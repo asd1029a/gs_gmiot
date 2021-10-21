@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="cont_area">
+	<div id="" class="cont_inner" title="">
+		<ul class="popup-list-area">
+			<li class="list">
+				<div class="popup-list-title">
+					<em>상세코드</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="hidden" id="popupDtlSeq"/>
+					<input type="hidden" id="popupDtlGrpCd"/>
+					<input type="text" id="popupDtlCd" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>상세코드 명</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupDtlNm" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>비고</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupDtlRemark" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>사용여부</em>
+				</div>
+				<div class="popup-list-cont">
+					<select class="easyui-combobox" id="popupDtlUseTy">
+						<option value="Y">사용</option>
+						<option value="N">미사용</option>
+					</select>
+				</div>
+			</li>
+		</ul>
+		<ul class="center-btn">
+			<li class="btn-cancle" onClick="closePopup();">취소</li>
+			<li class="btn-insert" onClick="saveCodeDetail();">저장</li>
+		</ul>
+	</div>
+</div>
+
+<script th:inline="javascript">
+$(document).ready(function(){
+	$('#popupDtlGrpCd').val($('#oprtSysCodeGrpTable').datagrid('getSelected').grpCd);
+	var grpCd = $('#popupDtlGrpCd').val();
+	if(grpCd == 'FCLT_E_KND') {
+		addIconUrl();
+		$("img").on('error', function() {
+			  $(this).attr("src", "/images/report/no_image.png");
+			});
+	}
+	if (typeof(selectedDataD) != 'undefined' && selectedDataD != '') {
+		setDetailData(selectedDataD);
+	}
+	
+	var row = $('#oprtSysCodeGrpTable').datagrid('getSelected');
+	
+	/* if (row.grpCd == 'FCLT_PURPOSE') {
+		$('#popupDtlCd').keyup(function(e) {
+			var regex = /^[1-9]{0,1}$/;
+			var val = $(this).val();
+			
+			if (val.length > 1) {
+				regex = /^[1]{1}[0]{1}$/;
+			} else {
+				regex = /^[1-9]{0,1}$/;
+			}
+			
+			if (!regex.test(val)) {
+				alert('10 이하의 숫자만 입력해 주세요.');
+				$(this).val('');
+			}
+		});
+	} */
+});
+
+function setDetailData(data) {
+	var row = data[0];
+	$('#popupDtlCd').attr('disabled', true);
+	$('#popupDtlSeq').val(row.deSeq);
+	$('#popupDtlCd').val(row.deCd);
+	$('#popupDtlNm').val(row.deCdNm);
+	$('#popupDtlRemark').val(row.remark);
+	$('#popupDtlUseTy').val(row.useYN);
+	$('#popupIconUrl').val(row.iconUrl);
+	if(row.iconUrl != null) {
+		var oImage = document.getElementById('preview');
+		var imgFile = "/file/getImage2.do?sPath=fclt&imageUrl="+row.iconUrl;
+		oImage.src = imgFile;
+	}
+}
+
+function clearPopup() {
+	$('#popupDtlSeq').val('');
+	$('#popupDtlCd').val('');
+	$('#popupDtlNm').val('');
+	$('#popupDtlGrpCd').val('');
+	$('#popupDtlRemark').val('');
+	$('#popupDtlUseTy').val('Y');
+	
+	selectedDataD = '';
+}
+
+function closePopup() {
+	clearPopup();
+	common.closeDialogPop("oprtSysCodeDtlPopup");
+}
+
+function saveCodeDetail() {
+	var grpCd = $('#popupDtlGrpCd').val();
+	var chkDeCd = $('#popupDtlCd').val();
+	var deCdNm = $('#popupDtlNm').val();
+	var remark = $('#popupDtlRemark').val();
+	
+	if(!checkNull(chkDeCd, "상세 코드를 입력해주십시오.")){
+		return false;
+	}
+	
+	if(!checkNull(deCdNm, "상세코드 명을 입력해주십시오.")){
+		return false;
+	}
+	
+	if(!checkNull(remark, "비고를 입력해주십시오.")){
+		return false;
+	}
+	
+	const jsonObj = {};
+	jsonObj.deSeq = $('#popupDtlSeq').val();
+	jsonObj.chkDeCd = chkDeCd;
+	jsonObj.deCdNm = deCdNm;
+	jsonObj.chkDeGrpCd = $('#popupDtlGrpCd').val();
+	jsonObj.remark = remark;
+	jsonObj.useYN = $('#popupDtlUseTy').val();
+	if(grpCd == 'FCLT_E_KND') {
+		var iconUrl = $('#popupIconUrl').val();
+		iconUrl = iconUrl.replace(/\\/gi, '//');
+		jsonObj.iconUrl = iconUrl;
+	}
+	
+	$.ajax({
+		type       : "POST",
+		url        : "/select/oprt.getCodeDetailList/action.do",
+		dataType   : "json",
+		data : {"param" : JSON.stringify(jsonObj)},
+		async      : false,
+		beforeSend : function(xhr) {
+			// 전송 전 Code
+		}
+	}).done(function (result) {
+		const rows = result.rows;
+    	if(rows=='sessionOut'){
+			alert('로그인 시간이 만료되었습니다.');
+			closeWindow();
+		}
+		if(rows.length > 0 && selectedDataD.length == 0) {
+			alert("그룹아이디가 존재합니다.");
+			return false;
+		}
+		else {
+			jsonObj.singleInsertSid = "oprt.saveCodeDetail";
+			$.ajax({
+				type       : "POST",
+				url        : "/multiAjax/action.do",
+				dataType   : "json",
+				data : {"param" : JSON.stringify(jsonObj)},
+				async      : false,
+				beforeSend : function(xhr) {
+					// 전송 전 Code
+				}
+			}).done(function (result) {
+				if (result == "SUCCESS") {
+					alert("저장 완료");
+					closePopup();
+					$('#oprtSysCodeDtlTable').datagrid('reload');
+				}
+				else {
+					alert("저장 실패");
+				}
+			}).fail(function (xhr) {
+				alert("저장 실패");
+			}).always(function() {
+				
+			});
+		}
+	});
+}
+function addIconUrl() {
+	var src= "/images/report/no_image.png";
+	let li = $('<li>').addClass('list');
+	let title = $('<div>').addClass('popup-list-title');
+	let em = $('<em>').html("아이콘 URL");
+	let cont = $('<div>').addClass('popup-list-cont');
+	let form = $('<form>').addClass('upload_form').attr('id','upload_form').attr('enctype','multipart/form-data').attr('method','post');
+	let filebox = $('<div>').addClass('filebox');
+	let input = $('<input>').addClass('upload-name').attr('id','popupIconUrl').attr('placeholder','파일을 선택해 주세요.').attr('disabled','disabled');
+	let label = $('<label>').attr('for','image_file').html('찾아보기');
+	let input2 = $('<input>').attr('type','file').attr('name','image_file').attr('id','image_file').addClass('upload-hidden').change(setImagefile).css('width','1');
+	let img = $('<img>').attr('id','preview')
+	
+	title.append(em);
+	li.append(title);
+	filebox.append(input);
+	filebox.append(label);
+	filebox.append(input2);
+	form.append(filebox);
+	cont.append(form);
+	li.append(cont);
+	li.append(img);
+	$('.popup-list-area').append(li);
+	$('#oprtSysCodeDtlPopup').css('height','290px');
+}
+
+function setImagefile() {
+	if($('#image_file')[0].files.length == 0) return;
+
+	var oFile = document.getElementById('image_file').files[0];
+    var rFilter = /^(image\/bmp|image\/gif|image\/jpeg|image\/png|image\/tiff)$/i;
+    
+    if (! rFilter.test(oFile.type)) {
+        alert('이미지 파일이 아닙니다.');
+        return;
+    }
+    
+    const file = document.getElementById('image_file').files[0];
+    var filePath = common.fileUpload(file, 'fclt');
+    
+    if(filePath == "") {
+    	alert('파일을 다시 선택 해 주세요');
+    }
+    else {
+    	$('#popupIconUrl').val(filePath);
+    	filePath = filePath.replace(/\\/gi, '//');
+    	
+    	var oImage = document.getElementById('preview');
+		var imgFile = "/file/getImage2.do?sPath=fclt&imageUrl="+filePath;
+		oImage.src = imgFile;
+    }
+}
+</script>

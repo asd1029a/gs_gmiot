@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="cont-pop-area" >
+	<ul class="list-condi">
+		<li class="list">
+			<em>검색조건</em>
+			<input type="text" id="searchCctvNm" style="width:150px;" placeholder=""/>
+			<a href="#" class="select-btn" onclick="searchUserCctv()">검색</a>
+		</li>
+	</ul>
+	<div class="cont-pop-inner" title="" id="userCctvPopup">
+	</div>
+	<ul class="center-btn">
+		<li class="btn-cancle" onClick="closeGroupPop();">취소</li>
+		<li class="btn-insert" id="saveUserBtn">저장</li>
+	</ul>
+	
+</div>
+
+<script th:inline="javascript">
+var userId = $('#oprtUserTable').datagrid('getSelected').userId;
+var fIdList = [];
+var tes;
+
+$(function () {
+	$('#oprtUserCctvPopup').parents().css({top : '50px'})
+	getUserCctv();
+	$("#saveUserBtn").off("click").on({
+	    "click" : function() {
+	        const ds = {};
+	        ds.id = fIdList;
+	        if(!ds.id)
+	        {
+	            alert("카메라를 선택하여 주십시오.");
+	            return false;
+	        }
+		saveUserCctv();
+	    }
+	});
+});
+
+function checkAllFlag() {
+	const jsonObj = {};
+	jsonObj.userId = userId;
+	$.ajax({
+		type       : "POST",
+		url        : "/select/oprt.checkUserCctvAllFlag/action.do",
+		dataType   : "json",
+		data       : {"param" : JSON.stringify(jsonObj)},
+		async      : false,
+		beforeSend : function(xhr) {
+			// 전송 전 Code
+		}
+	}).done(function (result) {
+		const rows = result.rows;
+    	if(rows=='sessionOut'){
+			alert('로그인 시간이 만료되었습니다.');
+			closeWindow();
+		}
+    	console.log(rows[0] === '1');
+	}).fail(function(xhr) {
+
+	}).always(function() {
+
+	});
+}
+
+function searchUserCctv(){
+	const searchKeyword = $("#searchCctvNm").val();
+	$('#userCctvPoup').jstree('search',searchKeyword);
+}
+
+function getUserCctv() {
+	$('#userCctvPopup').jstree("destroy");
+	const jsonObj = {};
+	jsonObj.userId = userId;
+	$.ajax({
+		type       : "POST",
+		url        : "/select/oprt.selectGetUserCctvList/action.do",
+		dataType   : "json",
+		data       : {"param" : JSON.stringify(jsonObj)},
+		async      : false,
+		beforeSend : function(xhr) {
+			// 전송 전 Code
+		}
+	}).done(function (result) {
+		const rows = result.rows;
+    	if(rows=='sessionOut'){
+			alert('로그인 시간이 만료되었습니다.');
+			closeWindow();
+		}
+		createJSTree(rows);
+	}).fail(function(xhr) {
+
+	}).always(function() {
+
+	});
+}
+
+function convertStringtoJson(jsondata) {
+	for(var i in jsondata) {
+		jsondata[i].state = JSON.parse(jsondata[i].state);
+		jsondata[i].state.selected = JSON.parse(jsondata[i].state.selected)
+	}
+	return jsondata;
+}
+
+function createJSTree(jsondata) {
+	 jsondata = convertStringtoJson(jsondata);
+	$('#userCctvPopup').jstree({
+		'core': {
+			'data': jsondata
+			//'multiple': false
+		},
+		"checkbox" : {
+			"keep_selected_style" : false
+			//"three_state" : false,
+			//"cascade" : "down+undetermined",
+		},
+		'search' : {
+			'case_insensitive': true,
+	        'show_only_matches' : true,
+	        'ajax' : true
+		},
+		"plugins" : [ "checkbox", "search" ]
+	}).on('search.jstree',function(nodes, str, res){
+		if(str.nodes.length === 0){
+			//$('#userCctvPopup').jstree(true).hide_all();
+		}//if
+	})//on
+	
+	$('#searchCctvNm').keyup(function(event){
+		if(event.keyCode != 13) return;
+		//$('#userCctvPopup').jstree(true).show_all();
+		$('#userCctvPopup').jstree().search($(this).val(), true);
+	})
+	
+	
+	$('#userCctvPopup').off("changed.jstree");
+	
+	$('#userCctvPopup').on("changed.jstree", function(e, data) {
+		nameList = [];
+		fIdList = [];
+		tes = data;
+		const instance = data.instance;
+		const list = data.selected;
+		getCheckedList(instance, list);
+		
+	});
+}
+
+function getCheckedList(instance, list) {
+	list.sort();
+	for(var i = 0, max = list.length; i < max; i++) {
+		const node = instance.get_node(list[i]);
+		if(node.parent == '#'){ continue;}
+		else if(node.parent == '0') {continue;}
+		
+		const children = node.children;
+		if(children.length > 0) {
+			fIdList.push(node.original.fId.trim());
+		} else {
+			if(fIdList.indexOf(node.parent) == -1) {
+				try{
+					fIdList.push(node.original.fId.trim());	
+				} catch(e) {
+					console.log(node.original);
+				}
+			}
+		}
+	}
+}
+
+function saveUserCctv() {
+	const jsonObj = {};
+	jsonObj.singleDeleteSid = "oprt.deleteUserCctv";
+	jsonObj.deleteRowId = userId;
+	
+    $.ajax({
+            type       : "POST",
+            url        : "/multiAjax/action.do",
+            dataType   : "json",
+            data : {"param" : JSON.stringify(jsonObj)},
+            async      : false,
+            beforeSend : function(xhr) {
+                // 전송 전 Code
+            }
+        }).done(function (data) {
+        	var rows = fIdList
+        	if(rows.length > 0) {
+        		var insertRows = [];
+        		for(var i=0; i<rows.length; i++) {
+        			insertRows.push({'userId':userId,'fcltId':rows[i]});
+        		}
+        		const jsonObj = {};
+        		jsonObj.singleInsertSid = "oprt.saveUserCctvList";
+        		jsonObj.insertRows = insertRows;
+        	    $.ajax({
+        	            type       : "POST",
+        	            url        : "/multiAjax/action.do",
+        	            dataType   : "json",
+        	            data : {"param" : JSON.stringify(jsonObj)},
+        	            async      : false,
+        	            beforeSend : function(xhr) {
+        	                // 전송 전 Code
+        	            }
+        	        }).done(function (result) {
+        	        if (result == "SUCCESS") {
+        	        	$('#userCctvPopup').jstree(true).refresh();
+        				alert("저장 완료");
+        	        }
+        	    }).fail(function (xhr) {
+        	        alert("등록 실패");
+        	        $('#userCctvPopup').jstree(true).refresh();
+        	    }).always(function() {
+
+        	    });
+        	} else {
+        		$('#userCctvPopup').jstree(true).refresh();
+        		alert("저장 완료");
+        	}
+    }).fail(function (xhr) {
+        alert("등록 실패");
+    }).always(function() {
+
+    });
+}
+
+
+function closeGroupPop() {
+	common.closeDialogPop("oprtUserCctvPopup");
+}
+
+</script>

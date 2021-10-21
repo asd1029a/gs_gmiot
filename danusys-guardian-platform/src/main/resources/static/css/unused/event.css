@@ -1,0 +1,56 @@
+.west_unfold {
+	position: absolute;
+    width: 320px;
+    height: 100%;
+    background: #fafafa;
+    z-index: 3;
+}
+.west_unfold .close_panel_btn {
+	background: url(../../images/icons/panel_close_nor.png) no-repeat center center / 100%;
+    position: absolute;
+    width: 18px;
+    height: 18px;
+	left: 300px;
+    top: 6px;
+}
+.west_unfold .close_panel_btn:hover {
+	background: url(../../images/icons/panel_close_over.png) no-repeat center center / 100%;
+}
+/* west패널 접힌영역 */
+.west_fold {
+	position: absolute;
+    width: 20px;
+    height: 100%;
+    z-index: 3;
+    background: #fafafa;
+}
+/* west패널 접힌영역-펼치기 */
+.west_fold .open_panel_btn {
+	background: url(../../images/icons/panel_open_nor.png) no-repeat center center / 100%;
+	width: 18px;
+    height: 18px;
+    position: absolute;
+    top: 50%;
+}
+.west_fold .open_panel_btn:hover {
+	background: url(../../images/icons/panel_open_over.png) no-repeat center center / 100%;
+}
+
+#eventContainer,
+#map {
+	width: 100%;
+    height: 100%;
+}
+/* #eventContainer {
+	width: 100%;
+	height: calc(100% - 30px);
+    margin-top: 30px;
+} */
+
+.center_layout {
+	position: absolute;
+    left: 320px;
+    width: calc(100% - 320px);
+    height: 100%;
+    background: #9cbad1;
+}

@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="facilityChart" >
+	<select id ="facilityTZ" parameterType="map" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY b.time) AS "rnum"
+				, b.time AS "xtarget"
+				, SUM(CASE WHEN b.time = a.time THEN 1 ELSE 0 END) AS "cnt"
+			FROM (
+				SELECT LPAD(GENERATE_SERIES(0,23)::text,2,'0') AS "time"
+			)b
+ 		]]>
+			LEFT OUTER JOIN (
+				SELECT 
+        			b.FCLT_ID
+        			,SUBSTR(TO_CHAR(b.INSERT_DATE,'YYYYMMDDHH24MISS'),9,2) AS TIME
+        			,b.INSERT_DATE
+        		FROM 
+        			CCTV_BRK_LOG b,
+        			FACILITY_S a,
+        			CM_AREA_SI_CD c
+				WHERE b.FCLT_ID = a.FCLT_ID
+				AND c.SI_CD::text = SUBSTR(a.AREA_CD::text,1,5)   
+				<if test="sDate != null and sDate != ''" ><![CDATA[
+					AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+				<if test="eDate != null and eDate != ''" ><![CDATA[
+					AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>	
+				<if test="sigCode != 'all'">
+					AND SUBSTR(a.AREA_CD::text, 1, 5) = #{sigCode}
+				</if>
+			) a
+			ON b.time = A.TIME
+			GROUP BY b.time
+			ORDER BY b.time
+	</select>
+	
+	<select id ="facilityByDay" parameterType="map" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY b.time) AS "rnum"
+				, (CASE B."time"::text WHEN '1' THEN '일요일' when '2' then '월요일'
+	       			when '3' then '화요일'
+	       			when '4' then '수요일'
+	       			when '5' then '목요일'
+	       			when '6' then '금요일'
+	       			when '7' then '토요일'
+				END) AS "xtarget"
+				, SUM(CASE WHEN b.TIME = a.dayCnt THEN 1 ELSE 0 END) AS "cnt"
+			FROM (
+				SELECT GENERATE_SERIES(1,7)::text AS "time"
+			)b
+				]]>
+			LEFT OUTER JOIN (
+				SELECT
+        			b.FCLT_ID
+        			,SUBSTR(TO_CHAR(b.INSERT_DATE,'YYYYMMDD'),0,8) AS TIME
+        			,TO_CHAR(b.INSERT_DATE,'TMDAY') AS day
+        			,TO_CHAR(b.INSERT_DATE,'D') AS dayCnt 
+        			,b.INSERT_DATE
+        		FROM 
+        			CCTV_BRK_LOG b,
+        			FACILITY_S a,
+        			CM_AREA_SI_CD c
+				WHERE b.FCLT_ID = a.FCLT_ID
+				AND c.SI_CD::text = SUBSTR(a.AREA_CD::text,1,5)
+				<if test="sDate != null and sDate != ''" ><![CDATA[
+					AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+				<if test="eDate != null and eDate != ''" ><![CDATA[
+					AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+					<if test="sigCode != 'all'">
+						AND SUBSTR(a.AREA_CD::text, 1, 5) = #{sigCode}
+					</if>
+			) a
+			ON b.time = a.dayCnt
+			GROUP BY B.TIME, a.day
+			ORDER BY b.TIME
+	</select>
+	
+	<select id ="facilityMonth" parameterType="map" resultType="java.util.HashMap">
+	SELECT
+		<![CDATA[ 
+				ROW_NUMBER() OVER(ORDER BY b.time) AS "rnum"
+				, b.time AS "xtarget"
+				, SUM(CASE WHEN b.time = a.time THEN 1 ELSE 0 END) AS "cnt"
+			FROM (
+				SELECT LPAD(GENERATE_SERIES(1,12)::text,2,'0') AS "time"
+			)b
+		]]>
+			LEFT OUTER JOIN (
+				SELECT
+        			b.FCLT_ID
+        			,SUBSTR(TO_CHAR(b.INSERT_DATE,'YYYYMMDD'),5,2) AS TIME 
+        		FROM 
+        			CCTV_BRK_LOG b,
+        			FACILITY_S a,
+        			CM_AREA_SI_CD c
+				WHERE b.FCLT_ID = a.FCLT_ID
+				AND c.SI_CD::text = SUBSTR(a.AREA_CD::text,1,5)
+					<if test="sDate != null and sDate != ''" ><![CDATA[
+					AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+				<if test="eDate != null and eDate != ''" ><![CDATA[
+					AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+					<if test="sigCode != 'all'">
+						AND SUBSTR(a.AREA_CD::text, 1, 5) = #{sigCode}
+					</if>
+			) a
+			ON b.time = A.TIME
+			GROUP BY b.time
+			ORDER BY b.time
+	</select>
+	
+	<select id ="facilityHeatMapByTZ" parameterType="map" resultType="java.util.HashMap">
+		SELECT * 
+		FROM(
+			SELECT
+				(b."time"::integer + 1) AS "xtarget"
+	  			,a.cdNm AS "ytarget"
+	  			,SUM(CASE WHEN b.time = a.time THEN 1 ELSE 0 END) AS "value"
+			FROM(
+				SELECT
+        			a.DE_CD_NM AS cdNm
+					,SUBSTR(TO_CHAR(b.INSERT_DATE,'YYYYMMDDHH24MISS'),9,2) AS TIME
+        		FROM 
+        			CCTV_BRK_LOG b
+        		INNER JOIN FACILITY_S c
+        		ON(b.FCLT_ID = c.FCLT_ID)
+        		AND c.AREA_CD IS NOT NULL
+			<if test="sigCode != 'all'">
+				AND SUBSTR(c.AREA_CD::text, 1, 5) = #{sigCode}
+			</if>
+        		RIGHT OUTER JOIN DETAIL_CD a
+          		ON (a.DE_CD = b.PURPOSE)
+          		<if test="sDate != null and sDate != ''" ><![CDATA[
+					AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+				<if test="eDate != null and eDate != ''" ><![CDATA[
+					AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+			WHERE 1=1
+				AND a.GRP_CD = 'FCLT_PURPOSE'	
+			) a
+			CROSS JOIN(
+				SELECT LPAD(GENERATE_SERIES(0,23)::text,2,'0') as "time"
+	 		)b 
+	 	GROUP BY b.TIME, a.cdNm
+		ORDER BY a.cdNm, b.TIME
+		) c
+	</select>
+	
+	<select id ="facilityHeatMapByDay" parameterType="map" resultType="java.util.HashMap">
+		SELECT * 
+		FROM(
+			SELECT
+				b.TIME AS "time"
+	  			,a.cdNm AS "ytarget"
+	    		,b.TIME AS "xtarget"
+	  			,SUM(CASE WHEN b.TIME = a.dayCnt THEN 1 ELSE 0 END) AS "value"
+			FROM(
+				SELECT
+					a.DE_CD_NM AS cdNm
+          			,TO_CHAR(b.INSERT_DATE,'D') AS dayCnt
+          		FROM
+        			CCTV_BRK_LOG b
+        		INNER JOIN FACILITY_S c
+        		ON(b.FCLT_ID = c.FCLT_ID)
+        		AND c.AREA_CD IS NOT NULL
+			<if test="sigCode != 'all'">
+				AND SUBSTR(c.AREA_CD::text, 1, 5) = #{sigCode}
+			</if>
+        		RIGHT OUTER JOIN DETAIL_CD a
+          		ON (a.DE_CD = b.PURPOSE)
+	        	<if test="sDate != null and sDate != ''" ><![CDATA[
+					AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+				<if test="eDate != null and eDate != ''" ><![CDATA[
+					AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+			WHERE 1=1
+				AND a.GRP_CD = 'FCLT_PURPOSE'
+			) a
+			CROSS JOIN(
+				SELECT GENERATE_SERIES(1,7)::text AS "time"
+ 			)b 
+			GROUP BY B.TIME, a.cdNm
+			ORDER BY a.cdNm, b.TIME
+		) c
+	</select>
+	
+	<select id ="facilityHeatMapByMonth" parameterType="map" resultType="java.util.HashMap">
+		SELECT * 
+		FROM(
+			SELECT
+				b.TIME AS "xtarget"
+		  		,a.cdNm AS "ytarget"
+		  		,SUM(CASE WHEN b.time = a.time THEN 1 ELSE 0 END) AS "value"
+			FROM(
+				SELECT
+        			a.DE_CD_NM AS cdNm
+        			,SUBSTR(TO_CHAR(b.INSERT_DATE,'YYYYMMDD'),5,2) AS TIME 
+        		FROM
+        			CCTV_BRK_LOG b
+        		INNER JOIN FACILITY_S c
+        		ON(b.FCLT_ID = c.FCLT_ID)
+        		AND c.AREA_CD IS NOT NULL
+				<if test="sigCode != 'all'">
+					AND SUBSTR(c.AREA_CD::text, 1, 5) = #{sigCode}
+				</if>
+        		RIGHT OUTER JOIN DETAIL_CD a
+          		ON (a.DE_CD = b.PURPOSE)
+	        	<if test="sDate != null and sDate != ''" ><![CDATA[
+					AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+				<if test="eDate != null and eDate != ''" ><![CDATA[
+					AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+				WHERE 1=1
+				AND a.GRP_CD = 'FCLT_PURPOSE'
+			) a
+			CROSS JOIN(
+				SELECT LPAD(GENERATE_SERIES(1,12)::text,2,'0') AS "time"
+			)b 
+			GROUP BY B.TIME, a.cdNm
+			ORDER BY a.cdNm, b.TIME
+		) c
+	</select>	
+
+	<select id ="selectPurposeList" parameterType="map" resultType="java.util.HashMap">
+		SELECT
+			b.DE_CD_NM AS "yList"
+		FROM 
+			DETAIL_CD b
+		WHERE 1=1 
+			AND b.GRP_CD = 'FCLT_PURPOSE'
+		ORDER BY b.DE_CD_NM
+	</select>
+	
+	
+	<select id ="selectTotalData" parameterType="map" resultType="java.util.HashMap">
+    	SELECT	
+			COUNT(a.total) AS "TOTALCNT",
+			COALESCE(TRUNC(COUNT(a.total)/ (MAX(SUBSTR(a.sDate,1,8))::date - MIN(SUBSTR(a.sDate,1,8))::date+1)::numeric,2),0) AS "DAYAVG"
+  		FROM(
+  			SELECT 
+				a.FCLT_ID as total
+  				,TO_CHAR(a.INSERT_DATE,'YYYYMMDDHH24MISS') AS sDate
+			FROM 
+				CCTV_BRK_LOG a, FACILITY_S b   
+			WHERE 
+				a.FCLT_ID = b.FCLT_ID
+    	) a
+	</select>
+	
+	<select id ="selectTotalData2" parameterType="map" resultType="java.util.HashMap">
+		SELECT
+			COUNT(a.total) as "TOTALCNT"
+			,TRUNC(COUNT(a.total) / CASE WHEN #{eDate}::date - #{sDate}::date = 0 THEN 1 ELSE #{eDate}::date - #{sDate}::date+1 END::numeric,2) AS "DAYAVG"
+  		FROM(
+  			SELECT
+				a.FCLT_ID as total
+  				,TO_CHAR(a.INSERT_DATE,'YYYYMMDDHH24MISS') AS sDate
+			FROM 
+				CCTV_BRK_LOG a, FACILITY_S b   
+			WHERE 
+				a.FCLT_ID = b.FCLT_ID
+			<if test="sDate != null and sDate != ''" ><![CDATA[
+	     			AND #{sDate} <= TO_CHAR(a.INSERT_DATE,'YYYY-mm-dd')
+				]]></if>
+				<if test="eDate != null and eDate != ''" ><![CDATA[
+					AND #{eDate} >= TO_CHAR(a.INSERT_DATE,'YYYY-mm-dd')
+			]]></if>
+    	) a
+	</select>
+	
+	<select id ="selectMaxMinEvent" parameterType="map" resultType="java.util.HashMap">	
+		SELECT * 
+		FROM(
+			SELECT
+      			ROW_NUMBER() OVER(ORDER BY COUNT(a.purpose) DESC) AS rnum1 
+				,COUNT(a.purpose) AS cnt ,
+	  			a.purpose AS "EVTNM"
+			FROM(	
+				SELECT 
+					a.DE_CD_NM AS purpose
+				FROM 
+					DETAIL_CD a
+					INNER JOIN 
+					CCTV_BRK_LOG b
+				ON(a.DE_CD = b.PURPOSE)
+				<if test="sDate != null and sDate != ''" ><![CDATA[
+	     			AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+				]]></if>
+				<if test="eDate != null and eDate != ''" ><![CDATA[
+					AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+			]]></if>
+      		) a
+			GROUP BY a.purpose
+		) b
+      	WHERE 
+      		b.rnum1 = (
+      			SELECT 
+      				MAX(b.rnum1)
+      			FROM(
+      				SELECT
+      					ROW_NUMBER() OVER(ORDER BY COUNT(a.purpose) DESC) AS rnum1 
+						,COUNT(a.purpose) AS cnt ,
+	  					a.purpose AS evtNm
+					FROM(	
+						SELECT 
+							a.DE_CD_NM AS purpose
+						FROM 
+							DETAIL_CD a
+							INNER JOIN 
+							CCTV_BRK_LOG b
+						ON(a.DE_CD = b.PURPOSE)
+						<if test="sDate != null and sDate != ''" ><![CDATA[
+			     			AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+						]]></if>
+						<if test="eDate != null and eDate != ''" ><![CDATA[
+							AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+						]]></if>
+      				) a
+					GROUP BY a.purpose
+				) b
+      		) 
+      	OR b.rnum1 = (
+      		SELECT 
+      			MIN(b.rnum1)
+      		FROM(
+      			SELECT
+      			ROW_NUMBER() OVER(ORDER BY COUNT(a.purpose) DESC) AS rnum1 
+				,COUNT(a.purpose) AS cnt ,
+	  			a.purpose AS evtNm
+				FROM(	
+					SELECT 
+						a.DE_CD_NM AS purpose
+					FROM 
+						DETAIL_CD a
+						INNER JOIN 
+						CCTV_BRK_LOG b
+					ON(a.DE_CD = b.PURPOSE)
+					<if test="sDate != null and sDate != ''" ><![CDATA[
+			     			AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+					]]></if>
+					<if test="eDate != null and eDate != ''" ><![CDATA[
+							AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+					]]></if>
+      			) a
+				GROUP BY a.purpose
+      		) b
+      	)
+	</select>
+	
+	
+	<select id ="selectMaxMinPlace" parameterType="map" resultType="java.util.HashMap">
+		SELECT *
+		FROM(
+			SELECT 
+				COUNT(a.place) AS cnt
+				,a.place AS "PLACE"
+		  		,ROW_NUMBER() OVER(ORDER BY COUNT(a.place) DESC) AS rnum1 
+			FROM(
+				SELECT 
+					c.DONG_NM AS place 
+				FROM 
+					FACILITY_S a INNER JOIN CCTV_BRK_LOG b
+					ON (a.FCLT_ID = b.FCLT_ID)
+					INNER JOIN CM_AREA_DONG_CD c
+					ON SUBSTR(a.AREA_CD::text,1,8) = SUBSTR(c.DONG_CD::text,1,8)
+					<if test="sDate != null and sDate != ''" ><![CDATA[
+			     			AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+					]]></if>
+					<if test="eDate != null and eDate != ''" ><![CDATA[
+							AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+					]]></if>
+				) a
+			GROUP BY a.place
+		) b
+		WHERE 
+			b.rnum1 = (
+  				SELECT MAX(b.rnum1)
+				FROM(
+					SELECT 
+						COUNT(a.place) AS cnt
+						,a.place
+				  		,ROW_NUMBER() OVER(ORDER BY COUNT(a.place) DESC) AS rnum1 
+					FROM(
+						SELECT 
+							c.DONG_NM AS place 
+						FROM 
+							FACILITY_S a INNER JOIN CCTV_BRK_LOG b
+							ON (a.FCLT_ID = b.FCLT_ID)
+							INNER JOIN CM_AREA_DONG_CD c
+							ON SUBSTR(a.AREA_CD::text,1,8) = SUBSTR(c.DONG_CD::text,1,8)
+							<if test="sDate != null and sDate != ''" ><![CDATA[
+			     			AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+					]]></if>
+					<if test="eDate != null and eDate != ''" ><![CDATA[
+							AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+					]]></if>
+					) a
+					GROUP BY a.place
+				) b 
+			)  	
+		OR 
+			b.rnum1 = (
+  				SELECT MIN(b.rnum1)
+				FROM(
+					SELECT 
+						COUNT(a.place) AS cnt
+						,a.place
+			  			,ROW_NUMBER() OVER(ORDER BY COUNT(a.place) DESC) AS rnum1 
+					FROM(
+						SELECT 
+							c.DONG_NM AS place 
+						FROM 
+							FACILITY_S a INNER JOIN CCTV_BRK_LOG b
+							ON (a.FCLT_ID = b.FCLT_ID)
+							INNER JOIN CM_AREA_DONG_CD c
+						ON SUBSTR(a.AREA_CD::text,1,8) = SUBSTR(c.DONG_CD::text,1,8)
+						<if test="sDate != null and sDate != ''" ><![CDATA[
+			     			AND #{sDate} <= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+					]]></if>
+					<if test="eDate != null and eDate != ''" ><![CDATA[
+							AND #{eDate} >= TO_CHAR(b.INSERT_DATE,'YYYY-MM-DD')
+					]]></if>
+					) a
+				GROUP BY a.place
+				) b 
+  			)
+	</select>
+</mapper>
+
+

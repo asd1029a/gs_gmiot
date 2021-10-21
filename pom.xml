@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <modules>
+<!--    <module>danusys-guardian-common-lib</module>-->
+<!--        <module>danusys-guardian-hub</module>-->
+        <module>danusys-guardian-platform</module>
+<!--        <module>danusys-guardian-mybatis</module>-->
+<!--        <module>danusys-guardian-web-jsp</module>-->
+<!--        <module>mybatis-sample</module>-->
+    </modules>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.12.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.danusys.guardian</groupId>
+    <artifactId>danusys-guardian-parent</artifactId>
+    <version>${revision}</version>
+    <description>Danusys Guardian Parent Project for Spring Boot</description>
+
+    <properties>
+        <revision>0.9.0-SNAPSHOT</revision>
+<!--        <revision>1.0.0-RELEASE</revision>-->
+        <java.version>8</java.version>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <postgresql.version>42.2.11</postgresql.version>
+        <egovframework.rte.version>3.8.0</egovframework.rte.version>
+    </properties>
+
+
+
+    <repositories>
+        <repository>
+            <id>mvn2s</id>
+            <url>https://repo1.maven.org/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>egovframe</id>
+            <url>https://maven.egovframe.go.kr/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>egovframe_old1</id>
+            <url>http://maven.egovframe.kr:8080/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>egovframe_old2</id>
+            <url>http://www.egovframe.go.kr/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>keesun.mvn.repo</id>
+            <url>https://github.com/keesun/mvn-repo/raw/master</url>
+        </repository>
+
+<!--        <repository>-->
+<!--            <id>danusys-group</id>-->
+<!--            <name>danusys-group</name>-->
+<!--            <url>https://nexus.danusys.com/repository/danusys-group/</url>-->
+<!--        </repository>-->
+    </repositories>
+<!--    <pluginRepositories>-->
+<!--        <pluginRepository>-->
+<!--            <id>danusys-group</id>-->
+<!--            <name>danusys-group</name>-->
+<!--            <url>https://nexus.danusys.com/repository/danusys-group/</url>-->
+<!--        </pluginRepository>-->
+<!--    </pluginRepositories>-->
+
+    <!-- for local maven deploy -->
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>danusys-release</id>-->
+<!--            <url>https://nexus.danusys.com/repository/danusys-release/</url>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--            <id>danusys-snapshot</id>-->
+<!--            <uniqueVersion>false</uniqueVersion>-->
+<!--            <url>https://nexus.danusys.com/repository/danusys-snapshot/</url>-->
+<!--        </snapshotRepository>-->
+<!--    </distributionManagement>-->
+
+
+    <!-- for dependencies -->
+    <dependencyManagement>
+        <dependencies>
+<!--            <dependency>-->
+<!--                <groupId>com.danusys.guardian</groupId>-->
+<!--                <artifactId>danusys-commons-???</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--            </dependency>-->
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>2.3.12.RELEASE</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <!-- for artifact versioning -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>2.3.12.RELEASE</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

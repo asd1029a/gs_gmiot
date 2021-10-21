@@ -1,0 +1,84 @@
+/* log.css */
+
+.log-area {
+	position: absolute;
+	right: 0;
+	left: 0;
+	top : 0;
+	padding: 2px;
+	display: flex;
+	flex-direction: column-reverse;
+	flex-grow: 1;
+	z-index: 10;
+	align-items: center;
+}
+
+.log-area > .log {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 10px;
+	border-radius: 5px 5px 5px 5px;
+	color: #fff;
+	cursor: pointer;
+	animation: slide-down 0.4s ease;
+}
+
+.log-area > .log.remove {
+	animation: slide-up 0.4s ease;
+}
+
+.log.info {
+	top: 0px;
+	background-color: rgb(138, 201, 38, 0.8);
+}
+
+.log.debug {
+	top: 0px;
+	background-color: rgb(25, 130, 196, 0.8);
+}
+
+.log.error {
+	top: 0px;
+	background-color: rgb(255, 89, 94, 0.8);
+}
+
+.log.twinkle {
+	animation-name: twinkle;
+	animation-duration: 1s;
+	animation-delay: .5s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+	animation-direction: alternate;
+}
+
+@keyframes slide-down {
+	0% {
+		transform: translateY(-20px);
+	}
+	
+	100% {
+		transfrom: translateY(0px);
+	}
+}
+
+@keyframes slide-up {
+	0% {
+		transform: translateY(0px);
+	}
+	
+	100% {
+		transfrom: translateY(-20px);
+	}
+	
+}
+
+@keyframes twinkle {
+	0% {
+		box-shadow: none;
+	}
+	
+	100% {
+		box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, .5);
+	}
+}

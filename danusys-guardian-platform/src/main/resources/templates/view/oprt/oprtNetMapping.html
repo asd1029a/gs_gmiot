@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<h4 class="admin-title">망연계정보 관리</h4>
+<div class="content-half">
+	<div class="admin-title-sub"><h3 class="tit">망연계장비 리스트</h3></div>
+	<ul class="list-condi">
+		<li class="list">
+			<em>검색조건 : </em>
+			<select id="searchGbn" style="width:250px;">
+				<option value="">전체</option>
+				<option value="noticeGbn">구분</option>
+				<option value="insertUser">입력자</option>
+			</select>
+			<input type="text" id="searchContent" style="width:250px;" onkeypress="if(event.keyCode==13){getNetMappingList();}" placeholder=""/>
+			
+			<a href="#" class="select-btn" onclick="getNetMappingList()">검색</a>
+			<a href="#" class="select-btn" onclick="searchClear()">초기화</a>
+		</li>
+	</ul>
+	
+	<table id="oprtNetMappingTable" title="" style="width:99%;height:85%;"></table>
+	
+	<ul class="right-btn">
+		<li class="btn-insert" onClick="openNetMappingPopup()">추가</li>
+		<li class="btn-insert" onClick="modifyNetMapping()">수정</li>
+		<li class="btn-insert" onClick="deleteNetMapping()">삭제</li>
+	</ul>
+</div>
+<div class="content-half">
+	<div class="admin-title-sub"><h3 class="tit">망연계장비 연결 리스트</h3></div>
+	<ul class="list-condi">
+		<li class="list">
+			<em>검색조건 : </em>
+			<select id="searchGbn" style="width:250px;">
+				<option value="">전체</option>
+				<option value="noticeGbn">구분</option>
+				<option value="insertUser">입력자</option>
+			</select>
+			<input type="text" id="searchContent" style="width:250px;" onkeypress="if(event.keyCode==13){getNetMappingList();}" placeholder=""/>
+			
+			<a href="#" class="select-btn" onclick="getNetMappingSubList()">검색</a>
+			<a href="#" class="select-btn" onclick="searchSubClear()">초기화</a>
+		</li>
+	</ul>
+	
+	<table id="oprtNetMappingSubTable" title="" style="width:99%;height:85%;"></table>
+	
+	<ul class="right-btn">
+		<li class="btn-insert" onClick="openNetMappingSubPopup()">추가</li>
+		<li class="btn-insert" onClick="modifyNetMappingSub()">수정</li>
+		<li class="btn-insert" onClick="deleteNetMappingSub()">삭제</li>
+	</ul>
+</div>
+
+<script th:inline="javascript">
+$(document).ready(function(){
+	getNetMappingList();
+});
+
+function getNetMappingList(){
+	var noticeGbn = $('#searchGbn').val();
+	var searchContent = $('#searchContent').val();
+	
+	const jsonObj = {};
+	
+	jsonObj.noticeGbn = noticeGbn;
+	jsonObj.searchContent = searchContent;
+	
+	$('#oprtNetMappingTable').datagrid({
+	    url:'/selectList/oprt.getNetMappingList/action.do',
+	    pagination:true,
+	    pageSize:20,
+	    queryParams : {
+			pageSize: 20,
+			param : JSON.stringify(jsonObj),
+	    },
+	    columns:[
+			{field: 'rnum', title: '번호', width:'10%', align:'center'},
+			{field: 'name', title: '망연계 명칭', width:'45%', align:'center'},
+	        {field: 'ip', title: '장비 IP', width:'45%', align:'center'},
+	    ],
+	    onSelect:function(index, row) {
+	    	getNetMappingSubList(row);
+	    },
+	    onDblClickRow:function(index, row) {
+	    	openNetMappingPopup(index, row);
+	    	selectedData = row;
+	    },
+	    onLoadSuccess:function(data){
+	    	if(data.rows=='sessionOut'){
+				alert('로그인 시간이 만료되었습니다.');
+				closeWindow();
+			}
+	    	
+			$('#oprtNetMappingTable').datagrid('selectRow', 0);
+	    }
+	});
+}
+
+function setNetMappingData(data) {
+	const ip = getIpClass(data.ip);
+	$('#popupName').val(data.name);
+	$('#popupIpA').val(ip[0]);
+	$('#popupIpB').val(ip[1]);
+	$('#popupIpC').val(ip[2]);
+	$('#popupIpD').val(ip[3]);
+	
+	$('#popupIpA').attr('disabled', true);
+	$('#popupIpB').attr('disabled', true);
+	$('#popupIpC').attr('disabled', true);
+	$('#popupIpD').attr('disabled', true);
+}
+
+function searchClear(){
+	$('#searchGbn').val('');
+	$('#searchContent').val('');
+}
+
+function modifyNetMapping() {
+	var row = $('#oprtNetMappingTable').datagrid('getSelected');
+	if(row == null) {
+		alert('선택 된 정보가 없습니다.');
+		return;
+	}
+	
+	selectedData = row;
+	
+	openNetMappingPopup();
+}
+
+function openNetMappingPopup(index, data) {
+	const path = "/oprt/popup/oprtNetMappingPopup";
+    common.openDialogPopPosition("oprtNetMappingPopup", "망연계 정보", "410", "180", "true", "/action/page.do", {path: path}, path.split("/")[3], "setNetMappingData");
+}
+
+
+function deleteNetMapping() {
+	var row = $('#oprtNetMappingTable').datagrid('getSelected');
+	
+	if(row == 'undefined' || row==null || row == ''){
+		alert("삭제할 망연계 장비를 선택해 주세요.");
+		return;
+	}
+	
+	if(confirm("망연계 장비를 삭제하시겠습니까?")) {
+		const jsonArray1 = [];
+    	const jsonArray2 = [];
+    	const jsonArray3 = [];
+    	const jsonArray4 = [];
+    	
+		const jsonObj = {};
+		jsonObj.rowStatus = "D";
+		jsonObj.ip = row.ip;
+		
+		jsonArray1[0] = jsonObj;
+		
+		const jsonObj2 = {};
+		jsonObj2.rowStatus = "D";
+		jsonObj2.netMappingIp = row.ip;
+		
+        jsonArray2[0] = jsonObj2;
+		
+	    $.ajax({
+	            type       : "POST",
+	            url        : "/multiTransaction/oprt.deleteNetMapping/oprt.deleteNetMappingSub/{sqlid3}/{sqlid4}/action.do",
+	            dataType   : "json",
+	            data : {
+	            	"param1" : JSON.stringify(jsonArray1),
+	                "param2" : JSON.stringify(jsonArray2),
+	                "param3" : JSON.stringify(jsonArray3),
+	                "param4" : JSON.stringify(jsonArray4)
+	            },
+	            async      : false,
+	            beforeSend : function(xhr) {
+	                // 전송 전 Code
+	            }
+	        }).done(function (result) {
+	        if (result == "SUCCESS") {
+	            alert("삭제 완료");
+	            getNetMappingList();
+	        }
+	        else {
+	            alert("삭제 실패");
+	        }
+	    }).fail(function (xhr) {
+	        alert("삭제 실패");
+	    }).always(function() {
+
+	    });
+	}
+	
+}
+
+function getNetMappingSubList(row){
+	var noticeGbn = $('#searchGbn').val();
+	var searchContent = $('#searchContent').val();
+	
+	const jsonObj = {};
+	
+	jsonObj.netMappingIp = row.ip;
+	
+	jsonObj.noticeGbn = noticeGbn;
+	jsonObj.searchContent = searchContent;
+	
+	$('#oprtNetMappingSubTable').datagrid({
+	    url:'/selectList/oprt.getNetMappingSubList/action.do',
+	    pagination:true,
+	    pageSize:20,
+	    queryParams : {
+			pageSize: 20,
+			param : JSON.stringify(jsonObj),
+	    },
+	    columns:[
+			{field: 'rnum', title: '번호', width:'10%', align:'center'},
+			{field: 'name', title: '서버 명칭', width:'30%', align:'center'},
+	        {field: 'ip', title: 'IP', width:'30%', align:'center'},
+	        {field: 'port', title: 'PORT', width:'30%', align:'center'}
+	    ],
+	    onDblClickRow:function(index, row) {
+	    	openNetMappingSubPopup(index, row);
+	    	selectedData = row;
+	    },
+	    onLoadSuccess:function(data){
+	    	if(data.rows=='sessionOut'){
+				alert('로그인 시간이 만료되었습니다.');
+				closeWindow();
+			}
+	    }
+	});
+}
+
+function setNetMappingSubData(data) {
+	const ip = getIpClass(data.ip);
+	$('#popupName').val(data.name);
+	$('#popupIpA').val(ip[0]);
+	$('#popupIpB').val(ip[1]);
+	$('#popupIpC').val(ip[2]);
+	$('#popupIpD').val(ip[3]);
+	$('#popupPort').val(data.port);
+}
+
+function searchClear(){
+	$('#searchGbn').val('');
+	$('#searchContent').val('');
+}
+
+function modifyNetMappingSub() {
+	var row = $('#oprtNetMappingSubTable').datagrid('getSelected');
+	if(row == null) {
+		alert('선택 된 정보가 없습니다.');
+		return;
+	}
+	
+	selectedData = row;
+	
+	openNetMappingSubPopup();
+}
+
+function openNetMappingSubPopup(index, data) {
+	const path = "/oprt/popup/oprtNetMappingSubPopup";
+    common.openDialogPopPosition("oprtNetMappingSubPopup", "망연계 서버 정보", "410", "220", "true", "/action/page.do", {path: path}, path.split("/")[3], "setNetMappingSubData");
+}
+
+
+function deleteNetMappingSub() {
+	var row = $('#oprtNetMappingSubTable').datagrid('getSelected');
+	
+	if(row == 'undefined' || row==null || row == ''){
+		alert("삭제할 망연계장비 연결 정보를 선택해 주세요.");
+		return;
+	}
+	
+	const jsonObj = {};
+    jsonObj.startIp = row.startIp;
+    jsonObj.startPort = row.startPort;
+    jsonObj.endIp = row.endIp;
+    jsonObj.endPort = row.endPort;
+    
+	if(confirm("선택된 망연계장비 연결 정보를 삭제하시겠습니까?")){
+		$.ajax({
+		        type       : "POST",
+		        url        : "/ajax/delete/oprt.deleteNetMappingSub/action.do",
+		        dataType   : "json",
+		        data       : {
+		        	"param" : JSON.stringify(jsonObj),
+		        },
+		        async      : false,
+		        beforeSend : function(xhr) {
+		            // 전송 전 Code
+		        }
+		    }).done(function (result) {
+		    if (result == "SUCCESS") {
+		        $('#oprtNetMappingSubTable').datagrid('reload');
+		        alert("삭제 완료");
+		    }
+		    else {
+		        alert("삭제 실패");
+		    }
+		}).fail(function (xhr) {
+		    alert("삭제 실패");
+		}).always(function() {
+		
+		});
+    }
+}
+
+
+
+</script>
+

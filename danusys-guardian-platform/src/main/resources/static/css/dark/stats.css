@@ -1,0 +1,293 @@
+@import "../image_manage.css";
+@import "../import/easyui_datagrid.css";
+@import "../import/calendar.css";
+
+html, body{width:100%; height:100%; font-size:14px; letter-spacing:-0.6px; font-family:'NanumGothic','Noto Sans KR','Apple SD Gothic','맑은고딕',sans-serif;overflow: hidden;}
+
+header{display:flex; flex-direction: column; justify-content:space-evenly; width:100%; height:160px; background:#2b2d30;}
+.stats-main{display:flex; width:100%; height:calc(100% - 160px); background:#2b2d30; color: #cecece;}
+
+text{color: #cecece;}
+
+.chart-header {
+	background: #36393d;
+	height: 40%;
+	margin: 0 5px;
+	color: #cecece;
+	display: flex;
+	border: 1px solid rgba(255,255,255,0.1);
+	border-radius: 10px;
+}
+
+.chart-header .search-content ul {
+	height: 100%;
+	width: calc(100% - 19px);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.chart-header .search-content ul span,
+.stats-area .search-content ul span {
+	text-align-last: center;
+}
+.chart-header .chart-summary-content ul li {
+	float: left;
+    width: 300px;
+    text-align: center;
+    height: 60px;
+    line-height: 30px;
+}
+.chart-header .chart-summary-content {
+	font-size: 18px;
+    width: calc(100% - 650px);
+    height: 60px;
+    left: 600px;
+    position: absolute;
+    overflow: hidden;
+}
+.chart-header .chart-summary-content span em {
+	font-size: 25px;
+	font-weight: bold;
+	margin: 0;
+}
+
+.stats-content {
+	width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    position: relative;
+    margin: 2px 5px 5px 5px;
+}
+.stats-area {
+	position: absolute;
+    width: calc(34% - 16px);
+	border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+	background: #36393d;
+}
+
+.stats-area.l {
+	height: 100%;
+	left: 0;
+	top: 0;
+}
+.stats-area.c {
+	height: 100%;
+    left: calc(33% + 7px);
+    top: 0;
+}
+.stats-area.r {
+	height: 100%;
+    right: 0;
+    top: 0;
+}
+
+.stats-area.c .ct,
+.stats-area.r .rt {
+	height: calc(50% - 25px);
+    left: 0;
+    top: 50px;
+    width: 100%;
+	position: absolute;
+}
+.stats-area.c .cb,
+.stats-area.r .rb {
+	height: calc(50% - 25px);
+    left: 0;
+    bottom: 0px;
+    width: 100%;
+    position: absolute;
+}
+
+.stats-area.c .ct > div,
+.stats-area.r .rt > div,
+.stats-area.c .cb > div,
+.stats-area.r .rb > div {
+	height: 100%;
+    overflow: hidden;
+}
+
+.stats-area .list-condi {
+	margin: 10px 10px 10px 10px;
+}
+
+/* mapChart */
+.place-label {
+	font-weight: bold;
+	font-size: 13px;
+	fill: #fff;
+	fill-opacity: 1;
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+#infoArea text {
+	fill: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.mapTooltip {
+	position: absolute;
+	background-color: RGB(0, 0, 0, 0.5);
+	color: #fff;
+	pointer-events: none;
+	border: 2px solid;
+	border-radius: 5px;
+	z-index: 999;
+	padding: 8px;
+	text-align: center;
+	margin-top: -30px;
+	/* font: 10px sans-serif; */
+}
+#mapPieArea {
+	width : 240px;
+	opacity: 1;
+}
+
+
+/* heatmapChart */
+.heatmapTooltip,
+.heatmapTooltip2 {
+	position: absolute;
+	background-color: RGB(0, 0, 0, 0.5);
+	color: #fff;
+	pointer-events: none;
+	border: 2px solid;
+	border-radius: 5px;
+	z-index: 999;
+	padding: 5px;
+	text-align: center;
+	opacity: 0;
+}
+#heatmapPieArea,
+#heatmapPieArea2 {
+	width : 220px;
+	opacity: 1;
+}
+
+rect.bordered {
+	stroke: #E6E6E6;
+	stroke-width:2px;   
+}
+text.mono {
+	font-size: 9pt;
+	fill: #aaa;
+}
+text.text-highlight {
+	fill: #c00;
+}
+/* text.axis-workweek {
+	fill: #000;
+}
+text.axis-worktime {
+	fill: #000;
+} */
+
+/* .datebox .combo-arrow {
+    background: url(../../images/icons/schedule_nor.png) no-repeat right center;
+}
+.datebox .combo-arrow:hover{
+	background: url(../../images/icons/schedule_pre.png) no-repeat right center;
+} */
+
+/* barlineChart */
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+
+.bar {
+	fill: steelblue;
+}
+
+.x.axis path {
+	display: none;
+}
+.x.axis, .y.axis {
+	font-size: 10px;
+}
+
+.barTooltip {
+	position: absolute;
+	background-color: RGB(0, 0, 0, 0.5);
+	color: #fff;
+	pointer-events: none;
+	border: 2px solid;
+	border-radius: 5px;
+	z-index: 999;
+	padding: 5px;
+	text-align: center;
+	opacity: 0;
+}
+
+em {
+    margin-left: 10px;
+	font-style: initial;
+}
+
+select {
+	border: 1px solid #4a4a4a;
+    height: 29px;
+    align-items: center;
+    vertical-align: middle;
+    margin-top: -2px;
+    background: #363738;
+    color: #eee;
+}
+
+input[type="text"], input[type="number"] {
+    height: 25px;
+    background: #363738;
+    color: #eee;
+    border: 1px solid #4a4a4a;
+    padding: 1px 2px;
+}
+input[type="radio"] {
+	vertical-align: sub;
+}
+
+
+.datebox {
+	margin-top: -3px;
+}
+.textbox {
+    position: relative;
+	background: #363738;
+    vertical-align: middle;
+    display: inline-block;
+    white-space: nowrap;
+    padding: 0;
+    border: 1px solid #555;
+}
+.textbox-addon {
+    position: absolute;
+}
+.textbox .textbox-text {
+    color: #aaa;
+    width: 70%;
+    font-size: 13px;
+    border: 0;
+    margin: 0;
+    padding: 0 10px 0;
+    white-space: normal;
+    vertical-align: top;
+    outline-style: none;
+    resize: none;
+    min-width: 50px;
+    /* font-family: 'nanum-barun-gothic-regular'; */
+}
+.datebox .combo-arrow {
+    background: url(../../images/icons/schedule_nor.png) no-repeat center center;
+}
+.datebox .combo-arrow:hover{
+	/* background: url(../../images/icons/schedule_pre.png) no-repeat center center; */
+	opacity: 0.5;
+}
+.textbox-icon {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    cursor: pointer;
+    outline-style: none;
+    margin-right: 3px;
+}

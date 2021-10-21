@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="danusys-guardian-platform" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="danusys-grardian-parent" target="8" />
+      <module name="danusys-guardian-hub" target="1.8" />
+      <module name="danusys-guardian-init" target="1.8" />
+      <module name="danusys-guardian-mybatis" target="1.8" />
+      <module name="danusys-guardian-sample" target="1.8" />
+      <module name="danusys-guardian-web-jsp" target="1.8" />
+      <module name="danusys-parent" target="8" />
+      <module name="mybatis-sample" target="1.8" />
+      <module name="spring-data (1)" target="8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="danusys-grardian-parent" options="-parameters" />
+      <module name="danusys-guardian-hub" options="-parameters" />
+      <module name="danusys-guardian-init" options="-parameters" />
+      <module name="danusys-guardian-mybatis" options="-parameters" />
+      <module name="danusys-guardian-platform" options="-parameters" />
+      <module name="danusys-guardian-sample" options="-parameters" />
+      <module name="danusys-guardian-web-jsp" options="-parameters" />
+      <module name="mybatis-sample" options="-parameters" />
+    </option>
+  </component>
+</project>

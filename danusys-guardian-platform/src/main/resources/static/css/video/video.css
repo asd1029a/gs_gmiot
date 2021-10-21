@@ -1,0 +1,282 @@
+/* video.css */
+
+.cctv-btn-wrap {
+	z-index: 1;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+.cctv-btn-wrap.active {
+	display: block;
+}
+
+.cctv-btn-wrap a.active {
+	filter: invert(80%);
+}
+
+.cctv-btn-wrap .left,
+.cctv-btn-wrap .right,
+.cctv-btn-wrap .up,
+.cctv-btn-wrap .down,
+.cctv-btn-wrap .zoomIn,
+.cctv-btn-wrap .zoomOut,
+.cctv-btn-wrap .Left,
+.cctv-btn-wrap .Right,
+.cctv-btn-wrap .Up,
+.cctv-btn-wrap .Down,
+.cctv-btn-wrap .ZoomIn,
+.cctv-btn-wrap .ZoomOut,
+.cctv-btn-wrap .preset_1,
+.cctv-btn-wrap .preset_2,
+.cctv-btn-wrap .preset_3,
+.cctv-btn-wrap .preset_4,
+.cctv-btn-wrap .preset_5,
+.cctv-btn-wrap .preset_6,
+.cctv-btn-wrap .preset_7,
+.cctv-btn-wrap .preset_8 {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    z-index: 7;
+    cursor: pointer;
+}
+.cctv-btn-wrap .left,
+.cctv-btn-wrap .Left {
+	background: url(/images/video/ptz_left.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .left:hover,
+.cctv-btn-wrap .Left:hover {
+	background: url(/images/video/ptz_left_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .right,
+.cctv-btn-wrap .Right {
+	background: url(/images/video/ptz_right.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .right:hover,
+.cctv-btn-wrap .Right:hover {
+	background: url(/images/video/ptz_right_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .up,
+.cctv-btn-wrap .Up {
+	background: url(/images/video/ptz_up.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .up:hover,
+.cctv-btn-wrap .Up:hover {
+	background: url(/images/video/ptz_up_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .down,
+.cctv-btn-wrap .Down {
+	background: url(/images/video/ptz_down.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .down:hover,
+.cctv-btn-wrap .Down:hover {
+	background: url(/images/video/ptz_down_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .zoomIn,
+.cctv-btn-wrap .ZoomIn {
+	height: 13px;
+	background: url(/images/video/zoom_in.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .zoomIn:hover,
+.cctv-btn-wrap .ZoomIn:hover {
+	background: url(/images/video/zoom_in_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .zoomOut,
+.cctv-btn-wrap .ZoomOut {
+	height: 13px;
+	background: url(/images/video/zoom_out.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .zoomOut:hover,
+.cctv-btn-wrap .ZoomOut:hover {
+	background: url(/images/video/zoom_out_over.png) no-repeat center center / 100%;
+}
+
+.cctv-btn-wrap .preset_1 {
+	background: url(/images/video/1.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_1:hover {
+	background: url(/images/video/1_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_2 {
+	background: url(/images/video/2.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_2:hover {
+	background: url(/images/video/2_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_3 {
+	background: url(/images/video/3.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_3:hover {
+	background: url(/images/video/3_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_4 {
+	background: url(/images/video/4.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_4:hover {
+	background: url(/images/video/4_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_5 {
+	background: url(/images/video/5.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_5:hover {
+	background: url(/images/video/5_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_6 {
+	background: url(/images/video/6.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_6:hover {
+	background: url(/images/video/6_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_7 {
+	background: url(/images/video/7.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_7:hover {
+	background: url(/images/video/7_over.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_8 {
+	background: url(/images/video/8.png) no-repeat center center / 100%;
+}
+.cctv-btn-wrap .preset_8:hover {
+	background: url(/images/video/8_over.png) no-repeat center center / 100%;
+}
+
+
+/* 우클릭 메뉴 css */
+.rightclick_menu {
+	background-color: #313035;
+    z-index: 11;
+    position: absolute;
+    padding: 10px;
+    cursor: auto;
+}
+.rightclick_menu .rightclick_menu_title {
+	color: #fff;
+    font-size: 20px;
+}
+.rightclick_menu li {
+	padding-top: 2px;
+}
+.rightclick_menu li a {
+	color: #b5b5b5;
+	font-size: 15px;
+	cursor: pointer;
+	vertical-align: middle;
+}
+.rightclick_menu li a:hover {
+	color: #3c78c3;
+}
+
+/* 방향설정 */
+.direction_area {
+	width: 160px;
+	height: 160px;
+	background-color: rgb(0, 0, 0, 0.4);
+	border-radius: 80px 80px 80px 80px;
+	cursor: pointer;
+}
+
+.playerWrap {
+	position: relative;
+	overflow: hidden;
+	height: 100%;
+}
+
+/* 순환감시 */
+.circle-video-area {
+	width: calc(100% - 341px);
+    height: 100%;
+    position: absolute;
+    left: 341px;
+    top: 0;
+    overflow: hidden;
+}
+
+.toggled + .circle-video-area {
+	width: 100%;
+    left: 0;
+}
+
+.circle-video-area .cctv-view-layer {
+	display: inline-block;
+	width: calc(33% + 3px);
+	height: calc(33% + 1px);
+	z-index: 2;
+	float: left;
+	border: 1px solid #000;
+}
+
+.cctv_layer_area .cctv-view-layer:first-child .view h3 {
+	width: calc(100% - 14px);
+}
+.cctv_layer_area .cctv-view-layer .view h3 {
+	position: absolute;
+	text-align: center;
+	color: #fff;
+    padding: 3px 5px 3px 5px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    display: block;
+    width: calc(50% - 13px);
+}
+
+.circle-video-area .cctv-view-layer .view h3 {
+	white-space: nowrap;
+	color: #fff;
+	position: absolute;
+	width: calc(34% - 22px);
+	z-index: 2;
+}
+
+.circle-video-area .cctv-view-layer .view {
+	display: block;
+	width: 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	position: relative;
+}
+.circle-video-area .cctv-view-layer .view .video-wrap {
+    width: 100%;
+    height: 100%;
+}
+.circle-video-area .cctv-view-layer .view .video-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+.circle-video-area .cctv-view-layer .view .video-wrap .spinner {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: flex;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+	z-index: 2;
+}
+.circle-video-area .cctv-view-layer .view .video-wrap .spinner > img {
+	width: 100%;
+}
+.circle-video-area .cctv-view-layer .view .video-wrap .error-view {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: flex;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+	z-index: 2;
+}
+.circle-video-area .cctv-view-layer .view .video-wrap .error-view > img {
+	width: 40%;
+}
+.circle-video-area .cctv-view-layer .view .video-wrap .video-content {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}

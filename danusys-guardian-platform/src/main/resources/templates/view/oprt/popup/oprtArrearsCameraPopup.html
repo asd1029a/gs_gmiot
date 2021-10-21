@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="cont_area">
+	<div id="" class="cont_inner" title="">
+		<ul class="popup-list-area">
+			<li class="list">
+				<div class="popup-list-title">
+					<em>카메라 명칭</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupName" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>경도(lat)</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupLatitude" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>위도(lon)</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupLongitude" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+		</ul>
+		<ul class="center-btn">
+			<li class="btn-cancle" onClick="closePopup();">취소</li>
+			<li class="btn-insert" onClick="saveUserGroup();">저장</li>
+		</ul>
+	</div>
+</div>
+
+<script th:inline="javascript">
+$(document).ready(function(){
+	if (typeof(selectedData) != 'undefined' && selectedData != '') {
+		setUserDetailData(selectedData);
+	}
+});
+
+function setUserDetailData(data) {
+	var row = data;
+	$('#popupName').val(row.name);
+	$('#popupLatitude').val(row.latitude);
+	
+	$('#popupLongitude').val(row.longitude);	
+}
+
+
+function clearPopup() {
+	$('#popupName').val('');
+	$('#popupLatitude').val('');
+	$('#popupLongitude').val('');
+}
+
+function closePopup() {
+	clearPopup();
+	if (typeof(selectedData) != 'undefined' && selectedData != '') {
+		selectedData='';
+	}
+	common.closeDialogPop("oprtArrearsCameraPopup");
+}
+
+function saveUserGroup() {
+	var name = $('#popupName').val();
+	var latitude = $('#popupLatitude').val();
+	var longitude = $('#popupLongitude').val();
+	
+	if(!checkNull(name, "카메라 명칭을 입력해주십시오.")){
+		return false;
+	}
+	if(!checkNull(latitude, "경도(lat)을 입력해주십시오.")){
+		return false;
+	}
+	
+	if(!checkNull(longitude, "위도(lon)을 입력해주십시오.")){
+		return false;
+	}
+	
+	const jsonObj = {};
+	jsonObj.name = name;
+	jsonObj.latitude = latitude;
+	jsonObj.longitude = longitude;
+	
+	$.ajax({
+		type       : "POST",
+		url        : "/ajax/insert/oprt.saveArrearsCamera/action.do",
+		dataType   : "json",
+		data : {
+			"param" : JSON.stringify(jsonObj),
+			},
+		async      : false,
+		beforeSend : function(xhr) {
+			// 전송 전 Code
+		}
+	}).done(function (result) {
+		if (result == "SUCCESS") {
+			//deleteSmsDetail();
+			alert("저장 완료");
+			closePopup();
+			$('#oprtArrearsCameraTable').datagrid('reload');
+		}
+		else {
+			alert("저장 실패");
+		}
+	}).fail(function (xhr) {
+		alert("저장 실패");
+	}).always(function() {
+		
+	});	
+}
+</script>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<h4 class="admin-title">메뉴권한 관리</h4>
+<div class="content-half">
+	<div class="admin-title-sub"><h3 class="tit">사용자 리스트</h3></div>
+	<ul class="list-condi">
+		<li class="list">
+			<em>사용자 아이디</em>
+			<input type="text" id="searchUserId" style="width:100px;" onkeypress="if(event.keyCode==13){reload();}"/>
+			<em>사용자 성명</em>
+			<input type="text" id="searchUserNm" style="width:100px;" onkeypress="if(event.keyCode==13){reload();}"/>
+			
+			<a href="#" class="select-btn" onclick="reload()">검색</a>
+		</li>
+	</ul>
+	<table id="oprtUserMenuAccountTable" style="width:98.5%;height:85%;"></table>
+</div>
+
+<div class="content-half" style="height: 88%">
+	<div class="admin-title-sub"><h3 class="tit">메뉴 리스트</h3></div>
+	<ul class="list-condi"></ul>
+	
+	<table id="oprtUserMenuTable" title="" style="width:98.5%;height:85%;"></table>
+	
+	<br>
+	<ul class="right-btn">
+		<li class="btn-insert" onClick="saveMenuList();">저장</li>
+	</ul>
+</div>
+
+<script type="text/javascript" src="/js/import/datagrid-cellediting.js"></script>
+<script th:inline="javascript">
+$(document).ready(function(){
+	reload();
+});
+
+var rCnt1 = 0;
+var rCnt2 = 0;
+
+baseIndex = 0;
+function reload() {
+	const jsonObj = {};
+	jsonObj.searchUserId = $('#searchUserId').val();
+	jsonObj.searchUserNm = $('#searchUserNm').val();
+	
+	$('#oprtUserMenuAccountTable').datagrid({
+	    url:'/selectList/oprt.getUserList/action.do',
+	    pagination:true,
+	    singleSelect:true,
+	    pageSize:18,
+	    queryParams : {
+			pageSize: 18,
+			param : JSON.stringify(jsonObj),
+	    },
+	    columns:[
+					/* {field: 'check', checkbox: true, width:'5%', align:'center'}, */
+					{field: 'rnum', title: '번호', width:'5%', align:'center'},
+					{field: 'userId', title: '사용자 아이디', width:'35%', align:'center'},
+					{field: 'userNm', title: '사용자 성명', width:'30%', align:'center'},
+					{field: 'phoneNo', title: '연락처', width:'30%', align:'center'}
+	    ],
+	    onClickRow:function(index, row) {
+	    	getMenuList(index);
+	    	baseIndex = index;
+	    },
+	    onLoadSuccess:function(data){
+	    	if(data.rows=='sessionOut'){
+				alert('로그인 시간이 만료되었습니다.');
+				closeWindow();
+			}
+	    	else {
+	    		getMenuList(baseIndex);
+	    	}
+	    }
+	});
+}
+
+function getMenuList(index) {
+	$('#oprtUserMenuAccountTable').datagrid('selectRow', index);
+	var selectRow = $('#oprtUserMenuAccountTable').datagrid('getSelected');
+	
+	const jsonObj = {};
+	jsonObj.userId = selectRow.userId;
+	
+	$('#oprtUserMenuTable').datagrid({
+	    url:'/select/oprt.getUserMenuList/action.do',
+	    queryParams : {
+			param : JSON.stringify(jsonObj),
+	    },
+	    columns:[
+	              {field: 'menuGbnNm', title: '메뉴구분', width:'20%', align:'center'},
+	              {field: 'menuId', title: '메뉴 아이디', width:'35%', align:'center'},
+	              {field: 'menuNm', title: '메뉴 명', width:'35%', align:'center'},
+	              {field: 'showYN', title: '부여권한', width:'10%', align:'center', checkbox:true
+	            	 /*  ,editor:{'type':'combobox'
+	            		  ,'options':{'valueField':"code",'textField':"code"
+	            			  ,'data':[{"code":"Y","text":"Y"},{"code":"N","text":"N"}]
+			              ,"onChange":function(value){
+			            	  $('td[field="showYN"].datagrid-row-selected > div .textbox-value').val(value);
+			            	  
+			            	  var getCell = $('#oprtUserMenuTable').datagrid('getSelectedCells');
+			            	  if(getCell.length == 0) return;
+			            	  var idx = getCell[0].index;
+			            	  $('#oprtUserMenuTable').datagrid('getData').rows[idx].showYN = value;
+		   					}
+	            	  }} */
+	              }
+	    ],
+	    onLoadSuccess:function(result){
+			const rows = result.rows;
+	    	if(rows=='sessionOut'){
+				alert('로그인 시간이 만료되었습니다.');
+				closeWindow();
+			}
+	    	//$('#oprtUserMenuTable').datagrid('disableCellEditing');
+	    	else {
+	    		for(var i=0; i<rows.length; i++) {
+	    			if(rows[i].showYN == "Y")
+	    				$('#oprtUserMenuTable').datagrid('checkRow',i);
+	    		}
+	    		rCnt1 = 0;
+	    		rCnt2 = 0;
+	    		for(var i=0; i<rows.length; i++) {
+	    			if(rows[i].menuGbn == "menu") rCnt1++;
+	    		}
+	    		rCnt2 = rows.length-rCnt1;
+	    		
+	    		//$('#oprtUserMenuTable').datagrid('enableCellEditing');
+	    		 var merges = [{
+	                 index: 0,
+	                 rowspan: rCnt1
+	             },{
+	                 index: rCnt1,
+	                 rowspan: rCnt2
+	             }];
+	             for(var i=0; i<merges.length; i++){
+	                 $(this).datagrid('mergeCells',{
+	                     index: merges[i].index,
+	                     field: 'menuGbnNm',
+	                     rowspan: merges[i].rowspan
+	                 });
+	             }
+	             $('.datagrid-td-merged').css('border','1px solid #313437');
+	    	}
+	    }
+	});
+}
+
+function saveMenuList() {
+	var selectUserRows = $('#oprtUserMenuAccountTable').datagrid('getSelected');
+	if(selectUserRows == null) {
+		alert('선택 된 사용자가 없습니다.');
+		return;
+	}
+	
+	var chkRows = $('#oprtUserMenuTable').datagrid('getChecked');
+	if(chkRows.length > 0) {
+		if(confirm("저장하시겠습니까?")) {
+			var menuList = [];
+			for(var i=0; i<chkRows.length; i++) {
+				menuList.push(chkRows[i].menuId);
+			}
+			console.log(menuList);
+			
+			const jsonObj = {};
+			jsonObj.singleUpdateSid = "oprt.saveUserMenuList";
+			jsonObj.userId = selectUserRows.userId;
+			jsonObj.menuList = menuList.toString();
+			
+			$.ajax({
+				type       : "POST",
+				url        : "/multiAjax/action.do",
+				dataType   : "json",
+				data : {"param" : JSON.stringify(jsonObj)},
+				async      : false,
+				beforeSend : function(xhr) {
+					// 전송 전 Code
+				}
+			}).done(function (result) {
+				if (result == "SUCCESS") {
+					$('#oprtUserMenuTable').datagrid('reload');
+					alert("저장 완료");
+				}
+				else {
+					alert("저장 실패");
+				}
+			}).fail(function (xhr) {
+				alert("저장 실패");
+			}).always(function() {
+				
+			});
+		}
+	}
+	
+	
+	
+	/*var dg = $('#oprtUserMenuTable').datagrid('getData');
+	var rows = dg.rows;
+	var menuList = '';
+	
+	for(var i=0; i<dg.total; i++) {
+		if(dg.rows[i].showYN == "Y") {
+			menuList += dg.rows[i].menuId+',';
+		}
+	}
+	
+	menuList = menuList.slice(0,-1); */
+	
+	
+}
+</script>

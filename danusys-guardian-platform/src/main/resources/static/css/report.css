@@ -1,0 +1,244 @@
+html, body {
+	background: #b5b5b5;
+}
+
+/* header */
+.ex_report_container, .report_container {
+	height: calc(100% - 20px);
+    padding: 10px;
+}
+
+.ex_report_container .panel, .report_container .panel {
+    overflow: hidden;
+    text-align: left;
+    border-radius: 0 0 0 0;
+    height: calc(100% - 95px);
+}
+
+
+/* reportNodeSearhPopup */
+#nodeList {
+	overflow: hidden;
+}
+
+#cctvNodeTable tbody td {
+	font-size: 11px;
+    border: 1px solid #ccc;
+}
+
+#cctvNodeTable {
+	margin: 1%;
+	width: 100%;
+}
+
+#cctvNodeTable tbody tr {
+	cursor: pointer;	
+}
+
+.cont_pop_inner .search_text #searchNode {
+    border: 0;
+    font-size: 13px;
+    outline: 0;
+    padding: 1.5%;
+    width: 350px;
+    height: 25px;
+}
+
+.cont_pop_inner .search_text .search_node_btn {
+	position: absolute;
+    height: 17px;
+    width: 17px;
+    right: 2.5em;
+    top: 4.4em;
+    border: 0;
+    cursor: pointer;
+    background: url(../../images/icons/icon_search.png) no-repeat center center / 100%;
+}
+
+
+#searchNodeList .btn_area {
+	position: absolute;
+    right: 50%;
+    width: 17px;
+    height: 17px;
+    background: url(../../../images/icons/clear.png) no-repeat;
+    cursor: pointer;
+    border: 0;
+}
+
+
+
+.cont_pop_inner .search_text {
+	margin-top: 1.5%;
+	text-align: center;
+}
+
+
+/* reportPopup */
+.list_text_area {
+    margin: 10px 0 0 0;
+    float: left;
+}
+/* .datebox .combo-arrow:hover {
+    background: url(../../images/icons/schedule_pre.png) no-repeat center center;
+} */
+
+
+.popup_list_area .list2 .popup_list_cont2 input {
+    width: calc(100% - 11px);
+}
+
+.cont_inner {
+	display: flex;
+	flex-direction: column;
+	margin-top: 10px;
+}
+
+.report_half {
+	width : 49%;
+}
+
+.report_popup_wrap {
+	display: flex;
+	justify-content: space-between;
+}
+
+.report_list_area_hz {
+	display: flex;
+	justify-content: space-between;
+}
+
+.report_list_area_vt {
+	display: flex;
+	flex-direction: column;
+}
+
+
+.report_list_area_hz .report_hz_wrap .report_list_title {
+	background-color: #555555;
+	text-align: center;
+	height: 30px;
+	color: #ffffff;
+	line-height: 30px;
+	width: 100%;
+}
+
+.report_hz_wrap {
+	width: 100%;	
+}
+
+
+.report_vt .report_list_title {
+	background-color: #555555;
+	text-align: center;
+	height: 30px;
+	color: #ffffff;
+	line-height: 30px;
+	width: 25%;
+    font-size: 11px;
+}
+
+.report_vt .report_list_cont {
+	width: 72%;
+}
+
+.report_vt{
+	display: flex;
+	margin-top: 1px;
+}
+
+.report_list_cont input[type="text"]{
+	width: 100.6%;
+	margin-left: 0.2em;
+}
+
+.report_list_cont select {
+    width: 103.4%;
+    height: 30px;
+    /* text-align-last: center; */
+    background: #363738;
+    color: #8c8c8c;
+}
+
+#reportPopup {
+	margin-top: 10px;
+}
+
+.report_list_btn_area {
+	margin-top : 0.1em;
+	display: flex;
+    justify-content: center;
+}
+
+
+.textbox {
+	margin-top : 0.8px;	
+}
+
+
+
+
+/* .report_type2 .textbox {
+	text-align-last: start;
+}
+.report_type2 .textbox.combo {
+	text-align-last: center;
+}
+.report_type2 .textbox-addon {
+	position: absolute;
+    top: 0;
+	width: 100%;
+	height: 100%;
+}
+.report_type2 .textbox {
+    position: relative;
+    vertical-align: middle;
+    display: inline-block;
+    white-space: nowrap;
+}
+.report_type2 .combo-arrow {
+	background: url(../../images/icons/dropdown_black.png) no-repeat right center;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 2px 0px 0px -3px;
+    display: inline-block;
+}
+.report_type2 .textbox .textbox-text {
+	padding-right: 15px;
+    font-size: 13px;
+    border: 0;
+    width: calc(100% - 15px) !important;
+    height: 100% !important;
+    font-family: KoPub Dotum;
+    color : #8c8c8c;
+} */
+.combo-arrow {
+    background: url(../../images/icons/dropdown_white.png) no-repeat center center;
+}
+.combo-arrow:hover{
+	/* background: url(../../images/icons/schedule_pre.png) no-repeat center center; */
+	opacity: 0.5;
+}
+
+/* input#selectType {
+	width: 97%;
+	height : 24px;
+	margin : 0px;
+	margin-top : 1px;
+} */
+
+.datagrid-btable>tbody>tr>td>div {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.combo-panel .combobox-item span {
+	width: 137px;
+    height: 28px;
+    display: block;
+}
+
+#selectDivision, #selectType {
+	width: 192px;
+}
