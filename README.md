@@ -14,7 +14,7 @@
   * InteliJ CE(권장)
 
 ---
-### 소스 내려 받기
+### 소스 내려 받기 / 빌드
 
 * 계정 만들기
   * http://172.20.5.3/users/sign_in
@@ -23,7 +23,8 @@
   * 콘솔창 (alt + F12)
     * mvn clean install -f pom.xml -Dmaven.test.skip=true
     * Maven 사이드 툴바 실행( 상단 번개모양 클릭(test skip)) > install 실행
-    ![Maven 사이드바 실행](doc/02-Maven-tool-bar.png)
+
+![Maven 사이드바 실행](doc/02-Maven-tool-bar.png)
 
 ---
 
@@ -32,4 +33,8 @@
   * application-local.properties / application-dev.properties
 * Edit Configurations > Modify Options > Add VM options 항몽 추가
   * -Dspring.profiles.active=local 추가
-  ![Active profile 추가 방법](doc/01-edit-configurations.png)
+
+![Active profile 추가 방법](doc/01-edit-configurations.png)
+
+![Server start](doc/03-Server-start.png)
+
