@@ -19,10 +19,10 @@
 * 계정 만들기
   * http://172.20.5.3/users/sign_in
 * git clone http://172.20.5.3/webapp/danusys-guardian-parent.git
-* 전체 소스 빌드
-  * 콘솔창 (alt + F12)
+* 전체 소스 빌드(1,2 둘중 하나만 하면 됨)
+  * 방법 1 : 콘솔창 (alt + F12)
     * mvn clean install -f pom.xml -Dmaven.test.skip=true
-    * Maven 사이드 툴바 실행( 상단 번개모양 클릭(test skip)) > install 실행
+  * 방법 2 : Maven 사이드 툴바 실행( 상단 번개모양 클릭(test skip)) > install 실행
 
 ![Maven 사이드바 실행](doc/02-Maven-tool-bar.png)
 
