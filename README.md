@@ -1,6 +1,7 @@
 #로컬 개발 환경 시작 하기
 
 ### 준비사항
+
 * 개발 환경
   * Java 8 이상 설치(앞으로는 11로 가야함...)
   * maven 설치
@@ -14,6 +15,7 @@
 
 ---
 ### 소스 내려 받기
+
 * 계정 만들기
   * http://172.20.5.3/users/sign_in
 * git clone http://172.20.5.3/webapp/danusys-guardian-parent.git
@@ -21,7 +23,7 @@
   * 콘솔창 (alt + F12)
     * mvn clean install -f pom.xml -Dmaven.test.skip=true
   * Maven 사이드 툴바 실행( 상단 번개모양 클릭(test skip)) > install 실행
-    ![img.png](doc/02-Maven-tool-bar.png)
+  ![img.png](doc/02-Maven-tool-bar.png)
 
 ---
 
