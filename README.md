@@ -36,5 +36,13 @@
 
 ![Active profile 추가 방법](doc/01-edit-configurations.png)
 
-![Server start](doc/03-Server-start.png)
+* Run
+  * 상단 네비게이션
+  
+  ![Server start](doc/03-Server-start.png)
+
+  * 하단 탭 (alt+8)
+  
+  ![Server start](04-Server-start.png)
+
 
