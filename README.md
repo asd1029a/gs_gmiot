@@ -43,6 +43,6 @@
 
   * 하단 탭 (alt+8)
   
-  ![Server start](04-Server-start.png)
+  ![Server start](doc/04-Server-start.png)
 
 
