@@ -80,9 +80,9 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
 
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.addResourceHandler("/vendor/**").addResourceLocations("classpath:/static/vendor/");
-        registry.addResourceHandler("/media/**").addResourceLocations("classpath:/static/media/");
+//        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+//        registry.addResourceHandler("/vendor/**").addResourceLocations("classpath:/static/vendor/");
+//        registry.addResourceHandler("/media/**").addResourceLocations("classpath:/static/media/");
         registry.addResourceHandler("/resources/**", "/**").addResourceLocations("classpath:/static/");
 
         super.addResourceHandlers(registry);
