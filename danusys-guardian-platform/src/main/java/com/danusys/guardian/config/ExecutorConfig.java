@@ -1,13 +1,11 @@
 package com.danusys.guardian.config;
 
 import com.danusys.guardian.service.executor.ApiExecutorFactory;
-import com.danusys.guardian.service.executor.RestApiExecutor;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Project : danusys-guardian-parent
@@ -18,7 +16,6 @@ import org.springframework.context.annotation.Scope;
  */
 @Configuration
 public class ExecutorConfig {
-
     @Bean
     public FactoryBean serviceLocatorFactoryBean() {
         ServiceLocatorFactoryBean factoryBean = new ServiceLocatorFactoryBean();
@@ -26,9 +23,8 @@ public class ExecutorConfig {
         return factoryBean;
     }
 
-    @Bean(name = "REST")
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public RestApiExecutor restApiExecutor() {
-        return new RestApiExecutor();
+    @Bean
+    public RestTemplate restTesmplate() {
+        return new RestTemplate();
     }
 }

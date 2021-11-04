@@ -2,10 +2,10 @@ package com.danusys.guardian.service.executor;
 
 import com.danusys.guardian.model.Api;
 import com.danusys.guardian.model.ApiParam;
-import com.danusys.guardian.type.MethodType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
  * Time : 3:31 오후
  */
 @Slf4j
-@Service
+@Service("REST")
 public class RestApiExecutor implements ApiExecutor {
-//    @Resource
+//    @Autowired
 //    private ObjectMapper objectMapper;
-//
-//    @Resource
-//    private RestTemplate restTemplate;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public ResponseEntity execute(final Api api) throws Exception {
@@ -51,13 +51,9 @@ public class RestApiExecutor implements ApiExecutor {
         //TODO REST API 인증키
         //TODO 암호화?
 
+        //요청 파라미터 값 추출
         final Map<String, Object> reqMap = apiRequestParams.stream().collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
         final String targetUrl = api.getTargetUrl() + api.getTargetPath();
-        log.trace("REQ MAP : {}",reqMap.toString());
-        log.trace("웹서비스 주소:{}, 메소드:{}, 파라미터:{}", targetUrl, this.getHttpMethod(api), reqMap);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        RestTemplate restTemplate = new RestTemplate();
         String result = "";
 
         try {
@@ -67,6 +63,7 @@ public class RestApiExecutor implements ApiExecutor {
 
             headers.setContentType(mediaType);
             headers.setAccept(Collections.singletonList(mediaType));
+            log.trace("웹서비스 주소:{}, 메소드:{}, 미디어타입:{}, 파라미터:{}", targetUrl, method, mediaType, reqMap);
 
             HttpEntity requestEntity = null;
             if (method == HttpMethod.GET || method == HttpMethod.DELETE) {
@@ -82,7 +79,7 @@ public class RestApiExecutor implements ApiExecutor {
 
             AtomicReference<String> body = new AtomicReference(res);
             api.getApiResponseParams().forEach((apiRes) -> {
-                log.trace("### {} => {}", apiRes.getFieldMapNm(), apiRes.getFieldNm());
+                log.trace("### 응답 {} => {}", apiRes.getFieldMapNm(), apiRes.getFieldNm());
                 body.set(StringUtils.replace(body.get(), apiRes.getFieldMapNm(), apiRes.getFieldNm()));
             });
             log.trace("convert body:{}", body);
@@ -97,25 +94,5 @@ public class RestApiExecutor implements ApiExecutor {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
-     }
-
-    /**
-     * http method
-     * @param api
-     * @return
-     * @throws Exception
-     */
-    public HttpMethod getHttpMethod(Api api) throws Exception {
-        if(MethodType.GET.equals(api.getMethodType())) {
-            return HttpMethod.GET;
-        } else if(MethodType.POST.equals(api.getMethodType())) {
-            return HttpMethod.POST;
-        } else if(MethodType.PUT.equals(api.getMethodType())) {
-            return HttpMethod.PUT;
-        } else if(MethodType.DELETE.equals(api.getMethodType())) {
-            return HttpMethod.DELETE;
-        } else {
-            throw new IllegalArgumentException("MethodType 정보를 가져올 수 없습니다.");
-        }
      }
 }

@@ -11,8 +11,5 @@ import org.springframework.http.ResponseEntity;
  * Time : 3:31 오후
  */
 public interface ApiExecutor {
-//    @Async(AsyncConfig.EXECUTOR_DANU_BEAN_NAME)
-//    CompletableFuture<JsonResponse> execute(Api api) throws Exception;
-
     ResponseEntity execute(Api api) throws Exception;
 }

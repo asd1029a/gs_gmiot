@@ -92,7 +92,7 @@ public class ApiCallRestController {
      * @return
      */
     private ApiParam apiRequestSetValue(ApiParam apiParam, Map<String, Object> param) {
-        log.trace("입력 필드명 : {} -> {}", apiParam.getFieldNm(), param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm())));
+        log.trace("### 요청 {} => {} = {}", apiParam.getFieldNm(), apiParam.getFieldMapNm(), param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm())));
         apiParam.setValue(StrUtils.getStr(param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm()))));
         return apiParam;
     }
