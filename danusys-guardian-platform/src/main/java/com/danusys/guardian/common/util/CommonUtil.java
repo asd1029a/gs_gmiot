@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.sql.SQLException;
@@ -749,5 +750,29 @@ public class CommonUtil {
 		buff.order(ByteOrder.BIG_ENDIAN);
 		buff.putInt(value);
 		return buff.array();
+	}
+
+	/**
+	 * Object type 변수가 비어있는지 체크
+	 *
+	 * @param obj
+	 * @return Boolean : true / false(data null)
+	 */
+	private static Boolean empty(Object obj) {
+		if (obj instanceof String) return obj == null || "".equals(obj.toString().trim());
+		else if (obj instanceof List) return obj == null || ((List) obj).isEmpty();
+		else if (obj instanceof Map) return obj == null || ((Map) obj).isEmpty();
+		else if (obj instanceof Object[]) return obj == null || Array.getLength(obj) == 0;
+		else return obj == null;
+	}
+
+	/**
+	 * Object type 변수가 비어있지 않은지 체크
+	 * 데이터가 있으면 true
+	 * @param obj
+	 * @return Boolean : true / false
+	 */
+	public static Boolean notEmpty(Object obj) {
+		return !empty(obj);
 	}
 }

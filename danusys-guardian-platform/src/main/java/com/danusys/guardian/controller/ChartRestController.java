@@ -144,7 +144,7 @@ public class ChartRestController {
 		for(int i=0;i<yList.size();i++) {
 			yNm[i] = (String)yList.get(i).get("yList");
 		}
-		data.put("data", reList);
+		data.put("json", reList);
 		if(param.get("kind").equals("t")) {
 			data.put("x",time);
 		}else if(param.get("kind").equals("d")){

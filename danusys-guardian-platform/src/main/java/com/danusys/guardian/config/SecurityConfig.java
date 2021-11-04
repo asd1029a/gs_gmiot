@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						, "/test/**"
 						, "/login/**"
 						, "/api/**"
+						, "/aepel/**"
 						, "/css/**"
 						, "/font/**"
 						, "/images/**"

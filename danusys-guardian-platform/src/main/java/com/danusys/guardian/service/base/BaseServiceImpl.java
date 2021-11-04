@@ -52,6 +52,16 @@ public class BaseServiceImpl implements BaseService
         return baseDao.baseSelectStringOne(sqlid, param);
     }
 
+    /**
+     * 단건 제네릭 타입 Object 리턴
+     * @param sqlid
+     * @param param
+     * @return
+     */
+    @Override
+    public Object baseSelectOneObject(String sqlid, Map<String, Object> param) {
+        return baseDao.baseSelectObjectOne(sqlid, param);
+    }
 
     /**
      * FuncName : baseInsertReturnSelectKey()

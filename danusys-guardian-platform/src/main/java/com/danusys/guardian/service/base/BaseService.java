@@ -20,6 +20,8 @@ public interface BaseService
     // 단건 조회
     public String baseSelectOne(String sqlid, Map<String, Object> param);
 
+    public Object baseSelectOneObject(String sqlid, Map<String, Object> param);
+
     // 등록 (Insert Key 반환)
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED, rollbackFor = { Exception.class })
     public String baseInsertReturnSelectKey(String sqlid, Map<String, Object> param) throws Exception;

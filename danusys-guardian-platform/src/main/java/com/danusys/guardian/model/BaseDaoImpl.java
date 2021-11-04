@@ -47,8 +47,18 @@ public class BaseDaoImpl implements BaseDao
     {
         return sqlSession.selectOne(sqlid, param);
     }
-    
-    
+
+    /**
+     * 단건 제네릭 타입 Object 리턴
+     * @param sqlid
+     * @param param
+     * @return
+     */
+    @Override
+    public Object baseSelectObjectOne(String sqlid, Map<String, Object> param) {
+        return sqlSession.selectOne(sqlid, param);
+    }
+
     /**
      * FuncName : baseSelectOne()
      * FuncDesc : 단일 Map 조회

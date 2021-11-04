@@ -14,7 +14,10 @@ public interface BaseDao
 
     // 단건 스트링 조회
     public String baseSelectStringOne(String sqlid, Map<String, Object> param);
-    
+
+    // 단건 Object
+    public Object baseSelectObjectOne(String sqlid, Map<String, Object> param);
+
     // 	단건 Map 조회
     public Map<String,Object> baseSelectMapOne(String sqlid, Map<String, Object> param);
 
