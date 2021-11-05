@@ -1,6 +1,6 @@
 INSERT INTO public.api
 (call_url, method_type, request_body_type, response_body_type, api_type, target_url, target_path, content_type, auth_info)
-VALUES('/aepel/findDeviceList', 'POST', 'OBJECTE', 'MULTISET', 'REST', 'http://aepel.co.kr', '/api/deviceInfoList.json', 'application/json; charset=utf-8', '');
+VALUES('/aepel/findDeviceList', 'POST', 'OBJECT', 'MULTISET', 'REST', 'http://aepel.co.kr', '/api/deviceInfoList.json', 'application/json', '');
 
 
 INSERT INTO public.api_param (id, seq, field_nm, field_map_nm, data_type, required, param_type, value, description, api_id) values
@@ -43,7 +43,7 @@ INSERT INTO public.api_param (id, seq, field_nm, field_map_nm, data_type, requir
 ,(37, 35, 'device_knd_value', 'device_kind.[value]','STRING','false','RESPONSE','','장치종류명', 1)
 ,(38, 36, 'defect_knd', 'problem_kind','OBJECT','true','RESPONSE','','고장종류정보 (배열)', 1)
 ,(39, 37, 'defect_knd_key', 'problem_kind.[key]','STRING','false','RESPONSE','','고장종류key (deviceList.d_error_code와 동일)', 1)
-,(40, 38, 'defect_knd_value', 'problem_kind.[value]','STRING','false','RESPONSE','','고장종류명', 1);
+,(40, 38, 'defect_knd_value', 'problem_kind.[value]','STRING','false','RESPONSE','','고장종류명', 1)
 ,(41, 39, 'device_channel', 'd_channel','STRING','false','RESPONSE','','', 1)
 ,(42, 40, 'device_ct_input_kind', 'd_ct_input_kind','STRING','false','RESPONSE','','', 1)
 ,(43, 41, 'device_insert_date', 'd_date_insert','STRING','false','RESPONSE','','', 1)
@@ -67,7 +67,7 @@ INSERT INTO public.api_param (id, seq, field_nm, field_map_nm, data_type, requir
 ,(61, 59, 'device_uno_insert', 'u_no_insert','STRING','false','RESPONSE','','', 1)
 ,(62, 60, 'device_uno_update', 'u_no_update','STRING','false','RESPONSE','','', 1)
 ,(63, 61, 'device_password', 'u_password','STRING','false','RESPONSE','','', 1)
-,(64, 62, 'device_usdevice_pos_yn', 'u_usdevice_pos_yn','STRING','false','RESPONSE','','', 1)
+,(64, 62, 'device_usdevice_pos_yn', 'u_usdevice_pos_yn','STRING','false','RESPONSE','','', 1);
 
 
 INSERT INTO public.domain_dic (id, type, word_nm, word_eng_nm, word_abrv) values
