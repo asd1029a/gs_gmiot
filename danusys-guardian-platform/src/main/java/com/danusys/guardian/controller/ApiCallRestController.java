@@ -6,8 +6,10 @@ import com.danusys.guardian.model.Api;
 import com.danusys.guardian.model.ApiParam;
 import com.danusys.guardian.service.api.ApiService;
 import com.danusys.guardian.service.base.BaseService;
+import com.danusys.guardian.type.ParamType;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -59,18 +61,18 @@ public class ApiCallRestController {
         try {
             //API 마스터 정보 가져오기
             api = (Api) baseService.baseSelectOneObject("api.selectApi", param);
+            //req, res 정보 가져오기
+            List<ApiParam> apiParams = baseService.baseSelectList("api.selectApiParam", ImmutableMap.of("apiId", api.getId()));
+
+//            log.trace("apiParams : {}", apiParams.toString());
 
             //요청 컬럼 정보 가져오기
-            Map<String, Object> apiParam = new HashMap<>();
-            apiParam.put("apiId",api.getId());
-            apiParam.put("paramType","REQUEST");
-            requestApiParam = baseService.baseSelectList("api.selectApiParam", apiParam);
+            requestApiParam = apiParams.stream().filter(f -> f.getParamType() == ParamType.REQUEST).collect(Collectors.toList()); //REQUEST정보 추출
             requestApiParam.stream().map(m -> this.apiRequestSetValue(m, param) ).collect(Collectors.toList()); //파라미터로 입력 받은 값을 request 정보에 세팅
             api.setApiRequestParams(requestApiParam);
 
             //응답 컬럼 정보 가져오기
-            apiParam.put("paramType","RESPONSE");
-            responseApiParam = baseService.baseSelectList("api.selectApiParam", apiParam);
+            responseApiParam = apiParams.stream().filter(f -> f.getParamType() == ParamType.RESPONSE).collect(Collectors.toList()); //RESPONSE정보 추출
             api.setApiResponseParams(responseApiParam);
 
         } catch (Exception ex) {

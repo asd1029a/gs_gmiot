@@ -39,7 +39,6 @@
 			ap.api_id as apiId
 		FROM api_param ap
 		WHERE ap.api_id = #{apiId}
-		AND ap.param_type = #{paramType}
 		]]>
 	</select>
 </mapper>
