@@ -9,7 +9,6 @@ import com.danusys.guardian.service.base.BaseService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ClassPathResource;
@@ -21,10 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +54,12 @@ public class ApiCallRestController {
         log.trace("param {}", param.toString());
 
         Api api = new Api();
-        List<ApiParam> requestApiParam = new ArrayList<ApiParam>();
-        List<ApiParam> responseApiParam = new ArrayList<ApiParam>();
+        List<ApiParam> requestApiParam = null;
+        List<ApiParam> responseApiParam = null;
         try {
+            //API 마스터 정보 가져오기
             api = (Api) baseService.baseSelectOneObject("api.selectApi", param);
+
             //요청 컬럼 정보 가져오기
             Map<String, Object> apiParam = new HashMap<>();
             apiParam.put("apiId",api.getId());
@@ -72,9 +73,9 @@ public class ApiCallRestController {
             responseApiParam = baseService.baseSelectList("api.selectApiParam", apiParam);
             api.setApiResponseParams(responseApiParam);
 
-
         } catch (Exception ex) {
             log.error(ex.toString());
+            throw ex;
         }
         ResponseEntity responseEntity = apiService.execute(api);
         String body = (String) responseEntity.getBody();
