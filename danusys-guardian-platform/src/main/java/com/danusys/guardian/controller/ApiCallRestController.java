@@ -79,6 +79,8 @@ public class ApiCallRestController {
             log.error(ex.toString());
             throw ex;
         }
+
+        //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiService.execute(api);
         String body = (String) responseEntity.getBody();
 //        log.trace("### body : {}", body.toString());
@@ -100,38 +102,6 @@ public class ApiCallRestController {
         apiParam.setValue(StrUtils.getStr(param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm()))));
         return apiParam;
     }
-
-//    @PostMapping(value = "/api/soapCall")
-//    public ResponseEntity soapCall(@RequestBody Map<String, Object> param) throws Exception {
-//        this.soapClient("http://localhost:9091/ws");
-//        String name = "Spain";
-//        GetCountryRequest request = new GetCountryRequest();
-//        request.setName(name);
-//        GetCountryResponse response =(GetCountryResponse) soapConnector.callWebService("http://localhost:9091/ws", request);
-//
-//        System.out.println("Got Response As below ========= : ");
-//        System.out.println("Name : "+response.getCountry().getName());
-//        System.out.println("getCapital : "+response.getCountry().getCapital());
-//        System.out.println("getCurrency : "+response.getCountry().getCurrency());
-
-
-
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body("");
-//    }
-
-//    private static String getFile() {
-//        final Resource resource = new ClassPathResource("data/request.xml");
-//        String result = "";
-////		JSONParser jsonParser = new JSONParser();
-//        try (Reader reader = new InputStreamReader(resource.getInputStream(), "UTF-8")) {
-//            result = FileCopyUtils.copyToString(reader);
-//        } catch (IOException e) {
-//            throw new UncheckedIOException(e);
-//        }
-//
-//        return result;
-//    }
 
     @PostMapping("/api/deviceInfoList.json")
     public ResponseEntity sample(@RequestBody Map<String, Object> param) throws ParseException {

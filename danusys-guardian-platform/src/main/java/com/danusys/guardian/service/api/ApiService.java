@@ -4,7 +4,6 @@ import com.danusys.guardian.model.Api;
 import com.danusys.guardian.service.executor.ApiExecutor;
 import com.danusys.guardian.service.executor.ApiExecutorFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
