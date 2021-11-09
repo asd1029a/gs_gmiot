@@ -78,11 +78,11 @@ public class RestApiExecutor implements ApiExecutor {
             final String res = responseEntity.getBody();
 
             AtomicReference<String> body = new AtomicReference(res);
-            api.getApiResponseParams().forEach((apiRes) -> {
+            api.getApiResponseParams().forEach(apiRes -> {
                 log.trace("### 응답 {} => {}", apiRes.getFieldMapNm(), apiRes.getFieldNm());
                 body.set(StringUtils.replace(body.get(), apiRes.getFieldMapNm(), apiRes.getFieldNm()));
             });
-            log.trace("convert body:{}", body);
+//            log.trace("convert body:{}", body);
             result = body.get();
 
 

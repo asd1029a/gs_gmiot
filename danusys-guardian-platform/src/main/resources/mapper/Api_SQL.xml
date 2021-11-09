@@ -18,6 +18,8 @@
 			a.target_url as targetUrl,
 			a.target_path as targetPath,
 			a.content_type as contentType,
+			a.service_nm as serviceNm,
+			a.service_prefix as servicePrefix,
 			a.auth_info as authInfo
 		FROM api a
 		where a.call_url = #{callUrl}

@@ -8,8 +8,10 @@ CREATE TABLE public.api (
 	response_body_type varchar(20) NOT NULL, -- 응답 데이터 타입
 	api_type varchar(20) NOT NULL, -- API 타입
 	target_url varchar(150) NOT NULL, -- 목적지 URL
-	target_path varchar(100) NOT NULL, -- 목적지 경로
-	content_type varchar(150) NOT NULL, -- 컨텐트 타입
+	target_path varchar(100) NOT NULL, -- 목적지 경로 / 서비스 URI
+	content_type varchar(150) NOT NULL, -- 컨텐트 타입(header 정보)
+	service_nm varchar(100) NOT NULL, -- 서비스명
+	service_prefix varchar(50) NOT NULL, -- 서비스 prefix
 	auth_info varchar(300) NULL, -- 권한 키(api key)
 	CONSTRAINT api_pkey PRIMARY KEY (id)
 );
@@ -26,8 +28,10 @@ COMMENT ON COLUMN public.api.request_body_type IS '요청 데이터 타입';
 COMMENT ON COLUMN public.api.response_body_type IS '응답 데이터 타입';
 COMMENT ON COLUMN public.api.api_type IS 'API 타입';
 COMMENT ON COLUMN public.api.target_url IS '목적지 URL';
-COMMENT ON COLUMN public.api.target_path IS '목적지 경로';
-COMMENT ON COLUMN public.api.content_type IS '컨텐트 타입';
+COMMENT ON COLUMN public.api.target_path IS '목적지 경로 / 서비스 URI';
+COMMENT ON COLUMN public.api.content_type IS '컨텐트 타입(header 정보)';
+COMMENT ON COLUMN public.api.service_nm IS '서비스명';
+COMMENT ON COLUMN public.api.service_prefix IS '서비스 prefix';
 COMMENT ON COLUMN public.api.auth_info IS '권한 키(api key)';
 
 

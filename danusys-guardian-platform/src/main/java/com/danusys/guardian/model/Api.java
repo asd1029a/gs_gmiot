@@ -32,7 +32,10 @@ public class Api implements Serializable {
     private String targetUrl;
     private String targetPath;
     private String contentType;
+    private String serviceNm;
+    private String servicePrefix;
     private String authInfo;
+
     private List<ApiParam> apiRequestParams;
     private List<ApiParam> apiResponseParams;
 }

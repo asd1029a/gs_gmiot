@@ -1,7 +1,15 @@
 INSERT INTO public.api
-(call_url, method_type, request_body_type, response_body_type, api_type, target_url, target_path, content_type, auth_info)
-VALUES('/aepel/findDeviceList', 'POST', 'OBJECT', 'MULTISET', 'REST', 'http://aepel.co.kr', '/api/deviceInfoList.json', 'application/json', '');
-
+(id, call_url, method_type, request_body_type, response_body_type, api_type, target_url, target_path, content_type, auth_info)
+VALUES(1,'/aepel/findDeviceList', 'POST', 'OBJECT', 'MULTISET', 'REST', 'http://aepel.co.kr', '/api/deviceInfoList.json', 'application/json', '');
+INSERT INTO public.api
+(id, call_url, method_type, request_body_type, response_body_type, api_type, target_url, target_path, content_type, auth_info)
+VALUES(2, '/aepel/whInfoList', 'POST', 'OBJECT', 'MULTISET', 'REST', 'http://aepel.co.kr', '/api/whInfoList.json', 'application/json', '');
+INSERT INTO public.api
+(id, call_url, method_type, request_body_type, response_body_type, api_type, target_url, target_path, content_type, auth_info)
+VALUES(3, '/aepel/login', 'POST', 'OBJECT', 'MULTISET', 'REST', 'http://aepel.co.kr', '/api/login.sso', 'application/json', '');
+INSERT INTO public.api
+(id, call_url, method_type, request_body_type, response_body_type, api_type, target_url, target_path, content_type, auth_info)
+VALUES(4, '/epkor/findDeviceList', 'POST', 'OBJECT', 'OBJECT', 'SOAP', 'http://localhost:9091/ws', 'http://www.baeldung.com/springsoap/gen', '', '');
 
 INSERT INTO public.api_param (id, seq, field_nm, field_map_nm, data_type, required, param_type, value, description, api_id) values
 (1, 1, 'auth_key', 'key','STRING','true','REQUEST','','인터페이스간 약속된 키', 1)
@@ -67,7 +75,53 @@ INSERT INTO public.api_param (id, seq, field_nm, field_map_nm, data_type, requir
 ,(61, 59, 'device_uno_insert', 'u_no_insert','STRING','false','RESPONSE','','', 1)
 ,(62, 60, 'device_uno_update', 'u_no_update','STRING','false','RESPONSE','','', 1)
 ,(63, 61, 'device_password', 'u_password','STRING','false','RESPONSE','','', 1)
-,(64, 62, 'device_usdevice_pos_yn', 'u_usdevice_pos_yn','STRING','false','RESPONSE','','', 1);
+,(64, 62, 'device_usdevice_pos_yn', 'u_usdevice_pos_yn','STRING','false','RESPONSE','','', 1)
+,(65, 1, 'auth_key', 'key','STRING','true','REQUEST','','인터페이스간 약속된 키', 2)
+,(66, 2, 'area_id', 'a_id (옵션)','NUMBER','false','REQUEST','','구역ID로 특정 구역의 정보를 조회합니다.', 2)
+,(67, 3, 'sad_stats_day', 'sad_stats_day (필수)','STRING','true','REQUEST','','측정기준일자의 전력사용량 정보를 조회, 전일인 경우 : 전일8시(포함)~금일오전8시(미포함)', 2)
+,(68, 1, 'wh_Info', 'whInfo','ARRAY','true','RESPONSE','','사용전력량 목록(배열)', 2)
+,(69, 2, 'site_id', 's_id','NUMBER','false','RESPONSE','','사이트ID', 2)
+,(70, 3, 'area_id', 'a_id','NUMBER','false','RESPONSE','','구역ID', 2)
+,(71, 4, 'area_name', 'a_name','STRING','false','RESPONSE','','구역명', 2)
+,(72, 5, 'sad_stats_day', 'sad_stats_day','STRING','false','RESPONSE','','통계기준일자', 2)
+,(73, 6, 'device_kind', 'd_kind','STRING','false','RESPONSE','','장치종류코드 - 하단 deviceInfo.[key](장치종류 key)로 장치종류 구함', 2)
+,(74, 7, 'device_cnt_min', 'd_cnt_min','NUMBER','false','RESPONSE','','해당 구역의 최소장치수', 2)
+,(75, 8, 'device_cnt_max', 'd_cnt_max','NUMBER','false','RESPONSE','','해당 구역의 최대장치수', 2)
+,(76, 9, 'device_lamp_cnt_min', 'd_lamp_cnt_min','NUMBER','false','RESPONSE','','해당 구역의 최소램프수', 2)
+,(77, 10, 'device_lamp_cnt_max', 'd_lamp_cnt_max','NUMBER','false','RESPONSE','','해당 구역의 최대램프수', 2)
+,(78, 11, 'device_watt_min', 'd_watt_min','NUMBER','false','RESPONSE','','해당 구역의 최소정격전력 (단위 : w)', 2)
+,(79, 12, 'device_watt_max', 'd_watt_max','NUMBER','false','RESPONSE','','해당 구역의 최대정격전력 (단위 : w)', 2)
+,(80, 13, 'device_cnt_gather', 'd_cnt_gather','NUMBER','false','RESPONSE','','해당 구역에서 수집된 장치 수', 2)
+,(81, 14, 'device_lamp_cnt_gather', 'd_lamp_cnt_gather','NUMBER','false','RESPONSE','','해당 구역에서 수집된 램프 수', 2)
+,(82, 15, 'sad_wh_max', 'sad_wh_max','FLOAT','false','RESPONSE','','최대사용전력량 (단위 : w)', 2)
+,(83, 16, 'sad_wh_use', 'sad_wh_use','FLOAT','false','RESPONSE','','실사용전력량 (단위 : w)', 2)
+,(84, 17, 'sad_pir', 'sad_pir','FLOAT','false','RESPONSE','','PRI 값', 2)
+,(85, 18, 'sad_use_sec', 'sad_use_sec','NUMBER','false','RESPONSE','','사용시간 (단위 : 초)', 2)
+,(86, 19, 'sad_gather_sec', 'sad_gather_sec','NUMBER','false','RESPONSE','','수집시간 (단위 : 초)', 2)
+,(87, 20, 'sad_gw_trans_trouble_cnt', 'sad_gw_trans_trouble_cnt','NUMBER','false','RESPONSE','','게이트웨이 통신 이상 수', 2)
+,(88, 21, 'sad_trans_trouble_cnt', 'sad_trans_trouble_cnt','NUMBER','false','RESPONSE','','디바이스 통신 이상 수', 2)
+,(89, 22, 'sad_elb_trouble_cnt', 'sad_elb_trouble_cnt','NUMBER','false','RESPONSE','','ELB차단 수', 2)
+,(90, 23, 'sad_smps_trouble_cnt', 'sad_smps_trouble_cnt','NUMBER','false','RESPONSE','','SMPS 고장 수', 2)
+,(91, 24, 'sad_lamp_trouble_cnt', 'sad_lamp_trouble_cnt','NUMBER','false','RESPONSE','','램프 고장 수', 2)
+,(92, 25, 'sad_data_trouble_cnt', 'sad_data_trouble_cnt','NUMBER','false','RESPONSE','','데이터 고장 수', 2)
+,(93, 26, 'sad_add_cnt', 'sad_add_cnt','NUMBER','false','RESPONSE','','입력횟수', 2)
+,(94, 27, 'sad_ld_cnt', 'sad_ld_cnt','NUMBER','false','RESPONSE','','통신로그 수 (중복 X)', 2)
+,(95, 28, 'sad_lda_cnt', 'sad_lda_cnt','NUMBER','false','RESPONSE','','통신로그 전체수', 2)
+,(96, 29, 'sad_date_insert', 'sad_date_insert','STRING','false','RESPONSE','','입력일시', 2)
+,(97, 30, 'sad_date_update', 'sad_date_update','STRING','false','RESPONSE','','수정일시', 2)
+,(98, 31, 'area_info', 'areaInfo','ARRAY','true','RESPONSE','','사이트 전체 구역정보 (Map)', 2)
+,(99, 32, 'area_info_key', 'areaInfo.[key]','NUMBER','false','RESPONSE','','구역 key', 2)
+,(100, 33, 'area_indo_value', 'areaInfo.[value]','STRING','false','RESPONSE','','구역명', 2)
+,(101, 34, 'device_info', 'deviceInfo','ARRAY','true','RESPONSE','','장치종류정보 (Map)', 2)
+,(102, 35, 'device_info_key', 'deviceInfo.[key]','STRING','false','RESPONSE','','장치종류 key', 2)
+,(103, 36, 'device_info_value', 'deviceInfo.[value]','STRING','false','RESPONSE','','장치종류명', 2)
+,(104, 1, 'auth_key', 'key','VARCHAR','true','REQUEST','','인터페이스간 약속된 키', 3)
+,(105, 2, 'user_id', 'u_id','VARCHAR','true','REQUEST','','사용자 ID', 3)
+,(106, 3, 'user_password', 'u_password','VARCHAR','true','REQUEST','','사용자 비밀번호', 3)
+,(107, 4, 'user_name', 'u_name','VARCHAR','true','REQUEST','','사용자 명', 3)
+,(108, 5, 'user_handphone', 'u_handphone','VARCHAR','true','REQUEST','','사용자 비밀번호', 3)
+,(109, 6, 'user_email', 'u_email','VARCHAR','true','REQUEST','','사용자 이메일', 3)
+,(110, 7, 'url', 'url','VARCHAR','true','REQUEST','','이동 URL', 3)
 
 
 INSERT INTO public.domain_dic (id, type, word_nm, word_eng_nm, word_abrv) values
