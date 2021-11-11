@@ -9,7 +9,7 @@ INSERT INTO public.api
 VALUES(3, '/aepel/login', 'POST', 'OBJECT', 'MULTISET', 'REST', 'http://aepel.co.kr', '/api/login.sso', 'application/json', '');
 INSERT INTO public.api
 (id, call_url, method_type, request_body_type, response_body_type, api_type, target_url, target_path, content_type, auth_info)
-VALUES(4, '/epkor/findDeviceList', 'POST', 'OBJECT', 'OBJECT', 'SOAP', 'http://localhost:9091/ws', 'http://www.baeldung.com/springsoap/gen', '', '');
+VALUES(4, '/epkor/findDeviceList', 'POST', 'OBJECT', 'OBJECT', 'SOAP', 'http://localhost:9091/ws', 'http://www.danusys.com/springsoap/gen', '', '');
 
 INSERT INTO public.api_param (id, seq, field_nm, field_map_nm, data_type, required, param_type, value, description, api_id) values
 (1, 1, 'auth_key', 'key','STRING','true','REQUEST','','인터페이스간 약속된 키', 1)
