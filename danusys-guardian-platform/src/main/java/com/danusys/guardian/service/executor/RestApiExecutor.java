@@ -29,9 +29,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("REST")
 public class RestApiExecutor implements ApiExecutor {
-//    @Autowired
-//    private ObjectMapper objectMapper;
-
     @Autowired
     private RestTemplate restTemplate;
 

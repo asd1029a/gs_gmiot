@@ -3,31 +3,15 @@ package com.danusys.guardian.service.executor;
 import com.danusys.guardian.common.util.StrUtils;
 import com.danusys.guardian.model.Api;
 import com.danusys.guardian.model.ApiParam;
-import com.danusys.guardian.type.BodyType;
-import com.danusys.guardian.type.ParamType;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StopWatch;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.soap.*;
-import javax.xml.transform.dom.DOMSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,19 +23,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("SOAP")
 public class SoapApiExecutor implements ApiExecutor  {
-
-//    @Autowired
-//    private AsyncRestTemplate asyncRestTemplate;
-//
-//    @Autowired
-//    private ObjectMapper objectMapper;
-//
-//    @Value("${mcare.client.db_charset:#{'EUC-KR'}}")
-//    private String db_charset;
-//    private String db_charset;
-
-//    private static final String ILSAN_SUCCESS_CD = "N0000";
-//    private static final String SUCCESS_CD = "0000";
 
     @Override
     public ResponseEntity execute(Api api) throws Exception {
