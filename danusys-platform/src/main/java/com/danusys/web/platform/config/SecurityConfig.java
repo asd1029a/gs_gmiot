@@ -64,7 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						, "/selectNoSession/**"
 						, "/file/**"
 						, "/sound/**"
-						, "/svg/**" ).permitAll()
+						, "/svg/**"
+						, "/webjars/**" ).permitAll()
 				.anyRequest().authenticated()
 				.and()
 				.formLogin()

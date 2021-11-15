@@ -1,5 +1,6 @@
 package com.danusys.web.platform.config;
 
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -75,6 +76,7 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
     public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) throws Exception {
         final SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(templateResolver);
+        engine.addDialect(new LayoutDialect());
         return engine;
     }
 
@@ -84,6 +86,10 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
 //        registry.addResourceHandler("/vendor/**").addResourceLocations("classpath:/static/vendor/");
 //        registry.addResourceHandler("/media/**").addResourceLocations("classpath:/static/media/");
         registry.addResourceHandler("/resources/**", "/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/")
+                .resourceChain(false);
+
+        registry.setOrder(1);
 
         super.addResourceHandlers(registry);
     }

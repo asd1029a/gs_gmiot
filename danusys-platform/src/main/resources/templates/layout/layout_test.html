@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.uz/thymeleaf/layout" >
+    <head>
+        <meta charset="utf-8">
+        <title>SMART-CITY 통합플랫폼</title>
+
+        <!-- default css files -->
+        <link rel="stylesheet" type="text/css" href="/css/default/layout.css">
+
+        <!-- css in contents -->
+        <th:block layout:fragment="css"></th:block>
+
+        <!-- default javascript files-->
+        <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+
+        <!-- javascript in contents -->
+        <th:block layout:fragment="script"></th:block>
+    </head>
+
+    <body>
+        <div class="wrap">
+            <th:block th:replace="fragments/default/header">
+            </th:block>
+            <th:block layout:fragment="content">
+            </th:block>
+            <th:block th:replace="fragments/default/footer">
+            </th:block>
+        </div>
+    </body>
+
+</html>

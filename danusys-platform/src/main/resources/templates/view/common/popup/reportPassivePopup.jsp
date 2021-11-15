@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="/css/jquery/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="/css/reportPassivePopup.css">
 
-<script src="/js/jquery/jquery.min.js"></script>
+<script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
 <script src="/js/jquery/jquery-ui.js"></script>
 <script src="/js/moment.min.js"></script>
 <script src="/js/common.js"></script>
