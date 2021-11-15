@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gis">
+	<select id="gisSiData" parameterType="map" resultType="HashMap">
+		SELECT 
+			ID as "id",
+			SI_CD as "regionCd",
+			SI_NM as "regionNm",
+			COORD as "coord",
+			COALESCE(b."cnt",0) AS "cnt",
+			CITY_NM as "cityNm",
+			CITY_LON as "cityLon",
+			CITY_LAT as "cityLat",
+			CITY_SCALE as "cityScale"
+		FROM (SELECT ID
+					,SI_CD
+					,SI_NM
+					,ST_ASTEXT(GEOM) coord
+					,CITY_NM
+					,CITY_LAT
+					,CITY_LON
+					,CITY_SCALE
+			FROM 
+			CM_AREA_SI_CD a
+			WHERE 
+			ST_GEOMETRYTYPE(GEOM) LIKE 'ST_MultiPolygon'
+			<if test="sigCode != 'all'">
+				AND SI_CD::text = #{sigCode}
+			</if>
+			ORDER BY ID ASC) a
+		LEFT OUTER JOIN
+			(SELECT 
+				ROW_NUMBER() OVER(ORDER BY SUBSTR(AREA_CD,1,5)) AS "rnum",
+				SUBSTR(a.AREA_CD,1,5) AS "areaCd",
+				SUM(CASE WHEN a.AREA_CD = '' THEN 0 ELSE 1 END ) AS "cnt"
+			FROM CM_EVT_OCR a
+			WHERE 1=1
+			<if test="timeS != null and timeS != ''">
+			<![CDATA[
+				AND TO_CHAR(TO_DATE(EVT_OCR_YMD_HMS, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD') >= #{timeS}
+			]]>	
+			</if>
+			<if test="timeE != null and timeE != ''">
+			<![CDATA[
+				AND #{timeE} >= TO_CHAR(TO_DATE(EVT_OCR_YMD_HMS, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD')
+			]]>	
+			</if>
+			GROUP BY SUBSTR(AREA_CD,1,5)) b 
+			ON a.SI_CD::text=b."areaCd"
+            ORDER BY SI_NM
+	</select>
+	
+	<select id="gisDongData" parameterType="map" resultType="HashMap">
+		SELECT 
+			ID as "id",
+			DONG_CD as "regionCd",
+			DONG_NM as "regionNm",
+			COORD as "coord",
+			COALESCE(b."cnt",0) AS "cnt"
+		FROM (SELECT 
+				ID, 
+				DONG_CD,
+				DONG_NM, 
+				ST_ASTEXT(GEOM) coord
+			FROM 
+			CM_AREA_DONG_CD a
+			WHERE 
+			ST_GEOMETRYTYPE(GEOM) LIKE 'ST_MultiPolygon'
+      		AND DONG_CD::text LIKE '%'||#{sigCode}||'%'
+			ORDER BY ID ASC) a
+		LEFT OUTER JOIN
+			(SELECT 
+				ROW_NUMBER() OVER(ORDER BY a.AREA_CD) AS "rnum",
+				a.AREA_CD AS "areaCd",
+				SUM(CASE WHEN a.AREA_CD = '' THEN 0 ELSE 1 END) AS "cnt"
+			FROM CM_EVT_OCR a
+			WHERE 1=1
+			<if test="timeS != null and timeS != ''">
+			<![CDATA[
+				AND TO_CHAR(TO_DATE(EVT_OCR_YMD_HMS, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD') >= #{timeS}
+			]]>	
+			</if>
+			<if test="timeE != null and timeE != ''">
+			<![CDATA[
+				AND #{timeE} >= TO_CHAR(TO_DATE(EVT_OCR_YMD_HMS, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD')
+			]]>	
+			</if>
+			GROUP BY AREA_CD) b 
+			ON a.DONG_CD::text=b."areaCd"
+            ORDER BY DONG_NM
+	</select>
+	
+		
+	<select id="gisEventCnt" parameterType="map" resultType="HashMap">
+		SELECT 
+			a.EVT_ID as "evtId",
+			a.EVT_NM as "evtNm",
+			COALESCE(b."cnt",0) AS "cnt"
+		FROM 
+		(SELECT DISTINCT(a.EVT_ID),b.EVT_NM FROM CM_EVT_OCR a JOIN CM_EVENT b ON a.EVT_ID=b.EVT_ID) a
+		LEFT OUTER JOIN
+		(SELECT EVT_ID,COUNT(EVT_ID) AS "cnt" FROM CM_EVT_OCR WHERE AREA_CD::text LIKE '%'||#{areaCd}||'%' 
+		<if test="timeS != null and timeS != ''">
+		<![CDATA[
+			AND TO_CHAR(TO_DATE(EVT_OCR_YMD_HMS, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD') >= #{timeS}
+		]]>	
+		</if>
+		<if test="timeE != null and timeE != ''">
+		<![CDATA[
+			AND #{timeE} >= TO_CHAR(TO_DATE(EVT_OCR_YMD_HMS, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD')
+		]]>	
+		</if>
+		GROUP BY EVT_ID) b
+		ON a.EVT_ID=b.EVT_ID
+		ORDER BY a.EVT_NM ASC
+	</select>
+	
+	
+	
+	<select id="gisSiDataByFacility" parameterType="map" resultType="HashMap">
+		SELECT 
+			ID as "id",
+			SI_CD as "regionCd",
+			SI_NM as "regionNm",
+			COORD as "coord",
+			COALESCE(c."cnt",0) AS "cnt",
+			CITY_NM as "cityNm",
+			CITY_LON as "cityLon",
+			CITY_LAT as "cityLat",
+			CITY_SCALE as "cityScale"
+		FROM 
+			(
+			SELECT ID
+				, SI_CD::text
+				, SI_NM
+				, ST_ASTEXT(GEOM) coord
+				, CITY_NM
+				, CITY_LAT
+				, CITY_LON
+				, CITY_SCALE
+			FROM 
+				CM_AREA_SI_CD a
+			WHERE 
+				ST_GEOMETRYTYPE(GEOM) LIKE 'ST_MultiPolygon'
+			ORDER BY ID ASC
+			) a
+		LEFT OUTER JOIN (
+			SELECT 
+				SUM(b."cnt") AS "cnt"
+				,SUBSTR( b."areaCd" ,1,5) AS "areaCd"
+			FROM(
+				SELECT
+					b."areaCd",
+					SUM(CASE WHEN b.AREA_CD::text = '' THEN 0 ELSE 1 END ) AS "cnt"
+				FROM 
+					(
+					SELECT
+						a.AREA_CD::text AS "areaCd",
+						a.*
+					FROM 
+						FACILITY_S a
+					INNER  JOIN CCTV_BRK_LOG b
+					ON (a.FCLT_ID = b.FCLT_ID )
+					WHERE 1=1
+					AND
+						a.AREA_CD IS NOT NULL
+						<if test="timeS != null and timeS != ''"><![CDATA[
+							AND TO_CHAR(b.INSERT_DATE, 'yyyy-mm-dd') >= #{timeS}
+						]]></if>
+						<if test="timeE != null and timeE != ''"><![CDATA[
+							AND #{timeE} >= TO_CHAR(b.INSERT_DATE, 'yyyy-mm-dd')
+						]]></if>
+					) b
+			GROUP BY b."areaCd"
+			) b
+			GROUP BY SUBSTR(b."areaCd",1,5)
+		) c
+		ON a.SI_CD=c."areaCd"
+		
+	</select>
+	
+	<select id="gisDongDataByFacility" parameterType="map" resultType="HashMap">
+		SELECT 
+			ID as "id",
+			DONG_CD as "regionCd",
+			DONG_NM as "regionNm",
+			COORD as "coord",
+			COALESCE(b."cnt",0) AS "cnt"
+		FROM (
+			SELECT 
+				ID, DONG_CD::text, DONG_NM, ST_ASTEXT(GEOM) coord
+			FROM 
+				CM_AREA_DONG_CD a
+			WHERE 
+				ST_GEOMETRYTYPE(GEOM) LIKE 'ST_MultiPolygon'
+			AND 
+				DONG_CD::text LIKE '%'||#{sigCode}||'%'
+		) a
+		LEFT OUTER JOIN (
+			SELECT
+				b."areaCd",
+				SUM(CASE WHEN b.AREA_CD = null THEN 0 ELSE 1 END ) AS "cnt"
+			FROM 
+				(
+				SELECT
+					a.AREA_CD::text AS "areaCd",
+					a.*
+				FROM 
+					FACILITY_S a
+				INNER  JOIN CCTV_BRK_LOG b
+					ON (a.FCLT_ID = b.FCLT_ID )
+					WHERE 1=1
+					AND 	a.AREA_CD IS NOT NULL
+					<if test="timeS != null and timeS != ''"><![CDATA[
+				AND TO_CHAR(b.INSERT_DATE, 'yyyy-mm-dd') >= #{timeS}
+				]]></if>
+				<if test="timeE != null and timeE != ''"><![CDATA[
+				AND #{timeE} >= TO_CHAR(b.INSERT_DATE, 'yyyy-mm-dd')
+				]]></if>
+			) b
+				GROUP BY b."areaCd"
+		) b 
+		ON a.DONG_CD=b."areaCd"
+		ORDER BY a.ID ASC 
+	</select>
+	
+		
+	<select id="gisFacilityCnt" parameterType="map" resultType="HashMap">
+		SELECT
+			b."purpose" AS "nm",
+			SUM(CASE WHEN b."areaCd" =null THEN 0 ELSE 1 END ) AS "cnt"
+			FROM 
+			(
+				SELECT
+					c.DE_CD_NM  AS "purpose",
+					a.AREA_CD::text AS "areaCd"
+				FROM 
+					FACILITY_S a
+				INNER JOIN 
+					CCTV_BRK_LOG b
+				ON 
+					(a.FCLT_ID = b.FCLT_ID )
+				INNER JOIN 
+					DETAIL_CD c
+				ON 
+					(b.PURPOSE = c.DE_CD)
+				WHERE 1=1
+				<if test="timeS != null and timeS != ''"><![CDATA[
+				AND TO_CHAR(b.INSERT_DATE, 'yyyy-mm-dd') >= #{timeS}
+				]]></if>
+				<if test="timeE != null and timeE != ''"><![CDATA[
+				AND #{timeE} >= TO_CHAR(b.INSERT_DATE, 'yyyy-mm-dd')
+				]]></if>
+				AND 
+					a.AREA_CD IS NOT NULL
+			) b
+			WHERE 1=1
+				AND b."areaCd" LIKE '%'||#{areaCd}||'%'
+			GROUP BY b."purpose"
+	</select>
+	
+	
+	<select id="getSigunguList" parameterType="map" resultType="HashMap">
+		SELECT
+			SI_CD AS "code",
+			SI_NM AS "label",
+			CITY_LAT AS "lat",
+			CITY_LON AS "lon",
+			CITY_SCALE AS "scale"
+		FROM CM_AREA_SI_CD
+	</select>
+</mapper>
+
+	

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="cont_area">
+	<div id="" class="cont_inner" title="">
+		<ul class="popup-list-area">
+			<li class="list">
+				<div class="popup-list-title">
+					<em>메뉴구분</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupMenuGbn" value="service" disabled/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>메뉴아이디</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupMenuId" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>메뉴 명</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupMenuNm" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>연결주소</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupMenuPath" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>순서</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="number" id="popupSort" placeholder="숫자만 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list high">
+				<div class="popup-list-title high">
+					<em>아이콘 URL</em>
+				</div>
+				<div class="popup-list-cont high">
+					<ul class="radio-wrap">
+						<li>
+							<input type="radio" name="linkEvent" value="link_01" checked/><img src="../images/intro/icon_link_01.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_02"/><img src="../images/intro/icon_link_02.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_03"/><img src="../images/intro/icon_link_03.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_04"/><img src="../images/intro/icon_link_04.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_05"/><img src="../images/intro/icon_link_05.png" alt="">
+						</li>
+					</ul>
+					<ul class="radio-wrap">
+						<li>
+							<input type="radio" name="linkEvent" value="link_06"/><img src="../images/intro/icon_link_06.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_07"/><img src="../images/intro/icon_link_07.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_08"/><img src="../images/intro/icon_link_08.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_09"/><img src="../images/intro/icon_link_09.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_10"/><img src="../images/intro/icon_link_10.png" alt="">
+						</li>
+					</ul>
+					<ul class="radio-wrap">
+						<li>
+							<input type="radio" name="linkEvent" value="link_11"/><img src="../images/intro/icon_link_11.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_12"/><img src="../images/intro/icon_link_12.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_13"/><img src="../images/intro/icon_link_13.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_14"/><img src="../images/intro/icon_link_14.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_15"/><img src="../images/intro/icon_link_15.png" alt="">
+						</li>
+					</ul>
+					<ul class="radio-wrap">
+						<li>
+							<input type="radio" name="linkEvent" value="link_16"/><img src="../images/intro/icon_link_16.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_17"/><img src="../images/intro/icon_link_17.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_18"/><img src="../images/intro/icon_link_18.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_19"/><img src="../images/intro/icon_link_19.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_20"/><img src="../images/intro/icon_link_20.png" alt="">
+						</li>
+					</ul>
+					<ul class="radio-wrap">
+						<li>
+							<input type="radio" name="linkEvent" value="link_21"/><img src="../images/intro/icon_link_21.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_22"/><img src="../images/intro/icon_link_22.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_23"/><img src="../images/intro/icon_link_23.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_24"/><img src="../images/intro/icon_link_24.png" alt="">
+						</li>
+						<li>
+							<input type="radio" name="linkEvent" value="link_25"/><img src="../images/intro/icon_link_25.png" alt="">
+						</li>
+					</ul>
+				</div>
+			</li>
+		</ul>
+		<ul class="center-btn">
+			<li class="btn-cancle" onClick="closePopup();">취소</li>
+			<li class="btn-insert" onClick="saveData();">저장</li>
+		</ul>
+	</div>
+</div>
+
+<script th:inline="javascript">
+$(document).ready(function(){
+	if (typeof(selectedData) != 'undefined' && selectedData != '') {
+		setUserDetailData(selectedData);
+	}
+});
+
+function setUserDetailData(data) {
+	//iconNm: null
+	
+	var row = data;
+	$('#popupMenuId').attr('disabled', true);
+	$('#popupMenuId').val(row.menuId);
+	$('#popupMenuNm').val(row.menuNm);
+	$('#popupMenuPath').val(row.path);
+	$('#popupSort').val(row.sort);
+	$("input:radio[value='"+row.iconNm+"']").attr('checked',true)
+	//$('#popupIconNm').val(row.iconNm);
+	
+}
+
+function closePopup() {
+	if (typeof(selectedData) != 'undefined' && selectedData != '') {
+		selectedData='';
+	}
+	common.closeDialogPop("oprtLinkMenuPopup");
+}
+
+function saveData() {
+	
+	var menuId = $('#popupMenuId').val();
+	if(!checkNull(menuId, "메뉴아이디를 입력해주십시오.")){
+		return false;
+	}
+	var menuNm = $('#popupMenuNm').val();
+	if(!checkNull(menuNm, "메뉴 명을 입력해주십시오.")){
+		return false;
+	}
+	var menuPath = $('#popupMenuPath').val();
+	if(!checkNull(menuPath, "연결주소를 입력해주십시오.")){
+		return false;
+	}
+	var menuSort = $('#popupSort').val();
+	if(!$.isNumeric(menuSort)) {
+		alert("순서는 숫자만 가능합니다.");
+		return false;
+	}
+	
+	const jsonObj = {};
+    jsonObj.menuId = menuId;
+    $.ajax(
+    {
+        type       : "POST",
+        url        : "/select/oprt.getLinkMenuListCnt/action.do",
+        dataType   : "json",
+        data       : {"param" : JSON.stringify(jsonObj)},
+        async      : false,
+        beforeSend : function(xhr) {
+            // 전송 전 Code
+        }
+    }).done(function (result) {
+		const rows = result.rows;
+    	if(rows=='sessionOut'){
+			alert('로그인 시간이 만료되었습니다.');
+			closeWindow();
+		}
+    	else {
+    		if(Number(rows[0]) > 0) {
+    			alert('메뉴아이디가 존재합니다.');
+    			return false;
+    		}
+    		else {
+    			jsonObj.singleInsertSid = "oprt.saveLinkMenu";
+    			jsonObj.menuGbn = $('#popupMenuGbn').val();
+    		    jsonObj.menuId = menuId;
+    		    jsonObj.menuNm = menuNm;
+    		    jsonObj.menuPath = menuPath;
+    		    jsonObj.menuSort = menuSort;
+    		    jsonObj.iconNm = $("input:radio[name='linkEvent']:checked").val();
+    		    //jsonObj.iconNm = $("input:radio[name='linkEvent']:checked").next().find('img').attr('src');
+    			$.ajax({
+    				type       : "POST",
+    				url        : "/multiAjax/action.do",
+    				dataType   : "json",
+    				data : {"param" : JSON.stringify(jsonObj)},
+    				async      : false,
+    				beforeSend : function(xhr) {
+    					// 전송 전 Code
+    				}
+    			}).done(function (result) {
+    				if (result == "SUCCESS") {
+   						alert("저장 완료");
+   						closePopup();
+   						$('#oprtLinkMenuTable').datagrid('reload');
+    				}
+    				else {
+    					alert("저장 실패");
+    				}
+    			}).fail(function (xhr) {
+    				alert("저장 실패");
+    			}).always(function() {
+    				
+    			});
+    		}
+    	}
+    }).fail(function (xhr) {
+
+    }).always(function() {
+
+    });
+}
+</script>

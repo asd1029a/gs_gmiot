@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="cont_area">
+	<div id="" class="cont_inner" title="">
+		<ul class="popup-list-area">
+			<li class="list">
+				<div class="popup-list-title">
+					<em>이벤트 아이디</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupEvtCodeId" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>이벤트명</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupEvtCodeNm" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>이벤트 설명</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupEvtDscrt" placeholder="내용을 입력해 주세요."/>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>담당자 추가</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popupUserNm" class="easyui-textbox wide80"
+						placeholder="담당자를 선택해 주세요." disabled/>
+					<input type="hidden" id="popupUserId">
+					<a href="#" class="single-btn" id="userPopBtn">추가</a>
+				</div>
+			</li>
+			
+			<!-- <li class="list">
+				<div class="popup-list-title">
+					<em>담당자아이디</em>
+				</div>
+				<div class="popup-list-cont">
+					<input type="text" id="popup_mngr_user_id" placeholder="선택버튼을 누르세요." disabled/>
+					<a href="javascript:openMngrUserPopup();" class="popup_select_btn">선택</a>
+				</div>
+			</li> -->
+			<!-- <li class="list">
+				<div class="popup-list-title">
+					<em>112연계여부</em>
+				</div>
+				<div class="popup-list-cont">
+					<select class="easyui-combobox" id="popup_lk_yn">
+						<option value="Y">사용</option>
+						<option value="N">미사용</option>
+					</select>
+				</div>
+			</li> -->
+			<li class="list">
+				<div class="popup-list-title">
+					<em>사용여부</em>
+				</div>
+				<div class="popup-list-cont">
+					<select class="easyui-combobox" id="popupUseTy">
+						<option value="Y">사용</option>
+						<option value="N">미사용</option>
+					</select>
+				</div>
+			</li>
+			<li class="list">
+				<div class="popup-list-title">
+					<em>아이콘 URL</em>
+				</div>
+				<div class="popup-list-cont">
+					<form id="upload_form" class="upload_form" enctype="multipart/form-data" method="post">
+						<div class="filebox">
+							<input class="upload-name" id="popupIconUrl" placeholder="파일을 선택해 주세요." disabled="disabled">
+							<label for="image_file">찾아보기</label>
+							<input type="file" name="image_file" id="image_file" class="upload-hidden" onchange="setImagefile();" style="width:100%">
+						</div>
+					</form>
+					<!-- <input type="text" id="popupIconUrl" placeholder="내용을 입력해 주세요."/> -->
+				</div>
+				<img id="preview" onerror="this.src='/images/report/no_image.png'"/>
+			</li>
+		</ul>
+		<ul class="center-btn">
+			<li class="btn-cancle" onClick="closePopup();">취소</li>
+			<li class="btn-insert" onClick="saveEventBase();">저장</li>
+		</ul>
+	</div>
+</div>
+
+<script th:inline="javascript">
+$(document).ready(function(){
+	if (typeof(selectedData) != 'undefined' && selectedData != '') {
+		setUserDetailData(selectedData);
+	}
+});
+
+function setUserDetailData(data) {
+	
+	var row = data;
+	$('#popupEvtCodeId').attr('disabled', true);
+	$('#popupEvtCodeId').val(row.evtId);
+	$('#popupEvtCodeNm').val(row.evtNm);
+	$('#popupEvtDscrt').val(row.evtDscrt);
+	$('#popupUserNm').val(row.userNm);
+	$('#popupUseTy').val(row.useTyCd);
+	$('#popupUserId').val(row.userId);
+	$('#popupIconUrl').val(row.iconUrl);
+	
+	var oImage = document.getElementById('preview');
+	var imgFile = "/file/getImage2.do?sPath=event&imageUrl="+row.iconUrl;
+	oImage.src = imgFile;
+}
+
+function clearPopup() {
+	$('#popupEvtCodeId').val('');
+	$('#popupEvtCodeNm').val('');
+	$('#popupEvtDscrt').val('');
+	//$('#popup_mngr_user_id').val('');
+	$('#popupUseTy').val('');
+	$('#popupUserNm').val('');
+	$('#popupUserId').val('');
+	//$('#popup_lk_yn').val('');
+	$('#popupIconUrl').val('');
+}
+
+function closePopup() {
+	if (typeof(selectedData) != 'undefined' && selectedData != '') {
+		selectedData='';
+	}
+	common.closeDialogPop("oprtEventInfoBasePopup");
+}
+
+function saveEventBase() {
+	var iconUrl = $('#popupIconUrl').val();
+	iconUrl = iconUrl.replace(/\\/gi, '//');
+	var tranUrl;
+	
+	var evtId = $('#popupEvtCodeId').val();
+	var evtNm = $('#popupEvtCodeNm').val();
+	var evtDscrt = $('#popupEvtDscrt').val();
+	//var mngrUserId = $('#popup_mngr_user_id').val();	
+	var useTyCd = $('#popupUseTy').val();
+	//var lkYn = $('#popup_lk_yn').val();
+	var userId = $('#popupUserId').val();
+	
+	var eventIdCheck =(function(){
+        const jsonObj = {};
+        let rtnVal;
+        jsonObj.evtId= evtId;
+        $.ajax(
+        {
+            type       : "POST",
+            url        : "/select/oprt.checkEventId/action.do",
+            dataType   : "json",
+            data       : {"param" : JSON.stringify(jsonObj)},
+            async      : false,
+            beforeSend : function(xhr) {
+                // 전송 전 Code
+            }
+        }).done(function (result) {
+    		const rows = result.rows;
+        	if(rows=='sessionOut'){
+    			alert('로그인 시간이 만료되었습니다.');
+    			closeWindow();
+    		}
+            rtnVal = rows[0].idKey;
+        }).fail(function (xhr) {
+
+        }).always(function() {
+
+        });
+        return rtnVal;
+    })();
+	
+	if(userId.length > 0) {
+		var insertDatas = [];
+		var userIdAry = userId.split(',');
+		for(var i=0; i<userIdAry.length; i++) {
+			insertDatas.push({'userId' : userIdAry[i], 'evtId': $('#popupEvtCodeId').val()});
+		}
+		
+	}
+	
+		
+	
+	if(!checkNull(evtId, "이벤트 아이디를 입력해주십시오.")){
+		return false;
+	}
+	
+	if(!checkNull(evtNm, "이벤트 이름을 입력해주십시오.")){
+		return false;
+	}
+	
+	if(!checkNull(evtDscrt, "이벤트 설명을 입력해주십시오.")){
+		return false;
+	}
+	
+	/* if(!checkNull(mngrUserId, "담당자를 선택해주십시오.")){
+		return false;
+	} */
+	
+	/* if(!checkNull(iconUrl, "아이콘을 선택해주십시오.")){
+		return false;
+	}
+	 */
+	if(eventIdCheck > 0){
+		alert('이벤트아이디가 존재합니다.');
+		return false;
+	}
+	
+	const jsonObj = {};
+	const jsonObj2 = {};
+	
+	const jsonArray1 = [];
+	const jsonArray2 = [];
+	const jsonArray3 = [];
+	const jsonArray4 = [];
+	
+	jsonObj.rowStatus = 'C';
+	jsonObj.evtId = evtId;
+	jsonObj.evtNm = evtNm;
+	jsonObj.evtDscrt = evtDscrt;
+	//jsonObj.mngrUserId = mngrUserId;	
+	//jsonObj.lkYn = lkYn;
+	jsonObj.useTyCd = useTyCd;
+	jsonObj.iconUrl = iconUrl;
+	jsonObj.insertDatas = insertDatas;
+	
+	jsonObj.groupId = 'admin';
+	
+	jsonObj2.rowStatus = 'D';
+	jsonObj2.evtId = evtId;
+	
+	if(userId.length > 0){
+		tranUrl = "/multiTransaction/oprt.saveEventCode/oprt.deleteEventMngrUser/oprt.saveEventMngrUser/oprt.insertEventGroupAdmin/action.do";
+		jsonArray1[0] = jsonObj;
+		jsonArray2[0] = jsonObj2;
+		jsonArray3[0] = jsonObj;
+		jsonArray4[0] = jsonObj;
+			
+	}else{
+		tranUrl = "/multiTransaction/oprt.saveEventCode/{sqlid2}/{sqlid3}/oprt.insertEventGroupAdmin/action.do";
+		jsonArray1[0] = jsonObj;
+		jsonArray4[0] = jsonObj;
+	}
+    
+	
+	$.ajax({
+		type       : "POST",
+		url        : tranUrl,
+		dataType   : "json",
+		data : {
+			"param1" : JSON.stringify(jsonArray1),
+			"param2" : JSON.stringify(jsonArray2),
+			"param3" : JSON.stringify(jsonArray3),
+			"param4" : JSON.stringify(jsonArray4)
+		},
+		async      : false,
+		beforeSend : function(xhr) {
+			// 전송 전 Code
+		}
+	}).done(function (result) {
+		if (result == "SUCCESS") {
+			alert("저장 성공");
+			closePopup();
+			$('#oprtEventInfoBaseTable').datagrid('reload');
+		}
+		else {
+			alert("저장 실패");
+		}
+	}).fail(function (xhr) {
+		alert("저장 실패");
+	}).always(function() {
+		
+	});
+
+}
+
+/* function openMngrUserPopup() {
+	var page = '/main/popup/mngr_user_popup'; 
+    $("#mngr_popup_area").html("");
+    $("#mngr_popup_area").load("/action/page.do", { path : page }, function() {
+    	
+    });
+    
+    $('#mngr_popup_area').dialog({
+        title: '담당자 선택',
+        width: 410,
+        height: 400,
+        closed: false,
+        cache: false,
+        modal: true,
+		onClose: function() {
+			
+		}
+    });
+    $('#mngr_popup_area').dialog('open');
+} */
+
+function setImagefile() {
+	if($('#image_file')[0].files.length == 0) return;
+
+	var oFile = document.getElementById('image_file').files[0];
+    var rFilter = /^(image\/bmp|image\/gif|image\/jpeg|image\/png|image\/tiff)$/i;
+    
+    if (! rFilter.test(oFile.type)) {
+        alert('이미지 파일이 아닙니다.');
+        return;
+    }
+    
+    const file = document.getElementById('image_file').files[0];
+    var filePath = common.fileUpload(file, 'event');
+    
+    if(filePath == "") {
+    	alert('파일을 다시 선택 해 주세요');
+    }
+    else {
+    	$('#popupIconUrl').val(filePath);
+    	filePath = filePath.replace(/\\/gi, '//');
+    	
+    	var oImage = document.getElementById('preview');
+		var imgFile = "/file/getImage2.do?sPath=event&imageUrl="+filePath;
+		oImage.src = imgFile;
+    }
+}
+
+$("#userPopBtn").off("click").on({
+	"click": function ()
+	{
+		const path = "oprt/popup/oprtGroupTreePopup";
+		console.log(path);
+		common.openDialogPopPosition("oprtGroupTreePopup", "조직도", "300", "430", "true", "/action/page.do", {path: path}, path.split("/")[2],"callBackOprtUserGroupTreePopup");
+	}
+});
+
+
+function callBackOprtUserGroupTreePopup(jsonObj)
+{
+    $("#popupUserNm").val(jsonObj.name);
+    $("#popupUserId").val(jsonObj.id);
+    common.closeDialogPop("oprtGroupTreePopup");
+}
+</script>

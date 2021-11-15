@@ -1,5 +1,5 @@
 target/
-!danusys-guardian-parent/.mvn/wrapper/maven-wrapper.jar
+!danusys-webservice-parent/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 

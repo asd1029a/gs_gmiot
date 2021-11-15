@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script type="text/javascript">
+$(document).ready(function() {
+	setBodyClass('event_container');
+	$("ul.tabs li").click(function () {
+		$("ul.tabs li").removeClass("active").css("color", "#333");
+		$(this).addClass("active").css("color", "#6e87df");
+		$(".tab_content").hide();
+		var activeTab = $(this).attr("rel");
+		$("#" + activeTab).fadeIn();
+		
+		selectEvent();
+    });
+	setSearchCombo();
+	$("ul.tabs li:first").click();
+	
+	var t = $('#selectEvtDtl');
+	t.textbox('textbox').bind('keydown', function(e){
+		if (e.keyCode == 13){
+			selectEvent();
+		}
+	});
+});
+</script>
+
+<div class="west_fold">
+	<a class="open_panel_btn" href="javascript:onOffPanel(1);"></a>
+</div>
+<div class="west_unfold">
+	<div id="eventContainer">
+		<div class="list_menu_title">이벤트 관제</div>
+		<ul class="tabs">
+			<li rel="eventOccur">발생이벤트</li>
+			<li rel="eventEnd">종료이벤트</li>
+		</ul>
+		<div class="tab_container">
+			<div class="search_content">
+				<ul>
+					<!-- <li>
+						<a id="eventStat" href="javascript:$('#selectStatCombo').combobox('showPanel');"></a>
+						<select id="selectStatCombo" class="combo_select" style="width:90px; height:30px;" data-options="onChange:selectEvent">
+							<option value="">처리상태</option>
+							<option value="10">사건 발생</option>
+							<option value="33">처리 지연</option>
+							<option value="50">확인</option>
+						</select>
+					</li> -->
+					<li>
+						<a id="eventSpace" href="javascript:$('#selectSpaceCombo').combobox('showPanel');"></a>
+						<select id="selectSpaceCombo" class="easyui-combotree" style="width:90px; height:30px;"
+			             		data-options="idField:'code',textField:'name', onChange:selectEvent,
+			             					value:['행정구역'],panelWidth: 150,labelPosition:'top',multiple:true"></select>
+					</li>
+					<li style="width: 90px;">
+						<a id="eventGbn" href="javascript:$('#selectGbnCombo').combobox('showPanel');"></a>
+						<input type="text" id="selectGbnCombo" style="width:90px; height:30px;"
+								data-options="valueField: 'code',textField: 'name', onChange:selectEvent,
+											value:'이벤트구분',panelWidth: 152,panelHeight: 'auto',formatter: formatItem">
+					</li>
+					<li style="width: 85px;margin-left:3px;">
+						<input type="checkbox" id="map_yn"/>
+						<label for="map_yn">지도 내 검색</label>
+					</li>
+				</ul>
+				<ul>
+					<li style="width: 185px;margin-top: -5px;">
+						<input id="selectEvtDtl" class="easyui-textbox" style="width:170px; height:30px;padding-left: 15px;"data-options="prompt:'이벤트내용'">
+					</li>
+					<li style="float: right;">
+						<a class="btn btnSelect" href="javascript:selectEvent()">조회</a>
+					</li>
+			    </ul>
+			</div>
+			
+			<div id="eventOccur" class="tab_content">
+				<div id="eventOccurTable" ></div>
+			</div>
+			
+			<div id="eventEnd" class="tab_content">
+				<div id="eventEndTable"></div>
+			</div>
+		</div>
+	</div>
+	<a class="close_panel_btn" href="javascript:onOffPanel(0);"></a>
+</div>
+
+<div id="loading">
+	<img src="/images/loading.gif">
+</div>
+
+<script type="text/javascript">
+</script>
+<script src="/js/event/eventMain.js"></script>

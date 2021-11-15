@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="common">
+	<select id="getAreaSiCode" parameterType="map" resultType="HashMap">
+		SELECT a.ID AS "id"
+			, a.SI_CD AS "siCd"
+		    , a.SI_NM AS "siNm"
+		    , a.CITY_NM AS "cityNm"
+		FROM CM_AREA_SI_CD a
+	</select>
+	
+	<select id="getAreaDongCode" parameterType="map" resultType="HashMap">
+		SELECT b.DONG_CD AS "dongCd"
+		    , b.DONG_NM AS "dongNm" 
+		FROM CM_AREA_DONG_CD b
+		WHERE b.SI_CD = #{siCd}
+	</select>
+	
+	<select id="getEventGbnCode" parameterType="map" resultType="HashMap">
+		SELECT *
+		FROM (
+				SELECT DISTINCT
+					a.EVT_ID AS "code",
+					a.EVT_NM AS "name",
+					1 AS "order"
+				FROM CM_EVENT a
+				JOIN CM_EVENT_GROUP_DETAIL b
+				ON a.EVT_ID = b.EVT_ID
+				<if test="userId != null and userId != ''">
+				JOIN ADMIN c
+				ON b.GROUP_ID = c.EVENT_GROUP_ID
+				AND c.ID = #{userId}
+				</if>
+				WHERE 1=1
+				UNION
+    			SELECT '','이벤트구분',0
+		) a
+		ORDER BY a."order" ASC, a."code" ASC
+	</select>
+	
+	<select id="getFcltKnd" parameterType="map" resultType="HashMap">
+		SELECT 
+			d.DE_CD as "code",
+			d.DE_CD_NM as "name"
+		FROM 
+			GROUP_CD a, DETAIL_CD d
+		WHERE a.GRP_CD = d.GRP_CD
+		AND a.GRP_CD = 'FCLT_E_KND'
+	</select>
+	
+	<select id="getFcltPurpose" parameterType="map" resultType="HashMap">
+		SELECT 
+			d.DE_CD as "code",
+			d.DE_CD_NM as "name"
+		FROM 
+			GROUP_CD a, DETAIL_CD d
+		WHERE a.GRP_CD = d.GRP_CD
+		AND a.GRP_CD = 'FCLT_E_PURPOSE'
+	</select>
+	
+	<select id="getEventCode" parameterType="map" resultType="HashMap">
+		SELECT 
+			a.EVT_ID as "code",
+			a.EVT_NM as "name"
+		FROM CM_EVENT a
+		JOIN CM_EVENT_GROUP_DETAIL b
+		ON a.EVT_ID = b.EVT_ID
+		<if test="userId != null and userId != ''">
+		JOIN ADMIN c
+		ON b.GROUP_ID = c.EVENT_GROUP_ID
+		AND c.ID = #{userId}
+		</if>
+		WHERE 1=1
+		<if test="lkYn == 1">
+		AND a.LK_YN = 'Y'
+		</if>
+	</select>
+	
+	<select id="getFacilityUseCode" parameterType="map" resultType="HashMap">
+		SELECT FCLT_USE_CD AS "code"
+			 , FCLT_USE_CD_NM AS "name"
+		FROM CM_FACILITY_USE
+		<if test="fcltKindCd != null and fcltKindCd != ''">
+		WHERE FCLT_KIND_CD = #{fcltKindCd}
+		</if>
+		ORDER BY SEQ
+	</select>
+	
+	<select id="getMenu" parameterType="map" resultType="HashMap">
+		SELECT a."menuPermission" AS "menuId"
+			 , b.MENU_NM AS "menuNm"
+			 , b.PATH AS "path"
+			 , b.ICON_NM AS "iconNm"
+		FROM (
+			SELECT regexp_split_to_table(a.MENU_PERMISSION,',') AS "menuPermission"
+  			FROM ADMIN a
+			WHERE id = #{userId}
+			) a
+			,CM_MENU b
+		WHERE a."menuPermission" = b.MENU_ID
+		AND b.MENU_GBN = #{menuGbn}
+		ORDER BY b.SORT
+	</select>
+	
+	<select id="userGroup" parameterType="map" resultType="HashMap">
+		SELECT 
+			GRP_ID as "id",
+			PARENTS_ID as "parent",
+			NAME as "text",
+			'icon-folder' as "icon",
+			'G' as "flag"
+		FROM CM_ORGNZ
+		<if test="userFlag != null and userFlag != ''">
+		UNION ALL
+		SELECT 
+			b.ID as "id",
+			a.GRP_ID as "parent",
+			b.NAME as "text",
+			'icon-user' as "icon",
+			'U' as "flag" 
+		FROM CM_ORGNZ a
+		join ADMIN b ON a.GRP_ID=b.GRP_ID
+		</if>
+	</select>
+	
+	<select id="maxLevel" parameterType="map" resultType="HashMap">
+		SELECT 
+			(MAX)LVL as "lvl"
+		FROM CM_ORGNZ
+	</select>
+	
+	<select id="pcTtlFcltList" parameterType="map" resultType="HashMap">
+		SELECT
+			TTL_ID AS "id",
+			'#' AS "parent",
+			TTL_ID || ':' || TTL_NM AS "text",
+			'{"selected" : "false"}' AS "state"
+		FROM PC_TTL_FCLT
+	</select>
+	
+	<!-- <select id="getCivilCmplntList" parameterType="map" resultType="EgovMap">
+		SELECT *
+		FROM (
+				SELECT  ROW_NUMBER() OVER(ORDER BY SEQ_NO DESC) AS "rnum",
+						TO_NUMBER(SEQ_NO) AS "seqNo",
+						CIVIL_CMPLNT_RECV_NM AS "civilCmplntRecvNm",
+						CIVIL_CMPLNT_RECV_TEL AS "civilCmplntRecvTel",
+						CIVIL_CMPLNT_RECV_DE AS "civilCmplntRecvDe",
+						SUBSTR(CIVIL_CMPLNT_RECV_DE,3,2)||'-'
+						||SUBSTR(CIVIL_CMPLNT_RECV_DE,5,2)||'-'
+						||SUBSTR(CIVIL_CMPLNT_RECV_DE,7,2)||' '
+						||SUBSTR(CIVIL_CMPLNT_RECV_DE,9,2)||':'
+						||SUBSTR(CIVIL_CMPLNT_RECV_DE,11,2)||':'
+						||SUBSTR(CIVIL_CMPLNT_RECV_DE,13,2) AS "civilCmplntRecvDeCustom",
+						CIVIL_CMPLNT_RECV_CONT AS "civilCmplntRecvCont",
+						CIVIL_CMPLNT_LAT AS "lat",
+						CIVIL_CMPLNT_LON AS "lon",
+						CIVIL_CMPLNT_PLACE AS "civilCmplntPlace",
+						NVL(CIVIL_CMPLNT_HNDL_NM,' ') AS "civilCmplntHndlNm",
+						NVL(CIVIL_CMPLNT_HNDL_DE,' ') AS "civilCmplntHndlDe",
+						NVL(CIVIL_CMPLNT_HNDL_CONT,' ') AS "civilCmplntHndlCont",
+						CIVIL_CMPLNT_FLAG AS "civilCmplntFlag",
+						DECODE(CIVIL_CMPLNT_FLAG,'R','접수','처리완료') AS "civilCmplntFlagNm",
+						CIVIL_CMPLNT_AREA_CD AS "civilCmplntAreaCd"
+				FROM CIVIL_CMPLNT
+				WHERE 1=1
+				<if test="mapBound != null and mapBound != ''">
+				AND ST_WITHIN(ST_GEOMFROMTEXT('POINT('||CIVIL_CMPLNT_LON||' '||CIVIL_CMPLNT_LAT||')'),ST_GEOMFROMTEXT('POLYGON(('||#{mapBound}||'))')) = 1
+				</if>
+				<if test="seqNo != null and seqNo != ''">
+				AND SEQ_NO = #{seqNo}
+				</if>
+				<if test="civilCmplntRecvNm != null and civilCmplntRecvNm != ''">
+				AND CIVIL_CMPLNT_RECV_NM LIKE '%'||#{civilCmplntRecvNm}||'%'
+				</if>
+				<if test="civilCmplntRecvTel != null and civilCmplntRecvTel != ''">
+				AND CIVIL_CMPLNT_RECV_TEL LIKE '%'||#{civilCmplntRecvTel}||'%'
+				</if>
+				<if test="civilCmplntRecvDeS != null and civilCmplntRecvDeS != ''"><![CDATA[
+				AND SUBSTR(CIVIL_CMPLNT_RECV_DE,1,8) >= TO_CHAR(#{civilCmplntRecvDeS})
+				]]></if>
+				<if test="civilCmplntRecvDeE != null and civilCmplntRecvDeE != ''"><![CDATA[
+				AND TO_CHAR(#{civilCmplntRecvDeE}) >= SUBSTR(CIVIL_CMPLNT_RECV_DE,1,8)
+				]]></if>
+				<if test="civilCmplntFlag != null and civilCmplntFlag != ''">
+				AND CIVIL_CMPLNT_FLAG = #{civilCmplntFlag}
+				</if>
+		)
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND "rnum" <= #{lastIndex}
+      		AND "rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select> -->
+	
+	
+	<!-- <select id="getCivilCmplntListCnt" parameterType="map" resultType="String">
+		SELECT  COUNT(*)
+		FROM CIVIL_CMPLNT
+		WHERE 1=1 
+		<if test="seqNo != null and seqNo != ''">
+		AND SEQ_NO = #{seqNo}
+		</if>
+		<if test="civilCmplntRecvNm != null and civilCmplntRecvNm != ''">
+		AND CIVIL_CMPLNT_RECV_NM LIKE '%'||#{civilCmplntRecvNm}||'%'
+		</if>
+		<if test="civilCmplntRecvTel != null and civilCmplntRecvTel != ''">
+		AND CIVIL_CMPLNT_RECV_TEL LIKE '%'||#{civilCmplntRecvTel}||'%'
+		</if>
+		<if test="civilCmplntRecvDeS != null and civilCmplntRecvDeS != ''"><![CDATA[
+		AND SUBSTR(CIVIL_CMPLNT_RECV_DE,1,8) >= TO_CHAR(#{civilCmplntRecvDeS})
+		]]></if>
+		<if test="civilCmplntRecvDeE != null and civilCmplntRecvDeE != ''"><![CDATA[
+		AND TO_CHAR(#{civilCmplntRecvDeE}) >= SUBSTR(CIVIL_CMPLNT_RECV_DE,1,8)
+		]]></if>
+		<if test="civilCmplntFlag != null and civilCmplntFlag != ''">
+		AND CIVIL_CMPLNT_FLAG = #{civilCmplntFlag}
+		</if>
+	</select> -->
+	
+	<!-- <update id="saveCivilCmplnt" parameterType="map">
+		MERGE INTO CIVIL_CMPLNT
+		USING dual
+		ON (SEQ_NO = #{seqNo})
+		WHEN MATCHED THEN
+		UPDATE SET
+			CIVIL_CMPLNT_RECV_NM = #{civilCmplntRecvNm},
+			CIVIL_CMPLNT_RECV_TEL = #{civilCmplntRecvTel},
+			CIVIL_CMPLNT_RECV_DE = #{civilCmplntRecvDe},
+			CIVIL_CMPLNT_RECV_CONT = #{civilCmplntRecvCont},
+			CIVIL_CMPLNT_LAT = #{civilCmplntLat},
+			CIVIL_CMPLNT_LON = #{civilCmplntLon},
+			CIVIL_CMPLNT_PLACE = #{civilCmplntPlace},
+			CIVIL_CMPLNT_HNDL_NM = #{civilCmplntHndlNm},
+			CIVIL_CMPLNT_HNDL_DE = #{civilCmplntHndlDe},
+			CIVIL_CMPLNT_HNDL_CONT = #{civilCmplntHndlCont},
+			CIVIL_CMPLNT_FLAG = #{civilCmplntFlag},
+			CIVIL_CMPLNT_AREA_CD = #{civilCmplntAreaCd}
+		WHEN NOT MATCHED THEN
+		INSERT (
+			SEQ_NO,
+			CIVIL_CMPLNT_RECV_NM,
+			CIVIL_CMPLNT_RECV_TEL,
+			CIVIL_CMPLNT_RECV_DE,
+			CIVIL_CMPLNT_RECV_CONT,
+			CIVIL_CMPLNT_LAT,
+			CIVIL_CMPLNT_LON,
+			CIVIL_CMPLNT_PLACE,
+			CIVIL_CMPLNT_HNDL_NM,
+			CIVIL_CMPLNT_HNDL_DE,
+			CIVIL_CMPLNT_HNDL_CONT,
+			CIVIL_CMPLNT_FLAG,
+			CIVIL_CMPLNT_AREA_CD
+		)
+		VALUES (
+			CIVIL_CMPLNT_SEQ.NEXTVAL,
+			#{civilCmplntRecvNm},
+			#{civilCmplntRecvTel},
+			#{civilCmplntRecvDe},
+			#{civilCmplntRecvCont},
+			#{civilCmplntLat},
+			#{civilCmplntLon},
+			#{civilCmplntPlace},
+			#{civilCmplntHndlNm},
+			#{civilCmplntHndlDe},
+			#{civilCmplntHndlCont},
+			#{civilCmplntFlag},
+			#{civilCmplntAreaCd}
+		);
+	</update> -->
+	
+	<!-- <delete id="deleteCivilCmplnt" parameterType="map">
+		<![CDATA[
+		DELETE FROM CIVIL_CMPLNT
+		WHERE SEQ_NO = #{seqNo}
+		]]>
+		;
+	</delete> -->
+	
+	<!-- <delete id="deleteCivilCmplntList" parameterType="map">
+		<![CDATA[
+		DELETE FROM CIVIL_CMPLNT
+		WHERE SEQ_NO IN
+		]]>
+		<foreach item="item" index="index" collection="deleteRowId" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		;
+	</delete> -->
+</mapper>

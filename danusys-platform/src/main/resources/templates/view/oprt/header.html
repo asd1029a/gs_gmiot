@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<th:block th:fragment="header">
+<nav>
+	<div class="oprt-menu">
+		<ul>
+			<li onclick="menuActive(this,'oprtEventInfoBase');" class="active">이벤트 관리</li>
+			<li onclick="menuActive(this,'oprtSysCode');">공통코드 관리</li>
+			<li onclick="menuActive(this,'oprtUserGrp');">사용자그룹 관리</li>
+			<li onclick="menuActive(this,'oprtUserEventGrp');">이벤트그룹 관리</li>
+			<li onclick="menuActive(this,'oprtUser');">계정 관리</li>
+			<li onclick="menuActive(this,'oprtLinkMenu');">외부연계메뉴 관리</li>
+			<li onclick="menuActive(this,'oprtUserMenu');">메뉴권한 관리</li>
+			<li onclick="menuActive(this,'oprtNetMapping');">망연계정보 관리</li>
+			<li onclick="menuActive(this,'oprtArrearsCamera');">체납카메라 관리</li>
+			<li onclick="menuActive(this,'oprtNotice');">공지사항</li>
+			<li onclick="menuActive(this,'oprtCctvViewLog');">영상재생로그</li>
+			<li onclick="menuActive(this,'oprtCctvCtrlLog');">영상제어로그</li>
+			<!-- <li onclick="menuActive(this,'oprtStorageStatusLog');">저장영상장애로그</li> -->
+			<li onclick="menuActive(this,'oprtDisplaySet');">화면 설정</li>
+			<!-- <li><a href="#" onclick="menuActive(this,'oprtGroup');">그룹관리</a></li> -->
+			<!-- <li><a href="#" onclick="menuActive(this,'oprtSendSms');">SMS전파</a></li> -->
+			<!-- <li><a href="#" onclick="menuActive(this,'oprtSendSmsLog');">전파이력결과</a></li> -->
+			<!-- <li><a href="#" onclick="menuActive(this,'oprtSendSmsLogStat');">전파이력통계</a></li> -->
+		</ul>
+	</div>
+</nav>
+
+<div id="oprtPopupArea" style="display:none;"></div>
+<div id="oprtPopupArea2" style="display:none;"></div>
+
+<script>
+$(document).ready(function(){
+	menuActive($('.active')[0],'oprtEventInfoBase');
+});
+
+function menuActive(target, pageNm) {
+	//엑티브 함수 적용
+	$('.oprt-menu li').removeClass("active");
+	
+	
+	$(target).addClass("active");
+
+	//$(".content_panel_container").html("<div class='full_panel'></div>");
+	
+	$(".oprt-main").html("<div class='opt-container'></div>");
+	$(".opt-container").html("");
+
+	console.log("===1");
+
+    $(".opt-container").load("/oprt/" + pageNm);
+
+
+}
+</script>
+</th:block>
+</body>
+</html>

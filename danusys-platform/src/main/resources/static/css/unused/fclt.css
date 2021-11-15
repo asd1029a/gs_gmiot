@@ -1,0 +1,94 @@
+
+html, body {
+	height: 100%;
+	width: 100%;
+}
+
+.content_panel_container {
+	height: 100%;
+    width: calc(100% - 61px);
+    position: absolute;
+    /* background: #eee; */
+    left: 61px;
+}
+.west_panel {
+	height: 100%;
+    width: 300px;
+    position: absolute;
+    font-size: 11px;
+    /* background: #aaa; */
+}
+.west_table_container {
+	height: calc(100% - 100px);
+    margin: 5px;
+}
+
+.map_panel_container {
+	width: calc(100% - 360px);
+	left: 360px;
+	height: 100%;
+    position: absolute;
+    background: #9cbad1;
+    z-index: -1;
+}
+
+.full_panel {
+	height: calc(100% - 20px);
+    width: calc(100% - 20px);
+    position: absolute;
+    background: #eee;
+    padding: 10px;
+}
+
+.center_layout {
+    width: 100%;
+    height: 100%;
+    background: #d0d0d0;
+}
+
+.qdrn_contatiner {
+	width: 100%;
+	height: 100%;
+}
+
+.qdrn_contatiner .container {
+	width: 50%;
+	height: 50%;
+	float: left;
+	position: relative;
+}
+
+.qdrn_contatiner .container:nth-child(even) {
+	background-color: #505050;
+}
+
+.qdrn_contatiner .container:nth-child(even) {
+	background-color: #909090;
+}
+
+.detail_wrap {
+	width: 100%;
+	height: 100%;
+}
+
+/* 시설물 Video */
+.fclt_video_wrap {
+	width: 100%;
+    height: 100%;
+    position: relative;
+}
+.fclt_video_wrap .cctv_layer_view {
+	width: 100%;
+    height: 100%;
+    position: relative;
+}
+.fclt_video_wrap .cctv_layer_view .view {
+    background-color: #39383d;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.fclt_video_wrap .cctv_layer_view .view .video_content {
+    width: 100%;
+    height: 100%;
+}
