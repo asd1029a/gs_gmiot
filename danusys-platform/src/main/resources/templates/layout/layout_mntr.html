@@ -21,11 +21,11 @@
 
     <body>
         <div class="wrap">
-            <th:block th:replace="fragments/default/header">
+            <th:block th:replace="fragments/default/header :: headerFragment">
             </th:block>
             <th:block layout:fragment="content">
             </th:block>
-            <th:block th:replace="fragments/default/footer">
+            <th:block th:replace="fragments/default/footer :: footerFragment">
             </th:block>
         </div>
     </body>
