@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:fragment="includes_head(link)">
+<th:block th:fragment="includes_head(pagesLink)">
     <meta charset="utf-8">
     <title>SMART-CITY 통합플랫폼</title>
 <!--    <meta name="description" content="Latest updates and statistic charts">-->
@@ -19,20 +19,21 @@
     <!--js file -->
     <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
 
-    <th:block th:if="${link}" >
-        <th:block th:insert="${link}"></th:block>
+    <th:block th:if="${pagesLink}" >
+        <th:block th:insert="${pagesLink}"></th:block>
     </th:block>
 </th:block>
 
-<th:block th:fragment="includes_footer(script)">
+<th:block th:fragment="includes_footer(pagesScript)">
 <!--    <th:block th:if="${!#arrays.contains(@environment.getActiveProfiles(),'local-1')}">-->
+
 <!--    </th:block>-->
 <!--    <th:block th:if="${#arrays.contains(@environment.getActiveProfiles(),'local-1')}">-->
 <!--    </th:block>-->
 
     <!-- js 파일-->
-    <th:block th:if="${script}" >
-        <th:block th:insert="${script}"></th:block>
+    <th:block th:if="${pagesScript}" >
+        <th:block th:insert="${pagesScript}"></th:block>
     </th:block>
 
 </th:block>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <th:block th:insert="fragments/mntr/includes :: includes_head(~{::link})"></th:block>
+        <th:block th:insert="fragments/default/includes :: includes_head(~{::pagesLink})"></th:block>
     </head>
     <body>
         <div class="wrap">
@@ -10,7 +10,7 @@
             <th:block layout:fragment="content">
             </th:block>
 
-            <th:block th:insert="fragments/mntr/includes :: includes_footer(~{::script})">
+            <th:block th:insert="fragments/default/includes :: includes_footer(~{::pagesScript})">
             </th:block>
 
             <th:block th:replace="fragments/default/footer :: footerFragment">
