@@ -13,11 +13,21 @@ $(function() {
     });
 
     $(".infoTitle i").click(function(){
-        $(".infoArea").hide("2000");
+        $(".infoArea").hide("2000", function() {
+            // mapManager.map.updateSize();
+        });
+    });
+
+    $(".listScroll dl").click(function(){
+        $(".infoArea").toggle("2000", function() {
+            // mapManager.map.updateSize();
+        });
     });
 
     // 각각의 셀렉트 박스 인스턴스 생성
     var selectType01 = new CustomSelectBox('.selectBox.type01');
+
+    mapManager.map.updateSize();
 })
 
 //    selectbox custom

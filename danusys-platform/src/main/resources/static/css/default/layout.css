@@ -53,7 +53,7 @@ header .logo{width: 320px; font-size: 18px;}
 header .logo i{margin: 0px 14px 0px 0px;}
 header .gnm{display: flex; align-items: center; column-gap: 80px; font-size: 18px;}
 header .gnm li{cursor: pointer;}
-header .gnm li:hover{font-weight: bold;}
+header .gnm li:hover{box-sizing: border-box; border-bottom: 1px solid #fff;}
 header .gnm li:active{}
 header .utmenu{display: flex; align-items: center; column-gap: 40px;}
 
@@ -159,7 +159,7 @@ header .utmenu{display: flex; align-items: center; column-gap: 40px;}
 
 /* map */
 #map{position: relative; flex: 1; background: #ccd5de;}
-.mapButton{position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: flex-end; margin: 10px;}
+.mapButton{position: absolute; top: 0; right: 0; display: flex; flex-direction: column; align-items: flex-end; margin: 10px; z-index: 1;}
 .mapButton ul{overflow: hidden; width: 40px; margin: 0px 0px 10px; border-radius: 4px; background: #1a1b1d;}
 .mapButton ul li{display: flex; align-items: center; justify-content: center; height: 40px; box-sizing: border-box; border-bottom: 1px solid #434751; text-indent: -9999px; cursor: pointer;}
 .mapButton ul li i{display: flex; align-items: center; justify-content: center; margin: 0px;}
@@ -173,7 +173,7 @@ header .utmenu{display: flex; align-items: center; column-gap: 40px;}
 
 
 /* infoArea */
-.infoArea{display: flex; flex-direction: column; width: 500px; height: 100%; background: #1a1b1d;}
+.infoArea{display: flex; flex-direction: column; width: 500px; height: inherit; background: #1a1b1d; position: absolute; right: 0px; z-index: 2;}
 .infoTitle{display: flex; align-items: center; justify-content: space-between; width: 100%; height: 40px; padding: 0px 14px; box-sizing: border-box; background: #23252b;}
 .infoTitle span{color: #dee0e4; font-size: 16px;}
 .infoTitle i{cursor: pointer;}

@@ -9,29 +9,8 @@
 
 <th:block layout:fragment="content">
     <div class="monitoring">
-        <div id="map">
-            <div class="mapButton">
-                <ul class="tabButton">
-                    <li class="on">지도</li>
-                    <li>스카이뷰</li>
-                </ul>
-                <ul>
-                    <li><i><img src="/images/default/mapButtonRoadview.svg"></i>로드뷰</li>
-                </ul>
-                <ul>
-                    <li><i><img src="/images/default/mapButtonPlus.svg"></i>확대</li>
-                    <li><i><img src="/images/default/mapButtonMinus.svg"></i>축소</li>
-                </ul>
-                <ul>
-                    <li><i><img src="/images/default/mapButtonDistance.svg"></i>거리재기</li>
-                    <li><i><img src="/images/default/mapButtonSquare.svg"></i>면적재기</li>
-                    <li><i><img src="/images/default/mapButtonRadius.svg"></i>반경재기</li>
-                    <li><i><img src="/images/default/mapButtonEraser.svg"></i>지우기</li>
-                    <li><i><img src="/images/default/mapButtonAlign.svg"></i>정렬</li>
-                    <li><i><img src="/images/default/mapButtonLayer.svg"></i>레이어</li>
-                </ul>
-            </div>
-        </div>
+        <th:block th:insert="/fragments/default/map">
+        </th:block>
         <div class="infoArea">
             <h4 class="infoTitle"><span>Name</span><i><img src="/images/default/close.svg"></i></h4>
             <section class="infoPart1">
