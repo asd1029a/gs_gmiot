@@ -78,7 +78,7 @@ public class LoginController {
 		if (user == null) {
 			mav.setViewName("view/login/login");
 		} else {
-			mav.setViewName("view/intro/intro");
+			mav.setViewName("view/pages/mntr");
 		}
 
 		return mav;

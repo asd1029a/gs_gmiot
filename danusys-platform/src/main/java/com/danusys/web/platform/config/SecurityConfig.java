@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public AuthenticationSuccessHandler authenticationSuccessHandler() {
-		return new LoginSuccessHandler("/action/page?path=intro/intro");
+		return new LoginSuccessHandler("/home");
 	}
 
 	@Override

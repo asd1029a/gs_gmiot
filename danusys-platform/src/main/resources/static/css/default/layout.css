@@ -54,7 +54,7 @@ header .logo i{margin: 0px 14px 0px 0px;}
 header .gnm{display: flex; align-items: center; column-gap: 80px; font-size: 18px;}
 header .gnm li{cursor: pointer;}
 header .gnm li:hover{box-sizing: border-box; border-bottom: 1px solid #fff;}
-header .gnm li:active{box-sizing: border-box; border-bottom: 1px solid #fff;}
+header .gnm li.active{box-sizing: border-box; border-bottom: 1px solid #fff;}
 header .utmenu{display: flex; align-items: center; column-gap: 40px;}
 
 

@@ -56,7 +56,12 @@ public class WebMvcConfig extends UiConfiguration {
         registry.addViewController("/oprt/oprtSendSmsLog").setViewName("view/oprt/oprtSendSmsLog");
         registry.addViewController("/oprt/oprtSendSmsLogStat").setViewName("view/oprt/oprtSendSmsLogStat");
 
+        registry.addViewController("home").setViewName("view/pages/home");
         registry.addViewController("mntr").setViewName("view/pages/mntr");
+        registry.addViewController("dashboard").setViewName("view/pages/dashboard");
+        registry.addViewController("stats").setViewName("view/pages/stats");
+        registry.addViewController("config").setViewName("view/pages/config");
+        registry.addViewController("inqry").setViewName("view/pages/inqry");
 
         super.addViewControllers(registry);
     }
