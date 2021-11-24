@@ -2,7 +2,7 @@
 <!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="excel">
-	<select id="selectEventByDay" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectEventByDay" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		<![CDATA[
 		SELECT
 		 a.gbn AS "gbn"
@@ -63,7 +63,7 @@
 		]]>
 	</select>
 	
-	<select id="selectEventByWeek" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectEventByWeek" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		<![CDATA[
 		SELECT
 		 a.gbn AS "gbn"
@@ -109,7 +109,7 @@
 		]]>
 	</select>
 	
-	<select id="selectEventByMon" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectEventByMon" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		<![CDATA[
 		SELECT
 			a.gbn AS "gbn"
@@ -161,7 +161,7 @@
 		]]>
 	</select>
 	
-	<select id="selectFacilityByDay" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectFacilityByDay" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		<![CDATA[
 		SELECT
 		 a.gbn AS "gbn"
@@ -220,7 +220,7 @@
 		]]>
 	</select>
 	
-	<select id="selectFacilityByWeek" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectFacilityByWeek" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		<![CDATA[
 		SELECT
 		 a.gbn AS "gbn"
@@ -262,7 +262,7 @@
 		]]>
 	</select>
 	
-	<select id="selectFacilityByMon" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectFacilityByMon" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		<![CDATA[
 		SELECT
 		 a.gbn AS "gbn"
@@ -309,7 +309,7 @@
 		]]>
 	</select>
 	
-	<select id="selectEventMapBySi" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectEventMapBySi" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT a.SI_NM as "area", e.EVT_NM as "gbn", SUM(1) AS "cnt"
 		FROM CM_EVT_OCR o
 		INNER JOIN  CM_AREA_SI_CD a
@@ -327,7 +327,7 @@
 		ORDER BY a.SI_NM
 	</select>
 	
-	<select id="selectEventMapByDong" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectEventMapByDong" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT a.DONG_NM as "area", e.EVT_NM as "gbn", SUM(1) AS "cnt"
 		FROM CM_EVT_OCR o
 		INNER JOIN CM_AREA_DONG_CD a
@@ -346,7 +346,7 @@
 		ORDER BY a.DONG_NM
 	</select>
 	
-	<select id="selectFacilityMapBySi" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectFacilityMapBySi" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT a.SI_NM as "area", d.DE_CD_NM as "gbn", SUM(1) as "cnt"
 		FROM CCTV_BRK_LOG b
 		LEFT OUTER JOIN FACILITY_S s
@@ -365,7 +365,7 @@
 		GROUP BY a.SI_NM, d.DE_CD_NM
 	</select>
 	
-	<select id="selectFacilityMapByDong" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectFacilityMapByDong" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT a.DONG_NM as "area", d.DE_CD_NM as "gbn", SUM(1) as "cnt"
 		FROM CCTV_BRK_LOG b
 		LEFT OUTER JOIN FACILITY_S s

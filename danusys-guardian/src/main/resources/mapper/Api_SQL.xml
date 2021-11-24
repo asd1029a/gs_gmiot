@@ -2,8 +2,8 @@
 <!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="api">
-	<resultMap type="com.danusys.web.platform.model.Api" id="api" />
-	<resultMap type="com.danusys.web.platform.model.ApiParam" id="apiParam" />
+	<resultMap type="com.danusys.web.guardian.model.Api" id="api" />
+	<resultMap type="com.danusys.web.guardian.model.ApiParam" id="apiParam" />
 
 
 	<select id="selectApi" parameterType="map" resultMap="api">

@@ -34,8 +34,7 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.20</version>
-      <scope>compile</scope>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -135,12 +134,12 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
         </exclusion>
         <exclusion>
-          <groupId>ch.qos.logback</groupId>
           <artifactId>logback-classic</artifactId>
+          <groupId>ch.qos.logback</groupId>
         </exclusion>
       </exclusions>
     </dependency>

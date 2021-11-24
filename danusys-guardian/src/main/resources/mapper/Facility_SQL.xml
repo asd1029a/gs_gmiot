@@ -2,7 +2,7 @@
 <!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="facility">
-	<select id="selectFcltSList" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectFcltSList" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT * FROM(
 			SELECT 
 				ROW_NUMBER() OVER(ORDER BY a.FCLT_ID ASC)::text AS "rnum",
@@ -762,7 +762,7 @@
 			MGMT_NO = #{fcltMgmtNo}
 	</insert>
 	
-	<select id="selectFcltEList" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectFcltEList" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT ROW_NUMBER() OVER(ORDER BY a."fcltId" ASC) AS "rnum",
 			   a.*
 		FROM (
@@ -823,7 +823,7 @@
 			FCLT_ID = #{fcltId}
 	</delete>
 	
-	<select id="selectFcltNodeList" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectFcltNodeList" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT SEQ_NO AS "no", lineString AS "lineString"  
 		FROM 
 			FACILITY_NODE

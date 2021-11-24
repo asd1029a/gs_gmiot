@@ -34,7 +34,8 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<version>1.18.20</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!--		</dependency>-->
@@ -198,9 +199,6 @@
 			<artifactId>moment</artifactId>
 			<version>2.29.1</version>
 		</dependency>
-
-
-
 
 		<!--		<dependency>-->
 <!--			<groupId>egovframework.rte</groupId>-->

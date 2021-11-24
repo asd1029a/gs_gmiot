@@ -2,7 +2,7 @@
 <!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="admin">
-	<resultMap type="com.danusys.web.platform.model.LoginVO" id="adminMap">
+	<resultMap type="com.danusys.web.guardian.model.LoginVO" id="adminMap">
 		<result property="id" column="ID" />
 		<result property="pwd" column="PWD" />
 		<result property="name" column="NAME" />
@@ -57,7 +57,7 @@
 		]]>
 	</select>
 
-	<select id="selectDisplaySet" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectDisplaySet" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT LOGIN_BG_TIT
 			, LOGIN_BG_TIT_SUB
 			, LOGIN_BG

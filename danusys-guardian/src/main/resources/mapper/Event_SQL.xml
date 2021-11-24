@@ -2,7 +2,7 @@
 <!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="event">
-	<select id="selectEventList" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectEventList" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT a.* FROM (
 			SELECT
 				ROW_NUMBER() OVER(ORDER BY a.EVT_OCR_YMD_HMS DESC) AS "rnum",
@@ -140,7 +140,7 @@
       	ORDER BY "rnum"
 	</select>
 	
-	<select id="selectEventCarList" parameterType="map" resultType="com.danusys.web.platform.common.util.EgovMap">
+	<select id="selectEventCarList" parameterType="map" resultType="com.danusys.web.guardian.common.util.EgovMap">
 		SELECT ('['||STRING_AGG(lonlat,',' ORDER BY t.evtDate)||']') AS lonlat
 		FROM (
 			SELECT  '['||a.LONGITUDE||','||a.LATITUDE||']' AS lonlat, SUBSTR(a.EVT_OCR_YMD_HMS, 1, 8) AS dateGbn, EVT_DTL AS evtDtl, a.EVT_OCR_YMD_HMS AS evtDate
