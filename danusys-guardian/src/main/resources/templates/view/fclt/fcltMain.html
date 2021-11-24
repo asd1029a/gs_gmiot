@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>시설물</title>
+	<link rel="stylesheet" type="text/css" href="/css/dark/reset.css">
+	<link rel="stylesheet" type="text/css" href="/css/dark/leftList.css">
+	<link rel="stylesheet" type="text/css" href="/css/dark/fclt.css">
+	<link rel="stylesheet" type="text/css" href="/css/jstree/style.css">
+	<link rel="stylesheet" type="text/css" href="/css/jqueryColor/jquery.minicolors.css">
+	
+	<script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+	<script src="/js/jquery/jquery-ui.js"></script>
+	<script src="/js/jquery/jquery.minicolors.js"></script>
+	<script src="/js/simplePagination/simplePagination.js"></script>
+	
+	<script src="/js/leftList.js"></script>
+	
+	<script src="/js/jstree/jstree.js"></script>
+	<script src="/js/jstree/jstree.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+	<aside class="aside-slide">
+		<p class="aside-fold-btn"><img src="../images/icons/asideBtn_fold.png"></p>
+		
+		<!-- tab button -->
+		<div class="aside-tab-btn">
+			<ul>
+				<li class="active" value="selectCctv">CCTV</li>
+				<li value="selectFclt">시설물 관리</li>
+			</ul>
+		</div>
+		<!-- //tab button -->
+		<!-- search form -->
+		<div class="aside-srch-form">
+			<ul>
+				<li>
+					<div id="spaceSelect" style="width:calc(25% - 20px);margin-right:46px;float:left;"></div>
+					<div id="useSelect" style="width:29%;margin-right:10px;float:left;"></div>
+					<select id="statSelect" style="width:23%;">
+						<option value="">상태</option>
+						<option value="0">On</option>
+						<option value="1">Off</option>
+					</select>
+				</li>
+				<li>
+					<input type="checkbox" id="mapFlag"><label for="mapFlag"></label>지도 내 검색
+				</li>
+				<li class="search-btn">조회</li>
+			</ul>
+		</div>
+		<!-- //search form -->
+		<!-- search list -->
+		<div class="aside-srch-list">
+			<dl class="srch-list-tit">
+				<dt>
+					<span class="title">목록</span>
+					<span class="count" id="list_count"></span>
+				</dt>
+			</dl>
+			<article class="srch-list" id="fcltList"></article>
+			<ul id="fcltListPagination"></ul>
+		</div>
+
+		<th:block th:insert="view/common/addressSearch :: addressSearch">
+		</th:block>
+
+		
+		<div class="connect-node-form" style="display: none;">
+			<dl class="node-form-tit">
+				<dt>
+					<span class="title">시설물 노드 선택</span>
+				</dt>
+			</dl>
+			<ul class="node-form-cont">
+				<li>
+					<dl>
+						<dt>선 종류</dt>
+						<dd style="width:80%">
+							<select id="fcltCnctLineKind">
+							</select>
+						</dd>
+					</dl>
+				</li>
+			</ul>
+			<ul class="center-btn">
+				<li onClick="addFcltCnctLinePopup();">추가</li>
+				<li onClick="updateFcltCnctLinePopup();">수정</li>
+				<li onClick="addFcltCnctLine(this);">실행</li>
+				<li onClick="closeFcltConnectLine();">닫기</li>
+			</ul>
+		</div>
+	</aside>
+	<th:block th:insert="view/common/map :: map">
+	</th:block>
+</div>
+
+<script type="text/javascript" src="/js/fclt/customLine2.js"></script>
+<script type="text/javascript" src="/js/fclt/fcltMain.js"></script>
+<!-- <script type="text/javascript" src="/js/fclt/customLine.js"></script> -->
+<script th:inline="javascript">
+$(document).ready(function(){
+	areaCode = [];
+	useCode = [];
+	$(".aside-fold-btn").click(function(){
+		$(".aside-slide").toggleClass("toggled");
+		mapManager.map.updateSize();
+	});
+	
+	$('.search-btn').click(function(){
+		eval($('.aside-tab-btn ul').children('.active').attr('value') + '()')
+	});
+	
+	$('.aside-tab-btn ul li').click(function(){
+		$(".aside-tab-btn ul li").removeClass("active");
+		$(this).addClass("active");
+		var fn = $(this).attr('value');
+		if(fn == 'selectCctv'){
+			const cctvLayer = mapManager.getVectorLayer('cctv');
+			const connectLineLayer = mapManager.getVectorLayer('connectLine');
+			const fcltLayer = mapManager.getVectorLayer('fclt');
+			if(cctvLayer) cctvLayer.setVisible(true);
+			if(connectLineLayer) connectLineLayer.setVisible(true);
+			if(fcltLayer) fcltLayer.setVisible(false);
+			$('.context-fclt').hide();
+			comboFcltUse('useSelect',[[ ${session.admin.id} ]],'FCLT_PURPOSE');
+		} else if(fn == 'selectFclt'){
+			const cctvLayer = mapManager.getVectorLayer('cctv');
+			const connectLineLayer = mapManager.getVectorLayer('connectLine');
+			const fcltLayer = mapManager.getVectorLayer('fclt');
+			if(cctvLayer) cctvLayer.setVisible(false);
+			if(connectLineLayer) connectLineLayer.setVisible(false);
+			if(fcltLayer) fcltLayer.setVisible(true);
+			dialogManager.closeAll();
+			$('.context-fclt').show();
+			comboFcltUse('useSelect',[[ ${session.admin.id} ]],'FCLT_E_KND');
+		}
+		new Function(fn + "()")();
+	});
+	
+	$('#mainFcltId').bind('click', function(e) {
+		mapManager.removeMapEventListener('click', fcltConnectLineSub);
+		mapManager.setMapEventListener('click', fcltConnectLineMain);
+	});
+	
+	$('#subFcltId').bind('click', function(e) {
+		mapManager.removeMapEventListener('click', fcltConnectLineMain);
+		mapManager.setMapEventListener('click', fcltConnectLineSub);
+	});
+	
+	selectCctv();
+	comboFcltUse('useSelect',[[ ${session.admin.id} ]],'FCLT_PURPOSE');
+	comboArea('spaceSelect');
+	mapManager.setMapEventListener('pointermove', fcltMapPointermoveListener);
+	mapManager.setMapEventListener('click', fcltMapClickListener);
+	mapManager.setMapEventListener('click', fcltCnctLineClickListener);
+
+	var contextItems = [
+	  	{
+	    	text: '지도 메뉴',
+	    	classname: 'first-menu'
+	  	},
+	  	{
+	  		text: '시설물추가',
+	  		classname: 'context-fclt',
+	  		callback : addFclt
+	  	},
+	  	{
+	  		text: '시설물연결',
+	  		classname: 'context-fclt',
+	  		callback : openFcltConnectLine
+	  	},
+		{
+			text: '영상종료',
+			classname: 'context-video',
+			callback : dialogManager.closeAll
+		}
+	];
+	mapManager.createContextMenu(contextItems);
+	
+	/* $('#fcltCnctLineKind').bind('change', function(target) {
+		$.ajax({
+			contentType : "application/json; charset=utf-8",
+			type		: "POST",
+			url			: "/selectList/common.getFcltDetailCode/action",
+			dataType	: "json",
+			data		: JSON.stringify(jsonObj),
+			async		: false
+		}).done(function(result) {
+			
+		})
+	}) */
+	layerCodeSelectBox();
+	$('.context-fclt').hide();
+});
+
+function layerCodeSelectBox() {
+	common.getSelectBoxItem({
+		"el"                : "fcltCnctLineKind",
+	    "sql"               : "facility.getLayerCode",
+	    "val"               : "layerName",
+	    "text"              : "layerName",
+	    "isAllCheckCustom"	: "-선택-"
+	})
+}
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1982 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="oprt">
+	<select id="getEventCodeList" parameterType="map" resultType="HashMap">
+		SELECT *
+		FROM (
+			SELECT  ROW_NUMBER() OVER(ORDER BY a.SORT_ORDR DESC) AS "rnum",
+					a.EVT_ID AS "evtId",
+					a.EVT_NM AS "evtNm",
+					a.USE_TY_CD AS "useTyCd",
+					CASE a.USE_TY_CD 
+						WHEN 'Y' THEN '사용'
+						WHEN 'N' THEN '미사용'
+					END AS "useTyNm",
+					a.ICON_URL AS "iconUrl",
+					a.EVT_DSCRT AS "evtDscrt",
+					COALESCE(a.MNGR_USER_ID,'') as "mngrUserId",
+					a.RGS_DATE AS "rgsDate",
+					a.RGS_USER_ID as "rgsUserId",
+					TO_CHAR(a.UPD_DATE,'YYYY/MM/DD HH24:MI:SS') AS "updDate",
+					a.UPD_USER_ID as "updUserId",
+					(
+						SELECT COALESCE(SPLIT_PART(STRING_AGG(DISTINCT m.name,',' ORDER BY m.name ASC),',',1) || ' 외 ' || COUNT(m.name)-1,'')
+						FROM CM_EVENT_MNGR_USER u, admin m
+						WHERE u.EVT_ID = a.EVT_ID
+						AND u.USER_ID = m.ID
+					) as "evtMngrUser"
+					<if test="evtId != null and evtId != ''">
+					,(SELECT STRING_AGG(USER_ID,',') FROM CM_EVENT_MNGR_USER WHERE EVT_ID='112UC001') as "userId"
+ 					,(SELECT STRING_AGG(a.NAME,',') FROM CM_EVENT_MNGR_USER g JOIN ADMIN a ON g.USER_ID=a.ID WHERE g.EVT_ID='"112UC001"') as "userNm"
+					</if>
+			FROM CM_EVENT a
+			<if test="userId != null and userId != ''">
+			JOIN CM_EVENT_GROUP_DETAIL b
+			ON a.EVT_ID = b.EVT_ID
+			JOIN ADMIN c
+			ON b.GROUP_ID = c.EVENT_GROUP_ID
+			</if>
+			WHERE 1=1
+			<if test="searchText != null and searchText != ''">
+				<if test="evtGbn == 1">
+					AND LOWER(a.EVT_ID) LIKE '%'||LOWER(#{searchText})||'%' 
+				</if>
+				<if test="evtGbn == 2">
+					AND LOWER(a.EVT_NM) LIKE '%'||LOWER(#{searchText})||'%'
+				</if>
+				<if test="evtGbn == 3">
+				AND (SELECT STRING_AGG(m.NAME, ',')
+					FROM CM_EVENT_MNGR_USER u, admin m
+					WHERE u.EVT_ID = a.EVT_ID
+					AND u.USER_ID = m.ID) LIKE '%'||#{searchText}||'%'
+				</if>
+			</if>
+			<if test="userId != null and userId != ''">
+				AND c.ID = #{userId}
+			</if>
+			<if test="useTyCd != null and useTyCd != ''">
+				AND a.USE_TY_CD = #{useTyCd}
+			</if>
+			<if test="evtId != null and evtId != ''">
+				AND a.EVT_ID = #{evtId} 
+			</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+      	ORDER BY a."rnum"
+	</select>
+	
+	
+	
+	<select id="getEventCodeListCnt" parameterType="map" resultType="String">
+		SELECT  
+			COUNT(*)
+		FROM CM_EVENT a
+		<if test="userId != null and userId != ''">
+		JOIN CM_EVENT_GROUP_DETAIL b
+		ON a.EVT_ID = b.EVT_ID
+		JOIN ADMIN c
+		ON b.GROUP_ID = c.EVENT_GROUP_ID
+		</if>
+		WHERE 1=1
+		<if test="searchText != null and searchText != ''">
+			<if test="evtGbn == 1">
+				AND LOWER(a.EVT_ID) LIKE '%'||LOWER(#{searchText})||'%' 
+			</if>
+			<if test="evtGbn == 2">
+				AND LOWER(a.EVT_NM) LIKE '%'||LOWER(#{searchText})||'%'
+			</if>
+			<if test="evtGbn == 3">
+			AND (SELECT STRING_AGG(m.NAME, ',')
+				FROM CM_EVENT_MNGR_USER u, admin m
+				WHERE u.EVT_ID = a.EVT_ID
+				AND u.USER_ID = m.ID) LIKE '%'||#{searchText}||'%'
+			</if>
+		</if>
+		<if test="userId != null and userId != ''">
+			AND c.ID = #{userId}
+		</if>
+		<if test="useTyCd != null and useTyCd != ''">
+			AND a.USE_TY_CD = #{useTyCd}
+		</if>
+		<if test="evtId != null and evtId != ''">
+			AND a.EVT_ID = #{evtId} 
+		</if>
+	</select>
+	
+	<select id="checkEventId" parameterType="map" resultType="HashMap">
+		SELECT
+			COUNT(*) AS idKey
+		FROM CM_EVENT
+		WHERE 1=1
+		AND EVT_ID = #{evtId}
+	</select>
+	
+	<update id="saveEventCode" parameterType="map">
+		INSERT INTO CM_EVENT
+		(
+			EVT_ID,
+			EVT_NM,
+			SORT_ORDR,
+			USE_TY_CD,
+			ICON_URL,
+			EVT_DSCRT,
+			MNGR_USER_ID,
+			LK_YN,
+			RGS_DATE,
+			RGS_USER_ID,
+			VMS_START_CODE,
+			VMS_END_CODE
+		)VALUES (
+			#{evtId},
+			#{evtNm},
+			#{sortOrdr},
+			#{useTyCd},
+			#{iconUrl},
+			#{evtDscrt},
+			#{mngrUserId},
+			#{lkYn},
+			NOW(),
+			#{sessionId},
+			'66',
+			'72'
+		) ON CONFLICT
+		(EVT_ID)
+		DO UPDATE SET
+			EVT_NM = #{evtNm},
+			SORT_ORDR = #{sortOrdr},
+			USE_TY_CD = #{useTyCd},
+			ICON_URL = #{iconUrl},
+			EVT_DSCRT = #{evtDscrt},
+			MNGR_USER_ID = #{mngrUserId},
+			LK_YN = #{lkYn},
+			UPD_DATE = NOW(),
+			UPD_USER_ID = #{sessionId}
+		
+	</update>
+	<insert id="insertEventGroupAdmin" parameterType="map">
+		INSERT INTO CM_EVENT_GROUP_DETAIL
+		(
+			GROUP_ID,
+			EVT_ID,
+			UPDATE_DATE,
+			INSERT_DATE	
+		)VALUES(
+			#{groupId},
+			#{evtId},
+			NOW(),
+			NOW()
+		)ON CONFLICT
+		(GROUP_ID,EVT_ID)
+		DO UPDATE SET
+			UPDATE_DATE = NOW()
+			
+		
+	</insert>
+	
+	<delete id="deleteEventCodeList" parameterType="map">
+		DELETE
+		FROM CM_EVENT
+		WHERE EVT_ID = #{evtId};
+	</delete>
+	
+	<delete id="deleteEventGroupDetailForEvtId" parameterType="map">
+		DELETE FROM CM_EVENT_GROUP_DETAIL
+		WHERE 1=1
+		AND EVT_ID = #{evtId};
+	</delete>
+	
+	
+	
+	<select id="getEventItemList" parameterType="map" resultType="HashMap">
+		SELECT *
+		FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY a.EVT_ID) AS "rnum",
+				   a.EVT_ID AS "evtId",
+				   a.EVT_NM AS "evtNm",
+				   b.EVT_ITEM_ID AS "evtItemId",
+				   c.EVT_ITEM_NM AS "evtItemNm",
+				   c.USE_TY_CD AS "useTyCd",
+				   CASE c.USE_TY_CD
+				   		WHEN 'Y' THEN '사용'
+				   		WHEN 'N' THEN '미사용'
+				   END AS "useTyNm"
+			FROM CM_EVENT a,
+				 CM_EVT_ITEM_INFO b,
+				 CM_EVT_ITEM c
+			WHERE a.EVT_ID = b.EVT_ID
+			AND b.EVT_ITEM_ID = c.EVT_ITEM_ID
+			<if test="searchText != null and searchText != ''">
+				AND LOWER(a.EVT_ID) LIKE '%'|| LOWER(#{chkEvtItemCd}) || '%'
+			</if>
+			<if test="chkEvtItemId != null and chkEvtItemId != ''">
+			AND c.EVT_ITEM_ID = #{chkEvtItemId} 
+			</if>
+			<if test="chkEvtId != null and chkEvtId != ''">
+			AND a.EVT_ID = #{chkEvtId} 
+			</if>
+			<if test="chkEvtItemCd != null and chkEvtItemCd != ''">
+			AND LOWER(a.EVT_ID) = LOWER(#{chkEvtItemCd})
+			</if>
+			<if test="evtItemId != null and evtItemId != ''">
+			AND LOWER(c.EVT_ITEM_ID) LIKE '%'||LOWER(#{evtItemId})||'%' 
+			</if>
+			<if test="evtItemNm != null and evtItemNm != ''">
+			AND LOWER(c.EVT_ITEM_NM) LIKE '%'||LOWER(#{evtItemNm})||'%' 
+			</if>
+	      	ORDER BY a.EVT_ID
+		) a
+		WHERE 1=1
+	    <if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	
+	
+	<select id="getEventItemListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+		FROM CM_EVENT a,
+			 CM_EVT_ITEM_INFO b,
+			 CM_EVT_ITEM c
+		WHERE a.EVT_ID = b.EVT_ID
+		AND b.EVT_ITEM_ID = c.EVT_ITEM_ID
+		<if test="searchText != null and searchText != ''">
+			AND LOWER(a.EVT_ID) LIKE '%'|| LOWER(#{chkEvtItemCd}) || '%'
+		</if>
+		<if test="chkEvtItemId != null and chkEvtItemId != ''">
+		AND c.EVT_ITEM_ID = #{chkEvtItemId} 
+		</if>
+		<if test="chkEvtId != null and chkEvtId != ''">
+		AND a.EVT_ID = #{chkEvtId} 
+		</if>
+		<if test="chkEvtItemCd != null and chkEvtItemCd != ''">
+			AND LOWER(a.EVT_ID) = LOWER(#{chkEvtItemCd})
+		</if>
+		<if test="evtItemId != null and evtItemId != ''">
+		AND LOWER(c.EVT_ITEM_ID) LIKE '%'||LOWER(#{evtItemId})||'%' 
+		</if>
+		<if test="evtItemNm != null and evtItemNm != ''">
+		AND LOWER(c.EVT_ITEM_NM) LIKE '%'||LOWER(#{evtItemNm})||'%' 
+		</if>
+	</select>
+	
+	<insert id="saveEventItemInfo" parameterType="map">
+		INSERT INTO CM_EVT_ITEM_INFO
+		(
+			EVT_ID,
+			EVT_ITEM_ID,
+			UPD_DATE,
+			UPD_USER_ID,
+			RGS_DATE,
+			RGS_USER_ID
+		) VALUES (
+			#{chkEvtId},
+			#{chkEvtItemId},
+			NOW(),
+			#{sessionId},
+			NOW(),
+			#{sessionId}
+		) ON CONFLICT
+		(EVT_ID,EVT_ITEM_ID)
+		DO UPDATE SET
+			UPD_DATE = NOW(),
+			UPD_USER_ID = #{sessionId}
+	</insert>
+	
+	<update id="saveEventItem" parameterType="map">
+		INSERT INTO CM_EVT_ITEM(
+			EVT_ITEM_ID,
+			EVT_ITEM_NM,
+			USE_TY_CD,
+			RGS_DATE,
+			RGS_USER_ID
+		) VALUES(
+			#{chkEvtItemId},
+			#{evtItemNm},
+			#{useTyCd},
+			NOW(),
+			#{sessionId}
+		) ON CONFLICT
+		(EVT_ITEM_ID)
+		DO UPDATE SET 
+			EVT_ITEM_NM = #{evtItemNm},
+			USE_TY_CD = #{useTyCd},
+			UPD_DATE = NOW(),
+			UPD_USER_ID = #{sessionId}
+	</update>
+	
+	<delete id="deleteEventItemInfo" parameterType="map">
+		DELETE
+		FROM CM_EVT_ITEM_INFO
+		WHERE 1=1 
+		AND EVT_ID = #{evtId}
+		AND EVT_ITEM_ID = #{evtItemId};
+	</delete>
+	
+	<delete id="deleteEventItem" parameterType="map">
+		DELETE
+		FROM CM_EVT_ITEM
+		WHERE EVT_ITEM_ID = #{evtItemId};
+	</delete>
+	
+	<select id="getEventSubList" parameterType="map" resultType="HashMap">
+		SELECT *
+		FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY a.EVT_ID) AS "rnum",
+				   a.EVT_ID AS "evtId",
+				   a.EVT_NM AS "evtNm",
+				   b.EVT_ID_SUB_CD AS "evtIdSubCd",
+				   b.EVT_ID_SUB_NM AS "evtIdSubNm",
+				   b.USE_TY_CD AS "useTyCd",
+				   CASE b.USE_TY_CD
+				   		WHEN 'Y' THEN '사용'
+				   		WHEN 'N' THEN '미사용'
+				   END AS "useTyNm"
+			FROM CM_EVENT a,
+				 CM_EVENT_SUB b
+			WHERE a.EVT_ID = b.EVT_ID
+			<if test="chkEvtId != null and chkEvtId != ''">
+			AND a.EVT_ID = #{chkEvtId} 
+			</if>
+			<if test="chkEvtSubId != null and chkEvtSubId != ''">
+			AND b.EVT_ID_SUB_CD = #{chkEvtSubId} 
+			</if>
+			<if test="evtSubId != null and evtSubId != ''">
+			AND LOWER(b.EVT_ID_SUB_CD) LIKE '%'||LOWER(#{evtSubId})||'%' 
+			</if>
+			<if test="evtSubNm != null and evtSubNm != ''">
+			AND LOWER(b.EVT_ID_SUB_NM) LIKE '%'||LOWER(#{evtSubNm})||'%' 
+			</if>
+	      	ORDER BY a.EVT_ID
+		) a
+		WHERE 1=1
+	    <if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	
+	<select id="getEventSubListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+		FROM CM_EVENT a,
+			 CM_EVENT_SUB b
+		WHERE a.EVT_ID = b.EVT_ID
+		<if test="chkEvtId != null and chkEvtId != ''">
+		AND a.EVT_ID = #{chkEvtId} 
+		</if>
+		<if test="chkEvtSubId != null and chkEvtSubId != ''">
+		AND b.EVT_ID_SUB_CD = #{chkEvtSubId} 
+		</if>
+		<if test="evtSubId != null and evtSubId != ''">
+		AND LOWER(b.EVT_ID_SUB_CD) LIKE '%'||LOWER(#{evtSubId})||'%' 
+		</if>
+		<if test="evtSubNm != null and evtSubNm != ''">
+		AND LOWER(b.EVT_ID_SUB_NM) LIKE '%'||LOWER(#{evtSubNm})||'%' 
+		</if>
+	</select>
+	
+	<update id="saveEventSub" parameterType="map">
+		INSERT INTO CM_EVENT_SUB(
+			EVT_ID,
+			EVT_ID_SUB_CD,
+			EVT_ID_SUB_NM,
+			USE_TY_CD,
+			RGS_DATE,
+			RGS_USER_ID
+		) VALUES (
+			#{chkEvtId},
+			#{chkEvtSubId},
+			#{evtIdSubNm},
+			#{useTyCd},
+			NOW(),
+			#{sessionId}
+		) ON CONFLICT
+		(EVT_ID,EVT_ID_SUB_CD)
+		DO UPDATE SET
+			EVT_ID_SUB_NM = #{evtIdSubNm},
+			USE_TY_CD = #{useTyCd},
+			UPD_DATE = NOW(),
+			UPD_USER_ID = #{sessionId}
+	
+	</update>
+	
+	<delete id="deleteEventSub" parameterType="map">
+		<![CDATA[
+		DELETE
+		FROM CM_EVENT_SUB
+		WHERE EVT_ID IN
+		]]>
+		<foreach item="item" index="index" collection="deleteRowEvtId" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		<![CDATA[
+		AND EVT_ID_SUB_CD IN
+		]]>
+		<foreach item="item" index="index" collection="deleteRowEvtSubId" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		;
+	</delete>
+	
+	<select id="getUserList" parameterType="map" resultType="HashMap">
+		SELECT *
+		FROM (
+			SELECT  ROW_NUMBER() OVER(ORDER BY a.SEQ_NO DESC) AS "rnum",
+					a.ID AS "userId",
+					a.NAME AS "userNm",
+					convert_from(decrypt(decode(a.phone_no,'hex'),'ENC_KEY','aes'),'utf8') AS "phoneNo",
+					a.BIRTHDAY AS "birthday",
+					a.RPSB_WORK AS "rpsbWork",
+					a.EMAIL AS "email",
+					a.AUTHORITY AS "authority",
+					a.MEDIAAUTHORITY AS "mediaAuthority",
+					a.ADDRESS AS "address",
+					a.MENU_PERMISSION AS "menuPermission",
+					a.EVENT_GROUP_ID AS "eventGroupId",
+					a.GRP_ID AS "groupId",
+					b.NAME AS "groupNm"
+			FROM admin a
+			JOIN CM_ORGNZ b ON a.GRP_ID = b.GRP_ID
+			WHERE 1=1
+			AND a.DELETED = 'N'
+			<if test="userId != null and userId != ''">
+				AND a.ID = #{userId}
+			</if>
+			<if test="searchUserId != null and searchUserId != ''">
+				AND a.ID LIKE '%'||#{searchUserId}||'%' 
+			</if>
+			<if test="searchUserNm != null and searchUserNm != ''">
+				AND a.NAME LIKE '%'||#{searchUserNm}||'%'
+			</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	<select id="getUserListCnt" parameterType="map" resultType="String">
+		SELECT  COUNT(*)
+		FROM ADMIN a
+		JOIN CM_ORGNZ b ON a.GRP_ID = b.GRP_ID
+		WHERE 1=1
+		AND a.DELETED = 'N'		
+		<if test="searchUserId != null and searchUserId != ''">
+			AND a.ID LIKE '%'||#{searchUserId}||'%' 
+		</if>
+		<if test="searchUserNm != null and searchUserNm != ''">
+			AND a.NAME LIKE '%'||#{searchUserNm}||'%'
+		</if>
+	</select>
+	
+	<select id="getCheckUserId" parameterType="map" resultType="int">
+		SELECT
+			COUNT(*) AS idKey
+		FROM ADMIN
+		WHERE 1=1
+		AND ID = #{userId}
+	</select>
+	
+	<insert id="insertUser" parameterType="map">
+		INSERT INTO ADMIN (
+			SEQ_NO,
+			ID,
+			PWD,
+			NAME,
+			PHONE_NO,
+			BIRTHDAY,
+			EMAIL,
+			RPSB_WORK,
+			EVENT_GROUP_ID,
+			AUTHORITY,
+			MEDIAAUTHORITY,
+			LOGIN_FAIL_COUNT,
+			GRP_ID,
+			CREATE_DATE,
+			UPD_DATE
+		) VALUES (
+			NEXTVAL('ADMIN_SEQ'),
+			#{userId},
+			#{password},
+			#{name},
+			encode(encrypt(convert_to(#{phoneNo},'utf8'),'ENC_KEY','aes'),'hex'),
+			#{birthday},
+			#{email},
+			#{rpsbWork},
+			#{eventGroupId},
+			#{authority},
+			#{mediaAuthority},
+			0,
+			#{groupId},
+			NOW(),
+			NOW()
+		);
+	</insert>
+	
+	<update id="updateUser" parameterType="map">
+		UPDATE ADMIN
+		SET
+			<if test="password != null">
+			PWD=#{password},
+			</if>
+			NAME = #{name},
+			BIRTHDAY = #{birthday},
+			PHONE_NO = encode(encrypt(convert_to(#{phoneNo},'utf8'),'ENC_KEY','aes'),'hex'),
+			EMAIL = #{email},
+			RPSB_WORK = #{rpsbWork},
+			EVENT_GROUP_ID = #{eventGroupId},
+			AUTHORITY = #{authority},
+			MEDIAAUTHORITY = #{mediaAuthority},
+			GRP_ID = #{groupId},
+			UPD_DATE = NOW()
+		WHERE ID = #{userId};
+	</update>
+	
+	<delete id="deleteUser" parameterType="map">
+		DELETE FROM ADMIN
+		WHERE 1=1
+		AND ID = #{userId};
+	</delete>
+	
+	<delete id="deleteUserCctv" parameterType="map">
+		DELETE FROM USER_FACILITY
+		WHERE 1=1
+		AND	USER_ID = #{deleteRowId};
+	</delete>
+	
+	<insert id="saveUserCctvList" parameterType="map">
+       	INSERT 
+		INTO USER_FACILITY (
+			USER_ID,
+			FCLT_ID
+		) VALUES 
+		<foreach item="item" collection="insertRows" separator=","> 
+			(#{item.userId}, #{item.fcltId})
+		</foreach>
+		;
+	</insert>
+	
+	<select id="selectEventGroupList" parameterType="map" resultType="HashMap">
+		SELECT a.* FROM (	
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY a.INSERT_DATE DESC) AS "rnum",
+				a.GROUP_ID as "groupId",
+				a.GROUP_NAME as "groupName",
+				a.CONTENT as "content",
+				CASE a.USE_YN
+					WHEN 'Y' THEN '사용'
+					WHEN 'N' THEN '미사용'
+				END AS "useYnNm",
+				a.USE_YN AS "useYn",
+				TO_CHAR(a.INSERT_DATE,'YYYY/MM/DD HH24:MI:SS') AS "insertDate",
+				TO_CHAR(a.UPDATE_DATE,'YYYY/MM/DD HH24:MI:SS') AS "updateDate"
+			FROM CM_EVENT_GROUP a 
+			WHERE 1=1
+			<if test="groupId != null and groupId != ''">
+				AND a.GROUP_ID = #{groupId}
+			</if>
+			<if test="useYn != null and useYn != ''">
+				AND a.USE_YN = #{useYn}
+			</if>
+			<if test="searchGroupId != null and searchGroupId != ''">
+				AND a.GROUP_ID LIKE '%'||#{searchGroupId}||'%'
+			</if>
+			<if test="searchGroupName != null and searchGroupName != ''">
+				AND a.GROUP_NAME LIKE '%'||#{searchGroupName}||'%'
+			</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	<select id="selectEventGroupListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+			FROM CM_EVENT_GROUP a 
+			WHERE 1=1
+			<if test="groupId != null and groupId != ''">
+				AND a.GROUP_ID = #{groupId}
+			</if>
+			<if test="useYn != null and useYn != ''">
+				AND a.USE_YN = #{useYn}
+			</if>
+			<if test="searchGroupId != null and searchGroupId != ''">
+				AND a.GROUP_ID LIKE '%'||#{searchGroupId}||'%'
+			</if>
+			<if test="searchGroupName != null and searchGroupName != ''">
+				AND a.GROUP_NAME LIKE '%'||#{searchGroupName}||'%'
+			</if>
+	</select>
+	
+	<select id="checkEvtGrpId" parameterType="map" resultType="HashMap">
+		SELECT
+			COUNT(*) AS idKey
+		FROM CM_EVENT_GROUP
+		WHERE 1=1
+		AND GROUP_ID = #{groupId}
+	</select>
+	
+	<update id="saveEventGroup" parameterType="map">
+		INSERT INTO CM_EVENT_GROUP (
+			GROUP_ID,
+			GROUP_NAME,
+			CONTENT,
+			USE_YN,
+			INSERT_DATE,
+			UPDATE_DATE
+		) VALUES(
+			#{groupId},
+			#{groupName},
+			#{content},
+			#{useYn},
+			NOW(),
+			NOW()
+		) ON CONFLICT
+		(GROUP_ID)
+		DO UPDATE SET
+			GROUP_NAME = #{groupName},
+			CONTENT = #{content},
+			USE_YN = #{useYn},
+			UPDATE_DATE = NOW()
+	</update>
+	
+	<delete id="deleteEventGroup" parameterType="map">
+		DELETE FROM CM_EVENT_GROUP
+		WHERE 1=1
+		AND GROUP_ID = #{groupId};
+	</delete>
+	
+	<select id="selectEventGroupDetailList" parameterType="map" resultType="HashMap">
+		SELECT a.* FROM (	
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY a.INSERT_DATE DESC) AS "rnum",
+				a.GROUP_ID as "groupId",
+				a.EVT_ID as "evtId",
+				b.EVT_NM as "evtNm",
+				TO_CHAR(a.INSERT_DATE,'YYYY/MM/DD HH24:MI:SS') AS "insertDate",
+				TO_CHAR(a.UPDATE_DATE,'YYYY/MM/DD HH24:MI:SS') AS "updateDate"
+			FROM CM_EVENT_GROUP_DETAIL a
+			LEFT JOIN CM_EVENT b
+			ON a.EVT_ID = b.EVT_ID 
+			WHERE 1=1
+			<if test="groupId != null and groupId != ''">
+				AND a.GROUP_ID = #{groupId}
+			</if>
+		) a
+		WHERE 1=1
+		
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	<select id="selectEventGroupDetailListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+			FROM CM_EVENT_GROUP_DETAIL a 
+			WHERE 1=1
+			<if test="groupId != null and groupId != ''">
+				AND a.GROUP_ID = #{groupId}
+			</if>
+	</select>
+	
+	<insert id="saveEventGroupDetail" parameterType="map">
+		INSERT INTO CM_EVENT_GROUP_DETAIL (
+			GROUP_ID,
+			EVT_ID,
+			UPDATE_DATE,
+			INSERT_DATE
+		) VALUES 
+		<foreach collection="insertRows" item="item" separator=",">
+			(#{item.groupId}, #{item.evtId}, NOW(), NOW())
+		</foreach>
+		;
+	</insert>
+	
+	<delete id="deleteEventGroupDetail" parameterType="map">
+		DELETE FROM CM_EVENT_GROUP_DETAIL
+		WHERE 1=1
+		AND	GROUP_ID = #{groupId};
+	</delete>
+	
+	<select id="getEventMngrUserList" parameterType="map" resultType="HashMap">
+		SELECT *
+		FROM (
+			SELECT  ROW_NUMBER() OVER(ORDER BY a.USER_ID DESC) AS "rnum",
+					a.EVT_ID AS "evtId",
+					a.USER_ID AS "userId",
+					b.NAME AS "userNm",
+					convert_from(decrypt(decode(b.PHONE_NO,'hex'),'ENC_KEY','aes'),'utf8'),
+					a.INSERT_DATE AS "insertDate",
+					a.UPDATE_DATE AS "updateDate"
+			FROM CM_EVENT_MNGR_USER a
+			INNER JOIN ADMIN b
+			ON a.USER_ID = b.ID
+			WHERE 1=1
+		<if test="evtId != null and evtId != ''">
+			AND a.EVT_ID = #{evtId}
+		</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	
+	<insert id="saveEventMngrUser" parameterType="map">
+		INSERT INTO CM_EVENT_MNGR_USER (
+			EVT_ID,
+			USER_ID,
+			INSERT_DATE,
+			UPDATE_DATE
+		) VALUES 
+		<foreach collection="insertDatas" item="item" separator=",">
+			(#{item.evtId}, #{item.userId}, NOW(), NOW())
+		</foreach>
+		;
+	</insert>
+	
+	<delete id="deleteEventMngrUser" parameterType="map">
+		DELETE FROM CM_EVENT_MNGR_USER
+		WHERE 1=1
+		AND	EVT_ID = #{evtId};
+	</delete>
+	
+	<select id="getUserGroupList" parameterType="map" resultType="HashMap">
+		SELECT * FROM(
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY g.INSERT_DATE DESC) AS "rnum",
+				g.GROUP_ID AS "userGrpId",
+				g.GROUP_NAME AS "userGrpNm",
+				CASE WHEN g.USE_YN = 'Y' THEN '사용' WHEN g.USE_YN = 'N' THEN '미사용' WHEN g.USE_YN = 'H' THEN '숨김' ELSE '삭제'
+				END AS "useYnNm",
+				g.USE_YN AS "useYn",
+				TO_CHAR(g.UPDATE_DATE,'YYYY-MM-DD HH24:MI:SS') AS "updateDate",
+				TO_CHAR(g.INSERT_DATE,'YYYY-MM-DD HH24:MI:SS') AS "insertDate",
+				g.REMARK AS "userGrpRemark",
+				STRING_AGG(d.USER_ID,',') as "userId",
+				STRING_AGG(a.NAME,',') as "userNm",
+				COUNT(d.USER_ID) as "userCnt"
+			FROM CM_USER_GROUP g
+			LEFT JOIN CM_USER_DETAIL d
+			ON g.GROUP_ID = d.GROUP_ID
+			LEFT JOIN admin a
+			ON d.USER_ID = a.ID
+			WHERE 1=1
+			<if test="groupId != null and groupId != '' ">
+				AND g.GROUP_ID = #{groupId}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+				AND g.USE_YN = #{useYn}
+			</if>
+			<if test="searchSmsGroupId != null and searchSmsGroupId != ''">
+				AND g.GROUP_ID LIKE '%' || #{searchSmsGroupId} || '%'
+			</if>
+			<if test="searchSmsGroupName != null and searchSmsGroupName != ''">
+				AND g.GROUP_NAME LIKE '%' || #{searchSmsGroupName} || '%'
+			</if>
+			GROUP BY g.GROUP_ID, g.GROUP_NAME, g.USE_YN, g.REMARK, g.UPDATE_DATE, g.INSERT_DATE
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+		AND a."rnum" > #{firstIndex}
+		AND a."rnum" <= #{lastIndex}
+		]]>
+		</if>
+	</select>
+	
+	<select id="getUserGroupListCnt" parameterType="map" resultType="String">
+		SELECT  COUNT(*)
+		FROM CM_USER_GROUP g
+		WHERE 1=1
+		<if test="groupId != null and groupId != '' ">
+			AND g.GROUP_ID = #{groupId}
+		</if>
+		<if test="useYn != null and useYn != '' ">
+			AND g.USE_YN = #{useYn}
+		</if>
+		<if test="searchSmsGroupId != null and searchSmsGroupId != ''">
+			AND g.GROUP_ID LIKE '%' || #{searchText} || '%'
+		</if>
+		<if test="searchSmsGroupName != null and searchSmsGroupName != ''">
+			AND g.GROUP_NAME LIKE '%' || #{searchText} || '%'
+		</if>
+	</select>
+	
+	<insert id="insertUserGroupDetail" parameterType="map">
+		INSERT INTO CM_USER_DETAIL (
+			GROUP_ID,
+			USER_ID,
+			UPDATE_DATE,
+			INSERT_DATE
+		) VALUES 
+		<foreach collection="userId" item="item" separator=",">
+			(#{item.groupId}, #{item.userId}, NOW(), NOW())
+		</foreach>
+		;
+	</insert>
+	
+	<update id="saveUserGroup" parameterType="map">
+		INSERT INTO CM_USER_GROUP(
+			GROUP_ID,
+			GROUP_NAME,
+			USE_YN,
+			INSERT_DATE,
+			REMARK
+		) VALUES (
+			#{groupId},
+			#{groupName},
+			#{useYn},
+			NOW(),
+			#{remark}
+		) ON CONFLICT
+		(GROUP_ID)
+		DO UPDATE SET
+			GROUP_NAME = #{groupName},
+			USE_YN = #{useYn},
+			UPDATE_DATE = NOW(),
+			REMARK = #{remark}
+		
+	</update>
+	
+	<delete id="deleteUserGroup" parameterType="map">
+		DELETE FROM CM_USER_GROUP
+		WHERE 1=1
+		AND	GROUP_ID = #{groupId};
+	</delete>
+	
+	<delete id="deleteUserDetail" parameterType="map">
+		DELETE FROM CM_USER_DETAIL
+		WHERE 1=1
+		AND	GROUP_ID = #{groupId};
+	</delete>
+	
+	<select id="getSituationInfoGroupDetailList" parameterType="map" resultType="HashMap">
+		SELECT * FROM(
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY a.INSERT_DATE DESC) AS "rnum",
+				a.GROUP_ID AS "groupId",
+				convert_from(decrypt(decode(b.PHONE_NO,'hex'),'ENC_KEY','aes'),'utf8') AS "phoneNo",
+				b.NAME AS "userNm",
+				a.USER_ID AS "userId",
+				TO_CHAR(a.UPDATE_DATE,'YYYY-MM-DD HH24:MI:SS') AS "updateDate",
+				TO_CHAR(a.INSERT_DATE,'YYYY-MM-DD HH24:MI:SS') AS "insertDate"
+			FROM CM_USER_DETAIL a
+			LEFT JOIN ADMIN b
+			ON a.USER_ID = b.ID
+			WHERE 1=1
+			<if test="groupId != null and groupId != '' ">
+				AND a.GROUP_ID = #{groupId}
+			</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+		AND a."rnum" > #{firstIndex}
+		AND a."rnum" <= #{lastIndex}
+		]]>
+		</if>
+	</select>
+	
+	 <select id="checkUserGrpChk" parameterType="map" resultType="HashMap">
+        SELECT 
+        	COUNT(*) AS idKey
+        FROM CM_USER_GROUP
+        WHERE GROUP_ID=#{groupId}
+    </select>
+	
+	<select id="getSituationInfoGroupDetailListCnt" parameterType="map" resultType="String">
+		SELECT  COUNT(*)
+		FROM CM_USER_DETAIL
+		WHERE 1=1
+		<if test="groupId != null and groupId != '' ">
+			AND GROUP_ID = #{groupId}
+		</if>
+	</select>
+	
+	<select id="selectSmsLogList" parameterType="map" resultType="HashMap">
+		SELECT a.* FROM (	
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY a.INSERT_DATE DESC) AS "rnum",
+				a.SMS_CD as "smsCd",
+				CASE a.SMS_STATE 
+					WHEN 'Y' THEN '전송성공'
+					WHEN 'N' THEN '전송실패'
+				END AS "smsState",
+				CASE a.SMS_TYPE 
+					WHEN 'E' THEN '긴급공지'
+					WHEN 'N' THEN '일반공지'
+				END AS "smsTypeNm",
+				a.SMS_TYPE AS "smsType",
+				SEND_DATE AS "sendDate",
+				SEND_ID AS "sendId",
+				CONTENT AS "content",
+				RCV_ID AS "rcvId",
+				CASE a.RCV_FLAG 
+					WHEN 'G' THEN '전파그룹'
+					WHEN 'P' THEN '일반계정'
+				END AS "rcvFlag",
+				INSERT_DATE AS "insertDate"
+			FROM SMS_INFO a 
+			WHERE 1=1
+			<if test="smsCd != null and smsCd != ''">
+				AND a.SMS_CD = #{smsCd}
+			</if>
+			<if test="smsType != null and smsType != ''">
+				AND a.SMS_TYPE = #{smsType}
+			</if>
+			<if test="rcvFlag != null and rcvFlag != ''">
+				AND a.RCV_FLAG = #{rcvFlag}
+			</if>
+			<if test="sendId != null and sendId != ''">
+				AND a.SEND_ID LIKE '%'||#{sendId}||'%'
+			</if>
+			<if test="content != null and content != ''">
+				AND a.CONTENT LIKE '%'||#{content}||'%'
+			</if>
+			<if test="smsDeS != null and smsDeS != ''">
+			<![CDATA[
+				AND TO_CHAR(a.SEND_DATE,'YYYY-MM-DD') >= #{smsDeS}
+			]]>	
+			</if>
+			<if test="smsDeE != null and smsDeE != ''">
+			<![CDATA[
+				AND #{smsDeE} >= TO_CHAR(a.SEND_DATE,'YYYY-MM-DD')
+			]]>	
+			</if>
+		) a
+		WHERE 1=1
+		<if test="totSearch != null and totSearch != ''">
+			
+		</if>
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	
+	<select id="selectSmsLogListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+			FROM SMS_INFO a 
+			WHERE 1=1
+			<if test="smsCd != null and smsCd != ''">
+				AND a.SMS_CD = #{smsCd}
+			</if>
+			<if test="smsType != null and smsType != ''">
+				AND a.SMS_TYPE = #{smsType}
+			</if>
+			<if test="rcvFlag != null and rcvFlag != ''">
+				AND a.RCV_FLAG = #{rcvFlag}
+			</if>
+			<if test="sendId != null and sendId != ''">
+				AND a.SEND_ID LIKE '%'||#{sendId}||'%'
+			</if>
+			<if test="content != null and content != ''">
+				AND a.CONTENT LIKE '%'||#{content}||'%'
+			</if>
+			<if test="smsDeS != null and smsDeS != ''">
+			<![CDATA[
+				AND TO_CHAR(a.SEND_DATE,'YYYY-MM-DD') >= #{smsDeS}
+			]]>	
+			</if>
+			<if test="smsDeE != null and smsDeE != ''">
+			<![CDATA[
+				AND #{smsDeE} >= TO_CHAR(a.SEND_DATE,'YYYY-MM-DD')
+			]]>	
+			</if>
+	</select>
+	
+	<insert id="insertSmsInfo" parameterType="map">
+		INSERT INTO SMS_INFO (
+			SMS_CD,
+			SMS_STATE,
+			SMS_GUBUN,
+			SMS_TYPE,
+			SEND_DATE,
+			SEND_ID,
+			CONTENT,
+			RCV_ID,
+			RCV_FLAG,
+			INSERT_USER,
+			INSERT_DATE
+		) VALUES (
+			#{smsCd},
+			'Y',
+			#{smsGubun},
+			#{smsType},
+			NOW(),
+			#{sendId},
+			#{content},
+			#{sendId},
+			#{rcvFlag},
+			#{sendId},
+			NOW()
+		);
+	</insert>
+	
+	<select id="getSmsUser" parameterType="map" resultType="HashMap">
+	<![CDATA[
+		SELECT REPLACE(convert_from(decrypt(decode(PHONE_NO,'hex'),'ENC_KEY','aes'),'utf8'),'-','') as "phoneNumber" FROM ADMIN 
+		WHERE 1=1
+		AND ID = #{rcvId}
+	]]>
+	</select>
+	
+	<select id="getSmsGroup" parameterType="map" resultType="HashMap">
+	<![CDATA[
+		SELECT REPLACE(convert_from(decrypt(decode(a.PHONE_NO,'hex'),'ENC_KEY','aes'),'utf8'),'-','') as "phoneNumber" FROM ADMIN a, CM_SMS_DETAIL b
+		WHERE 1=1
+		AND a.ID=b.USER_ID
+		AND b.GROUP_ID = #{rcvId}
+	]]>
+	</select>
+	
+	<select id="getLinkMenuList" parameterType="map" resultType="HashMap">
+		SELECT a.* FROM (
+				SELECT  ROW_NUMBER() OVER(ORDER BY SORT) AS "rnum",
+						MENU_ID AS "menuId",
+						MENU_NM AS "menuNm",
+						MENU_GBN AS "menuGbn",
+						SORT AS "sort",
+						PATH AS "path",
+						ICON_NM AS "iconNm"
+				FROM CM_MENU
+				WHERE 1=1
+				AND MENU_GBN = #{menuGbn}
+				<if test="menuNm != null and menuNm != ''">
+				AND MENU_NM LIKE '%'||#{menuNm}||'%'
+				</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	<select id="getLinkMenuListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+		FROM CM_MENU
+		WHERE 1=1
+		AND MENU_GBN = #{menuGbn}
+		<if test="menuId != null and menuId != ''">
+		AND MENU_ID = #{menuId}
+		</if>
+		<if test="menuNm != null and menuNm != ''">
+		AND MENU_NM LIKE '%'||#{menuNm}||'%'
+		</if>
+	</select>
+	
+	<update id="saveLinkMenu" parameterType="map">
+		INSERT INTO CM_MENU (
+			MENU_ID, 
+			MENU_NM, 
+			MENU_GBN, 
+			SORT, 
+			PATH, 
+			ICON_NM,
+			INSERT_DATE
+		) VALUES (
+			#{menuId},
+			#{menuNm},
+			#{menuGbn},
+			#{menuSort}::integer,
+			#{menuPath},
+			#{iconNm},
+			NOW()
+		) ON CONFLICT
+		(MENU_ID,MENU_GBN )
+		DO UPDATE SET
+			MENU_NM = #{menuNm},
+			SORT = #{menuSort}::integer,
+			PATH = #{menuPath},
+			ICON_NM = #{iconNm},
+			UPDATE_DATE = NOW()
+	</update>
+	
+	<delete id="deleteLinkMenu" parameterType="map">
+		DELETE
+		FROM CM_MENU
+		WHERE MENU_ID = #{menuId}
+		AND MENU_GBN = #{menuGbn};
+	</delete>
+	
+	<select id="getUserMenuList" parameterType="map" resultType="HashMap">
+		SELECT a.MENU_ID AS "menuId",
+			   a.MENU_NM AS "menuNm",
+			   a.MENU_GBN AS "menuGbn",
+			   CASE WHEN a.MENU_GBN = 'menu' THEN '메뉴' ELSE '서비스' END AS "menuGbnNm",
+			   CASE WHEN  b."menuPermission" IN (a.MENU_ID) THEN 'Y' ELSE 'N' END AS "showYN"
+			   ,b."menuPermission"
+		FROM CM_MENU a
+		LEFT OUTER JOIN (
+			SELECT regexp_split_to_table(a.MENU_PERMISSION,',') AS "menuPermission"
+  			FROM ADMIN a
+			WHERE id = #{userId}
+		) b
+		ON a.MENU_ID = b."menuPermission"
+		WHERE 1=1
+		ORDER BY a.MENU_GBN, a.SORT
+	</select>
+	
+	<update id="saveUserMenuList" parameterType="map">
+		Update admin
+		SET menu_permission = #{menuList}
+		WHERE id = #{userId};
+	</update>
+	
+	<select id="getCodeGroupList" parameterType="map" resultType="HashMap">
+		SELECT *
+		FROM (
+			SELECT  ROW_NUMBER() OVER(ORDER BY a.SEQ DESC) AS "rnum",
+					a.SEQ AS "grpSeq",
+					a.GRP_CD AS "grpCd",
+					a.GRP_CD_NM AS "grpCdNm",
+					a.REMARK AS "remark",
+					a.USE_YN AS "useYN",
+					CASE a.USE_YN 
+						WHEN 'Y' THEN '사용'
+						WHEN 'N' THEN '미사용'
+					END AS "useYNNm",
+					a.UPDATE_ID as "updId",
+					TO_CHAR(a.UPDATE_DATE,'YYYY/MM/DD HH24:MI:SS') AS "updDate",
+					a.INSERT_ID as "instId",
+					TO_CHAR(a.INSERT_DATE,'YYYY/MM/DD HH24:MI:SS') AS "instDate"
+			FROM GROUP_CD a
+			WHERE 1=1 
+			<if test="grpSeq != null and grpSeq != ''">
+			AND a.SEQ::text = #{grpSeq}::text
+			</if>
+			<if test="chkGrpCd != null and chkGrpCd != ''">
+			AND LOWER(a.GRP_CD) = LOWER(#{chkGrpCd})
+			</if>
+			<if test="grpCd != null and grpCd != ''">
+			AND LOWER(a.GRP_CD) LIKE LOWER('%'||#{grpCd}||'%')
+			</if>
+			<if test="grpCdNm != null and grpCdNm != ''">
+			AND LOWER(a.GRP_CD_NM) LIKE LOWER('%'||#{grpCdNm}||'%')
+			</if>
+			<if test="useYN != null and useYN != ''">
+			AND a.USE_YN = #{useYN} 
+			</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	<select id="getCodeGroupListCnt" parameterType="map" resultType="String">
+		SELECT  COUNT(*)
+		FROM GROUP_CD a
+		WHERE 1=1
+		<if test="grpSeq != null and grpSeq != ''">
+		AND a.SEQ::text = #{grpSeq}::text
+		</if>
+		<if test="chkGrpCd != null and chkGrpCd != ''">
+		AND LOWER(a.GRP_CD) = LOWER(#{chkGrpCd})
+		</if>
+		<if test="grpCd != null and grpCd != ''">
+		AND LOWER(a.GRP_CD) LIKE LOWER('%'||#{grpCd}||'%')
+		</if>
+		<if test="grpCdNm != null and grpCdNm != ''">
+		AND LOWER(a.GRP_CD_NM) LIKE LOWER('%'||#{grpCdNm}||'%')
+		</if>
+		<if test="useYN != null and useYN != ''">
+		AND a.USE_YN = #{useYN} 
+		</if>
+	</select>
+	
+	<update id="saveCodeGroup" parameterType="map">
+		INSERT INTO GROUP_CD
+		(
+			SEQ,
+			GRP_CD,
+			GRP_CD_NM,
+			REMARK,
+			USE_YN,
+			INSERT_DATE,
+			INSERT_ID
+		) VALUES (
+			CASE WHEN #{grpSeq}::integer IS NULL
+			THEN NEXTVAL('GROUP_CD_SEQ')
+			ELSE #{grpSeq}::integer END::integer,
+			#{chkGrpCd},
+			#{grpCdNm},
+			#{remark},
+			#{useYN},
+			NOW(),
+			#{sessionId}
+		) ON CONFLICT
+		(SEQ)
+		DO UPDATE SET
+			GRP_CD_NM = #{grpCdNm},
+			REMARK = #{remark},
+			USE_YN = #{useYN},
+			UPDATE_DATE = NOW(),
+			UPDATE_ID = #{sessionId}
+	</update>
+	
+	<delete id="deleteCodeGroup" parameterType="map">
+		DELETE
+		FROM GROUP_CD
+		WHERE SEQ::text = #{seq}::text;
+	</delete>
+	
+	<delete id="deleteDetailsGroupCode" parameterType="map">
+		DELETE
+		FROM DETAIL_CD
+		WHERE GRP_CD = #{grpCd};
+	</delete>
+	
+	<select id="getCodeDetailList" parameterType="map" resultType="HashMap">
+		SELECT *
+		FROM (
+			SELECT  ROW_NUMBER() OVER(ORDER BY a.SEQ DESC) AS "rnum",
+					a.SEQ AS "deSeq",
+					a.DE_CD AS "deCd",
+					a.DE_CD_NM AS "deCdNm",
+					a.GRP_CD AS "deGrpCd",
+					a.USE_YN AS "useYN",
+					CASE a.USE_YN 
+						WHEN 'Y' THEN '사용'
+						WHEN 'N' THEN '미사용'
+					END AS "useYNNm",
+					a.REMARK AS "remark",
+					a.UPDATE_ID as "updId",
+					TO_CHAR(a.UPDATE_DATE,'YYYY/MM/DD HH24:MI:SS') AS "updDate",
+					a.INSERT_ID as "instId",
+					TO_CHAR(a.INSERT_DATE,'YYYY/MM/DD HH24:MI:SS') AS "instDate",
+					a.ICON_URL AS "iconUrl"
+			FROM DETAIL_CD a
+			WHERE 1=1 
+			<if test="deSeq != null and deSeq != ''">
+			AND a.SEQ::text = #{deSeq}::text
+			</if>
+			<if test="chkDeGrpCd != null and chkDeGrpCd != ''">
+			AND LOWER(a.GRP_CD) = LOWER(#{chkDeGrpCd})
+			</if>
+			<if test="chkDeCd != null and chkdDeCd != ''">
+			AND LOWER(a.DE_CD) = LOWER(#{chkDeCd})
+			</if>
+			<if test="deCd != null and deCd != ''">
+			AND LOWER(a.DE_CD) LIKE LOWER('%'||#{deCd}||'%')
+			</if>
+			<if test="deCdNm != null and deCdNm != ''">
+			AND LOWER(a.DE_CD_NM) LIKE LOWER('%'||#{deCdNm}||'%')
+			</if>
+			<if test="useYN != null and useYN != ''">
+			AND a.USE_YN = #{useYN} 
+			</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+		<![CDATA[
+      		AND a."rnum" <= #{lastIndex}
+      		AND a."rnum" > #{firstIndex}
+      	]]>	
+      	</if>
+	</select>
+	<select id="getCodeDetailListCnt" parameterType="map" resultType="String">
+		SELECT  COUNT(*)
+		FROM DETAIL_CD a
+		WHERE 1=1 
+		<if test="deSeq != null and deSeq != ''">
+			AND a.SEQ::text = #{deSeq}::text
+			</if>
+			<if test="chkDeGrpCd != null and chkDeGrpCd != ''">
+			AND LOWER(a.GRP_CD) = LOWER(#{chkDeGrpCd})
+			</if>
+			<if test="chkDeCd != null and chkdDeCd != ''">
+			AND LOWER(a.DE_CD) = LOWER(#{chkDeCd})
+			</if>
+			<if test="deCd != null and deCd != ''">
+			AND LOWER(a.DE_CD) LIKE LOWER('%'||#{deCd}||'%')
+			</if>
+			<if test="deCdNm != null and deCdNm != ''">
+			AND LOWER(a.DE_CD_NM) LIKE LOWER('%'||#{deCdNm}||'%')
+			</if>
+			<if test="useYN != null and useYN != ''">
+			AND a.USE_YN = #{useYN} 
+			</if>
+	</select>
+	
+	<update id="saveCodeDetail" parameterType="map">
+		INSERT INTO DETAIL_CD(
+			SEQ,
+			DE_CD,
+			DE_CD_NM,
+			GRP_CD,
+			REMARK,
+			USE_YN,
+			INSERT_DATE,
+			INSERT_ID,
+			ICON_URL
+		) VALUES(
+			CASE WHEN #{deSeq}::integer IS NULL
+			THEN NEXTVAL('DETAIL_CD_SEQ')
+			ELSE #{deSeq}::integer END,
+			#{chkDeCd},
+			#{deCdNm},
+			#{chkDeGrpCd},
+			#{remark},
+			#{useYN},
+			NOW(),
+			#{sessionId},
+			#{iconUrl}
+		) ON CONFLICT
+		(SEQ)
+		DO UPDATE SET
+			DE_CD_NM = #{deCdNm},
+			REMARK = #{remark},
+			USE_YN = #{useYN},
+			UPDATE_DATE = NOW(),
+			UPDATE_ID = #{sessionId},
+			ICON_URL = #{iconUrl}
+	</update>
+	
+	<delete id="deleteCodeDetail" parameterType="map">
+		DELETE
+		FROM DETAIL_CD
+		WHERE SEQ::text = #{seq}::text;
+	</delete>
+	
+	
+	<select id="groupList" parameterType="map" resultType="HashMap">
+		SELECT
+			GRP_ID as "id",
+			GROUP_FLAG as "parent",
+			GROUP_NAME as "text"
+		FROM CM_GROUP
+	</select>
+	
+	<select id="getNoticeList" parameterType="map" resultType="HashMap">
+		SELECT *
+			FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.NO DESC) AS "rnum",
+				a.NO as "no",
+				a.TITLE as "title",
+				CONTENT as "content",
+				COUNT as "count",
+				FILE_PATH as "filePath",
+				INSERT_USER as "insertUser",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "insertDate",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "updateDate",
+				a.NOTICE_GBN as "noticeGbn",
+				CASE a.NOTICE_GBN
+					WHEN 'notice' THEN '공지사항'
+					ELSE '공지사항'
+				END as "noticeGbnNm",
+				a.FILE_NAME as "fileName"
+			FROM NOTICE a
+			WHERE 1=1
+		) a
+		WHERE 1=1
+		<if test="noticeGbn != null and noticeGbn != ''">
+		<choose>
+			<when test="noticeGbn == 'noticeGbn'">
+				AND a."noticeGbn" LIKE '%' || #{searchContent} || '%' 
+			</when>
+			<when test="noticeGbn == 'insertUser'">
+				AND a."insertUser" LIKE '%' || #{searchContent} || '%'
+			</when>
+		</choose>
+		</if>
+		<if test="searchTimeS != null and searchTimeS != ''">
+			<![CDATA[AND #{searchTimeS} <= a."updateDate"]]>
+		</if>
+		<if test="searchTimeE != null and searchTimeE != ''">
+			<![CDATA[AND #{searchTimeE} >= a."updateDate"]]>
+		</if>
+		<if test="no != null and no != ''">
+			AND a."no" = #{no}
+		</if>
+		<if test='recordCountPerPage != -1'>
+			<![CDATA[
+	      		AND a."rnum" <= #{lastIndex}
+	      		AND a."rnum" > #{firstIndex}
+	      	]]>	
+	    </if>
+	    ORDER BY a."rnum"
+	</select>
+	
+	<select id="getNoticeListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.NO DESC) AS "rnum",
+				a.NO as "no",
+				a.TITLE as "title",
+				CONTENT as "content",
+				COUNT as "count",
+				FILE_PATH as "filePath",
+				INSERT_USER as "insertUser",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "insertDate",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "updateDate",
+				a.NOTICE_GBN as "noticeGbn",
+				a.FILE_NAME as "fileName"
+			FROM NOTICE a
+			WHERE 1=1
+		) a
+		WHERE 1=1
+	<if test="noticeGbn != null and noticeGbn != ''">
+		<choose>
+			<when test="noticeGbn == 'noticeGbn'">
+				AND a."noticeGbn" LIKE '%' || #{searchContent} || '%' 
+			</when>
+			<when test="noticeGbn == 'insertUser'">
+				AND a."insertUser" LIKE '%' || #{searchContent} || '%'
+			</when>
+		</choose>
+	</if>
+	<if test="searchTimeS != null and searchTimeS != ''">
+		<![CDATA[AND #{searchTimeS} <= a."updateDate"]]>
+	</if>
+	<if test="searchTimeE != null and searchTimeE != ''">
+		<![CDATA[AND #{searchTimeE} >= a."updateDate"]]>
+	</if>
+	
+	</select>
+	
+	<insert id="insertNotice" parameterType="map">
+		INSERT INTO
+		NOTICE
+		(NO, TITLE, CONTENT,COUNT, INSERT_USER, INSERT_DATE, UPDATE_USER, UPDATE_DATE, NOTICE_GBN, FILE_NAME)
+		VALUES
+		(
+		NEXTVAL('NOTICE_SEQ'),
+		#{title},
+		#{content},
+		0,
+		#{adminId},
+		NOW(),
+		#{adminId},
+		NOW(),
+		#{noticeGbn},
+		#{fileName}
+		);
+	</insert>
+	
+	<delete id="deleteNotice" parameterType="map">
+		<![CDATA[
+		DELETE
+		FROM NOTICE
+		WHERE NO=#{no};
+		]]>
+	</delete>
+	
+	<select id="getCctvViewLog" parameterType="map" resultType="HashMap">
+		SELECT *
+			FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.INSERT_DATE DESC) AS "rnum",
+				a.FCLT_ID as "fcltId",
+				a.FCLT_NM as "fcltNm",
+				a.USER_ID as "userId",
+				a.SESSION_ID as "sessionId",
+				a.TYPE as "type",
+				CASE a.TYPE
+					WHEN 'R' THEN '실시간'
+					WHEN 'S' THEN '저장영상'
+				END as "typeNm",
+				COALESCE(TO_CHAR(TO_TIMESTAMP(REPLACE(a.STORAGE_START_TIME,'.',''), 'YYYYMMDDHH24MISS'), 'YYYY.MM.DDHH24:MI:SS'),'') as "storageStartTime",
+				COALESCE(TO_CHAR(TO_TIMESTAMP(REPLACE(a.STORAGE_END_TIME,'.',''), 'YYYYMMDDHH24MISS'), 'YYYY.MM.DDHH24:MI:SS'),'') as "storageEndTime",
+				TO_CHAR(a.INSERT_DATE, 'YYYY.MM.DD HH24:MI:SS') as "insertDate"
+			FROM CCTV_VIEW_LOG a
+			WHERE 1=1
+			<if test="searchViewTimeS != null and searchViewTimeS != ''"><![CDATA[
+				AND #{searchViewTimeS} <= TO_CHAR(a.INSERT_DATE,'YYYY-MM-DD')
+			]]></if>
+			<if test="searchViewTimeE != null and searchViewTimeE != ''"><![CDATA[
+				AND #{searchViewTimeE} >= TO_CHAR(a.INSERT_DATE,'YYYY-MM-DD')
+			]]></if>
+			<if test="searchType != null and searchType != ''">
+				AND a.TYPE = #{searchType}
+			</if>
+			<if test="searchGbn != null and searchGbn != ''">
+				<choose>
+					<when test="searchGbn == 'fcltId'">
+						AND a.FCLT_ID like '%' || #{searchContent} || '%'
+					</when>
+					<when test="searchGbn == 'fcltNm'">
+						AND a.FCLT_NM like '%' || #{searchContent} || '%'
+					</when>
+					<when test="searchGbn == 'userId'">
+						AND a.USER_ID like '%' || #{searchContent} || '%'
+					</when>
+				</choose>
+			</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+			<![CDATA[
+	      		AND a."rnum" <= #{lastIndex}
+	      		AND a."rnum" > #{firstIndex}
+	      	]]>	
+	    </if>
+	    ORDER BY a."rnum"::integer
+	</select>
+	
+	<select id="getCctvViewLogCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+			FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.INSERT_DATE DESC) AS "rnum",
+				a.FCLT_ID as "fcltId",
+				a.FCLT_NM as "fcltNm",
+				a.USER_ID as "userId",
+				a.SESSION_ID as "sessionId",
+				a.TYPE as "type",
+				CASE a.TYPE
+					WHEN 'R' THEN '실시간'
+					WHEN 'S' THEN '저장영상'
+				END as "typeNm",
+				COALESCE(TO_CHAR(TO_TIMESTAMP(REPLACE(a.STORAGE_START_TIME,'.',''), 'YYYYMMDDHH24MISS'), 'YYYY.MM.DDHH24:MI:SS'),'') as "storageStartTime",
+				COALESCE(TO_CHAR(TO_TIMESTAMP(REPLACE(a.STORAGE_END_TIME,'.',''), 'YYYYMMDDHH24MISS'), 'YYYY.MM.DDHH24:MI:SS'),'') as "storageEndTime",
+				TO_CHAR(a.INSERT_DATE, 'YYYY.MM.DD HH24:MI:SS') as "insertDate"
+			FROM CCTV_VIEW_LOG a
+			WHERE 1=1
+			<if test="searchViewTimeS != null and searchViewTimeS != ''"><![CDATA[
+				AND #{searchViewTimeS} <= TO_CHAR(a.INSERT_DATE,'YYYY-MM-DD')
+			]]></if>
+			<if test="searchViewTimeE != null and searchViewTimeE != ''"><![CDATA[
+				AND #{searchViewTimeE} >= TO_CHAR(a.INSERT_DATE,'YYYY-MM-DD')
+			]]></if>
+			<if test="searchType != null and searchType != ''">
+				AND a.TYPE = #{searchType}
+			</if>
+			<if test="searchGbn != null and searchGbn != ''">
+				<choose>
+					<when test="searchGbn == 'fcltId'">
+						AND a.FCLT_ID like '%' || #{searchContent} || '%'
+					</when>
+					<when test="searchGbn == 'fcltNm'">
+						AND a.FCLT_NM like '%' || #{searchContent} || '%'
+					</when>
+					<when test="searchGbn == 'userId'">
+						AND a.USER_ID like '%' || #{searchContent} || '%'
+					</when>
+				</choose>
+			</if>
+		) a
+		WHERE 1=1
+	</select>
+	
+	<select id="getCctvCtrlLog" parameterType="map" resultType="HashMap">
+		SELECT *
+			FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.INSERT_DATE DESC) AS "rnum",
+				a.FCLT_ID as "fcltId",
+				a.FCLT_NM as "fcltNm",
+				a.USER_ID as "userId",
+				a.TYPE as "type",
+				CASE a.TYPE
+					WHEN '0' THEN 'PTZ'
+					WHEN '1' THEN '프리셋'
+				END as "typeNm",
+				a.KINDS as "kinds",
+				CASE a.KINDS
+					WHEN 'left' THEN '왼쪽'
+					WHEN 'right' THEN '오른쪽'
+					WHEN 'bottom' THEN '아래'
+					WHEN 'top' THEN '위'
+					WHEN 'zoomIn' THEN '줌 인'
+					WHEN 'zoomOut' THEN '줌 아웃'
+					WHEN 'focusNear' THEN '포커스 인'
+					WHEN 'focusFar' THEN '포커스 아웃'
+					WHEN 'stop' THEN '멈춤'
+					ELSE a.KINDS
+				END as "kindsNm",
+				TO_CHAR(a.INSERT_DATE, 'YYYY.MM.DD HH24:MI:SS') as "insertDate"
+			FROM CCTV_CTRL_LOG a
+			WHERE 1=1
+			<if test="searchCtrlTimeS != null and searchCtrlTimeS != ''"><![CDATA[
+				AND #{searchCtrlTimeS} <= TO_CHAR(a.INSERT_DATE,'YYYY-MM-DD')
+			]]></if>
+			<if test="searchCtrlTimeE != null and searchCtrlTimeE != ''"><![CDATA[
+				AND #{searchCtrlTimeE} >= TO_CHAR(a.INSERT_DATE,'YYYY-MM-DD')
+			]]></if>
+			<if test="searchType != null and searchType != ''">
+				AND a.TYPE = #{searchType}
+			</if>
+			<if test="searchGbn != null and searchGbn != ''">
+				<choose>
+					<when test="searchGbn == 'fcltId'">
+						AND a.FCLT_ID like '%' || #{searchContent} || '%'
+					</when>
+					<when test="searchGbn == 'fcltNm'">
+						AND a.FCLT_NM like '%' || #{searchContent} || '%'
+					</when>
+					<when test="searchGbn == 'userId'">
+						AND a.USER_ID like '%' || #{searchContent} || '%'
+					</when>
+				</choose>
+			</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+			<![CDATA[
+	      		AND a."rnum" <= #{lastIndex}
+	      		AND a."rnum" > #{firstIndex}
+	      	]]>	
+	    </if>
+	    ORDER BY a."rnum"::integer
+	</select>
+	
+	<select id="getCctvCtrlLogCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+			FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.INSERT_DATE DESC) AS "rnum",
+				a.FCLT_ID as "fcltId",
+				a.FCLT_NM as "fcltNm",
+				a.USER_ID as "userId",
+				a.TYPE as "type",
+				CASE a.TYPE
+					WHEN '0' THEN 'PTZ'
+					WHEN '1' THEN '프리셋'
+				END as "typeNm",
+				a.KINDS as "kinds",
+				CASE a.KINDS
+					WHEN 'left' THEN '왼쪽'
+					WHEN 'right' THEN '오른쪽'
+					WHEN 'bottom' THEN '아래'
+					WHEN 'top' THEN '위'
+					WHEN 'zoomIn' THEN '줌 인'
+					WHEN 'zoomOut' THEN '줌 아웃'
+					WHEN 'focusNear' THEN '포커스 인'
+					WHEN 'focusFar' THEN '포커스 아웃'
+					WHEN 'stop' THEN '멈춤'
+					ELSE a.KINDS
+				END as "kindsNm",
+				TO_CHAR(a.INSERT_DATE, 'YYYY.MM.DD HH24:MI:SS') as "insertDate"
+			FROM CCTV_CTRL_LOG a
+			WHERE 1=1
+			<if test="searchCtrlTimeS != null and searchCtrlTimeS != ''"><![CDATA[
+				AND #{searchCtrlTimeS} <= TO_CHAR(a.INSERT_DATE,'YYYY-MM-DD')
+			]]></if>
+			<if test="searchCtrlTimeE != null and searchCtrlTimeE != ''"><![CDATA[
+				AND #{searchCtrlTimeE} >= TO_CHAR(a.INSERT_DATE,'YYYY-MM-DD')
+			]]></if>
+			<if test="searchType != null and searchType != ''">
+				AND a.TYPE = #{searchType}
+			</if>
+			<if test="searchGbn != null and searchGbn != ''">
+				<choose>
+					<when test="searchGbn == 'fcltId'">
+						AND a.FCLT_ID like '%' || #{searchContent} || '%'
+					</when>
+					<when test="searchGbn == 'fcltNm'">
+						AND a.FCLT_NM like '%' || #{searchContent} || '%'
+					</when>
+					<when test="searchGbn == 'userId'">
+						AND a.USER_ID like '%' || #{searchContent} || '%'
+					</when>
+				</choose>
+			</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+			<![CDATA[
+	      		AND a."rnum" <= #{lastIndex}
+	      		AND a."rnum" > #{firstIndex}
+	      	]]>	
+	    </if>
+	</select>
+	
+	<select id="selectGetUserCctvList" parameterType="map" resultType="HashMap">
+		SELECT
+			'0' AS "id"
+			,'#' AS "parent"
+			,'전체' AS "text"
+			,'icon-folder' AS "icon"
+			,'{"selected" : "false"}' AS "state"
+			, 'fId' AS "fId"
+		UNION ALL
+		SELECT
+			a.DE_CD AS "id"
+			,'0' AS "parent"
+			,a.DE_CD_NM AS "text"
+			,'icon-folder' AS "icon"
+			,'{"selected" : "false"}' AS "state"
+			, 'fId' AS "fId"
+		FROM DETAIL_CD a
+		WHERE a.GRP_CD = 'FCLT_PURPOSE'
+		UNION ALL
+		SELECT
+			 a.FCLT_ID AS "id"
+			,a.PURPOSE AS "parent"
+			,a.FCLT_NM || ' / '||a.MGMT_NO AS "text"
+			,'icon-folder' AS "icon"
+			,COALESCE('{ "selected" : "'||
+				(SELECT 'true' FROM USER_FACILITY c WHERE c.FCLT_ID = a.FCLT_ID AND c.USER_ID = 'admin' ) || '"}','{"selected" : "false"}') AS "state"
+			, a.FCLT_ID AS "fId"
+		FROM FACILITY_S a INNER JOIN DETAIL_CD b
+		ON a.PURPOSE = b.DE_CD AND b.GRP_CD = 'FCLT_PURPOSE'
+	</select>
+	
+	<select id="checkUserCctvAllFlag" parameterType="map" resultType="String">
+		SELECT 
+			COUNT(FCLT_ID)
+		FROM USER_FACILITY
+		WHERE 1=1
+		<if test="userId != null and userId != ''">
+			AND USER_ID = #{userId}
+		</if>
+		AND FCLT_ID = 'all'
+	</select>
+	
+	<select id="getNetMappingList" parameterType="map" resultType="HashMap">
+		SELECT * FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.NAME ASC) AS "rnum",
+				a.NAME AS "name",
+				a.IP AS "ip",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "insertDate",
+				TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') as "updateDate"
+			FROM NET_MAPPING a
+			WHERE 1=1
+			<if test="ip != null and ip != ''">
+				AND a.IP = #{ip}
+			</if>
+			ORDER BY a.NAME ASC
+		) a
+		WHERE 1=1
+	    ORDER BY "rnum"
+	</select>
+	
+	<select id="getNetMappingListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*) FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.NAME ASC) AS "rnum",
+				a.NAME AS "name",
+				a.IP AS "ip",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "insertDate",
+				TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') as "updateDate"
+			FROM NET_MAPPING a
+			WHERE 1=1
+			<if test="name != null and name != ''">
+				AND a.NAME = #{name}
+			</if>
+			ORDER BY a.NAME ASC
+		) a
+		WHERE 1=1
+	    ORDER BY "rnum"
+	</select>
+	
+	<insert id="saveNetMapping" parameterType="map">
+		INSERT INTO NET_MAPPING(
+			NAME,
+			IP,
+			INSERT_DATE
+		) VALUES(
+			#{name},
+			#{ip},
+			NOW()
+		) ON CONFLICT
+		(IP)
+		DO UPDATE SET
+			NAME = #{name},
+			UPDATE_DATE = NOW()
+	</insert>
+	
+	<delete id="deleteNetMapping" parameterType="map">
+		DELETE FROM NET_MAPPING
+		WHERE 1=1
+		<if test="ip != null and ip != ''">
+			AND IP = #{ip}
+		</if>
+	</delete>
+	
+	<select id="getNetMappingSubList" parameterType="map" resultType="HashMap">
+		SELECT * FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.NAME ASC) AS "rnum",
+				a.NAME AS "name",
+				a.NET_MAPPING_IP AS "netMappinIp",
+				a.IP AS "ip",
+				a.PORT AS "port",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "insertDate",
+				TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') as "updateDate"
+			FROM NET_MAPPING_SUB a
+			WHERE 1=1
+			<if test="name != null and name != ''">
+				AND a.NAME = #{name}
+			</if>
+			<if test="netMappingIp != null and netMappingIp != ''">
+				AND a.NET_MAPPING_IP = #{netMappingIp}
+			</if>
+			<if test="searchIp != null and searchIp != ''">
+				AND a.NET_MAPPING_IP like '%' || #{searchIp} || '%'
+			</if>
+			<if test="port != null and port != ''">
+				AND a.PORT = #{port}
+			</if>
+			ORDER BY a.NAME ASC
+		) a
+		WHERE 1=1
+	    ORDER BY "rnum"
+	</select>
+	
+	<select id="getNetMappingSubListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*) FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.NAME ASC) AS "rnum",
+				a.NAME AS "name",
+				a.NET_MAPPING_IP AS "netMappinIp",
+				a.IP AS "ip",
+				a.PORT AS "port",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "insertDate",
+				TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') as "updateDate"
+			FROM NET_MAPPING_SUB a
+			WHERE 1=1
+			<if test="name != null and name != ''">
+				AND a.NAME = #{name}
+			</if>
+			<if test="netMappingIp != null and netMappingIp != ''">
+				AND a.NET_MAPPING_IP = #{netMappingIp}
+			</if>
+			<if test="searchIp != null and searchIp != ''">
+				AND a.NET_MAPPING_IP like '%' || #{searchIp} || '%'
+			</if>
+			<if test="port != null and port != ''">
+				AND a.PORT = #{port}
+			</if>
+			ORDER BY a.NAME ASC
+		) a
+		WHERE 1=1
+	    ORDER BY "rnum"
+	</select>
+	
+	<insert id="saveNetMappingSub" parameterType="map">
+		INSERT INTO NET_MAPPING_SUB(
+			NAME,
+			NET_MAPPING_IP,
+			IP,
+			PORT,
+			INSERT_DATE
+		) VALUES(
+			#{name},
+			#{netMappingIp},
+			#{ip},
+			#{port},
+			NOW()
+		) ON CONFLICT
+		(IP, PORT)
+		DO UPDATE SET
+			NAME = #{name},
+			UPDATE_DATE = NOW()
+	</insert>
+	
+	<delete id="deleteNetMappingSub" parameterType="map">
+		DELETE FROM NET_MAPPING_SUB
+		WHERE 1=1
+		<if test="netMappingIp != null and netMappingIp != ''">
+			AND NET_MAPPING_IP = #{netMappingIp}
+		</if>
+		<if test="ip != null and ip != ''">
+			AND IP = #{ip}
+		</if>
+		<if test="port != null and port != ''">
+			AND PORT = #{port}
+		</if>
+	</delete>
+	
+	<select id="getArrearsCameraList" parameterType="map" resultType="HashMap">
+		SELECT *
+			FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.NAME DESC) AS "rnum",
+				a.NAME as "name",
+				a.LATITUDE as "latitude",
+				a.LONGITUDE as "longitude",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "insertDate",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "updateDate"
+			FROM ARREARS_CAMERA a
+			WHERE 1=1
+		<if test="name != null and name != ''">
+			AND a.NAME = #{name}
+		</if>
+		) a
+		WHERE 1=1
+		<if test='recordCountPerPage != -1'>
+			<![CDATA[
+	      		AND a."rnum" <= #{lastIndex}
+	      		AND a."rnum" > #{firstIndex}
+	      	]]>	
+	    </if>
+	    ORDER BY a."rnum"
+	</select>
+	
+	<select id="getArrearsCameraListCnt" parameterType="map" resultType="String">
+		SELECT COUNT(*)
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY a.NAME DESC) AS "rnum",
+				a.NAME as "name",
+				a.LATITUDE as "latitude",
+				a.LONGITUDE as "longitude",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "insertDate",
+				TO_CHAR(INSERT_DATE, 'YYYY-MM-DD') as "updateDate"
+			FROM ARREARS_CAMERA a
+			WHERE 1=1
+		) a
+		WHERE 1=1
+	</select>
+	
+	<insert id="saveArrearsCamera" parameterType="map">
+		INSERT INTO ARREARS_CAMERA(
+			NAME,
+			LATITUDE,
+			LONGITUDE,
+			INSERT_DATE
+		) VALUES(
+			#{name},
+			#{latitude}::double precision,
+			#{longitude}::double precision,
+			NOW()
+		) ON CONFLICT
+		(NAME)
+		DO UPDATE SET
+			NAME = #{name},
+			LATITUDE = #{latitude}::double precision,
+			LONGITUDE = #{longitude}::double precision,
+			UPDATE_DATE = NOW()
+	</insert>
+	
+	<delete id="deleteArrearsCamera" parameterType="map">
+		DELETE FROM ARREARS_CAMERA
+		WHERE 1=1
+		<if test="name != null and name != ''">
+			AND NAME = #{name}
+		</if>
+	</delete>
+</mapper>

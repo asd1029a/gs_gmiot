@@ -4,9 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
+        <module>danusys-common-api</module>
+        <module>danusys-guardian</module>
         <module>danusys-platform</module>
         <module>danusys-drone</module>
-        <!--        <module>danusys-mavlink-protocol</module>-->
     </modules>
 
     <parent>

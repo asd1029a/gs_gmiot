@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<h4 class="admin-title">공통코드 관리</h4>
+<div class="content-half">
+	<div class="admin-title-sub"><h3 class="tit">그룹코드</h3></div>
+	<ul class="list-condi">
+		<li class="list">
+			<em>그룹코드</em>
+			<input type="text" id="searchGrpCd" style="width:100px;" onkeypress="if(event.keyCode==13){reload();}"/>
+			<em>그룹코드 명</em>
+			<input type="text" id="searchGrpNm" style="width:100px;" onkeypress="if(event.keyCode==13){reload();}"/>
+			<em>사용유형</em>
+			<input type="radio" name="search_m_use_type" onclick="reload();" value="Y" checked="checked"> 사용
+			<input type="radio" name="search_m_use_type" onclick="reload();" value="N"> 미사용
+			
+			<a href="#" class="select-btn" onclick="reload()">검색</a>
+		</li>
+	</ul>
+	
+	<table id="oprtSysCodeGrpTable" title="" style="width:98.5%;height:85%;"></table>
+	
+	<ul class="right-btn">
+		<li class="btn-insert" onClick="addCodeGroup();">추가</li>
+		<li class="btn-modify" onClick="modifyCodeGroup();">수정</li>
+		<li class="btn-delete" onClick="deleteCodeGroup();">삭제</li>
+	</ul>
+</div>
+
+<div class="content-half">
+	<div class="admin-title-sub"><h3 class="tit">상세코드</h3></div>
+	<ul class="list-condi">
+		<li class="list">
+			<em>상세코드</em>
+			<input type="text" id="searchDtlCd" style="width:100px;" onkeypress="if(event.keyCode==13){getCodeGbnList($('#oprtSysCodeGrpTable').datagrid('getSelected').rnum);}"/>
+			<em>상세코드 명</em>
+			<input type="text" id="searchDtlNm" style="width:100px;" onkeypress="if(event.keyCode==13){getCodeGbnList($('#oprtSysCodeGrpTable').datagrid('getSelected').rnum);}"/>
+			<em>사용유형</em>
+			<input type="radio" name="search_d_use_type" onclick="getCodeGbnList($('#oprtSysCodeGrpTable').datagrid('getSelected').rnum);" value="Y" checked="checked"> 사용
+			<input type="radio" name="search_d_use_type" onclick="getCodeGbnList($('#oprtSysCodeGrpTable').datagrid('getSelected').rnum);" value="N"> 미사용
+		
+			<a href="#" class="select-btn" onclick="getCodeGbnList($('#oprtSysCodeGrpTable').datagrid('getSelected').rnum);">검색</a>
+		</li>
+	</ul>
+	
+	<table id="oprtSysCodeDtlTable" title="" style="width:98.5%;height:85%;"></table>
+	
+	<ul class="right-btn">
+		<li class="btn-insert" onClick="addCodeDetail();">추가</li>
+		<li class="btn-modify" onClick="modifyCodeDetail();">수정</li>
+		<li class="btn-delete" onClick="deleteCodeDetail();">삭제</li>
+	</ul>
+</div>
+
+<script th:inline="javascript">
+var selectedDataM = '';
+var selectedDataD = '';
+$(document).ready(function(){
+	reload();
+	//dataDetail();
+});
+
+var baseIndex = 0;
+function reload() {
+	const jsonObj = {};
+	jsonObj.grpCd = $('#searchGrpCd').val();
+	jsonObj.grpCdNm = $('#searchGrpNm').val();
+	jsonObj.useYN = $('input[name=search_m_use_type]:checked').val(); 
+	
+	$('#oprtSysCodeGrpTable').datagrid({
+	    url:'/selectList/oprt.getCodeGroupList/action.do',
+	    pagination:true,
+	    pageSize:18,
+	    queryParams : {
+			pageSize: 18,
+			param : JSON.stringify(jsonObj),
+	    },
+	    columns:[
+					/* {field: 'check', checkbox: true, width:'5%', align:'center'}, */
+					{field: 'grpCd', title: '그룹코드', width:'40%', align:'center'},
+					{field: 'grpCdNm', title: '그룹코드 명', width:'40%', align:'center'},
+					{field: 'useYNNm', title: '사용유형', width:'15%', align:'center'},
+					{field: 'useYN', hidden:true},
+					{field: 'grpSeq', hidden:true}
+	    ],
+	    onClickRow:function(index, row) {
+	    	getCodeGbnList(index);
+	    	baseIndex = index;
+	    },
+	    onLoadSuccess:function(data){
+	    	if(data.rows=='sessionOut'){
+				alert('로그인 시간이 만료되었습니다.');
+				closeWindow();
+			}
+	    	else {
+	    		getCodeGbnList(baseIndex);
+	    	}
+	    }
+	});
+}
+
+function addCodeGroup() {
+    
+    const path = "oprt/popup/oprtSysCodeGrpPopup";
+	console.log(path);
+	common.openDialogPopPosition("oprtSysCodeGrpPopup", "코드그룹 신규 등록", "410", "250", "true", "/action/page.do", {path: path}, path.split("/")[2]);
+}
+
+
+function modifyCodeGroup() {
+	var rows = $('#oprtSysCodeGrpTable').datagrid('getSelected');
+	if(rows == null) {
+		alert('선택 된 정보가 없습니다.');
+		return;
+	}
+
+	const jsonObj = {};
+	jsonObj.grpSeq = rows.grpSeq;
+
+    $.ajax(
+        {
+            type       : "POST",
+            url        : "/select/oprt.getCodeGroupList/action.do",
+            dataType   : "json",
+            data       : {
+                "param" : JSON.stringify(jsonObj)
+            },
+            async      : false,
+            beforeSend : function(xhr) {
+                // 전송 전 Code
+            }
+        }).done(function (result) {
+    		const rows = result.rows;
+        	if(rows=='sessionOut'){
+    			alert('로그인 시간이 만료되었습니다.');
+    			closeWindow();
+    		}
+        	selectedDataM = rows;
+        	
+         
+        	 const path = "oprt/popup/oprtSysCodeGrpPopup";
+       		
+       		common.openDialogPopPosition("oprtSysCodeGrpPopup", "코드그룹 수정", "410", "250", "true", "/action/page.do", {path: path}, path.split("/")[2]);
+    }).fail(function (xhr) {
+        
+    }).always(function() {
+
+    });
+}
+
+function deleteCodeGroup() {
+	var chkRows = $('#oprtSysCodeGrpTable').datagrid('getSelected');
+	if(chkRows != null) {
+		if(confirm("삭제하시겠습니까?")) {
+			
+			
+			const jsonArray1 = [];
+			const jsonArray2 = [];
+			const jsonArray3 = [];
+			const jsonArray4 = [];
+
+			const jsonObj1 = {};
+			jsonObj1.rowStatus = 'D';
+			
+			const jsonObj2 = {};
+			jsonObj2.rowStatus = 'D';
+			
+			jsonObj1.seq = chkRows.grpSeq;
+			jsonObj2.grpCd = chkRows.grpCd;
+			
+			jsonArray1[0] = jsonObj1;
+		    jsonArray2[0] = jsonObj2;
+		    
+		    $.ajax({
+		            type       : "POST",
+		            url        : "/multiTransaction/oprt.deleteCodeGroup/oprt.deleteDetailsGroupCode/sqlid3/sqlid4/action.do",
+		            dataType   : "json",
+		            data : {
+		            	"param1" : JSON.stringify(jsonArray1),
+		                "param2" : JSON.stringify(jsonArray2),
+		                "param3" : JSON.stringify(jsonArray3),
+		                "param4" : JSON.stringify(jsonArray4)
+					},
+		            async      : false,
+		            beforeSend : function(xhr) {
+		                // 전송 전 Code
+		            }
+		        }).done(function (result) {
+		        if (result == "SUCCESS") {
+		            $('#oprtSysCodeGrpTable').datagrid('reload');
+		            alert("삭제 완료");
+		        }
+		        else {
+		            alert("삭제 실패");
+		        }
+		    }).fail(function (xhr) {
+		        alert("삭제 실패");
+		    }).always(function() {
+
+		    });
+		}
+	}
+	else {
+		alert('선택 된 정보가 없습니다.');
+		return;
+	}
+}
+
+function getCodeGbnList(index) {
+	if($('#oprtSysCodeGrpTable').datagrid('getSelected') == null) {
+		$('#oprtSysCodeGrpTable').datagrid('selectRow', index);
+	}
+	var selectRow = $('#oprtSysCodeGrpTable').datagrid('getSelected');
+	
+	const jsonObj = {};
+	jsonObj.chkDeGrpCd = selectRow.grpCd;
+	jsonObj.deCd = $('#searchDtlCd').val();
+	jsonObj.deCdNm = $('#searchDtlNm').val();
+	jsonObj.useYN = $('input[name=search_d_use_type]:checked').val();
+	
+	$('#oprtSysCodeDtlTable').datagrid({
+	    url:'/selectList/oprt.getCodeDetailList/action.do',
+	    pagination:true,
+	    pageSize:18,
+	    queryParams : {
+			pageSize: 18,
+			param : JSON.stringify(jsonObj),
+	    },
+	    columns:[
+					/* {field: 'check', checkbox: true, width:'5%', align:'center'}, */
+					{field: 'deCd', title: '세부코드', width:'40%', align:'center'},
+					{field: 'deCdNm', title: '세부코드 명', width:'40%', align:'center'},
+					{field: 'useYNNm', title: '사용유형', width:'15%', align:'center'},
+					{field: 'useYN', hidden:true},
+					{field: 'deSeq', hidden:true},
+					{field: 'deGrpCd', hidden:true}
+	    ],
+	    onLoadSuccess:function(data){
+	    	if(data.rows=='sessionOut'){
+				alert('로그인 시간이 만료되었습니다.');
+				closeWindow();
+			}
+	    }
+	});
+}
+
+function addCodeDetail() {
+	const path = "oprt/popup/oprtSysCodeDtlPopup";
+	console.log(path);
+	common.openDialogPopPosition("oprtSysCodeDtlPopup", "코드상세 신규 등록", "410", "250", "true", "/action/page.do", {path: path}, path.split("/")[2]);
+}
+
+
+function modifyCodeDetail() {
+	var rows = $('#oprtSysCodeDtlTable').datagrid('getSelected');
+	if(rows == null) {
+		alert('선택 된 정보가 없습니다.');
+		return;
+	}
+	
+	
+	const jsonObj = {};
+	jsonObj.deSeq = rows.deSeq;
+
+    $.ajax({
+    	type       : "POST",
+    	url        : "/select/oprt.getCodeDetailList/action.do",
+    	dataType   : "json",
+    	data       : {
+    		"param" : JSON.stringify(jsonObj)
+    	},
+    	async      : false,
+    	beforeSend : function(xhr) {
+    		// 전송 전 Code
+    	}
+	}).done(function (result) {
+		const rows = result.rows;
+    	if(rows=='sessionOut'){
+			alert('로그인 시간이 만료되었습니다.');
+			closeWindow();
+		}
+		selectedDataD = rows;
+		
+		const path = "oprt/popup/oprtSysCodeDtlPopup";
+		console.log(path);
+		common.openDialogPopPosition("oprtSysCodeDtlPopup", "코드상세 수정", "410", "250", "true", "/action/page.do", {path: path}, path.split("/")[2]);
+	}).fail(function (xhr) {
+        
+    }).always(function() {
+
+    });
+}
+
+function deleteCodeDetail() {
+	var chkRows = $('#oprtSysCodeDtlTable').datagrid('getSelected');
+	if(chkRows != null) {
+		if(confirm("삭제하시겠습니까?")) {
+			
+			const jsonObj = {};
+			jsonObj.singleDeleteSid = "oprt.deleteCodeDetail";
+			jsonObj.seq = chkRows.deSeq;
+			
+		    $.ajax({
+		            type       : "POST",
+		            url        : "/multiAjax/action.do",
+		            dataType   : "json",
+		            data : {"param" : JSON.stringify(jsonObj)},
+		            async      : false,
+		            beforeSend : function(xhr) {
+		                // 전송 전 Code
+		            }
+		        }).done(function (result) {
+		        if (result == "SUCCESS") {
+		            $('#oprtSysCodeDtlTable').datagrid('reload');
+		            alert("삭제 완료");
+		        }
+		        else {
+		            alert("삭제 실패");
+		        }
+		    }).fail(function (xhr) {
+		        alert("삭제 실패");
+		    }).always(function() {
+
+		    });
+		}
+	}
+	else {
+		alert('선택 된 정보가 없습니다.');
+		return;
+	}
+}
+</script>
+

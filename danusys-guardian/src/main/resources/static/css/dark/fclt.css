@@ -1,0 +1,73 @@
+
+/* 노드 연결 영역 */
+.connect-node-form {z-index:10; position:absolute; top:10px; right:-710px; width:350px; padding:20px; background:#2b2d30; border-radius:3px; box-shadow:0px 0px 10px rgba(0,0,0,0.1);max-height: calc(100% - 60px);overflow: auto;}
+.connect-node-form .node-form-tit {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 10px;
+	border-top: 2px solid rgba(255,255,255,0.1);
+	border-bottom: 2px solid rgba(255,255,255,0.1);
+} 
+.connect-node-form .node-form-cont li {}
+.connect-node-form .node-form-cont dl {display: flex; justify-content:space-between; align-items:center; width:calc(100% - 20px); padding: 6px 10px;}
+.connect-node-form .node-form-cont dd input{height:40px; margin:0px; padding:0px 40px 0px 10px; font-size:15px; color:#FFF; border:none; background:#36393d; border-radius:3px;}
+.connect-node-form .node-form-cont dd input:focus{outline:none;}
+.connect-node-form .node-form-cont dd select {width: 100%; padding: 8.5px 10px; font-size: 13px; color: #FFF; background: #36393d; border: none; border-radius: 3px; cursor: pointer; text-align-last: right; padding-right:118px; direction: rtl;}
+
+/* 시설물 상세정보 팝업 */
+.popup-fclt{overflow:inherit; width:380px; background:#2b2d30; border-radius:5px; box-shadow:0px 0px 15px rgba(0,0,0,0.8);}
+.popup-fclt::after{content:""; position:absolute; left:47%; bottom:-10px; border-top:12px solid #2b2d30; border-left:12px solid transparent; border-right:12px solid transparent; border-bottom:0px solid transparent;}
+.popup-fclt .popup-tit{display:flex; justify-content:space-between; align-items:center; width:100%; border-bottom:1px solid #2b2d30; background:rgb(54,57,61); background:linear-gradient(90deg, rgba(54,57,61,1) 0%, rgba(43,45,48,1) 100%); font-family: 'NanumSquare', 'Noto Sans KR','Apple SD Gothic','맑은고딕','Nanum Gothic',sans-serif; border-top-left-radius:3px; border-top-right-radius:3px;}
+.popup-fclt .popup-tit dt{width:calc(100% - 86px); margin:0px 0px 0px 26px; font-size:18px; color:#FFF; font-weight:600; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}
+.popup-fclt .popup-tit dd{width:50px; height:50px; text-align:center; cursor:pointer;}
+.popup-fclt .popup-tit dd:hover{background:rgba(255,255,255,0.05);}
+.popup-fclt .popup-tit dd img{width:20px; height:20px; margin:14px 0px;}
+/* .popup-fclt .popup-btn {display: flex; justify-content: center; align-items: center; width: 100%; border-bottom: 1px solid #2b2d30; background: linear-gradient(90deg, rgba(54,57,61,1) 0%, rgba(43,45,48,1) 100%); font-family: 'NanumSquare', 'Noto Sans KR','Apple SD Gothic','맑은고딕','Nanum Gothic',sans-serif; border-top-left-radius: 3px; border-top-right-radius: 3px;}
+.popup-fclt .popup-btn li{justify-content:center; padding:4px 15px; text-align:center; font-size:15px; color:rgba(255,255,255,0.4); background:#494e56; border-radius:3px; cursor:pointer;margin: 3px 1px;}
+.popup-fclt .popup-btn li:hover{color:#FFF; background:#565e69;}
+.popup-fclt .popup-btn li.active{color:#FFF; background:#3f87f5;} */
+.fclt-cont{margin:30px 0px; padding:0px 30px; font-size:14px; color:#FFF;}
+.fclt-cont-list{overflow:auto; width:100%; height:100%; border-top:2px solid rgba(255,255,255,0.1);}
+.fclt-cont-list ul{width:100%; }
+.fclt-cont-list ul li{display:flex; align-items:flex-start; padding:13.7px 0px; line-height:20px; font-size:14px; border-bottom:1px solid rgba(255,255,255,0.1);}
+.fclt-cont-list ul li span{padding:0px 5px;}
+.fclt-cont-list ul li span.thead{min-width:80px;}
+
+.fclt-selected-overlay img {
+	width: 80px
+}
+
+/* 시설물추가팝업 */
+.fclt-cont{overflow:auto; height:calc(100% - 184px); margin:30px 0px; padding:0px 30px; font-size:14px; color:#FFF;}
+.fclt-cont ul{}
+.fclt-cont ul li{display:flex; align-items:center; justify-content:space-between; margin:0px 0px 10px 0px;}
+.fclt-cont ul li dl{display:flex; flex:auto; align-items:center;}
+.fclt-cont ul li:nth-child(1) dl{max-width:48%;}
+.fclt-cont ul li:nth-child(2) dl{max-width:48%;}
+.fclt-cont ul li:nth-child(3) dl{max-width:48%;}
+.fclt-cont ul li dl dt{flex:auto;}
+.fclt-cont ul li dl dd{width:85px; margin:0px 10px 0px 0px;}
+.fclt-cont ul li dl dt select{width:100%; height:32px; padding:0px 8px; font-size:15px; color:#FFF; background:#36393d; border:none; border-radius:3px;}
+.fclt-cont ul li dl dt input{width:calc(100% - 16px); height:32px; padding:0px 8px; font-size:15px; color:#FFF; background:#36393d; border:none; border-radius:3px;}
+.fclt-cont ul li dl dt textarea{width:calc(100% - 16px); min-height:254px; padding:0px 8px; line-height:26px; font-size:15px; color:#FFF; background:#36393d; border:none; border-radius:3px; font-family:'NanumGothic','Noto Sans KR','Apple SD Gothic','맑은고딕',sans-serif;}
+.fclt-cont ul li dl dt select:focus{outline:none;}
+.fclt-cont ul li dl dt input:focus{outline:none;}
+.fclt-cont ul li dl dt textarea:focus{outline:none;}
+
+/* fclt line 추가 팝업 */
+.fclt_cnct_line_list .add-fclt-line-tit {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 10px;
+	border-top: 2px solid rgba(255,255,255,0.1);
+	border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+.fclt_cnct_line_list .add-fclt-line-form li dl {display: flex; justify-content: space-between; align-items: center; width: calc(100% - 20px); padding: 6px 10px;}
+.fclt_cnct_line_list .add-fclt-line-form dd input{height:40px; margin:0px; padding:0px 40px 0px 10px; font-size:15px; color:#FFF; border:none; background:#36393d; border-radius:3px;}
+.fclt_cnct_line_list .add-fclt-line-form dd input:focus{outline:none;}
+.fclt_cnct_line_list .add-fclt-line-form dd select {width: 100%; padding: 8.5px 10px; font-size: 13px; color: #FFF; background: #36393d; border: none; border-radius: 3px; cursor: pointer; text-align-last: right; padding-right: 118px; direction: rtl;}
+
+
+

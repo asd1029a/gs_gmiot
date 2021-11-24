@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<h4 class="admin-title">공지사항</h4>
+<ul class="list-condi">
+	<li class="list">
+		<em>입력일 : </em>
+		<input id="searchTimeS" data-options="formatter:myformatter,parser:myparser,prompt:'시작일 입력'" style="width:175px;height:25px;margin: 0;">
+		&nbsp;~ 
+		<input id="searchTimeE" data-options="formatter:myformatter,parser:myparser,prompt:'종료일 입력'" style="width:175px;height:25px;margin: 0;">
+		<em>검색조건 : </em>
+		<select id="searchGbn" style="width:250px;">
+			<option value="">전체</option>
+			<option value="noticeGbn">구분</option>
+			<option value="insertUser">입력자</option>
+		</select>
+		<input type="text" id="searchContent" style="width:250px;" onkeypress="if(event.keyCode==13){reload();}" placeholder=""/>
+		
+		<a href="#" class="select-btn" onclick="reload()">검색</a>
+		<a href="#" class="select-btn" onclick="searchClear()">초기화</a>
+	</li>
+</ul>
+<!-- <ul class="list-condi">
+	<li class="list">
+		
+	</li>
+</ul> -->
+
+<table id="oprtNoticeTable" title="" style="width:99%;height:85%;"></table>
+
+<ul class="right-btn">
+	<li class="btn-insert" onClick="openNoticeWritePopup()">글쓰기</li>
+	<li class="btn-insert" onClick="deleteNotice()">글삭제</li>
+	<li class="btn-excel" onClick="excelDown('oprtNoticeTable','getNoticeList','notice_list_result')">엑셀저장</li>
+</ul>
+	
+<div id="rcv_popup_area" style="display:none;"></div>
+
+<script th:inline="javascript">
+$(document).ready(function(){
+	$('#searchTimeS').datebox({
+		requeired:true
+	});
+	
+	$('#searchTimeE').datebox({
+		requeired:true
+	});
+	
+	reload();
+});
+
+var jsonMObj = {};
+
+function reload(){
+	var timeS = $('#searchTimeS').datebox('getValue');
+	var timeE = $('#searchTimeE').datebox('getValue');
+	var noticeGbn = $('#searchGbn').val();
+	var searchContent = $('#searchContent').val();
+	if(!dateboxValiCk(timeS , timeE)){
+		return;
+	}
+	
+	const jsonObj = {};
+	
+	jsonObj.searchTimeS = timeS;
+	jsonObj.searchTimeE = timeE;
+	jsonObj.noticeGbn = noticeGbn;
+	jsonObj.searchContent = searchContent;
+	
+	jsonMObj = jsonObj;
+	
+	$('#oprtNoticeTable').datagrid({
+	    url:'/selectList/oprt.getNoticeList/action.do',
+	    pagination:true,
+	    pageSize:20,
+	    queryParams : {
+			pageSize: 20,
+			param : JSON.stringify(jsonObj),
+	    },
+	    columns:[
+			{field: 'rnum', title: '번호', width:'5%', align:'center'},
+			{field: 'noticeGbnNm', title: '구분', width:'10%', align:'center'},
+			{field: 'title', title: '공지제목', width:'35%', align:'center'},
+	        {field: 'count', title: '조회수', width:'10%', align:'center'},
+	        {field: 'insertUser', title: '작성자', width:'20%', align:'center'},
+	        {field: 'insertDate', title: '작성일자', width:'20%', align:'center'}
+	    ],
+	    onDblClickRow:function(index, row) {
+	    	openDetailPopup(index, row);
+	    },
+	    onLoadSuccess:function(data){
+	    	if(data.rows=='sessionOut'){
+				alert('로그인 시간이 만료되었습니다.');
+				closeWindow();
+			}
+	    }
+	});
+}
+
+function searchClear(){
+	$('#searchGbn').val('');
+	$('#searchContent').val('');
+	$('#searchTimeS').datebox();
+	$('#searchTimeE').datebox();
+}
+
+function openDetailPopup(index, row) {
+	const jsonObj = {};
+	jsonObj.no = row.no;
+
+    $.ajax(
+        {
+            type       : "POST",
+            url        : "/select/oprt.getNoticeList/action.do",
+            dataType   : "json",
+            data       : {
+                "param" : JSON.stringify(jsonObj)
+            },
+            async      : false,
+            beforeSend : function(xhr) {
+                // 전송 전 Code
+            }
+        }).done(function (result) {
+    		const rows = result.rows;
+        	if(rows=='sessionOut'){
+    			alert('로그인 시간이 만료되었습니다.');
+    			closeWindow();
+    		}
+        	selectedData = rows;
+        	
+            const path = "/oprt/popup/oprtNoticeWritePopup";
+            console.log(path);
+            common.openDialogPopPosition("oprtNoticeWritePopup", "공지사항 상세", "1024", "480", "true", "/action/page.do", {path: path}, path.split("/")[3]);
+    }).fail(function (xhr) {
+        
+    }).always(function() {
+
+    });
+}
+
+
+function openNoticeWritePopup() {
+/* 	var page = '/oprt/popup/oprtNoticeWritePopup'; 
+	   $("#oprtPopupArea").html("");
+	   $("#oprtPopupArea").load("/action/page.do", { path : page }, function() {
+	   	
+	   });
+	   
+	   $('#oprtPopupArea').dialog({
+	       title: '글쓰기',
+	       width: 1024,
+	       height: 480,
+	       closed: false,
+	       cache: false,
+	       modal: true,
+		onClose: function() {
+			selectedData = '';
+			clearPopup();
+		}
+	   });
+	   $('#oprtPopupArea').dialog('open');  */
+	const path = "/oprt/popup/oprtNoticeWritePopup";
+    console.log(path);
+    common.openDialogPopPosition("oprtNoticeWritePopup", "글쓰기", "1024", "480", "true", "/action/page.do", {path: path}, path.split("/")[3]);
+}
+
+
+function deleteNotice() {
+	var row = $('#oprtNoticeTable').datagrid('getSelected');
+	
+	if(row == 'undefined' || row==null || row == ''){
+		alert("삭제할 글을 선택해 주세요.");
+		return;
+	}
+	
+	const jsonArray1 = [];
+	const jsonArray2 = [];
+	const jsonArray3 = [];
+	const jsonArray4 = [];
+	
+	const jsonObj = {};
+    jsonObj.rowStatus = "D";
+    jsonObj.no = row.no;
+    
+    jsonArray1[0] = jsonObj;
+  
+	if(confirm("선택된 공지사항을 삭제하시겠습니까?")){
+		$.ajax({
+		        type       : "POST",
+		        url        : "/multiTransaction/oprt.deleteNotice/sqlid2/sqlid3/sqlid4/action.do",
+		        dataType   : "json",
+		        data       : {
+		        	"param1" : JSON.stringify(jsonArray1),
+		            "param2" : JSON.stringify(jsonArray2),
+		            "param3" : JSON.stringify(jsonArray3),
+		            "param4" : JSON.stringify(jsonArray4)
+		        },
+		        async      : false,
+		        beforeSend : function(xhr) {
+		            // 전송 전 Code
+		        }
+		    }).done(function (result) {
+		    if (result == "SUCCESS") {
+		        $('#oprtNoticeTable').datagrid('reload');
+		        alert("삭제 완료");
+		    }
+		    else {
+		        alert("삭제 실패");
+		    }
+		}).fail(function (xhr) {
+		    alert("삭제 실패");
+		}).always(function() {
+		
+		});
+    }
+}
+
+
+function excelDown(tableNm, sqlId, fileNm) {
+	var path = '/excelDownload/oprt.'+sqlId+'/action.do';
+	excelDownLoad('#'+tableNm, path, fileNm, jsonMObj);
+}
+
+</script>
+

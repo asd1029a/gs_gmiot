@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: danusys-guardian-platform
+  profiles:
+    active: native
+
+---
+spring:
+  profiles: native
+  cloud:
+    config:
+      enabled: false
+  thymeleaf:
+    cache: true
+    mode: HTML
+    suffix: .html
+    check-template-location: true
+    template-resolver-order: 0
+    prefix: classpath:templates/
+thread-pool:
+  service:
+    max-pool-size: 50
+    core-pool-size: 20
+    queue-capacity: 100
+  endpoint:
+    max-pool-size: 50
+    core-pool-size: 20
+    queue-capacity: 100
+

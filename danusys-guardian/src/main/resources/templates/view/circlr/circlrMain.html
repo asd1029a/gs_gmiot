@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>순환감시</title>
+	<link rel="stylesheet" type="text/css" href="/css/dark/reset.css">
+	<link rel="stylesheet" type="text/css" href="/css/dark/leftList.css">
+	<link rel="stylesheet" type="text/css" href="/css/jstree/style.css">
+	<link rel="stylesheet" type="text/css" href="/css/video/video.css">
+	<link rel="stylesheet" type="text/css" href="/css/log.css">
+	
+	<script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+	<script src="/js/jquery/jquery-ui.js"></script>
+	
+	<script src="/js/common.js"></script>
+	<script src="/js/simplePagination/simplePagination.js"></script>
+	
+	<script src="/js/log.js"></script>
+	<script src="/js/video/video.util.js"></script>
+	
+	<!-- kurento 영상 연결 -->
+	<script src="/js/constant/constant-real.js"></script>
+	<script src="/js/kurento/midsvr.js"></script>
+	<script src="/js/kurento/video.js"></script>
+	<script src="/js/kurento/adapter.js"></script>
+	<script src="/js/kurento/kurento-client.js"></script>
+	<script src="/js/kurento/kurento-utils.js"></script>
+	
+	<!-- xeus 영상 연결 -->
+	<script src="/js/xeus/xeus.player.2.0.2.js"></script>
+	
+	<script src="/js/leftList.js"></script>
+	
+	<script src="/js/jstree/jstree.js"></script>
+	<script src="/js/jstree/jstree.min.js"></script>
+</head>
+
+<body>
+<div class="wrap">
+	<aside class="aside-slide">
+		<p class="aside-fold-btn"><img src="../images/icons/asideBtn_fold.png"></p>
+		
+		<!-- search list -->
+		<div class="aside-srch-list">
+			<dl class="srch-list-tit">
+				<dt>
+					<span class="title">목록</span>
+					<span class="count" id="list_count"></span>
+				</dt>
+				<dd>
+					<select id="circlrTime">
+						<option value="1M">1분</option>
+						<option value="10M">10분</option>
+						<option value="30M">30분</option>
+						<option value="1H">1시간</option>
+					</select>
+				</dd>
+			</dl>
+			<article class="srch-list" id="circlrGrpList"></article>
+			<ul id="circlrGrpListPagination"></ul>
+		</div>
+		<div class="aside-srch-list" style="height: calc(100% - 155px);">
+			<article class="srch-list" id="circlrDtlList" style="height: 100%;"><p>상단 목록 클릭 시 나타납니다.</p></article>
+		</div>
+	</aside>
+	<div class="circle-video-area">
+		<div class="cctv-view-layer">
+			<div class="view"></div>
+		</div>
+		<div class="cctv-view-layer">
+			<div class="view"></div>
+		</div>
+		<div class="cctv-view-layer">
+			<div class="view"></div>
+		</div>
+		<div class="cctv-view-layer">
+			<div  class="view"></div>
+		</div>
+		<div class="cctv-view-layer">
+			<div class="view"></div>
+		</div>
+		<div class="cctv-view-layer">
+			<div class="view"></div>
+		</div>
+		<div class="cctv-view-layer">
+			<div class="view"></div>
+		</div>
+		<div class="cctv-view-layer">
+			<div class="view"></div>
+		</div>
+		<div class="cctv-view-layer">
+			<div class="view"></div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="/js/circlr/circlr.js"></script>
+<script th:inline="javascript">
+$(document).ready(function(){
+	
+	// 비디오 옵션 세팅
+	const videoOption = {
+		midServerIp : [[${serverName}]],
+		mediaAuthority : [[ ${session.admin.mediaAuthority}]],
+		clientIp : [[ ${session.clientIp} ]]
+	};
+	
+	videoManager.init(videoOption);
+	
+	$(".aside-fold-btn").click(function(){
+		$(".aside-slide").toggleClass("toggled");
+	});
+	
+	const logParent = $('.circle-video-area');
+	commonLog.init(logParent);
+	
+	selectCirclrGrpList();
+	
+	
+	//videoManager.setClientInfo('', '${sessionId}');
+	//clientSessionId = '${sessionId}';
+});
+</script>
+</body>
+</html>
+
+<!-- <div class="list_menu_title">순환감시</div>
+<div class="title_content">
+	<span>시나리오</span>
+	<div class="btn_area_right">
+		<select id="circlrTime" style="width:50px;height:22px;">
+			<option value="1M">1분</option>
+			<option value="10M">10분</option>
+			<option value="30M">30분</option>
+			<option value="1H">1시간</option>
+		</select>
+	</div>
+</div>
+
+<div class="west_table_container" style="height: 44%;">
+	<div id="circlrGrpCctvTable"></div>
+</div>
+
+<div class="title_content">CCTV 목록</div>
+<div class="west_table_container" style="height: 45%;">
+	<div id="circlrDtlCctvTable"></div>
+</div> -->
+
