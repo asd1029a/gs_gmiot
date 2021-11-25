@@ -1,11 +1,9 @@
 package com.danusys.web.platform.service.login;
 
-import com.danusys.web.platform.common.util.EgovFileScrty;
+import com.danusys.web.commons.util.EgovFileScrty;
 import com.danusys.web.platform.model.LoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +23,8 @@ public class LoginServiceImpl implements LoginService {
 	@Value("${danusys.db.encrypt}")
 	private String dbEncrypt = "";
 
-	@Autowired
-    SqlSessionTemplate sqlSession;
+//	@Autowired
+//    SqlSessionTemplate sqlSession;
     
 	public LoginVO login(HttpServletRequest request, String id, String pwd) throws Exception {
 		return this.loginSel(request, id, pwd);
@@ -54,10 +52,10 @@ public class LoginServiceImpl implements LoginService {
 		param.put("pwd", userPw);
 		
 		
-		loginVo = sqlSession.selectOne("admin.selectLogin", param);
+		//loginVo = sqlSession.selectOne("admin.selectLogin", param);
 		log.trace("============    [1]   ============ : {}", ToStringBuilder.reflectionToString(loginVo));
 		
-		return loginVo;
+		return null;//loginVo;
 	}
 	
 	

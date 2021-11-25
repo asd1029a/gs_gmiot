@@ -1,9 +1,9 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.platform.common.util.JsonUtil;
+import com.danusys.web.commons.util.JsonUtil;
 import com.danusys.web.platform.config.security.LoginDetailsService;
-import com.danusys.web.platform.service.login.LoginService;
 import com.danusys.web.platform.model.LoginVO;
+import com.danusys.web.platform.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

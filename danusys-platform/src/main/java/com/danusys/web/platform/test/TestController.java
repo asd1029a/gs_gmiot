@@ -1,6 +1,6 @@
 package com.danusys.web.platform.test;
 
-import com.danusys.web.platform.common.util.JsonUtil;
+import com.danusys.web.commons.util.JsonUtil;
 import com.danusys.web.platform.service.base.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

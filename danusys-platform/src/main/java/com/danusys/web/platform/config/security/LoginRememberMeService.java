@@ -1,18 +1,14 @@
 package com.danusys.web.platform.config.security;
 
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.CookieTheftException;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.SecureRandom;
@@ -24,8 +20,8 @@ public class LoginRememberMeService extends AbstractRememberMeServices {
 	@Autowired
 	private LoginDetailsService loginDetailService;
 	
-	@Resource(name = "sqlSessionTemplate")
-	SqlSessionTemplate sqlSession;
+//	@Resource(name = "sqlSessionTemplate")
+//	SqlSessionTemplate sqlSession;
 	
 	SecureRandom random;
 
@@ -41,13 +37,13 @@ public class LoginRememberMeService extends AbstractRememberMeServices {
 		
 		String username = successfulAuthentication.getName();
 		
-		if(cookieValue != null) {
-			sqlSession.delete("security.deleteToken", decodeCookie(cookieValue)[0]);
-		}
-		
-		if(username != null) {
-			sqlSession.delete("security.deleteTokenByUsername", username);
-		}
+//		if(cookieValue != null) {
+//			sqlSession.delete("security.deleteToken", decodeCookie(cookieValue)[0]);
+//		}
+//
+//		if(username != null) {
+//			sqlSession.delete("security.deleteTokenByUsername", username);
+//		}
 		
 		String series = generateTokenValue();
 		String token = generateTokenValue();
@@ -59,7 +55,7 @@ public class LoginRememberMeService extends AbstractRememberMeServices {
 			param.put("token", token);
 			param.put("lastUsed", new Date());
 			
-			sqlSession.insert("security.insertUserToken", param);
+//			sqlSession.insert("security.insertUserToken", param);
 			
 			String[] rawCookie = new String[] {series, token};
 			super.setCookie(rawCookie, getTokenValiditySeconds(), request, response);
@@ -84,69 +80,57 @@ public class LoginRememberMeService extends AbstractRememberMeServices {
 		param.put("series", cookieSeries);
 		param.put("token", cookieToken);
 		
-		Map<String, Object> rememberMeData = sqlSession.selectOne("security.selectUserByToken", param);
+//		Map<String, Object> rememberMeData = sqlSession.selectOne("security.selectUserByToken", param);
 		
-		if(rememberMeData == null) {
-			throw new RememberMeAuthenticationException("not user cookie");
-		}
+//		if(rememberMeData == null) {
+//			throw new RememberMeAuthenticationException("not user cookie");
+//		}
 		
-		String username = rememberMeData.get("username").toString();
+//		String username = rememberMeData.get("username").toString();
 		
-		if(!cookieToken.equals(rememberMeData.get("token"))) {
-			sqlSession.delete("security.deleteToken", cookieSeries);
-			
-			throw new CookieTheftException("Tampered cookie");
-		}
+//		if(!cookieToken.equals(rememberMeData.get("token"))) {
+//			sqlSession.delete("security.deleteToken", cookieSeries);
+//
+//			throw new CookieTheftException("Tampered cookie");
+//		}
 		
-		Date lastUsed = (Date) rememberMeData.get("lastUsed");
+//		Date lastUsed = (Date) rememberMeData.get("lastUsed");
 		
-		if(lastUsed.getTime() + getTokenValiditySeconds() * 1000L < System.currentTimeMillis()) {
-			sqlSession.delete("security.deleteToken", cookieSeries);
-			
-			throw new RememberMeAuthenticationException("Expiration date cookie");
-		}
+//		if(lastUsed.getTime() + getTokenValiditySeconds() * 1000L < System.currentTimeMillis()) {
+//			sqlSession.delete("security.deleteToken", cookieSeries);
+//
+//			throw new RememberMeAuthenticationException("Expiration date cookie");
+//		}
 		
-		String newToken = generateTokenValue();
-		rememberMeData.put("token", newToken);
-		rememberMeData.put("lastUsed", new Date());
+//		String newToken = generateTokenValue();
+//		rememberMeData.put("token", newToken);
+//		rememberMeData.put("lastUsed", new Date());
+//
+//		try {
+//			sqlSession.update("security.updateUserToken", rememberMeData);
+//
+//			String[] rawCookie = new String[] {cookieSeries, newToken};
+//			super.setCookie(rawCookie, getTokenValiditySeconds(), request, response);
+//		} catch(DataAccessException e) {
+//			e.printStackTrace();
+//			throw new RememberMeAuthenticationException("new token update fail");
+//		}
 		
-		try {
-			sqlSession.update("security.updateUserToken", rememberMeData);
-			
-			String[] rawCookie = new String[] {cookieSeries, newToken};
-			super.setCookie(rawCookie, getTokenValiditySeconds(), request, response);
-		} catch(DataAccessException e) {
-			e.printStackTrace();
-			throw new RememberMeAuthenticationException("new token update fail");
-		}
-		
-		/*HttpSession session = request.getSession();
-		LoginVO loginVO = (LoginVO) session.getAttribute("admin");
-		
-		if(loginVO == null) {
-			loginVO = (LoginVO) loginDetailService.loadUserByUsername(username);
-			
-			loginVO.setSessionId(session.getId());
-			
-			session.setAttribute("id", loginVO.getUsername());
-			session.setAttribute("pwd", loginVO.getPassword());
-			session.setAttribute("admin", loginVO);
-		}*/
-		
-		return getUserDetailsService().loadUserByUsername(username);
+
+		return null;//getUserDetailsService().loadUserByUsername(username);
 	}
 
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		String decodedCookieVal = super.extractRememberMeCookie(request);
 		
-		if(decodedCookieVal != null) {
-			String[] cookieTokens = super.decodeCookie(decodedCookieVal);
-			
-			if(cookieTokens != null && cookieTokens.length == 2) {
-				sqlSession.delete("security.deleteToken", cookieTokens[0]);
-			}
-		}
+//		if(decodedCookieVal != null) {
+//			String[] cookieTokens = super.decodeCookie(decodedCookieVal);
+//
+//			if(cookieTokens != null && cookieTokens.length == 2) {
+//				sqlSession.delete("security.deleteToken", cookieTokens[0]);
+//			}
+//		}
 		
 		super.logout(request, response, authentication);
 	}

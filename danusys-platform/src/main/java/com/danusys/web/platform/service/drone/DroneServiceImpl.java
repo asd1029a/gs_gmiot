@@ -1,11 +1,10 @@
 package com.danusys.web.platform.service.drone;
 
-import com.danusys.web.platform.common.util.GisUtil;
 import com.danusys.web.platform.model.BaseDao;
 import com.danusys.web.platform.socket.WebSocketVerticle;
+import com.danusys.web.platform.util.GisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.net.NetSocket;
 
@@ -13,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Service
+//@Service
 public class DroneServiceImpl implements DroneService {
 
 	private BaseDao baseDao;

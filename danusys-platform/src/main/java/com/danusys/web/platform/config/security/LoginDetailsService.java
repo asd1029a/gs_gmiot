@@ -1,9 +1,6 @@
 package com.danusys.web.platform.config.security;
 
-import com.danusys.web.platform.model.LoginVO;
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,20 +10,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginDetailsService implements UserDetailsService {
 
-	@Autowired
-    SqlSessionTemplate sqlSession;
+//	@Autowired
+//    SqlSessionTemplate sqlSession;
 
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-		LoginVO user = sqlSession.selectOne("selectUserById", id);
+//		LoginVO user = sqlSession.selectOne("selectUserById", id);
 
-		log.trace("# Login User {}", user.toString());
+//		log.trace("# Login User {}", user.toString());
 
-		if(user==null) {
-			log.error("UsernameNotFoundException");
-            throw new UsernameNotFoundException(id);
-        }
-        return user;
+//		if(user==null) {
+//			log.error("UsernameNotFoundException");
+//            throw new UsernameNotFoundException(id);
+//        }
+        return null;//user;
 	}
 
 }

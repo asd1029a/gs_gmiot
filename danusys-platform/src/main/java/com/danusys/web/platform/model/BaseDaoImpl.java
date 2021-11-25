@@ -1,7 +1,5 @@
 package com.danusys.web.platform.model;
 
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,8 +17,8 @@ public class BaseDaoImpl implements BaseDao
 
 
 //    @Resource(name = "sqlSessionTemplate")
-    @Autowired
-    SqlSessionTemplate sqlSession;
+//    @Autowired
+//    SqlSessionTemplate sqlSession;
     
     /**
      * FuncName : baseSelectList()
@@ -31,7 +29,7 @@ public class BaseDaoImpl implements BaseDao
     */
     @Override
     public <T> List<T> baseSelectList(String sqlid, Map<String, Object> param) {
-    		return sqlSession.selectList(sqlid, param);
+    		return null;//sqlSession.selectList(sqlid, param);
     }
 
 
@@ -45,7 +43,7 @@ public class BaseDaoImpl implements BaseDao
     @Override
     public String baseSelectStringOne(String sqlid, Map<String, Object> param)
     {
-        return sqlSession.selectOne(sqlid, param);
+        return null;//sqlSession.selectOne(sqlid, param);
     }
 
     /**
@@ -56,7 +54,7 @@ public class BaseDaoImpl implements BaseDao
      */
     @Override
     public Object baseSelectObjectOne(String sqlid, Map<String, Object> param) {
-        return sqlSession.selectOne(sqlid, param);
+        return null;//sqlSession.selectOne(sqlid, param);
     }
 
     /**
@@ -69,7 +67,7 @@ public class BaseDaoImpl implements BaseDao
     @Override
     public Map<String,Object> baseSelectMapOne(String sqlid, Map<String, Object> param)
     {
-        return sqlSession.selectOne(sqlid, param);
+        return null;//sqlSession.selectOne(sqlid, param);
     }
 
 
@@ -83,7 +81,7 @@ public class BaseDaoImpl implements BaseDao
     @Override
     public String baseInsertReturnSelectKey(String sqlid, Map<String, Object> param)
     {
-    	sqlSession.insert(sqlid, param);
+    	//sqlSession.insert(sqlid, param);
         return param.get("idKey").toString();
     }
 
@@ -98,7 +96,7 @@ public class BaseDaoImpl implements BaseDao
     @Override
     public int baseInsert(String sqlid, Map<String, Object> param)
     {
-        return sqlSession.insert(sqlid, param);
+        return 0;//sqlSession.insert(sqlid, param);
     }
 
     /**
@@ -111,7 +109,7 @@ public class BaseDaoImpl implements BaseDao
     @Override
     public int baseUpdate(String sqlid, Map<String, Object> param)
     {
-        return sqlSession.update(sqlid, param);
+        return 0;//sqlSession.update(sqlid, param);
     }
 
 
@@ -125,7 +123,7 @@ public class BaseDaoImpl implements BaseDao
     @Override
     public int baseDelete(String sqlid, Map<String, Object> param)
     {
-        return sqlSession.delete(sqlid, param);
+        return 0;//sqlSession.delete(sqlid, param);
     }
 
 

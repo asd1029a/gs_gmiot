@@ -6,7 +6,6 @@ import com.danusys.web.platform.service.drone.DroneService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.buffer.Buffer;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Component
+//@Component
 public class NetSocketVerticle extends DefaultEmbeddableVerticle {
 
 	@Value("${danusys.event.port}")
