@@ -1,9 +1,15 @@
 #Danusys-webservice-parent 프로젝트
 
 ## Main 모듈 설명
-### danusys-guardian(고도화 필요)
-* 모듈명 : 통합플랫폼
-* 서버포트 : 8081
+
+## Library 모듈
+### danusys-commons-api
+* 모듈명 : API 통신 공통 라이브러리
+* 서버포트 : X
+### danusys-commons-util
+* 모듈명 : API 통신 공통 라이브러리
+* 서버포트 : X
+
 ### danusys-platform
 * 모듈명 : 광명 스마트시티 확산 사업(IoT 연계)
 * 서버포트 : 8082
@@ -11,10 +17,6 @@
 * 모듈명 : 드론관제
 * 서버포트 : 8083
 
-## Library 모듈
-### danusys-common-api
-* 모듈명 : API 통신 공통 라이브러리
-* 서버포트 : X
 
 ## 로컬 개발환경 시작하기
 ### 준비사항
