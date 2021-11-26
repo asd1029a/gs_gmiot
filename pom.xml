@@ -6,6 +6,7 @@
     <modules>
         <module>danusys-commons-util</module>
         <module>danusys-commons-api</module>
+        <module>danusys-commons-ui</module>
 
         <module>danusys-platform</module>
         <module>danusys-drone</module>
