@@ -1,5 +1,6 @@
 package com.danusys.web.platform.config;
 
+import com.danusys.web.commons.ui.config.UiWebMvcConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -13,10 +14,10 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
  * Time : 16:10
  */
 @Configuration
-public class WebMvcConfig extends UiConfiguration {
+public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
 
     @Autowired
-    public WebMvcConfig(ApplicationContext applicationContext) {
+    public PlatformUiWebMvcConfig(ApplicationContext applicationContext) {
         super(applicationContext);
     }
 

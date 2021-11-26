@@ -11,8 +11,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-
-
 /**
  * Project : danusys-webservice-parent
  * Created by IntelliJ IDEA

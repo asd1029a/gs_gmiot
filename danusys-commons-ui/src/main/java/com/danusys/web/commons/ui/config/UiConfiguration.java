@@ -1,4 +1,4 @@
-package com.danusys.web.platform.config;
+package com.danusys.web.commons.ui.config;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.beans.factory.annotation.Autowired;
