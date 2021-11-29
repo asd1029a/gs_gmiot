@@ -7,5 +7,5 @@ package com.danusys.web.commons.api;
  * Date : 2021/11/24
  * Time : 5:54 오후
  */
-public class DanusysApi {
+public class CommonsApi {
 }

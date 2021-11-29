@@ -1,8 +1,0 @@
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-    <soapenv:Header/>
-    <soapenv:Body>
-        <gs:getCountryRequest xmlns:gs="http://www.baeldung.com/springsoap/gen">
-            <gs:name>Spain</gs:name>
-        </gs:getCountryRequest>
-    </soapenv:Body>
-</soapenv:Envelope>

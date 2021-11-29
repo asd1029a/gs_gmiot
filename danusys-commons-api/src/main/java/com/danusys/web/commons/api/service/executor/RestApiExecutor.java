@@ -5,7 +5,6 @@ import com.danusys.web.commons.api.model.ApiParam;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
@@ -29,8 +28,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("REST")
 public class RestApiExecutor implements ApiExecutor {
-    @Autowired
+
     private RestTemplate restTemplate;
+
+    public RestApiExecutor(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public ResponseEntity execute(final Api api) throws Exception {

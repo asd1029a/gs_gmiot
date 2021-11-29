@@ -10,5 +10,6 @@ package com.danusys.web.commons.api.types;
 public enum ApiType {
     REST,
     SOAP,
-    TCP_SOCKET
+    TCP_SOCKET,
+    MAV_TCP_SOCKET
 }

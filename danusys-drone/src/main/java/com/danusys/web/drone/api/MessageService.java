@@ -4,7 +4,6 @@ import io.dronefleet.mavlink.MavlinkConnection;
 import io.dronefleet.mavlink.MavlinkMessage;
 import io.dronefleet.mavlink.common.CommandAck;
 import io.dronefleet.mavlink.common.CommandLong;
-import io.dronefleet.mavlink.common.Heartbeat;
 import io.dronefleet.mavlink.common.MavCmd;
 
 import java.io.IOException;
@@ -35,21 +34,23 @@ public class MessageService {
             byte[] secretKey = MessageDigest.getInstance("SHA-256")
                     .digest("danusys".getBytes(StandardCharsets.UTF_8));
 
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(1).param2(0).build(), linkId, timestamp, secretKey);
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(10).build(), linkId, timestamp, secretKey);
+            CommandLong cmd = new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build();
+
+            System.out.println(cmd);
+            connection.send2(systemId, componentId, cmd, linkId, timestamp, secretKey);
+//            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(1).param2(0).build(), linkId, timestamp, secretKey);
+//            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(10).build(), linkId, timestamp, secretKey);
 
             MavlinkMessage message;
             while ((message = connection.next()) != null) {
                 Object p = message.getPayload();
-                if (p instanceof Heartbeat || p instanceof CommandAck)
+                if (p instanceof CommandAck)
                     System.out.println("" + message.getSequence() + " --> " + p);
             }
 
         } catch (Exception ioe) {
             ioe.printStackTrace();
         } finally {
-//            System.exit(0);
             System.out.println("전송됨");
         }
     }
