@@ -66,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						, "/sound/**"
 						, "/svg/**"
 						, "/ui/**"
+                        , "/mntr/**"
 						, "/webjars/**" ).permitAll()
 				.anyRequest().authenticated()
 				.and()
