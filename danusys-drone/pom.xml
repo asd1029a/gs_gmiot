@@ -24,6 +24,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
@@ -36,9 +41,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.danusys.web</groupId>
-            <artifactId>danusys-commons-api</artifactId>
-            <version>${revision}</version>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -57,6 +62,18 @@
             <groupId>io.dronefleet.mavlink</groupId>
             <artifactId>mavlink-protocol</artifactId>
             <version>1.1.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.danusys.web</groupId>
+            <artifactId>danusys-commons-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.danusys.web</groupId>
+            <artifactId>danusys-commons-ui</artifactId>
+            <version>${revision}</version>
         </dependency>
 
     </dependencies>

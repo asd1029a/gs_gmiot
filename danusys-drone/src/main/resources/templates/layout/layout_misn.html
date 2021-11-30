@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <th:block th:insert="fragments/default/includes :: includes_head(~{::pagesLink})"></th:block>
+    </head>
+    <body>
+        <div class="wrap">
+            <th:block th:replace="fragments/default/header :: headerFragment">
+            </th:block>
+
+            <th:block layout:fragment="content">
+            </th:block>
+
+            <th:block th:insert="fragments/default/includes :: includes_footer(~{::pagesScript})">
+            </th:block>
+        </div>
+    </body>
+
+</html>

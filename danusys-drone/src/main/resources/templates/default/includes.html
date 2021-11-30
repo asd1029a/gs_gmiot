@@ -1,0 +1,42 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="includes_head(pagesLink)">
+    <meta charset="utf-8">
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">SMART-CITY 통합플랫폼</title>
+<!--    <meta name="description" content="Latest updates and statistic charts">-->
+<!--    <meta name="viewport" content="width=device-width, user-scalable=no, initial-sca le=1.0, maximum-scale=3.0, minimum-scale=1.0"/>-->
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>-->
+<!--    <meta property="og:type" content="website"/>-->
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="context-path" th:content="@{/}"/>
+<!--    <link rel="shortcut icon" th:href="@{/media/images/favicon/favicon.ico}" />-->
+
+    <!-- default css files -->
+    <link rel="stylesheet" type="text/css" href="/css/default/layout.css">
+
+    <!--js file -->
+    <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+
+    <th:block th:if="${pagesLink}" >
+        <th:block th:insert="${pagesLink}"></th:block>
+    </th:block>
+</th:block>
+
+<th:block th:fragment="includes_footer(pagesScript)">
+<!--    <th:block th:if="${!#arrays.contains(@environment.getActiveProfiles(),'local-1')}">-->
+
+<!--    </th:block>-->
+<!--    <th:block th:if="${#arrays.contains(@environment.getActiveProfiles(),'local-1')}">-->
+<!--    </th:block>-->
+
+    <!-- js 파일-->
+    <th:block th:if="${pagesScript}" >
+        <th:block th:insert="${pagesScript}"></th:block>
+    </th:block>
+
+</th:block>
+
+</html>
