@@ -26,6 +26,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 /**
  * Project : danusys-webservice-parent
@@ -58,7 +61,11 @@ public class ApiCallRestController {
             api = apiExecutorService.findByCallUrl(StrUtils.getStr(param.get("callUrl")));
 
             //요청 컬럼 정보 가져오기
-            api.setApiRequestParams(apiExecutorService.findApiParam(api.getId(), ParamType.REQUEST));
+            api.setApiRequestParams(apiExecutorService
+                    .findApiParam(api.getId(), ParamType.REQUEST)
+                    .stream()
+                    .filter(f -> f.getParamType() == ParamType.REQUEST).collect(toList())
+            );
 
             //응답 컬럼 정보 가져오기
             api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
