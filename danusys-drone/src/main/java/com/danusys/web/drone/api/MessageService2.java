@@ -2,8 +2,9 @@ package com.danusys.web.drone.api;
 
 import io.dronefleet.mavlink.MavlinkConnection;
 import io.dronefleet.mavlink.MavlinkMessage;
-import io.dronefleet.mavlink.common.CommandLong;
 import io.dronefleet.mavlink.common.MavCmd;
+import io.dronefleet.mavlink.common.MavFrame;
+import io.dronefleet.mavlink.common.MissionItem;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
  * Date : 2021/11/13
  * Time : 4:36 오전
  */
-public class MessageService {
+public class MessageService2 {
     private final static Logger logger = Logger.getGlobal();
 
 
@@ -37,7 +38,7 @@ public class MessageService {
             rootLogger.removeHandler(handlers[0]);
         }
 
-        Handler handler = new FileHandler("/Users/kai/dev/log/message.log", false);
+        Handler handler = new FileHandler("/Users/kai/dev/log/message2.log", false);
 
         CustomLogFormatter formatter = new CustomLogFormatter();
         handler.setFormatter(formatter);
@@ -55,29 +56,6 @@ public class MessageService {
             byte[] secretKey = MessageDigest.getInstance("SHA-256")
                     .digest("danusys".getBytes(StandardCharsets.UTF_8));
 
-            connection.send2(systemId, componentId,  new CommandLong.Builder()
-                    .command(MavCmd.MAV_CMD_DO_SET_MODE)
-                    .param1(1)
-                    .param2(4)
-                    .build(), linkId, timestamp, secretKey);
-
-            connection.send2(systemId, componentId, new CommandLong.Builder().
-                    command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM)
-                    .param1(1)
-                    .param2(0)
-                    .build(), linkId, timestamp, secretKey);
-
-            connection.send2(systemId, componentId, new CommandLong.Builder()
-                    .command(MavCmd.MAV_CMD_NAV_TAKEOFF)
-                    .param1(15)
-                    .param2(0)
-                    .param3(0)
-                    .param4(0)
-                    .param5(0)
-                    .param6(0)
-                    .param7(10)
-                    .build(), linkId, timestamp, secretKey);
-
 
 //            connection.send2(systemId, componentId, new CommandLong.Builder().
 //                    command(MavCmd.MAV_CMD_DO_CHANGE_SPEED)
@@ -87,23 +65,32 @@ public class MessageService {
 //                    .param4(0)
 //                    .build(), linkId, timestamp, secretKey);
 
-//            connection.send2(systemId, componentId, new MissionItem.Builder()
-//                    .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
-//                    .targetSystem(0)
-//                    .targetComponent(0)
-//                    .seq(0)
-//                    .current(2)
-//                    .autocontinue(0)
-//                    .frame(MavFrame.MAV_FRAME_GLOBAL_RELATIVE_ALT)
-//                    .x(-35.36440330f)
-//                    .y(149.17024280f)
-//                    .z(10)
-//                    .build(), linkId, timestamp, secretKey);
+            connection.send2(systemId, componentId, new MissionItem.Builder()
+                    .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
+                    .targetSystem(0)
+                    .targetComponent(0)
+                    .seq(0)
+                    .current(2) //2일때 해당 포지션으로 바로 비행이 됨.
+                    .autocontinue(0)
+                    .frame(MavFrame.MAV_FRAME_GLOBAL_RELATIVE_ALT)
+                    .x(-35.3643678f) //-35.3643678
+                    .y(149.1695791f) //149.1695791
+                    .z(10)
+                    .build(), linkId, timestamp, secretKey);
+
+
+
+
+//            2021-12-01 18:13 [INFO] [main] #3 --> CommandAck{command=EnumValue{value=176, entry=MAV_CMD_DO_SET_MODE}, result=EnumValue{value=0, entry=MAV_RESULT_ACCEPTED}, progress=0, resultParam2=0, targetSystem=255, targetComponent=190}
+//            2021-12-01 18:13 [INFO] [main] #4 --> CommandAck{command=EnumValue{value=11, entry=null}, result=EnumValue{value=0, entry=MAV_RESULT_ACCEPTED}, progress=0, resultParam2=0, targetSystem=255, targetComponent=190}
+//            2021-12-01 18:13 [INFO] [main] #6 --> CommandAck{command=EnumValue{value=11, entry=null}, result=EnumValue{value=0, entry=MAV_RESULT_ACCEPTED}, progress=0, resultParam2=0, targetSystem=255, targetComponent=190}
+
+
 
 
             //MissionCurrent|MissionItemInt
             //PositionTargetGlobalInt
-            final String objectNames = "ParamValue|MissionCurrent|PositionTargetGlobalInt|Timesync|Attitude|Ahrs|Ahrs2|A|ttitude|BatteryStatus|EkfStatusReport|EscTelemetry1To4|GlobalPositionInt|GpsGlobalOrigin|GpsRawInt|Heartbeat|HomePosition|Hwstatus|LocalPositionNed|Meminfo|MountStatus|NavControllerOutput|PowerStatus|RawImu|RcChannels|ScaledImu2|ScaledImu3|ScaledPressure|ScaledPressure2|ServoOutputRaw|Simstate|Statustext|SysStatus|SystemTime|TerrainReport|VfrHud|Vibration";
+            final String objectNames = "ParamValue|MissionCurrent|PositionTargetGlobalInt|Timesync|Attitude|Ahrs|Ahrs2|A|ttitude|BatteryStatus|EkfStatusReport|EscTelemetry1To4|GlobalPositionInt|GpsGlobalOrigin|GpsRawInt|Heartbeat|Hwstatus|LocalPositionNed|Meminfo|MountStatus|NavControllerOutput|PowerStatus|RawImu|RcChannels|ScaledImu2|ScaledImu3|ScaledPressure|ScaledPressure2|ServoOutputRaw|Simstate|Statustext|SysStatus|SystemTime|TerrainReport|VfrHud|Vibration";
             MavlinkMessage message;
             while ((message = connection.next()) != null) {
                 Object p = message.getPayload();
