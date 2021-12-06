@@ -2,18 +2,11 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/layout_config">
+      layout:decorator="~{layout/base_layout}">
 <head>
     <title>Configuration</title>
 </head>
-<th:block layout:fragment="css">
-</th:block>
-
 <th:block layout:fragment="content">
     <h1>Configuration</h1>
 </th:block>
-
-<th:block th:fragment="pagesScript">
-</th:block>
-
 </html>

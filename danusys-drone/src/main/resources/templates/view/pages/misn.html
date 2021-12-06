@@ -2,412 +2,219 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/layout_mntr">
+      layout:decorator="~{layout/base_layout}">
 <head>
     <title>Monitoring & Control</title>
 </head>
-<th:block layout:fragment="css">
-</th:block>
 
-<th:block layout:fragment="content">
-    <div class="monitoring">
+<section layout:fragment="content">
+    <div class="droneMap">
         <th:block th:insert="/view/commons/map">
         </th:block>
-        <div class="infoArea">
-            <h4 class="infoTitle"><span>Name</span><i><img src="/images/default/close.svg"></i></h4>
-            <section class="infoPart1">
-                <dl class="subTitle">
-                    <dt><i><img src="/images/default/subTitle03.svg"></i>CCTV
+        <!--           mapComponent -->
+        <div class="mapComponent">
+            <div class="mapComponentSet">
+                <article class="altitude">
+                    <h6>고도</h6>
+                    <div class="graph"></div>
+                </article>
+                <article class="panel">
+                    <div></div>
+                    <div></div>
+                </article>
+                <article class="control">
+                    <div class="mission">
+                        <h6>미션 제어</h6>
                         <ul>
-                            <li class="button">회전형</li>
-                            <li class="button">고정형1</li>
-                            <li class="button">고정형2</li>
+                            <li><i class="controlButton"><img src="images/default/controlsPlay.svg"></i>재생</li>
+                            <li><i class="controlButton"><img src="images/default/controlsStop.svg"></i>일시정지</li>
                         </ul>
+                    </div>
+                    <div class="drone">
+                        <h6>드론 제어</h6>
+                        <ul>
+                            <li><i class="controlButton"><img src="images/default/controlsHome.svg"></i>귀환</li>
+                            <li><i class="controlButton"><img src="images/default/controlsGoto.svg"></i>Go To</li>
+                            <li><i class="controlButton"><img src="images/default/controlsReturn.svg"></i>선회</li>
+                        </ul>
+                    </div>
+                </article>
+                <article class="values">
+                    <h6>Values</h6>
+                    <ul>
+                        <li><span>고도 (상대) m</span>-0.0</li>
+                        <li><span>속도 m/s</span>-0.0</li>
+                        <li><span>비행 시간</span>00:00:00</li>
+                        <li><span>대기 속도 m/s</span>-0.0</li>
+                    </ul>
+                </article>
+            </div>
+            <article class="stream">
+                <dl>
+                    <dt class="switchButton">
+                        <span>Stream</span>
+                        <input type="checkbox" id="switchStream" /><label for="switchStream">Toggle</label>
                     </dt>
-                    <dd class="switchButton">
-                        <span>PTZ</span>
-                        <input type="checkbox" id="switch" /><label for="switch">Toggle</label>
-                    </dd>
+                    <dd><i><img src="images/default/streamFull.svg"></i></dd>
                 </dl>
                 <div class="video"></div>
-            </section>
-            <section class="infoPart2">
-                <ul class="tabButton">
-                    <li class="on">요약</li>
-                    <li>안전</li>
-                    <li>편의</li>
-                    <li>실내환경</li>
-                    <li>에너지</li>
-                </ul>
-                <div class="infoState">
-                    <h6><i><img src="/images/default/subTitle04.svg"></i>장비 상태</h6>
-                    <article>
-                        <dl>
-                            <dt><span class="green"></span>장비 연결 끊김 :</dt>
-                            <dd>AED, 비상벨</dd>
-                        </dl>
-                        <dl>
-                            <dt><span class="red"></span>장비 고장 :</dt>
-                            <dd>없음</dd>
-                        </dl>
-                        <ul>
-                            <li>교통약자편의시설 : 미설치</li>
-                            <li>선팅 필름 : 미부착</li>
-                        </ul>
-                    </article>
+                <h6>Values</h6>
+                <div class="streamValues">
+                    <ul>
+                        <li><i class="controlButton"><img src="images/default/valuesRec.svg"></i>RED</li>
+                        <li><i class="controlButton"><img src="images/default/valuesCamera.svg"></i>카메라</li>
+                    </ul>
+                    <div class="PTZ">
+                        <img src="images/default/ptzButtonBg.png" usemap="#imagemap">
+                        <map name="imagemap">
+                            <area shape="rect" coords="0,36,36,62" href="" target="">
+                            <area shape="rect" coords="36,0,62,36" href="" target="">
+                            <area shape="rect" coords="62,36,100,62" href="" target="">
+                            <area shape="rect" coords="36,62,62,100" href="" target="">
+                        </map>
+                    </div>
+                    <dl class="slideBar">
+                        <dt>
+                            <span>-</span>
+                            <span>정상</span>
+                            <span>+</span>
+                        </dt>
+                        <dd><input type="range" min="1" max="100" value="50" class="bar" id="myRange"></dd>
+                    </dl>
                 </div>
-                <div class="infoCurrent">
-                    <h6><i><img src="/images/default/subTitle05.svg"></i>정류장 현황</h6>
-                    <article>
-                        <dl>
-                            <dt><i><img src="/images/default/infoCurrent01.svg"></i>현재인원</dt>
-                            <dd>8<span>명</span></dd>
-                        </dl>
-                        <dl>
-                            <dt><i><img src="/images/default/infoCurrent02.svg"></i>전력</dt>
-                            <dd>30<span>kWh</span></dd>
-                        </dl>
-                        <dl>
-                            <dt><i><img src="/images/default/infoCurrent02.svg"></i>전력량</dt>
-                            <dd>30<span>w</span></dd>
-                        </dl>
-                        <dl>
-                            <dt><i><img src="/images/default/infoCurrent03.svg"></i>기온</dt>
-                            <dd>8<span>°C</span></dd>
-                        </dl>
-                        <dl class="color">
-                            <dt><i><img src="/images/default/infoCurrent04.svg"></i>대기지수</dt>
-                            <dd class="green">30<span>보통</span></dd>
-                        </dl>
-                        <dl>
-                            <dt><i><img src="/images/default/infoCurrent05.svg"></i>습도</dt>
-                            <dd>30<span>%</span></dd>
-                        </dl>
-                        <dl class="color">
-                            <dt><span>PM10</span>미세먼지</dt>
-                            <dd class="orange">8<span>나쁨</span></dd>
-                        </dl>
-                        <dl class="color">
-                            <dt><span>PM2.5</span>초미세먼지</dt>
-                            <dd class="red">30<span>매우나쁨</span></dd>
-                        </dl>
-                        <dl class="color">
-                            <dt><span>CO2</span>일산화탄소</dt>
-                            <dd class="blue">30<span>좋음</span></dd>
-                        </dl>
-                        <dl class="color">
-                            <dt><span>NO2</span>이산화질소</dt>
-                            <dd class="blue">8<span>좋음</span></dd>
-                        </dl>
-                        <dl class="color">
-                            <dt><span>O3</span>오존</dt>
-                            <dd class="green">30<span>보통</span></dd>
-                        </dl>
-                        <dl class="color">
-                            <dt><span>SO2</span>아황산가스</dt>
-                            <dd class="blue">30<span>좋음</span></dd>
-                        </dl>
-                    </article>
-                </div>
-            </section>
+            </article>
         </div>
+        <!--           //mapComponent -->
     </div>
     <!--    lnb 영역 -->
     <div class="lnb" id="">
-        <ul class="tabButton">
-            <li class="on">시설물</li>
-            <li>이벤트</li>
-            <li>주소/장소</li>
-            <li>즐겨찾기</li>
-        </ul>
-        <section class="searchOptions">
+        <section class="flightList">
             <dl class="subTitle">
-                <dt><i><img src="/images/default/subTitle01.svg"></i>시설물 검색</dt>
-                <dd class="button"><i><img src="/images/default/return.svg"></i>초기화</dd>
-            </dl>
-            <div class="searchArea">
-                <dl>
-                    <dt>종류</dt>
-                    <dd>
-                        <span>
-                            <input type="checkbox" id="bus" name="">
-                            <label for="bus"><span></span>버스정류장</label>
-                        </span>
-                        <span>
-                            <input type="checkbox" id="pole" name="">
-                            <label for="pole"><span></span>스마트폴</label>
-                        </span>
-                    </dd>
-                </dl>
-                <dl>
-                    <dt>기능</dt>
-                    <dd>
-                        <p class="selectboxCheck_title">기능 선택</p>
-                        <ul class="selectCheckList" style="display: none;">
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option01" name="">
-                                    <label for="option01"><span></span>AED</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option02" name="">
-                                    <label for="option02"><span></span>이상음원</label>
-                                </span>
-                            </li>
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option03" name="">
-                                    <label for="option03"><span></span>공기청정기</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option04" name="">
-                                    <label for="option04"><span></span>포충기</label>
-                                </span>
-                            </li>
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option05" name="">
-                                    <label for="option05"><span></span>에어커튼</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option06" name="">
-                                    <label for="option06"><span></span>공기청정기</label>
-                                </span>
-                            </li>
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option07" name="">
-                                    <label for="option07"><span></span>기능1</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option08" name="">
-                                    <label for="option08"><span></span>기능2</label>
-                                </span>
-                            </li>
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option09" name="">
-                                    <label for="option09"><span></span>기능3</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option10" name="">
-                                    <label for="option10"><span></span>기능4</label>
-                                </span>
-                            </li>
-                        </ul>
-                    </dd>
-                </dl>
-                <dl>
-                    <dt>행정구역</dt>
-                    <dd>
-                        <p class="selectboxCheck_title">전체 선택</p>
-                        <ul class="selectCheckList" style="display: none;">
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option01" name="">
-                                    <label for="option01"><span></span>광명1동</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option02" name="">
-                                    <label for="option02"><span></span>광명1동</label>
-                                </span>
-                            </li>
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option03" name="">
-                                    <label for="option03"><span></span>광명2동</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option04" name="">
-                                    <label for="option04"><span></span>광명1동</label>
-                                </span>
-                            </li>
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option05" name="">
-                                    <label for="option05"><span></span>광명1동</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option06" name="">
-                                    <label for="option06"><span></span>광명1동</label>
-                                </span>
-                            </li>
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option07" name="">
-                                    <label for="option07"><span></span>광명1동</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option08" name="">
-                                    <label for="option08"><span></span>광명1동</label>
-                                </span>
-                            </li>
-                            <li>
-                                <span>
-                                    <input type="checkbox" id="option09" name="">
-                                    <label for="option09"><span></span>광명1동</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="option10" name="">
-                                    <label for="option10"><span></span>광명1동</label>
-                                </span>
-                            </li>
-                        </ul>
-                    </dd>
-                </dl>
-                <dl class="searchButton">
-                    <dt><input type="text" placeholder="시설물 검색"></dt>
-                    <dd><i><img src="/images/default/search.svg"></i></dd>
-                </dl>
-            </div>
-        </section>
-        <section class="searchList">
-            <dl class="subTitle">
-                <dt><i><img src="/images/default/subTitle02.svg"></i>시설물 목록<span class="count">11</span></dt>
-                <dd>
-                    <div class="selectBox type01">
-                        <div class="box">
-                            <div class="select">선택</div>
-                            <ul class="list">
-                                <li class="selected">전체</li>
-                                <li>번호 내림차순</li>
-                                <li>번호 오름차순</li>
-                                <li>행정구역 내림차순</li>
-                                <li>행정구역 오름차순</li>
-                            </ul>
-                        </div>
-                    </div>
-
+                <dt>목록<span>59</span></dt>
+                <dd class="switchButton">
+                    <span>모든 정보 OFF</span>
+                    <input type="checkbox" id="switchList" /><label for="switchList">Toggle</label>
                 </dd>
             </dl>
             <div class="listScroll">
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmarkOn.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmark.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmarkOn.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmark.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmark.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmark.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmarkOn.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmarkOn.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmark.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmark.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmark.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
-                <dl>
-                    <dt>
-                        <p><span>SBS5001</span><span class="type">버스정류장</span></p>
-                        <p><span>광명1동</span><i><img src="/images/default/bookmark.svg"></i></p>
-                    </dt>
-                    <dd>광명동 5-1 광복현대 위 목감로</dd>
-                    <dd>목감로 368</dd>
-                </dl>
+                <ul>
+                    <li>
+                        <dl>
+                            <dt><span class="green">비행중</span>DJI신림 5호</dt>
+                            <dd><i><img src="images/default/listMore.svg"></i></dd>
+                        </dl>
+                        <article class="flightContents">
+                            <dl>
+                                <dt>미션명 : 신림면 11구역 정기비행</dt>
+                                <dd>총 거리 : 000,000 m</dd>
+                                <dd>예상 시간 : 000 분</dd>
+                            </dl>
+                            <ul class="route" style="display: block;">
+                                <li><span class="circle"></span><span class="text">이륙-기지명</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 1</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 2</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 3</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 4</span></li>
+                            </ul>
+                        </article>
+                    </li>
+                    <li>
+                        <dl>
+                            <dt><span class="gray">충전완료</span>DJI신림 4호</dt>
+                            <dd><i><img src="images/default/listMore.svg"></i></dd>
+                        </dl>
+                        <article class="flightContents" style="display: none;">
+                            <dl>
+                                <dt>미션명 : 신림면 11구역 정기비행</dt>
+                                <dd>총 거리 : 000,000 m</dd>
+                                <dd>예상 시간 : 000 분</dd>
+                            </dl>
+                            <ul class="route" style="display: block;">
+                                <li><span class="circle"></span><span class="text">이륙-기지명</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 1</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 2</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 3</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 4</span></li>
+                            </ul>
+                        </article>
+                    </li>
+                    <li>
+                        <dl>
+                            <dt><span class="gray">비행중</span>DJI신림 3호</dt>
+                            <dd><i><img src="images/default/listMore.svg"></i></dd>
+                        </dl>
+                        <article class="flightContents" style="display: none;">
+                            <dl>
+                                <dt>미션명 : 신림면 11구역 정기비행</dt>
+                                <dd>총 거리 : 000,000 m</dd>
+                                <dd>예상 시간 : 000 분</dd>
+                            </dl>
+                            <ul class="route" style="display: block;">
+                                <li><span class="circle"></span><span class="text">이륙-기지명</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 1</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 2</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 3</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 4</span></li>
+                            </ul>
+                        </article>
+                    </li>
+                    <li>
+                        <dl>
+                            <dt><span class="yellow">충전중</span>DJI신림 2호</dt>
+                            <dd><i><img src="images/default/listMore.svg"></i></dd>
+                        </dl>
+                        <article class="flightContents" style="display: block;">
+                            <dl>
+                                <dt>미션명 : 신림면 11구역 정기비행</dt>
+                                <dd>총 거리 : 000,000 m</dd>
+                                <dd>예상 시간 : 000 분</dd>
+                            </dl>
+                            <ul class="route" style="display: block;">
+                                <li><span class="circle"></span><span class="text">이륙-기지명</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 1</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 2</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 3</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 4</span></li>
+                            </ul>
+                        </article>
+                    </li>
+                    <li>
+                        <dl>
+                            <dt><span class="yellow">충전중</span>DJI신림 2호</dt>
+                            <dd><i><img src="images/default/listMore.svg"></i></dd>
+                        </dl>
+                        <article class="flightContents" style="display: block;">
+                            <dl>
+                                <dt>미션명 : 신림면 11구역 정기비행</dt>
+                                <dd>총 거리 : 000,000 m</dd>
+                                <dd>예상 시간 : 000 분</dd>
+                            </dl>
+                            <ul class="route" style="display: block;">
+                                <li><span class="circle"></span><span class="text">이륙-기지명</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 1</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 2</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 3</span></li>
+                                <li><span class="circle"></span><span class="text">경유지 4</span></li>
+                            </ul>
+                        </article>
+                    </li>
+                </ul>
             </div>
-            <ul class="listPage">
-                <li class="prev"><i><img src="/images/default/prev.svg"></i></li>
-                <li class="on">1</li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-                <li>5</li>
-                <li>6</li>
-                <li class="next"><i><img src="/images/default/next.svg"></i></li>
-            </ul>
-            <footer>
-                <span>고객센터</span>
-                <span>이용약관</span>
-                <span>개인정보처리방침</span>
-            </footer>
         </section>
-        <div class="mapLocation">
+        <div class="missionSummary">
             <ul>
-                <li>경기도<i><img src="/images/default/arrowNext.svg"></i></li>
-                <li>광명시<i><img src="/images/default/arrowNext.svg"></i></li>
-                <li>하안동</li>
+                <li><span>미션명</span>산림구역 정기비행</li>
+                <li><span>총 거리</span>00.00000<small>km</small></li>
+                <li><span>예상 시간</span>000<small>분</small></li>
+                <li><span>최종 수정</span>윤자민<small>(2021-09-14 10:15)</small></li>
             </ul>
-            <p><i><img src="/images/default/icon_weather01.png"></i>맑음 12&deg;</p>
         </div>
         <button class="lnbToggle"><span></span></button>
     </div>
-</th:block>
+    </div>
+</section>
 
-<th:block th:fragment="pagesScript">
-    <script type="text/javascript" src="/js/pages/mntr.js"></script>
-</th:block>
+<footer layout:fragment="footer">
+</footer>
 
 </html>

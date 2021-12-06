@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -43,7 +43,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/sound/**"
                         , "/svg/**"
                         , "/ui/**"
-                        , "/mntr/**"
+                        , "/flying"
+                        , "/drone"
+                        , "/home"
+                        , "/dashboard"
+                        , "/misn"
+                        , "/log"
+                        , "/config"
                         , "/webjars/**" ).permitAll()
                 .anyRequest().authenticated()
                 .and()
