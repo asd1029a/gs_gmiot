@@ -1,11 +1,13 @@
 package com.danusys.web.commons.auth.config;
 
 
+import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
 import com.danusys.web.commons.auth.filter.JwtRequestFilter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,9 +17,19 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Project : danusys-webservice-parent
@@ -31,8 +43,8 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity        //기본 보안설정
 //@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)    //secure anotation 사용 가능 preAuthorize ,postAuthorize도  어노테이션 활성화
-                                                                            //@Secured("ROLE_ADMIN")
-                                                                            //@PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('
+//@Secured("ROLE_ADMIN")
+//@PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('
 
 //해야할일 1. form 로그인시 처리되게
 //2. 프론트에서 세션으로 jwt 저장
@@ -40,52 +52,51 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-
     private final CorsFilter corsFilter;
 
 
     private final JwtRequestFilter jwtRequestFilter;
 
+    @Value("#{'${permit.all.page}'.split(',')}")
+    private String[] permitAll;
+
+    @Value("#{'${role.manager.page}'.split(',')}")
+    private String[] roleManagerPage;
+
+    @Value("#{'${role.admin.page}'.split(',')}")
+    private String[] roleAdminPage;
+
     @Autowired
-    private UserDetailsService myUserDetailsService;
+    private CommonsUserDetailsService myUserDetailsService;
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(myUserDetailsService);
     }
+
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception{
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+
 
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("/auth/*","/hitest",
-                        "/resources/**"
-                        , "/test/**"
-                        , "/login/**"
-                        , "/api/**"
-                        , "/aepel/**"
-                        , "/css/**"
-                        , "/font/**"
-                        , "/images/**"
-                        , "/js/**"
-                        , "/favicon.ico"
-                        , "/selectNoSession/**"
-                        , "/file/**"
-                        , "/sound/**"
-                        , "/svg/**"
-                        , "/ui/**"
-                        , "/webjars/**" ).permitAll().
-                anyRequest().authenticated()
-                .and().
-                exceptionHandling().and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .authorizeRequests()
+                .antMatchers(permitAll).permitAll()
+                .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
+                .antMatchers(roleAdminPage).access("hasRole('ROLE_ADMIN')")
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-
+    //encorder
 
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public PasswordEncoder delegatingPasswordEncoder() {
+        return DefaultPasswordEncoderFactories.getInstance().createDelegatingPasswordEncoder();
     }
     @Override
     @Bean

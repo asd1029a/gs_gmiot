@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name="admin")
+@Table(name="admin_test")
 public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +18,7 @@ public class User {
         private String username;
         private String password;
         private String roles;
+        private String refreshToken;
 
         public List<String> getRoleList(){
                 if(this.roles.length() >0){

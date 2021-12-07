@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>SMART-CITY 통합플랫폼</title>
+    <link rel="stylesheet" type="text/css" href="/css/dark/reset.css">
+    <link rel="stylesheet" type="text/css" href="/css/dark/main.css">
+
+    <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+    <script src="/js/login.js"></script>
+
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            //if ("${message}" != "") {
+            //	alert("${message}");
+            //}
+
+            if ("${sessionId}" == "sessionOut") {
+                if (window.parent.name != "") {
+                    window.close();
+                    window.opener.location.reload();
+                } else
+                    window.location.reload();
+            }
+
+            $('#login').on("click", function () {
+                login();
+            });
+            $('#pwd').keydown(function () {
+                if (event.keyCode == 13) {
+                    login();
+                }
+            });
+            $('label[for=remember-me]').bind('keypress', function (e) {
+                if (e.keyCode !== 32 && e.keyCode !== 13) {
+                    return;
+                }
+
+                $('#remember-me').is(':checked') ? $('#remember-me').prop('checked', false) : $('#remember-me').prop('checked', true);
+            })
+
+            /* 로그인 디스플레이 설정 */
+            loginDisplaySet();
+        });
+
+        function login() {
+            if ($('#id').val() == "") {
+                alert("아이디를 입력하세요");
+            } else if ($('#password').val() == "") {
+                alert("비밀번호를 입력하세요");
+            } else {
+                document.loginForm.submit();
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+<div class="login-wrap">
+    <div class="login-img" id="loginImg">
+        <dl>
+            <dd id="loginBgTitSub"></dd>
+            <dt id="loginBgTit"></dt>
+        </dl>
+    </div>
+
+    <div class="login-form">
+
+            <dl>
+                <dd>
+                    <span>ID</span>
+                    <span><input type="text" id="id" name="username" placeholder="아이디를 입력하세요." tabindex="1"></span>
+                </dd>
+                <dd>
+                    <span>PW</span>
+                    <span><input type="password" id="pwd" name="password" placeholder="비밀번호를 입력하세요."
+                                 tabindex="2"></span>
+                </dd>
+                <dt>
+                    <span class=""><input type="checkbox" id="remember-me" name="remember-me"><label for="remember-me"
+                                                                                                     tabindex="3"></label>Save ID</span>
+                    <span><button class="login-btn">LOGIN</button></span>
+                </dt>
+                <!-- <dd class="forgot">Forgot ID or PASSWORD?</dd> -->
+            </dl>
+
+    </div>
+</div>
+
+</body>
+<script>
+
+    $(".login-btn").on("click", function () {
+        const sendData = {
+            username: $("#id").val(),
+            password: $("#pwd").val()
+        }
+        $.ajax({
+            url: "/auth/generateToken",
+            type:"POST",
+            data:sendData,
+            success: function (resultData) {
+                let keys=Object.keys(resultData.jwt);
+                console.log("keys",keys);
+                console.log("resultData.jwt",resultData.jwt);
+                //localStorage.setItem(key[0],resultData[key]);
+                console.log("resultData.jwt[keys[0]",resultData.jwt[keys[0]]);
+                console.log("resultData.jwt[keys[1]",resultData.jwt[keys[1]]);
+                //console.log(localStorage.getItem(key));
+                console.log("keys[1]=",keys[1]);
+
+                document.cookie=keys[0]+'='+resultData.jwt[keys[0]];//s + "; " + keys[1]+'='+resultData.jwt[keys[1]] ;
+                document.cookie=keys[1]+'='+resultData.jwt[keys[1]];
+                document.cookie=keys[2]+'='+resultData.jwt[keys[2]];
+
+
+            }
+        });
+
+        return false;
+    });
+
+
+</script>
+</html>

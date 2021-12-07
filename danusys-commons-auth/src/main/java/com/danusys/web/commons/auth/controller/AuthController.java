@@ -2,6 +2,7 @@ package com.danusys.web.commons.auth.controller;
 
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
 import com.danusys.web.commons.auth.model.AuthenticationResponse;
+import com.danusys.web.commons.auth.model.TokenDto;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +35,8 @@ public class AuthController {
     @RequestMapping("/hi4")
     public ModelAndView hi4(){
         ModelAndView mv =new ModelAndView();
-        mv.setViewName("login.html");
-       return mv;
+        mv.setViewName("/view/login/login.html");
+        return mv;
     }
 
 
@@ -57,7 +58,7 @@ public class AuthController {
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(user.getUsername());
 
-        final String jwt = jwtTokenUtil.generateToken(userDetails);
+        final TokenDto jwt = jwtTokenUtil.generateToken(userDetails);
         log.info("jwt={}",jwt);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
