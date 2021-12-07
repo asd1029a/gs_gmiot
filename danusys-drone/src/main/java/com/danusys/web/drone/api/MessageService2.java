@@ -2,9 +2,6 @@ package com.danusys.web.drone.api;
 
 import io.dronefleet.mavlink.MavlinkConnection;
 import io.dronefleet.mavlink.MavlinkMessage;
-import io.dronefleet.mavlink.common.MavCmd;
-import io.dronefleet.mavlink.common.MavFrame;
-import io.dronefleet.mavlink.common.MissionItem;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -65,18 +62,18 @@ public class MessageService2 {
 //                    .param4(0)
 //                    .build(), linkId, timestamp, secretKey);
 
-            connection.send2(systemId, componentId, new MissionItem.Builder()
-                    .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
-                    .targetSystem(0)
-                    .targetComponent(0)
-                    .seq(0)
-                    .current(2) //2일때 해당 포지션으로 바로 비행이 됨.
-                    .autocontinue(0)
-                    .frame(MavFrame.MAV_FRAME_GLOBAL_RELATIVE_ALT)
-                    .x(-35.3643678f) //-35.3643678
-                    .y(149.1695791f) //149.1695791
-                    .z(10)
-                    .build(), linkId, timestamp, secretKey);
+//            connection.send2(systemId, componentId, new MissionItem.Builder()
+//                    .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
+//                    .targetSystem(0)
+//                    .targetComponent(0)
+//                    .seq(0)
+//                    .current(2) //2일때 해당 포지션으로 바로 비행이 됨.
+//                    .autocontinue(0)
+//                    .frame(MavFrame.MAV_FRAME_GLOBAL_RELATIVE_ALT)
+//                    .x(-35.3643678f) //-35.3643678
+//                    .y(149.1695791f) //149.1695791
+//                    .z(10)
+//                    .build(), linkId, timestamp, secretKey);
 
 
 
@@ -90,13 +87,13 @@ public class MessageService2 {
 
             //MissionCurrent|MissionItemInt
             //PositionTargetGlobalInt
-            final String objectNames = "ParamValue|MissionCurrent|PositionTargetGlobalInt|Timesync|Attitude|Ahrs|Ahrs2|A|ttitude|BatteryStatus|EkfStatusReport|EscTelemetry1To4|GlobalPositionInt|GpsGlobalOrigin|GpsRawInt|Heartbeat|Hwstatus|LocalPositionNed|Meminfo|MountStatus|NavControllerOutput|PowerStatus|RawImu|RcChannels|ScaledImu2|ScaledImu3|ScaledPressure|ScaledPressure2|ServoOutputRaw|Simstate|Statustext|SysStatus|SystemTime|TerrainReport|VfrHud|Vibration";
+//            final String objectNames = "ParamValue|MissionCurrent|PositionTargetGlobalInt|Timesync|Attitude|Ahrs|Ahrs2|A|ttitude|BatteryStatus|EkfStatusReport|EscTelemetry1To4|GlobalPositionInt|GpsGlobalOrigin|GpsRawInt|Heartbeat|Hwstatus|LocalPositionNed|Meminfo|MountStatus|NavControllerOutput|PowerStatus|RawImu|RcChannels|ScaledImu2|ScaledImu3|ScaledPressure|ScaledPressure2|ServoOutputRaw|Simstate|Statustext|SysStatus|SystemTime|TerrainReport|VfrHud|Vibration";
             MavlinkMessage message;
             while ((message = connection.next()) != null) {
                 Object p = message.getPayload();
-                if(!objectNames.contains(p.getClass().getSimpleName())) {
+//                if(!objectNames.contains(p.getClass().getSimpleName())) {
                     logger.info("#" + message.getSequence() + " --> " + p);
-                }
+//                }
             }
 
         } catch (Exception ioe) {

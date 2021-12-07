@@ -4,6 +4,8 @@ import io.dronefleet.mavlink.MavlinkConnection;
 import io.dronefleet.mavlink.MavlinkMessage;
 import io.dronefleet.mavlink.common.CommandLong;
 import io.dronefleet.mavlink.common.MavCmd;
+import io.dronefleet.mavlink.common.MavFrame;
+import io.dronefleet.mavlink.common.MissionItem;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -61,12 +63,16 @@ public class MessageService {
                     .param2(4)
                     .build(), linkId, timestamp, secretKey);
 
+
+            Thread.sleep(1000);
+
             connection.send2(systemId, componentId, new CommandLong.Builder().
                     command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM)
                     .param1(1)
                     .param2(0)
                     .build(), linkId, timestamp, secretKey);
 
+            Thread.sleep(2000);
             connection.send2(systemId, componentId, new CommandLong.Builder()
                     .command(MavCmd.MAV_CMD_NAV_TAKEOFF)
                     .param1(15)
@@ -78,6 +84,7 @@ public class MessageService {
                     .param7(10)
                     .build(), linkId, timestamp, secretKey);
 
+            Thread.sleep(5000);
 
 //            connection.send2(systemId, componentId, new CommandLong.Builder().
 //                    command(MavCmd.MAV_CMD_DO_CHANGE_SPEED)
@@ -86,20 +93,51 @@ public class MessageService {
 //                    .param3(-1)
 //                    .param4(0)
 //                    .build(), linkId, timestamp, secretKey);
+            connection.send2(systemId, componentId, new MissionItem.Builder()
+                    .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
+                    .targetSystem(0)
+                    .targetComponent(0)
+                    .seq(0)
+                    .current(2)
+                    .autocontinue(0)
+                    .frame(MavFrame.MAV_FRAME_GLOBAL_RELATIVE_ALT)
+                    .x(-35.364321f)
+                    .y(149.170503f)
+                    .z(10)
+                    .build(), linkId, timestamp, secretKey);
 
-//            connection.send2(systemId, componentId, new MissionItem.Builder()
-//                    .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
-//                    .targetSystem(0)
-//                    .targetComponent(0)
-//                    .seq(0)
-//                    .current(2)
-//                    .autocontinue(0)
-//                    .frame(MavFrame.MAV_FRAME_GLOBAL_RELATIVE_ALT)
-//                    .x(-35.36440330f)
-//                    .y(149.17024280f)
-//                    .z(10)
-//                    .build(), linkId, timestamp, secretKey);
 
+
+
+            Thread.sleep(15000);
+            connection.send2(systemId, componentId, new MissionItem.Builder()
+                    .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
+                    .targetSystem(0)
+                    .targetComponent(0)
+                    .seq(0)
+                    .current(2)
+                    .autocontinue(0)
+                    .frame(MavFrame.MAV_FRAME_GLOBAL_RELATIVE_ALT)
+                    .x(-35.3645121f)
+                    .y(149.1701370f)
+                    .z(10)
+                    .build(), linkId, timestamp, secretKey);
+
+
+
+            Thread.sleep(15000);
+            connection.send2(systemId, componentId, new MissionItem.Builder()
+                    .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
+                    .targetSystem(0)
+                    .targetComponent(0)
+                    .seq(0)
+                    .current(2)
+                    .autocontinue(0)
+                    .frame(MavFrame.MAV_FRAME_GLOBAL_RELATIVE_ALT)
+                    .x(-35.364321f)
+                    .y(149.170503f)
+                    .z(10)
+                    .build(), linkId, timestamp, secretKey);
 
             //MissionCurrent|MissionItemInt
             //PositionTargetGlobalInt

@@ -14,10 +14,12 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
  */
 @Configuration
 public class UiWebMvcConfig extends UiConfiguration {
+    private ApplicationContext applicationContext;
 
     @Autowired
     public UiWebMvcConfig(ApplicationContext applicationContext) {
         super(applicationContext);
+        this.applicationContext = applicationContext;
     }
 
     @Override
