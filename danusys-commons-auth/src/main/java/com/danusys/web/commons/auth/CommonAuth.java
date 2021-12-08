@@ -7,5 +7,6 @@ package com.danusys.web.commons.auth;
  * Date : 2021/11/29
  * Time : 18:01
  */
+
 public class CommonAuth {
 }

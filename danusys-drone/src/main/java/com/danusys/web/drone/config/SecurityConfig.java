@@ -1,15 +1,10 @@
 package com.danusys.web.drone.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
  * Project : danusys-webservice-parent
@@ -20,7 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -43,7 +38,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/sound/**"
                         , "/svg/**"
                         , "/ui/**"
-                        , "/mntr/**"
+                        , "/flying"
+                        , "/app/**"
+                        , "/drone/**"
+                        , "/topic/**"
+                        , "/ws/**"
+                        , "/home"
+                        , "/dashboard"
+                        , "/misn"
+                        , "/log"
+                        , "/config"
                         , "/webjars/**" ).permitAll()
                 .anyRequest().authenticated()
                 .and()

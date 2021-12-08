@@ -73,7 +73,7 @@ public class MAVLinkConnection {
     public void Send(MissionItemInt missionItemInt) {
         try (Socket socket = new Socket("172.20.14.84", 14550)) {
             connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-            connection.send1(255, 0, missionItemInt);
+            connection.send1(1, 1, missionItemInt);
             log.info(missionItemInt.toString());
         } catch (IOException e) {
             e.printStackTrace();

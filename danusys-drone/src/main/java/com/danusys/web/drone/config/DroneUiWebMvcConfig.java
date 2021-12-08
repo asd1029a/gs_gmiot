@@ -16,9 +16,12 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 @Configuration
 public class DroneUiWebMvcConfig extends UiWebMvcConfig {
 
+    private final ApplicationContext applicationContext;
+
     @Autowired
     public DroneUiWebMvcConfig(ApplicationContext applicationContext) {
         super(applicationContext);
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -30,6 +33,10 @@ public class DroneUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("flying").setViewName("view/pages/flying");
         registry.addViewController("log").setViewName("view/pages/log");
         registry.addViewController("config").setViewName("view/pages/config");
+
+
+        registry.addViewController("drone/info").setViewName("view/pages/droneInfo");
+
         super.addViewControllers(registry);
     }
 }

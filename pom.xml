@@ -4,13 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
+
         <module>danusys-commons-util</module>
+        <module>danusys-commons-auth</module>
         <module>danusys-commons-api</module>
         <module>danusys-commons-ui</module>
 
         <module>danusys-platform</module>
         <module>danusys-drone</module>
-        <module>danusys-commons-auth</module>
+
     </modules>
 
     <parent>
