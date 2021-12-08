@@ -4,12 +4,12 @@
     <header>
         <h1 class="logo"><i><img src="/images/default/headerMenu.svg"></i>Title</h1>
         <ul class="gnm">
-            <li id="home" th:classappend="${#httpServletRequest.getRequestURI()}"><a href="home">Home</a></li>
-            <li id="dashboard"><a href="dashboard">Dashboard</a></li>
-            <li id="mntr"><a href="mntr">Monitoring & Control</a></li>
-            <li id="inqry"><a href="inqry">Inquiry &amp; Management</a></li>
-            <li id="stats"><a href="stats">Statistics</a></li>
-            <li id="config"><a href="config">Configuration</a></li>
+            <li id="home"><a href="/pages/home">Home</a></li>
+            <li id="dashboard"><a href="/pages/dashboard">Dashboard</a></li>
+            <li id="mntr"><a href="/pages/mntr">Monitoring & Control</a></li>
+            <li id="inqry"><a href="/pages/inqry">Inquiry &amp; Management</a></li>
+            <li id="stats"><a href="/pages/stats">Statistics</a></li>
+            <li id="config"><a href="/pages/config">Configuration</a></li>
         </ul>
         <ul class="utmenu">
             <li><i><img src="/images/default/utmenu01.svg"></i>알림</li>
@@ -18,13 +18,10 @@
     </header>
     <script>
         $(function() {
-            // $(".gnm li").on("click", function(e) {
-            //     console.log(e);
-            //     location.href = e.target.id;
-            //     $(".gnm li.active").removeClass("active");
-            //     $(this).addClass("active");
-            // });
-
+            let path = "[[${#httpServletRequest.getRequestURI()}]]";
+            $(".gnm li").map((i, el) => {
+                if(path.indexOf(el.id) > -1) $(el).addClass("active");
+            })
         })
     </script>
 </th:block>

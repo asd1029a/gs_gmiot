@@ -1,7 +1,7 @@
 
 //EPSG:5181 좌표계 설정
-// proj4.defs("EPSG:5181","+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
-// ol.proj.setProj4 = proj4;
+proj4.defs("EPSG:5181","+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+ol.proj.proj4.register(proj4);
 
 /**
  * 맵생성, 레이어생성 등등 기본적인 맵 셋팅을 해주는 class 이다.
@@ -37,26 +37,44 @@ var mapManager = {
 		type : null,
 		/*lat : 35.264116707579205,
 		lon : 128.62390442253118,*/
-		lat : 37.894915,
-		lon : 127.200355,
+		lat : 37.4785138,
+		lon : 126.8646843,
 		center : null,
 		projection : null,
 		resolutions : [
 			[2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25], // daum,
 			[], // naver,
-			[], // openlayer
+			undefined, // vworld
 		],
-		
 		extents : [
 			[-30000, -60000, 494288, 988576], // daum
 			[], // naver
-			[] // openlayer
-			
+			undefined // vworld
+		],
+		defaultZoom : [
+			8, // daum
+			undefined, // naver
+			16, // vworld
+		],
+		maxZoom : [
+			13, // daum
+			undefined, //naver
+			19, //vworld
+		],
+		minZoom : [
+			0, // daum
+			undefined, // naver
+			7, // vworld
+		],
+		zoomFactor : [
+			1, // daum
+			undefined, // naver
+			undefined// vworld
 		],
 		pro4j : [
-			'EPSG:4326', // openlayer
+			'EPSG:5181', // daum
 			'', // naver
-			'EPSG:5181' // daum
+			'EPSG:3857'// vworld
 		],
 		urls : [
 			[
@@ -196,67 +214,20 @@ var mapManager = {
 			[
 				{
 					name : 'base',
-					prefix : '//map.daumcdn.net/map_2d_hd/1909dms/L', 
+					prefix : '//api.vworld.kr/req/wmts/1.0.0/CEB52025-E065-364C-9DBA-44880E3B02B8/Base/',
+					// prefix : '//xdworld.vworld.kr:8080/2d/Base/202002/',
 					surffix : '.png'
 				},
 				{
 					name : 'satellite',
-					prefix : '//map.daumcdn.net/map_skyview/L', 
-					surffix : '.jpg'
+					prefix : '//api.vworld.kr/req/wmts/1.0.0/CEB52025-E065-364C-9DBA-44880E3B02B8/Satellite/',
+					// prefix : '//xdworld.vworld.kr:8080/2d/Satellite/202002/',
+					surffix : '.png'
 				},
 				{
 					name : 'hybrid',
-					prefix : '//map.daumcdn.net/map_hybrid/1909dms/L',
-					surffix : '.png'
-				},
-				{
-					name : 'roadView',
-					prefix : '//map.daumcdn.net/map_roadviewline/7.00/L',
-					surffix : '.png'
-				},
-				{
-					name : 'traffic',
-					prefix : '//r2.maps.daum-img.net/mapserver/file/realtimeroad/L',
-					surffix : '.png'
-				},
-				{
-					name : 'airPm10',
-					prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_pm10/T/L',
-					surffix : '.png'
-				},
-				{
-					name : 'airKhai',
-					prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_khai/T/L',
-					surffix : '.png'
-				},
-				{
-					name : 'airPm25',
-					prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_pm25/T/L',
-					surffix : '.png'
-				},
-				{
-					name : 'airYsnd',
-					prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_ysnd/T/L',
-					surffix : '.png'
-				},
-				{
-					name : 'airO3',
-					prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_o3/T/L',
-					surffix : '.png'
-				},
-				{
-					name : 'airNo2',
-					prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_no2/T/L',
-					surffix : '.png'
-				},
-				{
-					name : 'airCo',
-					prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_co/T/L',
-					surffix : '.png'
-				},
-				{
-					name : 'airSo2',
-					prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_so2/T/L',
+					prefix : '//api.vworld.kr/req/wmts/1.0.0/CEB52025-E065-364C-9DBA-44880E3B02B8/Hybrid/',
+					// prefix : '//xdworld.vworld.kr:8080/2d/Hybrid/202002/',
 					surffix : '.png'
 				}
 			],
@@ -274,11 +245,12 @@ var mapManager = {
 		this.initKakao();
 		this.properties.id = id;
 		this.properties.type = type;
+		this.createTileGrid();
 		this.createProjection(type);
 		this.createMap();
-		this.createOverviewMap(minimapId);
+		// this.createOverviewMap(minimapId);
 		this.createMapMoveEvent();
-		this.mapCenterAddress();
+		// this.mapCenterAddress();
 		const tileOptions = this.properties.urls[type];
 		for (var i = 0, max = tileOptions.length; i < max; i++) {
 			this.createTileLayer(tileOptions[i].name, tileOptions[i].prefix, tileOptions[i].surffix);
@@ -286,7 +258,15 @@ var mapManager = {
 		
 		this.switchTileMap('btnRoadmap');
 	},
-	
+	createTileGrid : function() {
+		let tileGrid = this.properties.extents[this.properties.type] == undefined ? undefined :
+			new ol.tilegrid.TileGrid({
+			origin: [this.properties.extents[this.properties.type][0], this.properties.extents[this.properties.type][1]],
+			resolutions: this.properties.resolutions[this.properties.type]
+		});
+
+		this.properties.tileGrid = tileGrid;
+	},
 	/**
 	 * 맵 상단 주소검색 기능 위해 카카오 api 사용
 	 * @function
@@ -307,11 +287,8 @@ var mapManager = {
 	 * @function 
 	 */
 	createProjection : function(type) {
-		this.properties.projection = new ol.proj.Projection({
-			code : "EPSG:4326",
-			extent : this.properties.extents[type],
-			units : 'm'
-		})
+		// this.properties.projection = this.properties.pro4j[type]
+		this.properties.projection = 'EPSG:4326'
 	},
 	
 	/**
@@ -329,22 +306,28 @@ var mapManager = {
 				visible: true,
 				type: type,
 				source: new ol.source.XYZ({
-					projection: this.properties.projection,
+					// url: `${prefix}{z}/{y}/{x}${surffix}`,
 					tileSize: 256,
-					minZoom: 0,
-					maxZoom: this.properties.resolutions.length - 1,
-					tileGrid: new ol.tilegrid.TileGrid({
-						origin: [this.properties.extents[this.properties.type][0], this.properties.extents[this.properties.type][1]],
-						resolutions: this.properties.resolutions[this.properties.type]
-					}),
+					tileGrid : this.properties.tileGrid,
+					projection : this.properties.pro4j[this.properties.type],
+					// maxZoom : this.properties.maxZoom[this.properties.type],
+					// minZoom : this.properties.minZoom[this.properties.type],
+					// url: 'http://api.vworld.kr/req/wmts/1.0.0/CEB52025-E065-364C-9DBA-44880E3B02B8/Base/{z}/{y}/{x}.png'
+					// projection: this.properties.projection,
+					// tileSize: 512,
+					// minZoom: 0,
+					// tileGrid: new ol.tilegrid.TileGrid({
+					// 	origin: [this.properties.extents[this.properties.type][0], this.properties.extents[this.properties.type][1]],
+					// 	resolutions: this.properties.resolutions[this.properties.type]
+					// }),
 					tileUrlFunction: function (tileCoord, pixelRatio, projection) {
-						debugger;
-						var zType = mapManager.properties.type;
+						let zType = mapManager.properties.type;
+						let resolution = mapManager.properties.resolutions[zType];
 						if (tileCoord == null) return undefined;
-						var s = Math.floor(Math.random() * 4);  
-						var z = mapManager.properties.resolutions[zType].length - tileCoord[0];
+						var s = Math.floor(Math.random() * 4);
+						var z = resolution ? resolution.length - tileCoord[0] : tileCoord[0];
 						var x = tileCoord[1];
-						var y = tileCoord[2];
+						var y = zType == 0 ? -(tileCoord[2]) : tileCoord[2];
 						return prefix + z + '/' + y + '/' + x + surffix;
 					},
 				})
@@ -367,14 +350,14 @@ var mapManager = {
 			controls : [],
 			logo: false,
 			view : new ol.View({
-				projection: this.properties.projection,
+				projection: this.properties.pro4j[this.properties.type],
 				extent: this.properties.extents[this.properties.type],
 				resolutions: this.properties.resolutions[this.properties.type],
-				maxResolution: this.properties.resolutions[this.properties.type][0],
-				zoomFactor: 1,
-				rotation: 0,
-				center : new ol.proj.transform([this.properties.lon,this.properties.lat],this.properties.pro4j[this.properties.type], this.properties.projection),
-				zoom : 8
+				center : new ol.proj.transform([this.properties.lon,this.properties.lat], this.properties.projection, this.properties.pro4j[this.properties.type]),
+				zoom : this.properties.defaultZoom[this.properties.type],
+				zoomFactor: this.properties.zoomFactor[this.properties.type],
+				maxZoom : this.properties.maxZoom[this.properties.type],
+				minZoom : this.properties.minZoom[this.properties.type],
 		   	})
 		});
 		
@@ -523,12 +506,11 @@ var mapManager = {
 			collapsible : false,
 			view : new ol.View({
 				zoom: 16,
-				projection: this.properties.projection,
+				projection: this.properties.proj4[this.properties.type],
 				extent: this.properties.extents[this.properties.type],
 				resolutions: this.properties.resolutions[this.properties.type],
-				maxResolution: this.properties.resolutions[this.properties.type][0],
 				rotation: 0,
-				center : new ol.proj.transform([this.properties.lon,this.properties.lat],this.properties.pro4j[this.properties.type], this.properties.projection),
+				center : new ol.proj.transform([this.properties.lon,this.properties.lat], this.properties.projection, this.properties.pro4j[this.properties.type]),
 			}),
 		})
 		this.map.addControl(this.overviewMap);
@@ -581,7 +563,7 @@ var mapManager = {
 	 */
 	searchDetailAddrFromCoords : function(coords, callback){
 		try {
-			transCoord =  new ol.proj.transform([coords[0], coords[1]], mapManager.properties.projection, mapManager.properties.pro4j[mapManager.properties.type]);
+			transCoord =  new ol.proj.transform([coords[0], coords[1]], mapManager.properties.pro4j[mapManager.properties.type], mapManager.properties.projection);
 			mapManager.geocoder.coord2Address(transCoord[0], transCoord[1], callback);
 		} catch(e) {
 			console.log('주소정보 사용 불가');
@@ -758,7 +740,7 @@ function siteMntr(data){
 
 			if(!videoManager.createPlayer(videoOption)) {
 				dialogManager.close(dialog);
-			};
+			}
 		}
 		
 		dialogManager.sortDialog();
