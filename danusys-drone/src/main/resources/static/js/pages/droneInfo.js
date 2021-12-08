@@ -38,8 +38,7 @@ function droneLog(log) {
 }
 
 function showDroneInfo(message) {
-    console.log("### >>> " + message);
-
+    // console.log("### >>> " + message);
     // $("#showDroneInfo").append("<tr><td>" + message + "</td></tr>");
     // $("#showDroneInfo").html(message);
 
