@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -29,24 +30,24 @@ import java.util.Date;
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+
     @Autowired
     private CommonsUserDetailsService userDetailsService;
 
+
     @Autowired
     private JwtUtil jwtUtil;
-
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-
-
-
-
         String authorizationHeader = request.getHeader("Authorization");
-        String refreshToken=null;
-        Cookie[] cookies=request.getCookies();
+        String refreshToken =request.getHeader("RefreshHeader");
+        log.info("header1={}",authorizationHeader);
+        log.info("header2={}",refreshToken);
+
+  //      Cookie[] cookies=request.getCookies();
         String accessTokenValue;
+        /*
         if(cookies!= null){
             for(Cookie cookie : cookies){
                 // log.info(cookie.getName());
@@ -62,7 +63,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             }
         }
-
+            */
         //log.info("authrizationHeader={}",authorizationHeader);
         String username = null;
         String jwt = null;
@@ -72,7 +73,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             jwt = authorizationHeader.substring(7); //beaer 뒤에 붙은것들
 
 
-            username=jwtUtil.extractUsername(refreshToken);
+            username=jwtUtil.extractUsername(jwt); //extractUsername에서 유효기간이 지났다면 exception 발생
             //username = jwtUtil.extractUsername(jwt);
             // log.info("username={}",username);
         }
@@ -84,12 +85,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
 
-            // log.info(cookie.getName());
-            //   log.info(cookie.getValue());
-            DecodedJWT decodedJWT =JWT.decode(authorizationHeader.substring(7));
+            DecodedJWT decodedJWT = JWT.decode(jwt);
 
             //log.info("abc={}",abc.getExpiresAt());
             //if(jwtUtil.isTokenExpired(authorizationHeader.substring(7)) ){
+            /*
             if(decodedJWT.getExpiresAt().before(new Date())){
                 //      log.info("-----------");
                 //    log.info("refreshToken={}",refreshToken);
@@ -103,9 +103,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 }
             }
+            */
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
-
+                log.info("test");
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken
@@ -114,6 +115,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
+
+
+
+
         chain.doFilter(request, response);
     }
 

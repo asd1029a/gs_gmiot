@@ -91,15 +91,11 @@
 </body>
 <script>
 
-    $(".login-btn").on("click", function () {
-        const sendData = {
-            username: $("#id").val(),
-            password: $("#pwd").val()
-        }
+
+    setInterval(function (){
         $.ajax({
-            url: "/auth/generateToken",
+            url: "/auth/regenerateToken",
             type:"POST",
-            data:sendData,
             success: function (resultData) {
                 let keys=Object.keys(resultData.jwt);
                 console.log("keys",keys);
@@ -117,10 +113,7 @@
 
             }
         });
-
-        return false;
-    });
-
+                          },10000);
 
 
 </script>

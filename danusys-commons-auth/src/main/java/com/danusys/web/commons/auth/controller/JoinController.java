@@ -21,10 +21,19 @@ public class JoinController {
     }
 
 
+
+
     @RequestMapping("/hitest")
     public ModelAndView hitest(){
         ModelAndView mav =new ModelAndView();
         mav.setViewName("view/login/test.html");
+        return mav;
+    }
+
+    @RequestMapping("/hitest2")
+    public ModelAndView hitest2(){
+        ModelAndView mav =new ModelAndView();
+        mav.setViewName("view/login/test2.html");
         return mav;
     }
     @PostMapping("/join")

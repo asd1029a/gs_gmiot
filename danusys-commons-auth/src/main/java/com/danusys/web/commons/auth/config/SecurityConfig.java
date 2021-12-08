@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,6 +43,7 @@ import java.util.Map;
 @RequiredArgsConstructor        //di
 @Configuration
 @EnableWebSecurity        //기본 보안설정
+@EnableZuulProxy
 //@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)    //secure anotation 사용 가능 preAuthorize ,postAuthorize도  어노테이션 활성화
 //@Secured("ROLE_ADMIN")
 //@PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('

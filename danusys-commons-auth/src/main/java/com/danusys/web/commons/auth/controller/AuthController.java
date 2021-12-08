@@ -1,5 +1,7 @@
 package com.danusys.web.commons.auth.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
 import com.danusys.web.commons.auth.model.AuthenticationResponse;
 import com.danusys.web.commons.auth.model.TokenDto;
@@ -17,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+
 @RestController
 @Slf4j
 @RequestMapping("/auth")
@@ -27,7 +33,7 @@ public class AuthController {
 
 
     @Autowired
-    private JwtUtil jwtTokenUtil;
+    private JwtUtil jwtUtil;
 
     @Autowired
     private CommonsUserDetailsService userDetailsService;
@@ -58,9 +64,62 @@ public class AuthController {
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(user.getUsername());
 
-        final TokenDto jwt = jwtTokenUtil.generateToken(userDetails);
+        final TokenDto jwt = jwtUtil.generateToken(userDetails);
         log.info("jwt={}",jwt);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
+
+    @PostMapping("/regenerateToken")
+    public ResponseEntity<?> RegenerateToken(HttpServletRequest request) throws Exception{
+
+        Cookie []cookies=request.getCookies();
+        String accessToken=null;
+        String refreshToken=null;
+        TokenDto jwt=null;
+        if(cookies!= null){
+            for(Cookie cookie : cookies){
+                // log.info(cookie.getName());
+                //   log.info(cookie.getValue());
+                if(cookie.getName().equals("accessToken")) {
+                    accessToken = cookie.getValue();
+
+                    //log.info("cookie.getValue()={}",authorizationHeader.substring(7));
+                }
+
+                if(cookie.getName().equals("refreshToken"))
+                    refreshToken= cookie.getValue();
+
+            }
+        }
+        String username=null;
+        username=jwtUtil.extractUsername(accessToken);
+
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+
+
+        DecodedJWT decodedJWT = JWT.decode(accessToken);
+
+        //log.info("abc={}",abc.getExpiresAt());
+        //if(jwtUtil.isTokenExpired(authorizationHeader.substring(7)) ){
+
+            if(decodedJWT.getExpiresAt().before(new Date())){
+                //      log.info("-----------");
+                //    log.info("refreshToken={}",refreshToken);
+                //  log.info("getUsername={}",userDetails.getUsername());
+                if(jwtUtil.validateToken( refreshToken,userDetails)){
+                    //3.발급
+                    //accessToken=jwtUtil.generateToken(userDetails).getAccessToken();
+                    jwt = jwtUtil.generateToken(userDetails);
+
+                    //  log.info("new jwt ={}",jwt);
+
+                }
+            }
+
+
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+
     }
 
 
