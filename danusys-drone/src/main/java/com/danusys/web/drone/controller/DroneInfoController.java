@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
+import com.google.gson.Gson;
 
 import java.net.Socket;
 import java.util.HashMap;
@@ -39,8 +40,7 @@ public class DroneInfoController {
 	public void topicDroneSendTo(Map<String, Object> param) {
 		final String droneStart = String.valueOf(param.get("droneLog"));
 		log.info("###topicDroneSendTo : {}" + droneStart);
-
-
+		Gson gson = new Gson();
 //		if("start".equals(droneStart)) {
 			try (Socket socket = new Socket(tcpServerHost, tcpServerPort)) {
 				MavlinkConnection connection = MavlinkConnection.create(
@@ -51,7 +51,8 @@ public class DroneInfoController {
 				while ((message = connection.next()) != null) {
 					Object p = message.getPayload();
 					messages.put(p.getClass().getSimpleName(), p);
-					this.simpMessagingTemplate.convertAndSend("/topic/drone", HtmlUtils.htmlEscape(p.toString()));
+					String jsonString = "{\"" + p.getClass().getSimpleName() + "\":" + gson.toJson(p) + "}";
+					this.simpMessagingTemplate.convertAndSend("/topic/drone", jsonString);
 					if("stop".equals(droneStart))
 						break;
 				}

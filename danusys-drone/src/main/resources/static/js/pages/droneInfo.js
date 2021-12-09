@@ -19,9 +19,7 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/drone', function (drone) {
-            console.log( drone )
-
-            // showDroneInfo(drone.body);
+            console.log(JSON.parse(drone.body));
         });
     });
 }
