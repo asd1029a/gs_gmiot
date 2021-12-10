@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,19 +52,23 @@ public class AuthController {
     public ResponseEntity<?> createAuthenticationToken(User user) throws Exception{
         // requestbody일경우 폼태그가 먹지않음 그래서 폼태그에서입력받은값을 json으로 변경해야됨
         log.info("user={},{}",user.getUsername(),user.getPassword());
+        /*
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
 
             );
+            log.info("ccc");
         }
         catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
 
+         */
+        log.info("bbb");
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(user.getUsername());
-
+        log.info("aaa");
         final TokenDto jwt = jwtUtil.generateToken(userDetails);
         log.info("jwt={}",jwt);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));

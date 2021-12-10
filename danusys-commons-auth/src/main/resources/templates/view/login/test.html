@@ -97,7 +97,7 @@
             password: $("#pwd").val()
         }
         $.ajax({
-            url: "/auth/generateToken",
+            url: "/ho/auth/generateToken",
             type:"POST",
             data:sendData,
             success: function (resultData) {

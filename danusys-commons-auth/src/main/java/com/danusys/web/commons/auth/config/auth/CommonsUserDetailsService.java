@@ -23,4 +23,6 @@ public class CommonsUserDetailsService implements UserDetailsService {
         User user =userRepository.findByUsername(username);
         return new CommonsUserDetails(user);
     }
+
 }
+

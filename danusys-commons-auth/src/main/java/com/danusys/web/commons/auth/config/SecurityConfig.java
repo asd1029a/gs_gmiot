@@ -29,6 +29,7 @@ import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
+import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +44,8 @@ import java.util.Map;
 @RequiredArgsConstructor        //di
 @Configuration
 @EnableWebSecurity        //기본 보안설정
-@EnableZuulProxy
+
+
 //@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)    //secure anotation 사용 가능 preAuthorize ,postAuthorize도  어노테이션 활성화
 //@Secured("ROLE_ADMIN")
 //@PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('
@@ -54,10 +56,9 @@ import java.util.Map;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-    private final CorsFilter corsFilter;
-
-
+    private final CorsConfig corsConfig;
     private final JwtRequestFilter jwtRequestFilter;
+
 
     @Value("#{'${permit.all.page}'.split(',')}")
     private String[] permitAll;
@@ -80,7 +81,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
 
-        httpSecurity.csrf().disable()
+        httpSecurity
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilter(corsConfig.corsFilter())
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(permitAll).permitAll()
                 .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
@@ -90,8 +94,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        //httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+
     }
+
+
 
     //encorder
 
