@@ -8,7 +8,7 @@
     <script src="/js/pages/flying.js" defer></script>
 </head>
 
-<section layout:fragment="content">
+<th:block layout:fragment="content">
     <div class="droneMap">
         <th:block th:insert="/view/commons/map">
         </th:block>
@@ -212,7 +212,7 @@
         </div>
         <button class="lnbToggle"><span></span></button>
     </div>
-</section>
+</th:block>
 
 <footer layout:fragment="footer">
 </footer>
