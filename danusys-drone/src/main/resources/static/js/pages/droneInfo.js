@@ -25,12 +25,6 @@ function connect() {
     });
 }
 
-/*var dataSet;
-var obj = {};
-dataSet = droneArr.map(rtnVal => {
-    return obj[rtnVal] = JSON.parse(drone[rtnVal])
-})*/
-
 function disconnect() {
     if (stompClient !== null) {
         stompClient.disconnect();
