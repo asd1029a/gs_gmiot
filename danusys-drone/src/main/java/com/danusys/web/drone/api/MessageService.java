@@ -139,6 +139,11 @@ public class MessageService {
                     .z(10)
                     .build(), linkId, timestamp, secretKey);
 
+
+//            https://map.kakao.com/link/map/37.4456046,126.8953084
+//            MavCmd.MAV_CMD_NAV_WAYPOINT
+
+
             //MissionCurrent|MissionItemInt
             //PositionTargetGlobalInt
             final String objectNames = "ParamValue|MissionCurrent|PositionTargetGlobalInt|Timesync|Attitude|Ahrs|Ahrs2|A|ttitude|BatteryStatus|EkfStatusReport|EscTelemetry1To4|GlobalPositionInt|GpsGlobalOrigin|GpsRawInt|Heartbeat|HomePosition|Hwstatus|LocalPositionNed|Meminfo|MountStatus|NavControllerOutput|PowerStatus|RawImu|RcChannels|ScaledImu2|ScaledImu3|ScaledPressure|ScaledPressure2|ServoOutputRaw|Simstate|Statustext|SysStatus|SystemTime|TerrainReport|VfrHud|Vibration";
