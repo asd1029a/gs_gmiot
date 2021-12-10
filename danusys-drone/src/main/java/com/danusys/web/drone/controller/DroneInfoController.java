@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.stream.Collectors.*;
 
@@ -42,30 +43,36 @@ public class DroneInfoController {
 		log.info("###topicDroneSendTo : {}" + droneStart);
 		Gson gson = new Gson();
 //		if("start".equals(droneStart)) {
+
 			try (Socket socket = new Socket(tcpServerHost, tcpServerPort)) {
 				MavlinkConnection connection = MavlinkConnection.create(
 						socket.getInputStream(),
 						socket.getOutputStream());
+				final StringBuilder jsonMessage = new StringBuilder();
 
 				MavlinkMessage message;
 				while ((message = connection.next()) != null) {
 					Object p = message.getPayload();
-					messages.put(p.getClass().getSimpleName(), p);
-					String jsonString = "{\"" + p.getClass().getSimpleName() + "\":" + gson.toJson(p) + "}";
-					this.simpMessagingTemplate.convertAndSend("/topic/drone", jsonString);
+					messages.put(p.getClass().getSimpleName(), gson.toJson(p));
+
+					if( message.getSequence() == 255 ) {
+						this.simpMessagingTemplate.convertAndSend("/topic/drone", gson.toJson(messages));
+						messages = new HashMap<>();
+					}
+
 					if("stop".equals(droneStart))
 						break;
 				}
 
-				log.info("###topicDroneSendTo last : {}" +
-						messages.values().stream()
-								.map(String::valueOf)
-								.collect(joining("\n"))
-				);
-
-			this.simpMessagingTemplate.convertAndSend("/topic/drone", HtmlUtils.htmlEscape(messages.values().stream()
-					.map(String::valueOf)
-					.collect(joining("\n"))));
+//				log.info("###topicDroneSendTo last : {}" +
+//						messages.values().stream()
+//								.map(String::valueOf)
+//								.collect(joining("\n"))
+//				);
+//
+//			this.simpMessagingTemplate.convertAndSend("/topic/drone", HtmlUtils.htmlEscape(messages.values().stream()
+//					.map(String::valueOf)
+//					.collect(joining("\n"))));
 
 			} catch (Exception e) {
 				e.printStackTrace();

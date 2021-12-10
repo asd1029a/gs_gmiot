@@ -1,4 +1,4 @@
-package com.danusys.web.drone.api;
+package com.danusys.web.drone;
 
 import com.google.gson.Gson;
 import io.dronefleet.mavlink.common.Heartbeat;
@@ -7,6 +7,10 @@ import io.dronefleet.mavlink.common.MavState;
 import io.dronefleet.mavlink.common.MavType;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Project : danusys-webservice-parent
@@ -37,10 +41,6 @@ public class ObjectToJson {
         System.out.println(jsonString);
         System.out.println("{\"" + object.getClass().getSimpleName() + "\":" + jsonString + "}");
 
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String str = objectMapper.writeValueAsString(object);
-//
-//        System.out.println(str);
 
     }
 }
