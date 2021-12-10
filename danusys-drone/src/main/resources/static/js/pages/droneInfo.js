@@ -19,14 +19,17 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/drone', function (drone) {
-            var drone = JSON.parse(drone.body);
-            var globalPositionInt = JSON.parse(drone.GlobalPositionInt);
-
-            console.log(globalPositionInt);
-
+            let droneData;
+            droneData = setDroneData(drone);
         });
     });
 }
+
+/*var dataSet;
+var obj = {};
+dataSet = droneArr.map(rtnVal => {
+    return obj[rtnVal] = JSON.parse(drone[rtnVal])
+})*/
 
 function disconnect() {
     if (stompClient !== null) {
@@ -45,6 +48,16 @@ function showDroneInfo(message) {
     // $("#showDroneInfo").append("<tr><td>" + message + "</td></tr>");
     // $("#showDroneInfo").html(message);
 
+}
+
+function setDroneData(obj) {
+    let bodyData = JSON.parse(obj.body);
+    let droneKeyArr = Object.keys(bodyData);
+    let droneData = {};
+    droneKeyArr.map(data => {
+        return droneData[data] = JSON.parse(bodyData[data]);
+    })
+    return droneData;
 }
 
 $(function () {
