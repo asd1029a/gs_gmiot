@@ -34,7 +34,7 @@
   * lombok 설치
 * 개발 툴
   * Eclipse STS
-  * InteliJ CE(권장)
+  * InteliJ(권장)
 
 ---
 ### 소스 내려 받기 / 빌드
