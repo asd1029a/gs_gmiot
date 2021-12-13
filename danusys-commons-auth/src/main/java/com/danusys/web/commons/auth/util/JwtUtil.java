@@ -86,7 +86,6 @@ public class JwtUtil {
         // tokenDto 타입으로 리턴
         return TokenDto.builder()
                 .accessToken(accessToken)
-                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
                 .refreshToken(refreshToken)
                 .build();
 

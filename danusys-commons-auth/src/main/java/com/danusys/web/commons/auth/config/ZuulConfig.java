@@ -28,10 +28,10 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Component
 @Slf4j
-@Order(0)
+
 public class ZuulConfig extends ZuulFilter {
-    @Autowired
-    private CommonsUserDetailsService userDetailsService;
+    //@Autowired
+    //private CommonsUserDetailsService userDetailsService;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     //
@@ -47,9 +47,9 @@ public class ZuulConfig extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 0;
+        return 1;
     }
-
+//가지고만있으면
     @Override
     public boolean shouldFilter() {
         return true;
@@ -57,16 +57,16 @@ public class ZuulConfig extends ZuulFilter {
 
     @Override
     public Object run() {
+/*
 
+            RequestContext ctx = RequestContext.getCurrentContext();
+            HttpServletRequest request = ctx.getRequest();
 
-
-
-             RequestContext ctx = RequestContext.getCurrentContext();
-             HttpServletRequest request = ctx.getRequest();
+            String url = request.getRequestURI();
 
 
             Cookie[] cookies = request.getCookies();
-
+            //쿠키안에
             log.info("pre");
             ctx.addZuulRequestHeader("a","b");
 
@@ -92,7 +92,7 @@ public class ZuulConfig extends ZuulFilter {
             }
 
 
-
+*/
 
 
         return null;

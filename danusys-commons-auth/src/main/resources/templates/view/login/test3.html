@@ -56,7 +56,7 @@
     </script>
 </head>
 
-<body>
+<body onload="test()">
 <div class="login-wrap">
     <div class="login-img" id="loginImg">
         <dl>
@@ -90,35 +90,19 @@
 
 </body>
 <script>
+function test(){
 
-    $(".login-btn").on("click", function () {
-        const sendData = {
-            username: $("#id").val(),
-            password: $("#pwd").val()
-        }
-        $.ajax({
-            url: "/auth/generateToken",
-            type:"POST",
-            data:sendData,
-            success: function (resultData) {
-                let keys=Object.keys(resultData.jwt);
-                console.log("keys",keys);
-                console.log("resultData.jwt",resultData.jwt);
-                //localStorage.setItem(key[0],resultData[key]);
-                console.log("resultData.jwt[keys[0]",resultData.jwt[keys[0]]);
-                console.log("resultData.jwt[keys[1]",resultData.jwt[keys[1]]);
-                //console.log(localStorage.getItem(key));
-                console.log("keys[1]=",keys[1]);
+    var req = new XMLHttpRequest();
+    req.open('GET', document.location, false);
+    req.setRequestHeader("Authorization","Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkYW51IiwiaWF0IjoxNjM5MTIyNDg5LCJleHAiOjE2MzkxMjg0ODl9.qJ0WS7Zm3iJMZXfZK9NbBtPXmbKROjg6YW7XrHhaJCA");
+    req.send(null);
+    var headers = req.getAllResponseHeaders().toLowerCase();
+    alert(headers);
 
-                document.cookie=keys[0]+'='+resultData.jwt[keys[0]];//s + "; " + keys[1]+'='+resultData.jwt[keys[1]] ;
-                document.cookie=keys[1]+'='+resultData.jwt[keys[1]];
-             //   document.cookie=keys[2]+'='+resultData.jwt[keys[2]];
 
-            }
-        });
+}
 
-        return false;
-    });
+
 
 
 

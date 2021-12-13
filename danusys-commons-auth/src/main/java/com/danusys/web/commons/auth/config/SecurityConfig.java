@@ -2,15 +2,20 @@ package com.danusys.web.commons.auth.config;
 
 
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
+import com.danusys.web.commons.auth.filter.BeforeJwtRequestFilter;
 import com.danusys.web.commons.auth.filter.JwtRequestFilter;
 
+import com.netflix.zuul.ZuulFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -53,11 +58,14 @@ import java.util.Map;
 //해야할일 1. form 로그인시 처리되게
 //2. 프론트에서 세션으로 jwt 저장
 //3. refreshtoekn,유효기간 달아
+
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     private final CorsConfig corsConfig;
-    private final JwtRequestFilter jwtRequestFilter;
+ //  private final JwtRequestFilter jwtRequestFilter;
+
+
 
 
     @Value("#{'${permit.all.page}'.split(',')}")
@@ -68,6 +76,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("#{'${role.admin.page}'.split(',')}")
     private String[] roleAdminPage;
+
+   // @Bean
+   // public BeforeJwtRequestFilter beforejwtRequestFilter() {
+  //      return new BeforeJwtRequestFilter();
+  //  }
+    @Bean
+    public JwtRequestFilter jwtRequestFilter() {
+        return new JwtRequestFilter();
+    }
+
 
     @Autowired
     private CommonsUserDetailsService myUserDetailsService;
@@ -82,13 +100,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         httpSecurity
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+/*
+                .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/**").permitAll()
+                .anyRequest().permitAll()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+ */
+
                 .addFilter(corsConfig.corsFilter())
+             //   .addFilterBefore(beforejwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(permitAll).permitAll()
-                .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
-                .antMatchers(roleAdminPage).access("hasRole('ROLE_ADMIN')")
+              //  .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
+            //    .antMatchers(roleAdminPage).access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
@@ -245,8 +275,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 }
-
-
 
 
 

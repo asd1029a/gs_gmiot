@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequiredArgsConstructor
 public class JoinController {
@@ -16,8 +18,9 @@ public class JoinController {
     private final UserRepository userRepository;
 
     @RequestMapping("/hi")
-    public String hi(){
-    return  "hi";
+    public String hi(HttpServletRequest request){
+        String test=request.getHeader("Authorization");
+    return  test;
     }
 
 
@@ -30,10 +33,16 @@ public class JoinController {
         return mav;
     }
 
-    @RequestMapping("/hitest2")
+    @RequestMapping("/tokenTest")
     public ModelAndView hitest2(){
         ModelAndView mav =new ModelAndView();
         mav.setViewName("view/login/test2.html");
+        return mav;
+    }
+    @RequestMapping("/hitest3")
+    public ModelAndView hitest3(){
+        ModelAndView mav =new ModelAndView();
+        mav.setViewName("view/login/test3.html");
         return mav;
     }
     @PostMapping("/join")

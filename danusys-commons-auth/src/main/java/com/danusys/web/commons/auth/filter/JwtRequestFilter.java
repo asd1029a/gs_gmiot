@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -26,13 +27,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.util.Date;
 import java.util.stream.Collectors;
 
 
 @Slf4j
-@Component
+
+
 public class JwtRequestFilter extends OncePerRequestFilter {
     //public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -56,16 +59,27 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
+
+
+
+
+
+       String authorizationHeader = request.getHeader("Authorization");
         String refreshToken = request.getHeader("RefreshHeader");
 
-        log.info("header1={}", authorizationHeader);
-        log.info("header2={}", refreshToken);
-        log.info("header3={}", request.getHeader("a"));
+        //String authorizationHeader = null;
+      //  String refreshToken = null;
 
-        //      Cookie[] cookies=request.getCookies();
+      // String url = request.getRequestURI();
+     //   log.info("headera={}",response.getHeader("a"));
+  //      log.info("header1={}", authorizationHeader);
+  //      log.info("header2={}", refreshToken);
+   //     log.info("header3={}", request.getHeader("a"));
+
+        Cookie[] cookies=request.getCookies();
         String accessTokenValue;
-        /*
+      //  if(cookies==null)
+      //      log.info("where is cookies");
         if(cookies!= null){
             for(Cookie cookie : cookies){
                 // log.info(cookie.getName());
@@ -73,15 +87,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 if(cookie.getName().equals("accessToken")) {
                     authorizationHeader = "Bearer " + cookie.getValue();
 
-                    //log.info("cookie.getValue()={}",authorizationHeader.substring(7));
+                    log.info("cookie.getValue()={}",authorizationHeader.substring(7));
                 }
 
                 if(cookie.getName().equals("refreshToken"))
                     refreshToken= cookie.getValue();
-
+                    log.info("refreshToken={}",refreshToken);
             }
         }
-            */
+
         //log.info("authrizationHeader={}",authorizationHeader);
         String username = null;
         String jwt = null;
