@@ -40,6 +40,7 @@ public class ZuulConfig extends ZuulFilter {
     @Override
     public String filterType() {
 
+
        // return ROUTE_TYPE;
        return "pre";
        // return POST_TYPE;
