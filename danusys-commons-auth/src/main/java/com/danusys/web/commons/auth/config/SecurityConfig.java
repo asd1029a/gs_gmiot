@@ -35,8 +35,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.Filter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Project : danusys-webservice-parent
@@ -68,19 +67,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 
-    @Value("#{'${permit.all.page}'.split(',')}")
-    private String[] permitAll;
+    @Value("#{'${permit.all.page.basic}'.split(',')}")
+    private String[] permitAllBasic;
 
+    @Value("#{'${permit.all.page.add}'.split(',')}")
+    private String[] permitAllAdd;
     @Value("#{'${role.manager.page}'.split(',')}")
     private String[] roleManagerPage;
 
+
+    private String[] permitAll=null;
     @Value("#{'${role.admin.page}'.split(',')}")
     private String[] roleAdminPage;
 
-   // @Bean
-   // public BeforeJwtRequestFilter beforejwtRequestFilter() {
-  //      return new BeforeJwtRequestFilter();
-  //  }
+
     @Bean
     public JwtRequestFilter jwtRequestFilter() {
         return new JwtRequestFilter();
@@ -98,33 +98,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
+        List<String> list=new ArrayList<String>();
+        Collections.addAll(list,permitAllBasic);
+        Collections.addAll(list,permitAllAdd);
 
+        permitAll=list.toArray(new String[list.size()]);
+        log.info("permitAll={}",permitAll);
         httpSecurity
-/*
+                .addFilter(corsConfig.corsFilter()) //corsconfig
                 .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .anyRequest().permitAll()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
- */
-
-                .addFilter(corsConfig.corsFilter())
-             //   .addFilterBefore(beforejwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
-                .csrf().disable()
-                .authorizeRequests()
+                .csrf().disable()       //서버에 인증정보를 보관하지 않기때문에 불필요
+                .authorizeRequests() //시큐리티 처리에 HttpServletRequest를 이용한다
                 .antMatchers(permitAll).permitAll()
-              //  .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
-            //    .antMatchers(roleAdminPage).access("hasRole('ROLE_ADMIN')")
+                .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
+                .antMatchers(roleAdminPage).access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        //httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+
 
     }
 
@@ -272,6 +265,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
      */
+
 
 
 }
