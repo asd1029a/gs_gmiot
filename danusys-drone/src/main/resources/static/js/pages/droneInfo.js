@@ -19,8 +19,8 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/drone', function (drone) {
-            let droneData;
-            droneData = setDroneData(drone);
+            let droneData = setDroneData(drone);
+            setDroneDraw(droneData);
         });
     });
 }
