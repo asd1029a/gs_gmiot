@@ -1,0 +1,45 @@
+@startuml
+title 토큰인증방식
+actor Client
+group 최초인증
+Client -> JwtRequestFilter : POST /generateToken with \n username & password
+
+JwtRequestFilter -> AuthController :
+AuthController -> AuthenticationManager :Validate username & password\n using spring authenticate()
+AuthenticationManager -> UserDetailService : Load User Details with username from Database
+UserDetailService -> AuthController : return UserDetails
+AuthController -> JwtUtil : Call generateToken(UserDetails) method to genrate a valid token
+JwtUtil -> AuthController : Return a valid Token
+AuthController -> Client : Return a valid Token
+end group
+
+group 권한이 있는 경우
+Client ->JwtRequestFilter : 페이지 요청
+JwtRequestFilter -> JwtRequestFilter : get request cookies
+JwtRequestFilter -> JwtUtil : extract user name with access token
+JwtUtil -> JwtRequestFilter : return username
+JwtRequestFilter -> JwtUtil : validateToken(jwt,UserDetail)
+JwtUtil -> JwtRequestFilter : 검증 여부 true false
+JwtRequestFilter -> JwtRequestFilter : SecurityContextHolder\n.getContext()\n.setAuthentication\n(UsernamePasswordAuthenticationToken)
+JwtRequestFilter -> Client : 인증 ok ,권한 ok
+
+end group
+
+
+group refreshtoken으로 token 재요청 (5분마다)
+Client -> JwtRequestFilter : POST /regenerateToken
+JwtRequestFilter -> JwtRequestFilter : check if \nrequest-cookie \n has token
+JwtRequestFilter -> AuthController :
+AuthController -> JwtUtil : extract username with accessToken
+JwtUtil -> AuthController : return username
+AuthController -> UserDetailService : Load User Details with username from Database
+UserDetailService -> AuthController : return UserDetails
+AuthController -> AuthController :accessToken 유효 기간 체크
+AuthController -> JwtUtil : validateToken(refreshtoken,UserDetails)
+JwtUtil -> AuthController : 검증 여부 true false
+AuthController -> JwtUtil : Call generateToken(UserDetails) method to genrate a valid token
+JwtUtil -> AuthController : Return a valid Token
+AuthController->Client : Return a valid Token
+
+end group
+@enduml

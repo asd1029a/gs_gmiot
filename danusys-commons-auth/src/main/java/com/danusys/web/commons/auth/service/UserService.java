@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
+
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -23,13 +23,13 @@ public class UserService {
 
     }
     @Transactional
-    public User updateUser(String userName, User user) {
+    public User updateUser(String userName,String refreshToken) {
         User findUser = this.findUser(userName, "Error update user id");
 
-        findUser.setRefreshToken(user.getRefreshToken());
+        findUser.setRefreshToken(refreshToken);
 
-        return userRepository.save(findUser);
-//        return findUser;
+    //    return userRepository.save(findUser);
+     return findUser;
     }
 
 }
