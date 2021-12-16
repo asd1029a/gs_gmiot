@@ -69,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						, "/ui/**"
                         , "/mntr/**"
 						, "/pages/**"
+						, "/pages/inqry/**"
 						, "/webjars/**" ).permitAll()
 				.anyRequest().authenticated()
 				.and()

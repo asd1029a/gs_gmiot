@@ -21,8 +21,13 @@
     <th:block th:replace="fragments/default/header :: headerFragment">
     </th:block>
 
-    <th:block layout:fragment="content">
-    </th:block>
+    <div class="inquiry">
+        <th:block th:replace="fragments/inqry/nav :: navFragment">
+        </th:block>
+
+        <th:block layout:fragment="content">
+        </th:block>
+    </div>
 
     <th:block th:insert="fragments/default/includes :: includes_footer(~{::pagesScript})">
     </th:block>

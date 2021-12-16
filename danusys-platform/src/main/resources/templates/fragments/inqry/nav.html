@@ -5,10 +5,10 @@
         <ul class="accordion">
             <li id="one" class="on">
                 <a href="#one">이벤트 관리<span>20</span></a>
-                <ul class="sub-menu">
-                    <li class="on"><a href="#one">스마트 도시 이벤트<span>12</span></a></li>
-                    <li><a href="#one">시설물 장애 이벤트<span>8</span></a></li>
-                </ul>
+                <dl class="sub-menu">
+                    <dd id="event1"><a href="/pages/inqry/event1">스마트 도시 이벤트<span>12</span></a></dd>
+                    <dd id="event2"><a href="/pages/inqry/event2">시설물 장애 이벤트<span>8</span></a></dd>
+                </dl>
             </li>
             <li id="two" class="">
                 <a href="#two">개소 관리<span>26</span></a>
@@ -26,11 +26,25 @@
     </aside>
     <script>
        $(function() {
-            let path = "[[${#httpServletRequest.getRequestURI()}]]";
+           /* let path = "[[${#httpServletRequest.getRequestURI()}]]";
             $(".accordion li").map((i, el) => {
-                debugger;
-                if(path.indexOf(el.id) > -1) $(el).addClass("on");
-            })
+                if(path.indexOf(el.id) > -1) $(el).addClass("active");
+            })*/
+
+           $(".accordion > li").click(function(e) {
+
+               $(".accordion > li").removeClass('on');
+               $(e.currentTarget).addClass('on');
+           })
+           /*$(".sub-menu dd").click(function(e) {
+
+               //$(".sub-menu dd").removeClass('on');
+               $(e.target).addClass('on');
+           })*/
+           let path = "[[${#httpServletRequest.getRequestURI()}]]";
+           $(".sub-menu dd").map((i, el) => {
+               if(path.indexOf(el.id) > -1) $(el).addClass("on");
+           })
        })
     </script>
 </th:block>
