@@ -91,7 +91,17 @@
 </body>
 <script>
 
-    $(".login-btn").on("click", function () {
+
+
+    $(".login-btn").on("click",function () {
+
+        if ($('#id').val() == "") {
+            alert("아이디를 입력하세요");
+            return false;
+        } else if ($('#pwd').val() == "") {
+            alert("비밀번호를 입력하세요");
+            return false;
+        }
         const sendData = {
             username: $("#id").val(),
             password: $("#pwd").val()
@@ -101,12 +111,14 @@
             type: "POST",
             data: sendData,
             success: function (resultData) {
-                let keys = Object.keys(resultData.jwt);
+
+                let keys = Object.keys(resultData);
                 keys.forEach(key => {
-                    if (key === 'refreshToken' || key === 'accessToken') {
-                        document.cookie = key + '=' + resultData.jwt[key];
+                    if (key === 'accessToken') {
+                        document.cookie = key + '=' + resultData[key];
                     }
                 });
+                document.location="/pages/mntr";
             }
         });
 

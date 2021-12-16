@@ -19,7 +19,7 @@ public class CommonsUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("loadUserByUsername");
+        //log.info("loadUserByUsername");
         User user =userRepository.findByUsername(username);
         return new CommonsUserDetails(user);
     }

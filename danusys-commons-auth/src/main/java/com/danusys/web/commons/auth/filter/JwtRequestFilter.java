@@ -67,9 +67,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                   //  log.info("cookie.getValue()={}", authorizationHeader.substring(7));
                 }
 
-            //    if (cookie.getName().equals("refreshToken"))
-              //      refreshToken = cookie.getValue();
-                //log.info("refreshToken={}", refreshToken);
 
             }
         }
@@ -98,7 +95,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
-                log.info("validateToken");
+              //  log.info("validateToken");
                 //userDetails.getAuthorities().forEach(r-> log.info("test={}",r));
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

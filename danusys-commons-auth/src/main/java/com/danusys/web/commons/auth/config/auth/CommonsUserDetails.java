@@ -31,6 +31,15 @@ public class CommonsUserDetails implements UserDetails{
         return user.getUsername();
     }
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        user.getRoleList().forEach(r -> {
+            authorities.add(()->{ return r;});
+        });
+        return authorities;
+    }
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -51,12 +60,5 @@ public class CommonsUserDetails implements UserDetails{
         return true;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        user.getRoleList().forEach(r -> {
-            authorities.add(()->{ return r;});
-        });
-        return authorities;
-    }
+
 }
