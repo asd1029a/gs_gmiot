@@ -2,39 +2,25 @@ package com.danusys.web.commons.auth.config;
 
 
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
-import com.danusys.web.commons.auth.filter.BeforeJwtRequestFilter;
+import com.danusys.web.commons.auth.config.security.AccessDeniedHandler;
+import com.danusys.web.commons.auth.config.security.CustomAuthenticationEntryPoint;
 import com.danusys.web.commons.auth.filter.JwtRequestFilter;
 
-import com.netflix.zuul.ZuulFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.CorsFilter;
 
-import javax.servlet.Filter;
 import java.util.*;
 
 /**
@@ -64,8 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CorsConfig corsConfig;
  //  private final JwtRequestFilter jwtRequestFilter;
 
+    private final AccessDeniedHandler accessDeniedHandler;
 
-
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Value("#{'${permit.all.page.basic}'.split(',')}")
     private String[] permitAllBasic;
@@ -87,6 +74,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+//    @Bean
+//    public CustomAuthenticationEntryPoint customAuthenticationEntryPoint() {
+//        return new CustomAuthenticationEntryPoint("/login/error");
+////    }
+//    @Bean
+//    public AuthenticationFailureHandler authenticationFailureHandler() {
+//        return new LoginFailureHandler2("/login/error");
+//    }
+
     @Autowired
     private CommonsUserDetailsService myUserDetailsService;
 
@@ -94,6 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(myUserDetailsService);
     }
+
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -115,6 +112,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

@@ -3,9 +3,16 @@
 proj4.defs("EPSG:5181","+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 ol.proj.proj4.register(proj4);
 
+
+let epsg5181 = new ol.proj.Projection({
+	code : "EPSG:5181",
+	extent : [-30000, -60000, 494288, 988576],
+	units : 'm'
+});
+
 /**
  * 맵생성, 레이어생성 등등 기본적인 맵 셋팅을 해주는 class 이다.
- * 
+ *
  * @class mapManager
  * @property {object} geocoder - 카카오 geocoder 담아주는 property
  * @property {object} ps - new window.kakao.maps.services.Places();
@@ -14,7 +21,7 @@ ol.proj.proj4.register(proj4);
  * @property {object} projection - 맵의 기본 projection 값 설정
  * @property {object} draw - draw layer 정보 설정
  * @property {object} sourceClear source 데이터 clear
- * @property {object} circleDraw circle draw 레이어 정보 설정 
+ * @property {object} circleDraw circle draw 레이어 정보 설정
  * @property {object} drawInteraction - draw interaction 값을 저장해서 삭제함
  */
 var mapManager = {
@@ -35,11 +42,11 @@ var mapManager = {
 	properties : {
 		id : null,
 		type : null,
-		/*lat : 35.264116707579205,
-		lon : 128.62390442253118,*/
-		lat : 37.4785138,
-		lon : 126.8646843,
-		center : null,
+		/*lat : 37.3616199494757,
+		lon : 126.93514995791503,*/
+		lat : 37.44457599567139,
+		lon : 126.89482519279865,
+			center : null,
 		projection : null,
 		resolutions : [
 			[2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25], // daum,
@@ -72,7 +79,7 @@ var mapManager = {
 			undefined// vworld
 		],
 		pro4j : [
-			'EPSG:5181', // daum
+			epsg5181, // daum
 			'', // naver
 			'EPSG:3857'// vworld
 		],
@@ -80,12 +87,12 @@ var mapManager = {
 			[
 				{
 					name : 'base',
-					prefix : '//map.daumcdn.net/map_2d_hd/1909dms/L', 
+					prefix : '//map.daumcdn.net/map_2d_hd/1909dms/L',
 					surffix : '.png'
 				},
 				{
 					name : 'satellite',
-					prefix : '//map.daumcdn.net/map_skyview/L', 
+					prefix : '//map.daumcdn.net/map_skyview/L',
 					surffix : '.jpg'
 				},
 				{
@@ -147,12 +154,12 @@ var mapManager = {
 			[
 				{
 					name : 'base',
-					prefix : '//map.daumcdn.net/map_2d_hd/1909dms/L', 
+					prefix : '//map.daumcdn.net/map_2d_hd/1909dms/L',
 					surffix : '.png'
 				},
 				{
 					name : 'satellite',
-					prefix : '//map.daumcdn.net/map_skyview/L', 
+					prefix : '//map.daumcdn.net/map_skyview/L',
 					surffix : '.jpg'
 				},
 				{
@@ -233,7 +240,7 @@ var mapManager = {
 			],
 		]
 	},
-	
+
 	/**
 	 *  map 생성 기능
 	 * @param {string} id - 맵생성 아이디
@@ -255,15 +262,15 @@ var mapManager = {
 		for (var i = 0, max = tileOptions.length; i < max; i++) {
 			this.createTileLayer(tileOptions[i].name, tileOptions[i].prefix, tileOptions[i].surffix);
 		}
-		
+
 		this.switchTileMap('btnRoadmap');
 	},
 	createTileGrid : function() {
 		let tileGrid = this.properties.extents[this.properties.type] == undefined ? undefined :
 			new ol.tilegrid.TileGrid({
-			origin: [this.properties.extents[this.properties.type][0], this.properties.extents[this.properties.type][1]],
-			resolutions: this.properties.resolutions[this.properties.type]
-		});
+				origin: [this.properties.extents[this.properties.type][0], this.properties.extents[this.properties.type][1]],
+				resolutions: this.properties.resolutions[this.properties.type]
+			});
 
 		this.properties.tileGrid = tileGrid;
 	},
@@ -280,17 +287,17 @@ var mapManager = {
 			console.log('주소정보 사용 불가');
 		}
 	},
-	
+
 	/**
 	 * map projection 값 셋팅
-	 * @param {string} type - (0 : daum, 1 : naver, 2 : openlayer) 
-	 * @function 
+	 * @param {string} type - (0 : daum, 1 : naver, 2 : openlayer)
+	 * @function
 	 */
 	createProjection : function(type) {
 		// this.properties.projection = this.properties.pro4j[type]
 		this.properties.projection = 'EPSG:4326'
 	},
-	
+
 	/**
 	 * 타일생성
 	 * @param {string} type - (0 : daum, 1 : naver, 2 : openlayer)
@@ -306,7 +313,8 @@ var mapManager = {
 				visible: true,
 				type: type,
 				source: new ol.source.XYZ({
-					// url: `${prefix}{z}/{y}/{x}${surffix}`,
+
+					/*url: `${prefix}{z}/{y}/{x}${surffix}`,*/
 					tileSize: 256,
 					tileGrid : this.properties.tileGrid,
 					projection : this.properties.pro4j[this.properties.type],
@@ -317,8 +325,8 @@ var mapManager = {
 					// tileSize: 512,
 					// minZoom: 0,
 					// tileGrid: new ol.tilegrid.TileGrid({
-					// 	origin: [this.properties.extents[this.properties.type][0], this.properties.extents[this.properties.type][1]],
-					// 	resolutions: this.properties.resolutions[this.properties.type]
+					//    origin: [this.properties.extents[this.properties.type][0], this.properties.extents[this.properties.type][1]],
+					//    resolutions: this.properties.resolutions[this.properties.type]
 					// }),
 					tileUrlFunction: function (tileCoord, pixelRatio, projection) {
 						let zType = mapManager.properties.type;
@@ -328,17 +336,18 @@ var mapManager = {
 						var z = resolution ? resolution.length - tileCoord[0] : tileCoord[0];
 						var x = tileCoord[1];
 						var y = zType == 0 ? -(tileCoord[2]) : tileCoord[2];
+
 						return prefix + z + '/' + y + '/' + x + surffix;
 					},
 				})
 			});
-			
+
 			this.map.addLayer(tileLayer);
 		} catch(e) {
 			console.log('error');
 		}
 	},
-	
+
 	/**
 	 * 맵생성
 	 * @function
@@ -358,12 +367,12 @@ var mapManager = {
 				zoomFactor: this.properties.zoomFactor[this.properties.type],
 				maxZoom : this.properties.maxZoom[this.properties.type],
 				minZoom : this.properties.minZoom[this.properties.type],
-		   	})
+			})
 		});
-		
+
 		this.map = map;
 	},
-	
+
 	/**
 	 * 맵 우측클릭 메뉴 생성
 	 * @function
@@ -371,40 +380,40 @@ var mapManager = {
 	createContextMenu : function(menuObj){
 		var contextmenu = new ContextMenu({
 			width: 170,
-		  	items: menuObj,
-		  	defaultItems: false
+			items: menuObj,
+			defaultItems: false
 		});
 		this.map.addControl(contextmenu);
 	},
-	
+
 	/**
 	 * vector layer 생성
 	 * @param {string} title - 레이어 타이틀 속성
 	 * @param {object} style - 레이어 스타일
 	 * @param {string} source - 레이어 소스
-	 * @return {Object} layer - layer 리턴 
+	 * @return {Object} layer - layer 리턴
 	 * @function
 	 */
 	createVectorLayer: function(title,style,source){
 		this.removeVectorLayer(title);
-		
+
 		var layer = new ol.layer.Vector({
 			title: title
 		});
-		
+
 		if(style != '' &&  style != null){
 			layer.setStyle(style);
 		}
-		
+
 		layer.setSource(source);
 		this.map.addLayer(layer);
-		
+
 		return layer;
 	},
 	/**
 	 * vector Layer 값 가져오는 기능
 	 * @param {string} vector layer 의 title
-	 * @function  
+	 * @function
 	 */
 	getVectorLayer: function(title) {
 		const layers = this.map.getLayers().getArray();
@@ -430,7 +439,7 @@ var mapManager = {
 			if(title == temp) return interaction[i];
 		}
 	},
-	
+
 	/**
 	 * 타일맵 변경 기능 기본,위성, 로드뷰 기능 사용
 	 * @param {string} type - 기본,위성,로드뷰 구분 하기위한 param
@@ -439,13 +448,13 @@ var mapManager = {
 	switchTileMap : function(type) {
 		const layers = this.map.getLayers().getArray();
 		var tilesId = '';
-	    if(type=='btnRoadmap'){
-	    	tilesId = 'base';
-	    	this.tiles = tilesId;
-	    } else if(type == 'btnSkyview'){
-	    	tilesId = 'satellite,hybrid';
-	    	this.tiles = tilesId;
-	    }
+		if(type=='btnRoadmap'){
+			tilesId = 'base';
+			this.tiles = tilesId;
+		} else if(type == 'btnSkyview'){
+			tilesId = 'satellite,hybrid';
+			this.tiles = tilesId;
+		}
 		for (var i = 0, max = layers.length; i < max; i++) {
 			const title = layers[i].get('title');
 			if($('#btnRoadview').hasClass('selected_btn') && title == 'roadView') {
@@ -454,11 +463,11 @@ var mapManager = {
 			tilesId.indexOf(title) > -1 || layers[i] instanceof ol.layer.Vector ? layers[i].setVisible(true) : layers[i].setVisible(false);
 		}
 	},
-	
+
 	/**
 	 * 로드뷰 기능
 	 * @param {string} type
-	 * @function 
+	 * @function
 	 */
 	btnRoadview : function(type){
 		if(type.indexOf('active') != 0){
@@ -470,7 +479,7 @@ var mapManager = {
 			mapManager.getVectorLayer('roadView').setVisible(true);
 		}
 	},
-	
+
 	/**
 	 * 사용하지 않음
 	 */
@@ -482,7 +491,7 @@ var mapManager = {
 			mapManager.getVectorLayer('traffic').setVisible(true);
 		}
 	},
-	
+
 	/**
 	 * 사용하지 않음
 	 */
@@ -494,7 +503,7 @@ var mapManager = {
 			mapManager.getVectorLayer('air_' + airType).setVisible(true);
 		}
 	},
-	
+
 	/**
 	 * overvieMap 생성
 	 * @function
@@ -515,34 +524,34 @@ var mapManager = {
 		})
 		this.map.addControl(this.overviewMap);
 	},
-	
+
 	setMapEventListener : function(name, listener) {
 		this.map.on(name, listener);
 	},
-	
+
 	removeMapEventListener : function(name, listener) {
 		this.map.un(name, listener);
 	},
-	
+
 	setMapViewEventListener : function(name, listener) {
 		this.map.getView().on(name, listener);
 	},
-	
+
 	removeMapViewEventListener : function(name, listener) {
 		this.map.getView().un(name, listener);
 	},
-	
+
 	getOverlay : function(type) {
 		return mapManager.map.getOverlayById(type);
 	},
-	
+
 	setOverlay : function(option) {
 		this.removeOverlayById(option.id);
-		
+
 		const overlay = new ol.Overlay(option);
-		
+
 		mapManager.map.addOverlay(overlay);
-		
+
 		return overlay;
 	},
 	removeOverlayById : function(id) {
@@ -557,7 +566,7 @@ var mapManager = {
 	},
 
 	/**
-	 * 주소 검색 기능 
+	 * 주소 검색 기능
 	 * @param {array} coords - 좌표
 	 * @param {function} callback - 팝업생성 콜백함수
 	 */
@@ -569,7 +578,7 @@ var mapManager = {
 			console.log('주소정보 사용 불가');
 		}
 	},
-	
+
 	/**
 	 * 지도 센터 정보 가져온다
 	 * @function
@@ -584,7 +593,7 @@ var mapManager = {
 			}
 		}
 	},
-	
+
 	/**
 	 * 맵 이동 이벤트
 	 * @function
@@ -592,7 +601,7 @@ var mapManager = {
 	createMapMoveEvent : function(){
 		// mapManager.setMapViewEventListener('propertychange', mapManager.mapCenterAddress);
 	},
-	
+
 	/**
 	 * map center 주소 가져오기 기능
 	 * @function
@@ -605,19 +614,19 @@ var mapManager = {
 		const resolution = mapManager.map.getView().getResolution() * 1;
 		const a = ol.proj.transform(center, mapManager.properties.projection, mapManager.properties.pro4j[mapManager.properties.type]);
 		const b = ol.proj.transform(coord, mapManager.properties.projection, mapManager.properties.pro4j[mapManager.properties.type]);
-		
+
 		//const distance = mapManager.wgs84Sphere.haversineDistance(a, b);
 		const duration = 500;
-		
+
 		const pan = ol.animation.pan({
 			source : center,
 			duration : duration
 		});
-		
+
 		mapManager.map.beforeRender(pan);
 		mapManager.map.getView().setCenter(coord);
 	},
-	
+
 	/**
 	 * map 확대,축소 이벤트
 	 * @param {string} level - 지도 줌 레벨
@@ -626,29 +635,29 @@ var mapManager = {
 	setZoom : function(level) {
 		const view = mapManager.map.getView();
 		const resolution = view.getResolution();
-		
+
 		const zoom = ol.animation.zoom({
 			resolution: resolution,
 			duration: 500
 		});
-		
+
 		mapManager.map.beforeRender(zoom);
 		//view.setResolution(resolution * factor);
 		mapManager.map.getView().setZoom(level);
 	}
-	
+
 };// mapManager
 
 /**
- * 맵 기능 버튼 관리 
+ * 맵 기능 버튼 관리
  * @class mapBtnFunc
  */
 var mapBtnFunc = {
 	properties : {
 	},
-	
+
 	/**
-	 * 맵 zoom in 기능 
+	 * 맵 zoom in 기능
 	 */
 	zoomIn : function() {
 		var nowZoom = mapManager.map.getView().getZoom();
@@ -656,7 +665,7 @@ var mapBtnFunc = {
 		//mapManager.map.getView().setZoom(zoomLevel);
 		mapManager.setZoom(zoomLevel);
 	},
-	
+
 	/**
 	 * 맵 zoom out 기능
 	 */
@@ -695,31 +704,31 @@ function clearDraw() {
  */
 function siteMntr(data){
 	const jsonObj = {};
-	
+
 	let purposeSpace = getLayerPurpose();
-	
+
 	jsonObj.sameLat = data.lat;
 	jsonObj.sameLon = data.lon;
 	jsonObj.purposeSpace = purposeSpace;
-	
+
 	$.ajax({
-	    contentType : "application/json; charset=utf-8",
-		type		: "POST",
-		url			: "/select/facility.selectSiteCctvList/action",
-		dataType	: "json",
-		data		: JSON.stringify(jsonObj),
-		async		: true
+		contentType : "application/json; charset=utf-8",
+		type      : "POST",
+		url         : "/select/facility.selectSiteCctvList/action",
+		dataType   : "json",
+		data      : JSON.stringify(jsonObj),
+		async      : true
 	}).done(function(result){
 		const datas = result.rows;
-    	if(datas=='sessionOut'){
+		if(datas=='sessionOut'){
 			alert('로그인 시간이 만료되었습니다.');
 			closeWindow();
 		}
-    	
-    	dialogManager.closeAll();
-		
+
+		dialogManager.closeAll();
+
 		for(var i = 0, max = datas.length; i < max; i++) {
-			
+
 			const dialogOption = {
 				draggable: true,
 				clickable: true,
@@ -729,9 +738,9 @@ function siteMntr(data){
 					height: '340px'
 				}
 			}
-			
+
 			const dialog = $.connectDialog(dialogOption);
-			
+
 			const videoOption = {};
 			videoOption.data = datas[i];
 			videoOption.parent = dialog;
@@ -742,8 +751,8 @@ function siteMntr(data){
 				dialogManager.close(dialog);
 			}
 		}
-		
+
 		dialogManager.sortDialog();
 	})
 }
-mapManager.init('map', 'minimap', 0);
+mapManager.init('map', 'minimap', 2);

@@ -79,3 +79,41 @@ function CustomSelectBox(selector){
     this.init(selector);
     this.initEvent();
 }
+
+const setDroneDraw = function(data) {
+    let source = createSource(data);
+    let style = droneLayerStyle;
+    //mapManager.createVectorLayer("fclt",style,source);
+    mapManager.createVectorLayer("drone", style, source);
+
+}
+
+const droneLayerStyle = function(feature) {
+    const imgSrc = createFcltMarker();
+    const style = new ol.style.Style({
+        image: new ol.style.Icon({ scale: 1, src: imgSrc }),
+        zIndex: 0
+    });
+    return style;
+}
+
+const createSource = function(data) {
+    let dronePosition = data.GlobalPositionInt;
+    let coordinates =  new ol.proj.transform([dronePosition.lon / 10000000,dronePosition.lat / 10000000],
+        mapManager.properties.projection, mapManager.properties.pro4j[mapManager.properties.type]);
+    const source = new ol.source.Vector({
+        features: [
+            new ol.Feature({
+                geometry : new ol.geom.Point(coordinates)
+            })
+        ]
+    });
+
+    return source;
+}
+
+const createFcltMarker = function() {
+    let imageSrc = '';
+    imageSrc = "/images/test/drone.png";
+    return imageSrc;
+}

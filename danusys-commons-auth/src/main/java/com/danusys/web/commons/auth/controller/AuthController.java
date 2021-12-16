@@ -6,7 +6,9 @@ import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
 import com.danusys.web.commons.auth.model.AuthenticationResponse;
 import com.danusys.web.commons.auth.model.TokenDto;
 import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.service.UserService;
 import com.danusys.web.commons.auth.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,11 +31,14 @@ import java.util.Date;
 @RestController
 @Slf4j
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
+
+    private final UserService userService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -61,6 +66,9 @@ public class AuthController {
 
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
+
+        }catch(NullPointerException e2){
+            throw new Exception("null pointException",e2);
         }
 
 
@@ -69,7 +77,8 @@ public class AuthController {
 
 
         final TokenDto jwt = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        userService.updateUser(user.getUsername(),jwt.getRefreshToken());
+        return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
     }
 
 
@@ -79,31 +88,37 @@ public class AuthController {
 
         Cookie[] cookies = request.getCookies();
         String accessToken = null;
-        String refreshToken = null;
+
         TokenDto jwt = null;
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("accessToken"))
                     accessToken = cookie.getValue();
 
-                if (cookie.getName().equals("refreshToken"))
-                    refreshToken = cookie.getValue();
-
             }
         }
+
         String username = null;
         username = jwtUtil.extractUsername(accessToken); //토큰에서 이름추출
+        log.info("username={}",username);
+        User user = userService.findUser(username,"error");
+
+
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
         DecodedJWT decodedJWT = JWT.decode(accessToken);
+        log.info("isTrue={}",decodedJWT.getExpiresAt());
+        log.info("isTrue={}",decodedJWT.getExpiresAt().after(new Date()));
 
-        if (decodedJWT.getExpiresAt().before(new Date())) {
-            if (jwtUtil.validateToken(refreshToken, userDetails)) {
+        if (decodedJWT.getExpiresAt().after(new Date())) {
+                log.info("hi");
+            if (jwtUtil.validateToken(user.getRefreshToken(), userDetails)) {
                 jwt = jwtUtil.generateToken(userDetails);
+                log.info("jwt={}",jwt);
             }
         }
 
-
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        userService.updateUser(username,jwt.getRefreshToken());
+        return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
 
     }
 

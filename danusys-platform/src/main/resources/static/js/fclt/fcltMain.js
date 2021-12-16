@@ -987,7 +987,7 @@ function deleteLine(feature) {
 		url			: "/ajax/delete/facility.deleteLine/action",
 		type		: "POST",
 		dataType	: "json",
-		data		: {JSON.stringify(jsonObj),
+		data		: {"param" : JSON.stringify(jsonObj)},
 		async		: false,
 		success		: function(result) {
 			alert('삭제가 완료되었습니다');

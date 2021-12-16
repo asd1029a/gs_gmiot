@@ -30,6 +30,7 @@ public class JoinController {
     public ModelAndView hitest(){
         ModelAndView mav =new ModelAndView();
         mav.setViewName("view/login/test.html");
+        mav.addObject("abc","123");
         return mav;
     }
 
