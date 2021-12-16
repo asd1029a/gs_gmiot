@@ -982,20 +982,20 @@ function deleteLine(feature) {
 	const jsonObj = {};
 	var seqNo = feature.getProperties().no;
 	jsonObj.seqNo = seqNo;
-		$.ajax({
-			contentType : "application/json; charset=utf-8",
-			url			: "/ajax/delete/facility.deleteLine/action",
-			type		: "POST",
-			dataType	: "json",
-			data		: JSON.stringify(jsonObj),
-			async		: false,
-			success		: function(result) {
-				alert('삭제가 완료되었습니다');
-			},
-			error		: function(error) {
-				alert("삭제 실패")
-			}
-		})
-	}
+	$.ajax({
+	    contentType : "application/json; charset=utf-8",
+		url			: "/ajax/delete/facility.deleteLine/action",
+		type		: "POST",
+		dataType	: "json",
+		data		: {"param" : JSON.stringify(jsonObj)},
+		async		: false,
+		success		: function(result) {
+			alert('삭제가 완료되었습니다');
+		},
+		error		: function(error) {
+			alert("삭제 실패")
+		}
+	})
+}
 
 
