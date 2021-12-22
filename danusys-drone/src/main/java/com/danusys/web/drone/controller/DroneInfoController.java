@@ -1,5 +1,6 @@
 package com.danusys.web.drone.controller;
 
+import com.google.gson.Gson;
 import io.dronefleet.mavlink.MavlinkConnection;
 import io.dronefleet.mavlink.MavlinkMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -8,15 +9,10 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.util.HtmlUtils;
-import com.google.gson.Gson;
 
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static java.util.stream.Collectors.*;
 
 @Slf4j
 @Controller
@@ -48,7 +44,6 @@ public class DroneInfoController {
 				MavlinkConnection connection = MavlinkConnection.create(
 						socket.getInputStream(),
 						socket.getOutputStream());
-				final StringBuilder jsonMessage = new StringBuilder();
 
 				MavlinkMessage message;
 				while ((message = connection.next()) != null) {
