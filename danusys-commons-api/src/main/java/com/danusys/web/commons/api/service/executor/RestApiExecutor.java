@@ -52,7 +52,9 @@ public class RestApiExecutor implements ApiExecutor {
         //TODO 암호화?
 
         //요청 파라미터 값 추출
-        final Map<String, Object> reqMap = apiRequestParams.stream().collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+        final Map<String, Object> reqMap = apiRequestParams
+                .stream()
+                .collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
         final String targetUrl = api.getTargetUrl() + api.getTargetPath();
         String result = "";
 
