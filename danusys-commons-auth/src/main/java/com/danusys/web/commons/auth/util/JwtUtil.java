@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class JwtUtil {
     @Value("${access.token.expire.time}")
     private long ACCESS_TOKEN_EXPIRE_TIME = 0  ;            // 10seconds
     @Value("${refresh.token.expire.time}")
-    private long REFRESH_TOKEN_EXPIRE_TIME  =0 ;  // 7일
+    private long REFRESH_TOKEN_EXPIRE_TIME  = 0 ;  // 7일
 
     public String extractUsername(String token) {
 
@@ -76,12 +77,12 @@ public class JwtUtil {
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken= Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(accessTokenExpiresIn)
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(SignatureAlgorithm.HS256,SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS512,SECRET_KEY)
                 .compact();
         // tokenDto 타입으로 리턴
         return TokenDto.builder()

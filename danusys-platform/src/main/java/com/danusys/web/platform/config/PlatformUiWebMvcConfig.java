@@ -32,7 +32,8 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("/pages/dashboard").setViewName("view/pages/dashboard");
         registry.addViewController("/pages/stats").setViewName("view/pages/stats");
         registry.addViewController("/pages/config").setViewName("view/pages/config");
-        registry.addViewController("/pages/inqry").setViewName("view/pages/inqry");
+        registry.addViewController("/pages/inqry/event1").setViewName("view/pages/inqry/event1");
+        registry.addViewController("/pages/inqry/event2").setViewName("view/pages/inqry/event2");
 
         super.addViewControllers(registry);
     }
