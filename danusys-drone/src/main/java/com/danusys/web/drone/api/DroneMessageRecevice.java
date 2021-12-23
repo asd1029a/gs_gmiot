@@ -17,7 +17,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class DroneMessageRecevice {
     public static void main(String[] args) {
-        try (Socket socket = new Socket("172.20.14.84", 14550)) {
+        //try (Socket socket = new Socket("172.20.14.84", 14550)) {
+            try (Socket socket = new Socket("172.20.14.87", 14550)) {
             MavlinkConnection connection = MavlinkConnection.create(
                     socket.getInputStream(),
                     socket.getOutputStream());

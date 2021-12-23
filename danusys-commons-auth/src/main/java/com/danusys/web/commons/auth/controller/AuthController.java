@@ -106,14 +106,13 @@ public class AuthController {
 
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
         DecodedJWT decodedJWT = JWT.decode(accessToken);
-        log.info("isTrue={}",decodedJWT.getExpiresAt());
-        log.info("isTrue={}",decodedJWT.getExpiresAt().after(new Date()));
+
 
         if (decodedJWT.getExpiresAt().after(new Date())) {
-                log.info("hi");
+
             if (jwtUtil.validateToken(user.getRefreshToken(), userDetails)) {
                 jwt = jwtUtil.generateToken(userDetails);
-                log.info("jwt={}",jwt);
+
             }
         }
 

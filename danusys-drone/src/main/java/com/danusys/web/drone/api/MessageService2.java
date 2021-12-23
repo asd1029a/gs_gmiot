@@ -41,7 +41,8 @@ public class MessageService2 {
         handler.setFormatter(formatter);
         logger.addHandler(handler);
 
-        try (Socket socket = new Socket("172.20.14.84", 14550)) {
+        //try (Socket socket = new Socket("172.20.14.84", 14550)) {
+            try (Socket socket = new Socket("172.20.14.87", 14550)) {
             MavlinkConnection connection = MavlinkConnection.create(
                     socket.getInputStream(),
                     socket.getOutputStream());

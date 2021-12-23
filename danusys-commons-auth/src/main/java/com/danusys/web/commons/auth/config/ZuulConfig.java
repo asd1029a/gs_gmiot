@@ -58,42 +58,36 @@ public class ZuulConfig extends ZuulFilter {
 
     @Override
     public Object run() {
-/*
+
 
             RequestContext ctx = RequestContext.getCurrentContext();
             HttpServletRequest request = ctx.getRequest();
 
-            String url = request.getRequestURI();
 
 
-            Cookie[] cookies = request.getCookies();
             //쿠키안에
             log.info("pre");
             ctx.addZuulRequestHeader("a","b");
 
-            if (cookies != null) {
                 log.info("hi2");
-                for (Cookie cookie : cookies) {
 
-                     //  log.info(cookie.getValue());
-                    if (cookie.getName().equals("accessToken")) {
-                        ctx.addZuulRequestHeader("Authorization", "Bearer " +cookie.getValue());
+
+
+                        ctx.addZuulRequestHeader("Auth", "Bearer ");
                     //    ctx.addZuulResponseHeader("Authorization", "Bearer " +cookie.getValue());
 
-                    }
 
-                    if (cookie.getName().equals("refreshToken")){
-                        ctx.addZuulRequestHeader("RefreshHeader", cookie.getValue());
-                     //     ctx.addZuulResponseHeader("RefreshHeader", cookie.getValue());
-                    }
+
+                        ctx.addZuulRequestHeader("Refres123er","1");
 
 
 
-                }
-            }
 
 
-*/
+
+
+
+
 
 
         return null;
