@@ -21,7 +21,7 @@ public class DroneControllController {
 
 
     @GetMapping("/move")
-    public void MoveDrone(float x, float y, float z) {
+    public void MoveDrone() {
         try (Socket socket = new Socket("172.20.14.87", 14550)) {
 
             MavlinkConnection connection = MavlinkConnection.create(
