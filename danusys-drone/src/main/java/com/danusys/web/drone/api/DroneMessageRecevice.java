@@ -90,7 +90,11 @@ public class DroneMessageRecevice {
                             message2.getPayload().getClass().getName().contains("Simstate") ||
                             message2.getPayload().getClass().getName().contains("Ahrs2") ||
                             message2.getPayload().getClass().getName().contains("Timesync") ||
-                            message2.getPayload().getClass().getName().contains("ParamValue")) {
+                            message2.getPayload().getClass().getName().contains("ParamValue") ||
+                            message2.getPayload().getClass().getName().contains("PositionTargetGlobalInt") ||
+                            message2.getPayload().getClass().getName().contains("EscTelemetry1To4")
+                    //여기서부터 내가작성
+                           ) {
                     } else {
                         System.out.println(message2.getPayload().getClass().getName() + " > " + message2 );
                         System.out.println("==========================================================================================");
