@@ -29,7 +29,9 @@
         <th:block layout:fragment="content">
         </th:block>
 
-        <footer th:replace="fragments/default/footer :: footerFragment">
+        <footer layout:fragment="footer">
+            <th:block th:replace="fragments/default/footer :: footerFragment">
+            </th:block>
         </footer>
     </div>
 </body>
