@@ -48,7 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/misn"
                         , "/log"
                         , "/config"
-                        , "/webjars/**" ).permitAll()
+                        , "/webjars/**"
+                        , "/hi4").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

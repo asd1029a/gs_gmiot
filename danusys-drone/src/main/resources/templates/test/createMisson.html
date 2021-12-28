@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+</head>
+<body>
+<table th:border="1" class="mission">
+    <tr>
+        <th>name</th>
+        <td><input type="text" id="name" name="name"></td>
+
+    </tr>
+
+    <button id="createMissionDetails">누르면.. 미션상세가 생겨요</button>
+    <button id="createMissionButton">누르면 미션이생겨요...</button>
+</table>
+
+</body>
+
+
+<script>
+    let i=0;
+
+    $("#createMissionDetails").on("click",function (){
+        $(".mission").append(`<tr class="MissionDetails${i}"></tr>`)
+        i++;
+        $(`.MissionDetails${i}`).append(`<th>미션이름</th>`)
+    })
+    $("#createMissionButton").on("click", function () {
+
+        if ($('#name').val() == "") {
+            alert("아이디를 입력하세요");
+            return false;
+        } else if ($('#index').val() == "") {
+            alert("비밀번호를 입력하세요");
+            return false;
+        }
+        const sendData = {
+            name: $("#name").val(),
+            index: parseInt($("#index").val()),
+            x: parseFloat($("#x").val()),
+            y: parseFloat($("#y").val()),
+            z: parseFloat($("#z").val())
+        }
+        $.ajax({
+            url: "/drone/api/saveMission",
+            type: "POST",
+            data: sendData,
+            success: function (resultData) {
+
+                console.log(resultData);
+                //document.location="/drone/test/index";
+            }
+        });
+
+
+    });
+
+
+</script>
+</html>

@@ -1,20 +1,22 @@
 package com.danusys.web.drone.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name="misson")
+@Table(name="mission")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
 @DynamicUpdate
-public class Misson {
+public class Mission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,13 +25,10 @@ public class Misson {
     @Column(nullable = false)
     private String name;
 
-    private int index;
 
-    private float x;
-
-    private float y;
-
-    private float z;
-
+    @JsonIgnore
+    @OneToMany(mappedBy ="mission",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
+   // @OneToMany(mappedBy ="misson")
+    private final List<MissionDetails> missonDetails= new ArrayList<>();
 
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+</head>
+<body>
+
+미션
+<a href="/drone/test/createMisson">미션생성</a>
+<div id="missonList"></div>
+</body>
+
+
+<script>
+
+    $.ajax({
+        url: "/drone/api/findAllMisson",
+        type: "GET",
+
+        success: function (resultData) {
+            console.log(resultData);
+
+            $.each(resultData,function (i,item){
+                $("#missonList").append(`
+                <div class='${item.name}'> ${item.name}</div>
+                <div> x:${item.x} ,y: ${item.y} ,index :${item.index}</div>    `)
+            })
+
+            //document.location="/drone/test/index";
+        }
+    });
+
+
+</script>
+</html>
