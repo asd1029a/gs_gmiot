@@ -25,8 +25,23 @@
 
     $("#createMissionDetails").on("click",function (){
         $(".mission").append(`<tr class="MissionDetails${i}"></tr>`)
-        i++;
+
         $(`.MissionDetails${i}`).append(`<th>미션이름</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "name"  name="name"> </td>`)
+
+        $(`.MissionDetails${i}`).append(`<th>미션순서</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "index"  name="index"> </td>`)
+
+        $(`.MissionDetails${i}`).append(`<th>X</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "gpsX"  name="gpsX"> </td>`)
+
+        $(`.MissionDetails${i}`).append(`<th>Y</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "gpsY"  name="gpsY"> </td>`)
+
+        $(`.MissionDetails${i}`).append(`<th>Z</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "gpsZ"  name="gpsZ"> </td>`)
+        i++;
+
     })
     $("#createMissionButton").on("click", function () {
 

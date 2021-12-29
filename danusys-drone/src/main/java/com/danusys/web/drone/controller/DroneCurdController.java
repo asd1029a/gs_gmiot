@@ -36,10 +36,10 @@ public class DroneCurdController {
 
 
     @PostMapping("/missiondetails")
-    public ResponseEntity <?> saveMissionDetails(MissionDetails missionDetails,long mission_id){
+    public ResponseEntity <?> saveMissionDetails(MissionDetails missionDetails,long missionId){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(missionDetailsService.saveMisson(missionDetails,mission_id));
+                .body(missionDetailsService.saveMisson(missionDetails,missionId));
 
     }
 
