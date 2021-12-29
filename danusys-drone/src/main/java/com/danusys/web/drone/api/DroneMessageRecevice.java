@@ -64,7 +64,7 @@ public class DroneMessageRecevice {
 
 
                     if(     message2.getPayload().getClass().getName().contains("GlobalPositionInt") || //x
-                            message2.getPayload().getClass().getName().contains("SysStatus") ||  //x
+                            message2.getPayload().getClass().getName().contains("SysStatus") ||  //battery voltage배터리  //battery_remaining 배터리
                             message2.getPayload().getClass().getName().contains("PowerStatus") || //payload=PowerStatus{vcc=5000, vservo=0, flags=EnumValue{value=0, entry=null}}}
                             message2.getPayload().getClass().getName().contains("NavControllerOutput") || //wpdist 목적지와의 거리
                             message2.getPayload().getClass().getName().contains("MissionCurrent") ||
@@ -80,7 +80,7 @@ public class DroneMessageRecevice {
                             message2.getPayload().getClass().getName().contains("TerrainReport") || //TerrainReport{lat=374433470, lon=1268897507, spacing=100, terrainHeight=14.5117655, currentHeight=100.431244, pending=0, loaded=504}}
                             message2.getPayload().getClass().getName().contains("LocalPositionNed") ||
                             message2.getPayload().getClass().getName().contains("Vibration") ||
-                            message2.getPayload().getClass().getName().contains("BatteryStatus") ||
+                            message2.getPayload().getClass().getName().contains("BatteryStatus") || //batteryFunction=EnumValue{value=0, entry=MAV_BATTERY_FUNCTION_UNKNOWN}, type=EnumValue{value=0, entry=MAV_BATTERY_TYPE_UNKNOWN}, temperature=32767, voltages=[12587, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535], currentBattery=0, currentConsumed=151475, energyConsumed=68546, batteryRemaining=0, timeRemaining=0, chargeState=EnumValue{value=1, entry=MAV_BATTERY_CHARGE_STATE_OK}}}
                             message2.getPayload().getClass().getName().contains("Attitude") ||
                             message2.getPayload().getClass().getName().contains("VfrHud") ||
                             message2.getPayload().getClass().getName().contains("Heartbeat") ||
