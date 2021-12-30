@@ -79,9 +79,10 @@ var mapManager = {
 			undefined// vworld
 		],
 		pro4j : [
-			epsg5181, // daum
-			'', // naver
-			'EPSG:3857'// vworld
+			'EPSG:5181', // daum
+			'EPSG:5179', // naver
+			'EPSG:3857', // vworld
+			'EPSG:4326' //위경도
 		],
 		urls : [
 			[
@@ -294,8 +295,8 @@ var mapManager = {
 	 * @function
 	 */
 	createProjection : function(type) {
-		// this.properties.projection = this.properties.pro4j[type]
-		this.properties.projection = 'EPSG:4326'
+		this.properties.projection = this.properties.pro4j[type]
+		//this.properties.projection = 'EPSG:4326'
 	},
 
 	/**
@@ -317,9 +318,9 @@ var mapManager = {
 					/*url: `${prefix}{z}/{y}/{x}${surffix}`,*/
 					tileSize: 256,
 					tileGrid : this.properties.tileGrid,
-					projection : this.properties.pro4j[this.properties.type],
-					// maxZoom : this.properties.maxZoom[this.properties.type],
-					// minZoom : this.properties.minZoom[this.properties.type],
+					projection : ol.proj.get(this.properties.pro4j[this.properties.type]),
+					maxZoom : this.properties.maxZoom[this.properties.type],
+					minZoom : this.properties.minZoom[this.properties.type],
 					// url: 'http://api.vworld.kr/req/wmts/1.0.0/CEB52025-E065-364C-9DBA-44880E3B02B8/Base/{z}/{y}/{x}.png'
 					// projection: this.properties.projection,
 					// tileSize: 512,
@@ -359,10 +360,12 @@ var mapManager = {
 			controls : [],
 			logo: false,
 			view : new ol.View({
-				projection: this.properties.pro4j[this.properties.type],
+				projection: ol.proj.get(this.properties.pro4j[this.properties.type]),
 				extent: this.properties.extents[this.properties.type],
 				resolutions: this.properties.resolutions[this.properties.type],
-				center : new ol.proj.transform([this.properties.lon,this.properties.lat], this.properties.projection, this.properties.pro4j[this.properties.type]),
+				center : new ol.proj.transform([this.properties.lon,this.properties.lat]
+												, this.properties.pro4j[3]
+												, this.properties.pro4j[this.properties.type]),
 				zoom : this.properties.defaultZoom[this.properties.type],
 				zoomFactor: this.properties.zoomFactor[this.properties.type],
 				maxZoom : this.properties.maxZoom[this.properties.type],
@@ -515,7 +518,7 @@ var mapManager = {
 			collapsible : false,
 			view : new ol.View({
 				zoom: 16,
-				projection: this.properties.proj4[this.properties.type],
+				projection: ol.proj.get(this.properties.pro4j[this.properties.type]),
 				extent: this.properties.extents[this.properties.type],
 				resolutions: this.properties.resolutions[this.properties.type],
 				rotation: 0,
@@ -756,3 +759,4 @@ function siteMntr(data){
 	})
 }
 mapManager.init('map', 'minimap', 2);
+//mapManager.init('map', 'minimap', 0);
