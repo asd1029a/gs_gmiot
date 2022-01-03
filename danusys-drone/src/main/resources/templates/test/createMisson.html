@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
 </head>
 <body>
 <table th:border="1" class="mission">
@@ -15,6 +17,9 @@
 
     <button id="createMissionDetails">누르면.. 미션상세가 생겨요</button>
     <button id="createMissionButton">누르면 미션이생겨요...</button>
+    <button id="connect">누르면 드론이 연결되요</button>
+    <button id="start">누르면 드론이 미션따라움직여요</button>
+    <button id="log">누르면 로그가나와요</button>
 </table>
 
 </body>
@@ -25,8 +30,23 @@
 
     $("#createMissionDetails").on("click",function (){
         $(".mission").append(`<tr class="MissionDetails${i}"></tr>`)
-        i++;
+
         $(`.MissionDetails${i}`).append(`<th>미션이름</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "name"  name="name"> </td>`)
+
+        $(`.MissionDetails${i}`).append(`<th>미션순서</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "index"  name="index"> </td>`)
+
+        $(`.MissionDetails${i}`).append(`<th>X</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "gpsX"  name="gpsX"> </td>`)
+
+        $(`.MissionDetails${i}`).append(`<th>Y</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "gpsY"  name="gpsY"> </td>`)
+
+        $(`.MissionDetails${i}`).append(`<th>Z</th>`)
+        $(`.MissionDetails${i}`).append(`<td><input type="text" class = "gpsZ"  name="gpsZ"> </td>`)
+        i++;
+
     })
     $("#createMissionButton").on("click", function () {
 
@@ -57,6 +77,37 @@
 
 
     });
+
+    function connect() {
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+          //  setConnected(true);
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/drone2', function (drone) {
+                console.log(drone);
+                //let droneData = setDroneData(drone);
+               // setDroneDraw(droneData);
+            });
+            stompClient.subscribe('/topic/drone3', function (drone) {
+                console.log(drone);
+                //let droneData = setDroneData(drone);
+                // setDroneDraw(droneData);
+            });
+        });
+    }
+
+    function droneMission(id) {
+        stompClient.send("/app/drone2", {}, JSON.stringify({'id': id}));
+    }
+
+    function droneGetLog() {
+        stompClient.send("/app/drone3",{});
+    }
+    $( "#connect" ).click(function() { connect(); });
+    $( "#start" ).click(function() { droneMission(4); });
+    $( "#log" ).click(function() { droneGetLog(); });
+
 
 
 </script>

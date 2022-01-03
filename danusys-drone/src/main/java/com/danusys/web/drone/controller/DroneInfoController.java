@@ -18,8 +18,8 @@ import java.util.Map;
 @Controller
 public class DroneInfoController {
 
-//	@Value("${tcp.server.host}")
-	@Value("127.0.0.1")
+	@Value("${tcp.server.host}")
+//	@Value("127.0.0.1")
 	private String tcpServerHost;
 
 	@Value("${tcp.server.port}")

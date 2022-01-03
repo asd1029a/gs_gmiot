@@ -23,12 +23,14 @@ public class MissionDetails {
     private String name;
 
     private int index;
+    @Column(name = "gps_x")
+    private float gpsX;
 
-    private float x;
+    @Column(name= "gps_y")
+    private float gpsY;
 
-    private float y;
 
-    private float z;
+    private float alt;
 
    @ManyToOne(fetch = FetchType.EAGER)
   // @ManyToOne

@@ -18,9 +18,9 @@ public class MissionDetailResponse {
         this.id = missonDetails.getId();
         this.name= missonDetails.getName() ;
         this.index= missonDetails.getIndex();
-        this.mapX= missonDetails.getX();
-        this.mapY= missonDetails.getY();
-        this.mapZ= missonDetails.getZ();
+        this.mapX= missonDetails.getGpsX();
+        this.mapY= missonDetails.getGpsY();
+        this.mapZ= missonDetails.getAlt();
 
 
     }
