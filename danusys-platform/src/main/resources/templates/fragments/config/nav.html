@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="navFragment">
+    <aside class="accordionMenu accordion">
+        <ul class="accordion">
+            <li id="one" class="on">
+                <a href="#one">관제</a>
+                <ul class="sub-menu">
+                    <li><a href="/pages/config/district">구역 설정</a></li>
+                    <li><a href="/pages/config/dimming">디밍 설정</a></li>
+                </ul>
+            </li>
+            <li id="two" class="">
+                <a href="#two">사용자</a>
+                <ul class="sub-menu">
+                    <li><a href="/pages/config/userAccount">사용자 계정 관리</a></li>
+                    <li><a href="/pages/config/userGroup">사용자 그룹 관리</a></li>
+                </ul>
+            </li>
+            <li id="three">
+                <a href="/pages/config/commonCode">공통 코드 관리</a>
+            </li>
+            <li id="four" class="">
+                <a href="/pages/config/notice">공지사항</a>
+            </li>
+        </ul>
+    </aside>
+</th:block>
+</html>
