@@ -3,13 +3,6 @@
 proj4.defs("EPSG:5181","+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 ol.proj.proj4.register(proj4);
 
-
-let epsg5181 = new ol.proj.Projection({
-	code : "EPSG:5181",
-	extent : [-30000, -60000, 494288, 988576],
-	units : 'm'
-});
-
 /**
  * 맵생성, 레이어생성 등등 기본적인 맵 셋팅을 해주는 class 이다.
  *
@@ -79,7 +72,7 @@ var mapManager = {
 			undefined// vworld
 		],
 		proj4 : [
-			epsg5181, // daum
+			'EPSG:5181', // daum
 			'EPSG:5179', // naver
 			'EPSG:3857', // vworld
 		],
