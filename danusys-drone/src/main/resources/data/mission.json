@@ -1,0 +1,34 @@
+{
+  "mission": [
+    {
+      "id": "1",
+      "name": "wayPoint",
+      "lon": 127,
+      "lat": 30,
+      "stop": 10,
+      "speed": 20,
+      "alt": 30,
+      "order": 1
+    },
+    {
+      "id": "2"
+      ,"name": "takeOff",
+      "lon": 127,
+      "lat": 30,
+      "stop": 20,
+      "speed": 20,
+      "alt": 30,
+      "order": 2
+    },
+    {
+      "id": "3",
+      "name": "return",
+      "lon": 127,
+      "lat": 30,
+      "stop": 30,
+      "speed": 20,
+      "alt": 30,
+      "order": 3
+    }
+  ]
+}
