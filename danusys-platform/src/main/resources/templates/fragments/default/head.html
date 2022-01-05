@@ -1,0 +1,24 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="head">
+    <head>
+        <!--<th:block th:insert="fragments/default/includes :: includes_head(~{::pagesLink})"></th:block>-->
+        <meta charset="utf-8">
+        <!--<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">SMART-CITY 통합플랫폼</title>-->
+        <title>Iot 플랫폼</title>
+        <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
+        <meta http-equiv="Cache-Control" content="no-cache" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta name="context-path" th:content="@{/}"/>
+
+        <!-- default css files -->
+        <link rel="stylesheet" type="text/css" href="/css/default/layout.css">
+
+        <!--js file -->
+        <script type="text/javascript" src="/webjars/jquery/3.6.0/dist/jquery.min.js" ></script>
+
+        <!-- common js-->
+        <script type="text/javascript" src="../../../static/js/common/common.js" ></script>
+        <script type="text/javascript" src="../../../static/js/common/pageInit.js" ></script>
+    </head>
+</th:block>
+</html>

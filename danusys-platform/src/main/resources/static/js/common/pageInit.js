@@ -8,7 +8,7 @@ $(document).on("ready", () => {
         $(".accordion li").map((i, el) => {
             if(path.indexOf(el.id) > -1) $(el).addClass("active");
         })*/
-
+    debugger;
     $(".accordion > li").click(function(e) {
         $(".accordion > li").removeClass('on');
         $(e.currentTarget).addClass('on');
@@ -19,7 +19,7 @@ $(document).on("ready", () => {
         $(e.target).addClass('on');
     })*/
 
-    $(".sub-menu dd").map((i, el) => {
+    $(".sub-menu > li").map((i, el) => {
         if(path.indexOf(el.id) > -1) $(el).addClass("on");
     })
 

@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/layout_config">
+
+    <th:block layout:fragment="content">
+        <h4>
+            <i><img src="/images/default/settingTitle.svg"></i>
+            <span>환경설정</span>
+            <i><img src="/images/default/settingArrowNext.svg"></i>
+            <span>관제</span>
+            <i><img src="/images/default/settingArrowNext.svg"></i>
+            <span>스마트가로등 디밍 설정</span>
+        </h4>
+        <section class="settingContent">
+            <article class="searchForm">
+                <h6>스마트가로등 검색</h6>
+                <form>
+                    <div>
+                        <dl class="selectboxSet">
+                            <dt>행정구역</dt>
+                            <dd>
+                                <div class="dropdownCheckbox">
+                                    <p class="checkboxTitle checkboxTitle_district">행정구역 선택</p>
+                                    <ul class="checkboxList checkboxList_district">
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtALL" name="">
+                                                <label for="districtALL"><span></span>전체</label>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtFind01" name="">
+                                                <label for="districtFind01"><span></span>광명1동</label>
+                                            </span>
+                                            <span>
+                                                <input type="checkbox" id="districtFind02" name="">
+                                                <label for="districtFind02"><span></span>광명2동</label>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtFind03" name="">
+                                                <label for="districtFind03"><span></span>광명3동</label>
+                                            </span>
+                                            <span>
+                                                <input type="checkbox" id="districtFind04" name="">
+                                                <label for="districtFind04"><span></span>광명4동</label>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtFind05" name="">
+                                                <label for="districtFind05"><span></span>광명5동</label>
+                                            </span>
+                                            <span>
+                                                <input type="checkbox" id="districtFind06" name="">
+                                                <label for="districtFind06"><span></span>광명6동</label>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtFind07" name="">
+                                                <label for="districtFind07"><span></span>광명7동</label>
+                                            </span>
+                                            <span>
+                                                <input type="checkbox" id="districtFind08" name="">
+                                                <label for="districtFind08"><span></span>소하1동</label>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtFind09" name="">
+                                                <label for="districtFind09"><span></span>소하2동</label>
+                                            </span>
+                                            <span>
+                                                <input type="checkbox" id="districtFind10" name="">
+                                                <label for="districtFind10"><span></span>철산1동</label>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtFind11" name="">
+                                                <label for="districtFind11"><span></span>철산2동</label>
+                                            </span>
+                                            <span>
+                                                <input type="checkbox" id="districtFind12" name="">
+                                                <label for="districtFind12"><span></span>철산3동</label>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtFind13" name="">
+                                                <label for="districtFind13"><span></span>철산4동</label>
+                                            </span>
+                                            <span>
+                                                <input type="checkbox" id="districtFind14" name="">
+                                                <label for="districtFind14"><span></span>하안1동</label>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtFind15" name="">
+                                                <label for="districtFind15"><span></span>하안2동</label>
+                                            </span>
+                                            <span>
+                                                <input type="checkbox" id="districtFind16" name="">
+                                                <label for="districtFind16"><span></span>하안3동</label>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span>
+                                                <input type="checkbox" id="districtFind17" name="">
+                                                <label for="districtFind17"><span></span>하안4동</label>
+                                            </span>
+                                            <span>
+                                                <input type="checkbox" id="districtFind18" name="">
+                                                <label for="districtFind18"><span></span>학온동</label>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl class="searchTextSet">
+                            <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
+                            <dd class="button"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
+                            <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
+                        </dl>
+                    </div>
+                </form>
+            </article>
+            <article class="searchList">
+                <div class="articleTitle">
+                    <dl class="title">
+                        <dt>스마트가로등 목록</dt>
+                        <dd><span class="count">123</span>건</dd>
+                    </dl>
+                </div>
+                <div class="searchTable">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>스마트가로등 관리 ID</th>
+                            <th>행정구역</th>
+                            <th>주소</th>
+                            <th>시간대별 최대/최소 밝기</th>
+                            <th>수정일자</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>PR0000</td>
+                            <td>다누 1동</td>
+                            <td>다누로 00번길 000 000 00000</td>
+                            <td>
+                                <div class="charts">Charts</div>
+                            </td> <!-- 차트 영역 임의 표시 -->
+                            <td>2021.11.20</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>PR0000</td>
+                            <td>다누 1동</td>
+                            <td>다누로 00번길 000 000 00000</td>
+                            <td>
+                                <div class="charts">Charts</div>
+                            </td>
+                            <td>2021.11.20</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>PR0000</td>
+                            <td>다누 1동</td>
+                            <td>다누로 00번길 000 000 00000</td>
+                            <td>
+                                <div class="charts">Charts</div>
+                            </td>
+                            <td>2021.11.20</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>PR0000</td>
+                            <td>다누 1동</td>
+                            <td>다누로 00번길 000 000 00000</td>
+                            <td>
+                                <div class="charts">Charts</div>
+                            </td>
+                            <td>2021.11.20</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>PR0000</td>
+                            <td>다누 1동</td>
+                            <td>다누로 00번길 000 000 00000</td>
+                            <td>
+                                <div class="charts">Charts</div>
+                            </td>
+                            <td>2021.11.20</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tableBottom">
+                    <ul class="pageNav">
+                        <li class="prev"><i><img src="/images/default/prev.svg"></i></li>
+                        <li class="on">1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                        <li class="next"><i><img src="/images/default/next.svg"></i></li>
+                    </ul>
+                    <p class="button"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>
+                </div>
+            </article>
+            <article class="searchList dimmingSet">
+                <div class="articleTitle">
+                    <dl class="title">
+                        <dt>디밍 설정</dt>
+                    </dl>
+                    <div>
+                        <ul>
+                            <li><i><img src="/images/default/return.svg"></i>기본값으로 되돌리기</li>
+                            <li><i><img src="/images/default/apply.svg"></i>적용</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="settingDimming">
+                    <ul>
+                        <li>
+                            <span>최대 밝기 도달 시간</span>
+                            <input type="text" placeholder="00">초
+                        </li>
+                        <li>
+                            <span>최대 밝기 유지 시간</span>
+                            <input type="text" placeholder="00">초
+                        </li>
+                        <li>
+                            <span>최소 밝기 도달 시간</span>
+                            <input type="text" placeholder="00">초
+                        </li>
+                    </ul>
+                    <div class="dimmingByTime">
+                        <p>시간대별 최대/최소 밝기</p>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>시간(시)</th>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td>6</td>
+                                <td>7</td>
+                                <td>8</td>
+                                <td>9</td>
+                                <td>10</td>
+                                <td>11</td>
+                                <td>12</td>
+                                <td>13</td>
+                                <td>14</td>
+                                <td>15</td>
+                                <td>16</td>
+                                <td>17</td>
+                                <td>18</td>
+                                <td>19</td>
+                                <td>20</td>
+                                <td>21</td>
+                                <td>22</td>
+                                <td>23</td>
+                                <td>24</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th>최대</th>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                            </tr>
+                            <tr>
+                                <th>최소</th>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </th:block>
+</html>

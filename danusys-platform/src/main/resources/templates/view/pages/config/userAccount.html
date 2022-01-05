@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/layout_config">
+
+    <th:block layout:fragment="content">
+        <h4>
+            <i><img src="/images/default/settingTitle.svg"></i>
+            <span>환경설정</span>
+            <i><img src="/images/default/settingArrowNext.svg"></i>
+            <span>사용자</span>
+            <i><img src="/images/default/settingArrowNext.svg"></i>
+            <span>사용자 계정 관리</span>
+        </h4>
+        <section class="settingContent">
+            <article class="searchForm">
+                <h6>사용자 계정 검색</h6>
+                <form>
+                    <div>
+                        <dl class="searchTextSet">
+                            <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
+                        </dl>
+                        <dl class="checkboxSet">
+                            <dt>계정 상태</dt>
+                            <dd>
+                                <span>
+                                    <input type="checkbox" id="normal" name="">
+                                    <label for="normal"><span></span>정상</label>
+                                </span>
+                                <span>
+                                    <input type="checkbox" id="none" name="">
+                                    <label for="none"><span></span>사용안함</label>
+                                </span>
+                            </dd>
+                        </dl>
+                        <dl class="searchTextSet">
+                            <dd class="button"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
+                            <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
+                        </dl>
+                    </div>
+                </form>
+            </article>
+            <article class="searchList">
+                <div class="articleTitle">
+                    <dl class="title">
+                        <dt>사용자 계정 목록</dt>
+                        <dd><span class="count">123</span>건</dd>
+                    </dl>
+                </div>
+                <div class="searchTable">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>소속 그룹</th>
+                            <th>전화번호</th>
+                            <th>이메일</th>
+                            <th>마지막 접속 시간</th>
+                            <th>계정 상태</th>
+                            <th>상세보기</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>userID0001</td>
+                            <td>김다누</td>
+                            <td>관제 1팀 외 00개</td>
+                            <td>010-0000-0000</td>
+                            <td>danusys@danusys.com</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><span class="status green"></span>정상</td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>userID0001</td>
+                            <td>김다누</td>
+                            <td>관제 1팀 외 00개</td>
+                            <td>010-0000-0000</td>
+                            <td>danusys@danusys.com</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><span class="status"></span>사용 안함</td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>userID0001</td>
+                            <td>김다누</td>
+                            <td>관제 1팀 외 00개</td>
+                            <td>010-0000-0000</td>
+                            <td>danusys@danusys.com</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><span class="status"></span>사용 안함</td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>userID0001</td>
+                            <td>김다누</td>
+                            <td>관제 1팀 외 00개</td>
+                            <td>010-0000-0000</td>
+                            <td>danusys@danusys.com</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><span class="status"></span>사용 안함</td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>userID0001</td>
+                            <td>김다누</td>
+                            <td>관제 1팀 외 00개</td>
+                            <td>010-0000-0000</td>
+                            <td>danusys@danusys.com</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><span class="status green"></span>정상</td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>userID0001</td>
+                            <td>김다누</td>
+                            <td>관제 1팀 외 00개</td>
+                            <td>010-0000-0000</td>
+                            <td>danusys@danusys.com</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><span class="status green"></span>정상</td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>userID0001</td>
+                            <td>김다누</td>
+                            <td>관제 1팀 외 00개</td>
+                            <td>010-0000-0000</td>
+                            <td>danusys@danusys.com</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><span class="status"></span>사용 안함</td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tableBottom">
+                    <ul class="pageNav">
+                        <li class="prev"><i><img src="/images/default/prev.svg"></i></li>
+                        <li class="on">1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                        <li class="next"><i><img src="/images/default/next.svg"></i></li>
+                    </ul>
+                    <p class="button"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>
+                </div>
+            </article>
+        </section>
+    </th:block>
+</html>
