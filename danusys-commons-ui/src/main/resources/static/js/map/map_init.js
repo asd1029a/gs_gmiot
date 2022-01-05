@@ -3,13 +3,6 @@
 proj4.defs("EPSG:5181","+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 ol.proj.proj4.register(proj4);
 
-
-let epsg5181 = new ol.proj.Projection({
-	code : "EPSG:5181",
-	extent : [-30000, -60000, 494288, 988576],
-	units : 'm'
-});
-
 /**
  * 맵생성, 레이어생성 등등 기본적인 맵 셋팅을 해주는 class 이다.
  *
@@ -47,7 +40,7 @@ var mapManager = {
 		lat : 37.44457599567139,
 		lon : 126.89482519279865,
 			center : null,
-		projection : null,
+		projection : 'EPSG:4326',
 		resolutions : [
 			[2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25], // daum,
 			[], // naver,
@@ -61,7 +54,7 @@ var mapManager = {
 		defaultZoom : [
 			8, // daum
 			undefined, // naver
-			16, // vworld
+			15, // vworld
 		],
 		maxZoom : [
 			13, // daum
@@ -78,10 +71,10 @@ var mapManager = {
 			undefined, // naver
 			undefined// vworld
 		],
-		pro4j : [
-			epsg5181, // daum
-			'', // naver
-			'EPSG:3857'// vworld
+		proj4 : [
+			'EPSG:5181', // daum
+			'EPSG:5179', // naver
+			'EPSG:3857', // vworld
 		],
 		urls : [
 			[
@@ -253,7 +246,7 @@ var mapManager = {
 		this.properties.id = id;
 		this.properties.type = type;
 		this.createTileGrid();
-		this.createProjection(type);
+		// this.createProjection(type);
 		this.createMap();
 		// this.createOverviewMap(minimapId);
 		this.createMapMoveEvent();
@@ -294,8 +287,8 @@ var mapManager = {
 	 * @function
 	 */
 	createProjection : function(type) {
-		// this.properties.projection = this.properties.pro4j[type]
-		this.properties.projection = 'EPSG:4326'
+		this.properties.projection = this.properties.proj4[type]
+		//this.properties.projection = 'EPSG:4326'
 	},
 
 	/**
@@ -313,21 +306,11 @@ var mapManager = {
 				visible: true,
 				type: type,
 				source: new ol.source.XYZ({
-
-					/*url: `${prefix}{z}/{y}/{x}${surffix}`,*/
 					tileSize: 256,
 					tileGrid : this.properties.tileGrid,
-					projection : this.properties.pro4j[this.properties.type],
-					// maxZoom : this.properties.maxZoom[this.properties.type],
-					// minZoom : this.properties.minZoom[this.properties.type],
-					// url: 'http://api.vworld.kr/req/wmts/1.0.0/CEB52025-E065-364C-9DBA-44880E3B02B8/Base/{z}/{y}/{x}.png'
-					// projection: this.properties.projection,
-					// tileSize: 512,
-					// minZoom: 0,
-					// tileGrid: new ol.tilegrid.TileGrid({
-					//    origin: [this.properties.extents[this.properties.type][0], this.properties.extents[this.properties.type][1]],
-					//    resolutions: this.properties.resolutions[this.properties.type]
-					// }),
+					projection : ol.proj.get(this.properties.proj4[this.properties.type]),
+					maxZoom : this.properties.maxZoom[this.properties.type],
+					minZoom : this.properties.minZoom[this.properties.type],
 					tileUrlFunction: function (tileCoord, pixelRatio, projection) {
 						let zType = mapManager.properties.type;
 						let resolution = mapManager.properties.resolutions[zType];
@@ -335,7 +318,7 @@ var mapManager = {
 						var s = Math.floor(Math.random() * 4);
 						var z = resolution ? resolution.length - tileCoord[0] : tileCoord[0];
 						var x = tileCoord[1];
-						var y = zType == 0 ? -(tileCoord[2]) : tileCoord[2];
+						var y = zType == 0 ? -(tileCoord[2]) - 1 : tileCoord[2];
 
 						return prefix + z + '/' + y + '/' + x + surffix;
 					},
@@ -359,10 +342,13 @@ var mapManager = {
 			controls : [],
 			logo: false,
 			view : new ol.View({
-				projection: this.properties.pro4j[this.properties.type],
+				projection: ol.proj.get(this.properties.proj4[this.properties.type]),
 				extent: this.properties.extents[this.properties.type],
 				resolutions: this.properties.resolutions[this.properties.type],
-				center : new ol.proj.transform([this.properties.lon,this.properties.lat], this.properties.projection, this.properties.pro4j[this.properties.type]),
+				// maxResolution : this.properties.resolutions ? this.properties.resolutions[this.properties.type][0] : undefined,
+				center : new ol.proj.transform([this.properties.lon,this.properties.lat]
+					, this.properties.projection
+					, this.properties.proj4[this.properties.type]),
 				zoom : this.properties.defaultZoom[this.properties.type],
 				zoomFactor: this.properties.zoomFactor[this.properties.type],
 				maxZoom : this.properties.maxZoom[this.properties.type],
@@ -515,11 +501,13 @@ var mapManager = {
 			collapsible : false,
 			view : new ol.View({
 				zoom: 16,
-				projection: this.properties.proj4[this.properties.type],
+				projection: ol.proj.get(this.properties.proj4[this.properties.type]),
 				extent: this.properties.extents[this.properties.type],
 				resolutions: this.properties.resolutions[this.properties.type],
 				rotation: 0,
-				center : new ol.proj.transform([this.properties.lon,this.properties.lat], this.properties.projection, this.properties.pro4j[this.properties.type]),
+				center : new ol.proj.transform([this.properties.lon,this.properties.lat]
+												, this.properties.proj4[this.properties.type]
+												, this.properties.projection),
 			}),
 		})
 		this.map.addControl(this.overviewMap);
@@ -572,7 +560,9 @@ var mapManager = {
 	 */
 	searchDetailAddrFromCoords : function(coords, callback){
 		try {
-			transCoord =  new ol.proj.transform([coords[0], coords[1]], mapManager.properties.pro4j[mapManager.properties.type], mapManager.properties.projection);
+			transCoord =  new ol.proj.transform([coords[0], coords[1]]
+												, mapManager.properties.projection
+												, mapManager.properties.proj4[mapManager.properties.type]);
 			mapManager.geocoder.coord2Address(transCoord[0], transCoord[1], callback);
 		} catch(e) {
 			console.log('주소정보 사용 불가');
@@ -612,8 +602,12 @@ var mapManager = {
 	setCenter : function(coord) {
 		const center = mapManager.map.getView().getCenter();
 		const resolution = mapManager.map.getView().getResolution() * 1;
-		const a = ol.proj.transform(center, mapManager.properties.projection, mapManager.properties.pro4j[mapManager.properties.type]);
-		const b = ol.proj.transform(coord, mapManager.properties.projection, mapManager.properties.pro4j[mapManager.properties.type]);
+		const a = ol.proj.transform(center
+									, mapManager.properties.proj4[mapManager.properties.type]
+									, mapManager.properties.projection);
+		const b = ol.proj.transform(coord
+									, mapManager.properties.proj4[mapManager.properties.type]
+									, mapManager.properties.projection);
 
 		//const distance = mapManager.wgs84Sphere.haversineDistance(a, b);
 		const duration = 500;
@@ -755,4 +749,4 @@ function siteMntr(data){
 		dialogManager.sortDialog();
 	})
 }
-mapManager.init('map', 'minimap', 2);
+mapManager.init('map', 'minimap', 0);

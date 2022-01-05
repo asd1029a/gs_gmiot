@@ -13,6 +13,8 @@ public class MissionDetailResponse {
     private float mapX;
     private float mapY;
     private float mapZ;
+    private float speed;
+    private float time;
 
     public MissionDetailResponse(MissionDetails missonDetails){
         this.id = missonDetails.getId();
@@ -21,6 +23,8 @@ public class MissionDetailResponse {
         this.mapX= missonDetails.getGpsX();
         this.mapY= missonDetails.getGpsY();
         this.mapZ= missonDetails.getAlt();
+        this.speed=missonDetails.getSpeed();
+        this.time= missonDetails.getTime();
 
 
     }

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/layout_config">
+
+    <th:block layout:fragment="content">
+        <h4>
+            <i><img src="/images/default/settingTitle.svg"></i>
+            <span>환경설정</span>
+            <i><img src="/images/default/settingArrowNext.svg"></i>
+            <span>공지사항</span>
+        </h4>
+        <section class="settingContent">
+            <article class="searchForm">
+                <h6>공지사항 검색</h6>
+                <form>
+                    <div>
+                        <dl class="dateSet">
+                            <dt>발생 기간</dt>
+                            <dd><input type="date" class="inputDate"></dd>
+                            <dd><input type="time" class="inputDate"></dd>
+                            <span>부터</span>
+                            <dd><input type="date" class="inputDate"></dd>
+                            <dd><input type="time" class="inputDate"></dd>
+                            <span>까지</span>
+                        </dl>
+                        <dl class="searchTextSet">
+                            <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
+                            <dd class="button"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
+                            <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
+                        </dl>
+                    </div>
+                </form>
+            </article>
+            <article class="searchList">
+                <div class="articleTitle">
+                    <dl class="title">
+                        <dt>공지사항 목록</dt>
+                        <dd><span class="count">123</span>건</dd>
+                    </dl>
+                </div>
+                <div class="searchTable">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>공지사항 제목</th>
+                            <th>작성자</th>
+                            <th>작성일시</th>
+                            <th>첨부파일</th>
+                            <th>상세보기</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>공지사항 제목</td>
+                            <td>김다누</td>
+                            <td>2021.11.25 15:49</td>
+                            <td><i><img src="/images/default/clipboard.svg"></i></td>
+                            <td><span class="button">상세보기</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tableBottom">
+                    <ul class="pageNav">
+                        <li class="prev"><i><img src="/images/default/prev.svg"></i></li>
+                        <li class="on">1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                        <li class="next"><i><img src="/images/default/next.svg"></i></li>
+                    </ul>
+                    <p class="button"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>
+                </div>
+            </article>
+        </section>
+    </th:block>
+</html>

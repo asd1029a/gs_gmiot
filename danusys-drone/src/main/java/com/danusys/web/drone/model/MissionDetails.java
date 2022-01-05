@@ -32,6 +32,9 @@ public class MissionDetails {
 
     private float alt;
 
+    private float speed;
+
+    private float time;
    @ManyToOne(fetch = FetchType.EAGER)
   // @ManyToOne
    @JoinColumn(name="mission_id")
