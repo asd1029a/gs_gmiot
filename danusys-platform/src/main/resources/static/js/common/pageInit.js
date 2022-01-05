@@ -1,4 +1,4 @@
-$(document).on("ready", () => {
+$(function () {
     let path = "[[${#httpServletRequest.getRequestURI()}]]";
     $(".gnm li").map((i, el) => {
         if(path.indexOf(el.id) > -1) $(el).addClass("active");
