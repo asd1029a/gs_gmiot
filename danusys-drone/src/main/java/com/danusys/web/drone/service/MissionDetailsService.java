@@ -43,5 +43,8 @@ public class MissionDetailsService {
 
     public List<MissionDetails> findAllMisson(){return (List<MissionDetails>) missionDetailsRepository.findAll();}
 
+    public MissionDetails findByNameAndMission(String name,Mission mission){
+            return missionDetailsRepository.findByNameAndMission(name,mission);
+    }
 
 }

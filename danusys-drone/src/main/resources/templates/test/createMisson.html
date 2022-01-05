@@ -81,32 +81,42 @@
     function connect() {
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
+
         stompClient.connect({}, function (frame) {
-          //  setConnected(true);
+
+
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/drone2', function (drone) {
+           // droneLog();
+
+            stompClient.subscribe('/topic/startmission', function (drone) {
                 console.log(drone);
                 //let droneData = setDroneData(drone);
                // setDroneDraw(droneData);
             });
-            stompClient.subscribe('/topic/drone3', function (drone) {
+            stompClient.subscribe('/topic/log', function (drone) {
                 console.log(drone);
                 //let droneData = setDroneData(drone);
                 // setDroneDraw(droneData);
             });
+
+
         });
+
     }
 
     function droneMission(id) {
-        stompClient.send("/app/drone2", {}, JSON.stringify({'id': id}));
+        stompClient.send("/app/startmission", {}, JSON.stringify({'id': id}));
     }
 
-    function droneGetLog() {
-        stompClient.send("/app/drone3",{});
+
+    function droneLog(){
+        stompClient.send("/app/droneinfo");
     }
+
+
     $( "#connect" ).click(function() { connect(); });
     $( "#start" ).click(function() { droneMission(4); });
-    $( "#log" ).click(function() { droneGetLog(); });
+    $( "#log" ).click(function() { droneLog(); });
 
 
 

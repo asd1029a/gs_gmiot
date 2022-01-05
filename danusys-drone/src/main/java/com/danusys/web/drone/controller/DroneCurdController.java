@@ -58,8 +58,8 @@ public class DroneCurdController {
 
 
 
-@GetMapping("/missiondetails")
-public ResponseEntity<?> findMissionDetails(@RequestParam String name) {
+@GetMapping("/missiondetails/{name}")
+public ResponseEntity<?> findMissionDetails(@PathVariable final String name) {
     return ResponseEntity
             .status(HttpStatus.OK)
             .body(missionDetailsService.findMissionDetails(name));
@@ -67,14 +67,14 @@ public ResponseEntity<?> findMissionDetails(@RequestParam String name) {
 
 
     @GetMapping("/findAllMission")
-    public ResponseEntity  findAllMisson() {
+    public ResponseEntity  findAllMission() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(missionDetailsService.findAllMisson());
     }
 
-    @GetMapping("/mission")
-    public ResponseEntity<?> findMisson(String name){
+    @GetMapping("/mission/{name}")
+    public ResponseEntity<?> findMission(@PathVariable final String name){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(missionService.missionResponseList(name));
