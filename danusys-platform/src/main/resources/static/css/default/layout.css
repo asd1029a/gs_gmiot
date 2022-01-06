@@ -280,10 +280,10 @@ header .utmenu li i{width: 18px; height: 18px; margin: 0px 8px 0px 0px;}
 
 /* Functionality */
 .accordion li > .sub-menu{height: 0; overflow: hidden; -webkit-transition: height .2s ease-in-out; -moz-transition: height .2s ease-in-out; -o-transition: height .2s ease-in-out; -ms-transition: height .2s ease-in-out; transition: height .2s ease-in-out;}
-.accordion li:target > .sub-menu{height: 120px; box-sizing: border-box; border-bottom: 1px solid #292c34;}
+.accordion li.on > .sub-menu{height: 120px; box-sizing: border-box; border-bottom: 1px solid #292c34;}
 .sub-menu li a:hover,
 .sub-menu li a:active,
-.sub-menu li a:target{color: #dee0e4;}
+.sub-menu li a:target, .sub-menu li.on a{color: #dee0e4;}
 /* //accordionMenu */
 
 
