@@ -20,7 +20,7 @@ public class MissionService {
     private final MissionRepository missionRepository;
 
 
-    public List<Mission> findAllMisson(){
+    public List<Mission> findAllMission(){
         return (List<Mission>) missionRepository.findAll();
     }
 

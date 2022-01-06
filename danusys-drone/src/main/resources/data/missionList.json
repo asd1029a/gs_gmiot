@@ -1,0 +1,19 @@
+{
+  "missionList": [
+    {
+      "id":1,
+      "name":"takeOff",
+      "koName":"이륙"
+    },
+    {
+      "id":2,
+      "name":"return",
+      "koName":"귀환"
+    },
+    {
+      "id":3,
+      "name":"wayPoint",
+      "koName":"경유지"
+    },
+  ]
+}
