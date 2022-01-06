@@ -1,103 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout_inqry">
 
 <th:block layout:fragment="content">
     <h4>
-        <i><img src="/images/default/inquiryTitle.svg"></i>
+        <i><img src="images/inquiryTitle.svg"></i>
         <span>조회/관리</span>
-        <i><img src="/images/default/settingArrowNext.svg"></i>
-        <span>이벤트 관리</span>
-        <i><img src="/images/default/settingArrowNext.svg"></i>
-        <span>스마트 도시 이벤트</span>
+        <i><img src="images/settingArrowNext.svg"></i>
+        <span>시설물 관리</span>
     </h4>
     <section class="inquiryContent">
         <article class="searchForm">
-            <h6>스마트 도시 이벤트 검색</h6>
+            <h6>시설물 검색</h6>
             <form>
                 <div>
                     <dl class="selectboxSet">
-                        <dt>이벤트 종류</dt>
+                        <dt>시설물 종류</dt>
                         <dd>
                             <div class="dropdownCheckbox">
-                                <p class="checkboxTitle checkboxTitle_event">이벤트 종류 선택</p>
-                                <ul class="checkboxList checkboxList_event">
+                                <p class="checkboxTitle checkboxTitle_facilities">시설물 종류 선택</p>
+                                <ul class="checkboxList checkboxList_facilities">
                                     <li>
 										<span>
-											<input type="checkbox" id="eventALL" name="">
-											<label for="eventALL"><span></span>전체</label>
+											<input type="checkbox" id="facilitiesAll" name="">
+											<label for="facilitiesAll"><span></span>전체</label>
 										</span>
                                     </li>
                                     <li>
 										<span>
-											<input type="checkbox" id="eventFind01" name="">
-											<label for="eventFind01"><span></span>지능형 CCTV 감지</label>
+											<input type="checkbox" id="facilities01" name="">
+											<label for="facilities01"><span></span>AED</label>
 										</span>
                                         <span>
-											<input type="checkbox" id="eventFind02" name="">
-											<label for="eventFind02"><span></span>이상음원 감지</label>
+											<input type="checkbox" id="facilities02" name="">
+											<label for="facilities02"><span></span>CCTV</label>
 										</span>
                                     </li>
                                     <li>
 										<span>
-											<input type="checkbox" id="eventFind03" name="">
-											<label for="eventFind03"><span></span>AED 사용</label>
+											<input type="checkbox" id="facilities03" name="">
+											<label for="facilities03"><span></span>비상벨</label>
 										</span>
                                         <span>
-											<input type="checkbox" id="eventFind04" name="">
-											<label for="eventFind04"><span></span>비상벨</label>
+											<input type="checkbox" id="facilities04" name="">
+											<label for="facilities04"><span></span>금연벨</label>
 										</span>
                                     </li>
                                     <li>
 										<span>
-											<input type="checkbox" id="eventFind05" name="">
-											<label for="eventFind05"><span></span>금연벨</label>
+											<input type="checkbox" id="facilities05" name="">
+											<label for="facilities05"><span></span>무정차 방지등</label>
 										</span>
                                         <span>
-											<input type="checkbox" id="eventFind06" name="">
-											<label for="eventFind06"><span></span>장기체류자</label>
+											<input type="checkbox" id="facilities06" name="">
+											<label for="facilities06"><span></span>홍보 전광판</label>
 										</span>
                                     </li>
                                     <li>
 										<span>
-											<input type="checkbox" id="eventFind07" name="">
-											<label for="eventFind07"><span></span>실내공기질 나쁨</label>
+											<input type="checkbox" id="facilities07" name="">
+											<label for="facilities07"><span></span>실내 공기질 모니터링</label>
 										</span>
                                         <span>
-											<input type="checkbox" id="eventFind08" name="">
-											<label for="eventFind08"><span></span>기타</label>
+											<input type="checkbox" id="facilities08" name="">
+											<label for="facilities08"><span></span>스마트 공기청정기</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="facilities09" name="">
+											<label for="facilities09"><span></span>냉난방기</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="facilities10" name="">
+											<label for="facilities10"><span></span>기타</label>
 										</span>
                                     </li>
                                 </ul>
                             </div>
                         </dd>
                     </dl>
+                    <!--
+                            <dl class="selectboxSet">
+                                <dt>개소 종류</dt>
+                                <dd>
+                                    <div class="selectBox type01">
+                                        <div class="box">
+                                            <div class="select">선택</div>
+                                            <ul class="list">
+                                                <li class="selected">전체</li>
+                                                <li>번호 내림차순</li>
+                                                <li>번호 오름차순</li>
+                                                <li>행정구역 내림차순</li>
+                                                <li>행정구역 오름차순</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </dd>
+                            </dl>
+-->
                     <dl class="checkboxSet">
-                        <dt>이벤트 등급</dt>
+                        <dt>개소 종류</dt>
                         <dd>
 							<span>
-								<input type="checkbox" id="urgent" name="">
-								<label for="urgent"><span></span>긴급</label>
+								<input type="checkbox" id="bus" name="">
+								<label for="bus"><span></span>스마트 버스 정류장</label>
 							</span>
                             <span>
-								<input type="checkbox" id="caution" name="">
-								<label for="caution"><span></span>주의</label>
-							</span>
-                        </dd>
-                    </dl>
-                    <dl class="checkboxSet">
-                        <dt>처리 상태</dt>
-                        <dd>
-							<span>
-								<input type="checkbox" id="staus01" name="">
-								<label for="staus01"><span></span>미처리</label>
-							</span>
-                            <span>
-								<input type="checkbox" id="staus02" name="">
-								<label for="staus02"><span></span>조치완료</label>
-							</span>
-                            <span>
-								<input type="checkbox" id="staus03" name="">
-								<label for="staus03"><span></span>종료</label>
+								<input type="checkbox" id="pole" name="">
+								<label for="pole"><span></span>스마트 가로등</label>
 							</span>
                         </dd>
                     </dl>
@@ -209,17 +219,23 @@
                             </div>
                         </dd>
                     </dl>
-                    <dl class="dateSet">
-                        <dt>발생 기간</dt>
-                        <dd><input type="date" class="inputDate"></dd>
-                        <span>부터</span>
-                        <dd><input type="date" class="inputDate"></dd>
-                        <span>까지</span>
+                    <dl class="checkboxSet">
+                        <dt>시설물 상태</dt>
+                        <dd>
+							<span>
+								<input type="checkbox" id="normal" name="">
+								<label for="normal"><span></span>정상</label>
+							</span>
+                            <span>
+								<input type="checkbox" id="strange" name="">
+								<label for="strange"><span></span>이상</label>
+							</span>
+                        </dd>
                     </dl>
                     <dl class="searchTextSet">
                         <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
-                        <dd class="button"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
-                        <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
+                        <dd class="button"><i><img src="images/return.svg"></i>검색조건 초기화</dd>
+                        <dd class="button"><i><img src="images/search.svg"></i>검색</dd>
                     </dl>
                 </div>
             </form>
@@ -227,17 +243,17 @@
         <article class="searchList">
             <div class="articleTitle">
                 <dl class="title">
-                    <dt>스마트 도시 이벤트 목록</dt>
+                    <dt>시설물 목록</dt>
                     <dd><span class="count">123</span>건</dd>
                 </dl>
                 <div>
                     <ul class="statusLabel">
-                        <li><span class="red"></span>미처리 : 5</li>
-                        <li><span class="yellow"></span>조치 완료 : 3</li>
-                        <li><span class="green"></span>이벤트 종료 : 14</li>
+                        <li><span class="gray"></span>미사용 : 5</li>
+                        <li><span class="red"></span>이상 : 3</li>
+                        <li><span class="green"></span>정상 : 14</li>
                     </ul>
                     <ul>
-                        <li><i><img src="/images/default/add.svg"></i>추가</li>
+                        <li><i><img src="images/add.svg"></i>추가</li>
                     </ul>
                 </div>
             </div>
@@ -246,60 +262,48 @@
                     <thead>
                     <tr>
                         <th>Index</th>
-                        <th>이벤트 ID</th>
-                        <th>이벤트 종류</th>
-                        <th>이벤트 등급</th>
-                        <th>처리 상태</th>
-                        <th>개소 관리 ID</th>
+                        <th>시설물 관리 ID</th>
+                        <th>시설물 종류</th>
+                        <th>시설물 상태</th>
+                        <th>개소 종류</th>
                         <th>개소 이름</th>
                         <th>행정구역</th>
-                        <th>개소 주소</th>
-                        <th>이벤트 발생일시</th>
-                        <th>이벤트 종료일시</th>
+                        <th>시설물 주소</th>
                         <th>상세보기</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                         <td>1</td>
-                        <td>CEB000001</td>
-                        <td>금연벨</td>
-                        <td>주의</td>
+                        <td>BF001</td>
+                        <td>AED</td>
                         <td><span class="status red"></span></td>
-                        <td>BG001</td>
-                        <td>광명시청</td>
+                        <td><span class="type bus"><i><img src="images/icon_bus.svg"></i></span></td>
+                        <td>광명 시청</td>
                         <td>철산 3동</td>
                         <td>경기 광명시 시청로 20 광명시청</td>
-                        <td>2021.11.25 15:49</td>
-                        <td>2021.11.25 15:49</td>
                         <td><span class="button">상세보기</span></td>
                     </tr>
                     <tr>
                         <td>1</td>
-                        <td>CEB000001</td>
-                        <td>금연벨</td>
-                        <td>주의</td>
-                        <td><span class="status yellow"></span></td>
-                        <td>BG001</td>
-                        <td>광명시청</td>
-                        <td>철산 3동</td>
-                        <td>경기 광명시 시청로 20 광명시청</td>
-                        <td>2021.11.25 15:49</td>
-                        <td>2021.11.25 15:49</td>
-                        <td><span class="button">상세보기</span></td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>CEB000001</td>
-                        <td>금연벨</td>
-                        <td>주의</td>
+                        <td>BF001</td>
+                        <td>AED</td>
                         <td><span class="status green"></span></td>
-                        <td>BG001</td>
-                        <td>광명시청</td>
+                        <td><span class="type pole"><i><img src="images/icon_pole.svg"></i></span></td>
+                        <td>광명 시청</td>
                         <td>철산 3동</td>
                         <td>경기 광명시 시청로 20 광명시청</td>
-                        <td>2021.11.25 15:49</td>
-                        <td>2021.11.25 15:49</td>
+                        <td><span class="button">상세보기</span></td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>BF001</td>
+                        <td>AED</td>
+                        <td><span class="status gray"></span></td>
+                        <td><span class="type bus"><i><img src="images/icon_bus.svg"></i></span></td>
+                        <td>광명 시청</td>
+                        <td>철산 3동</td>
+                        <td>경기 광명시 시청로 20 광명시청</td>
                         <td><span class="button">상세보기</span></td>
                     </tr>
                     </tbody>
@@ -307,19 +311,18 @@
             </div>
             <div class="tableBottom">
                 <ul class="pageNav">
-                    <li class="prev"><i><img src="/images/default/prev.svg"></i></li>
+                    <li class="prev"><i><img src="images/prev.svg"></i></li>
                     <li class="on">1</li>
                     <li>2</li>
                     <li>3</li>
                     <li>4</li>
                     <li>5</li>
-                    <li class="next"><i><img src="/images/default/next.svg"></i></li>
+                    <li class="next"><i><img src="images/next.svg"></i></li>
                 </ul>
-                <p class="button"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>
+                <p class="button"><i><img src="images/excel.svg"></i>엑셀로 내보내기</p>
             </div>
         </article>
     </section>
-
 </th:block>
 
 </html>

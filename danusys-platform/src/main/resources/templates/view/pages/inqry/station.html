@@ -287,6 +287,285 @@
 </th:block>
 
 <th:block th:fragment="pagesScript">
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout_inqry">
+
+<th:block layout:fragment="content">
+    <h4>
+        <i><img src="images/inquiryTitle.svg"></i>
+        <span>조회/관리</span>
+        <i><img src="images/settingArrowNext.svg"></i>
+        <span>개소 관리</span>
+    </h4>
+    <section class="inquiryContent">
+        <article class="searchForm">
+            <h6>개소 검색</h6>
+            <form>
+                <div>
+                    <dl class="selectboxSet">
+                        <dt>개소 종류</dt>
+                        <dd>
+                            <div class="dropdownCheckbox">
+                                <p class="checkboxTitle checkboxTitle_station">개소 종류 선택</p>
+                                <ul class="checkboxList checkboxList_station">
+                                    <li>
+										<span>
+											<input type="checkbox" id="stationAll" name="">
+											<label for="stationAll"><span></span>전체</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="station01" name="">
+											<label for="station01"><span></span>스마트 버스 정류장</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="station02" name="">
+											<label for="station02"><span></span>스마트 가로등</label>
+										</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl class="selectboxSet">
+                        <dt>시설물 종류</dt>
+                        <dd>
+                            <div class="dropdownCheckbox">
+                                <p class="checkboxTitle checkboxTitle_stationFind">시설물 종류 선택</p>
+                                <ul class="checkboxList checkboxList_stationFind">
+                                    <li>
+										<span>
+											<input type="checkbox" id="stationAll" name="">
+											<label for="stationAll"><span></span>전체</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="station01" name="">
+											<label for="station01"><span></span>AED</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="station02" name="">
+											<label for="station02"><span></span>기타</label>
+										</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+                <div>
+                    <dl class="selectboxSet">
+                        <dt>행정구역</dt>
+                        <dd>
+                            <div class="dropdownCheckbox">
+                                <p class="checkboxTitle checkboxTitle_district">행정구역 선택</p>
+                                <ul class="checkboxList checkboxList_district">
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtALL" name="">
+											<label for="districtALL"><span></span>전체</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtFind01" name="">
+											<label for="districtFind01"><span></span>광명1동</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="districtFind02" name="">
+											<label for="districtFind02"><span></span>광명2동</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtFind03" name="">
+											<label for="districtFind03"><span></span>광명3동</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="districtFind04" name="">
+											<label for="districtFind04"><span></span>광명4동</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtFind05" name="">
+											<label for="districtFind05"><span></span>광명5동</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="districtFind06" name="">
+											<label for="districtFind06"><span></span>광명6동</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtFind07" name="">
+											<label for="districtFind07"><span></span>광명7동</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="districtFind08" name="">
+											<label for="districtFind08"><span></span>소하1동</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtFind09" name="">
+											<label for="districtFind09"><span></span>소하2동</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="districtFind10" name="">
+											<label for="districtFind10"><span></span>철산1동</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtFind11" name="">
+											<label for="districtFind11"><span></span>철산2동</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="districtFind12" name="">
+											<label for="districtFind12"><span></span>철산3동</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtFind13" name="">
+											<label for="districtFind13"><span></span>철산4동</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="districtFind14" name="">
+											<label for="districtFind14"><span></span>하안1동</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtFind15" name="">
+											<label for="districtFind15"><span></span>하안2동</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="districtFind16" name="">
+											<label for="districtFind16"><span></span>하안3동</label>
+										</span>
+                                    </li>
+                                    <li>
+										<span>
+											<input type="checkbox" id="districtFind17" name="">
+											<label for="districtFind17"><span></span>하안4동</label>
+										</span>
+                                        <span>
+											<input type="checkbox" id="districtFind18" name="">
+											<label for="districtFind18"><span></span>학온동</label>
+										</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl class="checkboxSet">
+                        <dt>처리 상태</dt>
+                        <dd>
+							<span>
+								<input type="checkbox" id="normal" name="">
+								<label for="normal"><span></span>정상</label>
+							</span>
+                            <span>
+								<input type="checkbox" id="strange" name="">
+								<label for="strange"><span></span>이상</label>
+							</span>
+                        </dd>
+                    </dl>
+                    <dl class="searchTextSet">
+                        <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
+                        <dd class="button"><i><img src="images/return.svg"></i>검색조건 초기화</dd>
+                        <dd class="button"><i><img src="images/search.svg"></i>검색</dd>
+                    </dl>
+                </div>
+            </form>
+        </article>
+        <article class="searchList">
+            <div class="articleTitle">
+                <dl class="title">
+                    <dt>개소 목록</dt>
+                    <dd><span class="count">123</span>건</dd>
+                </dl>
+                <div>
+                    <ul class="statusLabel">
+                        <li><span class="gray"></span>비활성 : 5</li>
+                        <li><span class="red"></span>이상 : 3</li>
+                        <li><span class="green"></span>정상 : 14</li>
+                    </ul>
+                    <ul>
+                        <li><i><img src="images/add.svg"></i>추가</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="searchTable">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>개소 관리 ID</th>
+                        <th>개소 종류</th>
+                        <th>개소 이름</th>
+                        <th>개소 상태</th>
+                        <th>시설물 종류</th>
+                        <th>행정구역</th>
+                        <th>개소 주소</th>
+                        <th>상세보기</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>BG001</td>
+                        <td><span class="type bus"><i><img src="images/icon_bus.svg"></i></span></td>
+                        <td>광명 시청</td>
+                        <td><span class="status red"></span></td>
+                        <td>AED, 비상벨, 스마트 공기청정지, 냉난방기 외 00개</td>
+                        <td>철산 3동</td>
+                        <td>경기 광명시 시청로 20 광명시청</td>
+                        <td><span class="button">상세보기</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>BG001</td>
+                        <td><span class="type pole"><i><img src="images/icon_pole.svg"></i></span></td>
+                        <td>광명 시청</td>
+                        <td><span class="status green"></span></td>
+                        <td>AED, 비상벨, 스마트 공기청정지, 냉난방기 외 00개</td>
+                        <td>철산 3동</td>
+                        <td>경기 광명시 시청로 20 광명시청</td>
+                        <td><span class="button">상세보기</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>BG001</td>
+                        <td><span class="type bus"><i><img src="images/icon_bus.svg"></i></span></td>
+                        <td>광명 시청</td>
+                        <td><span class="status gray"></span></td>
+                        <td>AED, 비상벨, 스마트 공기청정지, 냉난방기 외 00개</td>
+                        <td>철산 3동</td>
+                        <td>경기 광명시 시청로 20 광명시청</td>
+                        <td><span class="button">상세보기</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tableBottom">
+                <ul class="pageNav">
+                    <li class="prev"><i><img src="images/prev.svg"></i></li>
+                    <li class="on">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li class="next"><i><img src="images/next.svg"></i></li>
+                </ul>
+                <p class="button"><i><img src="images/excel.svg"></i>엑셀로 내보내기</p>
+            </div>
+        </article>
+    </section>
 </th:block>
 
 </html>

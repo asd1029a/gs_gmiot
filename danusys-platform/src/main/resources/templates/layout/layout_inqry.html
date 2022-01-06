@@ -8,7 +8,9 @@
 
     <div class="inquiry">
         <th:block th:replace="fragments/inqry/nav :: navFragment" />
-        <th:block layout:fragment="content" />
+        <div class="inquiryContainer">
+            <th:block layout:fragment="content" />
+        </div>
     </div>
 
     <th:block th:replace="fragments/default/footer :: footerFragment" />
