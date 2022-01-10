@@ -12,6 +12,7 @@
 
         <module>danusys-platform</module>
         <module>danusys-drone</module>
+        <module>danusys-commons-crypto</module>
 
     </modules>
 

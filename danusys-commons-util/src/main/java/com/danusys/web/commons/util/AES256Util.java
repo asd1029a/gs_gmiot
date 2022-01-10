@@ -24,7 +24,7 @@ public class AES256Util {
     public AES256Util(String key) throws UnsupportedEncodingException {
         this.iv = key.substring(0, 16);
 
-        byte[] keyBytes = new byte[32];
+        byte[] keyBytes = new byte[16];
         byte[] b = key.getBytes("UTF-8");
         int len = b.length;
         if(len > keyBytes.length)
