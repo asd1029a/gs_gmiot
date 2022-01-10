@@ -22,6 +22,14 @@ $(document).ready(() => {
     /* 셀렉트 박스 */
     comm.customSelectBox('.dropdownCheckbox');
 
+    /* 행정구역 선택 셀렉트 박스 */
+    $(".checkboxTitle_district").click(function(){
+        $(".checkboxList_district").toggle();
+    });
+    $("#districtALL").change(function () {
+        $(".checkboxList_district input[type=checkbox]").prop('checked', $(this).prop('checked'));
+    });
+
     /* 페이지별 공통 기능 */
     // 조회/관리
     if(path === "/pages/inqry/event1") {
@@ -37,9 +45,7 @@ $(document).ready(() => {
     }
     // 환경설정
     else if(path === "/pages/config/district") {
-        $(".checkboxTitle_district").click(function(){
-            $(".checkboxList_district").show();
-        });
+
     } else if(path === "/pages/config/userAccount") {
 
     } else if(path === "/pages/config/userGroup") {
