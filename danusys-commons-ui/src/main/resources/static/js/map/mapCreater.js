@@ -1,17 +1,21 @@
 proj4.defs("EPSG:5181","+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+proj4.defs("EPSG:5179","+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 ol.proj.proj4.register(proj4);
 
+/**
+ * 0: daum, 1: naver, 2:vworld
+ * */
 class mapCreater {
     'use strict'
     // default values
     resolutions = [
         [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25], // daum
-        [], // naver,
+        [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25], // naver,
         undefined, // vworld
     ];
     extents = [
         [-30000, -60000, 494288, 988576], // daum
-        [], // naver
+        [90112, 1192896, 2187264, 2765760], // naver
         undefined // vworld
     ];
     defaultZoom = [
@@ -212,7 +216,7 @@ class mapCreater {
 
         this.createTileLayers();
 
-        this.switchTileMap('btnRoadmap');
+        this.switchTileMap('btnImgmap');
     }
 
     createTileGrid() {
@@ -339,7 +343,7 @@ class mapCreater {
     switchTileMap(type) {
         const layers = this.map.getLayers().getArray();
         let tilesId = '';
-        if(type=='btnRoadmap'){
+        if(type=='btnImgmap'){
             tilesId = 'base';
             this.tiles = tilesId;
         } else if(type == 'btnSkyview'){
@@ -348,7 +352,7 @@ class mapCreater {
         }
         for (let i = 0, max = layers.length; i < max; i++) {
             const title = layers[i].get('title');
-            if($('#btnRoadview').hasClass('selected_btn') && title == 'roadView') {
+            if($('#btnImgview').hasClass('selected_btn') && title == 'roadView') {
                 continue;
             }
             tilesId.indexOf(title) > -1 || layers[i] instanceof ol.layer.Vector ? layers[i].setVisible(true) : layers[i].setVisible(false);
