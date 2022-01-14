@@ -2,7 +2,7 @@
 $(document).ready(() => {
     const path = location.pathname;
     const pathArr = path.split("/");
-
+    
     /* 탑메뉴 및 lnb 메뉴 관련 */
     $("#"+pathArr[2]).addClass("active");
 

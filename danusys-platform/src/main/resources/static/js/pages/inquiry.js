@@ -9,8 +9,10 @@ const inquiry = {
     }
     /* 이벤트 */
     , event : {
+        create : () => {
 
-        getList : () => {
+        }
+        , getList : () => {
 
         }
         , get : () => {
