@@ -587,6 +587,70 @@ var comm = {
         this.customSelectBox.prototype.init(selector);
         this.customSelectBox.prototype.initEvent();
     }
+    /* 커스텀 다중 선택 셀렉트 박스 / 이유나 2022.01.14 */
+    , customListSelectBox : function(selector) {
+        this.customListSelectBox.$selectBox = null,
+            this.customListSelectBox.$select = null,
+            this.customListSelectBox.$list = null,
+            this.customListSelectBox.$listLi = null;
+
+        comm.customListSelectBox.prototype.init = function(selector){
+            this.$selectBox = $(selector);
+            this.$select = this.$selectBox.find('.box .select');
+            this.$list = this.$selectBox.find('.box .list');
+            this.$listLi = this.$list.find('li> span');
+        }
+        comm.customListSelectBox.prototype.initEvent = function(e){
+            var that = this;
+            this.$select.on('click', function(e){
+                that.listOn();
+            });
+            this.$listLi.on('click', function(e){
+                that.listSelect($(this));
+            });
+        }
+        comm.customListSelectBox.prototype.listOn = function(){
+            this.$selectBox.toggleClass('on');
+            if(this.$selectBox.hasClass('on')){
+                this.$list.css('display', 'block');
+            }else{
+                this.$list.css('display', 'none');
+            };
+        }
+        comm.customListSelectBox.prototype.listSelect = function($target){
+            $target.toggleClass('selected');
+
+            let selectStr = "";
+            let $listInput = $target.children("input");
+
+            if($listInput.attr("id").indexOf("checkAll") > -1){
+                selectStr = $listInput.prop('checked') ? $target.text() : "미선택";
+                this.$listLi.children("input[type=checkbox]").prop('checked', $listInput.prop('checked'));
+            }else{
+                let totalLen = this.$listLi.length - 1;
+                let checkedLen = this.$listLi.find("input[type=checkbox]:checked").not("#checkAll").length;
+
+                if(totalLen !== checkedLen){
+                    this.$listLi.find("#checkAll").prop("checked", false);
+                    for (let i = 0; i < this.$listLi.length; i++){
+                        if($(this.$listLi[i]).children("input[type=checkbox]").prop("checked")) selectStr += $(this.$listLi[i]).text();
+                    }
+                }else{
+                    this.$listLi.find("#checkAll").prop("checked", true);
+                    selectStr = this.$listLi.find("#checkAll + label").text();
+                }
+            }
+            this.$select.text(selectStr);
+        }
+        comm.customListSelectBox.prototype.listOff = function($target){
+            if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
+                this.$selectBox.removeClass('on');
+                this.$list.css('display', 'none');
+            };
+        }
+        this.customListSelectBox.prototype.init(selector);
+        this.customListSelectBox.prototype.initEvent();
+    }
 };
 
 /**
