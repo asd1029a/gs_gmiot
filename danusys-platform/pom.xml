@@ -39,6 +39,26 @@
         			<artifactId>danusys-commons-util</artifactId>
         			<version>${revision}</version>
         		</dependency>
+                <dependency>
+                    <groupId>com.danusys.web</groupId>
+                    <artifactId>danusys-commons-auth</artifactId>
+                    <version>${revision}</version>
+                </dependency>
+
+        <!--		<dependency>-->
+        <!--			<groupId>org.springframework.boot</groupId>-->
+        <!--			<artifactId>spring-boot-starter-data-jdbc</artifactId>-->
+        <!--		</dependency>-->
+        <!--		<dependency>-->
+        <!--			<groupId>org.mybatis.spring.boot</groupId>-->
+        <!--			<artifactId>mybatis-spring-boot-starter</artifactId>-->
+        <!--			<version>2.2.0</version>-->
+        <!--		</dependency>-->
+        <!--		<dependency>-->
+        <!--			<groupId>com.danusys.web</groupId>-->
+        <!--			<artifactId>danusys-common-util</artifactId>-->
+        <!--			<version>${revision}</version>-->
+        <!--		</dependency>-->
 
         <dependency>
             <groupId>com.danusys.web</groupId>
@@ -94,6 +114,7 @@
         </dependency>
 
 
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -105,6 +126,8 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+
 
 
         <!--		<dependency>-->
@@ -179,6 +202,14 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>3.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
         </dependency>
 
         <!--		<dependency>-->
