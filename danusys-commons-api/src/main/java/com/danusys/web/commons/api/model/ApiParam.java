@@ -2,6 +2,7 @@ package com.danusys.web.commons.api.model;
 
 import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.api.types.ParamType;
+import com.danusys.web.commons.crypto.types.CryptoType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -57,4 +58,11 @@ public class ApiParam implements Serializable {
 
     @Column(nullable = false)
     private Long apiId;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private CryptoType cryptoType;
+
+    @Column
+    private String cryptoKey;
 }

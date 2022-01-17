@@ -1,26 +1,48 @@
-$(function () {
-    let path = "[[${#httpServletRequest.getRequestURI()}]]";
-    $(".gnm li").map((i, el) => {
-        if(path.indexOf(el.id) > -1) $(el).addClass("active");
+/* document 공통 기능 */
+$(document).ready(() => {
+    const path = location.pathname;
+    const pathArr = path.split("/");
+    
+    /* 탑메뉴 및 lnb 메뉴 관련 */
+    $("#"+pathArr[2]).addClass("active");
+
+    $("#"+pathArr[3]).parents("li").hasClass("multi")
+        ? $("#"+pathArr[3]).parents("li").addClass("on")
+        : $("#"+pathArr[3]).addClass("on");
+
+    $(".multi").on("click", (e)=> {
+        $(".accordion > li").removeClass("on");
+        $(e.currentTarget).addClass("on");
     });
-
-    /* let path = "[[${#httpServletRequest.getRequestURI()}]]";
-        $(".accordion li").map((i, el) => {
-            if(path.indexOf(el.id) > -1) $(el).addClass("active");
-        })*/
-    debugger;
-    $(".accordion > li").click(function(e) {
-        $(".accordion > li").removeClass('on');
-        $(e.currentTarget).addClass('on');
-    })
-    /*$(".sub-menu dd").click(function(e) {
-
-        //$(".sub-menu dd").removeClass('on');
-        $(e.target).addClass('on');
-    })*/
 
     $(".sub-menu > li").map((i, el) => {
         if(path.indexOf(el.id) > -1) $(el).addClass("on");
-    })
+    });
 
+    /* 다중 셀렉트 박스 */
+    comm.customListSelectBox('.dropdown_checkbox');
+
+    /* 페이지별 공통 기능 */
+    // 조회/관리
+    if(path === "/pages/inqry/event1") {
+
+    } else if(path === "/pages/inqry/event2") {
+
+    } else if(path === "/pages/inqry/station") {
+
+    } else if(path === "/pages/inqry/facilities") {
+
+    }
+    // 환경설정
+    else if(path === "/pages/config/district") {
+
+    } else if(path === "/pages/config/userAccount") {
+
+    } else if(path === "/pages/config/userGroup") {
+
+    } else if(path === "/pages/config/commonCode") {
+
+    } else if(path === "/pages/config/notice") {
+
+    }
 })

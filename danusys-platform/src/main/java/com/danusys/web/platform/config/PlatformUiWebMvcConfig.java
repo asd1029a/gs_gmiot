@@ -48,9 +48,11 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("/pages/config/userGroup").setViewName("view/pages/config/userGroup");
 
 
-        // 이벤트
+        // 조회관리
         registry.addViewController("/pages/inqry/event1").setViewName("view/pages/inqry/event1");
         registry.addViewController("/pages/inqry/event2").setViewName("view/pages/inqry/event2");
+        registry.addViewController("/pages/inqry/station").setViewName("view/pages/inqry/station");
+        registry.addViewController("/pages/inqry/facilities").setViewName("view/pages/inqry/facilities");
 
 
 
