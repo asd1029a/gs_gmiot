@@ -21,11 +21,7 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.danusys.web</groupId>
-            <artifactId>danusys-commons-ui</artifactId>
-            <version>${revision}</version>
-        </dependency>
+
 
         <!--   스타트웹, jpa 끝  -->
         <!-- 롬복,다누시스웹 -->
@@ -34,11 +30,7 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>com.danusys.web</groupId>
-            <artifactId>danusys-commons-util</artifactId>
-            <version>${revision}</version>
-        </dependency>
+
         <!-- 롬복,다누시스웹  끝 -->
         <!-- 시큐리티 ouath  jwt start -->
         <dependency>

@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/dark/main.css">
 
     <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
-    <script src="/js/login.js"></script>
+    <script src="/js/logintest.js"  defer></script>
 
     <script th:inline="javascript">
         $(document).ready(function () {
@@ -40,7 +40,7 @@
             })
 
             /* 로그인 디스플레이 설정 */
-            loginDisplaySet();
+        //    loginDisplaySet();
         });
 
         function login() {
@@ -93,37 +93,6 @@
 
 
 
-    $(".login-btn").on("click",function () {
-
-        if ($('#id').val() == "") {
-            alert("아이디를 입력하세요");
-            return false;
-        } else if ($('#pwd').val() == "") {
-            alert("비밀번호를 입력하세요");
-            return false;
-        }
-        const sendData = {
-            username: $("#id").val(),
-            password: $("#pwd").val()
-        }
-        $.ajax({
-            url: "/auth/generateToken",
-            type: "POST",
-            data: sendData,
-            success: function (resultData) {
-
-                let keys = Object.keys(resultData);
-                keys.forEach(key => {
-                    if (key === 'accessToken') {
-                        document.cookie = key + '=' + resultData[key];
-                    }
-                });
-                document.location="/pages/mntr";
-            }
-        });
-
-        return false;
-    });
 
 
 </script>

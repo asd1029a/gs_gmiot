@@ -1,5 +1,8 @@
 package com.danusys.web.commons.auth.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,18 +16,32 @@ import java.util.List;
 public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private long id;
+        @Column(name="id")
+        private int id;
 
+
+        @Column(name="user_id")
         private String username;
         private String password;
-        private String roles;
+
         private String refreshToken;
 
+/*
         public List<String> getRoleList(){
                 if(this.roles.length() >0){
                         return Arrays.asList(this.roles.split(","));
                 }
                 return new ArrayList<>();
         }
+*/
+        //@JsonIgnore
+       // @OneToOne(mappedBy ="user",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
+        @OneToOne(mappedBy ="user")
+        @JsonManagedReference
+        private  UserGroupInUser userGroupInUser;
+
+
+
+
 
 }

@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * Date : 2021/11/30
  * Time : 17:17
  */
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)

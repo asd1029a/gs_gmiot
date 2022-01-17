@@ -24,19 +24,19 @@ public class MissionDetails {
 
     private int index;
     @Column(name = "gps_x")
-    private float gpsX;
+    private int gpsX;
 
     @Column(name= "gps_y")
-    private float gpsY;
+    private int gpsY;
 
 
-    private float alt;
+    private int alt;
 
-    private float speed;
+    private int speed;
 
-    private float time;
+    private int time;
    @ManyToOne(fetch = FetchType.EAGER)
   // @ManyToOne
-   @JoinColumn(name="mission_id")
+   @JoinColumn(name ="mission_id")
     private Mission mission;
 }

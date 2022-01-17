@@ -7,13 +7,13 @@
 <link rel="stylesheet" type="text/css" href="/css/dark/main.css">
 
 <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
-<script src="/js/login.js"></script>
+
 
 <script type="text/javascript">
 $(document).ready(function() {
 	
 	/* 로그인 디스플레이 설정 */
-	loginDisplaySet();
+	//loginDisplaySet();
 });
 </script>
 
@@ -32,10 +32,10 @@ $(document).ready(function() {
 				<dt>
 					<span class="icon"><img src="/images/login/login_fail_img.png"></span>
 					<span class="txt" th:text="${#httpServletRequest.getAttribute('failMsg')}"></span>
-					<span class="txt-bold">아이디 또는 비밀번호를<br>다시 확인하세요.</span>
-					<span class="txt">통합플랫폼에 등록되지 않은 아이디이거나,<br>아이디 또는 비밀번호를 잘못 입력하셨습니다.</span>
+<!--					<span class="txt-bold">아이디 또는 비밀번호를<br>다시 확인하세요.</span>-->
+<!--					<span class="txt">통합플랫폼에 등록되지 않은 아이디이거나,<br>아이디 또는 비밀번호를 잘못 입력하셨습니다.</span>-->
 				</dt>
-				<dd onclick="javascript:window.location = '/login/loginPage'">
+				<dd onclick="javascript:window.location = '/loginpage'">
 					<span class="icon"><img src="/images/login/icon_arrow_back.png"></span>
 					<span class="txt">뒤로 가기</span>
 				</dd>

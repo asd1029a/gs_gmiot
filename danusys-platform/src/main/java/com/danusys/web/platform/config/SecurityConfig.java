@@ -1,3 +1,4 @@
+
 package com.danusys.web.platform.config;
 
 import com.danusys.web.platform.config.security.LoginAuthenticationProvider;
@@ -20,7 +21,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  * Developer : hansik.shin
  * Date : 2021/10/21
  * Time : 16:10
- */
+ * /
+ **/
 
 @Configuration
 @EnableWebSecurity
@@ -70,6 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/mntr/**"
 						, "/pages/**"
 						, "/pages/inqry/**"
+						, "/user/**"
 						, "/webjars/**" ).permitAll()
 				.anyRequest().authenticated()
 				.and()
@@ -83,6 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll();
 	}
 }
+
 
 
 

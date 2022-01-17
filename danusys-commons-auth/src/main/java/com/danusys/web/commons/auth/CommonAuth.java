@@ -9,4 +9,5 @@ package com.danusys.web.commons.auth;
  */
 
 public class CommonAuth {
+    /***/
 }
