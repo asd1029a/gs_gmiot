@@ -2,6 +2,7 @@ package com.danusys.web.commons.auth.config.auth;
 
 
 
+import com.danusys.web.commons.auth.model.Permit;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,13 @@ public class CommonsUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //log.info("loadUserByUsername");
+
         User user =userRepository.findByUsername(username);
+        //Permit permit=user.getUserGroupInUser().getUserGroup().getUserGroupPermit().getPermit();
+       // log.info("permit={}",permit);
+        if(user==null){
+            return null;
+        }
         return new CommonsUserDetails(user);
     }
 

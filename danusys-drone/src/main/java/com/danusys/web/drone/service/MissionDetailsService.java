@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,26 +26,38 @@ public class MissionDetailsService {
     private final MissionRepository missionRepository;
 
     @Transactional
-    public MissionDetails saveMisson(MissionDetails missonDetails,long mission_id){
-        Optional<Mission> mission=missionRepository.findById(mission_id);
+    public MissionDetails saveMission(MissionDetails missonDetails, long mission_id) {
+        Optional<Mission> mission = missionRepository.findById(mission_id);
 
         missonDetails.setMission(mission.get());
-        return missionDetailsRepository.save(missonDetails);}
+        return missionDetailsRepository.save(missonDetails);
+    }
+
+    @Transactional
+    public List<MissionDetails> saveMission( @RequestParam List<MissionDetails> missionDetails, @RequestParam long mission_id) {
+        log.info("mission_id={}",mission_id);
+        Optional<Mission> mission = missionRepository.findById(mission_id);
+        missionDetails.forEach(r->{ r.setMission(mission.get());});
+      //  missionDetails.setMission(mission.get());
+        //return missionDetailsRepository.save(missonDetails);
+        return null;
+    }
 
 
     public List<MissionDetailResponse> findMissionDetails(String name) {
-        List<MissionDetails> missonDetails= missionDetailsRepository.findAllByName(name);
+        List<MissionDetails> missonDetails = missionDetailsRepository.findAllByName(name);
 
 
-
-            return missonDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
+        return missonDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
     }
 
-    public List<MissionDetails> findAllMisson(){return (List<MissionDetails>) missionDetailsRepository.findAll();}
+    public List<MissionDetails> findAllMisson() {
+        return (List<MissionDetails>) missionDetailsRepository.findAll();
+    }
 
-    public MissionDetails findByNameAndMission(String name,Mission mission){
-            return missionDetailsRepository.findByNameAndMission(name,mission);
+    public MissionDetails findByNameAndMission(String name, Mission mission) {
+        return missionDetailsRepository.findByNameAndMission(name, mission);
     }
 
 }

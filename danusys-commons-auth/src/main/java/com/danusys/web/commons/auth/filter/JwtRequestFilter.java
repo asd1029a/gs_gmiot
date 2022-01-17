@@ -1,10 +1,7 @@
 package com.danusys.web.commons.auth.filter;
 
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
-import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.util.JwtUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +51,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-
+        log.info("oncefilter");
         String authorizationHeader = request.getHeader("Authorization");
         String refreshToken = request.getHeader("RefreshHeader");
         Cookie[] cookies = request.getCookies();
@@ -95,7 +92,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
-              //  log.info("validateToken");
+
+
                 //userDetails.getAuthorities().forEach(r-> log.info("test={}",r));
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

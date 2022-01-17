@@ -25,15 +25,6 @@ public class JoinController {
 
 
 
-
-    @RequestMapping("/hitest")
-    public ModelAndView hitest(){
-        ModelAndView mav =new ModelAndView();
-        mav.setViewName("view/login/test.html");
-        mav.addObject("abc","123");
-        return mav;
-    }
-
     @RequestMapping("/tokenTest")
     public ModelAndView hitest2(){
         ModelAndView mav =new ModelAndView();
