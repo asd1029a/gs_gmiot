@@ -13,6 +13,7 @@
     <div class="monitoring">
         <th:block th:insert="/view/commons/map">
         </th:block>
+        <div id="map"></div>
         <div class="infoArea">
             <h4 class="infoTitle"><span>Name</span><i><img src="/images/default/close.svg"></i></h4>
             <section class="infoPart1">
@@ -29,7 +30,7 @@
                         <input type="checkbox" id="switch" /><label for="switch">Toggle</label>
                     </dd>
                 </dl>
-                <div class="video"></div>
+                <div id="map2" class="video"></div>
             </section>
             <section class="infoPart2">
                 <ul class="tabButton">
@@ -407,6 +408,7 @@
 </th:block>
 
 <th:block th:fragment="pagesScript">
+    <script type="text/javascript" src="/js/map/controlMap.js"></script>
     <script type="text/javascript" src="/js/pages/mntr.js"></script>
 </th:block>
 

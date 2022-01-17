@@ -287,7 +287,7 @@ class mapCreater {
                 zoom: this.defaultZoom[this.type],
                 zoomFactor: this.zoomFactor[this.type],
                 maxZoom: this.maxZoom[this.type],
-                minZoom: this.minZoom[this.type],
+                minZoom: this.minZoom[this.type]
             })
         });
     }
@@ -299,6 +299,17 @@ class mapCreater {
             defaultItems: false
         });
         this.map.addControl(contextmenu);
+    }
+
+    createMousePosition(textArea){
+        let mousePosition = new ol.control.MousePosition({
+            coordinateFormat: ol.coordinate.createStringXY(6), // 좌표 표시 포맷
+            projection: "EPSG:4326", // 표출 좌표계
+            className : 'custom-mouse-position',
+            target: document.getElementById(textArea), // 표출할 영역 (id값)
+            undefinedHTML:''
+        });
+        this.map.addControl(mousePosition);
     }
 
     createVectorLayer(title, style, source) {
@@ -384,12 +395,11 @@ class mapCreater {
         //const distance = this.wgs84Sphere.haversineDistance(a, b);
         const duration = 500;
 
-        const pan = ol.animation.pan({
-            source : center,
+        this.view.animate({
+            center : center,
             duration : duration
         });
 
-        this.map.beforeRender(pan);
         this.map.getView().setCenter(coord);
     }
 
@@ -414,4 +424,64 @@ class mapCreater {
     updateSize() {
         this.map.updateSize();
     }
+
+    /////
+    zoomInOut(type){
+        const view = this.map.getView();
+        const zoom = view.getZoom();
+
+        if(type == 'plus'){
+            view.setZoom(zoom +1);
+        } else if(type == 'minus'){
+            view.setZoom(zoom -1);
+        }
+    }
+
+    scaleLine() {
+        const scaleLine = new ol.control.ScaleLine({
+            units: 'metric'
+            //target :
+        });
+        this.map.addControl(scaleLine);
+    }
+
+
+
+
 }
+
+
+const olProjection = {
+    addProjection : (epsg,param) => {
+        proj4.defs(epsg,param);
+        ol.proj.proj4.register(proj4);
+    },
+    createProjection : (code,extent) => {
+        const makedProjection = new ol.proj.Projection({
+            code : code,
+            extent : extent,
+            units : 'm'
+        });
+        return makedProjection;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
