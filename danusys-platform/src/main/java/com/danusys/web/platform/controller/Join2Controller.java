@@ -15,56 +15,54 @@ import javax.servlet.http.HttpServletResponse;
 public class Join2Controller {
 
 
-@RequestMapping("/hi234")
-public String hi1234(){
-    return "hi";
-}
+    @RequestMapping("/hi234")
+    public String hi1234() {
+        return "hi";
+    }
 
-    @RequestMapping("/login/error")
-    public ModelAndView error(){
-        ModelAndView mav =new ModelAndView();
-        mav.setViewName("loginError2");
+    @RequestMapping("/login/errorTest")
+    public ModelAndView error() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/view/login/loginErrorTest");
 
         return mav;
     }
+
     @RequestMapping("/test2")
-    public String test2(){
-     return "test2";
+    public String test2() {
+        return "test2";
     }
+
     @RequestMapping("/permitadminpage")
-    public String permitadminpage(){
+    public String permitadminpage() {
         return "permitadminpage";
     }
+
     @RequestMapping("/permitmanagerpage")
-    public String permitmanagerpage(){
+    public String permitmanagerpage() {
         return "permitmanagerpage";
     }
+
     @RequestMapping("/permitauthpage")
-    public String permitauthpage(){
+    public String permitauthpage() {
         return "permitauthpage";
     }
 
 
     @RequestMapping("/permitallpage")
-    public String permitallpage(){
+    public String permitallpage() {
         return "permitallpage";
     }
 
-    @RequestMapping("/loginpage")
-    public ModelAndView loginpage(HttpServletRequest request, HttpServletResponse response){
-//       Cookie cookie =new Cookie("accessToken",null);
-//        cookie.setMaxAge(0);
-//        response.addCookie(cookie);
+    @RequestMapping("/loginpagetest")
+    public ModelAndView loginpage() {
 
-        ModelAndView mav =new ModelAndView();
-        mav.setViewName("view/login/test");
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/view/login/test1");
 
         return mav;
     }
-
-
-
-
 
 
 }

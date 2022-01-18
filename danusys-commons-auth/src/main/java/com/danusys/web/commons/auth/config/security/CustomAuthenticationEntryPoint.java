@@ -42,6 +42,15 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, org.springframework.security.core.AuthenticationException authenticationException) throws IOException, ServletException {
         String defaultFailureUrl = this.defaultFailureUrl;
         log.trace("error type ={}", authenticationException.getClass().getName());
+        String exception=null;
+                exception=(String) httpServletRequest.getAttribute("exception");
+        log.info("log : exception:{}",exception);
+        if(exception!=null){
+            if(exception.equals("ExpiredJwtException")){
+                log.error("ExpiredJwtException");
+                httpServletRequest.setAttribute("failMsg", "토큰만료.");
+            }
+        }
 
 
         if (authenticationException instanceof AuthenticationServiceException) {

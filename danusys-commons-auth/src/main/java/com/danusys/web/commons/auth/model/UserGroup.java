@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
 @Data
-@Table(name="user_group")
+@Table(name="t_user_group")
 public class UserGroup {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,9 +18,9 @@ public class UserGroup {
         private int userGroupSeq;
 
 
-        @Column(name="group_name")
+        @Column(name="user_group_name")
         private String groupName;
-        @Column(name="group_desc")
+        @Column(name="user_group_remark")
         private String groupDesc;
         @Column(name="insert_dt")
         private Date insertDt ;

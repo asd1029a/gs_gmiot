@@ -56,7 +56,6 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
 
 
 
-
         super.addViewControllers(registry);
     }
 

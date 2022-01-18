@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity
 @Data
-@Table(name="permit")
+@Table(name="t_permit")
 public class Permit {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)

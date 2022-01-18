@@ -48,7 +48,7 @@ public class CommonsUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         // log.info("여기");
-        // log.info("요기={}",user.getUserGroupInUser().getUserGroup().getUserGroupPermit().getPermit().getPermitName());
+         log.info("요기={}",user.getUserGroupInUser().getUserGroup().getUserGroupPermit().getPermit().getPermitName());
         if (user == null) {
 
 

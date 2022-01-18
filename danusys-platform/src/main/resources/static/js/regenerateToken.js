@@ -6,7 +6,11 @@ function regenerateToken(){
             let keys = Object.keys(resultData);
             keys.forEach(key => {
                 if (key === 'accessToken') {
-                    document.cookie = key + '=' + resultData[key];
+
+                    let date=new Date();
+                    date.setDate(date.getDate() + 1000* 60 * 15);
+                    document.cookie = key + '=' + resultData[key]+';'+`Expires=${date.toUTCString()}`;
+
                 }
             });
         }

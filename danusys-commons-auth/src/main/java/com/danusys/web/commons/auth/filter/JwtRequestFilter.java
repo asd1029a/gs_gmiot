@@ -4,8 +4,11 @@ package com.danusys.web.commons.auth.filter;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
 import com.danusys.web.commons.auth.util.JwtUtil;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
@@ -19,6 +22,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +38,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private CommonsUserDetailsService userDetailsService;
 
+    @Value("${defaultFailureUrl}")
+    private String defaultFailureUrl;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -61,7 +67,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 if (cookie.getName().equals("accessToken")) {
                     authorizationHeader = "Bearer " + cookie.getValue();
 
-                  //  log.info("cookie.getValue()={}", authorizationHeader.substring(7));
+                    //  log.info("cookie.getValue()={}", authorizationHeader.substring(7));
                 }
 
 
@@ -76,8 +82,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             jwt = authorizationHeader.substring(7); //beaer 뒤에 붙은것들
 
+            try {
+                username = jwtUtil.extractUsername(jwt); //extractUsername에서 유효기간이 지났다면 exception 발생
+            } catch (ExpiredJwtException e) {
+                log.info("Error");
 
-            username = jwtUtil.extractUsername(jwt); //extractUsername에서 유효기간이 지났다면 exception 발생
+                request.setAttribute("exception", "ExpiredJwtException");
+
+
+
+            } catch (JwtException e) {
+                log.info("Error2");
+                e.printStackTrace();
+
+                request.setAttribute("exception", "JwtException");
+            }
 
         }
 
