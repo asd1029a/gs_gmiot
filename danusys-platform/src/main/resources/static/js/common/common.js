@@ -149,15 +149,28 @@ $.fn.extend({
         return returnVal;
     },
     initForm : function() {
+        let isCheckboxInit = false;
         $.each($(this)[0], function(idx, element){
             var objEle = $(element);
             var eleAttr = objEle[0];
 
             if(eleAttr != "undefined"  && typeof(eleAttr) != 'undefined') {
                 if(typeof(objEle.attr("data-init-value"))!="undefined") {
-                    objEle.val(objEle.attr("data-init-value"));
+                    if(eleAttr.type === "checkbox"){
+                        isCheckboxInit = true;
+                        objEle.prop("checked", objEle.attr("data-init-value"));
+                        comm.customListSelectBox.prototype.listSelect(objEle.parent());
+                    }else{
+                        objEle.val(objEle.attr("data-init-value"));
+                    }
                 } else if(eleAttr.tagName == "INPUT" || eleAttr.tagName == "TEXTAREA") {
-                    objEle.val("");
+                    if(eleAttr.type === "checkbox" && !isCheckboxInit){
+                        objEle.prop("checked", false);
+                        comm.customListSelectBox.prototype.listSelect(objEle.parent());
+                    }else{
+                        objEle.val("");
+                    }
+
                     if(typeof(objEle.attr("data-diff-month"))!="undefined" &&
                         objEle.attr("data-diff-month").length > 0) {
                         const diff = objEle.data("diff-month");
@@ -166,7 +179,6 @@ $.fn.extend({
                 } else if(eleAttr.tagName == "SELECT") {
                     var firstVal = objEle.find("option:eq(0)").val();
                     objEle.val(firstVal);
-                    //objEle.selectpicker("val", firstVal);
                 }
             }
         });

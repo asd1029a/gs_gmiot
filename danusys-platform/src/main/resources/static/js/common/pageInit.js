@@ -22,6 +22,11 @@ $(document).ready(() => {
     /* 다중 셀렉트 박스 */
     comm.customListSelectBox('.dropdown_checkbox');
 
+    /* 검색조건 초기화 버튼 */
+    $("#resetFormBtn").on("click", (e) => {
+        $("#searchForm form").initForm();
+    });
+
     /* 페이지별 공통 기능 */
     // 조회/관리
     if(path === "/pages/inqry/event1") {
