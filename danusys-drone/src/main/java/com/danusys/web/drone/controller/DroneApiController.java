@@ -606,7 +606,7 @@ public class DroneApiController {
     @GetMapping("/test")
     public void test() {
        // flight.loiter(30);
-
+        flight.camera();
     }
 }
 
