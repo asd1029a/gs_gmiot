@@ -1,81 +1,97 @@
 
 $(function() {
-    $(".lnbToggle").on("click", function() {
-        $(".lnb").toggleClass("toggle");
-    });
+    // $(".lnbToggle").on("click", function() {
+    //     $(".lnb").toggleClass("toggle");
+    // });
+    //
+    // $(".selectboxCheck_title").click(function(){
+    //     $(".selectCheckList").show();
+    // })
+    //
+    // $('.lnb .tabButton li').click(function(){
+    //     $(this).addClass('on');
+    // });
+    //
+    // $(".infoTitle i").click(function(){
+    //     $(".infoArea").hide("2000", function() {
+    //         // mapManager.map.updateSize();
+    //     });
+    // });
+    //
+    // $(".listScroll dl").click(function(){
+    //     $(".infoArea").toggle("2000", function() {
+    //         // mapManager.map.updateSize();
+    //     });
+    // });
+    //
+    // // 각각의 셀렉트 박스 인스턴스 생성
+    // var selectType01 = new CustomSelectBox('.selectBox.type01');
 
-    $(".selectboxCheck_title").click(function(){
-        $(".selectCheckList").show();
-    })
+    //mapManager.map.updateSize();
+    let map = new mapCreater('map',0);
+    map.createMousePosition('mouse-position');
+    map.scaleLine();
+    window.map = map;
 
-    $('.lnb .tabButton li').click(function(){
-        $(this).addClass('on');
-    });
+    let lc = new layerControl('map', 'title');
+    console.log(lc.exist('cctvLayer'));
 
-    $(".infoTitle i").click(function(){
-        $(".infoArea").hide("2000", function() {
-            // mapManager.map.updateSize();
-        });
-    });
 
-    $(".listScroll dl").click(function(){
-        $(".infoArea").toggle("2000", function() {
-            // mapManager.map.updateSize();
-        });
-    });
+    //
+    let map2 = new mapCreater('map2',2);
+    map2.createMousePosition('mouse-position');
+    map2.scaleLine();
+    window.map2 = map2;
 
-    // 각각의 셀렉트 박스 인스턴스 생성
-    var selectType01 = new CustomSelectBox('.selectBox.type01');
 
-    let map = new mapCreater('map', 0);
+    //console.log(map);
+});
 
-    map.updateSize();
-})
 
 //    selectbox custom
-function CustomSelectBox(selector){
-    this.$selectBox = null,
-    this.$select = null,
-    this.$list = null,
-    this.$listLi = null;
-    CustomSelectBox.prototype.init = function(selector){
-        this.$selectBox = $(selector);
-        this.$select = this.$selectBox.find('.box .select');
-        this.$list = this.$selectBox.find('.box .list');
-        this.$listLi = this.$list.children('li');
-    }
-    CustomSelectBox.prototype.initEvent = function(e){
-        var that = this;
-        this.$select.on('click', function(e){
-            that.listOn();
-        });
-        this.$listLi.on('click', function(e){
-            that.listSelect($(this));
-        });
-        $(document).on('click', function(e){
-            that.listOff($(e.target));
-        });
-    }
-    CustomSelectBox.prototype.listOn = function(){
-        this.$selectBox.toggleClass('on');
-        if(this.$selectBox.hasClass('on')){
-            this.$list.css('display', 'block');
-        }else{
-            this.$list.css('display', 'none');
-        };
-    }
-    CustomSelectBox.prototype.listSelect = function($target){
-        $target.addClass('selected').siblings('li').removeClass('selected');
-        this.$selectBox.removeClass('on');
-        this.$select.text($target.text());
-        this.$list.css('display', 'none');
-    }
-    CustomSelectBox.prototype.listOff = function($target){
-        if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
-            this.$selectBox.removeClass('on');
-            this.$list.css('display', 'none');
-        };
-    }
-    this.init(selector);
-    this.initEvent();
-}
+// function CustomSelectBox(selector){
+//     this.$selectBox = null,
+//     this.$select = null,
+//     this.$list = null,
+//     this.$listLi = null;
+//     CustomSelectBox.prototype.init = function(selector){
+//         this.$selectBox = $(selector);
+//         this.$select = this.$selectBox.find('.box .select');
+//         this.$list = this.$selectBox.find('.box .list');
+//         this.$listLi = this.$list.children('li');
+//     }
+//     CustomSelectBox.prototype.initEvent = function(e){
+//         var that = this;
+//         this.$select.on('click', function(e){
+//             that.listOn();
+//         });
+//         this.$listLi.on('click', function(e){
+//             that.listSelect($(this));
+//         });
+//         $(document).on('click', function(e){
+//             that.listOff($(e.target));
+//         });
+//     }
+//     CustomSelectBox.prototype.listOn = function(){
+//         this.$selectBox.toggleClass('on');
+//         if(this.$selectBox.hasClass('on')){
+//             this.$list.css('display', 'block');
+//         }else{
+//             this.$list.css('display', 'none');
+//         };
+//     }
+//     CustomSelectBox.prototype.listSelect = function($target){
+//         $target.addClass('selected').siblings('li').removeClass('selected');
+//         this.$selectBox.removeClass('on');
+//         this.$select.text($target.text());
+//         this.$list.css('display', 'none');
+//     }
+//     CustomSelectBox.prototype.listOff = function($target){
+//         if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
+//             this.$selectBox.removeClass('on');
+//             this.$list.css('display', 'none');
+//         };
+//     }
+//     this.init(selector);
+//     this.initEvent();
+// }

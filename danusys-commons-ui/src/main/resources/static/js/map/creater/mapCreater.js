@@ -1,17 +1,21 @@
 proj4.defs("EPSG:5181","+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+proj4.defs("EPSG:5179","+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 ol.proj.proj4.register(proj4);
 
+/**
+ * 0: daum, 1: naver, 2:vworld
+ * */
 class mapCreater {
     'use strict'
     // default values
     resolutions = [
         [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25], // daum
-        [], // naver,
+        [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25], // naver,
         undefined, // vworld
     ];
     extents = [
         [-30000, -60000, 494288, 988576], // daum
-        [], // naver
+        [90112, 1192896, 2187264, 2765760], // naver
         undefined // vworld
     ];
     defaultZoom = [
@@ -212,7 +216,7 @@ class mapCreater {
 
         this.createTileLayers();
 
-        this.switchTileMap('btnRoadmap');
+        this.switchTileMap('btnImgmap');
     }
 
     createTileGrid() {
@@ -283,7 +287,7 @@ class mapCreater {
                 zoom: this.defaultZoom[this.type],
                 zoomFactor: this.zoomFactor[this.type],
                 maxZoom: this.maxZoom[this.type],
-                minZoom: this.minZoom[this.type],
+                minZoom: this.minZoom[this.type]
             })
         });
     }
@@ -295,6 +299,17 @@ class mapCreater {
             defaultItems: false
         });
         this.map.addControl(contextmenu);
+    }
+
+    createMousePosition(textArea){
+        let mousePosition = new ol.control.MousePosition({
+            coordinateFormat: ol.coordinate.createStringXY(6), // 좌표 표시 포맷
+            projection: "EPSG:4326", // 표출 좌표계
+            className : 'custom-mouse-position',
+            target: document.getElementById(textArea), // 표출할 영역 (id값)
+            undefinedHTML:''
+        });
+        this.map.addControl(mousePosition);
     }
 
     createVectorLayer(title, style, source) {
@@ -339,7 +354,7 @@ class mapCreater {
     switchTileMap(type) {
         const layers = this.map.getLayers().getArray();
         let tilesId = '';
-        if(type=='btnRoadmap'){
+        if(type=='btnImgmap'){
             tilesId = 'base';
             this.tiles = tilesId;
         } else if(type == 'btnSkyview'){
@@ -348,7 +363,7 @@ class mapCreater {
         }
         for (let i = 0, max = layers.length; i < max; i++) {
             const title = layers[i].get('title');
-            if($('#btnRoadview').hasClass('selected_btn') && title == 'roadView') {
+            if($('#btnImgview').hasClass('selected_btn') && title == 'roadView') {
                 continue;
             }
             tilesId.indexOf(title) > -1 || layers[i] instanceof ol.layer.Vector ? layers[i].setVisible(true) : layers[i].setVisible(false);
@@ -380,12 +395,11 @@ class mapCreater {
         //const distance = this.wgs84Sphere.haversineDistance(a, b);
         const duration = 500;
 
-        const pan = ol.animation.pan({
-            source : center,
+        this.view.animate({
+            center : center,
             duration : duration
         });
 
-        this.map.beforeRender(pan);
         this.map.getView().setCenter(coord);
     }
 
@@ -410,4 +424,64 @@ class mapCreater {
     updateSize() {
         this.map.updateSize();
     }
+
+    /////
+    zoomInOut(type){
+        const view = this.map.getView();
+        const zoom = view.getZoom();
+
+        if(type == 'plus'){
+            view.setZoom(zoom +1);
+        } else if(type == 'minus'){
+            view.setZoom(zoom -1);
+        }
+    }
+
+    scaleLine() {
+        const scaleLine = new ol.control.ScaleLine({
+            units: 'metric'
+            //target :
+        });
+        this.map.addControl(scaleLine);
+    }
+
+
+
+
 }
+
+
+const olProjection = {
+    addProjection : (epsg,param) => {
+        proj4.defs(epsg,param);
+        ol.proj.proj4.register(proj4);
+    },
+    createProjection : (code,extent) => {
+        const makedProjection = new ol.proj.Projection({
+            code : code,
+            extent : extent,
+            units : 'm'
+        });
+        return makedProjection;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

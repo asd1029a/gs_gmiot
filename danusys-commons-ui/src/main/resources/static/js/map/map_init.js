@@ -1,6 +1,9 @@
 
 //EPSG:5181 좌표계 설정
 proj4.defs("EPSG:5181","+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+//EPSG:5179 좌표계 설정
+proj4.defs("EPSG:5179","+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+
 ol.proj.proj4.register(proj4);
 
 /**
@@ -39,16 +42,16 @@ var mapManager = {
 		lon : 126.93514995791503,*/
 		lat : 37.44457599567139,
 		lon : 126.89482519279865,
-			center : null,
+		center : null,
 		projection : 'EPSG:4326',
 		resolutions : [
 			[2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25], // daum,
-			[], // naver,
+			[2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25], // naver,
 			undefined, // vworld
 		],
 		extents : [
 			[-30000, -60000, 494288, 988576], // daum
-			[], // naver
+			[90112, 1192896, 2187264, 2765760], // naver
 			undefined // vworld
 		],
 		defaultZoom : [
@@ -506,8 +509,8 @@ var mapManager = {
 				resolutions: this.properties.resolutions[this.properties.type],
 				rotation: 0,
 				center : new ol.proj.transform([this.properties.lon,this.properties.lat]
-												, this.properties.proj4[this.properties.type]
-												, this.properties.projection),
+					, this.properties.proj4[this.properties.type]
+					, this.properties.projection),
 			}),
 		})
 		this.map.addControl(this.overviewMap);
@@ -561,8 +564,8 @@ var mapManager = {
 	searchDetailAddrFromCoords : function(coords, callback){
 		try {
 			transCoord =  new ol.proj.transform([coords[0], coords[1]]
-												, mapManager.properties.projection
-												, mapManager.properties.proj4[mapManager.properties.type]);
+				, mapManager.properties.projection
+				, mapManager.properties.proj4[mapManager.properties.type]);
 			mapManager.geocoder.coord2Address(transCoord[0], transCoord[1], callback);
 		} catch(e) {
 			console.log('주소정보 사용 불가');
@@ -603,11 +606,11 @@ var mapManager = {
 		const center = mapManager.map.getView().getCenter();
 		const resolution = mapManager.map.getView().getResolution() * 1;
 		const a = ol.proj.transform(center
-									, mapManager.properties.proj4[mapManager.properties.type]
-									, mapManager.properties.projection);
+			, mapManager.properties.proj4[mapManager.properties.type]
+			, mapManager.properties.projection);
 		const b = ol.proj.transform(coord
-									, mapManager.properties.proj4[mapManager.properties.type]
-									, mapManager.properties.projection);
+			, mapManager.properties.proj4[mapManager.properties.type]
+			, mapManager.properties.projection);
 
 		//const distance = mapManager.wgs84Sphere.haversineDistance(a, b);
 		const duration = 500;
@@ -749,4 +752,4 @@ function siteMntr(data){
 		dialogManager.sortDialog();
 	})
 }
-mapManager.init('map', 'minimap', 0);
+//mapManager.init('map', 'minimap', 0);
