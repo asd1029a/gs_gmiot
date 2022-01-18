@@ -20,8 +20,8 @@ public class Substring {
         index = gpsInt.indexOf("lon");
         String gpsY = gpsInt.substring(index + 4, index + 4 + 3) + "." + gpsInt.substring(index + 4 + 3 , index + 4 + 3 + 5);
 
-        gps.setGpsX(Float.parseFloat(gpsX));
-        gps.setGpsY(Float.parseFloat(gpsY));
+ //       gps.setGpsX(Float.parseFloat(gpsX));
+  //      gps.setGpsY(Float.parseFloat(gpsY));
 
 
     }
