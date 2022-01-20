@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
 * 공지사항 관련 Mapper
@@ -26,6 +27,9 @@ public interface BoardMapper {
 
     @Select(selectBoard + whereBoard)
     List<HashMap<String, Object>> selectAll();
+
+    @Select(selectBoard + whereBoard)
+    List<HashMap<String, Object>> selectAll(Map<String, Object> param);
 
     @Select(selectCntBoard + whereBoard)
     Integer selectOne();
