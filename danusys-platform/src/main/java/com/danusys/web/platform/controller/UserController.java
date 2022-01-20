@@ -14,11 +14,9 @@ import java.util.Map;
 @RequestMapping(value = "/user")
 public class UserController {
 
-    private final UserService userService;
+    public UserController(UserService userService) { this.userService = userService; }
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserService userService;
 
     @PostMapping("/getList.ado")
     public List<HashMap<String,Object>> getListUser(@RequestBody Map<String, Object> paramMap) throws Exception {

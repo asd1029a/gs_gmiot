@@ -15,17 +15,13 @@ public class PagingUtil {
     /*
     * datatable.js 용 페이징 유틸
     * */
-    public Map<String, Object> createPagingMap(Map<String, Object> paramMap
-            , List<HashMap<String, Object>> dataListMap
-            , Integer cnt) throws Exception {
+    public static Map<String, Object> createPagingMap(Map<String, Object> paramMap, List<Map<String, Object>> dataListMap) throws Exception {
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("data", dataListMap);
         resultMap.put("draw", paramMap.get("draw"));
-
-        //Integer cnt = commonDao.selectOneObject(qId.concat("_CNT"), paramMap);
-        resultMap.put("recordsTotal", cnt.intValue());
-        resultMap.put("recordsFiltered", cnt.intValue());
+        resultMap.put("recordsTotal", dataListMap.size());
+        resultMap.put("recordsFiltered", dataListMap.size());
         return resultMap;
     }
 }

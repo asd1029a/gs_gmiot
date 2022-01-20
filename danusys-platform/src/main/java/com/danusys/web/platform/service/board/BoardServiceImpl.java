@@ -3,6 +3,7 @@ package com.danusys.web.platform.service.board;
 import com.danusys.web.platform.mapper.BoardMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -13,8 +14,8 @@ public class BoardServiceImpl implements BoardService {
     private final BoardMapper boardMapper;
 
     @Override
-    public String selectListBoard(Map<String, Object> paramMap) throws Exception {
-        return null;
+    public List<Map<String, Object>> selectListBoard(Map<String, Object> paramMap) throws Exception {
+        return boardMapper.selectAll();
     }
 
     @Override
