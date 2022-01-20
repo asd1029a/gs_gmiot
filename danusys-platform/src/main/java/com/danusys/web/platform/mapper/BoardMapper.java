@@ -26,4 +26,9 @@ public interface BoardMapper {
 
     @Select(selectBoard + whereBoard)
     Map<String, Object> selectOne();
+    @Select(selectBoard + whereBoard)
+    List<HashMap<String, Object>> selectAll(Map<String, Object> param);
+
+    @Select(selectCntBoard + whereBoard)
+    Integer selectOne();
 }

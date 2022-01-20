@@ -312,9 +312,9 @@ header .utmenu li i{width: 18px; height: 18px; margin: 0px 8px 0px 0px;}
 
 .search-form form div dl span{color: #797d87; font-size: 14px; white-space: nowrap;}
 .search-form form div dl.dateSet{grid-gap: 20px;}
-.search-form form div dl.dateSet [type="date"]{background: url(../../images/default/calendar.svg) 94% center no-repeat; background-size: 18px;}
-.search-form form div dl.dateSet [type="date"]::-webkit-inner-spin-button{display: none;}
-.search-form form div dl.dateSet [type="date"]::-webkit-calendar-picker-indicator{opacity: 0;}
+.search-form form div dl.dateSet .input_date{background: url(../../images/default/calendar.svg) 94% center no-repeat; background-size: 18px;}
+.search-form form div dl.dateSet .input_date::-webkit-inner-spin-button{display: none;}
+.search-form form div dl.dateSet .input_date::-webkit-calendar-picker-indicator{opacity: 0;}
 
 
 .search-form form div dl.dateSet [type="time"]{background: url(../../images/default/clock.svg) 94% center no-repeat; background-size: 18px;}

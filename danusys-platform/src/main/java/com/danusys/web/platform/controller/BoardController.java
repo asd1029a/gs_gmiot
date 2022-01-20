@@ -1,22 +1,11 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.platform.service.board.BoardService;
-import com.danusys.web.platform.util.PagingUtil;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-
-@RestController
-@RequestMapping(value = "/board")
 public class BoardController {
 
     public BoardController(BoardService boardService) { this.boardService = boardService }
 
     private final BoardService boardService;
+    private BoardService boardService;
 
     /**
      * 공지사항 : 공지사항 목록 조회
@@ -85,5 +74,18 @@ public class BoardController {
 //
 //        return excelUtil.exportExcel(paramMap);
 //    }
+    public BoardController(BoardService boardService) {
+        this.boardService = boardService;
+    }
+
+    @GetMapping("/boards")
+    public Map<String, Object> boards(@RequestBody Map<String, Object> param,
+                                      @PageableDefault(size=10, sort="id", direction=Sort.Direction.DESC) Pageable pageable) throws  Exception {
+        Map<String,Object> result = new HashMap<>();
+        Page<Map<String, Object>> boards = boardService.selectListBoard(param, pageable);
+        result.put("contents", boards);
+        result.put("size", pageable.getPageSize());
+        return result;
+    }
 
 }

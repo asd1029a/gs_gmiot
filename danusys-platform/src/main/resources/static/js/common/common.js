@@ -843,6 +843,13 @@ var stringFunc = {
             result = false;
         }
         return result;
+    },
+    /* str 빈값 체크 */
+    isValidStr : function(str) {
+        if (str == null || str == undefined || str == "")
+            return true;
+        else
+            return false;
     }
 }
 
@@ -911,5 +918,73 @@ var dateFunc = {
         if (months < 12) return `${Math.floor(months)}개월 전`
         const years = days / 365
         return `${Math.floor(years)}년 전`
+    },
+    /*
+    * 달력 생성기
+    * @param sDate 파라미터만 넣으면 1개짜리 달력 생성
+    * @example   datePickerSet($("#datepicker"));
+    *
+    *
+    * @param sDate,
+    * @param eDate 2개 넣으면 연결달력 생성되어 서로의 날짜를 넘어가지 않음
+    * @param customObj 사용자 정의 설정 Object
+    * @example   datePickerSet($("#datepicker1"), $("#datepicker2"));
+    */
+    datePickerSet: function(sDate, eDate, flag, customObj) {
+        //시작 ~ 종료 2개 짜리 달력 datepicker
+        if (!stringFunc.isValidStr(sDate) && !stringFunc.isValidStr(eDate) && sDate.length > 0 && eDate.length > 0) {
+            let sDay = sDate.val();
+            let eDay = eDate.val();
+
+            let defaultObj = {
+                language: 'ko',
+                autoClose: true,
+                timepicker: true,
+                timeFormat: "hh:ii",
+                onSelect: function () {
+                    dateFunc.datePickerSet(sDate, eDate);
+                }
+            }
+
+            let otpObj = Object.assign(defaultObj, customObj);
+
+            if (flag && !stringFunc.isValidStr(sDay) && !stringFunc.isValidStr(eDay)) { //처음 입력 날짜 설정, update...
+                let sdp = sDate.datepicker().data("datepicker");
+                sdp.selectDate(new Date(sDay.replace(/-/g, "/")));  //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
+
+                let edp = eDate.datepicker().data("datepicker");
+                edp.selectDate(new Date(eDay.replace(/-/g, "/")));  //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
+            }
+
+            //시작일자 세팅하기 날짜가 없는경우엔 제한을 걸지 않음
+            if (!stringFunc.isValidStr(eDay)) {
+                sDate.datepicker({
+                    maxDate: new Date(eDay.replace(/-/g, "/"))
+                });
+            }
+            sDate.datepicker(otpObj);
+
+            //종료일자 세팅하기 날짜가 없는경우엔 제한을 걸지 않음
+            if (!stringFunc.isValidStr(sDay)) {
+                eDate.datepicker({
+                    minDate: new Date(sDay.replace(/-/g, "/"))
+                });
+            }
+            eDate.datepicker(otpObj);
+        } else if (!stringFunc.isValidStr(sDate)) {//한개짜리 달력 datepicker
+            let sDay = sDate.val();
+            if (flag && !stringFunc.isValidStr(sDay)) { //처음 입력 날짜 설정, update...
+                let sdp = sDate.datepicker().data("datepicker");
+                sdp.selectDate(new Date(sDay.replace(/-/g, "/"))); //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
+            }
+            let defaultObj = {
+                language: 'ko',
+                autoClose: true,
+                timepicker: true,
+                timeFormat: "hh:ii AA",
+            }
+            let otpObj = Object.assign(defaultObj, customObj);
+            sDate.datepicker(defaultObj);
+        }
     }
 }
