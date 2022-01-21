@@ -132,34 +132,6 @@ class dataLayer {
     
 }
 
-/**
- * @summary 스타일 생성
- */
-class layerStyle {
-    cctvStyle() {
-        const style = new ol.style.Style({
-            image: new ol.style.Icon({
-                nchor:[0.5,0.5],
-                anchorXUnits: 'fraction',
-                anchorYUnits: 'fraction',
-                img: cctvImgObj[keys],
-                imgSize:[50,50],
-                scale: iconScale
-            }),
-            text: new ol.style.Text({
-                fill: new ol.style.Fill({ color: '#000', width: 5 }),
-                font: 'Bold 10px Arial',
-                stroke: new ol.style.Stroke({ color: 'white', width: 1 }),
-                offsetY: 25
-            })
-        })
-        return style;
-    }
-    //clusterSty
-
-
-
-
    // function (feature, resolution) => {
    //      const size = feature.get('features').length;
    //
@@ -188,18 +160,8 @@ class layerStyle {
    //  }
    //      return mulStyle;
    //  }
-}
 
 
-
-
-
-//레이어 만들기
-// jsonObj => layer
-// fromGeoJson
-// fromRaw
-// fromFeatures
-// toCluster
 
 //스타일
 //function style

@@ -91,6 +91,20 @@ class layerControl {
     }
 
     /**
+     * @summary 레이어 순서 바꾸기
+     * @param 레이어명
+     * @param 순서
+     * */
+    // order(layerName, order) {
+    //     this.map.getLayers().forEach( layer => {
+    //         if(layer.get(this.check)==layerName){
+    //             layer.setZIndex(order);
+    //         }
+    //     });
+    //     this.map.renderSync();
+    // }
+
+    /**
      * @summary 해당 그룹안 모든 레이어 보여지기
      * @param groupName : 그룹명
      */
