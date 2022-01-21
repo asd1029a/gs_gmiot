@@ -22,6 +22,18 @@ $(document).ready(() => {
     /* 다중 셀렉트 박스 */
     comm.customListSelectBox('.dropdown_checkbox');
 
+    /* 검색조건 초기화 버튼 */
+    $("#resetFormBtn").on("click", (e) => {
+        $("#searchForm form").initForm();
+    });
+
+    /* date picker */
+    if($("#startDt").length > 0 && $("#endDt").length > 0){
+        dateFunc.datePickerSet($("#startDt"), $("#endDt"), true);
+    } else if($(".input_date").length > 0){
+        dateFunc.datePickerSet($(".input_date"));
+    }
+
     /* 페이지별 공통 기능 */
     // 조회/관리
     if(path === "/pages/inqry/event1") {

@@ -1,18 +1,14 @@
 package com.danusys.web.commons.auth.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Entity
 @Data
-@Table(name="admin_test")
+@Table(name="t_user")
 public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +18,10 @@ public class User {
 
         @Column(name="user_id")
         private String username;
+
         private String password;
 
+        @Column (name="refresh_token")
         private String refreshToken;
 
 /*

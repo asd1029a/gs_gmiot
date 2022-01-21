@@ -299,39 +299,39 @@ header .utmenu li i{width: 18px; height: 18px; margin: 0px 8px 0px 0px;}
 .settingContent article{padding: 26px; border-radius: 10px; background: #1a1b1d;}
 .settingContent article h6{font-size: 16px; color: #dee0e4;}
 
-/* searchForm */
-.searchForm{}
-.searchForm h6{margin: 0px 0px 20px;}
-.searchForm form{display: flex; flex-direction: column; grid-gap: 14px;}
-.searchForm form div{display: flex; align-items: center; justify-content: flex-start; grid-gap: 20px;}
-.searchForm form div dl{position: relative; display: flex; align-items: center; justify-content: flex-start; grid-gap: 30px; padding: 0px 30px 0px 0px;}
-.searchForm form div dl dt{min-width: 86px; color: #797d87; font-size: 14px; font-weight: bolder;}
-.searchForm form div dl dd{display: flex; align-items: center; justify-content: flex-start; grid-gap: 40px; white-space: nowrap;}
-.searchForm form div dl dd label{color: #dee0e4; font-weight: normal;}
+/* search-form */
+.search-form{}
+.search-form h6{margin: 0px 0px 20px;}
+.search-form form{display: flex; flex-direction: column; grid-gap: 14px;}
+.search-form form div{display: flex; align-items: center; justify-content: flex-start; grid-gap: 20px;}
+.search-form form div dl{position: relative; display: flex; align-items: center; justify-content: flex-start; grid-gap: 30px; padding: 0px 30px 0px 0px;}
+.search-form form div dl dt{min-width: 86px; color: #797d87; font-size: 14px; font-weight: bolder;}
+.search-form form div dl dd{display: flex; align-items: center; justify-content: flex-start; grid-gap: 40px; white-space: nowrap;}
+.search-form form div dl dd label{color: #dee0e4; font-weight: normal;}
 
 
-.searchForm form div dl span{color: #797d87; font-size: 14px; white-space: nowrap;}
-.searchForm form div dl.dateSet{grid-gap: 20px;}
-.searchForm form div dl.dateSet [type="date"]{background: url(../../images/default/calendar.svg) 94% center no-repeat; background-size: 18px;}
-.searchForm form div dl.dateSet [type="date"]::-webkit-inner-spin-button{display: none;}
-.searchForm form div dl.dateSet [type="date"]::-webkit-calendar-picker-indicator{opacity: 0;}
+.search-form form div dl span{color: #797d87; font-size: 14px; white-space: nowrap;}
+.search-form form div dl.dateSet{grid-gap: 20px;}
+.search-form form div dl.dateSet .input_date{background: url(../../images/default/calendar.svg) 94% center no-repeat; background-size: 18px;}
+.search-form form div dl.dateSet .input_date::-webkit-inner-spin-button{display: none;}
+.search-form form div dl.dateSet .input_date::-webkit-calendar-picker-indicator{opacity: 0;}
 
 
-.searchForm form div dl.dateSet [type="time"]{background: url(../../images/default/clock.svg) 94% center no-repeat; background-size: 18px;}
-.searchForm form div dl.dateSet [type="time"]::-webkit-inner-spin-button{display: none;}
-.searchForm form div dl.dateSet [type="time"]::-webkit-calendar-picker-indicator{opacity: 0;}
+.search-form form div dl.dateSet [type="time"]{background: url(../../images/default/clock.svg) 94% center no-repeat; background-size: 18px;}
+.search-form form div dl.dateSet [type="time"]::-webkit-inner-spin-button{display: none;}
+.search-form form div dl.dateSet [type="time"]::-webkit-calendar-picker-indicator{opacity: 0;}
 
 
 
-.searchForm form div dl::after{content: ''; position: absolute; right: 0px; width: 2px; height: 20px; background: #32353e;}
-.searchForm form div dl:nth-last-child(1)::after{display: none;}
+.search-form form div dl::after{content: ''; position: absolute; right: 0px; width: 2px; height: 20px; background: #32353e;}
+.search-form form div dl:nth-last-child(1)::after{display: none;}
 /* button */
-.searchForm form div dl.searchTextSet{grid-gap: 10px;}
-.searchForm form div dl.searchTextSet dd input{background: url(../../images/default/search.svg) 94% center no-repeat; background-size:20px 20px;}
-.searchForm form div dl.searchTextSet dd.button{height: 34px; padding: 0px 14px; grid-gap: 0px; color: #7f8491;}
-.searchForm form div dl.searchTextSet dd.button:hover,
-.searchForm form div dl.searchTextSet dd.button:active{color: #dee0e4;}
-/* //searchForm */
+.search-form form div dl.searchTextSet{grid-gap: 10px;}
+.search-form form div dl.searchTextSet dd input{background: url(../../images/default/search.svg) 94% center no-repeat; background-size:20px 20px;}
+.search-form form div dl.searchTextSet dd.button{height: 34px; padding: 0px 14px; grid-gap: 0px; color: #7f8491;}
+.search-form form div dl.searchTextSet dd.button:hover,
+.search-form form div dl.searchTextSet dd.button:active{color: #dee0e4;}
+/* //search-form */
 
 
 .settingContent article.searchList{flex: 1; overflow: hidden; display: flex; flex-direction: column;}

@@ -20,11 +20,12 @@ public class CommonsUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //log.info("loadUserByUsername");
+        log.info("loadUserByUsername, id={}",username);
 
         User user =userRepository.findByUsername(username);
-        //Permit permit=user.getUserGroupInUser().getUserGroup().getUserGroupPermit().getPermit();
-       // log.info("permit={}",permit);
+        log.info("End loadUserByUsername{}");
+      //  Permit permit=user.getUserGroupInUser().getUserGroup().getUserGroupPermit().getPermit();
+       //log.info("permit={}",permit);
         if(user==null){
             return null;
         }

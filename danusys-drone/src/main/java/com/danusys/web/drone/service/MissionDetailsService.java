@@ -8,6 +8,8 @@ import com.danusys.web.drone.repository.MissionDetailsRepository;
 import com.danusys.web.drone.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,15 +34,41 @@ public class MissionDetailsService {
         missonDetails.setMission(mission.get());
         return missionDetailsRepository.save(missonDetails);
     }
+        /*
+            saveMission
 
+            미션 번호로 미션 조회 불가 시: return "fail"
+            미션 세부 사항 이 이미 있을 경우: return "fail"
+
+         */
     @Transactional
-    public List<MissionDetails> saveMission( @RequestParam List<MissionDetails> missionDetails, @RequestParam long mission_id) {
-        log.info("mission_id={}",mission_id);
+    public String saveMission(List<MissionDetails> missionDetails, long mission_id) {
+        log.info("mission_id={}", mission_id);
         Optional<Mission> mission = missionRepository.findById(mission_id);
-        missionDetails.forEach(r->{ r.setMission(mission.get());});
-      //  missionDetails.setMission(mission.get());
-        //return missionDetailsRepository.save(missonDetails);
-        return null;
+        log.info("mission={}", mission);
+        ObjectMapper mapper = new ObjectMapper();
+        List<MissionDetails> missionDetailsList = mapper.convertValue(missionDetails, new TypeReference<List<MissionDetails>>() {
+        });
+
+        log.info("missionDetails={}", missionDetails);
+        if(!mission.isPresent()){
+            return "fail";
+        }
+        missionDetailsList.forEach(r -> {
+            r.setMission(mission.get());
+        });
+        List<MissionDetails> isExist=missionDetailsRepository.findAllByMission(mission.get());
+        log.info("isExist={}",isExist);
+        if(isExist.isEmpty()){
+            missionDetailsList.forEach(r -> {
+                missionDetailsRepository.save(r);
+            });
+            return "success";
+        }
+
+        //  missionDetails.setMission(mission.get());
+        //return missionDetailsRepository.save(missionDetailsList);
+            return "fail";
     }
 
 

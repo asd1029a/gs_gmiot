@@ -12,22 +12,20 @@
             <span>공지사항</span>
         </h4>
         <section class="settingContent">
-            <article class="searchForm">
+            <article class="search-form" id="searchForm">
                 <h6>공지사항 검색</h6>
                 <form>
                     <div>
                         <dl class="dateSet">
                             <dt>발생 기간</dt>
-                            <dd><input type="date" class="inputDate"></dd>
-                            <dd><input type="time" class="inputDate"></dd>
+                            <dd><input type="text"  id="startDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
                             <span>부터</span>
-                            <dd><input type="date" class="inputDate"></dd>
-                            <dd><input type="time" class="inputDate"></dd>
+                            <dd><input type="text" id="endDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
                             <span>까지</span>
                         </dl>
                         <dl class="searchTextSet">
                             <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
-                            <dd class="button"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
+                             <dd class="button" id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
                             <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
                         </dl>
                     </div>

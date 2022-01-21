@@ -23,9 +23,14 @@ import java.util.Map;
 @Controller
 public class BaseController {
 
+	/*
+
+	  date: 2022-01-18
+	  수정내용 : return 값을 "view/index에서 view/login/test1로 수정함
+	 */
 	@RequestMapping(value = "/")
 	public String index() {
-		return "view/index";
+		return "view/login/test1";
 	}
 
 //	/**

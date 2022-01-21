@@ -13,7 +13,7 @@
         <span>구역 설정</span>
     </h4>
     <section class="settingContent">
-        <article class="searchForm">
+        <article class="search-form" id="searchForm">
             <h6>구역 검색</h6>
             <form>
                 <div>
@@ -25,7 +25,7 @@
                                 <ul class="checkbox_list checkbox_list_district list">
                                     <li>
 									<span>
-										<input type="checkbox" id="checkAll" name="">
+										<input type="checkbox"  id="checkAll" name="" data-init-value="true">
 										<label for="checkAll"><span></span>전체</label>
 									</span>
                                     </li>
@@ -124,7 +124,7 @@
                     </dl>
                     <dl class="searchTextSet">
                         <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
-                        <dd class="button"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
+                        <dd class="button" id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
                         <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
                     </dl>
                 </div>

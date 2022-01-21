@@ -5,14 +5,16 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Data
-@Table(name="user_group_permit")
+@Table(name="t_user_group_permit")
 public class UserGroupPermit {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name="index")
+        @Column(name="idx")
         private int id;
 
 
@@ -24,9 +26,9 @@ public class UserGroupPermit {
      //   @Column(name="permit_seq")
     //    private String permitSeq;
         @Column(name="insert_dt")
-        private String insertDt ;
+        private Date insertDt ;
         @Column(name="insert_user_seq")
-        private String insertUserSeq ;
+        private int insertUserSeq ;
 
         @OneToOne
         @JoinColumn(name ="user_group_seq")

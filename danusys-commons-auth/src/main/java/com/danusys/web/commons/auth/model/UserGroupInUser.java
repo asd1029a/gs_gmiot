@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -12,11 +13,11 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name="user_group_in_user")
+@Table(name="t_user_group_in_user")
 public class UserGroupInUser {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name="index")
+        @Column(name="idx")
         private int index;
 
         @Column(name="insert_dt")

@@ -20,53 +20,30 @@
             <artifactId>danusys-commons-ui</artifactId>
             <version>${revision}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.danusys.web</groupId>-->
-<!--            <artifactId>danusys-commons-auth</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-        		<dependency>
-        			<groupId>org.springframework.boot</groupId>
-        			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-        		</dependency>
-        		<dependency>
-        			<groupId>org.mybatis.spring.boot</groupId>
-        			<artifactId>mybatis-spring-boot-starter</artifactId>
-        			<version>2.2.0</version>
-        		</dependency>
-        		<dependency>
-        			<groupId>com.danusys.web</groupId>
-        			<artifactId>danusys-commons-util</artifactId>
-        			<version>${revision}</version>
-        		</dependency>
-
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.boot</groupId>-->
-        <!--			<artifactId>spring-boot-starter-data-jdbc</artifactId>-->
-        <!--		</dependency>-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.mybatis.spring.boot</groupId>-->
-        <!--			<artifactId>mybatis-spring-boot-starter</artifactId>-->
-        <!--			<version>2.2.0</version>-->
-        <!--		</dependency>-->
-        <!--		<dependency>-->
-        <!--			<groupId>com.danusys.web</groupId>-->
-        <!--			<artifactId>danusys-common-util</artifactId>-->
-        <!--			<version>${revision}</version>-->
-        <!--		</dependency>-->
-
+        <dependency>
+            <groupId>com.danusys.web</groupId>
+            <artifactId>danusys-commons-auth</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.danusys.web</groupId>
+            <artifactId>danusys-commons-util</artifactId>
+            <version>${revision}</version>
+        </dependency>
         <dependency>
             <groupId>com.danusys.web</groupId>
             <artifactId>danusys-commons-api</artifactId>
             <version>${revision}</version>
         </dependency>
-
-        <!--		<dependency>-->
-        <!--			<groupId>com.danusys.web.api</groupId>-->
-        <!--			<artifactId>danusys-common-api</artifactId>-->
-        <!--			<version>${revision}</version>-->
-        <!--		</dependency>-->
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -80,10 +57,10 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.boot</groupId>-->
-        <!--			<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-        <!--		</dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-jpa</artifactId>-->
+<!--        </dependency>-->
         <!--		<dependency>-->
         <!--			<groupId>org.springframework.boot</groupId>-->
         <!--			<artifactId>spring-boot-starter-data-rest</artifactId>-->

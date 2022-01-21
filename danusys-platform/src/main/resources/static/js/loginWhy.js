@@ -25,7 +25,9 @@ $(".login-btn").on("click", function () {
             keys.forEach(key => {
                 if (key === 'accessToken') {
                     flag = true;
-                    document.cookie = key + '=' + resultData[key];
+                    let date=new Date();
+                    date.setDate(date.getDate() + 1000* 60 * 15);
+                    document.cookie = key + '=' + resultData[key]+';'+`Expires=${date.toUTCString()}`;
 
                 }
             });
