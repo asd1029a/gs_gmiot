@@ -11,24 +11,23 @@ import java.util.Map;
 * 공지사항 관련 Mapper
 * */
 @Mapper
-public interface BoardMapper {
+public interface NoticeMapper {
 
-    String selectBoard = "SELECT * " +
-            "FROM t_board" +
+    String selectNotice = "SELECT * " +
+            "FROM t_notice" +
             "WHERE 1=1";
 
-    String whereBoard = "<script>" +
+    String whereNotice = "<script>" +
             "" +
             "</script>";
 
-    @Select(selectBoard + whereBoard)
+    @Select(selectNotice + whereNotice)
     List<Map<String, Object>> selectAll();
 
-    @Select(selectBoard + whereBoard)
+    @Select(selectNotice + whereNotice)
     Map<String, Object> selectOne();
-    @Select(selectBoard + whereBoard)
+
+    @Select(selectNotice + whereNotice)
     List<HashMap<String, Object>> selectAll(Map<String, Object> param);
 
-    @Select(selectCntBoard + whereBoard)
-    Integer selectOne();
 }

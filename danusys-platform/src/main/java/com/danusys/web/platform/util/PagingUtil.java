@@ -1,8 +1,5 @@
 package com.danusys.web.platform.util;
 
-import com.danusys.web.platform.mapper.BoardMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
