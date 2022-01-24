@@ -34,7 +34,12 @@ $(function() {
     window.map = map;
 
     let lc = new layerControl('map', 'title');
+    window.lc = lc;
     console.log(lc.exist('cctvLayer'));
+
+    let msT = new measureTool('map');
+    window.msT = msT;
+    //msT.initDraw('Line');
 
 
     //

@@ -63,3 +63,4 @@ const svgToImage = {
 //for (const [k, v] of Object.entries(imgSrcObj)) {
 //    imgObj[k] = svgToImage.create(k);
 //}
+
