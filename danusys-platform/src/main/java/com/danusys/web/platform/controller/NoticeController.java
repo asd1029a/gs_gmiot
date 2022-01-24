@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@RestController
+@RequestMapping(value="/notice")
 public class NoticeController {
 
     public NoticeController(NoticeService noticeService) { this.noticeService = noticeService; }
@@ -23,30 +25,29 @@ public class NoticeController {
     /**
      * 공지사항 : 공지사항 목록 조회
      */
-    /*@PostMapping(value = "/notice/getListNotice")
-    public ResponseEntity<List<Map<String, Object>>> getListNotice(
+    @PostMapping(value = "/getListNotice")
+    public ResponseEntity<Map<String, Object>> getListNotice(
             HttpServletRequest request
             , HttpServletResponse response
             , @RequestBody Map<String, Object> paramMap) throws Exception {
-
         return ResponseEntity.ok().body(noticeService.selectListNotice(paramMap));
-    }*/
-
-    @PostMapping("notice/getListNotice")
-    public Map<String, Object> notices(@RequestBody Map<String, Object> param,
-                                      @PageableDefault(size=10, sort="id", direction = Sort.Direction.DESC) Pageable pageable) throws  Exception {
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@"+param);
-        Map<String,Object> result = new HashMap<>();
-        Page<Map<String, Object>> notices = noticeService.selectListNotice(param, pageable);
-        result.put("contents", notices);
-        result.put("size", pageable.getPageSize());
-        return result;
     }
+
+//    @PostMapping("/getListNotice")
+//    public Map<String, Object> notices(@RequestBody Map<String, Object> param,
+//                                      @PageableDefault(size=10, sort="id", direction = Sort.Direction.DESC) Pageable pageable) throws  Exception {
+//        System.out.println("@@@@@@@@@@@@@@@@@@@@@"+param);
+//        Map<String,Object> result = new HashMap<>();
+//        Page<Map<String, Object>> notices = noticeService.selectListNotice(param, pageable);
+//        result.put("contents", notices);
+//        result.put("size", pageable.getPageSize());
+//        return result;
+//    }
 
     /**
      * 공지사항 : 공지사항 등록
      */
-    @PutMapping(value = "/notice/addNotice")
+    @PutMapping(value = "/addNotice")
     public @ResponseBody String addNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
         return noticeService.insertNotice(paramMap);
     }
@@ -54,7 +55,7 @@ public class NoticeController {
     /**
      * 공지사항 : 공지사항 수정
      */
-    @PatchMapping(value = "/notice/modNotice")
+    @PatchMapping(value = "/modNotice")
     public @ResponseBody String modNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
         return noticeService.updateNotice(paramMap);
     }
@@ -62,7 +63,7 @@ public class NoticeController {
     /**
      * 공지사항 : 공지사항 삭제
      */
-    @DeleteMapping(value = "/notice/delNotice.ado")
+    @DeleteMapping(value = "/delNotice.ado")
     public @ResponseBody String delNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
         return noticeService.deleteNotice(paramMap);
     }

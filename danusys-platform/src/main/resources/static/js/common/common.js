@@ -380,10 +380,10 @@ var comm = {
                     emptyTable : "데이터가 없습니다.",
                     zeroRecords : "검색된 데이터가 없습니다.",
                     paginate: {
-                        first: '<span><img src="/images/common/iconPrev2.svg"></span>',
-                        previous: '<span><img src="/images/common/iconPrev.svg"></span>',
-                        next: '<span><img src="/images/common/iconNext.svg"></span>',
-                        last: '<span><img src="/images/common/iconNext2.svg"></span>'
+                        //first: '<span><img src="/images/default/iconPrev2.svg"></span>',
+                        //previous: '<span><img src="/images/default/prev.svg"></span>',
+                        //next: '<span><img src="/images/default/next.svg"></span>',
+                        //last: '<span><img src="/images/default/iconNext2.svg"></span>'
                     }
                 },
             excelDownload: false

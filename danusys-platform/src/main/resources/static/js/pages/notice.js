@@ -3,7 +3,10 @@
  */
 
 const notice = {
-    create : () => {
+    eventHandler : () => {
+
+    }
+    , create : () => {
         const $target = $('#noticeTable');
 
         const optionObj = {
@@ -17,12 +20,10 @@ const notice = {
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
                     'data' : function ( d ) {
-                        console.log(d);
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
-                        console.log(result);
                         $('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
@@ -32,9 +33,9 @@ const notice = {
             },
             columns : [
                 {data: "title", className: "alignLeft"},
-                {data: "content", className: "alignLeft"},
                 {data: "insertAdminId"},
                 {data: "insertDt"},
+                {data: null},
                 {data: null}
             ]
             // "columnDefs": [{

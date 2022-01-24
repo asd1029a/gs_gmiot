@@ -56,6 +56,6 @@ $(document).ready(() => {
     } else if(path === "/pages/config/commonCode") {
 
     } else if(path === "/pages/config/notice") {
-
+        notice.create();
     }
 })

@@ -14,7 +14,7 @@ public class PagingUtil {
     * */
     public static Map<String, Object> createPagingMap(Map<String, Object> paramMap, List<Map<String, Object>> dataListMap) throws Exception {
 
-        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("data", dataListMap);
         resultMap.put("draw", paramMap.get("draw"));
         resultMap.put("recordsTotal", dataListMap.size());

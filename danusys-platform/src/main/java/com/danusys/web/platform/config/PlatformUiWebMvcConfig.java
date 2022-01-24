@@ -27,9 +27,6 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("/intro/intro").setViewName("view/intro/intro");
         registry.addViewController("/login/error").setViewName("view/login/loginError");
 
-        // 메인
-        registry.addViewController("/pages/home").setViewName("view/pages/home");
-
         // 관제
         registry.addViewController("/pages/mntr").setViewName("view/pages/mntr");
 
