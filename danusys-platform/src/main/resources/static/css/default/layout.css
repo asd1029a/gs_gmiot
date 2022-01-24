@@ -374,22 +374,22 @@ header .utmenu li i{width: 18px; height: 18px; margin: 0px 8px 0px 0px;}
 .searchTable table tbody tr td span.type i{margin: 5px 0px; opacity: 0.8; cursor: default;}
 .searchTable table tbody tr td span.type.bus i{width: 16px; height: 16px; margin: 7px 0px;}
 .searchTable table tbody tr td .charts{width: 100%; height: 38px; margin: auto; line-height: 34px; color: darkslateblue; background: darkseagreen;} /* 차트 영역 임의 표시 */
-.tableBottom{display: flex; align-items: center; justify-content: center; height: 40px; margin: 14px 0px 0px;}
-.tableBottom .pageNav{flex: 1;  display: flex; align-items: center; justify-content: center; grid-gap: 10px;}
-.tableBottom .pageNav li{width: 34px; height: 34px; line-height: 32px; text-align: center; font-size: 14px; color: #7f8491; border-radius: 100%; background: #292c34; cursor: pointer;}
-.tableBottom .pageNav li:hover{color: #dee0e4;}
-.tableBottom .pageNav li.on{color: #dee0e4; font-weight: bold; background: #3a66e5;}
-.tableBottom .pageNav li:active{color: #dee0e4; font-weight: bold; background: #3a66e5;}
-.tableBottom .pageNav li.prev,
-.tableBottom .pageNav li.next{background: none;}
-.tableBottom .pageNav li.prev i,
-.tableBottom .pageNav li.next i{max-width: 20px; max-height: 20px; margin: 0px auto;}
-.tableBottom .pageNav li.prev:hover,
-.tableBottom .pageNav li.next:hover{filter: brightness(1.75);}
+.searchTable .tableBottom{display: flex; align-items: center; justify-content: center; height: 40px; margin: 14px 0px 0px;}
+.searchTable .tableBottom .pageNav{flex: 1;  display: flex; align-items: center; justify-content: center; grid-gap: 10px;}
+.searchTable .tableBottom .pageNav li{width: 34px; height: 34px; line-height: 32px; text-align: center; font-size: 14px; color: #7f8491; border-radius: 100%; background: #292c34; cursor: pointer;}
+.searchTable .tableBottom .pageNav li:hover{color: #dee0e4;}
+.searchTable .tableBottom .pageNav li.on{color: #dee0e4; font-weight: bold; background: #3a66e5;}
+.searchTable .tableBottom .pageNav li:active{color: #dee0e4; font-weight: bold; background: #3a66e5;}
+.searchTable .tableBottom .pageNav li.prev,
+.searchTable .tableBottom .pageNav li.next{background: none;}
+.searchTable .tableBottom .pageNav li.prev i,
+.searchTable .tableBottom .pageNav li.next i{max-width: 20px; max-height: 20px; margin: 0px auto;}
+.searchTable .tableBottom .pageNav li.prev:hover,
+.searchTable .tableBottom .pageNav li.next:hover{filter: brightness(1.75);}
 
 
-.tableBottom .button{float: right; height: 34px; line-height: 32px; padding: 0px 14px; color: #7f8491;}
-.tableBottom .button:hover{color: #dee0e4;}
+.searchTable .tableBottom .button{float: right; height: 34px; line-height: 32px; padding: 0px 14px; color: #7f8491;}
+.searchTable .tableBottom .button:hover{color: #dee0e4;}
 
 
 /* inquiry */

@@ -359,7 +359,7 @@ var comm = {
         return result;
     }
     , createTable : ($target, optionObj, evt) => {
-        comm.showLoading();
+        //comm.showLoading();
 
         const defaultObj = {
             dom: '<"tableBody"rt><"tableBottom"p>',
@@ -407,9 +407,7 @@ var comm = {
         $target.DataTable(newOptionObj);
 
         if(newOptionObj.excelDownload) {
-            const html = '<a class="excelDownloadBtn">'
-                + '<span class="buttonIcon"><img src="/images/common/iconExport.svg">'
-                + '</span>엑셀로 내보내기</a>';
+            const html = ' <p class="button"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>';
             $target.parents('.tableBody').siblings('.tableBottom').append(html);
             const path = $target.attr('id').split('Table')[0];
             $('.excelDownloadBtn').on('click', (e) => {
@@ -420,7 +418,7 @@ var comm = {
             });
         }
 
-        comm.hideLoading();
+        //comm.hideLoading();
     }
     , showAlert : function(title, option) {
         var defaultOption = {

@@ -1,0 +1,140 @@
+/**
+ * 공지사항
+ */
+
+const notice = {
+    create : () => {
+        const $target = $('#noticeTable');
+
+        const optionObj = {
+            dom: '<"tableBody"rt><"tableBottom"p>',
+            destroy: true,
+            pageLength: 15, //$("#noticeListCntSel").val(),
+            scrollY: "calc(100% - 45px)",
+            ajax :
+                {
+                    'url' : "/notice/getListNotice",
+                    'contentType' : "application/json; charset=utf-8",
+                    'type' : "POST",
+                    'data' : function ( d ) {
+                        console.log(d);
+                        const param = $.extend({}, d, $("#searchForm form").serializeJSON());
+                        return JSON.stringify( param );
+                    },
+                    'dataSrc' : function (result) {
+                        console.log(result);
+                        $('.title dd .count').text(result.recordsTotal);
+                        return result.data;
+                    }
+                },
+            select: {
+                toggleable: false
+            },
+            columns : [
+                {data: "title", className: "alignLeft"},
+                {data: "content", className: "alignLeft"},
+                {data: "insertAdminId"},
+                {data: "insertDt"},
+                {data: null}
+            ]
+            // "columnDefs": [{
+            //     "targets": -1,
+            //     "data": null,
+            //     "defaultContent": '<span class="writeButton"><i></i></span>'
+            // }
+            //     , {
+            //         targets: 0,
+            //         render: $.fn.dataTable.render.ellipsis( 30, true )
+            //     }
+            //     , {
+            //         targets: 1,
+            //         render: $.fn.dataTable.render.ellipsis( 50, true )
+            //     }]
+            , excelDownload : true
+        }
+
+        const evt = {
+            click : function(e) {
+                const rowData = $target.DataTable().row($(e.currentTarget)).data();
+                if($(e.target).hasClass('writeButton') || $(e.target).prop('tagName') === "I") {
+                    notice.showPopup('mod');
+                    $('#noticeForm').setItemValue(rowData);
+                }
+            }
+        }
+        comm.createTable($target ,optionObj, evt);
+    },
+    getListNotice : (pCallback) => {
+        comm.ajaxPost({
+            url : "/notice/getListNoticeForMain"
+            , data : {}
+        }, (result) => {
+            pCallback(result);
+        });
+    },
+    showPopup : (type) => {
+        $('#noticePopup .popupContents').scrollTop(0);
+        comm.showModal($('#noticePopup'));
+        $('#noticePopup').css("display", "flex");
+        $('#noticeForm').initForm();
+        $('#noticePopup [data-mode]').hide();
+        if(type === "add") {
+            $('#noticePopup .popupTitle h4').text("공지사항 게시글 등록");
+            $('#noticePopup').css('height', '480px');
+            $('#noticePopup [data-mode="'+type+'"]').show();
+        } else if(type === "mod") {
+            $('#noticePopup .popupTitle h4').text('공지사항 게시글 수정');
+            $('#noticePopup').css('height', '780px');
+            $('#noticePopup [data-mode="'+type+'"]').show();
+        } else if(type === "detail") {
+            $('#noticePopup .popupTitle h4').text("공지사항 상세");
+            $('#noticePopup').css('height', '610px');
+            $('#noticePopup [data-mode="'+type+'"]').show();
+        }
+    },
+    hidePopup : () => {
+        $('#noticePopup .popupContents').scrollTop(0);
+        comm.hideModal($('#noticePopup'));
+        $('#noticePopup').hide();
+    },
+    addProc : () => {
+        const formObj = $('#noticeForm').serializeJSON();
+
+        comm.ajaxPost({
+                url : "/notice/addNotice"
+                , type : "PUT"
+                , data : formObj
+            },
+            (result) => {
+                comm.showAlert("공지사항이 등록되었습니다");
+                notice.create($('#noticeTable'));
+                notice.hidePopup();
+            });
+    },
+    modProc : () => {
+        const formObj = $('#noticeForm').serializeJSON();
+
+        comm.ajaxPost({
+                url : "/notice/modNotice"
+                , type : "PATCH"
+                , data : formObj
+            },
+            (result) => {
+                comm.showAlert("공지사항이 수정되었습니다");
+                notice.create($('#noticeTable'));
+                notice.hidePopup();
+            });
+    },
+    delProc : (pNoticeSeq) => {
+        comm.ajaxPost({
+                url : "/notice/delNotice"
+                , type : "DELETE"
+                , data : {noticeSeq : pNoticeSeq}
+            },
+            (result) => {
+                comm.showAlert("공지사항이 삭제되었습니다");
+                notice.create($('#noticeTable'));
+                notice.hidePopup();
+            });
+    }
+}

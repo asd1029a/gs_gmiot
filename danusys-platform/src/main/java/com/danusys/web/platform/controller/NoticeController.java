@@ -32,9 +32,10 @@ public class NoticeController {
         return ResponseEntity.ok().body(noticeService.selectListNotice(paramMap));
     }*/
 
-    @GetMapping("notice/notice")
+    @PostMapping("notice/getListNotice")
     public Map<String, Object> notices(@RequestBody Map<String, Object> param,
                                       @PageableDefault(size=10, sort="id", direction = Sort.Direction.DESC) Pageable pageable) throws  Exception {
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@"+param);
         Map<String,Object> result = new HashMap<>();
         Page<Map<String, Object>> notices = noticeService.selectListNotice(param, pageable);
         result.put("contents", notices);

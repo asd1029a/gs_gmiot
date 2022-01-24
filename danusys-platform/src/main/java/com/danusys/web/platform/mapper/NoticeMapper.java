@@ -21,13 +21,13 @@ public interface NoticeMapper {
             "" +
             "</script>";
 
-    @Select(selectNotice + whereNotice)
-    List<Map<String, Object>> selectAll();
+//    @Select(selectNotice + whereNotice)
+//    List<Map<String, Object>> selectAll();
 
     @Select(selectNotice + whereNotice)
     Map<String, Object> selectOne();
 
-    @Select(selectNotice + whereNotice)
+    @Select(selectNotice)
     List<HashMap<String, Object>> selectAll(Map<String, Object> param);
 
 }

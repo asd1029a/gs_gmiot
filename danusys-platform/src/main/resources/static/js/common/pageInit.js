@@ -28,9 +28,10 @@ $(document).ready(() => {
     });
 
     /* date picker */
-    if($("#startDt").length > 0 && $("#endDt").length > 0){
+    if($("#startDt").length > 0 && $("#endDt").length > 0) {
+        $("#startDt, #endDt").attr("autocomplete", "off");
         dateFunc.datePickerSet($("#startDt"), $("#endDt"), true);
-    } else if($(".input_date").length > 0){
+    } else if($(".input_date").length > 0) {
         dateFunc.datePickerSet($(".input_date"));
     }
 
