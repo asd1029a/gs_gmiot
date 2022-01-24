@@ -33,6 +33,7 @@ public class UserGroupInUser {
         @JsonBackReference
         private User user;
 
+
         @OneToOne
         @JoinColumn(name ="user_group_seq")
         @JsonManagedReference

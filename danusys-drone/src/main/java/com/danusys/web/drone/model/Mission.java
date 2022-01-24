@@ -1,6 +1,7 @@
 package com.danusys.web.drone.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -26,9 +27,10 @@ public class Mission {
     private String name;
 
 
-    @JsonIgnore
-    @OneToMany(mappedBy ="mission",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
-   // @OneToMany(mappedBy ="misson")
+   // @JsonIgnore
+  //  @OneToMany(mappedBy ="mission",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
+   @OneToMany(mappedBy ="mission")
+   @JsonManagedReference
     private final List<MissionDetails> missonDetails= new ArrayList<>();
 
 }

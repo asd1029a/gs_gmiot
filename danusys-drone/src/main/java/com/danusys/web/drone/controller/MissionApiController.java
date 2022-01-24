@@ -1,7 +1,6 @@
 package com.danusys.web.drone.controller;
 
 
-import com.danusys.web.drone.dto.response.Gps;
 import com.danusys.web.drone.model.Mission;
 import com.danusys.web.drone.model.MissionDetails;
 import com.danusys.web.drone.service.MissionDetailsService;
@@ -21,8 +20,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.EOFException;
-import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -34,7 +31,7 @@ import com.danusys.web.drone.utils.Flight;
 @RequestMapping("/drone/api")
 @Slf4j
 @RequiredArgsConstructor
-public class DroneApiController {
+public class MissionApiController {
 
 
     @Value("${tcp.server.host}")
@@ -77,23 +74,23 @@ public class DroneApiController {
             HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
 
 
-            connection.send2(systemId, componentId, new CommandLong.Builder()
-                    .command(MavCmd.MAV_CMD_DO_SET_MODE)
-                    .param1(1)
-                    .param2(4)
-                    .build(), linkId, timestamp, secretKey);
-
-            connection.send2(systemId, componentId, new CommandLong.Builder()
-                    .command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM)
-                    .param1(1)
-                    .param2(0)
-                    .build(), linkId, timestamp, secretKey);
-
-
-            connection.send2(systemId, componentId, new CommandLong.Builder()
-                    .command(MavCmd.MAV_CMD_NAV_TAKEOFF)
-                    .param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100)
-                    .build(), linkId, timestamp, secretKey);
+//            connection.send2(systemId, componentId, new CommandLong.Builder()
+//                    .command(MavCmd.MAV_CMD_DO_SET_MODE)
+//                    .param1(1)
+//                    .param2(4)
+//                    .build(), linkId, timestamp, secretKey);
+//
+//            connection.send2(systemId, componentId, new CommandLong.Builder()
+//                    .command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM)
+//                    .param1(1)
+//                    .param2(0)
+//                    .build(), linkId, timestamp, secretKey);
+//
+//
+//            connection.send2(systemId, componentId, new CommandLong.Builder()
+//                    .command(MavCmd.MAV_CMD_NAV_TAKEOFF)
+//                    .param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100)
+//                    .build(), linkId, timestamp, secretKey);
 
 
             int flag = 0;
@@ -141,7 +138,7 @@ public class DroneApiController {
                 {
                 } else {
                     log.info(message2.toString());
-                    if (message.getPayload() instanceof HomePosition) {
+                    if (message2.getPayload() instanceof HomePosition) {
                         MavlinkMessage<HomePosition> homePositionMavlinkMessage = (MavlinkMessage<HomePosition>) message;
                         int latitude = homePositionMavlinkMessage.getPayload().latitude();//x
                         int longitude = homePositionMavlinkMessage.getPayload().longitude();//y
@@ -257,7 +254,7 @@ public class DroneApiController {
     public void startMission(Mission mission) {
 
 
-        Mission missionResponse = missionService.missionResponseList(mission.getId());
+        Mission missionResponse = missionService.missionResponseList2(mission.getId());
         int i = 2;
         int step = 1;
         int flag= 0;
@@ -313,7 +310,7 @@ public class DroneApiController {
             int time = 0;
             int speed = 0;
 
-            log.info("{}", step);
+            log.info("step={}", step);
 
             x = gpsXs.getOrDefault(missionIndex.get(step), 0);
             y = gpsYs.getOrDefault(missionIndex.get(step), 0);
@@ -355,8 +352,8 @@ public class DroneApiController {
                         .y(y)
                         .z(z)
                         .seq(flag)
-                        .targetComponent(0)
-                        .targetSystem(0)
+                        .targetComponent(1)
+                        .targetSystem(1)
                         .current(0)
                         .autocontinue(1)
                         .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
@@ -606,7 +603,29 @@ public class DroneApiController {
     @GetMapping("/test")
     public void test() {
        // flight.loiter(30);
+        //flight.camera();
+       flight.returnDrone();
+    }
+
+    @GetMapping("/test2")
+    public void test2() {
+        // flight.loiter(30);
         flight.camera();
+       // flight.returnDrone();
+    }
+
+    @GetMapping("/test3")
+    public void test3() {
+        // flight.loiter(30);
+        flight.heartBeat();
+
+        // flight.returnDrone();
+    }
+    @GetMapping("/test4")
+    public void test4() {
+        // flight.loiter(30);
+        flight.gimbal();
+        // flight.returnDrone();
     }
 }
 

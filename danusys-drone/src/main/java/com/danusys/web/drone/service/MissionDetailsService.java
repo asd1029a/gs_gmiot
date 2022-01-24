@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,13 +35,14 @@ public class MissionDetailsService {
         missonDetails.setMission(mission.get());
         return missionDetailsRepository.save(missonDetails);
     }
-        /*
-            saveMission
 
-            미션 번호로 미션 조회 불가 시: return "fail"
-            미션 세부 사항 이 이미 있을 경우: return "fail"
+    /*
+        saveMission
 
-         */
+        미션 번호로 미션 조회 불가 시: return "fail"
+        미션 세부 사항 이 이미 있을 경우: return "fail"
+
+     */
     @Transactional
     public String saveMission(List<MissionDetails> missionDetails, long mission_id) {
         log.info("mission_id={}", mission_id);
@@ -51,24 +53,71 @@ public class MissionDetailsService {
         });
 
         log.info("missionDetails={}", missionDetails);
-        if(!mission.isPresent()){
+
+        Long deleteResult=missionDetailsRepository.deleteByMission(mission.get());
+        if (!mission.isPresent()) {
             return "fail";
         }
         missionDetailsList.forEach(r -> {
             r.setMission(mission.get());
         });
-        List<MissionDetails> isExist=missionDetailsRepository.findAllByMission(mission.get());
-        log.info("isExist={}",isExist);
-        if(isExist.isEmpty()){
+
+
+        List<MissionDetails> isExist = missionDetailsRepository.findAllByMission(mission.get());
+        log.info("isExist={}", isExist);
+        if (isExist.isEmpty()) {
             missionDetailsList.forEach(r -> {
                 missionDetailsRepository.save(r);
             });
             return "success";
         }
 
-        //  missionDetails.setMission(mission.get());
-        //return missionDetailsRepository.save(missionDetailsList);
+        return "fail";
+    }
+
+
+    @Transactional
+    public String updateMissionDetails(List<MissionDetails> missionDetails, long mission_id) {
+
+
+        log.info("mission_id={}", mission_id);
+        Optional<Mission> mission = missionRepository.findById(mission_id);
+        log.info("mission={}", mission);
+        ObjectMapper mapper = new ObjectMapper();
+        List<MissionDetails> missionDetailsList = mapper.convertValue(missionDetails, new TypeReference<List<MissionDetails>>() {
+        });
+
+        log.info("missionDetails={}", missionDetails);
+
+
+        if (!mission.isPresent()) {
             return "fail";
+        }
+
+
+        missionDetailsList.forEach(r -> {
+            r.setMission(mission.get());
+        });
+
+            missionDetailsList.forEach(r -> {
+                missionDetailsRepository.save(r);
+            });
+            return "success";
+
+
+
+
+
+    }
+
+    public void deleteMissionDetails(long mission_id){
+
+
+        Optional<Mission> optionalMission = missionRepository.findById(mission_id);
+        Mission mission =optionalMission.get();
+
+
+
     }
 
 

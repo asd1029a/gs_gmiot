@@ -57,7 +57,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        log.info("oncefilter");
+     //   log.info("oncefilter");
         String authorizationHeader = request.getHeader("Authorization");
         String refreshToken = request.getHeader("RefreshHeader");
         Cookie[] cookies = request.getCookies();
@@ -85,7 +85,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUsername(jwt); //extractUsername에서 유효기간이 지났다면 exception 발생
             } catch (ExpiredJwtException e) {
-                log.info("Error");
+             //   log.info("Error");
 
                 request.setAttribute("exception", "ExpiredJwtException");
 

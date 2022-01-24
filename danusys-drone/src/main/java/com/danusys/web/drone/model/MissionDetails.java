@@ -1,5 +1,6 @@
 package com.danusys.web.drone.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -35,8 +36,13 @@ public class MissionDetails {
     private int speed;
 
     private int time;
-   @ManyToOne(fetch = FetchType.EAGER)
-  // @ManyToOne
-   @JoinColumn(name ="mission_id")
+
+    private float yaw;
+   //@ManyToOne(fetch = FetchType.EAGER)
+   //@JoinColumn(name ="mission_id")
+
+    @ManyToOne
+    @JoinColumn(name ="mission_id")
+    @JsonBackReference
     private Mission mission;
 }

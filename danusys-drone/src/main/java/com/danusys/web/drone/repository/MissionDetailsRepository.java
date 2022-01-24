@@ -14,4 +14,10 @@ public interface MissionDetailsRepository extends CrudRepository<MissionDetails,
 
     List<MissionDetails> findAllByMission(Mission mission);
 
+    MissionDetails findByIndex(int index);
+
+    MissionDetails findByMissionAndIndex(Mission mission,int index);
+
+    Long deleteByMission(Mission mission);
+
 }

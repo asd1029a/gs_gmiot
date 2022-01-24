@@ -9,6 +9,7 @@ public interface MissionRepository extends CrudRepository<Mission,Long> {
 
         List<Mission> findAllByName(String name);
 
+        List<Mission> findAllById(Long id);
 
 
 
