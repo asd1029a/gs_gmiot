@@ -2,13 +2,15 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <th:block th:insert="/fragments/default/head"/>
 <th:block layout:fragment="css" />
-<th:block th:fragment="pagesScript" />
+<script type="text/javascript" src="/js/map/controlMap.js"></script>
+<script type="text/javascript" src="/js/pages/mntr.js"></script>
 
 <body>
     <div class="wrap">
         <th:block th:replace="fragments/default/header :: headerFragment" />
 
             <div class="mntrContainer">
+                <th:block layout:fragment="menu" />
                 <th:block th:replace="fragments/mntr/navL :: navLFragment" />
                 <th:block layout:fragment="content" />
                 <th:block th:replace="fragments/mntr/navR :: navRFragment" />

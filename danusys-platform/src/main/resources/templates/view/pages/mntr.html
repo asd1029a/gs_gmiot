@@ -7,14 +7,24 @@
 <th:block layout:fragment="css">
     <link rel="stylesheet" type="text/css" href="/css/default/monitoring.css">
 </th:block>
-<th:block th:fragment="pagesScript">
-    <script type="text/javascript" src="/js/map/controlMap.js"></script>
-    <script type="text/javascript" src="/js/pages/mntr.js"></script>
+
+<th:block layout:fragment="menu">
+    <aside class="lnb">
+        <ul>
+            <li class="active" value="smartPower">MENU<br>1</li>
+            <li>MENU<br>2</li>
+            <li>MENU<br>3</li>
+            <li>MENU<br>4</li>
+            <li>MENU<br>5</li>
+        </ul>
+    </aside>
 </th:block>
 
 <th:block layout:fragment="content">
     <th:block th:insert="/view/commons/map"></th:block>
-    <div id="map"></div>
+    <div id="map" class="mapWrap">
+        <div id="mouse-position"></div>
+    </div>
 </th:block>
 
 

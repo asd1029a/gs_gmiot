@@ -58,4 +58,8 @@ $(document).ready(() => {
     } else if(path === "/pages/config/notice") {
         notice.create();
     }
+    // 관제
+    else if(path === "/pages/mntr") {
+        mntr.eventHandler();
+    }
 })

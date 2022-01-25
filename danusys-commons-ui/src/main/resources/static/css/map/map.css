@@ -1,0 +1,14 @@
+
+/**
+* 맵관련 기본 css
+*/
+#mouse-position{
+    display: block;
+    position: absolute;
+    bottom: 32px;
+    padding: 4px;
+    margin-left: 9px;
+    border-radius: 3px;
+    z-index: 3;
+    background: #1a1b1d78;
+}

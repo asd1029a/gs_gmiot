@@ -17,7 +17,7 @@
 .lnb ul li.active{color: #dee0e4; background: #3a66e5;}
 
 .menuFold{position: relative; display: flex; flex-direction: column; width: 320px; background: #1e1f23;}
-.lnbFold{display: flex; align-items: center; justify-content: center; position: absolute; top: 50%; left: 100%; transform:translate(0%, -50%); width: 24px; height: 60px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; background: rgba(30,31,35,0.75); cursor: pointer;}
+.lnbFold{display: flex; align-items: center; justify-content: center; position: absolute; top: 50%; left: 100%; transform:translate(0%, -50%); width: 24px; height: 60px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; background: rgba(30,31,35,0.75); cursor: pointer; z-index: 2;}
 .lnbFold i{width: 7px; height: 12px; margin: 0px 4px 0px 0px;}
 .lnbFold i img{width: 7px; height: 12px;}
 .toggleOff{display: none; transition: all 0.2s;}
