@@ -45,6 +45,7 @@ public class MissionApiController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final Substring substring;
 
+
     @GetMapping("/return")
     public void returnDrone() {
         flight.returnDrone();
@@ -358,7 +359,6 @@ public class MissionApiController {
                         .autocontinue(1)
                         .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
                         .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
-//                                .build(), linkId, timestamp, secretKey);
                         .build();
                 missionMap.put("missionItemInt"+flag,missionItemInt);
                 flag++;
@@ -387,7 +387,6 @@ public class MissionApiController {
                         .autocontinue(1)
                         .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
                         .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
-//                                .build(), linkId, timestamp, secretKey);
                         .build();
                 missionMap.put("missionItemInt"+flag,missionItemInt);
                 flag++;
@@ -418,7 +417,21 @@ public class MissionApiController {
 
 
     }
+    @MessageMapping("/pause")
+    @SendTo("/topic/pause")
+    public void pause() {
+        // flight.loiter(30);
+        flight.pauseOrPlay(0);
+        // flight.returnDrone();
+    }
 
+    @MessageMapping("/play")
+    @SendTo("/topic/play")
+    public void play() {
+        // flight.loiter(30);
+        flight.pauseOrPlay(1);
+        // flight.returnDrone();
+    }
 //    public void startMission(Mission mission) {
 //
 //        Mission missionResponse = missionService.missionResponseList(mission.getId());
@@ -621,12 +634,7 @@ public class MissionApiController {
 
         // flight.returnDrone();
     }
-    @GetMapping("/test4")
-    public void test4() {
-        // flight.loiter(30);
-        flight.gimbal();
-        // flight.returnDrone();
-    }
+
 }
 
 

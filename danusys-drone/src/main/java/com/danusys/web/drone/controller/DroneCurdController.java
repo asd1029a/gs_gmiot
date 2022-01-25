@@ -29,9 +29,6 @@ public class DroneCurdController {
         parameter:
                     String droneId;
                     String droneDeviceName;
-
-
-
      */
 
     @PostMapping("/drone")
