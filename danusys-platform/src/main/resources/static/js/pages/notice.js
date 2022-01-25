@@ -34,24 +34,36 @@ const notice = {
             },
             columns : [
                 {data: "noticeTitle", className: "alignLeft"},
+                {data: "noticeContent", className: "alignLeft"},
                 {data: "insertUserSeq"},
                 {data: "insertDt"},
-                {data: null},
+                {data: "noticeFile"},
                 {data: null}
-            ]
-            // "columnDefs": [{
-            //     "targets": -1,
-            //     "data": null,
-            //     "defaultContent": '<span class="writeButton"><i></i></span>'
-            // }
-            //     , {
-            //         targets: 0,
-            //         render: $.fn.dataTable.render.ellipsis( 30, true )
-            //     }
-            //     , {
-            //         targets: 1,
-            //         render: $.fn.dataTable.render.ellipsis( 50, true )
-            //     }]
+            ],
+            "columnDefs": [
+                {
+                    "targets": -1,
+                    "data": null,
+                    "defaultContent": '<span class="button">상세보기</span>'
+                }
+                , {
+                    targets: 0,
+                    render: $.fn.dataTable.render.ellipsis( 30, true )
+                }
+                , {
+                    targets: 1,
+                    render: $.fn.dataTable.render.ellipsis( 50, true )
+                }
+                , {
+                    targets: 4,
+                    createdCell: function (td, cellData) {
+                        if ( cellData !== null ) {
+                            $(td).append("<i><img src='/images/default/clipboard.svg'></i>");
+                        } else {
+                            $(td).text("없음");
+                        }
+                    }
+                }]
             , excelDownload : true
         }
 

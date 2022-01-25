@@ -9,6 +9,13 @@ import org.springframework.context.annotation.Configuration;
 public class MyBatisConfig {
     @Bean
     ConfigurationCustomizer mybatisConfigurationCustomizer() {
-        return configuration -> configuration.setMapUnderscoreToCamelCase(true);
+        return new ConfigurationCustomizer() {
+            @Override
+            public void customize(org.apache.ibatis.session.Configuration configuration) {
+                configuration.setMapUnderscoreToCamelCase(true);
+                configuration.setCallSettersOnNulls(true);
+                configuration.setReturnInstanceForEmptyRow(true);
+            }
+        };
     }
 }
