@@ -1,16 +1,13 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.platform.model.paging.Page;
+import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.service.notice.NoticeService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +54,11 @@ public class NoticeController {
     @DeleteMapping
     public @ResponseBody String delNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
         return noticeService.deleteNotice(paramMap);
+    }
+
+    @PostMapping(value = "/paging")
+    public Page<List<Map<String, Object>>> list(@RequestBody PagingRequest pagingRequest) {
+        return noticeService.getLists(pagingRequest);
     }
 //    @PostMapping("/getListNotice")
 //    public Map<String, Object> notices(@RequestBody Map<String, Object> param,
