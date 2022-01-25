@@ -24,6 +24,7 @@ const notice = {
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
+                        console.log(result);
                         $('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
@@ -32,8 +33,8 @@ const notice = {
                 toggleable: false
             },
             columns : [
-                {data: "title", className: "alignLeft"},
-                {data: "insertAdminId"},
+                {data: "noticeTitle", className: "alignLeft"},
+                {data: "insertUserSeq"},
                 {data: "insertDt"},
                 {data: null},
                 {data: null}

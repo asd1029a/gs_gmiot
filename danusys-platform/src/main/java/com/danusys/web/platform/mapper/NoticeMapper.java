@@ -1,5 +1,6 @@
 package com.danusys.web.platform.mapper;
 
+import com.danusys.web.commons.util.EgovMap;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -26,6 +27,6 @@ public interface NoticeMapper {
     Map<String, Object> selectOne();
 
     @Select(selectNotice)
-    List<Map<String, Object>> selectAll(Map<String, Object> param);
+    List<EgovMap> selectAll(Map<String, Object> param);
 
 }

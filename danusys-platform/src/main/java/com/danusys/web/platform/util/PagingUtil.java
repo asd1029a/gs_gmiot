@@ -1,5 +1,7 @@
 package com.danusys.web.platform.util;
 
+import com.danusys.web.commons.util.EgovMap;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,7 @@ public class PagingUtil {
     /*
     * datatable.js 용 페이징 유틸
     * */
-    public static Map<String, Object> createPagingMap(Map<String, Object> paramMap, List<Map<String, Object>> dataListMap) throws Exception {
+    public static Map<String, Object> createPagingMap(Map<String, Object> paramMap, List<EgovMap> dataListMap) throws Exception {
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("data", dataListMap);
