@@ -34,4 +34,25 @@ public class NoticeSqlProvider {
         }};
         return sql.toString();
     }
+
+    public String insert(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+
+        }};
+        return sql.toString();
+    }
+
+    public String update(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+
+        }};
+        return sql.toString();
+    }
+
+    public String delete(int noticeSeq) {
+        SQL sql = new SQL() {{
+
+        }};
+        return sql.toString();
+    }
 }
