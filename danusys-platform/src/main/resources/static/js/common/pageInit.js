@@ -54,7 +54,7 @@ $(document).ready(() => {
     } else if(path === "/pages/config/userGroup") {
 
     } else if(path === "/pages/config/commonCode") {
-
+        commonCode.create();
     } else if(path === "/pages/config/notice") {
         notice.create();
     }
