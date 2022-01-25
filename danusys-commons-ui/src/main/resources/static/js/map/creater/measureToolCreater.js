@@ -123,7 +123,7 @@ class measureTool {
     removeMeasureTool() {
         debugger;
         this.map.getLayers().forEach( layer => {
-            if(layer.get('title')=='measureVector'){
+            if(layer.get('name')=='measureVector'){
                 this.map.getInteractions().forEach( inter => {
                     if(inter instanceof ol.interaction.Draw){
                         inter.setActive(false);

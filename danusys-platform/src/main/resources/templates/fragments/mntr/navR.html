@@ -1,0 +1,90 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="navRFragment">
+
+        <!-- RNM -->
+        <section class="areaInfo">
+            <h6>[Tab 1 관리번호] [Tab 1 형태] Tab 1 이름<i><img src="/images/default/close.svg"></i></h6>
+            <ul class="tab">
+                <li class="active"><a>기본 정보</a></li>
+                <li><a>시설물 제어</a></li>
+                <li><a>제어 로그</a></li>
+            </ul>
+            <div class="infoTabSection">
+                <dl class="areaTitle">
+                    <dt><i><img src="/images/default/titleIcon03.svg"></i>CCTV
+                        <select>
+                            <option>번호 올림차순</option>
+                            <option>번호 내림차순</option>
+                        </select>
+                    </dt>
+                    <dd class="ptzToggle">
+                        <span>PTZ</span>
+                        <input type="checkbox" id="switch"><label for="switch">Toggle</label>
+                    </dd>
+                </dl>
+                <div class="areaVideo">
+                    <div><!-- 영상 --></div>
+                </div>
+                <dl class="areaTitle">
+                    <dt><i><img src="/images/default/titleIcon04.svg"></i>개소 정보</dt>
+                </dl>
+                <div class="areaContents">
+                    <ul>
+                        <li>[관리번호] 이름</li>
+                        <li>종류</li>
+                        <li class="gray">행정동/도로명 주소 or 지번 주소</li>
+                    </ul>
+                </div>
+                <dl class="areaTitle">
+                    <dt><i><img src="/images/default/titleIcon04.svg"></i>장비 상태</dt>
+                </dl>
+                <div class="areaContents">
+                    <div>
+                        <dl>
+                            <dt><i class="circle green"></i>장비 연결 끊김</dt>
+                            <dd class="white">AED, 비상벨</dd>
+                        </dl>
+                        <dl>
+                            <dt><i class="circle red"></i>장비 고장</dt>
+                            <dd>없음</dd>
+                        </dl>
+                        <dl>
+                            <dd>교통약자 편의시설 : 미설치</dd>
+                            <dd>선팅 필름 : 미부착</dd>
+                        </dl>
+                    </div>
+                </div>
+                <dl class="areaTitle">
+                    <dt><i><img src="/images/default/titleIcon05.svg"></i>정류장 현황</dt>
+                </dl>
+                <div class="areaBusStationState">
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState01.svg"></i>현재 인원</dt>
+                        <dd>8<span>명</span></dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState02.svg"></i>전력</dt>
+                        <dd>30<span>kwh</span></dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState02.svg"></i>전력량</dt>
+                        <dd>30<span>w</span></dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState04.svg"></i>기온</dt>
+                        <dd>30<span>℃</span></dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState05.svg"></i>대기지수</dt>
+                        <dd class="green">79<span>보통</span></dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState06.svg"></i>습도</dt>
+                        <dd>66<span>%</span></dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+    </th:block>
+</html>

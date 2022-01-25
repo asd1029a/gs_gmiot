@@ -1,0 +1,149 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/* default */
+.wrap{display: flex; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; background: navy;}
+.mntrContainer{flex: 1; display: flex; flex-direction: row; overflow: hidden;}
+.mntrContainer .mapWrap{flex: 1; background: olive;}
+.mntrContainer .areaInfo{display: flex; flex-direction: column; width: 440px; background: #1a1b1d;}
+
+/* lnb */
+.lnb{z-index: 10; width: 60px; background: #1a1b1d; position: unset; height: unset;}
+.lnb ul{display: flex; flex-direction: column;}
+.lnb ul li{display: flex; align-items: center; justify-content: center; height: 60px; line-height: 22px; color: #7f8491; font-size: 16px; text-align: center; box-sizing: border-box; border-bottom: 1px solid #23252b; cursor: pointer;}
+.lnb ul li:hover{color: #dee0e4;}
+.lnb ul li:active{color: #dee0e4; background: #3a66e5;}
+.lnb ul li.active{color: #dee0e4; background: #3a66e5;}
+
+.menuFold{position: relative; display: flex; flex-direction: column; width: 320px; background: #1e1f23;}
+.lnbFold{display: flex; align-items: center; justify-content: center; position: absolute; top: 50%; left: 100%; transform:translate(0%, -50%); width: 24px; height: 60px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; background: rgba(30,31,35,0.75); cursor: pointer;}
+.lnbFold i{width: 7px; height: 12px; margin: 0px 4px 0px 0px;}
+.lnbFold i img{width: 7px; height: 12px;}
+.toggleOff{display: none; transition: all 0.2s;}
+.toggleOn{display: flex;}
+
+.lnbTabSection{overflow: hidden; flex: 1; display: flex; flex-direction: column;}
+.lnbTabSection:not(.select){display:none;}
+
+/* tab */
+.tab{display: flex; align-items: center; justify-content: space-between; grid-gap: 8px; height: 40px; margin: 0px; padding: 0px 14px; background: #23252b;}
+.tab li{flex: 1; height: 40px; line-height: 38px; text-align: center; cursor: pointer;}
+.tab li a{display: block; color: #7f8491;}
+.tab li:hover{}
+.tab li:hover a{color: #dee0e4; font-weight: bold;}
+.tab li:active{}
+.tab li.active{border-bottom: 4px solid #3a66e5;}
+.tab li.active a{color: #dee0e4; font-weight: bold;}
+
+/* areaTitle */
+.areaTitle{display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0px 14px; border-bottom: 1px solid #292c34;}
+.areaTitle dt{display: flex; align-items: center; justify-content: flex-start; grid-gap: 8px; font-size: 16px;}
+.areaTitle dt span{color: #3a66e5; font-weight: bold;}
+.areaTitle dt i{width: 20px !important; min-width: 20px !important; height: 20px !important;}
+.areaTitle dt i img{width: 20px; height: 20px;}
+.areaTitle dd{display: flex; align-items: center; justify-content: flex-start; grid-gap: 8px; margin: 0px; color: #7f8491;  cursor: pointer;}
+.areaTitle dd.button{height: 28px; line-height: 26px; padding: 0px 8px; background: #292c34; border-radius: 4px;}
+.areaTitle dd i{width: 16px; height: 16px;}
+.areaTitle dd i img{width: 16px; height: 16px;}
+.areaTitle dd:hover{color: #dee0e4;}
+.areaTitle dd span.count{color: #3a66e5; font-size: 16px; font-weight: bold;}
+
+/* searchForm */
+.searchForm{padding: 14px; border-bottom: 2px solid #292c34;}
+.searchForm dl{display: flex; align-items: center; justify-content: flex-start; grid-gap: 8px; height: 34px; border: 1px solid #292c34; border-radius: 4px;}
+.searchForm dl dt{display: flex; align-items: center; justify-content: flex-start; grid-gap: 8px; padding: 0px 14px; border-right: 1px solid #292c34;}
+.searchForm dl dt input{flex: 1; padding: 0px; border: none;}
+.searchForm dl dt i{width: 20px; height: 20px;}
+.searchForm dl dt i img{width: 20px; height: 20px;}
+.searchForm dl dd{display: flex; align-items: center; justify-content: flex-start; grid-gap: 8px; color: #7f8491; cursor: pointer;}
+.searchForm dl dd i{width: 16px; height: 16px;}
+.searchForm dl dd i img{width: 16px; height: 16px;}
+.searchForm dl dd:hover{color: #dee0e4;}
+
+/* searchFold */
+.searchFold{display: flex; flex-direction: column; grid-gap: 14px; height: auto; margin: -1px 0px 0px; padding: 14px; box-sizing: border-box; border: 1px solid #292c34;}
+.searchFold dl{height: auto; display: flex; align-items: baseline; justify-content: flex-start; grid-gap: 14px; border: none;}
+.searchFold dl dt{padding: 0px; border: none;}
+.searchFold dl dd{flex: 1;}
+.searchFold dl dd ul{flex: 1; display: flex; flex-direction: column; grid-gap: 8px;}
+.searchFold dl dd ul li{display: flex; align-items: center; justify-content: space-between;}
+
+/* searchList */
+.searchList{position: relative; flex: 1; overflow: auto; border-bottom: 2px solid #292c34;}
+.buttonTop{position: absolute; right: 10px; bottom: 10px; z-index: 10; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 40px; background: #2a2d35; box-shadow: 0px 0px 14px rgba(0,0,0,0.6); cursor: pointer;}
+.buttonTop img{width: 16px; height: 16px; transform: rotate(-90deg); filter: brightness(0) invert(1); opacity: 0.5;}
+.searchList:nth-last-child(1){border: none;}
+.searchList dl{padding: 14px; box-sizing: border-box; border-bottom: 1px solid #292c34; line-height: 20px; cursor: pointer;}
+.searchList dl:hover{background: #212327;}
+.searchList dl dt{display: flex; align-items: center; justify-content: space-between; margin: 0px 0px 4px 0px; font-weight: bold;}
+.searchList dl dt p{display: flex; align-items: center; justify-content: flex-start; grid-gap: 4px;}
+.searchList dl dt p span{}
+
+.searchList dl dt p span.level{width:40px; height:24px; margin:0px 4px 0px 0px; line-height:22px; font-size:13px; font-weight:bold; text-align:center; background:#797d87; border-radius:4px;}
+.searchList dl dt p span.level.lv1{background:#f04242;}
+.searchList dl dt p span.level.lv2{color: #000; background:#f99b22;}
+.searchList dl dt p span.level.lv3{background:#53596c;}
+
+.searchList dl dt p span.number{color: #7f8491; font-weight: normal;}
+.searchList dl dt i{width: 20px; height: 20px; cursor: pointer;}
+.searchList dl dt i img{width: 20px; height: 20px;}
+.searchList dl dd{display: flex; align-items: center; justify-content: space-between; color: #797d87;}
+
+.searchList dl dd span{height: 28px; line-height: 26px; padding: 0px 8px; border: 1px solid red; border-radius: 28px;}
+.searchList dl dd span.state{width:82px; height:26px; line-height:22px; color:#797d87; font-size:13px; font-weight:normal; text-align:center; border:2px solid #797d87; border-radius:26px;}
+.searchList dl dd span.state.state1{color:#ff4f4f; border:2px solid #f04242;}
+.searchList dl dd span.state.state2{color:#f99b22; border:2px solid #f99b22;}
+.searchList dl dd span.state.state3{color:#7a8094; border:2px solid #4e5466;}
+
+/* areaInfo */
+.areaInfo h6{display: flex; align-items: center; justify-content: space-between; grid-gap: 8px; height: 40px; max-height: 40px; min-height: 40px; margin: 0px; padding: 0px 14px; font-size: 16px; background: #23252b;}
+.areaInfo h6 i{width: 20px; height: 20px; cursor: pointer;}
+.areaInfo h6 i img{width: 20px; height: 20px;}
+.areaInfo .tab{justify-content: flex-start; background: #1a1b1d; border-bottom: 1px solid #292c34;}
+.areaInfo .tab li{flex: initial; text-align: left; padding: 0px 14px;}
+.infoTabSection{flex: 1; display: flex; flex-direction: column;}
+.areaInfo .areaTitle{height: 50px;}
+.areaInfo .ptzToggle{ display: flex; align-items: center;}
+.areaInfo .ptzToggle span{margin: 0px 8px 0px 0px; font-size: 16px; color: #7f8491;}
+.ptzToggle input[type=checkbox]{visibility: hidden; width: 0; height: 0;}
+.ptzToggle label{cursor: pointer; text-indent: -9999px; width: 50px; height: 28px; background: #292c34; display: block; border-radius: 100px; position: relative;}
+.ptzToggle label:after{content: ''; position: absolute; top: 4px; left: 5px; width: 20px; height: 20px; background: #7f8491; border-radius: 90px; transition: 0.3s;}
+.ptzToggle input:checked + label{background: #292c34;}
+.ptzToggle input:checked + label:after{left: calc(100% - 5px); transform: translateX(-100%); background: #3a66e5;}
+.ptzToggle label:active:after{width: 20px;}
+.areaVideo{overflow: hidden; margin: auto; padding: 14px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
+.areaVideo div{width: 412px; height: 232px; background: pink;}
+.areaContents{overflow: hidden; padding: 10px; line-height: 24px; border-bottom: 2px solid #292c34;}
+.areaContents ul{overflow: hidden; padding: 14px; background: #23252b; border-radius: 4px;}
+.areaContents ul li{display: flex; align-items: center; grid-gap: 8px;}
+.areaContents ul li.gray{color: #7f8491;}
+.areaContents ul li span{}
+.areaContents div{overflow: hidden; padding: 14px; background: #23252b; border-radius: 4px;}
+.areaContents div dl{display: flex; align-items: center; justify-content: flex-start; justify-content: center; grid-gap: 14px;}
+.areaContents div dl dt{display: flex; align-items: center; min-width: 120px; grid-gap: 6px;}
+.areaContents div dl dd{display: flex; flex: 1; color: #7f8491;}
+.areaContents div dl dd.white{color: #dee0e4;}
+.areaBusStationState{flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; align-items: center;}
+.areaBusStationState dl{flex: 1; display: flex; flex-direction: column; line-height: 28px; text-align: center;}
+.areaBusStationState dl dt{display: flex; align-items: center; justify-content: center; grid-gap: 8px; font-size: 14px;}
+.areaBusStationState dl dt i{width: 16px; height: 16px;}
+.areaBusStationState dl dt i img{width: 16px; height: 16px;}
+.areaBusStationState dl dd{display: flex; align-items: baseline; justify-content: center; grid-gap: 4px; font-size: 20px;}
+.areaBusStationState dl dd span{font-size: 14px;}
+.areaBusStationState dl dd.green{color: #3ad274;}
+.areaInfoOff{display: none !important;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
