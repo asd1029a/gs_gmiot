@@ -23,7 +23,7 @@ public class DroneMessageRecevice {
         //try (Socket socket = new Socket("172.20.14.84", 14550)) {
 
 
-            try (Socket socket = new Socket("106.244.179.242", 20011)) {
+            try (Socket socket = new Socket("172.20.14.87", 14550)) {
             MavlinkConnection connection = MavlinkConnection.create(
                     socket.getInputStream(),
                     socket.getOutputStream());
@@ -80,6 +80,7 @@ public class DroneMessageRecevice {
                             message2.getPayload().getClass().getName().contains("ScaledImu3") ||
                             message2.getPayload().getClass().getName().contains("ScaledPressure") ||
                             message2.getPayload().getClass().getName().contains("ScaledPressure2") ||
+                            message2.getPayload().getClass().getName().contains("GlobalPositionInt") ||
                             message2.getPayload().getClass().getName().contains("GpsRawInt") || //lat=374456473, lon=1268953303, alt=18230, eph=121, epv=200, vel=0, cog=3988, satellitesVisible=10, altEllipsoid=0, hAcc=300, vAcc=300, velAcc=40, hdgAcc=0
                             message2.getPayload().getClass().getName().contains("SystemTime") ||
                             message2.getPayload().getClass().getName().contains("TerrainReport") ||//TerrainReport{lat=374433470, lon=1268897507, spacing=100, terrainHeight=14.5117655, currentHeight=100.431244, pending=0, loaded=504}}
@@ -99,12 +100,13 @@ public class DroneMessageRecevice {
                             message2.getPayload().getClass().getName().contains("Timesync") ||
                             message2.getPayload().getClass().getName().contains("ParamValue") || //x
                             message2.getPayload().getClass().getName().contains("PositionTargetGlobalInt") || //x
-                            message2.getPayload().getClass().getName().contains("EscTelemetry1To4") //EscTelemetry1To4{temperature=[B@553a3d88, voltage=[0, 0, 0, 0], current=[0, 0, 0, 0], totalcurrent=[0, 0, 0, 0], rpm=[0, 0, 0, 0], count=[0, 0, 0, 0]}
+                            message2.getPayload().getClass().getName().contains("EscTelemetry1To4") || //EscTelemetry1To4{temperature=[B@553a3d88, voltage=[0, 0, 0, 0], current=[0, 0, 0, 0], totalcurrent=[0, 0, 0, 0], rpm=[0, 0, 0, 0], count=[0, 0, 0, 0]}
+                            message2.getPayload().getClass().getName().contains("SensorOffsets") //EscTelemetry1To4{temperature=[B@553a3d88, voltage=[0, 0, 0, 0], current=[0, 0, 0, 0], totalcurrent=[0, 0, 0, 0], rpm=[0, 0, 0, 0], count=[0, 0, 0, 0]}
                     //여기서부터 내가작성
                            ) {
                     } else {
 
-            if(  message2.getPayload().getClass().getName().contains("GlobalPositionInt") )
+
                         {
 
                             System.out.println(message2.getPayload().getClass().getName() + " > " + message2 );
