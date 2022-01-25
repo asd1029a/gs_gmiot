@@ -1,5 +1,6 @@
 package com.danusys.web.platform.service.notice;
 
+import com.danusys.web.commons.util.EgovMap;
 import com.danusys.web.platform.mapper.NoticeMapper;
 import com.danusys.web.platform.model.paging.Page;
 import com.danusys.web.platform.model.paging.PagingRequest;
@@ -25,33 +26,22 @@ public class NoticeServiceImpl implements NoticeService {
         return PagingUtil.createPagingMap(paramMap, noticeMapper.selectList(paramMap));
     }
 
-    @Override
-    public Map<String, Object> getOne(int noticeSeq) throws Exception {
+    public EgovMap getOne(int noticeSeq) throws Exception {
         return noticeMapper.selectOne(noticeSeq);
     }
-//    @Override
-//    public Page<Map<String, Object>> selectListNotice(Map<String, Object> param, Pageable pageable) throws Exception {
-//        param.put("offset", pageable.getOffset());
-//        param.put("pageSize", pageable.getPageSize());
-//
-//        List<HashMap<String, Object>> list = noticeMapper.selectAll(param);
-//        long count = list.stream().count();
-//
-//        return new PageImpl(list, pageable, count);
-//    }
 
     @Override
-    public String insertNotice(Map<String, Object> paramMap) throws Exception {
+    public String insert(Map<String, Object> paramMap) throws Exception {
         return null;
     }
 
     @Override
-    public String updateNotice(Map<String, Object> paramMap) throws Exception {
+    public String update(Map<String, Object> paramMap) throws Exception {
         return null;
     }
 
     @Override
-    public String deleteNotice(Map<String, Object> paramMap) throws Exception {
+    public String delete(Map<String, Object> paramMap) throws Exception {
         return null;
     }
 

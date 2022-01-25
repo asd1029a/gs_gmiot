@@ -1,5 +1,6 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.util.EgovMap;
 import com.danusys.web.platform.model.paging.Page;
 import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.service.notice.NoticeService;
@@ -28,7 +29,7 @@ public class NoticeController {
     }
 
     @GetMapping(value="/{noticeSeq}")
-    public ResponseEntity<Map<String, Object>> getNotice(@PathVariable("noticeSeq") int noticeSeq) throws Exception {
+    public ResponseEntity<EgovMap> getNotice(@PathVariable("noticeSeq") int noticeSeq) throws Exception {
         return ResponseEntity.ok().body(noticeService.getOne(noticeSeq));
     }
 
@@ -36,24 +37,24 @@ public class NoticeController {
      * 공지사항 : 공지사항 등록
      */
     @PutMapping
-    public @ResponseBody String addNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
-        return noticeService.insertNotice(paramMap);
+    public @ResponseBody String add(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        return noticeService.insert(paramMap);
     }
 
     /**
      * 공지사항 : 공지사항 수정
      */
     @PatchMapping
-    public @ResponseBody String modNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
-        return noticeService.updateNotice(paramMap);
+    public @ResponseBody String mod(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        return noticeService.update(paramMap);
     }
 
     /**
      * 공지사항 : 공지사항 삭제
      */
     @DeleteMapping
-    public @ResponseBody String delNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
-        return noticeService.deleteNotice(paramMap);
+    public @ResponseBody String del(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        return noticeService.delete(paramMap);
     }
 
     @PostMapping(value = "/paging")
