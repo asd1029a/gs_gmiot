@@ -25,14 +25,39 @@ public class NoticeController {
     /**
      * 공지사항 : 공지사항 목록 조회
      */
-    @PostMapping(value = "/getListNotice")
-    public ResponseEntity<Map<String, Object>> getListNotice(
-            HttpServletRequest request
-            , HttpServletResponse response
-            , @RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(noticeService.selectListNotice(paramMap));
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> getListNotice(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(noticeService.getList(paramMap));
     }
 
+    @GetMapping(value="/{noticeSeq}")
+    public ResponseEntity<Map<String, Object>> getNotice(@PathVariable("noticeSeq") int noticeSeq) throws Exception {
+        return ResponseEntity.ok().body(noticeService.getOne(noticeSeq));
+    }
+
+    /**
+     * 공지사항 : 공지사항 등록
+     */
+    @PutMapping
+    public @ResponseBody String addNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        return noticeService.insertNotice(paramMap);
+    }
+
+    /**
+     * 공지사항 : 공지사항 수정
+     */
+    @PatchMapping
+    public @ResponseBody String modNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        return noticeService.updateNotice(paramMap);
+    }
+
+    /**
+     * 공지사항 : 공지사항 삭제
+     */
+    @DeleteMapping
+    public @ResponseBody String delNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        return noticeService.deleteNotice(paramMap);
+    }
 //    @PostMapping("/getListNotice")
 //    public Map<String, Object> notices(@RequestBody Map<String, Object> param,
 //                                      @PageableDefault(size=10, sort="id", direction = Sort.Direction.DESC) Pageable pageable) throws  Exception {
@@ -45,33 +70,9 @@ public class NoticeController {
 //    }
 
     /**
-     * 공지사항 : 공지사항 등록
-     */
-    @PutMapping(value = "/addNotice")
-    public @ResponseBody String addNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
-        return noticeService.insertNotice(paramMap);
-    }
-
-    /**
-     * 공지사항 : 공지사항 수정
-     */
-    @PatchMapping(value = "/modNotice")
-    public @ResponseBody String modNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
-        return noticeService.updateNotice(paramMap);
-    }
-
-    /**
-     * 공지사항 : 공지사항 삭제
-     */
-    @DeleteMapping(value = "/delNotice.ado")
-    public @ResponseBody String delNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
-        return noticeService.deleteNotice(paramMap);
-    }
-
-    /**
      * 공지사항 : 공지사항 엑셀
      */
-//    @RequestMapping(value = "/notice/exportExcel.do")
+//    @RequestMapping(value = "/exportExcel.do")
 //    public ModelAndView exportNotice(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> paramMap) throws Exception {
 //        String fileName = "공지사항목록_"+DateUtil.getCurrentDate("yyyyMmddHHmmss");
 //        String columnArr = "title|content|insertDt|insertAdminId|updateDt|updateAdminId";

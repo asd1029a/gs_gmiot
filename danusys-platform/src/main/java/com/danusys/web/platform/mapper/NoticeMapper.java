@@ -2,7 +2,8 @@ package com.danusys.web.platform.mapper;
 
 import com.danusys.web.commons.util.EgovMap;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 import java.util.Map;
@@ -13,20 +14,9 @@ import java.util.Map;
 @Mapper
 public interface NoticeMapper {
 
-    String selectNotice = "SELECT * " +
-            "FROM t_notice " +
-            "WHERE 1=1";
+    @SelectProvider(type=NoticeSqlProvider.class, method="selectList")
+    List<EgovMap> selectList(Map<String, Object> param);
 
-    String whereNotice = "<script>" +
-            "<if test= start != null and length != null>" +
-            " LIMIT #{start} , #{length}" +
-            "</if>" +
-            "</script>";
-
-    @Select(selectNotice + whereNotice)
-    Map<String, Object> selectOne();
-
-    @Select(selectNotice)
-    List<EgovMap> selectAll(Map<String, Object> param);
-
+    @SelectProvider(type=NoticeSqlProvider.class, method="selectOne")
+    Map<String, Object> selectOne(@Param("noticeSeq") int noticeSeq);
 }

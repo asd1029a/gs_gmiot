@@ -16,7 +16,7 @@ const notice = {
             scrollY: "calc(100% - 45px)",
             ajax :
                 {
-                    'url' : "/notice/getListNotice",
+                    'url' : "/notice",
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
                     'data' : function ( d ) {
@@ -70,19 +70,28 @@ const notice = {
         const evt = {
             click : function(e) {
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
-                if($(e.target).hasClass('writeButton') || $(e.target).prop('tagName') === "I") {
-                    notice.showPopup('mod');
-                    $('#noticeForm').setItemValue(rowData);
+                if($(e.target).hasClass('button')) {
+                    //notice.showPopup('mod');
+                    //$('#noticeForm').setItemValue(rowData);
+                    notice.get(rowData.noticeSeq ,(result) => console.log(result));
                 }
             }
         }
         comm.createTable($target ,optionObj, evt);
     },
-    getListNotice : (pCallback) => {
-        comm.ajaxPost({
-            url : "/notice/getListNoticeForMain"
-            , data : {}
-        }, (result) => {
+    getList : (param, pCallback) => {
+        $.ajax({
+            url : "/notice"
+            , data : param
+        }).done((result) => {
+            pCallback(result);
+        });
+    },
+    get : (pSeq, pCallback) => {
+        $.ajax({
+            url : "/notice/" + pSeq
+            , type : "GET"
+        }).done((result) => {
             pCallback(result);
         });
     },

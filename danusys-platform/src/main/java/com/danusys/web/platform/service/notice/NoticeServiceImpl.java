@@ -17,11 +17,14 @@ public class NoticeServiceImpl implements NoticeService {
     private final NoticeMapper noticeMapper;
 
     @Override
-    public Map<String, Object> selectListNotice(Map<String, Object> paramMap) throws Exception {
-        System.out.println(noticeMapper.selectAll(paramMap));
-        return PagingUtil.createPagingMap(paramMap, noticeMapper.selectAll(paramMap));
+    public Map<String, Object> getList(Map<String, Object> paramMap) throws Exception {
+        return PagingUtil.createPagingMap(paramMap, noticeMapper.selectList(paramMap));
     }
 
+    @Override
+    public Map<String, Object> getOne(int noticeSeq) throws Exception {
+        return noticeMapper.selectOne(noticeSeq);
+    }
 //    @Override
 //    public Page<Map<String, Object>> selectListNotice(Map<String, Object> param, Pageable pageable) throws Exception {
 //        param.put("offset", pageable.getOffset());

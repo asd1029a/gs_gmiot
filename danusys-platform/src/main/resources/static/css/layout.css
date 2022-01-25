@@ -354,7 +354,7 @@ header .utmenu li i{width: 18px; height: 18px; margin: 0px 8px 0px 0px;}
 .searchTable table thead tr{height: 40px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
 .searchTable table thead tr th{vertical-align: middle; font-size: 14px; color: #797d87; font-weight: bold;}
 
-.searchTable table tbody{}
+.searchTable table tbody{height: 100%}
 .searchTable table tbody tr{height: 50px; border-bottom: 1px solid #292c34; box-sizing: border-box;}
 .searchTable table tbody tr:hover{background: #23252b;}
 .searchTable table tbody tr:hover td span.button{background: #434751;}
@@ -391,6 +391,8 @@ header .utmenu li i{width: 18px; height: 18px; margin: 0px 8px 0px 0px;}
 .searchTable .tableBottom .button{position: absolute; right: 0; height: 34px; line-height: 32px; padding: 0px 14px; color: #7f8491;}
 .searchTable .tableBottom .button:hover{color: #dee0e4;}
 
+.searchTable .dataTables_wrapper{height: 100%; display: flex; flex-direction: column;}
+.searchTable .dataTables_wrapper .tableBody{flex: 1;}
 
 /* inquiry */
 .inquiry{display: flex; height: calc(100% - 60px);}
