@@ -4050,6 +4050,7 @@
 			d.columns.push( {
 				data:       dataProp,
 				name:       column.sName,
+				type:       column.sType,
 				searchable: column.bSearchable,
 				orderable:  column.bSortable,
 				search:     {
