@@ -1,12 +1,15 @@
 package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.platform.model.paging.Page;
+import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.service.notice.NoticeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -53,6 +56,21 @@ public class NoticeController {
     public @ResponseBody String del(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
         return noticeService.delete(paramMap);
     }
+
+    @PostMapping(value = "/paging")
+    public Page<List<Map<String, Object>>> list(@RequestBody PagingRequest pagingRequest) {
+        return noticeService.getLists(pagingRequest);
+    }
+//    @PostMapping("/getListNotice")
+//    public Map<String, Object> notices(@RequestBody Map<String, Object> param,
+//                                      @PageableDefault(size=10, sort="id", direction = Sort.Direction.DESC) Pageable pageable) throws  Exception {
+//        System.out.println("@@@@@@@@@@@@@@@@@@@@@"+param);
+//        Map<String,Object> result = new HashMap<>();
+//        Page<Map<String, Object>> notices = noticeService.selectListNotice(param, pageable);
+//        result.put("contents", notices);
+//        result.put("size", pageable.getPageSize());
+//        return result;
+//    }
 
     /**
      * 공지사항 : 공지사항 엑셀
