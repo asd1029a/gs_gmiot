@@ -26,23 +26,24 @@ public class NoticeServiceImpl implements NoticeService {
         return PagingUtil.createPagingMap(paramMap, noticeMapper.selectList(paramMap));
     }
 
+    @Override
     public EgovMap getOne(int noticeSeq) throws Exception {
         return noticeMapper.selectOne(noticeSeq);
     }
 
     @Override
-    public String insert(Map<String, Object> paramMap) throws Exception {
-        return null;
+    public int insert(Map<String, Object> paramMap) throws Exception {
+        return noticeMapper.insert(paramMap);
     }
 
     @Override
-    public String update(Map<String, Object> paramMap) throws Exception {
-        return null;
+    public int update(Map<String, Object> paramMap) throws Exception {
+        return noticeMapper.update(paramMap);
     }
 
     @Override
-    public String delete(Map<String, Object> paramMap) throws Exception {
-        return null;
+    public void delete(int noticeSeq) throws Exception {
+
     }
 
     @Override

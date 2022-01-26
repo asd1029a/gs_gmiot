@@ -109,10 +109,6 @@ const notice = {
             $('#noticePopup .popupTitle h4').text('공지사항 게시글 수정');
             $('#noticePopup').css('height', '780px');
             $('#noticePopup [data-mode="'+type+'"]').show();
-        } else if(type === "detail") {
-            $('#noticePopup .popupTitle h4').text("공지사항 상세");
-            $('#noticePopup').css('height', '610px');
-            $('#noticePopup [data-mode="'+type+'"]').show();
         }
     },
     hidePopup : () => {
@@ -120,44 +116,43 @@ const notice = {
         comm.hideModal($('#noticePopup'));
         $('#noticePopup').hide();
     },
-    addProc : () => {
+    addProc : (pSeq) => {
         const formObj = $('#noticeForm').serializeJSON();
 
-        comm.ajaxPost({
-                url : "/notice/addNotice"
-                , type : "PUT"
-                , data : formObj
-            },
-            (result) => {
-                comm.showAlert("공지사항이 등록되었습니다");
-                notice.create($('#noticeTable'));
-                notice.hidePopup();
-            });
+        $.ajax({
+            url : "/notice/add/"+pSeq
+            , type: "PUT"
+            , data : formObj
+        }).done((result) => {
+            comm.showAlert("공지사항이 등록되었습니다");
+            notice.create($('#noticeTable'));
+            notice.hidePopup();
+        });
     },
-    modProc : () => {
+    modProc : (pSeq) => {
         const formObj = $('#noticeForm').serializeJSON();
 
-        comm.ajaxPost({
-                url : "/notice/modNotice"
-                , type : "PATCH"
-                , data : formObj
-            },
-            (result) => {
-                comm.showAlert("공지사항이 수정되었습니다");
-                notice.create($('#noticeTable'));
-                notice.hidePopup();
-            });
+        $.ajax({
+            url : "/notice/mod"
+            , type: "PATCH"
+            , data : formObj
+        }).done((result) => {
+            comm.showAlert("공지사항이 수정되었습니다");
+            notice.create($('#noticeTable'));
+            notice.hidePopup();
+        });
     },
-    delProc : (pNoticeSeq) => {
-        comm.ajaxPost({
-                url : "/notice/delNotice"
-                , type : "DELETE"
-                , data : {noticeSeq : pNoticeSeq}
-            },
-            (result) => {
-                comm.showAlert("공지사항이 삭제되었습니다");
-                notice.create($('#noticeTable'));
-                notice.hidePopup();
-            });
+    delProc : (pSeq) => {
+        const formObj = $('#noticeForm').serializeJSON();
+
+        $.ajax({
+            url : "/notice/del/"+pSeq
+            , type: "DELETE"
+            , data : formObj
+        }).done((result) => {
+            comm.showAlert("공지사항이 삭제되었습니다");
+            notice.create($('#noticeTable'));
+            notice.hidePopup();
+        });
     }
 }

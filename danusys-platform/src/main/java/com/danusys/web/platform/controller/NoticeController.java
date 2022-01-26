@@ -7,8 +7,6 @@ import com.danusys.web.platform.service.notice.NoticeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +26,9 @@ public class NoticeController {
         return ResponseEntity.ok().body(noticeService.getList(paramMap));
     }
 
+    /**
+     * 공지사항 : 공지사항 단건 조회
+     */
     @GetMapping(value="/{noticeSeq}")
     public ResponseEntity<EgovMap> getNotice(@PathVariable("noticeSeq") int noticeSeq) throws Exception {
         return ResponseEntity.ok().body(noticeService.getOne(noticeSeq));
@@ -36,41 +37,31 @@ public class NoticeController {
     /**
      * 공지사항 : 공지사항 등록
      */
-    @PutMapping
-    public @ResponseBody String add(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+    @PutMapping(value="/add")
+    public int add(@RequestBody Map<String, Object> paramMap) throws Exception {
         return noticeService.insert(paramMap);
     }
 
     /**
      * 공지사항 : 공지사항 수정
      */
-    @PatchMapping
-    public @ResponseBody String mod(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+    @PatchMapping(value="/mod")
+    public int mod(@RequestBody Map<String, Object> paramMap) throws Exception {
         return noticeService.update(paramMap);
     }
 
     /**
      * 공지사항 : 공지사항 삭제
      */
-    @DeleteMapping
-    public @ResponseBody String del(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
-        return noticeService.delete(paramMap);
+    @DeleteMapping(value="/del/{noticeSeq}")
+    public void del (@PathVariable("noticeSeq") int noticeSeq) throws Exception {
+        noticeService.delete(noticeSeq);
     }
 
     @PostMapping(value = "/paging")
     public Page<List<Map<String, Object>>> list(@RequestBody PagingRequest pagingRequest) {
         return noticeService.getLists(pagingRequest);
     }
-//    @PostMapping("/getListNotice")
-//    public Map<String, Object> notices(@RequestBody Map<String, Object> param,
-//                                      @PageableDefault(size=10, sort="id", direction = Sort.Direction.DESC) Pageable pageable) throws  Exception {
-//        System.out.println("@@@@@@@@@@@@@@@@@@@@@"+param);
-//        Map<String,Object> result = new HashMap<>();
-//        Page<Map<String, Object>> notices = noticeService.selectListNotice(param, pageable);
-//        result.put("contents", notices);
-//        result.put("size", pageable.getPageSize());
-//        return result;
-//    }
 
     /**
      * 공지사항 : 공지사항 엑셀
