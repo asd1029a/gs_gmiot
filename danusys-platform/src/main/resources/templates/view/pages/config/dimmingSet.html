@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/layout_config">
+
+    <th:block layout:fragment="content">
+        <h4>
+            <i><img src="/images/default/settingTitle.svg"></i>
+            <span>환경설정</span>
+            <i><img src="/images/default/settingArrowNext.svg"></i>
+            <span>스마트 가로등</span>
+            <i><img src="/images/default/settingArrowNext.svg"></i>
+            <span>디밍 설정</span>
+        </h4>
+        <section class="settingContent">
+            <article class="search-form" id="searchForm">
+                <h6>디밍 검색</h6>
+                <form>
+                    <div>
+                        <dl class="searchTextSet">
+                            <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
+                             <dd class="button" id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
+                            <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
+                        </dl>
+                    </div>
+                </form>
+            </article>
+            <article class="searchList">
+                <div class="articleTitle">
+                    <dl class="title">
+                        <dt>디밍 목록</dt>
+                        <dd><span class="count">123</span>건</dd>
+                    </dl>
+                </div>
+                <div class="searchTable">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>디밍 관리 ID</th>
+                            <th>구역 이름</th>
+                            <th>설명</th>
+                            <th>스마트폴</th>
+                            <th>마지막 수정일시</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>AREA0000</td>
+                            <td>다누대로</td>
+                            <td>다누대로입니다.</td>
+                            <td>000</td>
+                            <td>2021.11.20</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>AREA0000</td>
+                            <td>다누대로</td>
+                            <td>다누대로입니다.</td>
+                            <td>000</td>
+                            <td>2021.11.20</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tableBottom">
+                    <ul class="pageNav">
+                        <li class="prev"><i><img src="/images/default/prev.svg"></i></li>
+                        <li class="on">1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                        <li class="next"><i><img src="/images/default/next.svg"></i></li>
+                    </ul>
+                    <p class="button"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>
+                </div>
+            </article>
+            <article class="map"></article>
+            <article class="searchList dimmingSet">
+                <div class="articleTitle">
+                    <dl class="title">
+                        <dt>디밍 설정</dt>
+                    </dl>
+                    <div>
+                        <ul>
+                            <li><i><img src="/images/default/return.svg"></i>기본값으로 되돌리기</li>
+                            <li><i><img src="/images/default/apply.svg"></i>적용</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="settingDimming">
+                    <ul>
+                        <li>
+                            <span>최대 밝기 도달 시간</span>
+                            <input type="text" placeholder="00">초
+                        </li>
+                        <li>
+                            <span>최대 밝기 유지 시간</span>
+                            <input type="text" placeholder="00">초
+                        </li>
+                        <li>
+                            <span>최소 밝기 도달 시간</span>
+                            <input type="text" placeholder="00">초
+                        </li>
+                    </ul>
+                    <div class="dimmingByTime">
+                        <p>시간대별 최대/최소 밝기</p>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>시간(시)</th>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td>6</td>
+                                <td>7</td>
+                                <td>8</td>
+                                <td>9</td>
+                                <td>10</td>
+                                <td>11</td>
+                                <td>12</td>
+                                <td>13</td>
+                                <td>14</td>
+                                <td>15</td>
+                                <td>16</td>
+                                <td>17</td>
+                                <td>18</td>
+                                <td>19</td>
+                                <td>20</td>
+                                <td>21</td>
+                                <td>22</td>
+                                <td>23</td>
+                                <td>24</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th>최대</th>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                                <td><input type="text" placeholder="100"></td>
+                            </tr>
+                            <tr>
+                                <th>최소</th>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                                <td><input type="text" placeholder="50"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </th:block>
+</html>
