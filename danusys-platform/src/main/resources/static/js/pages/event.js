@@ -5,7 +5,7 @@
 const event = {
     create : ($target, pEventType) => {
         const optionObj = {
-            dom: '<"tableBody"rt><"tableBottom"p>',
+            dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
             pageLength: 15,
             scrollY: "calc(100% - 45px)",
@@ -129,44 +129,44 @@ const event = {
         // comm.hideModal($('#commonCodePopup'));
         // $('#commonCodePopup').hide();
     },
-    addProc : () => {
-        // const formObj = $('#commonCodeForm').serializeJSON();
-        //
-        // comm.ajaxPost({
-        //         url : "/common/addCommonCodeProc"
-        //         , type : "PUT"
-        //         , data : formObj
-        //     },
-        //     (result) => {
-        //         comm.showAlert("등록되었습니다");
-        //         commonCode.create($('#parentCodeTable'));
-        //         commonCode.hidePopup();
-        //     });
+    addProc : ($target, pEventType) => {
+        const formObj = $target.serializeJSON();
+
+        comm.ajaxPost({
+                url : "/event"
+                , type : "PUT"
+                , data : formObj
+            },
+            (result) => {
+                comm.showAlert("등록되었습니다");
+                commonCode.create($target, pEventType);
+                commonCode.hidePopup();
+            });
     },
-    modProc : () => {
-        // const formObj = $('#commonCodeForm').serializeJSON();
-        //
-        // comm.ajaxPost({
-        //         url : "/common/modCommonCodeProc"
-        //         , type : "PATCH"
-        //         , data : formObj
-        //     },
-        //     (result) => {
-        //         comm.showAlert("수정되었습니다");
-        //         commonCode.create($('#parentCodeTable'));
-        //         commonCode.hidePopup();
-        //     });
+    modProc : ($target, pEventType) => {
+        const formObj = $target.serializeJSON();
+
+        comm.ajaxPost({
+                url : "/event"
+                , type : "PATCH"
+                , data : formObj
+            },
+            (result) => {
+                comm.showAlert("수정되었습니다");
+                commonCode.create($target, pEventType);
+                commonCode.hidePopup();
+            });
     },
-    delProc : (pSeq) => {
-        // comm.ajaxPost({
-        //         url : "/common/delCommonCodeProc"
-        //         , type : "DELETE"
-        //         , data : {commonCodeSeq : pSeq}
-        //     },
-        //     (result) => {
-        //         comm.showAlert("삭제되었습니다");
-        //         commonCode.create($('#parentCodeTable'));
-        //         commonCode.hidePopup();
-        //     });
+    delProc : ($target, pEventType, pSeq) => {
+        comm.ajaxPost({
+                url : "/event"
+                , type : "DELETE"
+                , data : {seq : pSeq}
+            },
+            (result) => {
+                comm.showAlert("삭제되었습니다");
+                commonCode.create($target, pEventType);
+                commonCode.hidePopup();
+            });
     }
 }
