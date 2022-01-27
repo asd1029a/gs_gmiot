@@ -1,8 +1,11 @@
 package com.danusys.web.drone.controller;
 
 
+import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.model.Mission;
 import com.danusys.web.drone.model.MissionDetails;
+import com.danusys.web.drone.service.DroneDetailsService;
+import com.danusys.web.drone.service.DroneLogService;
 import com.danusys.web.drone.service.MissionDetailsService;
 import com.danusys.web.drone.service.MissionService;
 import com.danusys.web.drone.utils.Substring;
@@ -44,6 +47,7 @@ public class MissionApiController {
     private final Flight flight;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final Substring substring;
+    private final DroneLogService droneLogService;
 
 
     @GetMapping("/return")
@@ -55,15 +59,15 @@ public class MissionApiController {
     @GetMapping("/takeoff")
     public void takeOffDrone(int takeOffAlt) {
 
-       flight.flightTakeoff(50);
+        flight.flightTakeoff(50);
 
     }
 
     @GetMapping("/waypoint")
-    public void wayPointDrone(int gpsX, int gpsY, int gpsZ, int speed){
-        flight.wayPoint(374435347,1268931842,100,5);
-    }
+    public void wayPointDrone(int gpsX, int gpsY, int gpsZ, int speed) {
 
+        flight.wayPoint(gpsX, gpsY, gpsZ, speed);
+    }
 
 
     @MessageMapping("/droneinfo")
@@ -83,17 +87,18 @@ public class MissionApiController {
     }
 
 
-
-
     @MessageMapping("/startmission")
     @SendTo("/topic/startmission")
     public void startMission(Mission mission) {
 
 
         Mission missionResponse = missionService.missionResponseList2(mission.getId());
+        DroneLog inputDroneLog = new DroneLog();
+        inputDroneLog.setMissionName(missionResponse.getName());
+        DroneLog droneLog = droneLogService.saveDroneLog(inputDroneLog);
         int i = 2;
         int step = 1;
-        int flag= 0;
+        int flag = 0;
         HashMap<Integer, String> missionIndex = new HashMap<>();
         HashMap<String, Integer> gpsXs = new HashMap<>();
         HashMap<String, Integer> gpsYs = new HashMap<>();
@@ -101,7 +106,7 @@ public class MissionApiController {
         HashMap<String, Integer> speeds = new HashMap<>();
         HashMap<String, String> result = new HashMap<>();
         HashMap<String, Integer> times = new HashMap<>();
-        HashMap<String,MissionItemInt> missionMap =new HashMap<>();
+        HashMap<String, MissionItemInt> missionMap = new HashMap<>();
         Iterator iterator = missionResponse.getMissonDetails().iterator();
         while (iterator.hasNext()) {
             MissionDetails missionDetails = (MissionDetails) iterator.next();
@@ -156,28 +161,12 @@ public class MissionApiController {
 
             if (missionIndex.getOrDefault(step, "finish").equals("takeoff")) {
 
-//                String missionResult = null;
-//                log.info("takeoffalt={}", takeOffAlt);
-//                do {
-//                    //missionResult = flight.takeoff(takeOffAlt);
-//                }
-//                while (missionResult.equals("onemore"));
-                missionMap=flight.missionTakeoff();
+                missionMap = flight.missionTakeoff(droneLog);
                 flag++;
 
             } else if (missionIndex.getOrDefault(step, "finish").contains("waypoint")) {
 
-//                String missionResult = null;
-//                do {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    missionResult = flight.wayPoint(x, y, z, speed);
-//                }
-//                while (missionResult.equals("onemore"));
-                log.info("x={},y={},z{}",x,y,z);
+//                log.info("x={},y={},z{}", x, y, z);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
                         .param1(0)
@@ -195,7 +184,7 @@ public class MissionApiController {
                         .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
                         .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
                         .build();
-                missionMap.put("missionItemInt"+flag,missionItemInt);
+                missionMap.put("missionItemInt" + flag, missionItemInt);
                 flag++;
 
             } else if (missionIndex.getOrDefault(step, "finish").contains("loiter")) {
@@ -206,7 +195,7 @@ public class MissionApiController {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                //    missionResult = flight.loiter(time);
+                    //    missionResult = flight.loiter(time);
                     log.info(missionResult);
                 }
                 while (missionResult.equals("onemore"));
@@ -223,10 +212,8 @@ public class MissionApiController {
                         .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
                         .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
                         .build();
-                missionMap.put("missionItemInt"+flag,missionItemInt);
+                missionMap.put("missionItemInt" + flag, missionItemInt);
                 flag++;
-
-
 
 
 //                String missionResult = null;
@@ -248,10 +235,11 @@ public class MissionApiController {
 
         }
         log.info("들어감");
-        flight.doMission(missionMap,flag);
+        flight.doMission(missionMap, flag);
 
 
     }
+
     @MessageMapping("/pause")
     @SendTo("/topic/pause")
     public void pause() {
@@ -450,16 +438,16 @@ public class MissionApiController {
 
     @GetMapping("/test")
     public void test() {
-       // flight.loiter(30);
+        // flight.loiter(30);
         //flight.camera();
-       flight.returnDrone();
+        flight.returnDrone();
     }
 
     @GetMapping("/test2")
     public void test2() {
         // flight.loiter(30);
         flight.camera();
-       // flight.returnDrone();
+        // flight.returnDrone();
     }
 
     @GetMapping("/test3")

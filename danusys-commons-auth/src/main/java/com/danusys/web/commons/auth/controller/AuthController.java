@@ -40,7 +40,6 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
     private final UserService userService;
 
     private final UserGroupService userGroupService;
@@ -111,7 +110,7 @@ public class AuthController {
         try {
 
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+                    new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword())
 
             );
 
@@ -124,13 +123,13 @@ public class AuthController {
            // httpServletRequest.getRequestDispatcher("/login/error").forward(httpServletRequest,httpServletResponse);
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserId());
         //userDetails가 잘못들어왔을대 에러페이지 관리해야됨
 
 
 
         final TokenDto jwt = jwtUtil.generateToken(userDetails);
-        userService.updateUser(user.getUsername(),jwt.getRefreshToken());
+        userService.updateUser(user.getUserId(),jwt.getRefreshToken());
 
 
 

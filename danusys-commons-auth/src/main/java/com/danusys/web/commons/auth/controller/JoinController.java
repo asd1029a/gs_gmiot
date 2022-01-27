@@ -39,7 +39,7 @@ public class JoinController {
     }
     @PostMapping("/join")
     public String join(@RequestBody User user){
-        user.setUsername(user.getUsername());
+        user.setUserId(user.getUserId());
         user.setPassword(user.getPassword());
         userRepository.save(user);
         return "hi";
