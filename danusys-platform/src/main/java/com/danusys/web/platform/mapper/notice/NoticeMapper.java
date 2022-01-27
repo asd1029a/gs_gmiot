@@ -1,4 +1,4 @@
-package com.danusys.web.platform.mapper;
+package com.danusys.web.platform.mapper.notice;
 
 import com.danusys.web.commons.util.EgovMap;
 import org.apache.ibatis.annotations.*;

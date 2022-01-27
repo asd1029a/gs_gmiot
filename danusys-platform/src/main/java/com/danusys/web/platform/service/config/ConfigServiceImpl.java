@@ -1,17 +1,17 @@
-package com.danusys.web.platform.service.common;
+package com.danusys.web.platform.service.config;
 
 import com.danusys.web.commons.util.EgovMap;
-import com.danusys.web.platform.mapper.CommonMapper;
+import com.danusys.web.platform.mapper.config.ConfigMapper;
 import com.danusys.web.platform.util.PagingUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
-public class CommonServiceImpl implements CommonService {
-    public CommonServiceImpl(CommonMapper commonMapper) {this.commonMapper = commonMapper;}
-    private final CommonMapper commonMapper;
+public class ConfigServiceImpl implements ConfigService {
+
+    public ConfigServiceImpl(ConfigMapper commonMapper) {this.commonMapper = commonMapper;}
+    private final ConfigMapper commonMapper;
 
     @Override
     public Map<String, Object> getListCode(Map<String, Object> paramMap) throws Exception {

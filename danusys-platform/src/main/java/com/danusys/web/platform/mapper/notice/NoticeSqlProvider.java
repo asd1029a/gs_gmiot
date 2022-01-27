@@ -1,7 +1,6 @@
-package com.danusys.web.platform.mapper;
+package com.danusys.web.platform.mapper.notice;
 
 import com.danusys.web.platform.util.SqlUtil;
-import com.danusys.web.platform.util.StringUtil;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;

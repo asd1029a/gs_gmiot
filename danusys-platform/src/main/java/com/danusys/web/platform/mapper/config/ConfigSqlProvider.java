@@ -1,10 +1,10 @@
-package com.danusys.web.platform.mapper;
+package com.danusys.web.platform.mapper.config;
 
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;
 
-public class CommonSqlProvider {
+public class ConfigSqlProvider {
     public String selectAllCode(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
         String start = paramMap.get("start").toString();

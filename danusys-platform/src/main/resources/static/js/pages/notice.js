@@ -24,7 +24,6 @@ const notice = {
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
-                        console.log(result);
                         $('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
@@ -147,7 +146,7 @@ const notice = {
         const formObj = $('#noticeForm').serializeJSON();
 
         $.ajax({
-            url : "/notice/del/"+pSeq
+            url : "/notice/"+pSeq
             , type: "DELETE"
             , data : formObj
         }).done((result) => {

@@ -11,7 +11,7 @@ const commonCode = {
             scrollY: "calc(100% - 45px)",
             ajax :
                 {
-                    'url' : "/common",
+                    'url' : "config/commonCode",
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
                     'data' : function ( d ) {
@@ -72,7 +72,7 @@ const commonCode = {
     },
     getList : (param, pCallback) => {
         comm.ajaxPost({
-            url : "/common"
+            url : "/config/commonCode"
             , data : {}
         }, (result) => {
             pCallback(result);
@@ -80,7 +80,7 @@ const commonCode = {
     },
     get : (pSeq, pCallback) =>{
         $.ajax({
-            url : "/common/" + pSeq
+            url : "/config/commonCode/" + pSeq
             , type : "GET"
         }).done((result) => {
             pCallback(result);

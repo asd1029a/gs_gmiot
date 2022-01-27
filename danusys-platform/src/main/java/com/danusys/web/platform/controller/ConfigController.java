@@ -1,27 +1,27 @@
 package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.util.EgovMap;
-import com.danusys.web.platform.service.common.CommonService;
+import com.danusys.web.platform.service.config.ConfigService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/common")
-public class CommonController {
-    public CommonController(CommonService commonService) { this.commonService = commonService;}
-    private final CommonService commonService;
+@RequestMapping(value = "/config")
+public class ConfigController {
+    public ConfigController(ConfigService commonService) { this.commonService = commonService;}
+    private final ConfigService commonService;
 
     /*
     * 공통코드관리: 공통코드 목록 조회
    */
-    @PostMapping
+    @PostMapping(value = "/commonCode")
     public ResponseEntity<Map<String, Object>> getListCommonCode(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(commonService.getListCode(paramMap));
     }
 
-    @GetMapping(value = "/{pSeq}")
+    @GetMapping(value = "/commonCode/{pSeq}")
     public ResponseEntity<EgovMap> getCommonCode(@PathVariable("pSeq") int seq) throws Exception {
         return ResponseEntity.ok().body(commonService.getOneCode(seq));
     }

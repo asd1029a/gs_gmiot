@@ -1,4 +1,4 @@
-package com.danusys.web.platform.mapper;
+package com.danusys.web.platform.mapper.event;
 
 import org.apache.ibatis.jdbc.SQL;
 

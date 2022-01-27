@@ -1,7 +1,7 @@
 package com.danusys.web.platform.service.notice;
 
 import com.danusys.web.commons.util.EgovMap;
-import com.danusys.web.platform.mapper.NoticeMapper;
+import com.danusys.web.platform.mapper.notice.NoticeMapper;
 import com.danusys.web.platform.model.paging.Page;
 import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.util.Paging;

@@ -3,25 +3,25 @@ package com.danusys.web.platform.util;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SqlUtil {
 
     public static Map<String, Object> getInsertValuesStr(Map<String, Object> paramMap){
-        StringBuilder keys = new StringBuilder();
-        StringBuilder values = new StringBuilder();
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        paramMap.forEach((key, value) -> {
-            if(keys.length() > 0) {
-                keys.append(",");
-                values.append(",");
-            }
-            keys.append(StringUtil.camelToSnake(key));
-            values.append("'").append(value).append("'");
-        });
-        resultMap.put("columns", keys.toString());
-        resultMap.put("values", values.toString());
-
+        resultMap.put("columns", String.join(",", paramMap.keySet()));
+        resultMap.put("values", paramMap.values().stream()
+                .map(value -> {
+                        if (value instanceof String) {
+                            return "'" + value + "'";
+                        } else if (value instanceof Integer) {
+                            return String.valueOf(value);
+                        } else {
+                            return "'" + value + "'";
+                        }
+                    })
+                .collect(Collectors.joining(",")));
         return resultMap;
     }
 
