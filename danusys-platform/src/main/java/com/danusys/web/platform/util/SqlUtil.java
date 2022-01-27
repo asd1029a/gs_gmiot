@@ -1,6 +1,7 @@
 package com.danusys.web.platform.util;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class SqlUtil {
@@ -29,7 +30,7 @@ public class SqlUtil {
 
         paramMap.entrySet()
                 .stream()
-                .filter(t -> !t.getKey().equals("noticeSeq"))
+                .filter(t -> !t.getKey().toLowerCase().equals("seq"))
                 .forEach((entry) -> {
                             if(setStr.length() > 0) {
                                 setStr.append(",");

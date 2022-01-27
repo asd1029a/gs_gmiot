@@ -27,8 +27,8 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public EgovMap getOne(int noticeSeq) throws Exception {
-        return noticeMapper.selectOne(noticeSeq);
+    public EgovMap getOne(int seq) throws Exception {
+        return noticeMapper.selectOne(seq);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public void delete(int noticeSeq) throws Exception {
+    public void delete(int seq) throws Exception {
 
     }
 

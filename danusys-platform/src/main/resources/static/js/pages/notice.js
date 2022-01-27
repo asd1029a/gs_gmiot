@@ -82,6 +82,7 @@ const notice = {
     getList : (param, pCallback) => {
         $.ajax({
             url : "/notice"
+            , type : "POST"
             , data : param
         }).done((result) => {
             pCallback(result);
@@ -120,7 +121,7 @@ const notice = {
         const formObj = $('#noticeForm').serializeJSON();
 
         $.ajax({
-            url : "/notice/add/"+pSeq
+            url : "/notice"
             , type: "PUT"
             , data : formObj
         }).done((result) => {
@@ -133,7 +134,7 @@ const notice = {
         const formObj = $('#noticeForm').serializeJSON();
 
         $.ajax({
-            url : "/notice/mod"
+            url : "/notice"
             , type: "PATCH"
             , data : formObj
         }).done((result) => {

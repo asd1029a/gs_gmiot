@@ -16,7 +16,7 @@ public interface NoticeMapper {
     List<EgovMap> selectList(Map<String, Object> param);
 
     @SelectProvider(type=NoticeSqlProvider.class, method="selectOne")
-    EgovMap selectOne(@Param("noticeSeq") int noticeSeq);
+    EgovMap selectOne(int seq);
 
     @InsertProvider(type=NoticeSqlProvider.class, method="insert")
     int insert(Map<String, Object> param);

@@ -37,7 +37,7 @@ public class NoticeController {
     /**
      * 공지사항 : 공지사항 등록
      */
-    @PutMapping(value="/add")
+    @PutMapping
     public int add(@RequestBody Map<String, Object> paramMap) throws Exception {
         return noticeService.insert(paramMap);
     }
@@ -45,7 +45,7 @@ public class NoticeController {
     /**
      * 공지사항 : 공지사항 수정
      */
-    @PatchMapping(value="/mod")
+    @PatchMapping
     public int mod(@RequestBody Map<String, Object> paramMap) throws Exception {
         return noticeService.update(paramMap);
     }
@@ -53,7 +53,7 @@ public class NoticeController {
     /**
      * 공지사항 : 공지사항 삭제
      */
-    @DeleteMapping(value="/del/{noticeSeq}")
+    @DeleteMapping(value="/{noticeSeq}")
     public void del (@PathVariable("noticeSeq") int noticeSeq) throws Exception {
         noticeService.delete(noticeSeq);
     }
