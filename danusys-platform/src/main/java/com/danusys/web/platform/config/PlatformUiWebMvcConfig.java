@@ -38,8 +38,8 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
         
         // 환경설정
         registry.addViewController("/pages/config/commonCode").setViewName("view/pages/config/commonCode");
-        registry.addViewController("/pages/config/dimming").setViewName("view/pages/config/dimming");
-        registry.addViewController("/pages/config/district").setViewName("view/pages/config/district");
+        registry.addViewController("/pages/config/dimmingSet").setViewName("view/pages/config/dimmingSet");
+        registry.addViewController("/pages/config/dimmingGroup").setViewName("view/pages/config/dimmingGroup");
         registry.addViewController("/pages/config/notice").setViewName("view/pages/config/notice");
 
         registry.addViewController("/paging").setViewName("view/paging");
