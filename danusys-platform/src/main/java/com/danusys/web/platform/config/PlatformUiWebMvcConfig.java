@@ -4,6 +4,7 @@ import com.danusys.web.commons.ui.config.UiWebMvcConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 
 /**
@@ -21,8 +22,20 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
         super(applicationContext);
     }
 
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/swagger-ui/**")
+//                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/").resourceChain(false);
+//
+//
+//    }
+
     @Override
     protected void addViewControllers(ViewControllerRegistry registry) {
+        //swagger-ui
+        //swagger-ui
+        registry.addViewController("/swagger-ui/").setViewName("forward:/swagger-ui/index.html");
+
         // 홈
         registry.addViewController("/intro/intro").setViewName("view/intro/intro");
         registry.addViewController("/login/error").setViewName("view/login/loginError");
