@@ -11,7 +11,7 @@ const commonCode = {
             scrollY: "calc(100% - 45px)",
             ajax :
                 {
-                    'url' : "config/commonCode",
+                    'url' : "/config/commonCode",
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
                     'data' : function ( d ) {
