@@ -60,6 +60,7 @@ $(document).ready(() => {
     }
     // 관제
     else if(path === "/pages/mntr") {
+        mntr.init();
         mntr.eventHandler();
     }
 })

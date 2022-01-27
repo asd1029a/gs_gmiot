@@ -1,47 +1,45 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="head">
-    <head>
-        <!--<th:block th:insert="fragments/default/includes :: includes_head(~{::pagesLink})"></th:block>-->
-        <meta charset="utf-8">
-        <!--<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">SMART-CITY 통합플랫폼</title>-->
-        <title>Iot 플랫폼</title>
-        <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
-        <meta http-equiv="Cache-Control" content="no-cache" />
-        <meta http-equiv="Pragma" content="no-cache" />
-        <meta name="context-path" th:content="@{/}"/>
+    <!--<th:block th:insert="fragments/default/includes :: includes_head(~{::pagesLink})"></th:block>-->
+    <meta charset="utf-8">
+    <!--<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">SMART-CITY 통합플랫폼</title>-->
+    <title>Iot 플랫폼</title>
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="context-path" th:content="@{/}"/>
 
-        <!--js file -->
+    <!--js file -->
 
-        <!-- jquery -->
-        <script type="text/javascript" src="/webjars/jquery/3.6.0/dist/jquery.min.js" ></script>
+    <!-- jquery -->
+    <script type="text/javascript" src="/webjars/jquery/3.6.0/dist/jquery.min.js" ></script>
 
-        <!-- dayjs -->
-        <script type="text/javascript" src="/webjars/dayjs/1.10.7/dayjs.min.js" ></script>
+    <!-- dayjs -->
+    <script type="text/javascript" src="/webjars/dayjs/1.10.7/dayjs.min.js" ></script>
 
-        <!-- datatable.js-->
-        <link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css">
-        <script type="text/javascript" src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js" ></script>
-        <script type="text/javascript" src="/js/plugin/dataTable-ellipsis/dataTable-ellipsis.js" ></script>
-        <!-- datetimepicker -->
-        <link rel="stylesheet" type="text/css" href="/css/plugin/air-datepicker/datepicker.css">
-        <script type=text/javascript src="/js/plugin/air-datepicker/datepicker.js"></script>
-        <script type=text/javascript src="/js/plugin/air-datepicker/datepicker.ko.js"></script>
+    <!-- datatable.js-->
+    <link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js" ></script>
+    <script type="text/javascript" src="/js/plugin/dataTable-ellipsis/dataTable-ellipsis.js" ></script>
+    <!-- datetimepicker -->
+    <link rel="stylesheet" type="text/css" href="/css/plugin/air-datepicker/datepicker.css">
+    <script type=text/javascript src="/js/plugin/air-datepicker/datepicker.js"></script>
+    <script type=text/javascript src="/js/plugin/air-datepicker/datepicker.ko.js"></script>
 
-        <!-- sweetAlert2-->
-        <link rel="stylesheet" type="text/css" href="/webjars/sweetalert2/11.1.2/dist/sweetalert2.min.css">
-        <script type=text/javascript src="/webjars/sweetalert2/11.1.2/dist/sweetalert2.min.js"></script>
+    <!-- sweetAlert2-->
+    <link rel="stylesheet" type="text/css" href="/webjars/sweetalert2/11.1.2/dist/sweetalert2.min.css">
+    <script type=text/javascript src="/webjars/sweetalert2/11.1.2/dist/sweetalert2.min.js"></script>
 
-        <!-- default css files -->
-        <link rel="stylesheet" type="text/css" href="/css/layout.css">
+    <!-- default css files -->
+    <link rel="stylesheet" type="text/css" href="/css/reset.css">
 
-        <!-- common js-->
-        <script type="text/javascript" src="/js/common/common.js" ></script>
-        <script type="text/javascript" src="/js/common/pageInit.js" ></script>
+    <!-- common js-->
+    <script type="text/javascript" src="/js/common/common.js" ></script>
+    <script type="text/javascript" src="/js/common/pageInit.js" ></script>
 
-        <!-- pages js-->
-        <script type="text/javascript" src="/js/pages/notice.js"></script>
-        <script type="text/javascript" src="/js/pages/commonCode.js"></script>
-        <script type="text/javascript" src="/js/pages/event.js"></script>
-    </head>
+    <!-- pages js-->
+    <script type="text/javascript" src="/js/pages/notice.js"></script>
+    <script type="text/javascript" src="/js/pages/commonCode.js"></script>
+    <script type="text/javascript" src="/js/pages/event.js"></script>
 </th:block>
 </html>

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<th:block th:insert="/fragments/default/head" />
-
+<head>
+    <th:block th:insert="/fragments/default/head" />
+    <link rel="stylesheet" type="text/css" href="/css/board.css">
+</head>
 <body>
 <div class="wrap">
     <th:block th:replace="fragments/default/header :: headerFragment" />
