@@ -38,9 +38,9 @@ $(document).ready(() => {
     /* 페이지별 공통 기능 */
     // 조회/관리
     if(path === "/pages/inqry/event1") {
-
+        event.create($('#cityEventTable'),"city");
     } else if(path === "/pages/inqry/event2") {
-
+        event.create($('#troubleEventTable'),"trouble");
     } else if(path === "/pages/inqry/station") {
 
     } else if(path === "/pages/inqry/facilities") {
