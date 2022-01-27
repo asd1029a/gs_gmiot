@@ -85,6 +85,11 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
 //        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 //        registry.addResourceHandler("/vendor/**").addResourceLocations("classpath:/static/vendor/");
 //        registry.addResourceHandler("/media/**").addResourceLocations("classpath:/static/media/");
+
+        registry.addResourceHandler("/swagger-ui/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
+
+
         registry.addResourceHandler("/resources/**", "/**").addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/")
                 .resourceChain(false);

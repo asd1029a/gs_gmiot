@@ -26,12 +26,15 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
 //    public void addResourceHandlers(ResourceHandlerRegistry registry) {
 //        registry.addResourceHandler("/swagger-ui/**")
 //                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/").resourceChain(false);
+//
+//
 //    }
 
     @Override
     protected void addViewControllers(ViewControllerRegistry registry) {
-//        //swagger-ui
-//        registry.addViewController("/swagger-ui/").setViewName("forward:/swagger-ui/index.html");
+        //swagger-ui
+        //swagger-ui
+        registry.addViewController("/swagger-ui/").setViewName("forward:/swagger-ui/index.html");
 
         // 홈
         registry.addViewController("/intro/intro").setViewName("view/intro/intro");
