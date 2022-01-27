@@ -47,7 +47,7 @@ $(document).ready(() => {
 
     }
     // 환경설정
-    else if(path === "/pages/config/district") {
+    else if(path === "/pages/config/dimmingGroup") {
 
     } else if(path === "/pages/config/userAccount") {
 
