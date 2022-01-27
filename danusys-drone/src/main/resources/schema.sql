@@ -104,3 +104,38 @@ create table mission_details
     insert_user_seq integer,
     update_user_seq integer
 );
+
+--드론 로그 && 드론 디테일 로그
+
+CREATE TABLE DRONE_LOG (
+                           id	bigint	NOT NULL,
+                           drone_id	bigint,
+                           drone_device_name varchar,
+                           mission_name varchar
+
+);
+
+ALTER TABLE DRONE_LOG ADD CONSTRAINT PK_DRONE_LOG PRIMARY KEY (
+                                                               id
+    );
+
+
+
+CREATE TABLE DRONE_LOG_DETAILS (
+                                   id	bigint	NOT NULL,
+                                   drone_log_id	bigint	NOT NULL,
+                                   fromTarget	varchar	NULL,
+                                   toTarget	varchar	NULL,
+                                   type	varchar	NULL,
+                                   param1	varchar	NULL,
+                                   param2	varchar	NULL,
+                                   param3	varchar	NULL,
+                                   param4	varchar	NULL,
+                                   param5	varchar	NULL,
+                                   param6	varchar	NULL,
+                                   param7 varchar NULL
+);
+
+ALTER TABLE DRONE_LOG_DETAILS ADD CONSTRAINT PK_DRONE_LOG_DETAILS PRIMARY KEY (
+                                                                               id
+    );

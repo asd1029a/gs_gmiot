@@ -4,9 +4,6 @@
 
 const commonCode = {
     create : ($target, pParentCode) => {
-        //const $target = $('#parentCodeTable');
-       // const $target = $('#'+pTarget);
-
         const optionObj = {
             dom: '<"tableBody"rt><"tableBottom"p>',
             destroy: true,
@@ -25,7 +22,9 @@ const commonCode = {
                     },
                     'dataSrc' : function (result) {
                         console.log(result);
-                        $('.title dd .count').text(result.recordsTotal);
+                        pParentCode === 0 ? $target.parents().find('.title dd .count').first().text(result.recordsTotal)
+                            : $target.parents().find('.title dd .count').last().text(result.recordsTotal)
+                        //$('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
                 },
@@ -81,7 +80,7 @@ const commonCode = {
     },
     get : (pSeq, pCallback) =>{
         $.ajax({
-            url : "/common" + pSeq
+            url : "/common/" + pSeq
             , type : "GET"
         }).done((result) => {
             pCallback(result);

@@ -54,9 +54,6 @@ public class MissionCurdController {
     }
 
 
-
-
-
     @GetMapping("/missiondetails/{name}")
     public ResponseEntity<?> findMissionDetails(@PathVariable final String name) {
         return ResponseEntity

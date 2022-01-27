@@ -1,4 +1,5 @@
-package com.danusys.web.commons.auth.service;
+package com.danusys.web.platform.service.user;
+
 
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
@@ -10,10 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService2 {
 
     private final UserRepository userRepository;
     private final UserGroupInUserRepository userGroupInUserRepository;
@@ -34,14 +36,41 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(String userName, String refreshToken) {
-        User findUser = this.findUser(userName, "Error update user id");
-        if(findUser!=null)
-        findUser.setRefreshToken(refreshToken);
+    public User updateUser(User user) {
+        User findUser = userRepository.findById(user.getId());
+        if(findUser!=null){
+            if(user.getUserName()!=null)
+                findUser.setUserName(user.getUserName());
+            if(user.getEmail()!=null)
+                findUser.setEmail(user.getEmail());
+            if(user.getTel()!=null)
+                findUser.setTel(user.getTel());
+            if(user.getAddress()!=null)
+                findUser.setAddress(user.getAddress());
+            if(user.getStatus()!=0)
+                findUser.setStatus(user.getStatus());
+            if(user.getDetailAddress()!=null)
+                findUser.setDetailAddress(user.getDetailAddress());
+            if(user.getUpdateUserSeq()!=0){
+                findUser.setUpdateUserSeq(user.getUpdateUserSeq());
+                Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+                findUser.setUpdateDt(timestamp);
+            }
+
+
+        }
 
         //    return userRepository.save(findUser);
         return findUser;
     }
+
+//    @Transactional
+//    public User deleteUser(User user) {
+//
+//
+//
+//        }
+
 
 
 

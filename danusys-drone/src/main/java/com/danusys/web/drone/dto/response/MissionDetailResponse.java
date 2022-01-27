@@ -15,7 +15,7 @@ public class MissionDetailResponse {
     private float mapZ;
     private float speed;
     private float time;
-
+    private float yaw;
     public MissionDetailResponse(MissionDetails missonDetails){
         this.id = missonDetails.getId();
         this.name= missonDetails.getName() ;
@@ -25,7 +25,7 @@ public class MissionDetailResponse {
         this.mapZ= missonDetails.getAlt();
         this.speed=missonDetails.getSpeed();
         this.time= missonDetails.getTime();
-
+        this.yaw=missonDetails.getYaw();
 
     }
 }
