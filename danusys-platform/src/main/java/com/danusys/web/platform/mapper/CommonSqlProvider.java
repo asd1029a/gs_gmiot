@@ -5,7 +5,7 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.Map;
 
 public class CommonSqlProvider {
-    public String selectCodeList(Map<String, Object> paramMap) {
+    public String selectAllCode(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
         String start = paramMap.get("start").toString();
         String length = paramMap.get("length").toString();
@@ -23,12 +23,12 @@ public class CommonSqlProvider {
         return sql.toString();
     }
 
-    public String selectCodeOne(int codeSeq) {
+    public String selectOneCode(int seq) {
         SQL sql = new SQL() {{
 
             SELECT("*");
             FROM("t_common_code");
-            WHERE("code_seq =" + codeSeq);
+            WHERE("code_seq =" + seq);
         }};
         return sql.toString();
     }

@@ -6,6 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface CommonService {
-    public Map<String, Object> selectCodeList(Map<String, Object> paramMap) throws Exception;
-    public EgovMap getCodeOne(int codeSeq) throws Exception;
+    public Map<String, Object> getListCode(Map<String, Object> paramMap) throws Exception;
+    public EgovMap getOneCode(int seq) throws Exception;
 }

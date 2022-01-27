@@ -5,8 +5,6 @@ import com.danusys.web.platform.service.common.CommonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
@@ -20,11 +18,11 @@ public class CommonController {
    */
     @PostMapping
     public ResponseEntity<Map<String, Object>> getListCommonCode(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(commonService.selectCodeList(paramMap));
+        return ResponseEntity.ok().body(commonService.getListCode(paramMap));
     }
 
-    @GetMapping(value = "/{codeSeq}")
-    public ResponseEntity<EgovMap> getCommonCode(@PathVariable("codeSeq") int codeSeq) throws Exception {
-        return ResponseEntity.ok().body(commonService.getCodeOne(codeSeq));
+    @GetMapping(value = "/{pSeq}")
+    public ResponseEntity<EgovMap> getCommonCode(@PathVariable("pSeq") int seq) throws Exception {
+        return ResponseEntity.ok().body(commonService.getOneCode(seq));
     }
 }

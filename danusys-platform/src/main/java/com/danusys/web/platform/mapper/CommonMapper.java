@@ -11,9 +11,9 @@ import java.util.Map;
 
 @Mapper
 public interface CommonMapper {
-    @SelectProvider(type=CommonSqlProvider.class, method = "selectCodeList")
-    List<EgovMap> selectCodeAll(Map<String, Object> paramMap);
+    @SelectProvider(type=CommonSqlProvider.class, method = "selectAllCode")
+    List<EgovMap> selectAllCode(Map<String, Object> paramMap);
 
-    @SelectProvider(type=CommonSqlProvider.class, method = "selectCodeOne")
-    EgovMap selectCodeOne(@Param("codeSeq") int codeSeq);
+    @SelectProvider(type=CommonSqlProvider.class, method = "selectOneCode")
+    EgovMap selectOneCode(int seq);
 }

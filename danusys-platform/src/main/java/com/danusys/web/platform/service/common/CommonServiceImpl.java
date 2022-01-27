@@ -14,12 +14,12 @@ public class CommonServiceImpl implements CommonService {
     private final CommonMapper commonMapper;
 
     @Override
-    public Map<String, Object> selectCodeList(Map<String, Object> paramMap) throws Exception {
-        System.out.println(commonMapper.selectCodeAll(paramMap));
-        return PagingUtil.createPagingMap(paramMap, commonMapper.selectCodeAll(paramMap));
+    public Map<String, Object> getListCode(Map<String, Object> paramMap) throws Exception {
+        System.out.println(commonMapper.selectAllCode(paramMap));
+        return PagingUtil.createPagingMap(paramMap, commonMapper.selectAllCode(paramMap));
     }
 
-    public EgovMap getCodeOne(int codeSeq) throws Exception {
-        return commonMapper.selectCodeOne(codeSeq);
+    public EgovMap getOneCode(int seq) throws Exception {
+        return commonMapper.selectOneCode(seq);
     }
 }
