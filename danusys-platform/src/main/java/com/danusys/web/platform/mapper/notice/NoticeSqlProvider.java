@@ -6,7 +6,7 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.Map;
 
 public class NoticeSqlProvider {
-    public String selectList(Map<String, Object> paramMap) {
+    public String selectListQry(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
         String start = paramMap.get("start").toString();
         String length = paramMap.get("length").toString();
@@ -26,7 +26,7 @@ public class NoticeSqlProvider {
         return sql.toString();
     }
 
-    public String selectOne(int noticeSeq) {
+    public String selectOneQry(int noticeSeq) {
         SQL sql = new SQL() {{
 
             SELECT("*");
@@ -36,7 +36,7 @@ public class NoticeSqlProvider {
         return sql.toString();
     }
 
-    public String insert(Map<String, Object> paramMap) {
+    public String insertQry(Map<String, Object> paramMap) {
         Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
 
         SQL sql = new SQL() {{
@@ -46,7 +46,7 @@ public class NoticeSqlProvider {
         return sql.toString();
     }
 
-    public String update(Map<String, Object> paramMap) {
+    public String updateQry(Map<String, Object> paramMap) {
         String noticeSeq = paramMap.get("noticeSeq").toString();
 
         SQL sql = new SQL() {{
@@ -57,7 +57,7 @@ public class NoticeSqlProvider {
         return sql.toString();
     }
 
-    public String delete(int noticeSeq) {
+    public String deleteQry(int noticeSeq) {
         SQL sql = new SQL() {{
             DELETE_FROM("t_notice");
             WHERE("notice_seq =" + noticeSeq);

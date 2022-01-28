@@ -1,7 +1,8 @@
 package com.danusys.web.platform.service.notice;
 
 import com.danusys.web.commons.util.EgovMap;
-import com.danusys.web.platform.mapper.notice.NoticeMapper;
+import com.danusys.web.platform.mapper.common.CommonMapper;
+import com.danusys.web.platform.mapper.notice.NoticeSqlProvider;
 import com.danusys.web.platform.model.paging.Page;
 import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.util.Paging;
@@ -17,33 +18,36 @@ import java.util.Map;
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
-    public NoticeServiceImpl(NoticeMapper noticeMapper) {this.noticeMapper = noticeMapper;}
+    public NoticeServiceImpl(CommonMapper commonMapper) {
+        this.commonMapper = commonMapper;
+    }
 
-    private final NoticeMapper noticeMapper;
+    private final CommonMapper commonMapper;
+    private final NoticeSqlProvider nsp = new NoticeSqlProvider();
 
     @Override
     public Map<String, Object> getList(Map<String, Object> paramMap) throws Exception {
-        return PagingUtil.createPagingMap(paramMap, noticeMapper.selectList(paramMap));
+        return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(nsp.selectListQry(paramMap)));
     }
 
     @Override
     public EgovMap getOne(int seq) throws Exception {
-        return noticeMapper.selectOne(seq);
+        return commonMapper.selectOne(nsp.selectOneQry(seq));
     }
 
     @Override
     public int insert(Map<String, Object> paramMap) throws Exception {
-        return noticeMapper.insert(paramMap);
+        return commonMapper.insert(nsp.insertQry(paramMap));
     }
 
     @Override
     public int update(Map<String, Object> paramMap) throws Exception {
-        return noticeMapper.update(paramMap);
+        return commonMapper.update(nsp.updateQry(paramMap));
     }
 
     @Override
     public void delete(int seq) throws Exception {
-
+        commonMapper.delete(nsp.deleteQry(seq));
     }
 
     @Override
