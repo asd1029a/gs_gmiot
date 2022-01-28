@@ -118,7 +118,7 @@
 .search_table table thead tr{height: 40px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
 .search_table table thead tr th{vertical-align: middle; font-size: 14px; color: #797d87; font-weight: bold;}
 .search_table table tbody{}
-.search_table table tbody tr{height: 50px; border-bottom: 1px solid #292c34; box-sizing: border-box;}
+.search_table table tbody tr{height: 50px; border-bottom: 1px solid #292c34; box-sizing: border-box; background-color: #1a1b1d;}
 .search_table table tbody tr:hover{background: #23252b;}
 .search_table table tbody tr:hover td span.button{background: #434751;}
 .search_table table tbody tr td{vertical-align: middle; text-align: center; font-size: 14px; color: #dee0e4;}
