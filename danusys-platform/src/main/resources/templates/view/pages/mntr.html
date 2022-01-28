@@ -18,13 +18,13 @@
 
 <th:block layout:fragment="content">
     <!--<th:block th:insert="/view/commons/map"></th:block>-->
-    <div id="map" class="mapWrap">
-        <div class="mapButton">
-            <ul class="mapType">
-                <li>지도</li>
-                <li>스카이뷰</li>
+    <div id="map" class="map_wrap">
+        <div class="map_button">
+            <ul class="map_type">
+                <li data-value="btnImgmap" class="active">지도</li>
+                <li data-value="btnSkyview">스카이뷰</li>
             </ul>
-            <ul class="mapOptions">
+            <ul class="map_options">
                 <li data-value="roadView" title="로드뷰"><img src="/images/default/mapRoadview.svg"></li>
                 <li data-value="plus" title="확대"><img src="/images/default/mapPlus.svg"></li>
                 <li data-value="minus" title="축소"><img src="/images/default/mapMinus.svg"></li>
@@ -35,7 +35,7 @@
                 <li data-value="eraser" title="지우기"><img src="/images/default/mapEraser.svg"></li>
             </ul>
         </div>
-        <div id="mouse-position"></div>
+        <div id="mousePosition"></div>
     </div>
 </th:block>
 
