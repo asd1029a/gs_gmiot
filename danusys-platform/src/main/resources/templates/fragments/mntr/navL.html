@@ -2,21 +2,21 @@
 <th:block th:fragment="navLFragment">
 
     <!-- LNM -->
-    <section id="smartPower" class="menuFold">
+    <section id="smartPower" class="menu_fold">
         <ul class="tab">
             <li data-value="realTime" class="active"><a>실시간</a></li>
             <li data-value="station"><a>개소</a></li>
             <li data-value="history"><a>과거이력</a></li>
         </ul>
-        <p class="lnbFold"><i><img src="/images/default/foldOn.svg"></i></p>
+        <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
 
         <!-- 실시간 -->
-        <div id="realTime" class="lnbTabSection select">
-            <dl class="areaTitle">
+        <div id="realTime" class="lnb_tab_section select">
+            <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
                 <dd><span class="count">11</span></dd>
             </dl>
-            <div class="searchList">
+            <div class="search_list">
                 <dl>
                     <dt>
                         <p><span class="level lv1">위험</span>이벤트 종류</p>
@@ -71,13 +71,13 @@
                     <dd>{개소ID} {개소명}</dd>
                     <dd>{이벤트 발생 시각}<span class="state state3">이벤트종료</span></dd>
                 </dl>
-                <p class="buttonTop"><img src="/images/default/arrowNext.svg"></p>
+                <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
             </div>
-            <dl class="areaTitle">
+            <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon02.svg"></i>주의 이벤트</dt>
                 <dd><span class="count">11</span></dd>
             </dl>
-            <div class="searchList">
+            <div class="search_list">
                 <dl>
                     <dt>
                         <p><span class="level lv3">주의</span>이벤트 종류</p>
@@ -132,24 +132,24 @@
                     <dd>{개소ID} {개소명}</dd>
                     <dd>{이벤트 발생 시각}<span class="state state3">이벤트종료</span></dd>
                 </dl>
-                <p class="buttonTop"><img src="/images/default/arrowNext.svg"></p>
+                <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
             </div>
         </div>
 
 
 
         <!-- 개소 -->
-        <div id="station" class="lnbTabSection">
-            <dl class="areaTitle">
+        <div id="station" class="lnb_tab_section">
+            <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>
                 <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
             </dl>
-            <div class="searchForm">
+            <div class="search_form">
                 <dl>
                     <dt><input type="text" placeholder="Tab 1 검색"><i><img src="/images/default/search.svg"></i></dt>
-                    <dd class="detailBtn">상세<i><img src="/images/default/arrowBottom.svg"></i></dd>
+                    <dd class="detail_btn">상세<i><img src="/images/default/arrowBottom.svg"></i></dd>
                 </dl>
-                <div class="searchFold" style="display: none;">
+                <div class="search_fold" style="display: none;">
                     <dl>
                         <dt>Type 1</dt>
                         <dd>
@@ -238,7 +238,7 @@
                     </ul>
                 </div>
             </div>
-            <dl class="areaTitle">
+            <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon02.svg"></i>Tab 1 목록<span class="count">11</span></dt>
                 <dd>
                     <!--                            <i></i>초기화-->
@@ -248,7 +248,7 @@
                     </select>
                 </dd>
             </dl>
-            <div class="searchList">
+            <div class="search_list">
                 <dl>
                     <dt>
                         <p>
@@ -345,24 +345,24 @@
                     <dd>도로명 주소/지번 주소</dd>
                     <dd>행정구역</dd>
                 </dl>
-                <p class="buttonTop"><img src="/images/default/arrowNext.svg"></p>
+                <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
             </div>
         </div>
 
 
 
         <!-- 과거이력 -->
-        <div id="history" class="lnbTabSection">
-            <dl class="areaTitle">
+        <div id="history" class="lnb_tab_section">
+            <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
                 <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
             </dl>
-            <div class="searchForm">
+            <div class="search_form">
                 <dl>
                     <dt><input type="text" placeholder="이벤트 검색"><i><img src="/images/default/search.svg"></i></dt>
-                    <dd class="detailBtn">상세<i><img src="/images/default/arrowBottom.svg"></i></dd>
+                    <dd class="detail_btn">상세<i><img src="/images/default/arrowBottom.svg"></i></dd>
                 </dl>
-                <div class="searchFold" style="display: none;">
+                <div class="search_fold" style="display: none;">
                     <dl>
                         <dt>Type 1</dt>
                         <dd>
@@ -451,7 +451,7 @@
                     </ul>
                 </div>
             </div>
-            <dl class="areaTitle">
+            <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon02.svg"></i>이벤트 목록<span class="count">11</span></dt>
                 <dd>
                     <!--                            <i></i>초기화-->
@@ -461,7 +461,7 @@
                     </select>
                 </dd>
             </dl>
-            <div class="searchList">
+            <div class="search_list">
                 <dl>
                     <dt><p><span class="level lv1">위험</span>{이벤트ID} {구역명} {이벤트 종류}</p></dt>
                     <dd>{장소유형} {개소ID} {개소명}</dd>
@@ -486,7 +486,7 @@
                     <dd>{개소 주소}</dd>
                     <dd>{이벤트 발생 시각}<span class="state state1">미처리</span></dd>
                 </dl>
-                <p class="buttonTop"><img src="/images/default/arrowNext.svg"></p>
+                <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
             </div>
         </div>
 
