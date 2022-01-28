@@ -10,25 +10,26 @@
 <body>
 <table th:border="1" class="mission">
     <tr>
-        <th>name</th>
-        <td><input type="text" id="name" name="name"></td>
+        <th>mission id</th>
+        <td><input type="text" id="mission_id" name="mission_id"></td>
 
     </tr>
 
-    <button id="createMissionDetails">누르면.. 미션상세가 생겨요</button>
-    <button id="createMissionButton">누르면 미션이생겨요...</button>
-    <button id="connect">누르면 드론이 연결되요</button>
+    <button id="connect">누르면 드론이 연결되요 번호를 쓰고 누르세요</button>
     <button id="start">누르면 드론이 미션따라움직여요</button>
     <button id="log">누르면 로그가나와요</button>
+    <button id="play"> 누르면 다시 실행되요</button>
+    <button id="pause"> 누르면 일시정지되요</button>
+
 </table>
 
 </body>
 
 
 <script>
-    let i=0;
-
-    $("#createMissionDetails").on("click",function (){
+    let i = 0;
+    let mission_id=0;
+    $("#createMissionDetails").on("click", function () {
         $(".mission").append(`<tr class="MissionDetails${i}"></tr>`)
 
         $(`.MissionDetails${i}`).append(`<th>미션이름</th>`)
@@ -78,6 +79,14 @@
 
     });
 
+    $("#play").on("click",function (){
+        stompClient.send("/app/play");
+    });
+
+
+    $("#pause").on("click",function (){
+        stompClient.send("/app/pause");
+    })
     function connect() {
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
@@ -86,38 +95,58 @@
 
 
             console.log('Connected: ' + frame);
-           // droneLog();
+            // droneLog();
 
             stompClient.subscribe('/topic/startmission', function (drone) {
                 console.log(drone);
                 //let droneData = setDroneData(drone);
-               // setDroneDraw(droneData);
+                // setDroneDraw(droneData);
             });
             stompClient.subscribe('/topic/log', function (drone) {
                 console.log(drone);
                 //let droneData = setDroneData(drone);
                 // setDroneDraw(droneData);
             });
+            stompClient.subscribe('/topic/pause',function (drone){
+                console.log(drone);
+            });
+            stompClient.subscribe('/topic/play',function (drone){
+                console.log(drone);
+            })
 
 
         });
 
     }
 
-    function droneMission(id) {
-        stompClient.send("/app/startmission", {}, JSON.stringify({'id': id}));
+    function droneMission() {
+
+        mission_id = $("#mission_id").val();
+
+        if (mission_id === "") {
+            alert("미션아이디를 입력하세요");
+        } else {
+            stompClient.send("/app/startmission", {}, JSON.stringify({'id': mission_id}));
+        }
+
+
     }
 
 
-    function droneLog(){
+    function droneLog() {
         stompClient.send("/app/droneinfo");
     }
 
 
-    $( "#connect" ).click(function() { connect(); });
-    $( "#start" ).click(function() { droneMission(4); });
-    $( "#log" ).click(function() { droneLog(); });
-
+    $("#connect").click(function () {
+        connect();
+    });
+    $("#start").click(function () {
+        droneMission();
+    });
+    $("#log").click(function () {
+        droneLog();
+    });
 
 
 </script>

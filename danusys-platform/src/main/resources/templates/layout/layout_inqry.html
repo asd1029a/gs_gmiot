@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<th:block th:insert="/fragments/default/head"/>
+<head>
+    <th:block th:insert="/fragments/default/default" />
+    <link rel="stylesheet" type="text/css" href="/css/board.css">
+</head>
 
 <body>
 <div class="wrap">
@@ -8,7 +11,9 @@
 
     <div class="inquiry">
         <th:block th:replace="fragments/inqry/nav :: navFragment" />
-        <th:block layout:fragment="content" />
+        <div class="inquiry_container">
+            <th:block layout:fragment="content" />
+        </div>
     </div>
 
     <th:block th:replace="fragments/default/footer :: footerFragment" />

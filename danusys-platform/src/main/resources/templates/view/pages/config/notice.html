@@ -11,151 +11,72 @@
             <i><img src="/images/default/settingArrowNext.svg"></i>
             <span>공지사항</span>
         </h4>
-        <section class="settingContent">
-            <article class="searchForm">
+        <section class="setting_content">
+            <article class="search_form" id="searchForm">
                 <h6>공지사항 검색</h6>
                 <form>
                     <div>
-                        <dl class="dateSet">
+                        <dl class="date_set">
                             <dt>발생 기간</dt>
-                            <dd><input type="date" class="inputDate"></dd>
-                            <dd><input type="time" class="inputDate"></dd>
+                            <dd><input type="text" name="startDt" id="startDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
                             <span>부터</span>
-                            <dd><input type="date" class="inputDate"></dd>
-                            <dd><input type="time" class="inputDate"></dd>
+                            <dd><input type="text" name="endDt" id="endDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
                             <span>까지</span>
                         </dl>
-                        <dl class="searchTextSet">
-                            <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
-                            <dd class="button"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
+                        <dl class="search_text_set">
+                            <dd><input type="text" name="keyword" placeholder="검색어를 입력하세요."></dd>
+                             <dd class="button" id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
                             <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
                         </dl>
                     </div>
                 </form>
             </article>
-            <article class="searchList">
-                <div class="articleTitle">
+            <article class="search_list">
+                <div class="article_title">
                     <dl class="title">
                         <dt>공지사항 목록</dt>
-                        <dd><span class="count">123</span>건</dd>
+                        <dd><span class="count">0</span>건</dd>
                     </dl>
+                    <ul>
+                        <li><i><img src="/images/default/add.svg"></i>작성하기</li>
+                    </ul>
                 </div>
-                <div class="searchTable">
-                    <table>
+                <div class="search_table">
+                    <table id="noticeTable">
                         <thead>
                         <tr>
-                            <th>Index</th>
-                            <th>공지사항 제목</th>
+                            <th>제목</th>
+                            <th>내용</th>
                             <th>작성자</th>
                             <th>작성일시</th>
                             <th>첨부파일</th>
                             <th>상세보기</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>공지사항 제목</td>
-                            <td>김다누</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><i><img src="/images/default/clipboard.svg"></i></td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        </tbody>
+<!--                        <tbody>-->
+<!--                        <tr>-->
+<!--                            <td>1</td>-->
+<!--                            <td>공지사항 제목</td>-->
+<!--                            <td>김다누</td>-->
+<!--                            <td>2021.11.25 15:49</td>-->
+<!--                            <td><i><img src="/images/default/clipboard.svg"></i></td>-->
+<!--                            <td><span class="button">상세보기</span></td>-->
+<!--                        </tr>-->
+<!--                        </tbody>-->
                     </table>
                 </div>
-                <div class="tableBottom">
+                <!--<div class="tableBottom">
                     <ul class="pageNav">
-                        <li class="prev"><i><img src="/images/default/prev.svg"></i></li>
+                        <li class="prev"><i><img src="/images/default/first.svg"></i></li>
                         <li class="on">1</li>
                         <li>2</li>
                         <li>3</li>
                         <li>4</li>
                         <li>5</li>
-                        <li class="next"><i><img src="/images/default/next.svg"></i></li>
+                        <li class="next"><i><img src="/images/default/last.svg"></i></li>
                     </ul>
                     <p class="button"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>
-                </div>
+                </div>-->
             </article>
         </section>
     </th:block>

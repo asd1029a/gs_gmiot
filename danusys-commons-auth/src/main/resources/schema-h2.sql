@@ -36,3 +36,57 @@ create table refresh_token_test(
 );
 alter table user2
        add constraint UK_user_user_name unique (user_name);
+
+
+CREATE TABLE admin_test2 (
+                             USER_SEQ	integer	NOT NULL,
+                             USER_ID	varchar	NULL,
+                             PASSWORD	varchar	NULL,
+                             USER_NAME	varchar	NULL,
+                             EMAIL	varchar	NULL,
+                             TEL	varchar	NULL,
+                             ADDRESS	varchar	NULL,
+                             DETAIL_ADDRESS	varchar	NULL,
+                             LAST_LOGIN_DT	date	NULL,
+                             INSERT_USER_SEQ	integer	NULL,
+                             UPDATE_USER_SEQ	integer	NULL,
+                             INSERT_DT	date	NULL,
+                             UPDATE_DT	date	NULL
+);
+
+CREATE TABLE user_group_in_user (
+                                    USER_GROUP_SEQ	integer	NOT NULL,
+                                    USER_SEQ  integer	NULL,
+                                    INSERT_DT	date	NULL,
+                                    INSERT_USER_SEQ integer
+);
+
+create table user_group (
+                            USER_GROUP_SEQ integer NOT NULL,
+                            GROUP_NAME varchar NULL,
+                            GROUP_DESC varchar NULL,
+                            INSERT_DT date NULL,
+                            INSERT_USER_SEQ integer NOT NULL,
+                            UPDATE_DT date NULL,
+                            UPDATE_USER_SEQ integer NOT NULL
+
+
+);
+
+create table user_group_permit (
+                                   USER_GROUP_SEQ integer NOT NULL,
+                                   PERMIT_SEQ integer NOT NULL,
+                                   INSERT_DT date NULL,
+                                   INSERT_USER_SEQ integer NOT NULL
+
+
+);
+
+create table permit(
+                       PERMIT_SEQ integer NOT NULL,
+                       PERMIT_NAME varchar NOT NULL,
+                       INSERT_DT date NULL,
+                       INSERT_USER_SEQ integer NOT NULL
+);
+
+

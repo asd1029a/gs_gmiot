@@ -91,6 +91,17 @@
             <version>3.3.11</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>datatables</artifactId>
+            <version>1.10.19</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>sweetalert2</artifactId>
+            <version>11.1.2</version>
+        </dependency>
 
         <!-- um -->
         <dependency>

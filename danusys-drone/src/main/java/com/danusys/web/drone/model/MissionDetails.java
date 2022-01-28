@@ -1,5 +1,6 @@
 package com.danusys.web.drone.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -24,19 +25,24 @@ public class MissionDetails {
 
     private int index;
     @Column(name = "gps_x")
-    private float gpsX;
+    private int gpsX;
 
     @Column(name= "gps_y")
-    private float gpsY;
+    private int gpsY;
 
 
-    private float alt;
+    private int alt;
 
-    private float speed;
+    private int speed;
 
-    private float time;
-   @ManyToOne(fetch = FetchType.EAGER)
-  // @ManyToOne
-   @JoinColumn(name="mission_id")
+    private int time;
+
+    private float yaw;
+   //@ManyToOne(fetch = FetchType.EAGER)
+   //@JoinColumn(name ="mission_id")
+    
+    @ManyToOne(fetch = FetchType.EAGER)     //마지막에수정됨
+    @JoinColumn(name ="mission_id")
+    @JsonBackReference
     private Mission mission;
 }

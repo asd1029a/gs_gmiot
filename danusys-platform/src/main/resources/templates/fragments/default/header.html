@@ -1,15 +1,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="headerFragment">
     <header>
-        <h1 class="logo"><i><img src="/images/default/headerMenu.svg"></i>Title</h1>
+        <!-- <h1 class="logo"><i><img src="/images/default/headerMenu.svg"></i>Title</h1> -->
+        <h1><img src="/images/default/logo.svg">광명 IoT 플랫폼</h1>
         <ul class="gnm">
             <li id="dashboard"><a href="/pages/dashboard">대시보드</a></li>
             <li id="mntr"><a href="/pages/mntr">관제</a></li>
             <li id="inqry"><a href="/pages/inqry/event1">조회/관리</a></li>
             <li id="stats"><a href="/pages/stats">통계</a></li>
-            <li id="config"><a href="/pages/config/district">환경설정</a></li>
+            <li id="config"><a href="/pages/config/dimmingGroup">환경설정</a></li>
         </ul>
-        <ul class="utmenu">
+        <ul class="util_menu">
             <li><i><img src="/images/default/utmenu01.svg"></i>알림</li>
             <li><i><img src="/images/default/utmenu02.svg"></i>admin 님</li>
         </ul>

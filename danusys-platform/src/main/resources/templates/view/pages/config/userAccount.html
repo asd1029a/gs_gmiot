@@ -13,15 +13,15 @@
             <i><img src="/images/default/settingArrowNext.svg"></i>
             <span>사용자 계정 관리</span>
         </h4>
-        <section class="settingContent">
-            <article class="searchForm">
+        <section class="setting_content">
+            <article class="search_form" id="searchForm">
                 <h6>사용자 계정 검색</h6>
                 <form>
                     <div>
-                        <dl class="searchTextSet">
+                        <dl class="search_text_set">
                             <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
-                        </dl>
-                        <dl class="checkboxSet">
+                        </Dl>
+                        <dl class="checkbox_set">
                             <dt>계정 상태</dt>
                             <dd>
                                 <span>
@@ -34,22 +34,25 @@
                                 </span>
                             </dd>
                         </dl>
-                        <dl class="searchTextSet">
-                            <dd class="button"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
+                        <dl class="search_text_set">
+                             <dd class="button" id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
                             <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
                         </dl>
                     </div>
                 </form>
             </article>
-            <article class="searchList">
-                <div class="articleTitle">
+            <article class="search_list">
+                <div class="article_title">
                     <dl class="title">
                         <dt>사용자 계정 목록</dt>
                         <dd><span class="count">123</span>건</dd>
                     </dl>
+                    <ul>
+                        <li><i><img src="/images/default/add.svg"></i>사용자 계정 추가</li>
+                    </ul>
                 </div>
-                <div class="searchTable">
-                    <table>
+                <div class="search_table">
+                    <table id="userAccountTable">
                         <thead>
                         <tr>
                             <th>Index</th>
@@ -75,77 +78,11 @@
                             <td><span class="status green"></span>정상</td>
                             <td><span class="button">상세보기</span></td>
                         </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>userID0001</td>
-                            <td>김다누</td>
-                            <td>관제 1팀 외 00개</td>
-                            <td>010-0000-0000</td>
-                            <td>danusys@danusys.com</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><span class="status"></span>사용 안함</td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>userID0001</td>
-                            <td>김다누</td>
-                            <td>관제 1팀 외 00개</td>
-                            <td>010-0000-0000</td>
-                            <td>danusys@danusys.com</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><span class="status"></span>사용 안함</td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>userID0001</td>
-                            <td>김다누</td>
-                            <td>관제 1팀 외 00개</td>
-                            <td>010-0000-0000</td>
-                            <td>danusys@danusys.com</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><span class="status"></span>사용 안함</td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>userID0001</td>
-                            <td>김다누</td>
-                            <td>관제 1팀 외 00개</td>
-                            <td>010-0000-0000</td>
-                            <td>danusys@danusys.com</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><span class="status green"></span>정상</td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>userID0001</td>
-                            <td>김다누</td>
-                            <td>관제 1팀 외 00개</td>
-                            <td>010-0000-0000</td>
-                            <td>danusys@danusys.com</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><span class="status green"></span>정상</td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>userID0001</td>
-                            <td>김다누</td>
-                            <td>관제 1팀 외 00개</td>
-                            <td>010-0000-0000</td>
-                            <td>danusys@danusys.com</td>
-                            <td>2021.11.25 15:49</td>
-                            <td><span class="status"></span>사용 안함</td>
-                            <td><span class="button">상세보기</span></td>
-                        </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="tableBottom">
-                    <ul class="pageNav">
+                <div class="table_bottom">
+                    <ul class="page_nav">
                         <li class="prev"><i><img src="/images/default/prev.svg"></i></li>
                         <li class="on">1</li>
                         <li>2</li>

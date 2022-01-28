@@ -2,6 +2,7 @@ package com.danusys.web.commons.api.service.executor;
 
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
+import com.danusys.web.commons.crypto.service.CryptoExecutorFactoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -31,8 +32,11 @@ public class RestApiExecutor implements ApiExecutor {
 
     private RestTemplate restTemplate;
 
-    public RestApiExecutor(RestTemplate restTemplate) {
+    private CryptoExecutorFactoryService cryptoExecutorFactoryService;
+
+    public RestApiExecutor(RestTemplate restTemplate, CryptoExecutorFactoryService cryptoExecutorFactoryService) {
         this.restTemplate = restTemplate;
+        this.cryptoExecutorFactoryService = cryptoExecutorFactoryService;
     }
 
     @Override
@@ -49,7 +53,9 @@ public class RestApiExecutor implements ApiExecutor {
 
         //TODO IN / OUT 로그 저장 ??
         //TODO REST API 인증키
-        //TODO 암호화?
+
+        // 암호화 모듈 테스트
+        apiRequestParams.stream().filter(f -> f.getCryptoKey() != null).forEach(d -> d.setValue(cryptoExecutorFactoryService.encrypt(d.getCryptoType(), d.getValue(), d.getCryptoKey())));
 
         //요청 파라미터 값 추출
         final Map<String, Object> reqMap = apiRequestParams

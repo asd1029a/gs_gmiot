@@ -25,15 +25,6 @@ public class JoinController {
 
 
 
-
-    @RequestMapping("/hitest")
-    public ModelAndView hitest(){
-        ModelAndView mav =new ModelAndView();
-        mav.setViewName("view/login/test.html");
-        mav.addObject("abc","123");
-        return mav;
-    }
-
     @RequestMapping("/tokenTest")
     public ModelAndView hitest2(){
         ModelAndView mav =new ModelAndView();
@@ -48,7 +39,7 @@ public class JoinController {
     }
     @PostMapping("/join")
     public String join(@RequestBody User user){
-        user.setUsername(user.getUsername());
+        user.setUserId(user.getUserId());
         user.setPassword(user.getPassword());
         userRepository.save(user);
         return "hi";

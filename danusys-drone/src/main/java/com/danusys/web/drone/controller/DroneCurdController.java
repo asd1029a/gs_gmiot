@@ -1,25 +1,19 @@
 package com.danusys.web.drone.controller;
 
 
-import com.danusys.web.drone.model.Mission;
-import com.danusys.web.drone.model.MissionDetails;
-import com.danusys.web.drone.service.MissionDetailsService;
-import com.danusys.web.drone.service.MissionService;
-import io.dronefleet.mavlink.MavlinkConnection;
-import io.dronefleet.mavlink.MavlinkMessage;
-import io.dronefleet.mavlink.common.CommandLong;
-import io.dronefleet.mavlink.common.MavCmd;
-import io.dronefleet.mavlink.common.MavFrame;
-import io.dronefleet.mavlink.common.MissionItem;
+import com.danusys.web.drone.model.Drone;
+import com.danusys.web.drone.model.DroneDetails;
+import com.danusys.web.drone.service.DroneDetailsService;
+import com.danusys.web.drone.service.DroneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/drone/api")
@@ -27,60 +21,63 @@ import java.security.MessageDigest;
 @RequiredArgsConstructor
 public class DroneCurdController {
 
+    private final DroneService droneService;
+    private final DroneDetailsService droneDetailsService;
 
-        private final MissionService missionService;
-        private final MissionDetailsService missionDetailsService;
+    /*
+        saveDrone
+        parameter:
+                    String droneId;
+                    String droneDeviceName;
+     */
 
+    @PostMapping("/drone")
+    public ResponseEntity<?> saveDrone(Drone drone, DroneDetails droneDetails) {
+        String returnResult = null;
+        String result1 = droneService.saveDrone(drone);
+        String result2 = droneDetailsService.saveDroneDetails(droneDetails, drone.getId());
 
-
-
-
-    @PostMapping("/missiondetails")
-    public ResponseEntity <?> saveMissionDetails(MissionDetails missionDetails,long missionId){
+        if(result1.equals("success") && result2.equals("success")){
+            returnResult="success";
+        }
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(missionDetailsService.saveMisson(missionDetails,missionId));
+                .body(returnResult);
 
     }
 
 
-
-    @PostMapping("/mission")
-    public ResponseEntity <?> saveMission(Mission mission){
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(missionService.saveMission(mission));
-
-    }
+    @PatchMapping("/drone")
+    public ResponseEntity<?> updateDrone(Drone drone) {
 
 
-
-
-
-@GetMapping("/missiondetails/{name}")
-public ResponseEntity<?> findMissionDetails(@PathVariable final String name) {
-    return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(missionDetailsService.findMissionDetails(name));
-}
-
-
-    @GetMapping("/findAllMission")
-    public ResponseEntity  findAllMission() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(missionDetailsService.findAllMisson());
+                .body(droneService.updateDrone(drone));
     }
 
-    @GetMapping("/mission/{name}")
-    public ResponseEntity<?> findMission(@PathVariable final String name){
+    @DeleteMapping("/drone")
+    public ResponseEntity<?> deleteDrone(Drone drone) {
+
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(missionService.missionResponseList(name));
+                .body(droneService.deleteDrone(drone));
     }
+    /*
+        드론 디테일 post
+
+     */
 
 
+    @GetMapping("/drone")
+    public ResponseEntity findAllDrone(Drone drone) {
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(droneService.findDrone(drone));
+    }
 
 
 }

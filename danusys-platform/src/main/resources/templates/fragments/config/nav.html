@@ -1,25 +1,25 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="navFragment">
-    <aside class="accordionMenu accordion">
+    <aside class="accordion_menu accordion">
         <ul class="accordion">
-            <li id="one" class="on">
-                <a href="#one">관제</a>
-                <ul class="sub-menu">
-                    <li><a href="/pages/config/district">구역 설정</a></li>
-                    <li><a href="/pages/config/dimming">디밍 설정</a></li>
+            <li id="one" class="multi">
+                <a href="#one">스마트 가로등</a>
+                <ul class="accordion_sub_menu">
+                    <li id="dimmingGroup"><a href="/pages/config/dimmingGroup">디밍 그룹 설정</a></li>
+                    <li id="dimmingSet"><a href="/pages/config/dimmingSet">디밍 설정</a></li>
                 </ul>
             </li>
-            <li id="two" class="">
+            <li id="two" class="multi">
                 <a href="#two">사용자</a>
-                <ul class="sub-menu">
-                    <li><a href="/pages/config/userAccount">사용자 계정 관리</a></li>
-                    <li><a href="/pages/config/userGroup">사용자 그룹 관리</a></li>
+                <ul class="accordion_sub_menu">
+                    <li id="userAccount"><a href="/pages/config/userAccount">사용자 계정 관리</a></li>
+                    <li id="userGroup"><a href="/pages/config/userGroup">사용자 그룹 관리</a></li>
                 </ul>
             </li>
-            <li id="three">
+            <li id="commonCode">
                 <a href="/pages/config/commonCode">공통 코드 관리</a>
             </li>
-            <li id="four" class="">
+            <li id="notice">
                 <a href="/pages/config/notice">공지사항</a>
             </li>
         </ul>
