@@ -202,7 +202,7 @@ header ul.utmenu li{display: flex; align-items: center; height: 100%; padding: 0
 .mapComponent article.stream .streamValues .slideBar dd .bar:hover{opacity: 1;}
 .mapComponent article.stream .streamValues .slideBar dd .bar::-webkit-slider-thumb{-webkit-appearance: none; appearance: none; width: 40px; height: 8px; border-radius: 8px; background: #3268e2; cursor: pointer;}
 .mapComponent article.stream .streamValues .slideBar dd .bar::-moz-range-thumb{width: 25px; height: 25px; background: #04aa6d; cursor: pointer;}
-.mapComponentMission{position: absolute; right: 1px; bottom: 255px;display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; grid-gap: 10px;}
+.mapComponentMission{position: absolute; right: 1px; top: -50em;display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; grid-gap: 10px;}
 .mapComponentMission .missionRoute{ overflow: hidden; width: 400px; height: 632px; max-height: 632px; border-radius: 4px;}
 
 .missionRoute .title{display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0px 14px; font-size: 16px; box-sizing: border-box; border-bottom: 2px solid #292c34; background: #1a1b1d;}
@@ -266,3 +266,11 @@ header ul.utmenu li{display: flex; align-items: center; height: 100%; padding: 0
 
 
 
+.disabled {
+    pointer-events:none;
+    opacity:0.6;
+}
+
+.active {
+    background: darkred !important;
+}
