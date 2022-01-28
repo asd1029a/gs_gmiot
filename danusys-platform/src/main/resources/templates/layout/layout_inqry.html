@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <th:block th:insert="/fragments/default/head" />
+    <th:block th:insert="/fragments/default/default" />
     <link rel="stylesheet" type="text/css" href="/css/board.css">
 </head>
 
@@ -11,7 +11,7 @@
 
     <div class="inquiry">
         <th:block th:replace="fragments/inqry/nav :: navFragment" />
-        <div class="inquiryContainer">
+        <div class="inquiry_container">
             <th:block layout:fragment="content" />
         </div>
     </div>
