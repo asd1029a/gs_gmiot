@@ -4,42 +4,45 @@
 
 const mntr = {
     init : () => {
-        //mapManager.map.updateSize();
+        //지도 생성
         let map = new mapCreater('map',0);
-        map.createMousePosition('mouse-position');
+        map.createMousePosition('mousePosition');
         map.scaleLine();
         window.map = map;
-
-        let lc = new layerControl('map', 'title');
-        window.lc = lc;
-
+        //레이어 도구
+        let lyControl = new layerControl('map', 'title');
+        window.lc = lyControl;
+        //측정 도구
         let measure = new measureTool('map');
         window.measure = measure;
-        //msT.initDraw('Line');
 
     },
     eventHandler : () => {
         //LNM FOLD
-        $('.mntrContainer .lnbFold').on("click", function(e){
-            $('.mntrContainer .menuFold').hide();
+        $('.mntr_container .lnb_fold').on("click", function(e){
+            $('.mntr_container .menu_fold').hide();
             window.map.updateSize();
         });
         //LNM SWITCH
-        $('.mntrContainer .lnb ul li').on("click", function(e){
+        $('.mntr_container .lnb ul li').on("click", function(e){
             const theme = $(e.currentTarget).attr('data-value');
-            $('.mntrContainer .menuFold').hide();
-            $('.mntrContainer .menuFold#'+theme).show();
+            $('.mntr_container .menu_fold').hide();
+            $('.mntr_container .menu_fold#'+theme).show();
             window.map.updateSize();
         });
         //LNM TAB SWITCH
-        $('.mntrContainer .menuFold .tab li').on("click", function(e){
+        $('.mntr_container .menu_fold .tab li').on("click", function(e){
             const tab = $(e.currentTarget).attr('data-value');
-            $('.menuFold .lnbTabSection').hide();
+            $('.menu_fold .lnb_tab_section').hide();
             $('div#'+tab).show();
+            //ACTIVE STYLE
+            $(e.currentTarget).parent().children("li").removeClass("active");
+            $(e.currentTarget).addClass("active");
+
         });
         //LNM TAB SEARCH DETAIL
-        $('.detailBtn').on("click", function(e){
-            const form = $(e.currentTarget).parents('.lnbTabSection').find('.searchFold');
+        $('.detail_btn').on("click", function(e){
+            const form = $(e.currentTarget).parents('.lnb_tab_section').find('.search_fold');
             if(form.is(':visible')) {
                 form.hide();
             } else {
@@ -47,12 +50,12 @@ const mntr = {
             }
         });
         //RNM CLOSER
-        $('.rnmCloser').on("click", function(e){
-            $('.areaInfo').hide();
+        $('.rnm_closer').on("click", function(e){
+            $('.area_info').hide();
             window.map.updateSize();
         });
         //MAP TOOL
-        $('.mapOptions li').on("click", function(e){
+        $('.map_options li').on("click", function(e){
             const type = $(e.currentTarget).attr('data-value');
             switch(type) {
                 case "plus" : window.map.zoomInOut('plus'); break;
@@ -65,10 +68,14 @@ const mntr = {
                 default:
             }
         });
-        //TOOL TIP
-        //console.log("aaaaaaa");
-        //$('.mapOptions li').tooltip();
-
+        //MAP BASE SWITCH
+        $('.map_type li').on("click", function(e){
+            const type = $(e.currentTarget).attr('data-value');
+            window.map.switchTileMap(type);
+            //ACTIVE STYLE
+            $(e.currentTarget).parent().children("li").removeClass("active");
+            $(e.currentTarget).addClass("active");
+        });
 
     }
 

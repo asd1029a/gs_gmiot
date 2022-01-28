@@ -2,7 +2,7 @@
 /**
 * 맵관련 기본 css
 */
-#mouse-position{
+#mousePosition{
     display: block;
     position: absolute;
     bottom: 32px;
