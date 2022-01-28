@@ -15,7 +15,7 @@ $(document).ready(() => {
         $(e.currentTarget).addClass("on");
     });
 
-    $(".sub-menu > li").map((i, el) => {
+    $(".accordion_sub_menu > li").map((i, el) => {
         if(path.indexOf(el.id) > -1) $(el).addClass("on");
     });
 

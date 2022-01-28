@@ -10,12 +10,12 @@
             <i><img src="/images/default/settingArrowNext.svg"></i>
             <span>공통 코드 관리</span>
         </h4>
-        <section class="settingContent">
-            <article class="search-form" id="searchForm">
+        <section class="setting_content">
+            <article class="search_form" id="searchForm">
                 <h6>공통 코드 검색</h6>
                 <form>
                     <div>
-                        <dl class="searchTextSet">
+                        <dl class="search_text_set">
                             <dd><input type="text" name="keyword" placeholder="검색어를 입력하세요."></dd>
                             <dd class="button" id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
                             <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
@@ -23,37 +23,99 @@
                     </div>
                 </form>
             </article>
-            <div class="commonCodeCont">
-                <article class="searchList">
-                    <div class="articleTitle">
+            <section class="section_common_code">
+                <article class="search_list">
+                    <div class="article_title">
                         <dl class="title">
                             <dt>그룹 코드 목록</dt>
-                            <dd><span class="count">0</span>건</dd>
+                            <dd><span class="count">123</span>건</dd>
                         </dl>
+                        <ul>
+                            <li><i><img src="/images/default/add.svg"></i>코드 추가</li>
+                        </ul>
                     </div>
-                    <div class="searchTable">
-                        <table id="parentCodeTable">
+                    <div class="search_table">
+                        <table>
                             <thead>
                             <tr>
-                                <th>그룹 번호</th>
-                                <th>그룹 명</th>
+                                <th>Index</th>
                                 <th>그룹 코드</th>
-                                <th>입력일</th>
+                                <th>그룹 코드 이름</th>
+                                <th>사용 여부</th>
                                 <th>상세보기</th>
                             </tr>
                             </thead>
+                            <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>FCLT_E_PURPOSE</td>
+                                <td>시설물</td>
+                                <td><span class="status green"></span>사용</td>
+                                <td><span class="button">상세보기</span></td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>FCLT_E_PURPOSE</td>
+                                <td>시설물</td>
+                                <td><span class="status"></span>사용 안함</td>
+                                <td><span class="button">상세보기</span></td>
+                            </tr>
+                            </tbody>
                         </table>
                     </div>
                 </article>
-                <article class="searchList">
-                    <div class="articleTitle">
+                <article class="search_list">
+                    <div class="article_title">
                         <dl class="title">
-                            <dt>{선택한 그룹 코드 이름}에 속한 세부 코드 목록</dt>
-                            <dd><span class="count">0</span>건</dd>
+                            <dt>상세 코드 목록</dt>
+                            <dd><span class="count">123</span>건</dd>
                         </dl>
+                        <ul>
+                            <li><i><img src="/images/default/add.svg"></i>코드 추가</li>
+                        </ul>
                     </div>
-                    <div class="searchTable">
-                        <table id="childCodeTable">
+                    <div class="search_table">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>상세 코드</th>
+                                <th>상세 코드 이름</th>
+                                <th>사용 여부</th>
+                                <th>상세보기</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>AED</td>
+                                <td>심장제세동기</td>
+                                <td><span class="status"></span>사용 안함</td>
+                                <td><span class="button">상세보기</span></td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>AED</td>
+                                <td>심장제세동기</td>
+                                <td><span class="status green"></span>사용</td>
+                                <td><span class="button">상세보기</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="search_list">
+                    <div class="article_title">
+                        <dl class="title">
+                            <dt>세부 코드 목록</dt>
+                            <dd><span class="count">123</span>건</dd>
+                        </dl>
+                        <ul>
+                            <li><i><img src="/images/default/add.svg"></i>코드 추가</li>
+                        </ul>
+                    </div>
+                    <div class="search_table">
+                        <table>
                             <thead>
                             <tr>
                                 <th>Index</th>
@@ -63,10 +125,26 @@
                                 <th>상세보기</th>
                             </tr>
                             </thead>
+                            <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>세부 코드</td>
+                                <td>세부 코드 이름</td>
+                                <td><span class="status"></span>사용 안함</td>
+                                <td><span class="button">상세보기</span></td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>세부 코드</td>
+                                <td>세부 코드 이름</td>
+                                <td><span class="status green"></span>사용</td>
+                                <td><span class="button">상세보기</span></td>
+                            </tr>
+                            </tbody>
                         </table>
                     </div>
                 </article>
-            </div>
+            </section>
         </section>
     </th:block>
 </html>

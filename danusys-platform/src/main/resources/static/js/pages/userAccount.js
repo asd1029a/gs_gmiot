@@ -7,7 +7,7 @@ const userAccount = {
         const $target = $('#userAccountTable');
 
         const optionObj = {
-            dom: '<"tableBody"rt><"tableBottom"p>',
+            dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
             pageLength: 15,
             scrollY: "calc(100% - 45px)",
