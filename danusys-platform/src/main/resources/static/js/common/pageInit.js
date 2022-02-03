@@ -20,7 +20,10 @@ $(document).ready(() => {
     });
 
     /* 다중 셀렉트 박스 */
-    comm.customListSelectBox('.dropdown_checkbox');
+    $.each($(".dropdown_checkbox"), (idx, item) => {
+        comm.createMultiSelectBox(item)
+    });
+
 
     /* 검색조건 초기화 버튼 */
     $("#resetFormBtn").on("click", (e) => {
