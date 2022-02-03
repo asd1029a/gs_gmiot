@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Column;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Optional;
 
@@ -45,10 +46,10 @@ public class UserGroupInUserService {
         userGroupInUser.setUser(user);
 
 
-        Date date =new Date();
+        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
 
         if(userGroupInUser.getInsertUserSeq()!=0)
-            userGroupInUser.setInsertDt(date);
+            userGroupInUser.setInsertDt(timestamp);
 
         return userGroupInUserRepository.save(userGroupInUser);
 

@@ -107,6 +107,7 @@ public class MissionApiController {
         HashMap<String, String> result = new HashMap<>();
         HashMap<String, Integer> times = new HashMap<>();
         HashMap<String, MissionItemInt> missionMap = new HashMap<>();
+        HashMap<String, Integer> radiusMap =new HashMap<>();
         Iterator iterator = missionResponse.getMissonDetails().iterator();
         while (iterator.hasNext()) {
             MissionDetails missionDetails = (MissionDetails) iterator.next();
@@ -126,7 +127,10 @@ public class MissionApiController {
             } else if (missionDetails.getName().equals("loiter")) {
                 missionIndex.put(missionDetails.getIndex(), "loiter" + missionDetails.getIndex());
                 times.put("loiter" + missionDetails.getIndex(), missionDetails.getTime());
-
+                gpsXs.put("loiter" + missionDetails.getIndex(), missionDetails.getGpsX());
+                gpsYs.put("loiter" + missionDetails.getIndex(), missionDetails.getGpsY());
+                gpsZs.put("loiter" + missionDetails.getIndex(), missionDetails.getAlt());
+                radiusMap.put("loiter" + missionDetails.getIndex(), missionDetails.getRadius());
             } else if (missionDetails.getName().equals("return")) {
 
                 missionIndex.put(missionDetails.getIndex(), "return");
@@ -150,7 +154,7 @@ public class MissionApiController {
             int z = 0;
             int time = 0;
             int speed = 0;
-
+            int radius=0;
             log.info("step={}", step);
 
             x = gpsXs.getOrDefault(missionIndex.get(step), 0);
@@ -172,7 +176,7 @@ public class MissionApiController {
                         .param1(0)
                         .param2(0)
                         .param3(0)
-                        .param4(0)
+                        .param4(0)      //yaw
                         .x(x)
                         .y(y)
                         .z(z)
@@ -188,17 +192,22 @@ public class MissionApiController {
                 flag++;
 
             } else if (missionIndex.getOrDefault(step, "finish").contains("loiter")) {
-                String missionResult = null;
-                do {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    //    missionResult = flight.loiter(time);
-                    log.info(missionResult);
-                }
-                while (missionResult.equals("onemore"));
+                MissionItemInt missionItemInt = new MissionItemInt.Builder()
+                        .command(MavCmd.MAV_CMD_NAV_LOITER_TIME)
+                        .param1(10)
+                        .param2(1)
+                        .param3(50)
+                        .param4(1)
+                        .seq(flag)
+                        .targetComponent(0)
+                        .targetSystem(0)
+                        .current(0)
+                        .autocontinue(1)
+                        .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
+                        .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
+                        .build();
+                missionMap.put("missionItemInt" + flag, missionItemInt);
+                flag++;
 
             } else if (missionIndex.getOrDefault(step, "finish").contains("return")) {
 

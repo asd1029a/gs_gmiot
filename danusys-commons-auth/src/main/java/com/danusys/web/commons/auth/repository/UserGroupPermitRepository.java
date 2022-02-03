@@ -8,4 +8,5 @@ public interface UserGroupPermitRepository extends JpaRepository<UserGroupPermit
 
     UserGroupPermit findById(int id);
 
+
 }

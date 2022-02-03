@@ -40,7 +40,9 @@ public class MissionDetails {
     private float yaw;
    //@ManyToOne(fetch = FetchType.EAGER)
    //@JoinColumn(name ="mission_id")
-    
+
+    private int radius;
+
     @ManyToOne(fetch = FetchType.EAGER)     //마지막에수정됨
     @JoinColumn(name ="mission_id")
     @JsonBackReference

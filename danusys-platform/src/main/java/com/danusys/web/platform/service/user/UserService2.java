@@ -2,6 +2,7 @@ package com.danusys.web.platform.service.user;
 
 
 import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 
@@ -21,15 +22,22 @@ public class UserService2 {
     private final UserGroupInUserRepository userGroupInUserRepository;
 
 
-
     public User findUser(String userName, String errorMessage) {
 
-        return userRepository.findByUserId(userName);
+        return userRepository.findByUsername(userName);
 
     }
 
     public User findUser(String userName) {
-        User user=userRepository.findByUserId(userName);
+        User user = userRepository.findByUsername(userName);
+        //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
+        return user;
+
+    }
+
+
+    public User findUser(int userSeq) {
+        User user = userRepository.findById(userSeq);
         //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
         return user;
 
@@ -38,22 +46,22 @@ public class UserService2 {
     @Transactional
     public User updateUser(User user) {
         User findUser = userRepository.findById(user.getId());
-        if(findUser!=null){
-            if(user.getUserName()!=null)
-                findUser.setUserName(user.getUserName());
-            if(user.getEmail()!=null)
+        if (findUser != null) {
+         //   if (user.getUserName() != null)
+            //    findUser.setUserName(user.getUserName());
+            if (user.getEmail() != null)
                 findUser.setEmail(user.getEmail());
-            if(user.getTel()!=null)
+            if (user.getTel() != null)
                 findUser.setTel(user.getTel());
-            if(user.getAddress()!=null)
+            if (user.getAddress() != null)
                 findUser.setAddress(user.getAddress());
-            if(user.getStatus()!=0)
+            if (user.getStatus() != 0)
                 findUser.setStatus(user.getStatus());
-            if(user.getDetailAddress()!=null)
+            if (user.getDetailAddress() != null)
                 findUser.setDetailAddress(user.getDetailAddress());
-            if(user.getUpdateUserSeq()!=0){
+            if (user.getUpdateUserSeq() != 0) {
                 findUser.setUpdateUserSeq(user.getUpdateUserSeq());
-                Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                 findUser.setUpdateDt(timestamp);
             }
 
@@ -64,15 +72,13 @@ public class UserService2 {
         return findUser;
     }
 
-//    @Transactional
-//    public User deleteUser(User user) {
-//
-//
-//
-//        }
+    @Transactional
+    public void deleteUser(User user) {
+
+        userRepository.deleteById(user.getId());
 
 
-
+    }
 
 
     @Transactional
@@ -80,7 +86,7 @@ public class UserService2 {
         SHA256 sha256 = new SHA256();
         try {
             String cryptoPassword = sha256.encrypt(user.getPassword());
-            user.setPassword("{SHA-256}" +cryptoPassword);
+            user.setPassword("{SHA-256}" + cryptoPassword);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

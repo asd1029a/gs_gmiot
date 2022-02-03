@@ -1,6 +1,7 @@
 package com.danusys.web.commons.auth.service;
 
 import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 
@@ -22,12 +23,12 @@ public class UserService {
 
     public User findUser(String userName, String errorMessage) {
 
-        return userRepository.findByUserId(userName);
+        return userRepository.findByUsername(userName);
 
     }
 
     public User findUser(String userName) {
-        User user=userRepository.findByUserId(userName);
+        User user=userRepository.findByUsername(userName);
         //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
         return user;
 

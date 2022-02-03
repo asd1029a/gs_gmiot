@@ -106,38 +106,32 @@ public class AuthController {
     @PostMapping("/generateToken")
     //public ResponseEntity<?> createAuthenticationToken(@RequestBody User user) throws Exception{
     public ResponseEntity<?> createAuthenticationToken(User user) throws Exception {
-
+        log.info("user={}", user);
         try {
 
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword())
-
-            );
-
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            log.info("바보");
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
 
-        }catch(NullPointerException e2){
+        } catch (NullPointerException e2) {
 
 
-           // httpServletRequest.getRequestDispatcher("/login/error").forward(httpServletRequest,httpServletResponse);
+            // httpServletRequest.getRequestDispatcher("/login/error").forward(httpServletRequest,httpServletResponse);
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserId());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
         //userDetails가 잘못들어왔을대 에러페이지 관리해야됨
 
 
-
         final TokenDto jwt = jwtUtil.generateToken(userDetails);
-        userService.updateUser(user.getUserId(),jwt.getRefreshToken());
-
+        userService.updateUser(user.getUsername(), jwt.getRefreshToken());
 
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
 
     }
-
-
 
 
     @PostMapping("/regenerateToken")
@@ -159,7 +153,7 @@ public class AuthController {
         String username = null;
         username = jwtUtil.extractUsername(accessToken); //토큰에서 이름추출
         log.info("username={}", username);
-        User user = userService.findUser(username, "error");
+        User     user = userService.findUser(username, "error");
 
 
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);

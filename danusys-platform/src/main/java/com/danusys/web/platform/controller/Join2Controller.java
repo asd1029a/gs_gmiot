@@ -20,12 +20,19 @@ public class Join2Controller {
         return "hi";
     }
 
+
+
     @RequestMapping("/login/errorTest")
     public ModelAndView error() {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/view/login/loginErrorTest");
 
         return mav;
+    }
+
+        @RequestMapping("/hi")
+    public String hi(){
+        return "hi";
     }
 
     @RequestMapping("/test2")

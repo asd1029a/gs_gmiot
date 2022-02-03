@@ -3,12 +3,14 @@ package com.danusys.web.commons.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Data
+@EqualsAndHashCode
 @Table(name="t_user")
 public class User {
         @Id
@@ -18,7 +20,7 @@ public class User {
 
 
         @Column(name="user_id")
-        private String userId;
+        private String username;
         //만약에 에러가 날경우 userId-> username auth 쪽에있는 get set userId username으로 바꿀껏
         //repository도수정햇음
 
@@ -26,7 +28,7 @@ public class User {
         private String password;
 
         @Column(name="user_name")
-        private String userName;
+        private String userName2;
         //위에 문제로 바꿨을경우 이것도 수정할것
 
         private String email;
@@ -72,7 +74,7 @@ public class User {
 */
         //@JsonIgnore
        // @OneToOne(mappedBy ="user",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
-        @OneToOne(mappedBy ="user")
+        @OneToOne(mappedBy ="user" ,fetch = FetchType.EAGER)
         @JsonManagedReference
         private  UserGroupInUser userGroupInUser;
 
