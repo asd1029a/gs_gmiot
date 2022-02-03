@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
+
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Service
@@ -22,6 +24,9 @@ public class PermitService {
         this.permitRepository = permitRepository;
     }
 
+    public Permit findPermit(int permitSeq){
+        return permitRepository.findByPermitSeq(permitSeq);
+    }
 
     public Permit findPermit(String permitName, String errorMessage) {
         return permitRepository.findByPermitName(permitName);
@@ -40,9 +45,9 @@ public class PermitService {
     public Permit savePermit(Permit permit) {
 
 
-        Date date =new Date();
+        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
         if(permit.getInsertUserSeq()!=0)
-            permit.setInsertDt(date);
+            permit.setInsertDt(timestamp);
         return permitRepository.save(permit);
     }
 

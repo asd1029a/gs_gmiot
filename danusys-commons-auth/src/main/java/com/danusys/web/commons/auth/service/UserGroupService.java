@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
+
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Service
@@ -26,17 +28,25 @@ public class UserGroupService {
         return userGroupRepository.findByGroupName(groupName);
 
     }
+    @Transactional(readOnly = true)
+    public UserGroup findUserGroupByGroupSeq(int groupSeq) {
+        return userGroupRepository.findByUserGroupSeq(groupSeq);
+    }
 
     @Transactional
     public UserGroup updateUserGroup(UserGroup userGroup) {
-        UserGroup findUserGroup = this.findUserGroup(userGroup.getGroupName(), "Error update user id");
 
-        findUserGroup.setGroupDesc(userGroup.getGroupDesc());
-        findUserGroup.setGroupName(userGroup.getGroupName());
-        findUserGroup.setUpdateUserSeq(userGroup.getUpdateUserSeq());
-        findUserGroup.setUpdateDt(userGroup.getUpdateDt());
-        findUserGroup.setInsertUserSeq(userGroup.getInsertUserSeq());
-        findUserGroup.setInsertDt(userGroup.getInsertDt());
+        UserGroup findUserGroup = this.findUserGroupByGroupSeq(userGroup.getUserGroupSeq());
+        if (userGroup.getGroupDesc() != null)
+            findUserGroup.setGroupDesc(userGroup.getGroupDesc());
+        if (userGroup.getGroupName() != null)
+            findUserGroup.setGroupName(userGroup.getGroupName());
+        if (userGroup.getUpdateUserSeq() != 0) {
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            findUserGroup.setUpdateUserSeq(userGroup.getUpdateUserSeq());
+
+            findUserGroup.setUpdateDt(userGroup.getUpdateDt());
+        }
 
 
         //    return userRepository.save(findUser);
@@ -46,12 +56,21 @@ public class UserGroupService {
     @Transactional
     public UserGroup saveUserGroup(UserGroup userGroup) {
 
-        Date date =new Date();
-        if(userGroup.getInsertUserSeq()!=0)
-            userGroup.setInsertDt(date);
-        else if(userGroup.getUpdateUserSeq()!=0)
-            userGroup.setUpdateDt(date);
+
+        if (userGroup.getInsertUserSeq() != 0) {
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            userGroup.setInsertDt(timestamp);
+        } else if (userGroup.getUpdateUserSeq() != 0) {
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            userGroup.setUpdateDt(timestamp);
+        }
+
         return userGroupRepository.save(userGroup);
+    }
+
+    public void deleteUserGroup(UserGroup userGroup){
+
+        userGroupRepository.deleteById(userGroup.getUserGroupSeq());
     }
 
 

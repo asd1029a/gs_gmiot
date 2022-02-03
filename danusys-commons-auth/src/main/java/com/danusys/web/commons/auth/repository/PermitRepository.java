@@ -8,4 +8,6 @@ public interface PermitRepository extends JpaRepository<Permit,Integer> {
 
     Permit findByPermitName(String permitName);
 
+    Permit findByPermitSeq(int permitSeq);
+
 }

@@ -1,5 +1,4 @@
 "use strict"
-
 const common = {
     arr: Array.prototype.slice,
     crtEl: function(el) {
@@ -16,7 +15,27 @@ const common = {
     },
     getQs: function (el) {
         const rtnElement = document.querySelector(el);
-        return rtnElement
+        return rtnElement;
+    },
+    getQsAll: function (el) {
+        const rtnElement = document.querySelectorAll(el);
+        return rtnElement;
+    },
+    elementSelected: (elements, name, className) => {
+        //let selected = common.getQs(`.${className}}``).getAttribute("id");
+        for (let arr of common.arr.call(elements)) {
+            arr.addEventListener(name, e => {
+                elements.map(value=> {
+                    return value.classList.remove(className);
+                });
+                e.currentTarget.classList.add(className);
+            });
+        }
+    },
+    postAxios: (data) => {
+        let key = Object.keys(data.data);
+        const dataArr = data.data[key];
+        return dataArr;
     },
 }
 const commonPopup = {

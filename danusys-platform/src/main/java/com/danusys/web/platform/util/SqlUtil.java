@@ -1,7 +1,7 @@
 package com.danusys.web.platform.util;
 
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -9,8 +9,11 @@ public class SqlUtil {
 
     public static Map<String, Object> getInsertValuesStr(Map<String, Object> paramMap){
         Map<String, Object> resultMap = new HashMap<String, Object>();
+        Map<String, Object> columnMap = new HashMap<String, Object>();
 
-        resultMap.put("columns", String.join(",", paramMap.keySet()));
+        paramMap.forEach((k, v) -> columnMap.put(StringUtil.camelToSnake(k), v));
+
+        resultMap.put("columns", String.join(",", columnMap.keySet()));
         resultMap.put("values", paramMap.values().stream()
                 .map(value -> {
                         if (value instanceof String) {
