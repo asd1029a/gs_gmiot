@@ -159,14 +159,14 @@ $.fn.extend({
                     if(eleAttr.type === "checkbox"){
                         isCheckboxInit = true;
                         objEle.prop("checked", objEle.attr("data-init-value"));
-                        comm.customListSelectBox.prototype.listSelect(objEle.parent());
+                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val(objEle.attr("data-init-value"));
                     }
                 } else if(eleAttr.tagName == "INPUT" || eleAttr.tagName == "TEXTAREA") {
                     if(eleAttr.type === "checkbox" && !isCheckboxInit){
                         objEle.prop("checked", false);
-                        comm.customListSelectBox.prototype.listSelect(objEle.parent());
+                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val("");
                     }
@@ -550,19 +550,20 @@ var comm = {
             $("#downloadForm").remove();
         }, 2000);
     }
-    , customSelectBox : function(selector) {
-        this.customSelectBox.$selectBox = null,
-        this.customSelectBox.$select = null,
-        this.customSelectBox.$list = null,
-        this.customSelectBox.$listLi = null;
+    /* 커스텀 단일 선택 셀렉트 박스 / 이유나 2022.01.14 */
+    , createSelectBox : function(selector) {
+        this.createSelectBox.$selectBox = null,
+        this.createSelectBox.$select = null,
+        this.createSelectBox.$list = null,
+        this.createSelectBox.$listLi = null;
 
-        comm.customSelectBox.prototype.init = function(selector){
+        comm.createSelectBox.prototype.init = function(selector){
             this.$selectBox = $(selector);
-            this.$select = this.$selectBox.find('.box .select');
-            this.$list = this.$selectBox.find('.box .list');
+            this.$select = this.$selectBox.find('.select');
+            this.$list = this.$selectBox.find('.list');
             this.$listLi = this.$list.children('li');
         }
-        comm.customSelectBox.prototype.initEvent = function(e){
+        comm.createSelectBox.prototype.initEvent = function(e){
             var that = this;
             this.$select.on('click', function(e){
                 that.listOn();
@@ -574,7 +575,7 @@ var comm = {
                 that.listOff($(e.target));
             });
         }
-        comm.customSelectBox.prototype.listOn = function(){
+        comm.createSelectBox.prototype.listOn = function(){
             this.$selectBox.toggleClass('on');
             if(this.$selectBox.hasClass('on')){
                 this.$list.css('display', 'block');
@@ -582,35 +583,36 @@ var comm = {
                 this.$list.css('display', 'none');
             };
         }
-        comm.customSelectBox.prototype.listSelect = function($target){
+        comm.createSelectBox.prototype.listSelect = function($target){
             $target.addClass('selected').siblings('li').removeClass('selected');
             this.$selectBox.removeClass('on');
             this.$select.text($target.text());
             this.$list.css('display', 'none');
         }
-        comm.customSelectBox.prototype.listOff = function($target){
+        comm.createSelectBox.prototype.listOff = function($target){
             if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
                 this.$selectBox.removeClass('on');
                 this.$list.css('display', 'none');
             };
         }
-        this.customSelectBox.prototype.init(selector);
-        this.customSelectBox.prototype.initEvent();
+        this.createSelectBox.prototype.init(selector);
+        this.createSelectBox.prototype.initEvent();
     }
     /* 커스텀 다중 선택 셀렉트 박스 / 이유나 2022.01.14 */
-    , customListSelectBox : function(selector) {
-        this.customListSelectBox.$selectBox = null,
-            this.customListSelectBox.$select = null,
-            this.customListSelectBox.$list = null,
-            this.customListSelectBox.$listLi = null;
+    , createMultiSelectBox : function(selector) {
 
-        comm.customListSelectBox.prototype.init = function(selector){
+        this.createMultiSelectBox.$selectBox = null,
+        this.createMultiSelectBox.$select = null,
+        this.createMultiSelectBox.$list = null,
+        this.createMultiSelectBox.$listLi = null;
+
+        comm.createMultiSelectBox.prototype.init = function(selector){
             this.$selectBox = $(selector);
-            this.$select = this.$selectBox.find('.box .select');
-            this.$list = this.$selectBox.find('.box .list');
-            this.$listLi = this.$list.find('li> span');
+            this.$select = this.$selectBox.find('.select');
+            this.$list = this.$selectBox.find('.list');
+            this.$listLi = this.$list.find('li > span');
         }
-        comm.customListSelectBox.prototype.initEvent = function(e){
+        comm.createMultiSelectBox.prototype.initEvent = function(e){
             var that = this;
             this.$select.on('click', function(e){
                 that.listOn();
@@ -619,7 +621,7 @@ var comm = {
                 that.listSelect($(this));
             });
         }
-        comm.customListSelectBox.prototype.listOn = function(){
+        comm.createMultiSelectBox.prototype.listOn = function(){
             this.$selectBox.toggleClass('on');
             if(this.$selectBox.hasClass('on')){
                 this.$list.css('display', 'block');
@@ -627,7 +629,7 @@ var comm = {
                 this.$list.css('display', 'none');
             };
         }
-        comm.customListSelectBox.prototype.listSelect = function($target){
+        comm.createMultiSelectBox.prototype.listSelect = function($target){
             $target.toggleClass('selected');
 
             let selectStr = "";
@@ -652,14 +654,14 @@ var comm = {
             }
             this.$select.text(selectStr);
         }
-        comm.customListSelectBox.prototype.listOff = function($target){
+        comm.createMultiSelectBox.prototype.listOff = function($target){
             if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
                 this.$selectBox.removeClass('on');
                 this.$list.css('display', 'none');
             };
         }
-        this.customListSelectBox.prototype.init(selector);
-        this.customListSelectBox.prototype.initEvent();
+        this.createMultiSelectBox.prototype.init(selector);
+        this.createMultiSelectBox.prototype.initEvent();
     }
 };
 
