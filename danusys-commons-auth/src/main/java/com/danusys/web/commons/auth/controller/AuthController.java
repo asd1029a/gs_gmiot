@@ -94,13 +94,13 @@ public class AuthController {
                 .body("created permit");
     }
 
-    @PostMapping("/usergroupinuser")
-    public ResponseEntity<?> saveUserGroupInUser(UserGroupInUser userGroupInUser, int userSeq) {
-        userGroupInUserService.saveUserGroupInUser(userGroupInUser, userSeq);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body("created usergroupinuser");
-    }
+//    @PostMapping("/usergroupinuser")
+//    public ResponseEntity<?> saveUserGroupInUser(UserGroupInUser userGroupInUser, int userSeq) {
+//        userGroupInUserService.saveUserGroupInUser(userGroupInUser, userSeq);
+//        return ResponseEntity
+//                .status(HttpStatus.CREATED)
+//                .body("created usergroupinuser");
+//    }
 
 
     @PostMapping("/generateToken")
@@ -110,7 +110,7 @@ public class AuthController {
         try {
 
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+                    new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword()));
             log.info("바보");
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
@@ -121,12 +121,12 @@ public class AuthController {
             // httpServletRequest.getRequestDispatcher("/login/error").forward(httpServletRequest,httpServletResponse);
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserId());
         //userDetails가 잘못들어왔을대 에러페이지 관리해야됨
 
 
         final TokenDto jwt = jwtUtil.generateToken(userDetails);
-        userService.updateUser(user.getUsername(), jwt.getRefreshToken());
+        userService.updateUser(user.getUserId(), jwt.getRefreshToken());
 
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));

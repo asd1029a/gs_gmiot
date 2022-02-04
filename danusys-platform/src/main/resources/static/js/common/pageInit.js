@@ -20,11 +20,10 @@ $(document).ready(() => {
     });
 
     /* 다중 셀렉트 박스 */
-    if($(".dropdown_checkbox").length > 0){
-        $(".dropdown_checkbox").each((i, e) => {
-            comm.createMultiSelectBox(e);
-        });
-    }
+    $.each($(".dropdown_checkbox"), (idx, item) => {
+        comm.createMultiSelectBox(item)
+    });
+
 
     /* 검색조건 초기화 버튼 */
     $("#resetFormBtn").on("click", (e) => {

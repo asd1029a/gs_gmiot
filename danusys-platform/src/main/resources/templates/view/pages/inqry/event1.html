@@ -18,12 +18,12 @@
                     <dl class="selectbox_set">
                         <dt>이벤트 종류</dt>
                         <dd>
-                            <div class="dropdown_checkbox" data-selectbox-type="eventKind">
-                                <p class="checkbox_title checkbox_title_event select">이벤트 종류 선택</p>
+                            <div class="dropdown_checkbox" data-selectbox-type="eventSel">
+                                <p class="checkbox_title checkbox_title_event select" data-placeholder="이벤트 종류 선택">이벤트 종류 선택</p>
                                 <ul class="checkbox_list checkbox_list_event list">
                                     <li>
                                         <span>
-                                            <input type="checkbox" id="eventALL" name="">
+                                            <input type="checkbox" id="eventALL" name="checkAll">
                                             <label for="eventALL"><span></span>전체</label>
                                         </span>
                                     </li>
@@ -106,12 +106,12 @@
                     <dl class="selectbox_set">
                         <dt>행정구역</dt>
                         <dd>
-                            <div class="dropdown_checkbox" data-selectbox-type="district">
-                                <p class="checkbox_title checkbox_title_district select">행정구역 선택</p>
+                            <div class="dropdown_checkbox" data-selectbox-type="districtSel">
+                                <p class="checkbox_title checkbox_title_district select" data-placeholder="행정구역 선택">행정구역 선택</p>
                                 <ul class="checkbox_list checkbox_list_district list">
                                     <li>
                                         <span>
-                                            <input type="checkbox" id="districtALL" name="">
+                                            <input type="checkbox" id="districtALL" name="checkAll">
                                             <label for="districtALL"><span></span>전체</label>
                                         </span>
                                     </li>
@@ -211,9 +211,9 @@
                     </dl>
                     <dl class="date_set">
                         <dt>발생 기간</dt>
-                        <dd><input type="date"  id="startDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
+                        <dd><input type="text" id="startDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
                         <span>부터</span>
-                        <dd><input type="date" id="endDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
+                        <dd><input type="text" id="endDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
                         <span>까지</span>
                     </dl>
                     <dl class="search_text_set">

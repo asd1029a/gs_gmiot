@@ -23,12 +23,12 @@ public class UserService {
 
     public User findUser(String userName, String errorMessage) {
 
-        return userRepository.findByUsername(userName);
+        return userRepository.findByUserId(userName);
 
     }
 
     public User findUser(String userName) {
-        User user=userRepository.findByUsername(userName);
+        User user=userRepository.findByUserId(userName);
         //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
         return user;
 
@@ -48,7 +48,7 @@ public class UserService {
 
 
     @Transactional
-    public User saveUser(User user) {
+    public int saveUser(User user) {
         SHA256 sha256 = new SHA256();
         try {
             String cryptoPassword = sha256.encrypt(user.getPassword());
@@ -56,8 +56,8 @@ public class UserService {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
-        return userRepository.save(user);
+        userRepository.save(user);
+        return user.getUserSeq();
     }
 
 

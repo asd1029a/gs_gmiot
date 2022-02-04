@@ -16,7 +16,7 @@ import java.util.List;
 
 @Entity
 @Data
-@EqualsAndHashCode
+//@EqualsAndHashCode
 @Table(name="t_user_group")
 public class UserGroup  implements Serializable {
         @Id
@@ -44,6 +44,6 @@ public class UserGroup  implements Serializable {
 
         @OneToMany(mappedBy ="userGroup2",fetch=FetchType.EAGER)
         @JsonManagedReference
-        private final List<UserGroupPermit> userGroupPermit =new ArrayList<>();;
+        private final List<UserGroupPermit> userGroupPermit =new ArrayList<>();
 
 }
