@@ -92,7 +92,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 
             } catch (JwtException e) {
-                log.info("Error2");
+      //          log.info("Error2");
                 e.printStackTrace();
 
                 request.setAttribute("exception", "JwtException");
@@ -106,8 +106,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             //2.토큰 사용자 조회
 
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            log.info("userDetails={}", userDetails);
-            log.info("2");
+      //      log.info("userDetails={}", userDetails);
+      //      log.info("2");
 
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
