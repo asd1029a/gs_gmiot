@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@RestController
+@RequestMapping(value="/station")
 public class StationController {
     public StationController(StationService stationService) { this.stationService = stationService;}
 

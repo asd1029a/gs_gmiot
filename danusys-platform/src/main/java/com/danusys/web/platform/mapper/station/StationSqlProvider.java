@@ -8,13 +8,17 @@ import java.util.Map;
 public class StationSqlProvider {
     public String selectListQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
-
+            SELECT("*");
+            FROM("t_station");
         }};
         return sql.toString();
     }
 
-    public String selectOneQry(int seq) {
+    public String selectOneQry(int stationSeq) {
         SQL sql = new SQL() {{
+            SELECT("*");
+            FROM("t_station");
+            WHERE("station_seq=" + stationSeq);
         }};
         return sql.toString();
     }

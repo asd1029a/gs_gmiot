@@ -49,6 +49,8 @@ const mntr = {
 
     },
     eventHandler : () => {
+        station.getList({} ,(result) => console.log(result));
+
         //LNM FOLD
         $('.mntr_container .lnb_fold').on("click", function(e){
             $('.mntr_container .menu_fold').hide();
