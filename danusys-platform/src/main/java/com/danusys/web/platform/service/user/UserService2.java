@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,7 @@ public class UserService2 {
     public UserDto findUser(int userSeq) {
         User user = userRepository.findByUserSeq(userSeq);
         UserDto userDto = new UserDto(user.getUserSeq(), user.getUserId(), user.getUserName(), user.getEmail(), user.getTel(), user.getAddress(), user.getStatus(), user.getDetailAddress(),
-                user.getLastLoginDt(), user.getInsertUserSeq(), user.getUpdateUserSeq(), user.getInsertDt(), user.getUpdateDt(), user.getUserGroupInUser());
+                user.getLastLoginDt(), user.getInsertUserSeq(), user.getUpdateUserSeq(), user.getInsertDt(), user.getUpdateDt());
         //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
         return userDto;
 
@@ -107,7 +108,10 @@ public class UserService2 {
     }
 
 
-    public List<User> findListUser() {
-        return userRepository.findAll();
+    public List<UserDto> findListUser() {
+        List<User> userList =userRepository.findAll();
+        //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
+
+        return userList.stream().map(UserDto::new).collect(Collectors.toList());
     }
 }
