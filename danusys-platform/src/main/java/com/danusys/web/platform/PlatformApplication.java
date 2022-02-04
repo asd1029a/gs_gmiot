@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan("com.danusys.web")
 @EntityScan("com.danusys.web")
 @EnableJpaRepositories("com.danusys.web")
-//@EnableZuulProxy
+@EnableZuulProxy
 public class PlatformApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PlatformApplication.class, args);
