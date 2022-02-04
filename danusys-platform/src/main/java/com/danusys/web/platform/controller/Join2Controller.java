@@ -30,7 +30,7 @@ public class Join2Controller {
         return mav;
     }
 
-        @RequestMapping("/hi")
+    @RequestMapping("/hi")
     public String hi(){
         return "hi";
     }
@@ -64,12 +64,19 @@ public class Join2Controller {
     @RequestMapping("/loginpagetest")
     public ModelAndView loginpage() {
 
-
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/view/login/test1");
 
         return mav;
     }
 
+    @RequestMapping("/roletest")
+    public ModelAndView roletest() {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/view/login/roletest");
+
+        return mav;
+    }
 
 }

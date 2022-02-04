@@ -11,7 +11,7 @@ $(".login-btn").on("click", function () {
         return false;
     }
     const sendData = {
-        username: $("#id").val(),
+        userId: $("#id").val(),
         password: $("#pwd").val()
     }
     $.ajax({
