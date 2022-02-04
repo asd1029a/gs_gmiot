@@ -5,7 +5,7 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.Map;
 
 public class ConfigSqlProvider {
-    public String selectAllCode(Map<String, Object> paramMap) {
+    public String selectAllCodeQry(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
         String start = paramMap.get("start").toString();
         String length = paramMap.get("length").toString();
@@ -23,7 +23,7 @@ public class ConfigSqlProvider {
         return sql.toString();
     }
 
-    public String selectOneCode(int seq) {
+    public String selectOneCodeQry(int seq) {
         SQL sql = new SQL() {{
 
             SELECT("*");

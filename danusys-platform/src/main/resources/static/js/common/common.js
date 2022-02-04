@@ -159,14 +159,14 @@ $.fn.extend({
                     if(eleAttr.type === "checkbox"){
                         isCheckboxInit = true;
                         objEle.prop("checked", objEle.attr("data-init-value"));
-                        comm.customListSelectBox.prototype.listSelect(objEle.parent());
+                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val(objEle.attr("data-init-value"));
                     }
                 } else if(eleAttr.tagName == "INPUT" || eleAttr.tagName == "TEXTAREA") {
                     if(eleAttr.type === "checkbox" && !isCheckboxInit){
                         objEle.prop("checked", false);
-                        comm.customListSelectBox.prototype.listSelect(objEle.parent());
+                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val("");
                     }
@@ -550,19 +550,19 @@ var comm = {
             $("#downloadForm").remove();
         }, 2000);
     }
-    , customSelectBox : function(selector) {
-        this.customSelectBox.$selectBox = null,
-        this.customSelectBox.$select = null,
-        this.customSelectBox.$list = null,
-        this.customSelectBox.$listLi = null;
+    , createSelectBox : function(selector) {
+        this.createSelectBox.$selectBox = null,
+        this.createSelectBox.$select = null,
+        this.createSelectBox.$list = null,
+        this.createSelectBox.$listLi = null;
 
-        comm.customSelectBox.prototype.init = function(selector){
+        comm.createSelectBox.prototype.init = function(selector){
             this.$selectBox = $(selector);
             this.$select = this.$selectBox.find('.box .select');
             this.$list = this.$selectBox.find('.box .list');
             this.$listLi = this.$list.children('li');
         }
-        comm.customSelectBox.prototype.initEvent = function(e){
+        comm.createSelectBox.prototype.initEvent = function(e){
             var that = this;
             this.$select.on('click', function(e){
                 that.listOn();
@@ -574,7 +574,7 @@ var comm = {
                 that.listOff($(e.target));
             });
         }
-        comm.customSelectBox.prototype.listOn = function(){
+        comm.createSelectBox.prototype.listOn = function(){
             this.$selectBox.toggleClass('on');
             if(this.$selectBox.hasClass('on')){
                 this.$list.css('display', 'block');
@@ -582,84 +582,99 @@ var comm = {
                 this.$list.css('display', 'none');
             };
         }
-        comm.customSelectBox.prototype.listSelect = function($target){
+        comm.createSelectBox.prototype.listSelect = function($target){
             $target.addClass('selected').siblings('li').removeClass('selected');
             this.$selectBox.removeClass('on');
             this.$select.text($target.text());
             this.$list.css('display', 'none');
         }
-        comm.customSelectBox.prototype.listOff = function($target){
+        comm.createSelectBox.prototype.listOff = function($target){
             if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
                 this.$selectBox.removeClass('on');
                 this.$list.css('display', 'none');
             };
         }
-        this.customSelectBox.prototype.init(selector);
-        this.customSelectBox.prototype.initEvent();
+        this.createSelectBox.prototype.init(selector);
+        this.createSelectBox.prototype.initEvent();
     }
     /* 커스텀 다중 선택 셀렉트 박스 / 이유나 2022.01.14 */
-    , customListSelectBox : function(selector) {
-        this.customListSelectBox.$selectBox = null,
-            this.customListSelectBox.$select = null,
-            this.customListSelectBox.$list = null,
-            this.customListSelectBox.$listLi = null;
+    , createMultiSelectBox : function(selector) {
+        // TODO - 셀렉트 타입에 따라 ajax로 listLi 조회 및 생성
+        const type = $(selector).data("selectboxType");
 
-        comm.customListSelectBox.prototype.init = function(selector){
+        this.createMultiSelectBox.$selectBox = null,
+            this.createMultiSelectBox.$select = null,
+            this.createMultiSelectBox.$list = null,
+            this.createMultiSelectBox.$listLi = null;
+
+        comm.createMultiSelectBox.prototype.init = function(selector){
             this.$selectBox = $(selector);
-            this.$select = this.$selectBox.find('.box .select');
-            this.$list = this.$selectBox.find('.box .list');
+            this.$select = this.$selectBox.find('.select');
+            this.$list = this.$selectBox.find('.list');
             this.$listLi = this.$list.find('li> span');
         }
-        comm.customListSelectBox.prototype.initEvent = function(e){
-            var that = this;
+        comm.createMultiSelectBox.prototype.initEvent = function(e){
+            let that = this;
             this.$select.on('click', function(e){
-                that.listOn();
+                that.listOn($(this));
             });
             this.$listLi.on('click', function(e){
                 that.listSelect($(this));
             });
         }
-        comm.customListSelectBox.prototype.listOn = function(){
-            this.$selectBox.toggleClass('on');
-            if(this.$selectBox.hasClass('on')){
-                this.$list.css('display', 'block');
+        comm.createMultiSelectBox.prototype.listOn = function($target){
+            let $box = $($target).parent();
+            $box.toggleClass('on');
+            if($box.hasClass('on')){
+                $box.find(".list").css('display', 'block');
             }else{
-                this.$list.css('display', 'none');
+                $box.find(".list").css('display', 'none');
             };
         }
-        comm.customListSelectBox.prototype.listSelect = function($target){
+        comm.createMultiSelectBox.prototype.listSelect = function($target){
             $target.toggleClass('selected');
 
-            let selectStr = "";
-            let $listInput = $target.children("input");
+            let $targetType = $target.parents(".dropdown_checkbox").data("selectboxType");
 
-            if($listInput.attr("id").indexOf("checkAll") > -1){
-                selectStr = $listInput.prop('checked') ? $target.text() : "미선택";
-                this.$listLi.children("input[type=checkbox]").prop('checked', $listInput.prop('checked'));
+            let selectStr = "";
+            let $targetInput = $target.children("input");
+
+            let $targetSelectBox = $("[data-selectbox-type="+$targetType+"]");
+            let $targetSelect = $targetSelectBox.find(".select");
+            let $targetListLi = $targetSelectBox.find("li> span");
+
+            if($targetInput.attr("name").indexOf("checkAll") > -1){
+                selectStr = $targetInput.prop('checked') ? $target.text() : $targetSelect.data("placeholder");
+                $targetListLi.children("input[type=checkbox]").prop('checked', $targetInput.prop('checked'));
             }else{
-                let totalLen = this.$listLi.length - 1;
-                let checkedLen = this.$listLi.find("input[type=checkbox]:checked").not("#checkAll").length;
+                let totalLen = $targetListLi.length - 1;
+                let checkedLen = $targetListLi.find("input[type=checkbox]:checked").not("#checkAll").length;
 
                 if(totalLen !== checkedLen){
-                    this.$listLi.find("#checkAll").prop("checked", false);
-                    for (let i = 0; i < this.$listLi.length; i++){
-                        if($(this.$listLi[i]).children("input[type=checkbox]").prop("checked")) selectStr += $(this.$listLi[i]).text();
+                    $targetListLi.find("[name=checkAll]").prop("checked", false);
+                    if($($targetListLi).children("input[type=checkbox]:checked").length > 0){
+                        for (let i = 0; i < $targetListLi.length; i++){
+                            if($($targetListLi[i]).children("input[type=checkbox]").prop("checked")) selectStr += $($targetListLi[i]).text();
+                        }
+                    }else{
+                        selectStr = $targetSelect.data("placeholder");
                     }
+
                 }else{
-                    this.$listLi.find("#checkAll").prop("checked", true);
-                    selectStr = this.$listLi.find("#checkAll + label").text();
+                    $targetListLi.find("[name=checkAll]").prop("checked", true);
+                    selectStr = $targetListLi.find("[name=checkAll] + label").text();
                 }
             }
-            this.$select.text(selectStr);
+            $targetSelect.text(selectStr);
         }
-        comm.customListSelectBox.prototype.listOff = function($target){
+        comm.createMultiSelectBox.prototype.listOff = function($target){
             if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
                 this.$selectBox.removeClass('on');
                 this.$list.css('display', 'none');
             };
         }
-        this.customListSelectBox.prototype.init(selector);
-        this.customListSelectBox.prototype.initEvent();
+        this.createMultiSelectBox.prototype.init(selector);
+        this.createMultiSelectBox.prototype.initEvent();
     }
 };
 

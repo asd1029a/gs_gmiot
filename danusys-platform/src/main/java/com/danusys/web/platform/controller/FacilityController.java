@@ -40,11 +40,27 @@ public class FacilityController {
     }
 
     /**
+     * 시설물 : 시설물 기능 등록
+     */
+    @PutMapping(value="/opt")
+    public int addOpt(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return facilityService.insertOpt(paramMap);
+    }
+
+    /**
      * 시설물 : 시설물 수정
      */
     @PatchMapping
     public int mod(@RequestBody Map<String, Object> paramMap) throws Exception {
         return facilityService.update(paramMap);
+    }
+
+    /**
+     * 시설물 : 시설물 기능 수정
+     */
+    @PatchMapping(value="/opt")
+    public int modOpt(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return facilityService.updateOpt(paramMap);
     }
 
     /**

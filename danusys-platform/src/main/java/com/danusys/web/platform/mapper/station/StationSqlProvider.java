@@ -6,20 +6,20 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.Map;
 
 public class StationSqlProvider {
-    public String selectList(Map<String, Object> paramMap) {
+    public String selectListQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
 
         }};
         return sql.toString();
     }
 
-    public String selectOne(int seq) {
+    public String selectOneQry(int seq) {
         SQL sql = new SQL() {{
         }};
         return sql.toString();
     }
 
-    public String insert(Map<String, Object> paramMap) {
+    public String insertQry(Map<String, Object> paramMap) {
         Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
 
         SQL sql = new SQL() {{
@@ -27,7 +27,7 @@ public class StationSqlProvider {
         return sql.toString();
     }
 
-    public String update(Map<String, Object> paramMap) {
+    public String updateQry(Map<String, Object> paramMap) {
         String noticeSeq = paramMap.get("noticeSeq").toString();
 
         SQL sql = new SQL() {{
@@ -35,7 +35,7 @@ public class StationSqlProvider {
         return sql.toString();
     }
 
-    public String delete(int seq) {
+    public String deleteQry(int seq) {
         SQL sql = new SQL() {{
         }};
         return sql.toString();

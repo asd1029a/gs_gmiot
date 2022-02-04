@@ -26,7 +26,7 @@ public class CommonsUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername, id={}",username);
 
-        User user =userRepository.findByUsername(username);
+        User user =userRepository.findByUserId(username);
         log.info("End loadUserByUsername{}");
 //
 //       user.getUserGroupInUser().getUserGroup().getUserGroupPermit().forEach(r->{

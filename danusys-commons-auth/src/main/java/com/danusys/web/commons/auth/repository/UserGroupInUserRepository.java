@@ -12,4 +12,5 @@ public interface UserGroupInUserRepository extends JpaRepository<UserGroupInUser
     UserGroupInUser findByUser(User user);
 
 
+
 }
