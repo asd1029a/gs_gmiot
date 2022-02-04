@@ -44,8 +44,7 @@ public class UserGroupService {
         if (userGroup.getUpdateUserSeq() != 0) {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             findUserGroup.setUpdateUserSeq(userGroup.getUpdateUserSeq());
-
-            findUserGroup.setUpdateDt(userGroup.getUpdateDt());
+            findUserGroup.setUpdateDt(timestamp);
         }
 
 
@@ -54,7 +53,7 @@ public class UserGroupService {
     }
 
     @Transactional
-    public UserGroup saveUserGroup(UserGroup userGroup) {
+    public int saveUserGroup(UserGroup userGroup) {
 
 
         if (userGroup.getInsertUserSeq() != 0) {
@@ -64,8 +63,8 @@ public class UserGroupService {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             userGroup.setUpdateDt(timestamp);
         }
-
-        return userGroupRepository.save(userGroup);
+        userGroupRepository.save(userGroup);
+        return userGroup.getUserGroupSeq();
     }
 
     public void deleteUserGroup(UserGroup userGroup){

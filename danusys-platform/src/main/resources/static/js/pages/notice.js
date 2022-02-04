@@ -57,6 +57,7 @@ const notice = {
                     targets: 4,
                     createdCell: function (td, cellData) {
                         if ( cellData !== null ) {
+                            $(td).text("");
                             $(td).append("<i><img src='/images/default/clipboard.svg'></i>");
                         } else {
                             $(td).text("없음");
@@ -143,12 +144,9 @@ const notice = {
         });
     },
     delProc : (pSeq) => {
-        const formObj = $('#noticeForm').serializeJSON();
-
         $.ajax({
             url : "/notice/"+pSeq
             , type: "DELETE"
-            , data : formObj
         }).done((result) => {
             comm.showAlert("공지사항이 삭제되었습니다");
             notice.create($('#noticeTable'));

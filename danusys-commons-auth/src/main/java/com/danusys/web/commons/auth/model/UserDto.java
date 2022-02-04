@@ -16,23 +16,13 @@ import java.util.List;
 
 public class UserDto {
 
-        private int id;
-
-
-
-        private String username;
+        private int userSeq;
+        private String userId;
         //만약에 에러가 날경우 userId-> username auth 쪽에있는 get set userId username으로 바꿀껏
         //repository도수정햇음
-
-
-        private String password;
-
-
-        private String userName2;
+        private String userName;
         //위에 문제로 바꿨을경우 이것도 수정할것
-
         private String email;
-
         private String tel;
 
         private String address;
@@ -52,11 +42,24 @@ public class UserDto {
 
         private Timestamp updateDt;
 
-        private String refreshToken;
+        public UserDto(User user) {
+
+                this.userSeq = user.getUserSeq();
+                this.userId = user.getUserId();
+                this.userName = user.getUserName();
+                this.email = user.getEmail();
+                this.tel = user.getTel();
+                this.address = user.getAddress();
+                this.status = user.getStatus();
+                this.detailAddress = user.getDetailAddress();
+                this.lastLoginDt = user.getLastLoginDt();
+                this.insertUserSeq = user.getInsertUserSeq();
+                this.updateUserSeq = user.getUpdateUserSeq();
+                this.insertDt = user.getInsertDt();
+                this.updateDt = user.getUpdateDt();
+        }
 
 
-
-        private  UserGroupInUser userGroupInUser;
 
 
 }

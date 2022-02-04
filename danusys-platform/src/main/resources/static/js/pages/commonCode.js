@@ -51,7 +51,7 @@ const commonCode = {
                     targets: 1,
                     render: $.fn.dataTable.render.ellipsis( 50, true )
                 }]
-            , excelDownload : true
+            , excelDownload : false
         }
 
         const evt = {

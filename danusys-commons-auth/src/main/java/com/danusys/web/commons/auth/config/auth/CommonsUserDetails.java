@@ -44,7 +44,12 @@ public class CommonsUserDetails implements UserDetails {
     @Override
     public String getUsername() {
 
-        return user.getUsername();
+        return user.getUserId();
+    }
+
+    public int getUserSeq(){
+
+        return user.getUserSeq();
     }
 
 

@@ -4,10 +4,41 @@
 
 const mntr = {
     init : () => {
+        $(document).contextmenu( e => {
+            e.preventDefault();
+//			if(e.target.className.indexOf('no_target')>-1){
+//				return false;
+//			}
+        });
+
+        //컨텍스트메뉴
+        const menuObj = [
+            {
+                text: '클릭 지점 로드뷰보기',
+                classname: 'context-style',
+                callback: e => {
+                    const coordinate = new ol.proj.transform(e.coordinate, window.map.realProjection[window.map.type] ,'EPSG:4326');
+					window.open("/ui/roadView?lon="+coordinate[0]+"&lat="+coordinate[1],'road','');
+					//contextmenu.clear();
+                }
+            },
+            {
+                text: '주소보기',
+                classname: 'context-style',
+                callback: e => {
+                    const coordinate = new ol.proj.transform(e.coordinate, window.map.realProjection[window.map.type] ,'EPSG:4326');
+                    console.log(coordinate);
+
+                    //팝업 붙이기
+                }
+            }
+        ];
+
         //지도 생성
         let map = new mapCreater('map',0);
         map.createMousePosition('mousePosition');
         map.scaleLine();
+        map.createContextMenu(menuObj);
         window.map = map;
         //레이어 도구
         let lyControl = new layerControl('map', 'title');
@@ -58,13 +89,19 @@ const mntr = {
         $('.map_options li').on("click", function(e){
             const type = $(e.currentTarget).attr('data-value');
             switch(type) {
+                case "roadView" :
+                    if(window.lc.find(type).getVisible()){
+                        window.lc.off(type);
+                    } else {
+                        window.lc.on(type);
+                    }
+                    break;
                 case "plus" : window.map.zoomInOut('plus'); break;
                 case "minus" : window.map.zoomInOut('minus'); break;
                 case "distance" : window.measure.initDraw('LineString'); break;
                 case "measure" : window.measure.initDraw('Polygon'); break;
                 case "radius" : window.measure.initDraw('Circle'); break;
                 case "eraser" : window.measure.removeMeasureTool(); break;
-                /////////////////////////////
                 default:
             }
         });
@@ -76,6 +113,12 @@ const mntr = {
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
         });
+        //TOP BUTTON
+        $(".search_list .button_top").on("click", function(e){
+            $(e.currentTarget).parent('div').scrollTop(0);
+        });
+
+
 
     }
 

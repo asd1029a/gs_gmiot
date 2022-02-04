@@ -1,16 +1,16 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.commons.auth.model.Permit;
-import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.model.*;
 
 
-import com.danusys.web.commons.auth.model.UserGroup;
-import com.danusys.web.commons.auth.model.UserGroupPermit;
 import com.danusys.web.commons.auth.service.PermitService;
+import com.danusys.web.commons.auth.service.UserGroupInUserService;
 import com.danusys.web.commons.auth.service.UserGroupPermitService;
 import com.danusys.web.commons.auth.service.UserGroupService;
+import com.danusys.web.platform.dto.request.UserGroupInUserRequest;
 import com.danusys.web.platform.service.user.UserService2;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,16 +19,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/user")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService2 userService;
     private final UserGroupService userGroupService;
     private final UserGroupPermitService userGroupPermitService;
+    private final UserGroupInUserService userGroupInUserService;
 
 //    @PostMapping("/getList.ado")
 //    public List<HashMap<String,Object>> getListUser(@RequestBody Map<String, Object> paramMap) throws Exception {
 //        return userService.getListUser(paramMap);
 //    }
+
 
     @PutMapping()
     public ResponseEntity<?> addUserProc(@RequestBody User user) {
@@ -43,11 +46,18 @@ public class UserController {
     public ResponseEntity<?> modProc(@RequestBody User user) {
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .body(userService.updateUser(user));
 
     }
 
+    @PostMapping()
+    public ResponseEntity<?> getListProc(){
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.findListUser());
+    }
     @DeleteMapping()
     public ResponseEntity<?> delProc(@RequestBody User user) {
         userService.deleteUser(user);
@@ -90,8 +100,9 @@ public class UserController {
                 .body(userGroupService.updateUserGroup(userGroup));
 
     }
+
     @DeleteMapping("/group")
-    public ResponseEntity<?> deleteGroupProc(@RequestBody UserGroup userGroup){
+    public ResponseEntity<?> deleteGroupProc(@RequestBody UserGroup userGroup) {
         userGroupService.deleteUserGroup(userGroup);
         return ResponseEntity
                 .status(HttpStatus.OK).build();
@@ -107,22 +118,32 @@ public class UserController {
     }
 
 
-//    @GetMapping("/groupinuser/{groupSeq}")
-//    public ResponseEntity<?> getGroupInUser(@PathVariable int groupSeq) {
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(userGroupService.findUserGroupByGroupSeq(groupSeq));
-//    }
-////
-//    @PutMapping("/groupinuser")
-//    public ResponseEntity<?> addGroupProc(@RequestBody UserGroup userGroup) {
-//
-//
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body(userGroupService.saveUserGroup(userGroup));
-//    }
+
+    @PutMapping("/groupinuser")
+    public ResponseEntity<?> addGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
+
+        log.info("usergroupInUser={}", userGroupInUserRequest);
+        UserGroupInUser userGroupInUser = new UserGroupInUser();
+        userGroupInUser.setInsertUserSeq(userGroupInUserRequest.getInsertUserSeq());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userGroupInUserService.saveUserGroupInUser(userGroupInUser,
+                        userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq()));
+    }
+
+    @PatchMapping("/groupinuser")
+    public ResponseEntity<?> modGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
+
+        log.info("usergroupInUser={}", userGroupInUserRequest);
+        UserGroupInUser userGroupInUser = new UserGroupInUser();
+        userGroupInUser.setInsertUserSeq(userGroupInUserRequest.getInsertUserSeq());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userGroupInUserService.updateUserGroupInUser(userGroupInUser,
+                        userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq()));
+    }
+
+
 //
 //    @PatchMapping("/groupinuser")
 //    public ResponseEntity<?> modGroupProc(@RequestBody UserGroup userGroup) {
