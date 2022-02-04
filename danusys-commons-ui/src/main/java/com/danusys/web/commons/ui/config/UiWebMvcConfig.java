@@ -27,6 +27,9 @@ public class UiWebMvcConfig extends UiConfiguration {
         // 홈
         registry.addViewController("/ui/map").setViewName("view/commons/map");
 
+        // 로드뷰
+        registry.addViewController("/ui/roadView").setViewName("view/commons/roadView");
+
         super.addViewControllers(registry);
     }
 
