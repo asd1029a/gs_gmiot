@@ -59,7 +59,7 @@ public class MissionApiController {
     @GetMapping("/takeoff")
     public void takeOffDrone(int takeOffAlt) {
 
-        flight.flightTakeoff(50);
+        flight.flightTakeoff(takeOffAlt);
 
     }
 

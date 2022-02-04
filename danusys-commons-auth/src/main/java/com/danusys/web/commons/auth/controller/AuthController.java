@@ -106,12 +106,12 @@ public class AuthController {
     @PostMapping("/generateToken")
     //public ResponseEntity<?> createAuthenticationToken(@RequestBody User user) throws Exception{
     public ResponseEntity<?> createAuthenticationToken(User user) throws Exception {
-        log.info("user={}", user);
+      //  log.info("user={}", user);
         try {
 
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword()));
-            log.info("바보");
+
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
 
@@ -152,7 +152,7 @@ public class AuthController {
 
         String username = null;
         username = jwtUtil.extractUsername(accessToken); //토큰에서 이름추출
-        log.info("username={}", username);
+      //  log.info("username={}", username);
         User     user = userService.findUser(username, "error");
 
 

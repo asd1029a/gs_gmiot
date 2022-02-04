@@ -325,7 +325,7 @@ public class Flight {
             droneLogDetailsArmDisarm.setParam7("0");
             droneLogDetailsService.saveDroneLogDetails(droneLogDetailsArmDisarm);
 
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(40).build(), linkId, timestamp, secretKey);
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(takeOffAlt).build(), linkId, timestamp, secretKey);
 
             DroneLogDetails droneLogDetailsTakeOff = new DroneLogDetails();
             droneLogDetailsTakeOff.setFromTarget("gcs");
@@ -347,7 +347,7 @@ public class Flight {
                 if (message.getPayload() instanceof TerrainReport) {
                     MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
                     float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
-                    if (takeoff > 40 - 1.5) {
+                    if (takeoff > takeOffAlt - 1.5) {
                         break;
                     }
 
