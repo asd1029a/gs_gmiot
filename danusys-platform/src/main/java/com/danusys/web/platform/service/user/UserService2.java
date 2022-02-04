@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,8 +39,8 @@ public class UserService2 {
 
     public UserDto findUser(int userSeq) {
         User user = userRepository.findByUserSeq(userSeq);
-        UserDto userDto =new UserDto(user.getUserSeq(),user.getUserId(), user.getUserName(), user.getEmail(),user.getTel(),user.getAddress(),user.getStatus(),user.getDetailAddress(),
-                user.getLastLoginDt(),user.getInsertUserSeq(),user.getUpdateUserSeq(),user.getInsertDt(),user.getUpdateDt(),user.getUserGroupInUser());
+        UserDto userDto = new UserDto(user.getUserSeq(), user.getUserId(), user.getUserName(), user.getEmail(), user.getTel(), user.getAddress(), user.getStatus(), user.getDetailAddress(),
+                user.getLastLoginDt(), user.getInsertUserSeq(), user.getUpdateUserSeq(), user.getInsertDt(), user.getUpdateDt(), user.getUserGroupInUser());
         //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
         return userDto;
 
@@ -49,8 +50,15 @@ public class UserService2 {
     public int updateUser(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
         if (findUser != null) {
-            if (user.getUserId() != null)
-                findUser.setUserId(user.getUserId());
+            if (user.getPassword() != null) {
+                SHA256 sha256 = new SHA256();
+                try {
+                    String cryptoPassword = sha256.encrypt(user.getPassword());
+                    findUser.setPassword("{SHA-256}" + cryptoPassword);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+            }
             if (user.getUserName() != null)
                 findUser.setUserName(user.getUserName());
             if (user.getEmail() != null)
@@ -99,4 +107,7 @@ public class UserService2 {
     }
 
 
+    public List<User> findListUser() {
+        return userRepository.findAll();
+    }
 }

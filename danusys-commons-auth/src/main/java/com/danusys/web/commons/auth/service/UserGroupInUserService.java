@@ -35,6 +35,14 @@ public class UserGroupInUserService {
 
     }
 
+    public UserGroupInUser findByUserSeq(int UserSeq) {
+
+        User findUser =new User();
+        findUser.setUserSeq(UserSeq);
+        return userGroupInUserRepository.findByUser(findUser);
+
+    }
+
     @Transactional
     public UserGroupInUser updatePermit(int UserGroupSeq, String refreshToken) {
         UserGroupInUser findUserGroupInUser = this.findUserGroupSeq(UserGroupSeq, "Error update user id");
@@ -44,9 +52,9 @@ public class UserGroupInUserService {
     }
 
     @Transactional
-    public UserGroupInUser saveUserGroupInUser(UserGroupInUser userGroupInUser,int userSeq,int userGroupSeq) {
+    public int saveUserGroupInUser(UserGroupInUser userGroupInUser,int userSeq,int userGroupSeq) {
         User user=userRepository.findByUserSeq(userSeq);
-        log.info("user={}",user);
+       // log.info("user={}",user);
         userGroupInUser.setUser(user);
         UserGroup userGroup=userGroupRepository.findByUserGroupSeq(userGroupSeq);
         userGroupInUser.setUserGroup(userGroup);
@@ -54,13 +62,31 @@ public class UserGroupInUserService {
         if(userGroupInUser.getInsertUserSeq()!=0)
             userGroupInUser.setInsertDt(timestamp);
 
-
-        return userGroupInUserRepository.save(userGroupInUser);
+        userGroupInUserRepository.save(userGroupInUser);
+        return userSeq;
 
 
 
 
     }
 
+    @Transactional
+    public int updateUserGroupInUser(UserGroupInUser userGroupInUser,int userSeq,int userGroupSeq) {
+        User user=userRepository.findByUserSeq(userSeq);
+        // log.info("user={}",user);
+        userGroupInUser.setUser(user);
+        UserGroup userGroup=userGroupRepository.findByUserGroupSeq(userGroupSeq);
+        userGroupInUser.setUserGroup(userGroup);
+        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+        if(userGroupInUser.getUpdateUserSeq()!=0)
+            userGroupInUser.setUpdateDt(timestamp);
+
+        //userGroupInUserRepository.save(userGroupInUser);
+        return userSeq;
+
+
+
+
+    }
 
 }

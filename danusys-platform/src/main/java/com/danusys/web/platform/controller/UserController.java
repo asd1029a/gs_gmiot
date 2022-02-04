@@ -32,6 +32,7 @@ public class UserController {
 //        return userService.getListUser(paramMap);
 //    }
 
+
     @PutMapping()
     public ResponseEntity<?> addUserProc(@RequestBody User user) {
 
@@ -50,6 +51,13 @@ public class UserController {
 
     }
 
+    @PostMapping()
+    public ResponseEntity<?> getListProc(){
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.findListUser());
+    }
     @DeleteMapping()
     public ResponseEntity<?> delProc(@RequestBody User user) {
         userService.deleteUser(user);
@@ -110,14 +118,7 @@ public class UserController {
     }
 
 
-    //    @GetMapping("/groupinuser/{groupSeq}")
-//    public ResponseEntity<?> getGroupInUser(@PathVariable int groupSeq) {
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(userGroupService.findUserGroupByGroupSeq(groupSeq));
-//    }
-////
+
     @PutMapping("/groupinuser")
     public ResponseEntity<?> addGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
 
@@ -127,6 +128,18 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userGroupInUserService.saveUserGroupInUser(userGroupInUser,
+                        userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq()));
+    }
+
+    @PatchMapping("/groupinuser")
+    public ResponseEntity<?> modGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
+
+        log.info("usergroupInUser={}", userGroupInUserRequest);
+        UserGroupInUser userGroupInUser = new UserGroupInUser();
+        userGroupInUser.setInsertUserSeq(userGroupInUserRequest.getInsertUserSeq());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userGroupInUserService.updateUserGroupInUser(userGroupInUser,
                         userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq()));
     }
 
