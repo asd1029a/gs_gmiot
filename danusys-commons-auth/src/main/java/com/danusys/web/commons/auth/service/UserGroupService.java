@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserGroupService {
@@ -73,4 +74,9 @@ public class UserGroupService {
     }
 
 
+    public List<UserGroup> findListGroup() {
+
+
+        return userGroupRepository.findAll();
+    }
 }

@@ -4,9 +4,8 @@ package com.danusys.web.platform.dto.request;
 import lombok.Data;
 
 @Data
-public class UserGroupInUserRequest {
+public class UserGroupPermitRequest {
     private int insertUserSeq ;
-    private int userSeq;
+    private int permitSeq;
     private int userGroupSeq;
-
 }

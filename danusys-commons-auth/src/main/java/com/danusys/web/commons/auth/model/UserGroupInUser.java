@@ -27,11 +27,6 @@ public class UserGroupInUser {
         @Column(name="insert_user_seq")
         private int insertUserSeq ;
 
-        @Column(name="update_dt")
-        private Timestamp updateDt;
-
-        @Column(name="update_user_seq")
-        private int updateUserSeq;
 
         //@OneToOne(fetch = FetchType.EAGER)
         // @ManyToOne

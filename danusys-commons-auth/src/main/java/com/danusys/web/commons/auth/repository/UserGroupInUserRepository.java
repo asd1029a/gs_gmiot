@@ -11,6 +11,6 @@ public interface UserGroupInUserRepository extends JpaRepository<UserGroupInUser
 
     UserGroupInUser findByUser(User user);
 
-
+    Long deleteByUserAndUserGroup(User user, UserGroup userGroup);
 
 }

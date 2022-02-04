@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.Column;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -70,23 +71,17 @@ public class UserGroupInUserService {
 
     }
 
+
+
     @Transactional
-    public int updateUserGroupInUser(UserGroupInUser userGroupInUser,int userSeq,int userGroupSeq) {
-        User user=userRepository.findByUserSeq(userSeq);
-        // log.info("user={}",user);
-        userGroupInUser.setUser(user);
-        UserGroup userGroup=userGroupRepository.findByUserGroupSeq(userGroupSeq);
-        userGroupInUser.setUserGroup(userGroup);
-        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
-        if(userGroupInUser.getUpdateUserSeq()!=0)
-            userGroupInUser.setUpdateDt(timestamp);
-
-        //userGroupInUserRepository.save(userGroupInUser);
-        return userSeq;
-
-
-
-
+    public void deleteUserGroupInUser(int userSeq, int userGroupSeq) {
+        User findUser=userRepository.findByUserSeq(userSeq);
+        UserGroup findUserGroup=userGroupRepository.findByUserGroupSeq(userGroupSeq);
+        userGroupInUserRepository.deleteByUserAndUserGroup(findUser,findUserGroup);
     }
 
+    public List<UserGroupInUser> findListGroupInUser() {
+
+        return userGroupInUserRepository.findAll();
+    }
 }

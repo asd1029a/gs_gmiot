@@ -8,6 +8,7 @@ import com.danusys.web.commons.auth.service.UserGroupInUserService;
 import com.danusys.web.commons.auth.service.UserGroupPermitService;
 import com.danusys.web.commons.auth.service.UserGroupService;
 import com.danusys.web.platform.dto.request.UserGroupInUserRequest;
+import com.danusys.web.platform.dto.request.UserGroupPermitRequest;
 import com.danusys.web.platform.service.user.UserService2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.PreUpdate;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -58,6 +61,7 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(userService.findListUser());
     }
+
     @DeleteMapping()
     public ResponseEntity<?> delProc(@RequestBody User user) {
         userService.deleteUser(user);
@@ -83,6 +87,13 @@ public class UserController {
                 .body(userGroupService.findUserGroupByGroupSeq(groupSeq));
     }
 
+    @PostMapping("/group")
+    public ResponseEntity<?> getListGroup(){
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userGroupService.findListGroup());
+    }
     @PutMapping("/group")
     public ResponseEntity<?> addGroupProc(@RequestBody UserGroup userGroup) {
 
@@ -108,14 +119,14 @@ public class UserController {
                 .status(HttpStatus.OK).build();
     }
 
-
-    @PutMapping("/grouppermit")
-    public ResponseEntity<?> addPermitProc(@RequestBody UserGroupPermit userGroupPermit) {
+    @PostMapping("/groupinuser")
+    public ResponseEntity<?> getListGroupInUserProc() {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userGroupPermitService.saveUserGroupPermit(userGroupPermit));
+                .body(userGroupInUserService.findListGroupInUser());
     }
+
 
 
 
@@ -131,17 +142,36 @@ public class UserController {
                         userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq()));
     }
 
-    @PatchMapping("/groupinuser")
-    public ResponseEntity<?> modGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
-
-        log.info("usergroupInUser={}", userGroupInUserRequest);
-        UserGroupInUser userGroupInUser = new UserGroupInUser();
-        userGroupInUser.setInsertUserSeq(userGroupInUserRequest.getInsertUserSeq());
+    @DeleteMapping("/groupinuser")
+    public ResponseEntity<?> delGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest){
+        userGroupInUserService.deleteUserGroupInUser(userGroupInUserRequest.getUserSeq(),userGroupInUserRequest.getUserGroupSeq());
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(userGroupInUserService.updateUserGroupInUser(userGroupInUser,
-                        userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq()));
+                .status(HttpStatus.OK).build();
     }
+
+    @PutMapping("/grouppermit")
+    public ResponseEntity<?> addPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
+
+        log.info("userGroupPermitReqeuest={}",userGroupPermitRequest);
+        UserGroupPermit userGroupPermit =new UserGroupPermit();
+        userGroupPermit.setInsertUserSeq(userGroupPermitRequest.getInsertUserSeq());
+        userGroupPermitService.saveUserGroupPermit(userGroupPermit
+                ,userGroupPermitRequest.getUserGroupSeq(),userGroupPermitRequest.getPermitSeq());
+        return ResponseEntity
+                .status(HttpStatus.OK).build();
+    }
+
+
+    @DeleteMapping("/grouppermit")
+    public ResponseEntity<?> delPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
+
+        log.info("userGroupPermitReqeuest={}",userGroupPermitRequest);
+        userGroupPermitService.deleteUserGroupPermit(
+                userGroupPermitRequest.getUserGroupSeq(),userGroupPermitRequest.getPermitSeq());
+        return ResponseEntity
+                .status(HttpStatus.OK).build();
+    }
+
 
 
 //
