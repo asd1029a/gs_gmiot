@@ -17,8 +17,14 @@ public class FacilityServiceImpl implements FacilityService{
     private final FacilitySqlProvider fsp = new FacilitySqlProvider();
 
     @Override
-    public Map<String, Object> getList(Map<String, Object> paramMap) throws Exception {
-        return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(fsp.selectListQry(paramMap)));
+    public EgovMap getList(Map<String, Object> paramMap) throws Exception {
+        if(paramMap.get("draw") != null) {
+            return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(fsp.selectListQry(paramMap)));
+        } else {
+            EgovMap resultMap = new EgovMap();
+            resultMap.put("data", commonMapper.selectList(fsp.selectListQry(paramMap)));
+            return resultMap;
+        }
     }
 
     @Override

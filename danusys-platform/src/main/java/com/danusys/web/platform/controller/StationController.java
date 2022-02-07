@@ -16,7 +16,7 @@ public class StationController {
      * 개소 : 개소 목록 조회
      */
     @PostMapping
-    public ResponseEntity<Map<String, Object>> getListStation(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<EgovMap> getListStation(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(stationService.getList(paramMap));
     }
 
@@ -32,23 +32,24 @@ public class StationController {
      * 개소 : 개소 등록
      */
     @PutMapping
-    public int add(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return stationService.insert(paramMap);
+    public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(stationService.insert(paramMap));
     }
 
     /**
      * 개소 : 개소 수정
      */
     @PatchMapping
-    public int mod(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return stationService.update(paramMap);
+    public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(stationService.update(paramMap));
     }
 
     /**
      * 개소 : 개소 삭제
      */
     @DeleteMapping(value="/{stationSeq}")
-    public void del (@PathVariable("stationSeq") int stationSeq) throws Exception {
+    public ResponseEntity<?> del (@PathVariable("stationSeq") int stationSeq) throws Exception {
         stationService.delete(stationSeq);
+        return ResponseEntity.noContent().build();
     }
 }

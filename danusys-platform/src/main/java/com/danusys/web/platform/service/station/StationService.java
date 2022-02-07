@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface StationService {
-    Map<String, Object> getList(Map<String, Object> paramMap) throws Exception;
+    EgovMap getList(Map<String, Object> paramMap) throws Exception;
     EgovMap getOne(int seq) throws Exception;
     int insert(Map<String, Object> paramMap) throws Exception;
     int update(Map<String, Object> paramMap) throws Exception;

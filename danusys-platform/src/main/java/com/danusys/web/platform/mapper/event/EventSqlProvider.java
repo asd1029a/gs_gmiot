@@ -5,7 +5,7 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.Map;
 
 public class EventSqlProvider {
-    public String selectAllEventQry(Map<String, Object> paramMap) {
+    public String selectListQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
 
             SELECT("*, " +
@@ -17,7 +17,7 @@ public class EventSqlProvider {
         }};
         return sql.toString();
     }
-    public String selectOneEventQry(int seq) {
+    public String selectOneQry(int seq) {
         SQL sql = new SQL() {{
 
             SELECT("*");

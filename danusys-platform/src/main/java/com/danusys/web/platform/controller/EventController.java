@@ -17,7 +17,7 @@ public class EventController {
     * 조회/관리 > 이벤트관리 > 스마트 도시 이벤트 목록 조희
     * */
     @PostMapping
-    public ResponseEntity<Map<String, Object>> getListEvent(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<EgovMap> getListEvent(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(eventService.getList(paramMap));
     }
     @GetMapping(value = "/{seq}")

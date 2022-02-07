@@ -3,24 +3,18 @@ package com.danusys.web.platform.controller;
 import com.danusys.web.commons.auth.model.*;
 
 
-import com.danusys.web.commons.auth.service.PermitService;
 import com.danusys.web.commons.auth.service.UserGroupInUserService;
 import com.danusys.web.commons.auth.service.UserGroupPermitService;
 import com.danusys.web.commons.auth.service.UserGroupService;
 import com.danusys.web.platform.dto.request.UserGroupInUserRequest;
 import com.danusys.web.platform.dto.request.UserGroupPermitRequest;
-import com.danusys.web.platform.service.user.UserService2;
+import com.danusys.web.platform.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.PreUpdate;
-import java.security.Principal;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -28,7 +22,7 @@ import java.security.Principal;
 @Slf4j
 public class UserController {
 
-    private final UserService2 userService;
+    private final UserService userService;
     private final UserGroupService userGroupService;
     private final UserGroupPermitService userGroupPermitService;
     private final UserGroupInUserService userGroupInUserService;

@@ -19,7 +19,7 @@ public class FacilityController {
      * 시설물 : 시설물 목록 조회
      */
     @PostMapping
-    public ResponseEntity<Map<String, Object>> getListFacility(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<EgovMap> getListFacility(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(facilityService.getList(paramMap));
     }
 
@@ -35,39 +35,40 @@ public class FacilityController {
      * 시설물 : 시설물 등록
      */
     @PutMapping
-    public int add(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return facilityService.insert(paramMap);
+    public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.insert(paramMap));
     }
 
     /**
      * 시설물 : 시설물 기능 등록
      */
     @PutMapping(value="/opt")
-    public int addOpt(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return facilityService.insertOpt(paramMap);
+    public ResponseEntity<?> addOpt(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.insertOpt(paramMap));
     }
 
     /**
      * 시설물 : 시설물 수정
      */
     @PatchMapping
-    public int mod(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return facilityService.update(paramMap);
+    public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.update(paramMap));
     }
 
     /**
      * 시설물 : 시설물 기능 수정
      */
     @PatchMapping(value="/opt")
-    public int modOpt(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return facilityService.updateOpt(paramMap);
+    public ResponseEntity<?> modOpt(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.updateOpt(paramMap));
     }
 
     /**
      * 시설물 : 시설물 삭제
      */
     @DeleteMapping(value="/{facilitySeq}")
-    public void del (@PathVariable("facilitySeq") int facilitySeq) throws Exception {
+    public ResponseEntity<?> del (@PathVariable("facilitySeq") int facilitySeq) throws Exception {
         facilityService.delete(facilitySeq);
+        return ResponseEntity.noContent().build();
     }
 }
