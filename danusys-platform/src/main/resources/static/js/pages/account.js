@@ -18,39 +18,32 @@ const account = {
                         'contentType' : "application/json; charset=utf-8",
                         'type' : "POST",
                         'data' : function ( d ) {
-                            console.log(d);
                             const param = $.extend({}, d, $("#searchForm form").serializeJSON());
                             return JSON.stringify( param );
                         },
                         'dataSrc' : function (result) {
-                            console.log(result);
                             $('.title dd .count').text(result.recordsTotal);
                             return result.data;
                         }
-                    },
-                select: {
+                    }
+                    , select: {
                     toggleable: false
-                },
-                columns : [
-                    {data: "title", className: "alignLeft"},
-                    {data: "content", className: "alignLeft"},
-                    {data: "insertAdminId"},
+                }
+                , columns : [
+                    {data: "userId", className: "alignLeft"},
+                    {data: "userName"},
+                    {data: "tel"},
+                    {data: "email", className: "alignLeft"},
+                    {data: "status"},
                     {data: "insertDt"},
+                    {data: "lastLoginDt"},
                     {data: null}
                 ]
-                // "columnDefs": [{
-                //     "targets": -1,
-                //     "data": null,
-                //     "defaultContent": '<span class="writeButton"><i></i></span>'
-                // }
-                //     , {
-                //         targets: 0,
-                //         render: $.fn.dataTable.render.ellipsis( 30, true )
-                //     }
-                //     , {
-                //         targets: 1,
-                //         render: $.fn.dataTable.render.ellipsis( 50, true )
-                //     }]
+                , "columnDefs": [{
+                    "targets": -1,
+                    "data": null,
+                    "defaultContent": '<span class="button">상세보기</span>'
+                }]
                 , excelDownload : true
             }
 

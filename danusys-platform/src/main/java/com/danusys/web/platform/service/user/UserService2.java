@@ -7,13 +7,20 @@ import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 
 import com.danusys.web.commons.auth.util.SHA256;
+import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.platform.service.event.EventServiceImpl;
+import com.danusys.web.platform.service.notice.NoticeService;
+import com.danusys.web.platform.service.notice.NoticeServiceImpl;
+import com.danusys.web.platform.util.PagingUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +66,7 @@ public class UserService2 {
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
+
             }
             if (user.getUserName() != null)
                 findUser.setUserName(user.getUserName());
@@ -108,10 +116,24 @@ public class UserService2 {
     }
 
 
-    public List<UserDto> findListUser() {
-        List<User> userList =userRepository.findAll();
+    // public List<UserDto> findListUser() {
+    public Map<String, Object> findListUser(Map<String, Object> paramMap) {
+        List<User> userList = userRepository.findAll();
+        List<UserDto> userDtoList = userList.stream().map(UserDto::new).collect(Collectors.toList());
         //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
-
-        return userList.stream().map(UserDto::new).collect(Collectors.toList());
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        try {
+            if (paramMap.get("draw") != null) resultMap = PagingUtil.createPagingMap(paramMap, userDtoList);
+            else {
+                resultMap.put("data", userDtoList);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultMap;
     }
+    //userList.stream().map(UserDto::new).collect(Collectors.toList());
+    // return userList.stream().collect(Collectors.toMap(User::getUserId, UserDto::new));
+
+
 }

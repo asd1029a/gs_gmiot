@@ -430,7 +430,7 @@ public class Flight {
 
 
         }
-        return "stop";
+        return "end";
     }
 
     //public String wayPoint(Socket socket, MavlinkConnection connection, float x, float y, float z, float speed) {
@@ -576,7 +576,7 @@ public class Flight {
 
 
         }
-        return "stop";
+        return "end";
     }
 
 
@@ -711,7 +711,7 @@ public class Flight {
 
 
         }
-        return "stop";
+        return "end";
 
     }
 

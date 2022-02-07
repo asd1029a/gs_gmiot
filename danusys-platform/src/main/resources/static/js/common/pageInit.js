@@ -53,7 +53,7 @@ $(document).ready(() => {
     else if(path === "/pages/config/dimmingGroup") {
 
     } else if(path === "/pages/config/userAccount") {
-
+        account.user.create();
     } else if(path === "/pages/config/userGroup") {
 
     } else if(path === "/pages/config/commonCode") {

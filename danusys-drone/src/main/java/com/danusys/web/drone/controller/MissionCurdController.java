@@ -26,7 +26,7 @@ public class MissionCurdController {
     private final MissionDetailsService missionDetailsService;
 
 
-    @PostMapping("/missiondetails")
+    @PutMapping("/missiondetails")
     public ResponseEntity<?> saveMissionDetails(@RequestBody Map<String, Object> missionList) {
         log.info("missionId={}", missionList);
 
@@ -44,8 +44,8 @@ public class MissionCurdController {
     }
 
 
-    @PostMapping("/mission")
-    public ResponseEntity<?> saveMission(Mission mission) {
+    @PutMapping("/mission")
+    public ResponseEntity<?> saveMission(@RequestBody Mission mission) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

@@ -17,7 +17,7 @@ public class DronePageContoller {
         return mv;
     }
 
-    @RequestMapping("/createMisson")
+    @RequestMapping("/createMission")
     public ModelAndView CreateMisson() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("/test/createMisson.html");
