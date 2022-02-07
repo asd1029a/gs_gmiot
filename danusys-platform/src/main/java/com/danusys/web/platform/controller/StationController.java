@@ -54,7 +54,7 @@ public class StationController {
      */
     @PutMapping
     public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(stationService.insert(paramMap));
+        return ResponseEntity.ok().body(stationService.add(paramMap));
     }
 
     /**
@@ -62,7 +62,7 @@ public class StationController {
      */
     @PatchMapping
     public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(stationService.update(paramMap));
+        return ResponseEntity.ok().body(stationService.mod(paramMap));
     }
 
     /**
@@ -70,7 +70,7 @@ public class StationController {
      */
     @DeleteMapping(value="/{stationSeq}")
     public ResponseEntity<?> del (@PathVariable("stationSeq") int stationSeq) throws Exception {
-        stationService.delete(stationSeq);
+        stationService.del(stationSeq);
         return ResponseEntity.noContent().build();
     }
 }

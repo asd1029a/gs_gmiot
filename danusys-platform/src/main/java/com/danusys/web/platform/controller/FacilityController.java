@@ -36,7 +36,7 @@ public class FacilityController {
      */
     @PutMapping
     public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(facilityService.insert(paramMap));
+        return ResponseEntity.ok().body(facilityService.add(paramMap));
     }
 
     /**
@@ -44,7 +44,7 @@ public class FacilityController {
      */
     @PutMapping(value="/opt")
     public ResponseEntity<?> addOpt(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(facilityService.insertOpt(paramMap));
+        return ResponseEntity.ok().body(facilityService.addOpt(paramMap));
     }
 
     /**
@@ -52,7 +52,7 @@ public class FacilityController {
      */
     @PatchMapping
     public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(facilityService.update(paramMap));
+        return ResponseEntity.ok().body(facilityService.mod(paramMap));
     }
 
     /**
@@ -60,7 +60,7 @@ public class FacilityController {
      */
     @PatchMapping(value="/opt")
     public ResponseEntity<?> modOpt(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(facilityService.updateOpt(paramMap));
+        return ResponseEntity.ok().body(facilityService.modOpt(paramMap));
     }
 
     /**
@@ -68,7 +68,7 @@ public class FacilityController {
      */
     @DeleteMapping(value="/{facilitySeq}")
     public ResponseEntity<?> del (@PathVariable("facilitySeq") int facilitySeq) throws Exception {
-        facilityService.delete(facilitySeq);
+        facilityService.del(facilitySeq);
         return ResponseEntity.noContent().build();
     }
 }
