@@ -31,7 +31,7 @@ public class DroneCurdController {
                     String droneDeviceName;
      */
 
-    @PostMapping("/drone")
+    @PutMapping("/drone")
     public ResponseEntity<?> saveDrone(Drone drone, DroneDetails droneDetails) {
         String returnResult = null;
         String result1 = droneService.saveDrone(drone);

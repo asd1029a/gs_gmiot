@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping(value = "/user")
 @RequiredArgsConstructor
@@ -52,11 +54,11 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> getListProc(){
+    public ResponseEntity<?> getListProc(Map<String, Object> paramMap){
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userService.findListUser());
+                .body(userService.findListUser(paramMap));
     }
 
     @DeleteMapping()

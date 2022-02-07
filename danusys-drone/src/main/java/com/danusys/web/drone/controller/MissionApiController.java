@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -51,22 +53,28 @@ public class MissionApiController {
 
 
     @GetMapping("/return")
-    public void returnDrone() {
-        flight.returnDrone();
+    public ResponseEntity<?> returnDrone() {
+       return  ResponseEntity.status(HttpStatus.OK)
+                        .body( flight.returnDrone());
+
     }
 
 
     @GetMapping("/takeoff")
-    public void takeOffDrone(int takeOffAlt) {
+    public ResponseEntity<?> takeOffDrone(int takeOffAlt) {
 
-        flight.flightTakeoff(takeOffAlt);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(flight.flightTakeoff(takeOffAlt));
+
 
     }
 
     @GetMapping("/waypoint")
-    public void wayPointDrone(int gpsX, int gpsY, int gpsZ, int speed) {
+    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ, int speed) {
 
-        flight.wayPoint(gpsX, gpsY, gpsZ, speed);
+        return ResponseEntity.status(HttpStatus.OK)
+                        .body(flight.wayPoint(gpsX, gpsY, gpsZ, speed));
+
     }
 
 
