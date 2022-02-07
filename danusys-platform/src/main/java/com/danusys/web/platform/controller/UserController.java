@@ -54,8 +54,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> getListProc(Map<String, Object> paramMap){
-
+    public ResponseEntity<?> getListProc(@RequestBody Map<String, Object> paramMap){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.findListUser(paramMap));

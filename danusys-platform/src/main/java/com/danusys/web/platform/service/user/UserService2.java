@@ -119,22 +119,18 @@ public class UserService2 {
     // public List<UserDto> findListUser() {
     public Map<String, Object> findListUser(Map<String, Object> paramMap) {
         List<User> userList = userRepository.findAll();
+        List<UserDto> userDtoList = userList.stream().map(UserDto::new).collect(Collectors.toList());
         //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
-
-        if (paramMap.get("draw") != null) {
-            EgovMap egovMap = null;
-            try {
-                egovMap = PagingUtil.createPagingMap(paramMap, userList.stream().map(UserDto::new).collect(Collectors.toList()));
-            } catch (Exception e) {
-                e.printStackTrace();
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        try {
+            if (paramMap.get("draw") != null) resultMap = PagingUtil.createPagingMap(paramMap, userDtoList);
+            else {
+                resultMap.put("data", userDtoList);
             }
-            return egovMap;
-        } else {
-            EgovMap resultMap = new EgovMap();
-            resultMap.put("data", userList.stream().map(UserDto::new).collect(Collectors.toList()));
-            return resultMap;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
+        return resultMap;
     }
     //userList.stream().map(UserDto::new).collect(Collectors.toList());
     // return userList.stream().collect(Collectors.toMap(User::getUserId, UserDto::new));

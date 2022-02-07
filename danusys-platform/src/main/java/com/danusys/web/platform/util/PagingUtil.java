@@ -15,7 +15,6 @@ public class PagingUtil {
     * datatable.js 용 페이징 유틸
     * */
     public static EgovMap createPagingMap(Map<String, Object> paramMap, List<?> dataListMap) throws Exception {
-
         EgovMap resultMap = new EgovMap();
         resultMap.put("data", dataListMap);
         resultMap.put("draw", paramMap.get("draw"));
