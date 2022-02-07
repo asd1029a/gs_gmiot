@@ -17,8 +17,14 @@ public class ConfigServiceImpl implements ConfigService {
     private final ConfigSqlProvider csp = new ConfigSqlProvider();
 
     @Override
-    public Map<String, Object> getListCode(Map<String, Object> paramMap) throws Exception {
-        return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(csp.selectAllCodeQry(paramMap)));
+    public EgovMap getListCode(Map<String, Object> paramMap) throws Exception {
+        if(paramMap.get("draw") != null) {
+            return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(csp.selectListCodeQry(paramMap)));
+        } else {
+            EgovMap resultMap = new EgovMap();
+            resultMap.put("data", commonMapper.selectList(csp.selectListCodeQry(paramMap)));
+            return resultMap;
+        }
     }
 
     public EgovMap getOneCode(int seq) throws Exception {

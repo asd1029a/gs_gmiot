@@ -5,7 +5,7 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.Map;
 
 public class ConfigSqlProvider {
-    public String selectAllCodeQry(Map<String, Object> paramMap) {
+    public String selectListCodeQry(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
         String start = paramMap.get("start").toString();
         String length = paramMap.get("length").toString();

@@ -17,8 +17,14 @@ public class StationServiceImpl implements StationService{
     private final StationSqlProvider ssp = new StationSqlProvider();
 
     @Override
-    public Map<String, Object> getList(Map<String, Object> paramMap) throws Exception {
-        return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(ssp.selectListQry(paramMap)));
+    public EgovMap getList(Map<String, Object> paramMap) throws Exception {
+        if(paramMap.get("draw") != null) {
+            return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(ssp.selectListQry(paramMap)));
+        } else {
+            EgovMap resultMap = new EgovMap();
+            resultMap.put("data", commonMapper.selectList(ssp.selectListQry(paramMap)));
+            return resultMap;
+        }
     }
 
     @Override

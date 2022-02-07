@@ -17,7 +17,7 @@ public class ConfigController {
     * 공통코드관리: 공통코드 목록 조회
    */
     @PostMapping(value = "/commonCode")
-    public ResponseEntity<Map<String, Object>> getListCommonCode(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<EgovMap> getListCommonCode(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(commonService.getListCode(paramMap));
     }
 

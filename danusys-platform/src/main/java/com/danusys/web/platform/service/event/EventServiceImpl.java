@@ -16,11 +16,17 @@ public class EventServiceImpl implements EventService {
     private final EventSqlProvider esp = new EventSqlProvider();
 
     @Override
-    public Map<String, Object> getList(Map<String, Object> paramMap) throws Exception {
-        return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(esp.selectAllEventQry(paramMap)));
+    public EgovMap getList(Map<String, Object> paramMap) throws Exception {
+        if(paramMap.get("draw") != null) {
+            return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(esp.selectListQry(paramMap)));
+        } else {
+            EgovMap resultMap = new EgovMap();
+            resultMap.put("data", commonMapper.selectList(esp.selectListQry(paramMap)));
+            return resultMap;
+        }
     }
 
     public EgovMap getOne(int seq) throws Exception {
-        return commonMapper.selectOne(esp.selectOneEventQry(seq));
+        return commonMapper.selectOne(esp.selectOneQry(seq));
     }
 }

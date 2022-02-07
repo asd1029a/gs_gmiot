@@ -26,8 +26,14 @@ public class NoticeServiceImpl implements NoticeService {
     private final NoticeSqlProvider nsp = new NoticeSqlProvider();
 
     @Override
-    public Map<String, Object> getList(Map<String, Object> paramMap) throws Exception {
-        return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(nsp.selectListQry(paramMap)));
+    public EgovMap getList(Map<String, Object> paramMap) throws Exception {
+        if(paramMap.get("draw") != null) {
+            return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(nsp.selectListQry(paramMap)));
+        } else {
+            EgovMap resultMap = new EgovMap();
+            resultMap.put("data", commonMapper.selectList(nsp.selectListQry(paramMap)));
+            return resultMap;
+        }
     }
 
     @Override

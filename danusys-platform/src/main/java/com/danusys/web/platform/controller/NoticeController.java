@@ -22,7 +22,7 @@ public class NoticeController {
      * 공지사항 : 공지사항 목록 조회
      */
     @PostMapping
-    public ResponseEntity<Map<String, Object>> getListNotice(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<EgovMap> getListNotice(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(noticeService.getList(paramMap));
     }
 
@@ -38,24 +38,25 @@ public class NoticeController {
      * 공지사항 : 공지사항 등록
      */
     @PutMapping
-    public int add(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return noticeService.insert(paramMap);
+    public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(noticeService.insert(paramMap));
     }
 
     /**
      * 공지사항 : 공지사항 수정
      */
     @PatchMapping
-    public int mod(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return noticeService.update(paramMap);
+    public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(noticeService.update(paramMap));
     }
 
     /**
      * 공지사항 : 공지사항 삭제
      */
     @DeleteMapping(value="/{noticeSeq}")
-    public void del (@PathVariable("noticeSeq") int noticeSeq) throws Exception {
+    public ResponseEntity<?> del (@PathVariable("noticeSeq") int noticeSeq) throws Exception {
         noticeService.delete(noticeSeq);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = "/paging")

@@ -14,7 +14,7 @@ const account = {
                 scrollY: "calc(100% - 45px)",
                 ajax :
                     {
-                        'url' : "/user/getListUser",
+                        'url' : "/user",
                         'contentType' : "application/json; charset=utf-8",
                         'type' : "POST",
                         'data' : function ( d ) {
@@ -58,7 +58,7 @@ const account = {
                 click : function(e) {
                     const rowData = $target.DataTable().row($(e.currentTarget)).data();
                     if($(e.target).hasClass('writeButton') || $(e.target).prop('tagName') === "I") {
-                        userAccount.showPopup('mod');
+                        account.user.showPopup('mod');
                         $('#userAccountForm').setItemValue(rowData);
                     }
                 }
@@ -108,8 +108,8 @@ const account = {
                 },
                 (result) => {
                     comm.showAlert("사용자 계정이 등록되었습니다");
-                    userAccount.create($('#userAccountTable'));
-                    userAccount.hidePopup();
+                    account.user.create($('#userAccountTable'));
+                    account.user.hidePopup();
                 });
         },
         modProc : () => {
@@ -122,8 +122,8 @@ const account = {
                 },
                 (result) => {
                     comm.showAlert("사용자 계정이 수정되었습니다");
-                    userAccount.create($('#userAccountTable'));
-                    userAccount.hidePopup();
+                    account.user.create($('#userAccountTable'));
+                    account.user.hidePopup();
                 });
         },
         delProc : (pSeq) => {
@@ -134,8 +134,8 @@ const account = {
                 },
                 (result) => {
                     comm.showAlert("사용자 계정이 삭제되었습니다");
-                    userAccount.create($('#userAccountTable'));
-                    userAccount.hidePopup();
+                    account.user.create($('#userAccountTable'));
+                    account.user.hidePopup();
                 });
         }
     }
@@ -194,7 +194,7 @@ const account = {
                 click : function(e) {
                     const rowData = $target.DataTable().row($(e.currentTarget)).data();
                     if($(e.target).hasClass('writeButton') || $(e.target).prop('tagName') === "I") {
-                        userGroup.showPopup('mod');
+                        account.group.showPopup('mod');
                         $('#userGrouptForm').setItemValue(rowData);
                     }
                 }
@@ -244,8 +244,8 @@ const account = {
                 },
                 (result) => {
                     comm.showAlert("사용자 그룹이 등록되었습니다");
-                    userGroup.create($('#userGroupTable'));
-                    userGroup.hidePopup();
+                    account.group.create($('#userGroupTable'));
+                    account.group.hidePopup();
                 });
         },
         modProc : () => {
@@ -258,8 +258,8 @@ const account = {
                 },
                 (result) => {
                     comm.showAlert("사용자 그룹이 수정되었습니다");
-                    userGroup.create($('#userGroupTable'));
-                    userGroup.hidePopup();
+                    account.group.create($('#userGroupTable'));
+                    account.group.hidePopup();
                 });
         },
         delProc : (pSeq) => {
@@ -270,8 +270,8 @@ const account = {
                 },
                 (result) => {
                     comm.showAlert("사용자 그룹이 삭제되었습니다");
-                    userGroup.create($('#userGroupTable'));
-                    userGroup.hidePopup();
+                    account.group.create($('#userGroupTable'));
+                    account.group.hidePopup();
                 });
         }
     }
