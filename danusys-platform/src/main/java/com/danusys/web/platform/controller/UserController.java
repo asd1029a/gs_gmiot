@@ -87,11 +87,11 @@ public class UserController {
     }
 
     @PostMapping("/group")
-    public ResponseEntity<?> getListGroup(){
+    public ResponseEntity<?> getListGroup(Map<String, Object> paramMap){
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userGroupService.findListGroup());
+                .body(userGroupService.findListGroup(paramMap));
     }
     @PutMapping("/group")
     public ResponseEntity<?> addGroupProc(@RequestBody UserGroup userGroup) {

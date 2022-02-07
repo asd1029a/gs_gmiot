@@ -31,7 +31,6 @@ public class UserService2 {
     private final UserGroupInUserRepository userGroupInUserRepository;
 
 
-
     public User findUser(String userName, String errorMessage) {
 
         return userRepository.findByUserId(userName);
@@ -121,17 +120,24 @@ public class UserService2 {
     public Map<String, Object> findListUser(Map<String, Object> paramMap) {
         List<User> userList = userRepository.findAll();
         //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
-        EgovMap egovMap=null;
-        try {
-            egovMap=PagingUtil.createPagingMap(paramMap,userList.stream().map(UserDto::new).collect(Collectors.toList()));
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if (paramMap.get("draw") != null) {
+            EgovMap egovMap = null;
+            try {
+                egovMap = PagingUtil.createPagingMap(paramMap, userList.stream().map(UserDto::new).collect(Collectors.toList()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return egovMap;
+        } else {
+            EgovMap resultMap = new EgovMap();
+            resultMap.put("data", userList.stream().map(UserDto::new).collect(Collectors.toList()));
+            return resultMap;
         }
-        return egovMap;
-        //userList.stream().map(UserDto::new).collect(Collectors.toList());
-       // return userList.stream().collect(Collectors.toMap(User::getUserId, UserDto::new));
 
     }
+    //userList.stream().map(UserDto::new).collect(Collectors.toList());
+    // return userList.stream().collect(Collectors.toMap(User::getUserId, UserDto::new));
 
 
 }

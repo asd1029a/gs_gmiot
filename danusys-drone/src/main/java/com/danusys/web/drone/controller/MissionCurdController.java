@@ -26,7 +26,7 @@ public class MissionCurdController {
     private final MissionDetailsService missionDetailsService;
 
 
-    @PostMapping("/missiondetails")
+    @PutMapping("/missiondetails")
     public ResponseEntity<?> saveMissionDetails(@RequestBody Map<String, Object> missionList) {
         log.info("missionId={}", missionList);
 
