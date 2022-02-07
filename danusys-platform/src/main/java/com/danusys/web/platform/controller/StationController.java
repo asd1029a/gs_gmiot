@@ -2,9 +2,13 @@ package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.util.EgovMap;
 import com.danusys.web.platform.service.station.StationService;
+import com.danusys.web.platform.util.GisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -14,12 +18,27 @@ public class StationController {
 
     private final StationService stationService;
 
+    @Autowired
+    GisUtil gisUtil;
+
     /**
      * 개소 : 개소 목록 조회
      */
     @PostMapping
     public ResponseEntity<EgovMap> getListStation(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(stationService.getList(paramMap));
+    }
+
+    /**
+     * 개소 : 개소 GEOJSON 목록 조회
+     */
+    @PostMapping(value="/geojson")
+    public Map<String, Object> getListStationGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
+        EgovMap resultEgov = stationService.getList(paramMap);
+        List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
+        Map<String, Object> result = gisUtil.getGeoJson(list,"station");
+
+        return result;
     }
 
     /**

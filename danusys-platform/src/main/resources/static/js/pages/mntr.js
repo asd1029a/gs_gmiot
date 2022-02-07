@@ -47,9 +47,16 @@ const mntr = {
         let measure = new measureTool('map');
         window.measure = measure;
 
+        // const heat = new HeatmapLayer({
+        //     url:'/station/geojson',
+        //     format:
+        // });
+
+
     },
     eventHandler : () => {
-        station.getList({} ,(result) => console.log(result));
+        station.getList({} ,(result) => console.log(result.data));
+        station.getListGeoJson({} ,(result) => console.log(result.data));
 
         //LNM FOLD
         $('.mntr_container .lnb_fold').on("click", function(e){

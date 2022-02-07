@@ -40,6 +40,56 @@ public class GisUtil {
 		this.projectionMap.put("EPSG:4326", new String[] { "+proj=longlat", "+ellps=WGS84", "+datum=WGS84", "+no_defs"});
 	}
 
+	/**
+	 * geoJson 생성
+	 * @param geoList
+	 * @return geoJson
+	 * @throws Exception
+	 */
+	public Map<String, Object> getGeoJson(List<Map<String,Object>> geoList, String id) throws Exception {
+
+		Map<String,Object> geoObj = new HashMap<String,Object>();
+		geoObj.put("type","FeatureCollection");
+		//features
+		ArrayList<Map<String, Object>> ary = new ArrayList<Map<String, Object>>();
+		Integer i = 1;
+		for(Map<String,Object> map : geoList) {
+			Map<String,Object> each = new HashMap<String,Object>();
+
+			each.put("type", "Feature");
+
+			each.put("id", id+i);
+			i++;
+
+			Map<String,Object> geom = new HashMap<String,Object>();
+			geom.put("type", "Point");
+
+			ArrayList<Double> coordinates = new ArrayList<Double>();
+
+			coordinates.add(Double.parseDouble(map.get("longitude").toString()));
+			coordinates.add(Double.parseDouble(map.get("latitude").toString()));
+
+			geom.put("coordinates",coordinates);
+			each.put("geometry",geom);
+
+			each.put("geometry_name","geom");
+
+			Map<String,Object> prop = new HashMap<String,Object>();
+			for(String key : map.keySet()) {
+				prop.put(key,map.get(key));
+				if((key.equals("longitude"))||(key.equals("latitude"))){
+					prop.put(key, Double.parseDouble(map.get(key).toString()));
+				}
+			}
+			each.put("properties",prop);
+
+			ary.add(each);
+		} //for cctvList
+		geoObj.put("features",ary);
+		return geoObj;
+	}
+
+
 	public Map<String, Object> createGeoJson(List<EgovMap> list, String lon, String lat, String featureKind) {
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 		resultMap.put("type", "FeatureCollection");
