@@ -8,7 +8,7 @@ import com.danusys.web.commons.auth.service.UserGroupPermitService;
 import com.danusys.web.commons.auth.service.UserGroupService;
 import com.danusys.web.platform.dto.request.UserGroupInUserRequest;
 import com.danusys.web.platform.dto.request.UserGroupPermitRequest;
-import com.danusys.web.platform.service.user.UserService;
+import com.danusys.web.platform.service.user.UserService2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserController {
 
-    private final UserService userService;
+    private final UserService2 userService;
     private final UserGroupService userGroupService;
     private final UserGroupPermitService userGroupPermitService;
     private final UserGroupInUserService userGroupInUserService;

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService2 {
 
     private final UserRepository userRepository;
     private final UserGroupInUserRepository userGroupInUserRepository;
