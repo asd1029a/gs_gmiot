@@ -47,7 +47,7 @@ $(document).ready(() => {
     } else if(path === "/pages/inqry/station") {
         station.create();
     } else if(path === "/pages/inqry/facilities") {
-
+        facility.create();
     }
     // 환경설정
     else if(path === "/pages/config/dimmingGroup") {
