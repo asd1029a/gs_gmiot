@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,12 +32,10 @@ public class StationController {
      * 개소 : 개소 GEOJSON 목록 조회
      */
     @PostMapping(value="/geojson")
-    public Map<String, Object> getListStationGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public String getListStationGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = stationService.getList(paramMap);
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
-        Map<String, Object> result = gisUtil.getGeoJson(list,"station");
-
-        return result;
+        return gisUtil.getGeoJson(list,"station");
     }
 
     /**

@@ -47,17 +47,57 @@ const mntr = {
         let measure = new measureTool('map');
         window.measure = measure;
 
-        // const heat = new HeatmapLayer({
-        //     url:'/station/geojson',
-        //     format:
+        station.getList({} ,(result) => {
+            console.log(result.data);
+        });
+        //개소 레이어
+        station.getListGeoJson({} ,(result) => {
+            let dataLy = new dataLayer('map');
+            let stationLayer = dataLy.fromGeoJSon(result, 'stationLayer', true, layerStyle.station());
+
+            map.addLayer(stationLayer);
+        });
+
+        // var heatmapdata = {
+        //     type:'FeatureCollection',
+        //     features:[
+        //         {
+        //             type:'Feature'
+        //             , geometry:{
+        //                 type:'Point',
+        //                 coordinates:[128.65352113, 35.31366397]
+        //             }
+        //             , properties : {administZone:'소하1동', stationSize:12, address:'경기도 광명시 소하로60', stationMaterial:'강철', stationImage:null, latitude:35.31366397, stationSeq:1, stationName:'스마트폴', stationKind:2, stationCompetDt:'2022-02-01 00:00:00.0', longitude:128.65352113}
+        //             , id: 'station1'
+        //             , geometry_name:'geom'
+        //         }
+        //     ]
+        // };
+        //
+        // const heat = new ol.layer.Heatmap({
+        //     source: new ol.source.Vector({
+        //         // url: './test.json',
+        //         // format: new ol.format.GeoJSON()
+        //         features: new ol.format.GeoJSON().readFeatures(heatmapdata, {
+        //             dataProjection: "EPSG:4326",
+        //             featureProjection: "EPSG:5181"
+        //         })
+        //     }),
+        //     blur: 15,
+        //     radius: 8,
+        //     weight: function (feature) {
+        //         //var magnitude = parseFloat(feature.get('magnitude'));
+        //         //return magnitude - 5;
+        //
+        //         return 0.4;
+        //     },
         // });
+        //
+        // window.map.map.addLayer(heat);
 
 
     },
     eventHandler : () => {
-        station.getList({} ,(result) => console.log(result.data));
-        station.getListGeoJson({} ,(result) => console.log(result.data));
-
         //LNM FOLD
         $('.mntr_container .lnb_fold').on("click", function(e){
             $('.mntr_container .menu_fold').hide();
