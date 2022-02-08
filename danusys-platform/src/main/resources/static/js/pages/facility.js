@@ -45,21 +45,21 @@ const facility = {
                 "data": null,
                 "defaultContent": '<span class="button">상세보기</span>'
             }
-                , {
-                    targets: 3,
-                    createdCell: function (td, cellData) {
-                        if ( cellData !== null ) {
-                            $(td).text("");
-                            $(td).append("<i><img src='/images/default/clipboard.svg'></i>");
-                        } else {
-                            $(td).text("없음");
-                        }
+            , {
+                targets: 3,
+                createdCell: function (td, cellData) {
+                    if ( cellData !== null ) {
+                        $(td).text("");
+                        $(td).append("<i><img src='/images/default/clipboard.svg'></i>");
+                    } else {
+                        $(td).text("없음");
                     }
                 }
-                , {
-                    targets: 6,
-                    render: $.fn.dataTable.render.ellipsis( 50, true )
-                }]
+            }
+            , {
+                targets: 6,
+                render: $.fn.dataTable.render.ellipsis( 50, true )
+            }]
             , excelDownload : true
         }
 
