@@ -25,7 +25,7 @@ public class Drone {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="drone_device_name")
+    @Column(name="drone_device_name",unique = true,nullable = false)
     private String droneDeviceName;
 
     @Column(name="insert_user_id")

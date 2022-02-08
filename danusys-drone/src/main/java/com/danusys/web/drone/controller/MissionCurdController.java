@@ -84,23 +84,34 @@ public class MissionCurdController {
 
     }
 
-
-    @PostMapping("/mission")
-    public ResponseEntity<?> findMission(String name,Long id) {
-
-        if(name!=null) {
+    @GetMapping("/mission/{id}")
+    public  ResponseEntity<?> findMission(@PathVariable Long id){
+        if(id!=null){
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(missionService.missionResponseList(name));
-        }else if(id!=null){
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(missionService.missionResponseList(id));
+                    .body(missionService.missionResponse(id));
         }
-
         return ResponseEntity
                 .status(HttpStatus.NOT_ACCEPTABLE)
                 .body("fail");
+    }
+
+    @PostMapping("/mission")
+    public ResponseEntity<?> findMissionList(@RequestBody Map<String,Object> paramMap) {
+
+        return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(missionService.missionResponseList(paramMap));
+
+    }
+
+    @PostMapping("/missiondetails")
+    public ResponseEntity<?> findMissionDetailsList(@RequestBody Map<String,Object> paramMap) {
+
+        String name=(String)paramMap.get("name");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(missionDetailsService.findMission(name));
 
     }
     @GetMapping("/missioncount")

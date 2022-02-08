@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/config"
                         , "/webjars/**"
                         , "/pages/**"
-                        , "/hi4").permitAll()
+                        , "/hi4", "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

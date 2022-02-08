@@ -130,6 +130,16 @@ public class MissionDetailsService {
 
     }
 
+    public List<MissionDetailResponse> findMission(String name) {
+        log.info("{}",name);
+        Mission mission =missionRepository.findByName(name);
+        List<MissionDetails> missonDetails = missionDetailsRepository.findAllByMission(mission);
+
+        log.info("{}",missonDetails);
+        return missonDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
+
+    }
+
     public List<MissionDetails> findAllMission() {
         return (List<MissionDetails>) missionDetailsRepository.findAll();
     }

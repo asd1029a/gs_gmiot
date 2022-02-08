@@ -24,13 +24,13 @@ public class DroneDetailsService {
 
 
     @Transactional
-    public String saveDroneDetails(DroneDetails droneDetails, Long droneId) {
+    public DroneDetails saveDroneDetails(DroneDetails droneDetails, Long droneId) {
         Optional<Drone> drone = droneRepository.findById(droneId);
 
 
         droneDetails.setDrone(drone.get());
         droneDetailsRepository.save(droneDetails);
-        return "success";
+        return droneDetails;
     }
 
     public DroneDetails findDroneDetails(Long droneId) {

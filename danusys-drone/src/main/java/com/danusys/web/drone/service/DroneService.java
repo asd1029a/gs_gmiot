@@ -63,7 +63,7 @@ public class DroneService {
         return "success";
     }
 
-    public List<Drone> findDrone(Drone drone) {
+    public List<Drone> findDroneList(Drone drone) {
 
         List<Drone> droneList = null;
         if (drone.getId() != null) {
@@ -79,4 +79,14 @@ public class DroneService {
     }
 
 
+    public Drone findDrone(Drone drone) {
+        log.info("droneName={}",drone.getDroneDeviceName());
+        if(drone.getDroneDeviceName()!=null){
+            return droneRepository.findByDroneDeviceName(drone.getDroneDeviceName());
+        }else{
+            return null;
+        }
+
+
+    }
 }
