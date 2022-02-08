@@ -42,17 +42,17 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public int insert(Map<String, Object> paramMap) throws Exception {
+    public int add(Map<String, Object> paramMap) throws Exception {
         return commonMapper.insert(nsp.insertQry(paramMap));
     }
 
     @Override
-    public int update(Map<String, Object> paramMap) throws Exception {
+    public int mod(Map<String, Object> paramMap) throws Exception {
         return commonMapper.update(nsp.updateQry(paramMap));
     }
 
     @Override
-    public void delete(int seq) throws Exception {
+    public void del(int seq) throws Exception {
         commonMapper.delete(nsp.deleteQry(seq));
     }
 

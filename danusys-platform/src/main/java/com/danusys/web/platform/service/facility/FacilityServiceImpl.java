@@ -33,27 +33,27 @@ public class FacilityServiceImpl implements FacilityService{
     }
 
     @Override
-    public int insertOpt(Map<String, Object> paramMap) throws Exception {
-        return commonMapper.insert(fsp.insertOptQry(paramMap));
-    }
-
-    @Override
-    public int insert(Map<String, Object> paramMap) throws Exception {
+    public int add(Map<String, Object> paramMap) throws Exception {
         return commonMapper.insert(fsp.insertQry(paramMap));
     }
 
     @Override
-    public int update(Map<String, Object> paramMap) throws Exception {
+    public int addOpt(Map<String, Object> paramMap) throws Exception {
+        return commonMapper.insert(fsp.insertOptQry(paramMap));
+    }
+
+    @Override
+    public int mod(Map<String, Object> paramMap) throws Exception {
         return commonMapper.update(fsp.updateQry(paramMap));
     }
 
     @Override
-    public int updateOpt(Map<String, Object> paramMap) throws Exception {
+    public int modOpt(Map<String, Object> paramMap) throws Exception {
         return commonMapper.update(fsp.updateOptQry(paramMap));
     }
 
     @Override
-    public void delete(int seq) throws Exception {
+    public void del(int seq) throws Exception {
         commonMapper.delete(fsp.deleteQry(seq));
     }
 }

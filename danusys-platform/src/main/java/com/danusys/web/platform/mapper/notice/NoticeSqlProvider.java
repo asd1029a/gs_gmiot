@@ -12,7 +12,6 @@ public class NoticeSqlProvider {
         String length = paramMap.get("length").toString();
 
         SQL sql = new SQL() {{
-
             SELECT("*");
             FROM("t_notice");
             if(keyword != null && !keyword.equals("")) {

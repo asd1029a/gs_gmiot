@@ -1,5 +1,6 @@
 package com.danusys.web.drone.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -32,5 +33,12 @@ public class Mission {
    @OneToMany(mappedBy ="mission" ,fetch = FetchType.EAGER)  //마지막에 수정됨
    @JsonManagedReference
     private final List<MissionDetails> missonDetails= new ArrayList<>();
+
+
+    @OneToOne
+    @JoinColumn(name="drone_id")
+    @JsonBackReference
+    private Drone drone;
+
 
 }

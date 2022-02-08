@@ -7,12 +7,22 @@ import java.util.Map;
 public class EventSqlProvider {
     public String selectListQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
+            String keyword = paramMap.get("keyword").toString();
+            String start = paramMap.get("start").toString();
+            String length = paramMap.get("length").toString();
 
             SELECT("*, " +
                     "'' as station_seq, '' as station_name, '' as station_kind, " +
                     "'' as dong_short_nm, '' as address, " +
                     "'' as facility_seq, '' as facility_kind");
             FROM("t_event");
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("event_kind LIKE" + keyword);
+            }
+            if (!start.equals("") && !length.equals("")) {
+                LIMIT(length);
+                OFFSET(start);
+            }
             //WHERE("seq =" + seq);
         }};
         return sql.toString();

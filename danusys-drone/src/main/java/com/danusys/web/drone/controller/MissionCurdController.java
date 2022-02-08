@@ -29,8 +29,6 @@ public class MissionCurdController {
     @PutMapping("/missiondetails")
     public ResponseEntity<?> saveMissionDetails(@RequestBody Map<String, Object> missionList) {
         log.info("missionId={}", missionList);
-
-
         List<MissionDetails> missionDetailsList = new ArrayList<>();
         missionDetailsList = (List<MissionDetails>) missionList.get("missionList");
 
@@ -76,12 +74,6 @@ public class MissionCurdController {
 //    }
 
 
-    @GetMapping("/findAllMission")
-    public ResponseEntity findAllMission() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(missionDetailsService.findAllMisson());
-    }
 
     @DeleteMapping("/mission")
     public ResponseEntity<?> deleteMission(Mission mission){
@@ -93,7 +85,7 @@ public class MissionCurdController {
     }
 
 
-    @GetMapping("/mission")
+    @PostMapping("/mission")
     public ResponseEntity<?> findMission(String name,Long id) {
 
         if(name!=null) {
@@ -108,8 +100,16 @@ public class MissionCurdController {
 
         return ResponseEntity
                 .status(HttpStatus.NOT_ACCEPTABLE)
-                .body("error");
+                .body("fail");
 
+    }
+    @GetMapping("/missioncount")
+    public ResponseEntity<?> getMissionCount(){
+        List<Mission> missionList=missionService.findAllMission();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(missionList.size());
     }
 
 

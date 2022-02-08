@@ -39,7 +39,7 @@ public class NoticeController {
      */
     @PutMapping
     public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(noticeService.insert(paramMap));
+        return ResponseEntity.ok().body(noticeService.add(paramMap));
     }
 
     /**
@@ -47,7 +47,7 @@ public class NoticeController {
      */
     @PatchMapping
     public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(noticeService.update(paramMap));
+        return ResponseEntity.ok().body(noticeService.mod(paramMap));
     }
 
     /**
@@ -55,7 +55,7 @@ public class NoticeController {
      */
     @DeleteMapping(value="/{noticeSeq}")
     public ResponseEntity<?> del (@PathVariable("noticeSeq") int noticeSeq) throws Exception {
-        noticeService.delete(noticeSeq);
+        noticeService.del(noticeSeq);
         return ResponseEntity.noContent().build();
     }
 

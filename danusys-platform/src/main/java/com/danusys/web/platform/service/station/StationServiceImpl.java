@@ -33,17 +33,17 @@ public class StationServiceImpl implements StationService{
     }
 
     @Override
-    public int insert(Map<String, Object> paramMap) throws Exception {
+    public int add(Map<String, Object> paramMap) throws Exception {
         return commonMapper.insert(ssp.insertQry(paramMap));
     }
 
     @Override
-    public int update(Map<String, Object> paramMap) throws Exception {
+    public int mod(Map<String, Object> paramMap) throws Exception {
         return commonMapper.update(ssp.updateQry(paramMap));
     }
 
     @Override
-    public void delete(int seq) throws Exception {
+    public void del(int seq) throws Exception {
         commonMapper.delete(ssp.deleteQry(seq));
     }
 }
