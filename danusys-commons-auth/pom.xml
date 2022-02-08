@@ -21,7 +21,11 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.danusys.web</groupId>
+            <artifactId>danusys-commons-util</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <!--   스타트웹, jpa 끝  -->
         <!-- 롬복,다누시스웹 -->

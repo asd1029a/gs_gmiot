@@ -47,5 +47,7 @@ public class Drone {
     private  DroneDetails droneDetails;
 
 
-
+    @OneToOne(mappedBy ="drone")
+    @JsonManagedReference
+    private Mission mission;
 }

@@ -1,19 +1,17 @@
 package com.danusys.web.commons.auth.service;
 
-import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.dto.response.GroupResponse;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
-import com.danusys.web.commons.auth.repository.UserRepository;
-import com.danusys.web.commons.auth.util.SHA256;
+import com.danusys.web.commons.auth.util.PagingUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.NoSuchAlgorithmException;
-
 import java.sql.Timestamp;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserGroupService {
@@ -30,15 +28,30 @@ public class UserGroupService {
         return userGroupRepository.findByGroupName(groupName);
 
     }
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
+    public GroupResponse findUserGroupResponseByGroupSeq(int groupSeq) {
+        UserGroup findUserGroup=userGroupRepository.findByUserGroupSeq(groupSeq);
+        GroupResponse groupResponse=new GroupResponse(findUserGroup.getUserGroupSeq(), findUserGroup.getGroupName(), findUserGroup.getGroupDesc(), findUserGroup.getInsertDt(),
+                findUserGroup.getInsertUserSeq(),findUserGroup.getUpdateDt(),findUserGroup.getUpdateUserSeq());
+
+        return groupResponse;
+    }
+
+    //    @Transactional(readOnly = true)
     public UserGroup findUserGroupByGroupSeq(int groupSeq) {
-        return userGroupRepository.findByUserGroupSeq(groupSeq);
+        UserGroup findUserGroup=userGroupRepository.findByUserGroupSeq(groupSeq);
+
+
+        return findUserGroup;
     }
 
     @Transactional
-    public UserGroup updateUserGroup(UserGroup userGroup) {
+    public int updateUserGroup(UserGroup userGroup) {
 
         UserGroup findUserGroup = this.findUserGroupByGroupSeq(userGroup.getUserGroupSeq());
+        if(findUserGroup==null){
+            return 0;
+        }
         if (userGroup.getGroupDesc() != null)
             findUserGroup.setGroupDesc(userGroup.getGroupDesc());
         if (userGroup.getGroupName() != null)
@@ -51,13 +64,15 @@ public class UserGroupService {
 
 
         //    return userRepository.save(findUser);
-        return findUserGroup;
+        return findUserGroup.getUserGroupSeq();
     }
 
     @Transactional
     public int saveUserGroup(UserGroup userGroup) {
 
-
+        if (userGroup.getGroupName()==null || userGroup.getGroupDesc()==null){
+            return 0;
+        }
         if (userGroup.getInsertUserSeq() != 0) {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             userGroup.setInsertDt(timestamp);
@@ -75,9 +90,21 @@ public class UserGroupService {
     }
 
 
-    public List<UserGroup> findListGroup(Map<String, Object> paramMap) {
+    public Map<String, Object> findListGroup(Map<String, Object> paramMap) {
+        List<UserGroup> userGroupList =  userGroupRepository.findAll();
+        List<GroupResponse> groupResponseList = userGroupList.stream().map(GroupResponse::new).collect(Collectors.toList());
+        //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        try {
+            if (paramMap.get("draw") != null) resultMap = PagingUtil.createPagingMap(paramMap, groupResponseList);
+            else {
+                resultMap.put("data", groupResponseList);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
-        return userGroupRepository.findAll();
+        return resultMap;
     }
 }

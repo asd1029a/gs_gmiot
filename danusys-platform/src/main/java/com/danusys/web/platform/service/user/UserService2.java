@@ -30,6 +30,10 @@ public class UserService2 {
     private final UserRepository userRepository;
     private final UserGroupInUserRepository userGroupInUserRepository;
 
+    /*
+
+
+     */
 
     public User findUser(String userName, String errorMessage) {
 
@@ -57,6 +61,8 @@ public class UserService2 {
     @Transactional
     public int updateUser(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
+
+
         if (findUser != null) {
             if (user.getPassword() != null) {
                 SHA256 sha256 = new SHA256();
@@ -87,6 +93,8 @@ public class UserService2 {
             }
 
 
+        } else {
+            return 0;
         }
 
         //    return userRepository.save(findUser);
@@ -104,6 +112,13 @@ public class UserService2 {
 
     @Transactional
     public int saveUser(User user) {
+
+        if (user.getUserId() == null || user.getPassword() == null)
+            return -1;
+
+        User findUser = userRepository.findByUserId(user.getUserId());
+        if (findUser != null)
+            return 0;
         SHA256 sha256 = new SHA256();
         try {
             String cryptoPassword = sha256.encrypt(user.getPassword());
