@@ -29,8 +29,6 @@ public class MissionCurdController {
     @PutMapping("/missiondetails")
     public ResponseEntity<?> saveMissionDetails(@RequestBody Map<String, Object> missionList) {
         log.info("missionId={}", missionList);
-
-
         List<MissionDetails> missionDetailsList = new ArrayList<>();
         missionDetailsList = (List<MissionDetails>) missionList.get("missionList");
 
@@ -76,12 +74,6 @@ public class MissionCurdController {
 //    }
 
 
-    @GetMapping("/findAllMission")
-    public ResponseEntity findAllMission() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(missionDetailsService.findAllMisson());
-    }
 
     @DeleteMapping("/mission")
     public ResponseEntity<?> deleteMission(Mission mission){
@@ -92,24 +84,43 @@ public class MissionCurdController {
 
     }
 
-
-    @GetMapping("/mission")
-    public ResponseEntity<?> findMission(String name,Long id) {
-
-        if(name!=null) {
+    @GetMapping("/mission/{id}")
+    public  ResponseEntity<?> findMission(@PathVariable Long id){
+        if(id!=null){
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(missionService.missionResponseList(name));
-        }else if(id!=null){
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(missionService.missionResponseList(id));
+                    .body(missionService.missionResponse(id));
         }
-
         return ResponseEntity
                 .status(HttpStatus.NOT_ACCEPTABLE)
-                .body("error");
+                .body("fail");
+    }
 
+    @PostMapping("/mission")
+    public ResponseEntity<?> findMissionList(@RequestBody Map<String,Object> paramMap) {
+
+        return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(missionService.missionResponseList(paramMap));
+
+    }
+
+    @PostMapping("/missiondetails")
+    public ResponseEntity<?> findMissionDetailsList(@RequestBody Map<String,Object> paramMap) {
+
+        String name=(String)paramMap.get("name");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(missionDetailsService.findMission(name));
+
+    }
+    @GetMapping("/missioncount")
+    public ResponseEntity<?> getMissionCount(){
+        List<Mission> missionList=missionService.findAllMission();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(missionList.size());
     }
 
 

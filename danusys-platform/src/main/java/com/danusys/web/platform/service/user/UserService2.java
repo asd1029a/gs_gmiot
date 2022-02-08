@@ -1,6 +1,7 @@
 package com.danusys.web.platform.service.user;
 
 
+import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
@@ -13,6 +14,10 @@ import com.danusys.web.platform.service.notice.NoticeService;
 import com.danusys.web.platform.service.notice.NoticeServiceImpl;
 import com.danusys.web.platform.util.PagingUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +30,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService2 {
 
     private final UserRepository userRepository;
     private final UserGroupInUserRepository userGroupInUserRepository;
 
+    /*
+
+
+     */
 
     public User findUser(String userName, String errorMessage) {
 
@@ -50,6 +60,8 @@ public class UserService2 {
         UserDto userDto = new UserDto(user.getUserSeq(), user.getUserId(), user.getUserName(), user.getEmail(), user.getTel(), user.getAddress(), user.getStatus(), user.getDetailAddress(),
                 user.getLastLoginDt(), user.getInsertUserSeq(), user.getUpdateUserSeq(), user.getInsertDt(), user.getUpdateDt());
         //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
+
+
         return userDto;
 
     }
@@ -57,6 +69,11 @@ public class UserService2 {
     @Transactional
     public int updateUser(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
+        // log.info("{}",userDetails.getUserSeq());
+
         if (findUser != null) {
             if (user.getPassword() != null) {
                 SHA256 sha256 = new SHA256();
@@ -80,13 +97,14 @@ public class UserService2 {
                 findUser.setStatus(user.getStatus());
             if (user.getDetailAddress() != null)
                 findUser.setDetailAddress(user.getDetailAddress());
-            if (user.getUpdateUserSeq() != 0) {
-                findUser.setUpdateUserSeq(user.getUpdateUserSeq());
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                findUser.setUpdateDt(timestamp);
-            }
+
+            findUser.setUpdateUserSeq(userDetails.getUserSeq());
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            findUser.setUpdateDt(timestamp);
 
 
+        } else {
+            return 0;
         }
 
         //    return userRepository.save(findUser);
@@ -104,13 +122,28 @@ public class UserService2 {
 
     @Transactional
     public int saveUser(User user) {
+
+        if (user.getUserId() == null || user.getPassword() == null)
+            return -1;
+
+        User findUser = userRepository.findByUserId(user.getUserId());
+        if (findUser != null)
+            return 0;
         SHA256 sha256 = new SHA256();
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
+        // log.info("{}",userDetails.getUserSeq());
         try {
             String cryptoPassword = sha256.encrypt(user.getPassword());
             user.setPassword("{SHA-256}" + cryptoPassword);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+        user.setInsertUserSeq(userDetails.getUserSeq());
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        user.setInsertDt(timestamp);
+
         userRepository.save(user);
         return user.getUserSeq();
     }

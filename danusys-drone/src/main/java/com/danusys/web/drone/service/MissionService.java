@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,36 +38,64 @@ public class MissionService {
         return missonList.get();
     }
 
-    public List<?> missionResponseList(Long id) {
-        missionList = missionRepository.findAllById(id);
+    public MissionResponse missionResponse(Long id) {
 
-        List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
+        Optional<Mission> optionalMission = missionRepository.findById(id);
+        if(!optionalMission.isPresent()){
+            return null;
+        }
+        Mission mission = optionalMission.get();
 
+//        MissionResponse missionResponse=new MissionResponse(mission.getId(),mission.getName(),
+//                mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList()));
+
+        MissionResponse missionResponse=new MissionResponse(mission.getId(),mission.getName(),mission.getAdminUserId());
+
+        return missionResponse;
+    }
+
+    public List<?> missionResponseList( Map<String,Object> paramMap) {
+
+        List<Mission> missionList=null;
+
+        if(paramMap.get("name")!=null){
+            String name=(String)paramMap.get("name");
+            missionList = missionRepository.findAllByNameLike("%"+name+"%");
+        }
+        if(paramMap.get("adminUserId")!=null){
+            String adminUserId=(String)paramMap.get("adminUserId");
+            missionList = missionRepository.findAllByAdminUserIdLike("%"+adminUserId+"%");
+        }
+
+
+
+
+//        missionList.forEach(r -> {
+//            r.getMissonDetails().forEach(rr -> {
+//
+//                log.info("rr.getName={}", rr.getName());
+//                if (rr.getName().equals("takeoff")) {
+//                    this.returnType = "takeoff";
+//                }
+//            });
+//
+//        });
 
         return missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
     }
 
-    public List<?> missionResponseList(String name) {
-        List<Mission> missionList = missionRepository.findAllByName(name);
-        AtomicReference<String> returnType = null;
-        missionList.forEach(r -> {
-            r.getMissonDetails().forEach(rr -> {
 
-                log.info("rr.getName={}", rr.getName());
-                if (rr.getName().equals("takeoff")) {
-                    this.returnType = "takeoff";
-                }
-            });
 
-        });
 
-        return missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
-    }
+    public Long saveMission(Mission mission) {
+        Mission findMission=missionRepository.findByName(mission.getName());
 
-    @Transactional
-    public String saveMission(Mission mission) {
-        missionRepository.save(mission);
-        return "success";
+        if(findMission==null){
+            missionRepository.save(mission);
+            return mission.getId();
+        }
+        return 0l;
+
     }
 
     @Transactional
@@ -82,6 +111,13 @@ public class MissionService {
 
     @Transactional
     public String deleteMission(Mission mission) {
+
+        Optional<Mission> optionalMission=missionRepository.findById(mission.getId());
+
+        if (!optionalMission.isPresent()) {
+            return "fail";
+        }
+
         Long result = missionDetailsRepository.deleteByMission(mission);
         log.info("result={}", result);
         missionRepository.deleteById(mission.getId());

@@ -48,6 +48,9 @@ public class MissionDetailsService {
         log.info("mission_id={}", mission_id);
         Optional<Mission> mission = missionRepository.findById(mission_id);
         log.info("mission={}", mission);
+        if (!mission.isPresent()) {
+            return "fail";
+        }
         ObjectMapper mapper = new ObjectMapper();
         List<MissionDetails> missionDetailsList = mapper.convertValue(missionDetails, new TypeReference<List<MissionDetails>>() {
         });
@@ -55,9 +58,7 @@ public class MissionDetailsService {
         log.info("missionDetails={}", missionDetails);
 
         Long deleteResult=missionDetailsRepository.deleteByMission(mission.get());
-        if (!mission.isPresent()) {
-            return "fail";
-        }
+
         missionDetailsList.forEach(r -> {
             r.setMission(mission.get());
         });
@@ -129,7 +130,17 @@ public class MissionDetailsService {
 
     }
 
-    public List<MissionDetails> findAllMisson() {
+    public List<MissionDetailResponse> findMission(String name) {
+        log.info("{}",name);
+        Mission mission =missionRepository.findByName(name);
+        List<MissionDetails> missonDetails = missionDetailsRepository.findAllByMission(mission);
+
+        log.info("{}",missonDetails);
+        return missonDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
+
+    }
+
+    public List<MissionDetails> findAllMission() {
         return (List<MissionDetails>) missionDetailsRepository.findAll();
     }
 

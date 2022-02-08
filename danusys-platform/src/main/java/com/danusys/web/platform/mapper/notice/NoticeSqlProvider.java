@@ -6,14 +6,12 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.Map;
 
 public class NoticeSqlProvider {
-
     public String selectListQry(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
         String start = paramMap.get("start").toString();
         String length = paramMap.get("length").toString();
 
         SQL sql = new SQL() {{
-
             SELECT("notice_seq" +
                             ",notice_title" +
                             ",notice_content" +

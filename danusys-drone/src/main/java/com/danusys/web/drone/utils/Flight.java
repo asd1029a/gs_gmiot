@@ -47,12 +47,12 @@ public class Flight {
     private final DroneLogDetailsService droneLogDetailsService;
     private final DroneLogService droneLogService;
 
-    MavlinkConnection connection = null;
-    Socket socket = null;
-    Gps gps = new Gps();
-    Gson gson = new Gson();
-    Timer t = null;
-    DroneLog droneLog=null;
+    private MavlinkConnection connection = null;
+    private Socket socket = null;
+    private Gps gps = new Gps();
+    private Gson gson = new Gson();
+    private Timer t = null;
+    private DroneLog droneLog=null;
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog) {
 
@@ -391,8 +391,13 @@ public class Flight {
 
 
                     String missionText = statustextMavlinkMessage.getPayload().text();
+
                     log.info(missionText);
-                    gps.setMissionType(missionText);
+                    if(missionText.equals("Arming motors"))
+                    {
+                        gps.setMissionType("takeoff");
+                    }
+
 
 
                 } else if (message.getPayload() instanceof CommandAck) {
@@ -440,7 +445,7 @@ public class Flight {
         connection = null;
         Timer t = null;
         Gson gson = new Gson();
-
+        gps.setMissionType("waypoint");
 
         try {
 
@@ -529,16 +534,13 @@ public class Flight {
 
                 } else if (message.getPayload() instanceof Statustext) {        //statusMessage
 
-
                     log.info(message.toString());
-
-
                     MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
 
 
                     String missionText = statustextMavlinkMessage.getPayload().text();
                     log.info(missionText);
-                    gps.setMissionType(missionText);
+                    gps.setMissionType("waypoint");
 
 
                 } else if (message.getPayload() instanceof CommandAck) {
@@ -587,7 +589,7 @@ public class Flight {
         connection = null;
         Timer t = null;
         Gson gson = new Gson();
-
+        gps.setMissionType("return");
 
         try {
 
@@ -699,7 +701,6 @@ public class Flight {
 
         } catch (Exception ioe) {
 
-            if (ioe instanceof EOFException) return "onemore";
         } finally {
 
             try {
@@ -762,16 +763,7 @@ public class Flight {
     }
 
     public String pauseOrPlay(int pauseOrPlay) {
-
-        // Socket socket = null;
-        // MavlinkConnection connection = null;
-        // Gps gps = new Gps();
-        //  Timer t = null;
-        //   Gson gson = new Gson();
         try {
-            //       socket = new Socket(tcpServerHost, tcpServerPort);
-            //       connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-
             int systemId = 1;
             int componentId = 1;
             int linkId = 1;
@@ -798,13 +790,7 @@ public class Flight {
             droneLogDetailsDoPauseContinue.setParam6("0");
             droneLogDetailsDoPauseContinue.setParam7("0");
             droneLogDetailsService.saveDroneLogDetails(droneLogDetailsDoPauseContinue);
-//            t = new Timer();
-//            t.schedule(new TimerTask() {
-//                @Override
-//                public void run() {
-//                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-//                }
-//            }, 0, 2000);
+
             MavlinkMessage message;
             while ((message = connection.next()) != null) {
 
@@ -935,10 +921,10 @@ public class Flight {
     }
 
 
-    public String doMission(HashMap<String, MissionItemInt> missionItemMap, int maxFlag) {
+    public String doMission(HashMap<String, MissionItemInt> missionItemMap, int maxFlag,  HashMap<String, Integer> speeds) {
         //       connection = null;
         //       socket = null;
-
+        log.info("speeds={}",speeds);
 
         try {
             socket = new Socket(tcpServerHost, tcpServerPort);
@@ -1030,11 +1016,12 @@ public class Flight {
                     MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
 
                     if (statustextMavlinkMessage.getPayload().text().contains("Hit ground")) {
-                        gps.setMissionType("landing");
+                    //    gps.setMissionType("landing");
                     }
 
                     if (statustextMavlinkMessage.getPayload().text().equals("Disarming motors")) {
-                        gps.setMissionType("mission end");
+                        //gps.setMissionType("mission end");
+
                         break;
                     }
                     String missionText = statustextMavlinkMessage.getPayload().text();
@@ -1138,173 +1125,7 @@ public class Flight {
         return "stop";
     }
 
-    public String droneInfo() {
-        Socket socket = null;
-        MavlinkConnection connection = null;
 
-
-        try {
-            socket = new Socket(tcpServerHost, tcpServerPort);
-
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-            Gps gps = new Gps();
-            MavlinkMessage message;
-
-            while ((message = connection.next()) != null) {
-                Gson gson = new Gson();
-
-                if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {
-                    substring.getGps(message, gps);
-
-
-                } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {
-
-                    String NavControllerOutput = message.getPayload().toString();
-                    int index = NavControllerOutput.indexOf("wpDist");
-                    String wpDistString = null;
-                    int substringCount = 10;
-                    //   log.info("istrue={}",b.contains(","));
-                    while ((wpDistString = NavControllerOutput.substring(index + 7, index + 7 + substringCount)).contains(",")) {
-                        substringCount--;
-
-                    }
-                    //    log.info(wpDistString);
-                    //     gps.setWpDistString(wpDistString);
-                    if (substring.timerFlag(message))
-                        this.simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-
-
-                }
-            }
-        } catch (Exception ioe) {
-            if (ioe instanceof EOFException) {
-
-                try {
-                    socket.close();
-                    return "onemore";
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        } finally {
-            System.out.println("droneInfo");
-
-
-        }
-        return "onemore";
-    }
-
-
-    public String camera() {
-        MavlinkConnection connection = null;
-        Socket socket = null;
-        try {
-            socket = new Socket(tcpServerHost, tcpServerPort);
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-
-            int systemId = 1;
-            int componentId = 1;
-            int linkId = 1;
-            int flag = 0;
-            long timestamp = System.currentTimeMillis();/* provide microsecond time */
-            ;
-            byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
-
-            MavlinkMessage message;
-
-            //CameraInformation cameraInformation = CameraInformation.builder().camDefinitionUri("rtsp://172.20.14.87:8554/myrtsp2").flags(VideoStreamStatusFlags.VIDEO_STREAM_STATUS_FLAGS_RUNNING).build();
-
-            //   connection.send2(systemId, componentId, cameraInformation);
-//            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_GET_HOME_POSITION).build(), linkId, timestamp, secretKey);
-            MissionCount count = MissionCount.builder().count(4).targetComponent(100).targetSystem(1).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION).build();
-            connection.send2(systemId, componentId, count);
-            // connection.send2(systemId, componentId, heartbeat);
-
-            MissionItemInt missionItemInt0 = new MissionItemInt.Builder().command(MavCmd.MAV_CMD_NAV_WAYPOINT).param1(0).param2(0).param3(0).param4(0).x(374456813).y(374435347).z(100).seq(0).targetComponent(1).targetSystem(1).current(0).autocontinue(1).frame(MavFrame.MAV_FRAME_GLOBAL_INT).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
-//                                .build(), linkId, timestamp, secretKey);
-                    .build();
-
-
-            MissionItemInt missionItemInt1 = new MissionItemInt.Builder().command(MavCmd.MAV_CMD_NAV_WAYPOINT).param1(0).param2(0).param3(0).param4(0).x(374456813).y(374435347).z(100).seq(1).targetComponent(1).targetSystem(1).current(0).autocontinue(1).frame(MavFrame.MAV_FRAME_GLOBAL_INT).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
-//                                .build(), linkId, timestamp, secretKey);
-                    .build();
-
-            MissionItemInt missionItemInt2 = new MissionItemInt.Builder().command(MavCmd.MAV_CMD_NAV_WAYPOINT).param1(0).param2(0).param3(0).param4(0).x(374456813).y(374435347).z(100).seq(2).targetComponent(1).targetSystem(1).current(0).autocontinue(1).frame(MavFrame.MAV_FRAME_GLOBAL_INT).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
-//                                .build(), linkId, timestamp, secretKey);
-                    .build();
-
-
-            MissionItemInt missionItemInt3 = new MissionItemInt.Builder().command(MavCmd.MAV_CMD_NAV_RETURN_TO_LAUNCH).seq(3).targetComponent(1).targetSystem(1).current(0).autocontinue(1).frame(MavFrame.MAV_FRAME_GLOBAL_INT).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
-//                                .build(), linkId, timestamp, secretKey);
-                    .build();
-
-
-            while ((message = connection.next()) != null) {
-                if (message instanceof Mavlink2Message) {
-                    Mavlink2Message message2 = (Mavlink2Message) message;
-                    if (message2.getPayload().getClass().getName().contains("SysStatus") ||//battery voltage배터리  //battery_remaining 배터리
-                            message2.getPayload().getClass().getName().contains("PowerStatus") || //payload=PowerStatus{vcc=5000, vservo=0, flags=EnumValue{value=0, entry=null}}}
-                            message2.getPayload().getClass().getName().contains("NavControllerOutput") || //wpdist 목적지와의 거리
-                            message2.getPayload().getClass().getName().contains("MissionCurrent") || //payload=MissionCurrent{seq=0}
-                            message2.getPayload().getClass().getName().contains("GlobalPositionInt") || //payload=MissionCurrent{seq=0}
-                            message2.getPayload().getClass().getName().contains("ServoOutputRaw") || //ServoOutputRaw{timeUsec=2772547204, port=0, servo1Raw=1591, servo2Raw=1591, servo3Raw=1590, servo4Raw=1591, servo5Raw=0, servo6Raw=0, servo7Raw=0, servo8Raw=0, servo9Raw=0, servo10Raw=0, servo11Raw=0, servo12Raw=0, servo13Raw=0, servo14Raw=0, servo15Raw=0, servo16Raw=0}
-                            message2.getPayload().getClass().getName().contains("SensorOffsets") || //ServoOutputRaw{timeUsec=2772547204, port=0, servo1Raw=1591, servo2Raw=1591, servo3Raw=1590, servo4Raw=1591, servo5Raw=0, servo6Raw=0, servo7Raw=0, servo8Raw=0, servo9Raw=0, servo10Raw=0, servo11Raw=0, servo12Raw=0, servo13Raw=0, servo14Raw=0, servo15Raw=0, servo16Raw=0}
-                            message2.getPayload().getClass().getName().contains("RcChannels") || //RcChannels{timeBootMs=2637547, chancount=16, chan1Raw=1500, chan2Raw=1500, chan3Raw=1000, chan4Raw=1500, chan5Raw=1800, chan6Raw=1000, chan7Raw=1000, chan8Raw=1800, chan9Raw=0, chan10Raw=0, chan11Raw=0, chan12Raw=0, chan13Raw=0, chan14Raw=0, chan15Raw=0, chan16Raw=0, chan17Raw=0, chan18Raw=0, rssi=255}}
-                            message2.getPayload().getClass().getName().contains("RawImu") || //RawImu{timeUsec=2582049267, xacc=0, yacc=1, zacc=-997, xgyro=4, ygyro=3, zgyro=2, xmag=151, ymag=258, zmag=413, id=0, temperature=4499}
-                            message2.getPayload().getClass().getName().contains("ScaledImu2") || //payload=ScaledImu2{timeBootMs=3097547, xacc=4, yacc=0, zacc=-1001, xgyro=-1, ygyro=0, zgyro=0, xmag=119, ymag=274, zmag=413, temperature=4499}
-                            message2.getPayload().getClass().getName().contains("ScaledImu3") || message2.getPayload().getClass().getName().contains("ScaledPressure") || message2.getPayload().getClass().getName().contains("ScaledPressure2") || message2.getPayload().getClass().getName().contains("GpsRawInt") || //lat=374456473, lon=1268953303, alt=18230, eph=121, epv=200, vel=0, cog=3988, satellitesVisible=10, altEllipsoid=0, hAcc=300, vAcc=300, velAcc=40, hdgAcc=0
-                            message2.getPayload().getClass().getName().contains("SystemTime") || message2.getPayload().getClass().getName().contains("TerrainReport") ||//TerrainReport{lat=374433470, lon=1268897507, spacing=100, terrainHeight=14.5117655, currentHeight=100.431244, pending=0, loaded=504}}
-                            message2.getPayload().getClass().getName().contains("LocalPositionNed") || //LocalPositionNed{timeBootMs=12024498, x=-0.07747139, y=0.061710242, z=0.001238235, vx=-0.013305673, vy=-1.9261298E-4, vz=4.191259E-4}}
-                            message2.getPayload().getClass().getName().contains("Vibration") || //Vibration{timeUsec=14555498804, vibrationX=0.0026672243, vibrationY=0.0027407336, vibrationZ=0.0027245833, clipping0=0, clipping1=0, clipping2=0}}
-                            message2.getPayload().getClass().getName().contains("BatteryStatus") || //batteryFunction=EnumValue{value=0, entry=MAV_BATTERY_FUNCTION_UNKNOWN}, type=EnumValue{value=0, entry=MAV_BATTERY_TYPE_UNKNOWN}, temperature=32767, voltages=[12587, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535], currentBattery=0, currentConsumed=151475, energyConsumed=68546, batteryRemaining=0, timeRemaining=0, chargeState=EnumValue{value=1, entry=MAV_BATTERY_CHARGE_STATE_OK}}}
-                            message2.getPayload().getClass().getName().contains("Attitude") || //=Attitude{timeBootMs=11556094, roll=0.0018187475, pitch=6.057985E-4, yaw=2.2014248, rollspeed=2.1905173E-4, pitchspeed=2.5810348E-4, yawspeed=7.619873E-4}}
-                            message2.getPayload().getClass().getName().contains("VfrHud") || // payload=VfrHud{airspeed=3.3680003, groundspeed=3.021782, heading=37, throttle=34, alt=99.979996, climb=0.015121608}}
-                            // payload=VfrHud{airspeed=3.3680003, groundspeed=3.021782, heading=37, throttle=34, alt=99.979996, climb=0.015121608}}
-
-                            message2.getPayload().getClass().getName().contains("Meminfo") || //payload=Meminfo{brkval=0, freemem=65535, freemem32=131072}}payload=Meminfo{brkval=0, freemem=65535, freemem32=131072}}
-                            message2.getPayload().getClass().getName().contains("Heartbeat") || //payload=Meminfo{brkval=0, freemem=65535, freemem32=131072}}payload=Meminfo{brkval=0, freemem=65535, freemem32=131072}}
-                            message2.getPayload().getClass().getName().contains("Ahrs") || //Ahrs{omegaix=-0.0025094047, omegaiy=-0.0025298656, omegaiz=-0.0020406283, accelWeight=0.0, renormVal=0.0, errorRp=0.002322554, errorYaw=0.0013488759}}
-                            message2.getPayload().getClass().getName().contains("Hwstatus") || // payload=Hwstatus{vcc=5000, i2cerr=0}}
-                            message2.getPayload().getClass().getName().contains("MountStatus") || //x
-                            message2.getPayload().getClass().getName().contains("EkfStatusReport") || //velocityVariance=0.021335527, posHorizVariance=0.025864147, posVertVariance=0.0017659252, compassVariance=0.035943523, terrainAltVariance=0.0, airspeedVariance=0.0}}
-                            message2.getPayload().getClass().getName().contains("Simstate") || //Simstate{roll=5.885804E-4, pitch=-5.997561E-7, yaw=-1.0545728, xacc=-0.09285733, yacc=-0.050651476, zacc=-9.81958, xgyro=-0.0067729917, ygyro=-0.0050521465, zgyro=3.3953006E-4, lat=374456475, lng=1268953310}
-                            message2.getPayload().getClass().getName().contains("Ahrs2") || //x
-                            message2.getPayload().getClass().getName().contains("Timesync") || message2.getPayload().getClass().getName().contains("ParamValue") || //x
-                            message2.getPayload().getClass().getName().contains("PositionTargetGlobalInt") || //x
-                            message2.getPayload().getClass().getName().contains("EscTelemetry1To4") //EscTelemetry1To4{temperature=[B@553a3d88, voltage=[0, 0, 0, 0], current=[0, 0, 0, 0], totalcurrent=[0, 0, 0, 0], rpm=[0, 0, 0, 0], count=[0, 0, 0, 0]}
-                        //여기서부터 내가작성
-                    ) {
-                    } else {
-                        log.info(message2.toString());
-                        if (message.getPayload() instanceof MissionRequest && flag == 0) {
-
-                            connection.send2(systemId, componentId, missionItemInt0);
-                            flag++;
-                        } else if (message.getPayload() instanceof MissionRequest && flag == 1) {
-                            connection.send2(systemId, componentId, missionItemInt1);
-                            flag++;
-                        } else if (message.getPayload() instanceof MissionRequest && flag == 2) {
-                            connection.send2(systemId, componentId, missionItemInt2);
-                            flag++;
-                        } else if (message.getPayload() instanceof MissionRequest && flag == 3) {
-                            connection.send2(systemId, componentId, missionItemInt3);
-                            flag++;
-
-                        }
-                    }
-                }
-            }
-
-        } catch (Exception ioe) {
-            System.out.println(ioe);
-        } finally {
-            System.out.println("holddrone");
-
-
-        }
-        return "stop";
-    }
 
     public String heartBeat() {
         MavlinkConnection connection = null;
@@ -1364,80 +1185,6 @@ public class Flight {
                         //여기서부터 내가작성
                     ) {
                     } else {
-                        log.info(message2.toString());
-
-                    }
-                }
-            }
-
-        } catch (Exception ioe) {
-            System.out.println(ioe);
-        } finally {
-            System.out.println("holddrone");
-
-
-        }
-        return "stop";
-    }
-
-    public String gimbal() {
-        MavlinkConnection connection = null;
-        Socket socket = null;
-        try {
-            socket = new Socket(tcpServerHost, tcpServerPort);
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-
-            int systemId = 0;
-            int componentId = 0;
-            int linkId = 1;
-            int flag = 0;
-            long timestamp = System.currentTimeMillis();/* provide microsecond time */
-            ;
-            byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
-
-            MavlinkMessage message;
-
-
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_REQUEST_MESSAGE).param1(205).build());
-
-            while ((message = connection.next()) != null) {
-                if (message instanceof Mavlink2Message) {
-                    Mavlink2Message message2 = (Mavlink2Message) message;
-                    if (message2.getPayload().getClass().getName().contains("SysStatus") ||//battery voltage배터리  //battery_remaining 배터리
-                            message2.getPayload().getClass().getName().contains("PowerStatus") || //payload=PowerStatus{vcc=5000, vservo=0, flags=EnumValue{value=0, entry=null}}}
-                            message2.getPayload().getClass().getName().contains("NavControllerOutput") || //wpdist 목적지와의 거리
-                            message2.getPayload().getClass().getName().contains("MissionCurrent") || //payload=MissionCurrent{seq=0}
-                            message2.getPayload().getClass().getName().contains("GlobalPositionInt") || //payload=MissionCurrent{seq=0}
-                            message2.getPayload().getClass().getName().contains("ServoOutputRaw") || //ServoOutputRaw{timeUsec=2772547204, port=0, servo1Raw=1591, servo2Raw=1591, servo3Raw=1590, servo4Raw=1591, servo5Raw=0, servo6Raw=0, servo7Raw=0, servo8Raw=0, servo9Raw=0, servo10Raw=0, servo11Raw=0, servo12Raw=0, servo13Raw=0, servo14Raw=0, servo15Raw=0, servo16Raw=0}
-                            message2.getPayload().getClass().getName().contains("SensorOffsets") || //ServoOutputRaw{timeUsec=2772547204, port=0, servo1Raw=1591, servo2Raw=1591, servo3Raw=1590, servo4Raw=1591, servo5Raw=0, servo6Raw=0, servo7Raw=0, servo8Raw=0, servo9Raw=0, servo10Raw=0, servo11Raw=0, servo12Raw=0, servo13Raw=0, servo14Raw=0, servo15Raw=0, servo16Raw=0}
-                            message2.getPayload().getClass().getName().contains("RcChannels") || //RcChannels{timeBootMs=2637547, chancount=16, chan1Raw=1500, chan2Raw=1500, chan3Raw=1000, chan4Raw=1500, chan5Raw=1800, chan6Raw=1000, chan7Raw=1000, chan8Raw=1800, chan9Raw=0, chan10Raw=0, chan11Raw=0, chan12Raw=0, chan13Raw=0, chan14Raw=0, chan15Raw=0, chan16Raw=0, chan17Raw=0, chan18Raw=0, rssi=255}}
-                            message2.getPayload().getClass().getName().contains("RawImu") || //RawImu{timeUsec=2582049267, xacc=0, yacc=1, zacc=-997, xgyro=4, ygyro=3, zgyro=2, xmag=151, ymag=258, zmag=413, id=0, temperature=4499}
-                            message2.getPayload().getClass().getName().contains("ScaledImu2") || //payload=ScaledImu2{timeBootMs=3097547, xacc=4, yacc=0, zacc=-1001, xgyro=-1, ygyro=0, zgyro=0, xmag=119, ymag=274, zmag=413, temperature=4499}
-                            message2.getPayload().getClass().getName().contains("ScaledImu3") || message2.getPayload().getClass().getName().contains("ScaledPressure") || message2.getPayload().getClass().getName().contains("ScaledPressure2") || message2.getPayload().getClass().getName().contains("GpsRawInt") || //lat=374456473, lon=1268953303, alt=18230, eph=121, epv=200, vel=0, cog=3988, satellitesVisible=10, altEllipsoid=0, hAcc=300, vAcc=300, velAcc=40, hdgAcc=0
-                            message2.getPayload().getClass().getName().contains("SystemTime") || message2.getPayload().getClass().getName().contains("TerrainReport") ||//TerrainReport{lat=374433470, lon=1268897507, spacing=100, terrainHeight=14.5117655, currentHeight=100.431244, pending=0, loaded=504}}
-                            message2.getPayload().getClass().getName().contains("LocalPositionNed") || //LocalPositionNed{timeBootMs=12024498, x=-0.07747139, y=0.061710242, z=0.001238235, vx=-0.013305673, vy=-1.9261298E-4, vz=4.191259E-4}}
-                            message2.getPayload().getClass().getName().contains("Vibration") || //Vibration{timeUsec=14555498804, vibrationX=0.0026672243, vibrationY=0.0027407336, vibrationZ=0.0027245833, clipping0=0, clipping1=0, clipping2=0}}
-                            message2.getPayload().getClass().getName().contains("BatteryStatus") || //batteryFunction=EnumValue{value=0, entry=MAV_BATTERY_FUNCTION_UNKNOWN}, type=EnumValue{value=0, entry=MAV_BATTERY_TYPE_UNKNOWN}, temperature=32767, voltages=[12587, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535], currentBattery=0, currentConsumed=151475, energyConsumed=68546, batteryRemaining=0, timeRemaining=0, chargeState=EnumValue{value=1, entry=MAV_BATTERY_CHARGE_STATE_OK}}}
-                            message2.getPayload().getClass().getName().contains("Attitude") || //=Attitude{timeBootMs=11556094, roll=0.0018187475, pitch=6.057985E-4, yaw=2.2014248, rollspeed=2.1905173E-4, pitchspeed=2.5810348E-4, yawspeed=7.619873E-4}}
-                            message2.getPayload().getClass().getName().contains("VfrHud") || // payload=VfrHud{airspeed=3.3680003, groundspeed=3.021782, heading=37, throttle=34, alt=99.979996, climb=0.015121608}}
-                            // payload=VfrHud{airspeed=3.3680003, groundspeed=3.021782, heading=37, throttle=34, alt=99.979996, climb=0.015121608}}
-
-                            message2.getPayload().getClass().getName().contains("Meminfo") || //payload=Meminfo{brkval=0, freemem=65535, freemem32=131072}}payload=Meminfo{brkval=0, freemem=65535, freemem32=131072}}
-                            message2.getPayload().getClass().getName().contains("Heartbeat") || //payload=Meminfo{brkval=0, freemem=65535, freemem32=131072}}payload=Meminfo{brkval=0, freemem=65535, freemem32=131072}}
-
-                            message2.getPayload().getClass().getName().contains("Ahrs") || //Ahrs{omegaix=-0.0025094047, omegaiy=-0.0025298656, omegaiz=-0.0020406283, accelWeight=0.0, renormVal=0.0, errorRp=0.002322554, errorYaw=0.0013488759}}
-                            message2.getPayload().getClass().getName().contains("Hwstatus") || // payload=Hwstatus{vcc=5000, i2cerr=0}}
-
-                            message2.getPayload().getClass().getName().contains("EkfStatusReport") || //velocityVariance=0.021335527, posHorizVariance=0.025864147, posVertVariance=0.0017659252, compassVariance=0.035943523, terrainAltVariance=0.0, airspeedVariance=0.0}}
-                            message2.getPayload().getClass().getName().contains("Simstate") || //Simstate{roll=5.885804E-4, pitch=-5.997561E-7, yaw=-1.0545728, xacc=-0.09285733, yacc=-0.050651476, zacc=-9.81958, xgyro=-0.0067729917, ygyro=-0.0050521465, zgyro=3.3953006E-4, lat=374456475, lng=1268953310}
-                            message2.getPayload().getClass().getName().contains("Ahrs2") || //x
-                            message2.getPayload().getClass().getName().contains("Timesync") || message2.getPayload().getClass().getName().contains("ParamValue") || //x
-                            message2.getPayload().getClass().getName().contains("PositionTargetGlobalInt") || //x
-                            message2.getPayload().getClass().getName().contains("EscTelemetry1To4") //EscTelemetry1To4{temperature=[B@553a3d88, voltage=[0, 0, 0, 0], current=[0, 0, 0, 0], totalcurrent=[0, 0, 0, 0], rpm=[0, 0, 0, 0], count=[0, 0, 0, 0]}
-                        //여기서부터 내가작성
-                    ) {
-                    } else {
-
                         log.info(message2.toString());
 
                     }

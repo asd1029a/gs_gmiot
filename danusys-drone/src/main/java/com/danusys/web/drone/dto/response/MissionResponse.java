@@ -1,6 +1,7 @@
 package com.danusys.web.drone.dto.response;
 
 import com.danusys.web.drone.model.Mission;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,19 +13,22 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class MissionResponse {
     private Long id;
     private String name;
-    private List<MissionDetailResponse> missionDetailResponseList;
+    private String adminUserId;
+    //private List<MissionDetailResponse> missionDetailResponseList;
 
 
 
     public MissionResponse(Mission mission){
         this.id = mission.getId();
         this.name=mission.getName();
+        this.adminUserId=mission.getAdminUserId();
 
-        this.missionDetailResponseList= mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
+        //this.missionDetailResponseList= mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
 
 

@@ -26,9 +26,12 @@ public class DroneService {
 
     @Transactional
     public String updateDrone(Drone drone) {
-        Date date = new Date();
-        Optional optionalDrone = droneRepository.findById(drone.getId());
 
+        Optional optionalDrone = droneRepository.findById(drone.getId());
+        if(!optionalDrone.isPresent()){
+            return "fail";
+        }
+        Date date = new Date();
         Drone updateDrone = (Drone) optionalDrone.get();
 
         updateDrone.setDroneDeviceName(drone.getDroneDeviceName());
@@ -40,6 +43,8 @@ public class DroneService {
     }
 
 
+
+
     @Transactional
     public String saveDrone(Drone drone) {
         droneRepository.save(drone);
@@ -49,13 +54,16 @@ public class DroneService {
 
     public String deleteDrone(Drone drone) {
         DroneDetails droneDetails = droneDetailsRepository.findByDrone(drone);
+        if(droneDetails==null) {
+            return "fail";
+        }
         droneDetailsRepository.deleteByDrone(drone);
         droneRepository.deleteById(drone.getId());
 
         return "success";
     }
 
-    public List<Drone> findDrone(Drone drone) {
+    public List<Drone> findDroneList(Drone drone) {
 
         List<Drone> droneList = null;
         if (drone.getId() != null) {
@@ -71,4 +79,14 @@ public class DroneService {
     }
 
 
+    public Drone findDrone(Drone drone) {
+        log.info("droneName={}",drone.getDroneDeviceName());
+        if(drone.getDroneDeviceName()!=null){
+            return droneRepository.findByDroneDeviceName(drone.getDroneDeviceName());
+        }else{
+            return null;
+        }
+
+
+    }
 }

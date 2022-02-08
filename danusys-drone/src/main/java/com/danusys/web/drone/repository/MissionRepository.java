@@ -8,11 +8,13 @@ package com.danusys.web.drone.repository;
 
 public interface MissionRepository extends CrudRepository<Mission,Long> {
 
-        List<Mission> findAllByName(String name);
+        List<Mission> findAllByNameLike(String name);
 
         List<Mission> findAllById(Long id);
 
+        Mission findByName(String name);
 
+        List<Mission> findAllByAdminUserIdLike(String adminUserId);
 
 
 

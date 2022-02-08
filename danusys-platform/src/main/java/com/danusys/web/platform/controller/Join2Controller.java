@@ -15,11 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 public class Join2Controller {
 
 
-    @RequestMapping("/hi234")
-    public String hi1234() {
-        return "hi";
-    }
-
 
 
     @RequestMapping("/login/errorTest")
@@ -28,16 +23,6 @@ public class Join2Controller {
         mav.setViewName("/view/login/loginErrorTest");
 
         return mav;
-    }
-
-    @RequestMapping("/hi")
-    public String hi(){
-        return "hi";
-    }
-
-    @RequestMapping("/test2")
-    public String test2() {
-        return "test2";
     }
 
     @RequestMapping("/permitadminpage")

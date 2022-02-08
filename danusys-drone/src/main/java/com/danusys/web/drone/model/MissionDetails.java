@@ -37,7 +37,7 @@ public class MissionDetails {
 
     private int time;
 
-    private float yaw;
+    private int yaw;
    //@ManyToOne(fetch = FetchType.EAGER)
    //@JoinColumn(name ="mission_id")
 

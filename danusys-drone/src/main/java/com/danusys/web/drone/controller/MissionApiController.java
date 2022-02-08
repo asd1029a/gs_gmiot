@@ -38,17 +38,9 @@ import com.danusys.web.drone.utils.Flight;
 @RequiredArgsConstructor
 public class MissionApiController {
 
-
-    @Value("${tcp.server.host}")
-    private String tcpServerHost;
-
-    @Value("${tcp.server.port}")
-    private int tcpServerPort;
     private final MissionService missionService;
     private final MissionDetailsService missionDetailsService;
     private final Flight flight;
-    private final SimpMessagingTemplate simpMessagingTemplate;
-    private final Substring substring;
     private final DroneLogService droneLogService;
 
 
@@ -78,21 +70,21 @@ public class MissionApiController {
     }
 
 
-    @MessageMapping("/droneinfo")
-    public void droneInfo() {
-        String missionResult = null;
-        do {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            missionResult = flight.droneInfo();
-            log.info(missionResult);
-        }
-        while (missionResult.equals("onemore"));
-
-    }
+//    @MessageMapping("/droneinfo")
+//    public void droneInfo() {
+//        String missionResult = null;
+//        do {
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            missionResult = flight.droneInfo();
+//            log.info(missionResult);
+//        }
+//        while (missionResult.equals("onemore"));
+//
+//    }
 
 
     @MessageMapping("/startmission")
@@ -114,6 +106,7 @@ public class MissionApiController {
         HashMap<String, Integer> speeds = new HashMap<>();
         HashMap<String, String> result = new HashMap<>();
         HashMap<String, Integer> times = new HashMap<>();
+        HashMap<String, Integer> yaws= new HashMap<>();
         HashMap<String, MissionItemInt> missionMap = new HashMap<>();
         HashMap<String, Integer> radiusMap =new HashMap<>();
         Iterator iterator = missionResponse.getMissonDetails().iterator();
@@ -132,6 +125,7 @@ public class MissionApiController {
                 speeds.put("waypoint" + missionDetails.getIndex(), missionDetails.getSpeed());
                 gpsYs.put("waypoint" + missionDetails.getIndex(), missionDetails.getGpsY());
                 gpsZs.put("waypoint" + missionDetails.getIndex(), missionDetails.getAlt());
+                yaws.put("waypoint"+ missionDetails.getIndex(),missionDetails.getYaw());
             } else if (missionDetails.getName().equals("loiter")) {
                 missionIndex.put(missionDetails.getIndex(), "loiter" + missionDetails.getIndex());
                 times.put("loiter" + missionDetails.getIndex(), missionDetails.getTime());
@@ -163,13 +157,16 @@ public class MissionApiController {
             int time = 0;
             int speed = 0;
             int radius=0;
+            int yaw=0;
             log.info("step={}", step);
 
             x = gpsXs.getOrDefault(missionIndex.get(step), 0);
             y = gpsYs.getOrDefault(missionIndex.get(step), 0);
             z = gpsZs.getOrDefault(missionIndex.get(step), 0);
+            yaw= yaws.getOrDefault(missionIndex.get(step),0);
             time = times.getOrDefault(missionIndex.get(step), 0);
             speed = speeds.getOrDefault(missionIndex.get(step), 0);
+            radius= radiusMap.getOrDefault(missionIndex.get(step),0);
 
             if (missionIndex.getOrDefault(step, "finish").equals("takeoff")) {
 
@@ -181,10 +178,10 @@ public class MissionApiController {
 //                log.info("x={},y={},z{}", x, y, z);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
-                        .param1(0)
+                        .param1(time)
                         .param2(0)
                         .param3(0)
-                        .param4(0)      //yaw
+                        .param4(yaw)      //yaw
                         .x(x)
                         .y(y)
                         .z(z)
@@ -202,9 +199,9 @@ public class MissionApiController {
             } else if (missionIndex.getOrDefault(step, "finish").contains("loiter")) {
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_LOITER_TIME)
-                        .param1(10)
+                        .param1(time)
                         .param2(1)
-                        .param3(50)
+                        .param3(radius)
                         .param4(1)
                         .seq(flag)
                         .targetComponent(0)
@@ -232,18 +229,6 @@ public class MissionApiController {
                 missionMap.put("missionItemInt" + flag, missionItemInt);
                 flag++;
 
-
-//                String missionResult = null;
-//                do {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    missionResult = flight.returnDrone();
-//                    log.info(missionResult);
-//                }
-//                while (missionResult.equals("onemore"));
             } else if (missionIndex.getOrDefault(step, "finish").contains("finish")) {
                 break;
             }
@@ -251,8 +236,8 @@ public class MissionApiController {
 
 
         }
-        log.info("들어감");
-        flight.doMission(missionMap, flag);
+
+        flight.doMission(missionMap, flag,speeds);
 
 
     }
@@ -460,12 +445,6 @@ public class MissionApiController {
         flight.returnDrone();
     }
 
-    @GetMapping("/test2")
-    public void test2() {
-        // flight.loiter(30);
-        flight.camera();
-        // flight.returnDrone();
-    }
 
     @GetMapping("/test3")
     public void test3() {

@@ -34,7 +34,14 @@ public class UserController {
 //        return userService.getListUser(paramMap);
 //    }
 
-
+    /*
+      name: addUserProc
+      url: /user
+      type: put
+      param: User user
+      do: 유저 저장
+      return: 저장된 userSeq,   userId로 이미 가입한 회원이 있을 경우  return 0 ,id와 패스워드를 빼고 넣었을경우 return -1 ,
+     */
     @PutMapping()
     public ResponseEntity<?> addUserProc(@RequestBody User user) {
 
@@ -44,54 +51,102 @@ public class UserController {
 
     }
 
+    /*
+      name: modUserProc
+      url: /user
+      type: patch
+      param: User user
+      do: 유저 수정
+      return : update된 userSeq , 잘못된 userSeq를 입력했을 경우 0 return
+    */
     @PatchMapping()
-    public ResponseEntity<?> modProc(@RequestBody User user) {
+    public ResponseEntity<?> modUserProc(@RequestBody User user) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.updateUser(user));
 
     }
-
+    /*
+       name: getListUserProc
+       url: /user
+       type: post
+       param: Map<String ,Object> paramMap
+       do: paramMap 조건에 맞는 유저 리스트 조회
+       return : 조건에 맞는 리스트
+     */
     @PostMapping()
-    public ResponseEntity<?> getListProc(@RequestBody Map<String, Object> paramMap){
+    public ResponseEntity<?> getListUserProc(@RequestBody Map<String, Object> paramMap) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.findListUser(paramMap));
     }
-
+    /*
+       name: delUserProc
+       url: /user
+       type: delete
+       param: User user
+       do: userSeq로 조회하여 삭제함
+     */
     @DeleteMapping()
-    public ResponseEntity<?> delProc(@RequestBody User user) {
+    public ResponseEntity<?> delUserProc(@RequestBody User user) {
         userService.deleteUser(user);
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }
-
+    /*
+       name: getUserProc
+       url: /user/{userSeq}
+       type: get
+       do: userSeq로 단건 조회
+       return : 조회 결과
+     */
     @GetMapping("/{userSeq}")
-    public ResponseEntity<?> getUser(@PathVariable int userSeq) {
+    public ResponseEntity<?> getUserProc(@PathVariable int userSeq) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.findUser(userSeq));
     }
 
-
+    /*
+       name: getGroupProc
+       url: /group/{groupSeq}
+       type: get
+       do: groupSeq로 group 단건 조회
+       return : 단건 조회
+     */
     @GetMapping("/group/{groupSeq}")
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getGroup(@PathVariable int groupSeq) {
+    public ResponseEntity<?> getGroupProc(@PathVariable int groupSeq) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userGroupService.findUserGroupByGroupSeq(groupSeq));
+                .body(userGroupService.findUserGroupResponseByGroupSeq(groupSeq));
     }
-
+    /*
+       name: getListGroupProc
+       url: /group/
+       type: post
+       param : Map<String, Object> paramMap
+       do: paramMap 조건에 맞는 list 출력
+       return : paramMap 조건에 맞는 list
+     */
     @PostMapping("/group")
-    public ResponseEntity<?> getListGroup(Map<String, Object> paramMap){
+    public ResponseEntity<?> getListGroupProc(@RequestBody Map<String, Object> paramMap) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userGroupService.findListGroup(paramMap));
     }
+    /*
+       name: addGroupProc
+       url: /group/
+       type: put
+       param : UserGroup userGroup
+       do: usergroup 저장 , groupName,groupDesc 없이 전송할경우 0 리턴
+       return : 저장된 groupSeq
+     */
     @PutMapping("/group")
     public ResponseEntity<?> addGroupProc(@RequestBody UserGroup userGroup) {
 
@@ -100,7 +155,14 @@ public class UserController {
                 .status(HttpStatus.CREATED)
                 .body(userGroupService.saveUserGroup(userGroup));
     }
-
+    /*
+       name: modGroupProc
+       url: /group/
+       type: patch
+       param : UserGroup userGroup
+       do: usergroup 업데이트 
+       return : 저장된 groupSeq groupSeq로 조회한 group이 없을경우 0 리턴
+     */
     @PatchMapping("/group")
     public ResponseEntity<?> modGroupProc(@RequestBody UserGroup userGroup) {
 
@@ -109,24 +171,42 @@ public class UserController {
                 .body(userGroupService.updateUserGroup(userGroup));
 
     }
-
+    /*
+       name: deleteGroupProc
+       url: /group/
+       type: delete
+       param : userSeq
+       do: usergroup 삭제
+     */
     @DeleteMapping("/group")
     public ResponseEntity<?> deleteGroupProc(@RequestBody UserGroup userGroup) {
         userGroupService.deleteUserGroup(userGroup);
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }
-
+    /*
+       name: getListGroupInUserProc
+       url: /groupinuser/
+       type: post
+       param : userSeq
+       do: paramMap조건에 맞는 groupinuser List 조회
+       return : paramMap 조건에 맞는 userSeq, userGroupSeq, insertUserSeq, insertDt
+     */
     @PostMapping("/groupinuser")
-    public ResponseEntity<?> getListGroupInUserProc() {
+    public ResponseEntity<?> getListGroupInUserProc(@RequestBody Map<String,Object> paramMap) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userGroupInUserService.findListGroupInUser());
+                .body(userGroupInUserService.findListGroupInUser(paramMap));
     }
-
-
-
+  /*
+       name: addGroupInUserProc
+       url: /groupinuser/
+       type: put
+       param : UserGroupInUserRequest userGroupInUserRequest
+       do: paramMap조건에 맞는 groupinuser List 조회
+       return : groupinuser seq, 잘못됫을때는 0 리턴
+     */
 
     @PutMapping("/groupinuser")
     public ResponseEntity<?> addGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
@@ -141,8 +221,8 @@ public class UserController {
     }
 
     @DeleteMapping("/groupinuser")
-    public ResponseEntity<?> delGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest){
-        userGroupInUserService.deleteUserGroupInUser(userGroupInUserRequest.getUserSeq(),userGroupInUserRequest.getUserGroupSeq());
+    public ResponseEntity<?> delGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
+        userGroupInUserService.deleteUserGroupInUser(userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq());
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }
@@ -150,11 +230,11 @@ public class UserController {
     @PutMapping("/grouppermit")
     public ResponseEntity<?> addPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
 
-        log.info("userGroupPermitReqeuest={}",userGroupPermitRequest);
-        UserGroupPermit userGroupPermit =new UserGroupPermit();
+        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
+        UserGroupPermit userGroupPermit = new UserGroupPermit();
         userGroupPermit.setInsertUserSeq(userGroupPermitRequest.getInsertUserSeq());
         userGroupPermitService.saveUserGroupPermit(userGroupPermit
-                ,userGroupPermitRequest.getUserGroupSeq(),userGroupPermitRequest.getPermitSeq());
+                , userGroupPermitRequest.getUserGroupSeq(), userGroupPermitRequest.getPermitSeq());
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }
@@ -163,13 +243,12 @@ public class UserController {
     @DeleteMapping("/grouppermit")
     public ResponseEntity<?> delPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
 
-        log.info("userGroupPermitReqeuest={}",userGroupPermitRequest);
+        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
         userGroupPermitService.deleteUserGroupPermit(
-                userGroupPermitRequest.getUserGroupSeq(),userGroupPermitRequest.getPermitSeq());
+                userGroupPermitRequest.getUserGroupSeq(), userGroupPermitRequest.getPermitSeq());
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }
-
 
 
 //

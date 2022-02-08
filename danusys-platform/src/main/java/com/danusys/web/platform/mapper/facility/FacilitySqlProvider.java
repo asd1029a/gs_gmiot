@@ -8,10 +8,21 @@ import java.util.Map;
 public class FacilitySqlProvider {
 
     public String selectListQry(Map<String, Object> paramMap) {
+        String keyword = paramMap.get("keyword").toString();
+        String start = paramMap.get("start").toString();
+        String length = paramMap.get("length").toString();
+
         SQL sql = new SQL() {{
-            SELECT("*");
+            SELECT("*, '' as station_kind, '' as station_name, '' as address");
             FROM("t_facility t1");
-            INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility");
+            INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("facility_kind LIKE" + keyword);
+            }
+            if (!start.equals("") && !length.equals("")) {
+                LIMIT(length);
+                OFFSET(start);
+            }
         }};
         return sql.toString();
     }
