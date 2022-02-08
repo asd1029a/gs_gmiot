@@ -63,10 +63,16 @@ public class MissionService {
         return missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
     }
 
-    @Transactional
-    public String saveMission(Mission mission) {
-        missionRepository.save(mission);
-        return "success";
+
+    public Long saveMission(Mission mission) {
+        Mission findMission=missionRepository.findByName(mission.getName());
+
+        if(findMission==null){
+            missionRepository.save(mission);
+            return mission.getId();
+        }
+        return 0l;
+
     }
 
     @Transactional
@@ -82,6 +88,13 @@ public class MissionService {
 
     @Transactional
     public String deleteMission(Mission mission) {
+
+        Optional<Mission> optionalMission=missionRepository.findById(mission.getId());
+
+        if (!optionalMission.isPresent()) {
+            return "fail";
+        }
+
         Long result = missionDetailsRepository.deleteByMission(mission);
         log.info("result={}", result);
         missionRepository.deleteById(mission.getId());

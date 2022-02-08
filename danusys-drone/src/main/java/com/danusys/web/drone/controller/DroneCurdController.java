@@ -70,7 +70,7 @@ public class DroneCurdController {
      */
 
 
-    @GetMapping("/drone")
+    @PostMapping("/drone")
     public ResponseEntity findAllDrone(Drone drone) {
 
 
