@@ -199,7 +199,14 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(userGroupInUserService.findListGroupInUser(paramMap));
     }
-
+  /*
+       name: addGroupInUserProc
+       url: /groupinuser/
+       type: put
+       param : UserGroupInUserRequest userGroupInUserRequest
+       do: paramMap조건에 맞는 groupinuser List 조회
+       return : groupinuser seq, 잘못됫을때는 0 리턴
+     */
 
     @PutMapping("/groupinuser")
     public ResponseEntity<?> addGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
