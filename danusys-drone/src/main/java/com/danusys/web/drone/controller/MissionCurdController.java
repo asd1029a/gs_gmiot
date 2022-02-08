@@ -76,7 +76,7 @@ public class MissionCurdController {
 
 
     @DeleteMapping("/mission")
-    public ResponseEntity<?> deleteMission(Mission mission){
+    public ResponseEntity<?> deleteMission(@RequestBody Mission mission){
 
 
         return ResponseEntity.status(HttpStatus.OK)

@@ -8,10 +8,14 @@ import com.danusys.web.drone.repository.MissionDetailsRepository;
 import com.danusys.web.drone.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +53,10 @@ public class MissionService {
 //        MissionResponse missionResponse=new MissionResponse(mission.getId(),mission.getName(),
 //                mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList()));
 
-        MissionResponse missionResponse=new MissionResponse(mission.getId(),mission.getName(),mission.getAdminUserId());
+        MissionResponse missionResponse=new MissionResponse(mission.getId(),mission.getName(),mission.getAdminUserId(),
+                mission.getInsertDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")),
+                mission.getUpdateDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"))
+                ,mission.getInsertUserSeq(),mission.getUpdateUserSeq());
 
         return missionResponse;
     }
@@ -57,14 +64,18 @@ public class MissionService {
     public List<?> missionResponseList( Map<String,Object> paramMap) {
 
         List<Mission> missionList=null;
-
+        Sort sort =sortByupdateDt();
         if(paramMap.get("name")!=null){
             String name=(String)paramMap.get("name");
-            missionList = missionRepository.findAllByNameLike("%"+name+"%");
+            missionList = missionRepository.findAllByNameLike("%"+name+"%",sort);
         }
         if(paramMap.get("adminUserId")!=null){
             String adminUserId=(String)paramMap.get("adminUserId");
-            missionList = missionRepository.findAllByAdminUserIdLike("%"+adminUserId+"%");
+            missionList = missionRepository.findAllByAdminUserIdLike("%"+adminUserId+"%",sort);
+        }
+
+        if(missionList==null){
+            return null;
         }
 
 
@@ -84,7 +95,9 @@ public class MissionService {
         return missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
     }
 
-
+    private Sort sortByupdateDt() {
+        return Sort.by(Sort.Direction.DESC, "updateDt");
+    }
 
 
     public Long saveMission(Mission mission) {
@@ -111,7 +124,7 @@ public class MissionService {
 
     @Transactional
     public String deleteMission(Mission mission) {
-
+        log.info("{}",mission.getId());
         Optional<Mission> optionalMission=missionRepository.findById(mission.getId());
 
         if (!optionalMission.isPresent()) {
