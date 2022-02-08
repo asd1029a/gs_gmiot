@@ -18,11 +18,17 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public EgovMap getListCode(Map<String, Object> paramMap) throws Exception {
-        if(paramMap.get("draw") != null) {
+
+        if (paramMap.get("draw") != null) {
             return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(csp.selectListCodeQry(paramMap)));
         } else {
             EgovMap resultMap = new EgovMap();
-            resultMap.put("data", commonMapper.selectList(csp.selectListCodeQry(paramMap)));
+            switch (paramMap.get("type").toString()) {
+                case "stationKind" : resultMap.put("data", null); break;
+                case "district" : resultMap.put("data", null); break;
+                case "facilityKind" : resultMap.put("data", null); break;
+                default : resultMap.put("data", commonMapper.selectList(csp.selectListCodeQry(paramMap))); break;
+            }
             return resultMap;
         }
     }

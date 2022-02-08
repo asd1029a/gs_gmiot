@@ -70,13 +70,15 @@ const commonCode = {
         }
         comm.createTable($target ,optionObj, evt);
     },
-    getList : (param, pCallback) => {
-        comm.ajaxPost({
+    getList : (pObj, pCallback) => {
+        $.ajax({
             url : "/config/commonCode"
-            , data : {}
-        }, (result) => {
+            , type : "POST"
+            , data : JSON.stringify(pObj)
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
             pCallback(result);
-        });
+        })
     },
     get : (pSeq, pCallback) =>{
         $.ajax({
