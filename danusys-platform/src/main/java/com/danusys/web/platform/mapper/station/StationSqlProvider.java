@@ -7,9 +7,20 @@ import java.util.Map;
 
 public class StationSqlProvider {
     public String selectListQry(Map<String, Object> paramMap) {
+        String keyword = paramMap.get("keyword").toString();
+        String start = paramMap.get("start").toString();
+        String length = paramMap.get("length").toString();
+
         SQL sql = new SQL() {{
-            SELECT("*");
+            SELECT("*, '' as facility_status, '' as facility_kind");
             FROM("t_station");
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("station_name LIKE" + keyword);
+            }
+            if (!start.equals("") && !length.equals("")) {
+                LIMIT(length);
+                OFFSET(start);
+            }
         }};
         return sql.toString();
     }
