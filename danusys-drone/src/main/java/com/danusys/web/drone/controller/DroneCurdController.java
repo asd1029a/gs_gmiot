@@ -47,12 +47,12 @@ public class DroneCurdController {
 
         String result1 = droneService.saveDrone(drone);
 
-       // DroneDetails droneDetails = droneDetailsService.saveDroneDetails(droneDetails, drone.getId());
+        DroneDetails saveDroneDetails = droneDetailsService.saveDroneDetails(droneDetails, drone.getId());
 
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(drone);
+                .body(saveDroneDetails);
 
     }
 

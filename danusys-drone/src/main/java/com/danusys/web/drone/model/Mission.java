@@ -27,7 +27,8 @@ public class Mission {
     @Column(nullable = false)
     private String name;
 
-
+    @Column(name="admin_user_id")
+    private String adminUserId;
    // @JsonIgnore
   //  @OneToMany(mappedBy ="mission",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
    @OneToMany(mappedBy ="mission" ,fetch = FetchType.EAGER)  //마지막에 수정됨
