@@ -18,4 +18,5 @@ public interface DroneRepository extends CrudRepository<Drone,Long> {
 
     List<Drone> findAllByDroneDeviceNameLike(String droneDeviceName);
 
+    Drone findByDroneDeviceName(String droneDeviceName);
 }

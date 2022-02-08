@@ -45,7 +45,7 @@ public class UserGroupPermitService {
         }
 
       //  return userGroupPermitRepository.save(userGroupPermit);
-    }
+
 
     @Transactional
     public void deleteUserGroupPermit(int userGroupSeq, int permitSeq) {
