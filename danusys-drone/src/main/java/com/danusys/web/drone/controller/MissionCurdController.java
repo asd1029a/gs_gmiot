@@ -108,10 +108,11 @@ public class MissionCurdController {
     @PostMapping("/missiondetails")
     public ResponseEntity<?> findMissionDetailsList(@RequestBody Map<String,Object> paramMap) {
 
-        String name=(String)paramMap.get("name");
+
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(missionDetailsService.findMission(name));
+                .body(missionDetailsService.findMission(paramMap));
 
     }
     @GetMapping("/missioncount")
