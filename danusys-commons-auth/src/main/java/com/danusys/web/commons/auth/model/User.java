@@ -37,7 +37,7 @@ public class User {
 
         private String address;
 
-        private char status;
+
 
         @Column(name="detail_address")
         private String detailAddress;
@@ -60,6 +60,7 @@ public class User {
         @Column (name="refresh_token")
         private String refreshToken;
 
+        private String status;
 
 
 
@@ -78,7 +79,9 @@ public class User {
         @JsonManagedReference
         private  UserGroupInUser userGroupInUser;
 
-
+//        @OneToOne(mappedBy = "userCommonCode",fetch =FetchType.EAGER)
+//        @JsonManagedReference
+//        private CommonCode status;
 
 
 

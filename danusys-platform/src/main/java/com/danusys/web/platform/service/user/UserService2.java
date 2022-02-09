@@ -93,7 +93,7 @@ public class UserService2 {
                 findUser.setTel(user.getTel());
             if (user.getAddress() != null)
                 findUser.setAddress(user.getAddress());
-            if (user.getStatus() != 0)
+            if (user.getStatus() != null)
                 findUser.setStatus(user.getStatus());
             if (user.getDetailAddress() != null)
                 findUser.setDetailAddress(user.getDetailAddress());

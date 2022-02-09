@@ -27,7 +27,7 @@ public class UserDto {
 
         private String address;
 
-        private char status;
+        private String status;
 
 
         private String detailAddress;

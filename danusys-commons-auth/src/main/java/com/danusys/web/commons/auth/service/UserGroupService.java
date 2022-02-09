@@ -4,6 +4,7 @@ import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.commons.auth.dto.response.GroupResponse;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.PagingUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -76,6 +77,7 @@ public class UserGroupService {
     public int saveUserGroup(UserGroup userGroup) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CommonsUserDetails userDetails = (CommonsUserDetails) principal;
+
         // log.info("{}",userDetails.getUserSeq());
         if (userGroup.getGroupName() == null || userGroup.getGroupDesc() == null) {
             return 0;
