@@ -57,7 +57,8 @@ public class UserService2 {
 
     public UserDto findUser(int userSeq) {
         User user = userRepository.findByUserSeq(userSeq);
-        UserDto userDto = new UserDto(user.getUserSeq(), user.getUserId(), user.getUserName(), user.getEmail(), user.getTel(), user.getAddress(), user.getStatus(), user.getDetailAddress(),
+        UserDto userDto = new UserDto(user.getUserSeq(), user.getUserId(), user.getUserName(), user.getEmail(), user.getTel(), user.getAddress(),
+                user.getStatus(), user.getDetailAddress(),
                 user.getLastLoginDt(), user.getInsertUserSeq(), user.getUpdateUserSeq(), user.getInsertDt(), user.getUpdateDt());
         //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
 

@@ -51,6 +51,15 @@ public class MissionCurdController {
 
     }
 
+    @PatchMapping("/mission")
+    public ResponseEntity<?> updateMission(@RequestBody Mission mission) {
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(missionService.updateMission(mission));
+
+    }
+
 
     @GetMapping("/missiondetails/{name}")
     public ResponseEntity<?> findMissionDetails(@PathVariable final String name) {

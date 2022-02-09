@@ -77,7 +77,7 @@ public class DroneCurdController {
 
 
     @PostMapping("/drone")
-    public ResponseEntity findAllDrone(Drone drone) {
+    public ResponseEntity findAllDrone(@RequestBody Drone drone) {
 
 
         return ResponseEntity
