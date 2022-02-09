@@ -32,12 +32,17 @@ public class MissionCurdController {
         List<MissionDetails> missionDetailsList = new ArrayList<>();
         missionDetailsList = (List<MissionDetails>) missionList.get("missionList");
 
+
         int missionId = 0;
         missionId = (int) missionList.get("missionId");
 
+        double totalDistance=0;
+        totalDistance=  Double.valueOf((int)missionList.get("totalDistance"));
+
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(missionDetailsService.saveMission(missionDetailsList, missionId));
+                .body(missionDetailsService.saveMission(missionDetailsList, missionId,totalDistance));
 
     }
 
