@@ -17,7 +17,7 @@ public interface MissionRepository extends CrudRepository<Mission,Long> {
 
         Mission findByName(String name);
 
-        List<Mission> findAllByAdminUserIdLike(String adminUserId,Sort sort);
+        List<Mission> findAllByUserIdLike(String adminUserId,Sort sort);
 
 
 

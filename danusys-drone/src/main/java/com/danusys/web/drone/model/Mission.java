@@ -29,20 +29,22 @@ public class Mission {
     @Column(nullable = false)
     private String name;
 
-    @Column(name="admin_user_id")
-    private String adminUserId;
+    @Column(name="user_id")
+    private String userId;
 
-    @Column(name="insert_dt")
-    private Timestamp insertDt;
-
+//    @Column(name="insert_dt")
+//    private Timestamp insertDt;
+//
     @Column(name="update_dt")
     private Timestamp updateDt;
 
-    @Column(name="insert_user_seq")
-    private int insertUserSeq;
+//    @Column(name="insert_user_seq")
+//    private int insertUserSeq;
+//
+//    @Column(name="update_user_seq")
+//    private int updateUserSeq;
 
-    @Column(name="update_user_seq")
-    private int updateUserSeq;
+
 
    // @JsonIgnore
   //  @OneToMany(mappedBy ="mission",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
