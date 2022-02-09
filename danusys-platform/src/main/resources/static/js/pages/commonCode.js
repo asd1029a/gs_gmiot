@@ -22,9 +22,8 @@ const commonCode = {
                     },
                     'dataSrc' : function (result) {
                         console.log(result);
-                        pParentCode === 0 ? $target.parents().find('.title dd .count').first().text(result.recordsTotal)
-                            : $target.parents().find('.title dd .count').last().text(result.recordsTotal)
-                        //$('.title dd .count').text(result.recordsTotal);
+                        const targetSeq = Number($target.attr('data-table-seq'));
+                        $('.search_list:nth-of-type('+(targetSeq+1)+') .title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
                 },
@@ -33,9 +32,8 @@ const commonCode = {
             },
             columns : [
                 {data: "codeSeq", className: "alignLeft"},
-                {data: "codeName", className: "alignLeft"},
-                {data: "codeValue"},
-                {data: "insertDt"},
+                {data: "codeName"},
+                {data: "useKind"},
                 {data: null}
             ],
             columnDefs: [{
@@ -43,40 +41,47 @@ const commonCode = {
                 "data": null,
                 "defaultContent": '<span class="button">상세보기</span>'
             }
-                , {
-                    targets: 0,
-                    render: $.fn.dataTable.render.ellipsis( 30, true )
+            , {
+                targets: 2,
+                    createdCell: function (td, cellData) {
+                    $(td).text("");
+                    if ( cellData === 'Y' ) {
+                        $(td).append("<span class=\"status green\"></span>사용");
+                    } else {
+                        $(td).append("<span class=\"status \"></span>사용 안함");
+                    }
                 }
-                , {
-                    targets: 1,
-                    render: $.fn.dataTable.render.ellipsis( 50, true )
-                }]
+            }]
             , excelDownload : false
         }
 
         const evt = {
             click : function(e) {
+                const targetSeq = Number($target.attr('data-table-seq'));
+
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
                 if($(e.target).hasClass('button')) {
                     //commonCode.showPopup('mod');
                     //$('#commonCodeForm').setItemValue(rowData);
                     commonCode.get(rowData.codeSeq, (result) => console.log(result));
                 }
-                else if(pParentCode === 0) {
-                    commonCode.create($("#childCodeTable"),rowData.codeSeq);
+                else if(targetSeq !== 2) {
+                    commonCode.create($("[data-table-seq='"+(targetSeq+1)+"']"),rowData.codeSeq);
                 }
             }
             // 클릭시 디테일 select 추가해야함
         }
         comm.createTable($target ,optionObj, evt);
     },
-    getList : (param, pCallback) => {
-        comm.ajaxPost({
+    getList : (pObj, pCallback) => {
+        $.ajax({
             url : "/config/commonCode"
-            , data : {}
-        }, (result) => {
+            , type : "POST"
+            , data : JSON.stringify(pObj)
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
             pCallback(result);
-        });
+        })
     },
     get : (pSeq, pCallback) =>{
         $.ajax({

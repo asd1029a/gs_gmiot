@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.bouncycastle.util.Times;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,22 @@ public class Mission {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(name="user_id")
+    private String userId;
+
+//    @Column(name="insert_dt")
+//    private Timestamp insertDt;
+//
+    @Column(name="update_dt")
+    private Timestamp updateDt;
+
+//    @Column(name="insert_user_seq")
+//    private int insertUserSeq;
+//
+//    @Column(name="update_user_seq")
+//    private int updateUserSeq;
+
 
 
    // @JsonIgnore

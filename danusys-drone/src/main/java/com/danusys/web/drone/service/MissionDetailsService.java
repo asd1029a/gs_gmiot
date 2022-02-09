@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,7 @@ public class MissionDetailsService {
 
         log.info("missionDetails={}", missionDetails);
 
-        Long deleteResult=missionDetailsRepository.deleteByMission(mission.get());
+        Long deleteResult = missionDetailsRepository.deleteByMission(mission.get());
 
         missionDetailsList.forEach(r -> {
             r.setMission(mission.get());
@@ -100,23 +101,19 @@ public class MissionDetailsService {
             r.setMission(mission.get());
         });
 
-            missionDetailsList.forEach(r -> {
-                missionDetailsRepository.save(r);
-            });
-            return "success";
-
-
-
+        missionDetailsList.forEach(r -> {
+            missionDetailsRepository.save(r);
+        });
+        return "success";
 
 
     }
 
-    public void deleteMissionDetails(long mission_id){
+    public void deleteMissionDetails(long mission_id) {
 
 
         Optional<Mission> optionalMission = missionRepository.findById(mission_id);
-        Mission mission =optionalMission.get();
-
+        Mission mission = optionalMission.get();
 
 
     }
@@ -127,6 +124,40 @@ public class MissionDetailsService {
 
 
         return missonDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
+
+    }
+
+    public List<MissionDetailResponse> findMission(Map<String, Object> paramMap) {
+        String name = null;
+        Mission mission = null;
+        Optional<Mission> optionalMission = null;
+        Long id = null;
+        int inputid=0;
+        if (paramMap.get("name") != null) {
+            name = (String) paramMap.get("name");
+            mission = missionRepository.findByName(name);
+        }
+        if( paramMap.get("id") != null){
+            inputid = (int) paramMap.get("id");
+            id= Long.valueOf(inputid);
+            optionalMission = missionRepository.findById(id);
+            if (!optionalMission.isPresent()) return null;
+            mission=optionalMission.get();
+        }
+
+        if (name == null && id == 0) {
+            return null;
+        }
+
+
+        List<MissionDetails> missionDetails = missionDetailsRepository.findAllByMission(mission);
+
+        if(missionDetails.isEmpty()){
+            log.info("비엇음");
+            return null;
+
+        }
+        return missionDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
     }
 

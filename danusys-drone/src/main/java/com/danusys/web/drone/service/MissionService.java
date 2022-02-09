@@ -3,14 +3,20 @@ package com.danusys.web.drone.service;
 
 import com.danusys.web.drone.dto.response.MissionDetailResponse;
 import com.danusys.web.drone.dto.response.MissionResponse;
+import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.Mission;
 import com.danusys.web.drone.repository.MissionDetailsRepository;
 import com.danusys.web.drone.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,37 +43,69 @@ public class MissionService {
         return missonList.get();
     }
 
-    public List<?> missionResponseList(Long id) {
-        missionList = missionRepository.findAllById(id);
+    public MissionResponse missionResponse(Long id) {
 
-        List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
+        Optional<Mission> optionalMission = missionRepository.findById(id);
+        if (!optionalMission.isPresent()) {
+            return null;
+        }
+        Mission mission = optionalMission.get();
 
+//        MissionResponse missionResponse=new MissionResponse(mission.getId(),mission.getName(),
+//                mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList()));
+
+        MissionResponse missionResponse = new MissionResponse(mission.getId(), mission.getName(), mission.getUserId(),
+                mission.getUpdateDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"))
+                , mission.getDrone().getId().intValue());
+
+        return missionResponse;
+    }
+
+    public List<?> missionResponseList(Map<String, Object> paramMap) {
+
+        List<Mission> missionList = null;
+        Sort sort = sortByupdateDt();
+        if (paramMap.get("name") != null) {
+            String name = (String) paramMap.get("name");
+            missionList = missionRepository.findAllByNameLike("%" + name + "%", sort);
+        }
+        if (paramMap.get("adminUserId") != null) {
+            String adminUserId = (String) paramMap.get("adminUserId");
+            missionList = missionRepository.findAllByUserIdLike("%" + adminUserId + "%", sort);
+        }
+
+        if (missionList == null) {
+            return null;
+        }
+
+
+//        missionList.forEach(r -> {
+//            r.getMissonDetails().forEach(rr -> {
+//
+//                log.info("rr.getName={}", rr.getName());
+//                if (rr.getName().equals("takeoff")) {
+//                    this.returnType = "takeoff";
+//                }
+//            });
+//
+//        });
 
         return missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
     }
 
-    public List<?> missionResponseList(String name) {
-        List<Mission> missionList = missionRepository.findAllByName(name);
-        AtomicReference<String> returnType = null;
-        missionList.forEach(r -> {
-            r.getMissonDetails().forEach(rr -> {
-
-                log.info("rr.getName={}", rr.getName());
-                if (rr.getName().equals("takeoff")) {
-                    this.returnType = "takeoff";
-                }
-            });
-
-        });
-
-        return missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
+    private Sort sortByupdateDt() {
+        return Sort.by(Sort.Direction.DESC, "updateDt");
     }
 
 
     public Long saveMission(Mission mission) {
-        Mission findMission=missionRepository.findByName(mission.getName());
-
-        if(findMission==null){
+        Mission findMission = missionRepository.findByName(mission.getName());
+        Drone drone = new Drone();
+        drone.setId(0l);
+        mission.setDrone(drone);
+        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+        mission.setUpdateDt(timestamp);
+        if (findMission == null) {
             missionRepository.save(mission);
             return mission.getId();
         }
@@ -76,20 +114,26 @@ public class MissionService {
     }
 
     @Transactional
-    public Mission updateMission(Mission mission) {
+    public int updateMission(Mission mission) {
+
         Optional<Mission> optionalMission = missionRepository.findById(mission.getId());
+        if(!optionalMission.isPresent())
+            return 0;
         Mission updateMission = optionalMission.get();
         if (updateMission.getName() != null) {
             updateMission.setName(mission.getName());
+            updateMission.setUserId(mission.getUserId());
+            Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+            updateMission.setUpdateDt(timestamp);
         }
 
-        return missionRepository.save(mission);
+        return updateMission.getId().intValue();
     }
 
     @Transactional
     public String deleteMission(Mission mission) {
-
-        Optional<Mission> optionalMission=missionRepository.findById(mission.getId());
+        log.info("{}", mission.getId());
+        Optional<Mission> optionalMission = missionRepository.findById(mission.getId());
 
         if (!optionalMission.isPresent()) {
             return "fail";

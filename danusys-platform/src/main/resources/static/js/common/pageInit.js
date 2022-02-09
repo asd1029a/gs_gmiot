@@ -57,7 +57,7 @@ $(document).ready(() => {
     } else if(path === "/pages/config/userGroup") {
 
     } else if(path === "/pages/config/commonCode") {
-        commonCode.create($('#parentCodeTable'),0);
+        commonCode.create($("[data-table-seq='0']"),0);
     } else if(path === "/pages/config/notice") {
         notice.create();
     }

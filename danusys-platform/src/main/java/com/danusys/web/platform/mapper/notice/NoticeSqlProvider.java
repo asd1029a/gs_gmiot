@@ -12,7 +12,14 @@ public class NoticeSqlProvider {
         String length = paramMap.get("length").toString();
 
         SQL sql = new SQL() {{
-            SELECT("*");
+            SELECT("notice_seq" +
+                            ",notice_title" +
+                            ",notice_content" +
+                            ", TO_CHAR(insert_dt, 'YYYY-DD-MM HH:MI:SS') AS insert_dt" +
+                            ",insert_user_seq" +
+                            ", TO_CHAR(update_dt, 'YYYY-DD-MM HH:MI:SS') AS update_dt" +
+                            ",update_user_seq" +
+                            ",notice_file");
             FROM("t_notice");
             if(keyword != null && !keyword.equals("")) {
                 WHERE("notice_title LIKE" + keyword);
@@ -28,7 +35,14 @@ public class NoticeSqlProvider {
     public String selectOneQry(int noticeSeq) {
         SQL sql = new SQL() {{
 
-            SELECT("*");
+            SELECT("notice_seq" +
+                    ",notice_title" +
+                    ",notice_content" +
+                    ", TO_CHAR(insert_dt, 'YYYY-DD-MM HH:MI:SS') AS insert_dt" +
+                    ",insert_user_seq" +
+                    ", TO_CHAR(update_dt, 'YYYY-DD-MM HH:MI:SS') AS update_dt" +
+                    ",update_user_seq" +
+                    ",notice_file");
             FROM("t_notice");
             WHERE("notice_seq =" + noticeSeq);
         }};

@@ -7,6 +7,7 @@ import com.danusys.web.commons.auth.model.*;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.PagingUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,10 +65,8 @@ public class UserGroupInUserService {
             return 0;
         userGroupInUser.setUserGroup(userGroup);
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
-        // log.info("{}",userDetails.getUserSeq());
 
+        CommonsUserDetails userDetails = LoginInfoUtil.getUserDetails();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userGroupInUser.setInsertUserSeq(userDetails.getUserSeq());
         userGroupInUser.setInsertDt(timestamp);

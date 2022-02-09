@@ -1,16 +1,34 @@
-$(".add_drone").on("click", function () {
-    let deviceName=$(".add_drone_device_name").val();
-    let param = {"droneDeviceName":deviceName};
+$(document).ready(function () {
+
+    let deviceName = $(".add_drone_device_name").val();
+    // let param={"name":}
     $.ajax({
         contentType: "application/json; charset=utf-8",
+        url: "/drone/api/drone",
+        type: "POST",
+        data: JSON.stringify(param),
+        success: function (resultData) {
+            console.log(resultData);
+        }
+    });
 
+
+});
+
+
+$(".add_drone").on("click", function () {
+    let deviceName = $(".add_drone_device_name").val();
+    let param = {"droneDeviceName": deviceName};
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
         url: "/drone/api/drone",
         type: "PUT",
         data: JSON.stringify(param),
         success: function (resultData) {
-        //    $(".add_drone_device_name").val()=
-            console.log(resultData);
+            $(".drone_id").val(resultData.id);
+            $(".drone_status").val(resultData.status);
+
         }
 
-    })
+    });
 });
