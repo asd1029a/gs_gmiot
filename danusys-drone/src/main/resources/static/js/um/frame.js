@@ -1,12 +1,14 @@
 $(document).ready(function () {
 
+    let deviceName = $(".add_drone_device_name").val();
+    // let param={"name":}
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: "/drone/api/drone",
-        type: "PUT",
+        type: "POST",
         data: JSON.stringify(param),
         success: function (resultData) {
-
+            console.log(resultData);
         }
     });
 

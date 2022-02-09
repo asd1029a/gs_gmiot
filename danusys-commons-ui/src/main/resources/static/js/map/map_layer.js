@@ -3,6 +3,9 @@
  * @summary  점 데이터 obj로 layer 반환
  * */
 class dataLayer {
+    constructor(target){
+        this.map = window[target];
+    }
     /**
      * @summary GeoJson 데이터로 벡터레이어 생성
      * @param data: 데이터 Obj, layerName : 레이어명, projFlag : 좌표변환여부, style : 레이어스타일
@@ -11,13 +14,12 @@ class dataLayer {
     fromGeoJSon(data, layerName, projFlag, style) {
         const source = new ol.source.Vector();
         const features = new ol.format.GeoJSON().readFeatures(data);
-    
+
         if(projFlag){
             features.forEach( feature => {
-                e.getGeometry().transform('EPSG:4326', basePropjection);
+                feature.getGeometry().transform('EPSG:4326', this.map.realProjection[this.map.type]);
             });
         }
-
         source.addFeatures(features);
 
         const pointsLayer = new ol.layer.Vector({

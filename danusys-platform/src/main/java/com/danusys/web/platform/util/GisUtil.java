@@ -8,6 +8,7 @@ import com.jhlabs.map.proj.Projection;
 import com.jhlabs.map.proj.ProjectionException;
 import com.jhlabs.map.proj.ProjectionFactory;
 import org.springframework.stereotype.Component;
+import org.json.JSONObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
@@ -46,22 +47,22 @@ public class GisUtil {
 	 * @return geoJson
 	 * @throws Exception
 	 */
-	public Map<String, Object> getGeoJson(List<Map<String,Object>> geoList, String id) throws Exception {
+	public String getGeoJson(List<Map<String,Object>> geoList, String id) throws Exception {
 
-		Map<String,Object> geoObj = new HashMap<String,Object>();
+		LinkedHashMap<String,Object> geoObj = new LinkedHashMap<String,Object>();
 		geoObj.put("type","FeatureCollection");
 		//features
 		ArrayList<Map<String, Object>> ary = new ArrayList<Map<String, Object>>();
 		Integer i = 1;
 		for(Map<String,Object> map : geoList) {
-			Map<String,Object> each = new HashMap<String,Object>();
+			LinkedHashMap<String,Object> each = new LinkedHashMap<String,Object>();
 
 			each.put("type", "Feature");
 
 			each.put("id", id+i);
 			i++;
 
-			Map<String,Object> geom = new HashMap<String,Object>();
+			LinkedHashMap<String,Object> geom = new LinkedHashMap<String,Object>();
 			geom.put("type", "Point");
 
 			ArrayList<Double> coordinates = new ArrayList<Double>();
@@ -84,9 +85,11 @@ public class GisUtil {
 			each.put("properties",prop);
 
 			ary.add(each);
-		} //for cctvList
+		}
 		geoObj.put("features",ary);
-		return geoObj;
+		JSONObject json = new JSONObject(geoObj);
+
+		return json.toString();
 	}
 
 

@@ -85,6 +85,15 @@ const facility = {
             pCallback(result);
         });
     }
+    , getListGeoJson : (param, pCallback) => {
+        $.ajax({
+            url : "/facility/geojson"
+            , type : "POST"
+            , data : JSON.stringify(param)
+        }).done((result) => {
+            pCallback(result);
+        });
+    }
     , get : (pSeq, pCallback) => {
         $.ajax({
             url : "/facility/" + pSeq

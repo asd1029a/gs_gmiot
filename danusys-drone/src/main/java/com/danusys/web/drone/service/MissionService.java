@@ -114,14 +114,20 @@ public class MissionService {
     }
 
     @Transactional
-    public Mission updateMission(Mission mission) {
+    public int updateMission(Mission mission) {
+
         Optional<Mission> optionalMission = missionRepository.findById(mission.getId());
+        if(!optionalMission.isPresent())
+            return 0;
         Mission updateMission = optionalMission.get();
         if (updateMission.getName() != null) {
             updateMission.setName(mission.getName());
+            updateMission.setUserId(mission.getUserId());
+            Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+            updateMission.setUpdateDt(timestamp);
         }
 
-        return missionRepository.save(mission);
+        return updateMission.getId().intValue();
     }
 
     @Transactional
