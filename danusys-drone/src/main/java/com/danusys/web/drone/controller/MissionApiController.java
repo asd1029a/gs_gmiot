@@ -161,9 +161,9 @@ public class MissionApiController {
             int radius=0;
             float yaw=0;
             log.info("step={}", step);
-
-            x = gpsXs.getOrDefault(missionIndex.get(step), 0);
-            y = gpsYs.getOrDefault(missionIndex.get(step), 0);
+//x,y 지금 바뀐 상황임 latitude longtitude 떄문에 바꿧음
+            y = gpsXs.getOrDefault(missionIndex.get(step), 0);
+            x = gpsYs.getOrDefault(missionIndex.get(step), 0);
             z = gpsZs.getOrDefault(missionIndex.get(step), 0);
             yaw= yaws.getOrDefault(missionIndex.get(step),0f);
             time = times.getOrDefault(missionIndex.get(step), 0);
@@ -243,6 +243,7 @@ public class MissionApiController {
 
 
     }
+
 
     @MessageMapping("/pause")
     @SendTo("/topic/pause")
