@@ -1,6 +1,7 @@
 package com.danusys.web.drone.controller;
 
 
+import com.danusys.web.drone.dto.request.DroneDetailRequest;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.service.DroneDetailsService;
@@ -77,14 +78,24 @@ public class DroneCurdController {
 
 
     @PostMapping("/drone")
-    public ResponseEntity findAllDrone(@RequestBody Drone drone) {
+    public ResponseEntity<?> findAllDrone(@RequestBody Drone drone) {
 
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(droneService.findDroneList(drone));
     }
+    @PutMapping("/dronedetails")
+    public ResponseEntity<?> updateDroneDetails(@RequestBody DroneDetailRequest droneDetailRequest){
 
+            long droneId = droneDetailRequest.getDroneId();
+            DroneDetails droneDetails=droneDetailRequest.getDroneDetails();
+            log.info("droneId={}",droneId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId));
+
+    }
 
 }
 

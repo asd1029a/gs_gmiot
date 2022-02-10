@@ -184,8 +184,8 @@ public class MissionApiController {
                         .param2(0)
                         .param3(0)
                         .param4(yaw)      //yaw
-                        .x(x)
-                        .y(y)
+                        .x(y)
+                        .y(x)
                         .z(z)
                         .seq(flag)
                         .targetComponent(1)
@@ -199,6 +199,7 @@ public class MissionApiController {
                 flag++;
 
             } else if (missionIndex.getOrDefault(step, "finish").contains("loiter")) {
+                log.info("time={}",time);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_LOITER_TIME)
                         .param1(time)
