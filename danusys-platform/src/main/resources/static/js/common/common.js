@@ -159,14 +159,16 @@ $.fn.extend({
                     if(eleAttr.type === "checkbox"){
                         isCheckboxInit = true;
                         objEle.prop("checked", objEle.attr("data-init-value"));
-                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
+                        if($(".dropdown_checkbox").length > 0)
+                            comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val(objEle.attr("data-init-value"));
                     }
                 } else if(eleAttr.tagName == "INPUT" || eleAttr.tagName == "TEXTAREA") {
                     if(eleAttr.type === "checkbox" && !isCheckboxInit){
                         objEle.prop("checked", false);
-                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
+                        if($(".dropdown_checkbox").length > 0)
+                            comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val("");
                     }

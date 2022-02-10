@@ -52,7 +52,7 @@ public class Flight {
     private Gps gps = new Gps();
     private Gson gson = new Gson();
     private Timer t = null;
-    private DroneLog droneLog=null;
+    private DroneLog droneLog = null;
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog) {
 
@@ -61,7 +61,8 @@ public class Flight {
         Timer t = null;
         Gson gson = new Gson();
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
-        droneLog=inputDroneLog;
+        droneLog = inputDroneLog;
+        gps.setMissionType("takeoff");
         try {
 
             socket = new Socket(tcpServerHost, tcpServerPort);
@@ -220,7 +221,7 @@ public class Flight {
 
                     String missionText = statustextMavlinkMessage.getPayload().text();
                     log.info(missionText);
-                    gps.setMissionType(missionText);
+                 //   gps.setMissionType(missionText);
 
 
                 } else if (message.getPayload() instanceof CommandAck) {
@@ -393,11 +394,9 @@ public class Flight {
                     String missionText = statustextMavlinkMessage.getPayload().text();
 
                     log.info(missionText);
-                    if(missionText.equals("Arming motors"))
-                    {
+                    if (missionText.equals("Arming motors")) {
                         gps.setMissionType("takeoff");
                     }
-
 
 
                 } else if (message.getPayload() instanceof CommandAck) {
@@ -921,10 +920,11 @@ public class Flight {
     }
 
 
-    public String doMission(HashMap<String, MissionItemInt> missionItemMap, int maxFlag,  HashMap<String, Integer> speeds) {
+    public String doMission(HashMap<String, MissionItemInt> missionItemMap, int maxFlag, HashMap<String, Integer> speeds
+            , HashMap<Integer, String> missionIndex) {
         //       connection = null;
         //       socket = null;
-        log.info("speeds={}",speeds);
+        log.info("speeds={}", speeds); //speeds={return5=0, waypoint4=4, waypoint3=6, waypoint2=8}
 
         try {
             socket = new Socket(tcpServerHost, tcpServerPort);
@@ -1014,19 +1014,26 @@ public class Flight {
 
 
                     MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
+                    String missionText = statustextMavlinkMessage.getPayload().text();
+                    log.info(missionText);
 
-                    if (statustextMavlinkMessage.getPayload().text().contains("Hit ground")) {
-                    //    gps.setMissionType("landing");
+                    if (missionText.contains("Mission")) {
+
+                        gps.setMissionType(missionText);
+                        String missionNumber=missionText.substring(9,10);
+                        log.info("missionNumber={}",missionNumber);
                     }
 
-                    if (statustextMavlinkMessage.getPayload().text().equals("Disarming motors")) {
+                    if (missionText.equals("Disarming motors")) {
                         //gps.setMissionType("mission end");
 
                         break;
                     }
-                    String missionText = statustextMavlinkMessage.getPayload().text();
-                    log.info(missionText);
-                    gps.setMissionType(missionText);
+
+
+                    if(missionText.contains("WP")){
+                  //      speed = speeds.getOrDefault(missionIndex.get(step), 0);
+                    }
 
 
                 } else if (message.getPayload() instanceof Heartbeat) {     //heartbaet
@@ -1063,12 +1070,12 @@ public class Flight {
                     log.info("maxFlag={}", maxFlag);
                     log.debug("flag={}", flag);
                     connection.send2(systemId, componentId, missionItemMap.get("missionItemInt" + flag), linkId, timestamp, secretKey);
-                    MissionItemInt missionItemInt=missionItemMap.get("missionItemInt" + flag);
+                    MissionItemInt missionItemInt = missionItemMap.get("missionItemInt" + flag);
                     DroneLogDetails droneLogDetailsMissionRequest = new DroneLogDetails();
                     droneLogDetailsMissionRequest.setDroneLog(droneLog);
                     droneLogDetailsMissionRequest.setFromTarget("gcs");
                     droneLogDetailsMissionRequest.setToTarget("drone");
-                    droneLogDetailsMissionRequest.setType("missionItemInt"+missionItemInt.command());
+                    droneLogDetailsMissionRequest.setType("missionItemInt" + missionItemInt.command());
                     droneLogDetailsMissionRequest.setParam1(Float.toString(missionItemInt.param1()));
                     droneLogDetailsMissionRequest.setParam2(Float.toString(missionItemInt.param2()));
                     droneLogDetailsMissionRequest.setParam3(Float.toString(missionItemInt.param3()));
@@ -1085,7 +1092,7 @@ public class Flight {
                         connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE)
                                 .param1(1).param2(3).build(), linkId, timestamp, secretKey);
 
-                        DroneLogDetails droneLogDetailsSetMode=new DroneLogDetails();
+                        DroneLogDetails droneLogDetailsSetMode = new DroneLogDetails();
                         droneLogDetailsSetMode.setDroneLog(droneLog);
                         droneLogDetailsSetMode.setFromTarget("gcs");
                         droneLogDetailsSetMode.setToTarget("drone");
@@ -1124,7 +1131,6 @@ public class Flight {
         }
         return "stop";
     }
-
 
 
     public String heartBeat() {
