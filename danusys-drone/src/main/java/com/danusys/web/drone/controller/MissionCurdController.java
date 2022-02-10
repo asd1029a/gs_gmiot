@@ -32,12 +32,17 @@ public class MissionCurdController {
         List<MissionDetails> missionDetailsList = new ArrayList<>();
         missionDetailsList = (List<MissionDetails>) missionList.get("missionList");
 
+
         int missionId = 0;
         missionId = (int) missionList.get("missionId");
 
+        double totalDistance=0;
+        totalDistance=  Double.valueOf((int)missionList.get("totalDistance"));
+
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(missionDetailsService.saveMission(missionDetailsList, missionId));
+                .body(missionDetailsService.saveMission(missionDetailsList, missionId,totalDistance));
 
     }
 
@@ -48,6 +53,15 @@ public class MissionCurdController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(missionService.saveMission(mission));
+
+    }
+
+    @PatchMapping("/mission")
+    public ResponseEntity<?> updateMission(@RequestBody Mission mission) {
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(missionService.updateMission(mission));
 
     }
 
@@ -76,7 +90,7 @@ public class MissionCurdController {
 
 
     @DeleteMapping("/mission")
-    public ResponseEntity<?> deleteMission(Mission mission){
+    public ResponseEntity<?> deleteMission(@RequestBody Mission mission){
 
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -108,10 +122,11 @@ public class MissionCurdController {
     @PostMapping("/missiondetails")
     public ResponseEntity<?> findMissionDetailsList(@RequestBody Map<String,Object> paramMap) {
 
-        String name=(String)paramMap.get("name");
+
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(missionDetailsService.findMission(name));
+                .body(missionDetailsService.findMission(paramMap));
 
     }
     @GetMapping("/missioncount")

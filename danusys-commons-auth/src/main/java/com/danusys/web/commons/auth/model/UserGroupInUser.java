@@ -15,32 +15,31 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode
-@Table(name="t_user_group_in_user")
+@Table(name = "t_user_group_in_user")
 public class UserGroupInUser {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name="idx")
-        private int index;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idx")
+    private int index;
 
-        @Column(name="insert_dt")
-        private Timestamp insertDt;
-        @Column(name="insert_user_seq")
-        private int insertUserSeq ;
-
-
-        //@OneToOne(fetch = FetchType.EAGER)
-        // @ManyToOne
-        @OneToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name ="user_seq")
-        @JsonBackReference
-        private User user;
+    @Column(name = "insert_dt")
+    private Timestamp insertDt;
+    @Column(name = "insert_user_seq")
+    private int insertUserSeq;
 
 
-        @OneToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name ="user_group_seq")
-        @JsonManagedReference
-        private UserGroup userGroup;
+    //@OneToOne(fetch = FetchType.EAGER)
+    // @ManyToOne
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_seq")
+    @JsonBackReference
+    private User user;
 
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_group_seq")
+    @JsonManagedReference
+    private UserGroup userGroup;
 
 
 }

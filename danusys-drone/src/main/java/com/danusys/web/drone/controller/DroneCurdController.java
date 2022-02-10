@@ -34,10 +34,10 @@ public class DroneCurdController {
     @PutMapping("/drone")
     public ResponseEntity<?> saveDrone(@RequestBody Drone drone) {
         String returnResult = null;
-        DroneDetails droneDetails=new DroneDetails();
+        DroneDetails droneDetails = new DroneDetails();
         droneDetails.setStatus("임시저장");
-        Drone findDrone=droneService.findDrone(drone);
-        if(findDrone!=null){
+        Drone findDrone = droneService.findDrone(drone);
+        if (findDrone != null) {
             returnResult = "fail";
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -45,15 +45,11 @@ public class DroneCurdController {
         }
 
 
-        String result1 = droneService.saveDrone(drone);
-
+        droneService.saveDrone(drone);
         DroneDetails saveDroneDetails = droneDetailsService.saveDroneDetails(droneDetails, drone.getId());
-
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(saveDroneDetails);
-
     }
 
 
@@ -81,7 +77,7 @@ public class DroneCurdController {
 
 
     @PostMapping("/drone")
-    public ResponseEntity findAllDrone(Drone drone) {
+    public ResponseEntity findAllDrone(@RequestBody Drone drone) {
 
 
         return ResponseEntity

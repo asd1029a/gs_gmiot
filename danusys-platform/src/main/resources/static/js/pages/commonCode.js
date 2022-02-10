@@ -73,12 +73,24 @@ const commonCode = {
         }
         comm.createTable($target ,optionObj, evt);
     },
+    /**
+     * commonCode 조회
+     * @param {object} pObj - {
+     *     draw: null일시 View 조회
+     *     ,type: 데이터종류(stationKind, district, facilityKind, null)
+     *     ,start: paging 시작 idx
+     *     ,length: paging row 갯수
+     *     ,pParentCode: 조회할 parent_code_seq
+     * }
+     * @param {function} pCallback - callback function
+     * */
     getList : (pObj, pCallback) => {
         $.ajax({
             url : "/config/commonCode"
             , type : "POST"
             , data : JSON.stringify(pObj)
             , contentType : "application/json; charset=utf-8"
+            , async: false
         }).done((result) => {
             pCallback(result);
         })

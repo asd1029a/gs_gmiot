@@ -343,6 +343,10 @@ class mapCreater {
         this.map.removeLayer(layer);
     }
 
+    addLayer(layer) {
+        this.map.addLayer(layer);
+    }
+
     getInteraction(title) {
         const interaction = this.map.getInteractions().getArray();
         for(let i=0; i < interaction.length;i++){
