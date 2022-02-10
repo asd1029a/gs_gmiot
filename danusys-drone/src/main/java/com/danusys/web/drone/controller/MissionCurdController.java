@@ -34,10 +34,10 @@ public class MissionCurdController {
 
 
         int missionId = 0;
-        missionId = (int) missionList.get("missionId");
+        missionId = Integer.parseInt(missionList.get("missionId").toString());
 
         double totalDistance=0;
-        totalDistance=  Double.valueOf((int)missionList.get("totalDistance"));
+        totalDistance=  Double.parseDouble(missionList.get("totalDistance").toString());
 
 
         return ResponseEntity

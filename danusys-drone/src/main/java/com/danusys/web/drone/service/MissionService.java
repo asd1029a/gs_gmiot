@@ -66,11 +66,11 @@ public class MissionService {
         List<Mission> missionList = null;
         Sort sort = sortByupdateDt();
         if (paramMap.get("name") != null) {
-            String name = (String) paramMap.get("name");
+            String name = paramMap.get("name").toString();
             missionList = missionRepository.findAllByNameLike("%" + name + "%", sort);
         }
         if (paramMap.get("adminUserId") != null) {
-            String adminUserId = (String) paramMap.get("adminUserId");
+            String adminUserId =  paramMap.get("adminUserId").toString();
             missionList = missionRepository.findAllByUserIdLike("%" + adminUserId + "%", sort);
         }
 

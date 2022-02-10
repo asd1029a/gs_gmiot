@@ -237,7 +237,7 @@ public class MissionApiController {
 
         }
 
-        flight.doMission(missionMap, flag,speeds);
+        flight.doMission(missionMap, flag,speeds,missionIndex);
 
 
     }
