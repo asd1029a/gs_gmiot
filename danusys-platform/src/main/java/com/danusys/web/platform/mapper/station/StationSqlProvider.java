@@ -10,9 +10,9 @@ public class StationSqlProvider {
 
     public String selectListQry(Map<String, Object> paramMap) {
 
-        String keyword = CommonUtil.checkParamNull(paramMap, "keyword");
-        String start = CommonUtil.checkParamNull(paramMap, "start");
-        String length = CommonUtil.checkParamNull(paramMap, "length");
+        String keyword = CommonUtil.validOneNull(paramMap,"keyword");
+        String start =  CommonUtil.validOneNull(paramMap,"start");
+        String length =  CommonUtil.validOneNull(paramMap,"length");
 
         SQL sql = new SQL() {{
             //SELECT("*, '' as facility_status, '' as facility_kind");

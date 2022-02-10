@@ -1,18 +1,23 @@
 package com.danusys.web.platform.mapper.notice;
 
+import com.danusys.web.commons.util.CommonUtil;
 import com.danusys.web.platform.util.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class NoticeSqlProvider {
     public String selectListQry(Map<String, Object> paramMap) {
 
-        String keyword = CommonUtil.checkParamNull(paramMap, "keyword");
-        String start = CommonUtil.checkParamNull(paramMap, "start");
-        String length = CommonUtil.checkParamNull(paramMap, "length");
-        String startDt = CommonUtil.checkParamNull(paramMap,"startDt");
-        String endDt = CommonUtil.checkParamNull(paramMap,"endDt");;
+        CommonUtil.validMapNull(paramMap);
+
+        String keyword = paramMap.get("keyword").toString();
+        String start = paramMap.get("start").toString();
+        String length = paramMap.get("length").toString();
+        String startDt = paramMap.get("startDt").toString();
+        String endDt = paramMap.get("endDt").toString();
 
         SQL sql = new SQL() {{
             SELECT("notice_seq" +
@@ -25,7 +30,8 @@ public class NoticeSqlProvider {
                             ",notice_file");
             FROM("t_notice");
             if(!keyword.equals("")) {
-                WHERE("notice_title LIKE" + keyword);
+                WHERE("notice_title LIKE '%" + keyword + "%'");
+            }
             if(!startDt.equals("")) {
                 WHERE("insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
             }
