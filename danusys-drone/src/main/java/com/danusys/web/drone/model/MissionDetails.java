@@ -25,10 +25,10 @@ public class MissionDetails {
 
     private int index;
     @Column(name = "gps_x")
-    private int gpsX;
+    private double gpsX;
 
     @Column(name= "gps_y")
-    private int gpsY;
+    private double gpsY;
 
 
     private int alt;
@@ -37,7 +37,7 @@ public class MissionDetails {
 
     private int time;
 
-    private int yaw;
+    private double yaw;
    //@ManyToOne(fetch = FetchType.EAGER)
    //@JoinColumn(name ="mission_id")
 

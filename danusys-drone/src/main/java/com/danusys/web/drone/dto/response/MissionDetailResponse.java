@@ -10,12 +10,12 @@ public class MissionDetailResponse {
     private Long id;
     private String name;
     private int index;
-    private int mapX;
-    private int mapY;
+    private double mapX;
+    private double mapY;
     private int mapZ;
     private int speed;
     private int time;
-    private int yaw;
+    private double yaw;
     public MissionDetailResponse(MissionDetails missonDetails){
         this.id = missonDetails.getId();
         this.name= missonDetails.getName() ;
