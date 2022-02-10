@@ -62,6 +62,7 @@ public class Flight {
         Gson gson = new Gson();
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         droneLog = inputDroneLog;
+        gps.setMissionType("takeoff");
         try {
 
             socket = new Socket(tcpServerHost, tcpServerPort);
@@ -220,7 +221,7 @@ public class Flight {
 
                     String missionText = statustextMavlinkMessage.getPayload().text();
                     log.info(missionText);
-                    gps.setMissionType(missionText);
+                 //   gps.setMissionType(missionText);
 
 
                 } else if (message.getPayload() instanceof CommandAck) {
@@ -1017,7 +1018,10 @@ public class Flight {
                     log.info(missionText);
 
                     if (missionText.contains("Mission")) {
+
                         gps.setMissionType(missionText);
+                        String missionNumber=missionText.substring(9,10);
+                        log.info("missionNumber={}",missionNumber);
                     }
 
                     if (missionText.equals("Disarming motors")) {
