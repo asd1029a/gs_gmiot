@@ -28,6 +28,8 @@ public class MissionDetailsService {
 
     private final MissionDetailsRepository missionDetailsRepository;
     private final MissionRepository missionRepository;
+    private int estimatedTime = 0;
+    private int timeCountNumber = 0;
 
     @Transactional
     public MissionDetails saveMission(MissionDetails missonDetails, long mission_id) {
@@ -45,27 +47,40 @@ public class MissionDetailsService {
 
      */
     @Transactional
-    public String saveMission(List<MissionDetails> missionDetails, long mission_id) {
+    public String saveMission(List<MissionDetails> missionDetails, long mission_id, double totalDistance) {
         log.info("mission_id={}", mission_id);
-        Optional<Mission> mission = missionRepository.findById(mission_id);
-        log.info("mission={}", mission);
-        if (!mission.isPresent()) {
+        Optional<Mission> optionalMission = missionRepository.findById(mission_id);
+
+
+        if (!optionalMission.isPresent()) {
             return "fail";
         }
+        Mission mission = optionalMission.get();
+
+
         ObjectMapper mapper = new ObjectMapper();
-        List<MissionDetails> missionDetailsList = mapper.convertValue(missionDetails, new TypeReference<List<MissionDetails>>() {
-        });
+        List<MissionDetails> missionDetailsList =
+                mapper.convertValue(missionDetails, new TypeReference<List<MissionDetails>>() {
+                });
 
         log.info("missionDetails={}", missionDetails);
 
-        Long deleteResult = missionDetailsRepository.deleteByMission(mission.get());
+        Long deleteResult = missionDetailsRepository.deleteByMission(mission);
 
         missionDetailsList.forEach(r -> {
-            r.setMission(mission.get());
+            if (r.getName().equals("waypoint")) {
+                estimatedTime += r.getSpeed();
+                timeCountNumber++;
+            }
+
+            r.setMission(mission);
         });
+        log.info("estimatedTime={},timeCountNumber={}", estimatedTime, timeCountNumber);
+        mission.setTotalDistance(totalDistance);
+        mission.setEstimatedTime((int) (totalDistance / estimatedTime * timeCountNumber / 60));
+        missionRepository.save(mission);
 
-
-        List<MissionDetails> isExist = missionDetailsRepository.findAllByMission(mission.get());
+        List<MissionDetails> isExist = missionDetailsRepository.findAllByMission(mission);
         log.info("isExist={}", isExist);
         if (isExist.isEmpty()) {
             missionDetailsList.forEach(r -> {
@@ -132,17 +147,17 @@ public class MissionDetailsService {
         Mission mission = null;
         Optional<Mission> optionalMission = null;
         Long id = null;
-        int inputid=0;
+        int inputid = 0;
         if (paramMap.get("name") != null) {
-            name = (String) paramMap.get("name");
+            name = paramMap.get("name").toString();
             mission = missionRepository.findByName(name);
         }
-        if( paramMap.get("id") != null){
-            inputid = (int) paramMap.get("id");
-            id= Long.valueOf(inputid);
+        if (paramMap.get("id") != null) {
+            inputid = Integer.parseInt(paramMap.get("id").toString());
+            id = Long.valueOf(inputid);
             optionalMission = missionRepository.findById(id);
             if (!optionalMission.isPresent()) return null;
-            mission=optionalMission.get();
+            mission = optionalMission.get();
         }
 
         if (name == null && id == 0) {
@@ -152,7 +167,7 @@ public class MissionDetailsService {
 
         List<MissionDetails> missionDetails = missionDetailsRepository.findAllByMission(mission);
 
-        if(missionDetails.isEmpty()){
+        if (missionDetails.isEmpty()) {
             log.info("비엇음");
             return null;
 

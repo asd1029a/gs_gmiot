@@ -23,6 +23,46 @@ public class ConfigSqlProvider {
         return sql.toString();
     }
 
+    public String selectListViewStationQry(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+            SELECT("*");
+            FROM("v_facility_station");
+        }};
+        return sql.toString();
+    }
+
+    public String selectListViewDirectionQry(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+            SELECT("*");
+            FROM("v_facility_direction");
+        }};
+        return sql.toString();
+    }
+
+    public String selectListViewDistrictQry(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+            SELECT("*");
+            FROM("v_facility_district");
+        }};
+        return sql.toString();
+    }
+
+    public String selectListViewKindQry(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+            SELECT("*");
+            FROM("v_facility_kind");
+        }};
+        return sql.toString();
+    }
+
+    public String selectListViewProblemQry(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+            SELECT("*");
+            FROM("v_facility_problem");
+        }};
+        return sql.toString();
+    }
+
     public String selectOneCodeQry(int seq) {
         SQL sql = new SQL() {{
 
@@ -32,4 +72,5 @@ public class ConfigSqlProvider {
         }};
         return sql.toString();
     }
+
 }

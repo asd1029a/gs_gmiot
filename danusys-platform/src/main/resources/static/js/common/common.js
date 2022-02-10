@@ -159,14 +159,16 @@ $.fn.extend({
                     if(eleAttr.type === "checkbox"){
                         isCheckboxInit = true;
                         objEle.prop("checked", objEle.attr("data-init-value"));
-                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
+                        if($(".dropdown_checkbox").length > 0)
+                            comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val(objEle.attr("data-init-value"));
                     }
                 } else if(eleAttr.tagName == "INPUT" || eleAttr.tagName == "TEXTAREA") {
                     if(eleAttr.type === "checkbox" && !isCheckboxInit){
                         objEle.prop("checked", false);
-                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
+                        if($(".dropdown_checkbox").length > 0)
+                            comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val("");
                     }
@@ -599,9 +601,6 @@ var comm = {
     }
     /* 커스텀 다중 선택 셀렉트 박스 / 이유나 2022.01.14 */
     , createMultiSelectBox : function(selector) {
-        // TODO - 셀렉트 타입에 따라 ajax로 listLi 조회 및 생성
-        const type = $(selector).data("selectboxType");
-
         this.createMultiSelectBox.$selectBox = null,
             this.createMultiSelectBox.$select = null,
             this.createMultiSelectBox.$list = null,
@@ -612,9 +611,51 @@ var comm = {
             this.$select = this.$selectBox.find('.select');
             this.$list = this.$selectBox.find('.list');
             this.$listLi = this.$list.find('li> span');
+
+            const type = this.$selectBox.data("selectboxType");
+            const pObj = {
+                draw : null
+                , type: type
+            }
+            commonCode.getList(pObj, this.setList);
         }
-        comm.createMultiSelectBox.prototype.initEvent = function(e){
+
+        comm.createMultiSelectBox.prototype.setList = function(datas){
+            if(datas.data.length != 0){
+
+                let tData = datas.data[0];
+                let data = datas.data.slice(1);
+
+                comm.createMultiSelectBox.prototype.$select.html(tData.codeName);
+                comm.createMultiSelectBox.prototype.$select.data("placeholder", tData.codeName);
+
+                let listEle =
+                    `<li>
+                        <span>
+                            <input type="checkbox" id="${tData.codeSeq}All" name="checkAll">
+                            <label for="${tData.codeSeq}All"><span></span>전체</label>
+                        </span>
+                    </li>`;
+
+                data.forEach((item, idx) => {
+                    let spanEle =
+                        `<span>
+                            <input type="checkbox" id="${item.codeSeq}" name="" value="${item.codeValue}">
+                            <label for="${item.codeSeq}"><span></span>${item.codeName}</label>
+                        </span>`;
+
+                    listEle += !(idx % 2) ? "<li>" + spanEle : spanEle + "</li>";
+                })
+                listEle += data.length % 2 ? "</li>" : "";
+                comm.createMultiSelectBox.prototype.$list.html(listEle);
+            }
+        }
+
+        comm.createMultiSelectBox.prototype.initEvent = function(){
             let that = this;
+
+            this.$listLi = this.$list.find('li> span');
+
             this.$select.on('click', function(e){
                 that.listOn($(this));
             });
@@ -648,7 +689,7 @@ var comm = {
                 $targetListLi.children("input[type=checkbox]").prop('checked', $targetInput.prop('checked'));
             }else{
                 let totalLen = $targetListLi.length - 1;
-                let checkedLen = $targetListLi.find("input[type=checkbox]:checked").not("#checkAll").length;
+                let checkedLen = $targetListLi.find("input[type=checkbox]:checked").not("[name=checkAll]").length;
 
                 if(totalLen !== checkedLen){
                     $targetListLi.find("[name=checkAll]").prop("checked", false);
@@ -673,6 +714,7 @@ var comm = {
                 this.$list.css('display', 'none');
             };
         }
+
         this.createMultiSelectBox.prototype.init(selector);
         this.createMultiSelectBox.prototype.initEvent();
     }

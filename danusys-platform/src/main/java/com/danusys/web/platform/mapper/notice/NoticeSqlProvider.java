@@ -1,6 +1,5 @@
 package com.danusys.web.platform.mapper.notice;
 
-import com.danusys.web.commons.util.CommonUtil;
 import com.danusys.web.platform.util.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -12,6 +11,8 @@ public class NoticeSqlProvider {
         String keyword = CommonUtil.checkParamNull(paramMap, "keyword");
         String start = CommonUtil.checkParamNull(paramMap, "start");
         String length = CommonUtil.checkParamNull(paramMap, "length");
+        String startDt = CommonUtil.checkParamNull(paramMap,"startDt");
+        String endDt = CommonUtil.checkParamNull(paramMap,"endDt");;
 
         SQL sql = new SQL() {{
             SELECT("notice_seq" +
@@ -25,6 +26,11 @@ public class NoticeSqlProvider {
             FROM("t_notice");
             if(!keyword.equals("")) {
                 WHERE("notice_title LIKE" + keyword);
+            if(!startDt.equals("")) {
+                WHERE("insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
+            }
+            if(!endDt.equals("")) {
+                WHERE("insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
             }
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);

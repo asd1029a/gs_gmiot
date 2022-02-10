@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="mission")
+@Table(name = "mission")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -29,13 +29,13 @@ public class Mission {
     @Column(nullable = false)
     private String name;
 
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private String userId;
 
-//    @Column(name="insert_dt")
+    //    @Column(name="insert_dt")
 //    private Timestamp insertDt;
 //
-    @Column(name="update_dt")
+    @Column(name = "update_dt")
     private Timestamp updateDt;
 
 //    @Column(name="insert_user_seq")
@@ -43,18 +43,21 @@ public class Mission {
 //
 //    @Column(name="update_user_seq")
 //    private int updateUserSeq;
+    @Column(name ="total_distance")
+    private double totalDistance;
 
+    @Column(name="estimated_time")
+    private int estimatedTime;
 
-
-   // @JsonIgnore
-  //  @OneToMany(mappedBy ="mission",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
-   @OneToMany(mappedBy ="mission" ,fetch = FetchType.EAGER)  //마지막에 수정됨
-   @JsonManagedReference
-    private final List<MissionDetails> missonDetails= new ArrayList<>();
+    // @JsonIgnore
+    //  @OneToMany(mappedBy ="mission",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "mission", fetch = FetchType.EAGER)  //마지막에 수정됨
+    @JsonManagedReference
+    private final List<MissionDetails> missonDetails = new ArrayList<>();
 
 
     @OneToOne
-    @JoinColumn(name="drone_id")
+    @JoinColumn(name = "drone_id")
     @JsonBackReference
     private Drone drone;
 
