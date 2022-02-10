@@ -18,7 +18,7 @@ public class StationSqlProvider {
             //SELECT("*, '' as facility_status, '' as facility_kind");
             SELECT("*");
             FROM("t_station");
-            if(keyword != null && !keyword.equals("")) {
+            if(!keyword.equals("")) {
                 WHERE("station_name LIKE" + keyword);
             }
             if (!start.equals("") && !length.equals("")) {

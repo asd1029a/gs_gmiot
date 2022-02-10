@@ -1,5 +1,6 @@
 package com.danusys.web.platform.mapper.notice;
 
+import com.danusys.web.commons.util.CommonUtil;
 import com.danusys.web.platform.util.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -7,9 +8,10 @@ import java.util.Map;
 
 public class NoticeSqlProvider {
     public String selectListQry(Map<String, Object> paramMap) {
-        String keyword = paramMap.get("keyword").toString();
-        String start = paramMap.get("start").toString();
-        String length = paramMap.get("length").toString();
+
+        String keyword = CommonUtil.checkParamNull(paramMap, "keyword");
+        String start = CommonUtil.checkParamNull(paramMap, "start");
+        String length = CommonUtil.checkParamNull(paramMap, "length");
 
         SQL sql = new SQL() {{
             SELECT("notice_seq" +
@@ -21,7 +23,7 @@ public class NoticeSqlProvider {
                             ",update_user_seq" +
                             ",notice_file");
             FROM("t_notice");
-            if(keyword != null && !keyword.equals("")) {
+            if(!keyword.equals("")) {
                 WHERE("notice_title LIKE" + keyword);
             }
             if (!start.equals("") && !length.equals("")) {
