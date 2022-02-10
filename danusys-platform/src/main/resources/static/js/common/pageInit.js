@@ -59,6 +59,7 @@ $(document).ready(() => {
     } else if(path === "/pages/config/commonCode") {
         commonCode.create($("[data-table-seq='0']"),0);
     } else if(path === "/pages/config/notice") {
+        notice.eventHandler();
         notice.create();
     }
     // 관제

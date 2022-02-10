@@ -4,7 +4,9 @@
 
 const notice = {
     eventHandler : () => {
-
+        $("#searchBtn").on('click', (e) => {
+            notice.create();
+        });
     }
     , create : () => {
         const $target = $('#noticeTable');

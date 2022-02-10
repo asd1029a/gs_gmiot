@@ -18,7 +18,7 @@ function getEventInfo(evt, callback) {
 		type : "POST",
 		url : "/select/event.selectEventList/action",
 		dataType : "json",
-		data : "param" : JSON.stringify(param),
+		data : JSON.stringify(param),
 		async : false,
 		beforeSend : function(xhr) {
 			// 전송 전 Code
