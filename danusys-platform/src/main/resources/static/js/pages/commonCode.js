@@ -58,8 +58,8 @@ const commonCode = {
         const evt = {
             click : function(e) {
                 const targetSeq = Number($target.attr('data-table-seq'));
-
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
+
                 if($(e.target).hasClass('button')) {
                     //commonCode.showPopup('mod');
                     //$('#commonCodeForm').setItemValue(rowData);

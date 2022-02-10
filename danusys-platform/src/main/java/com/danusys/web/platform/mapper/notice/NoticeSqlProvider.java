@@ -10,19 +10,27 @@ public class NoticeSqlProvider {
         String keyword = paramMap.get("keyword").toString();
         String start = paramMap.get("start").toString();
         String length = paramMap.get("length").toString();
+        String startDt = paramMap.get("startDt").toString();
+        String endDt = paramMap.get("endDt").toString();
 
         SQL sql = new SQL() {{
             SELECT("notice_seq" +
                             ",notice_title" +
                             ",notice_content" +
-                            ", TO_CHAR(insert_dt, 'YYYY-DD-MM HH:MI:SS') AS insert_dt" +
+                            ", TO_CHAR(insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
                             ",insert_user_seq" +
-                            ", TO_CHAR(update_dt, 'YYYY-DD-MM HH:MI:SS') AS update_dt" +
+                            ", TO_CHAR(update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt" +
                             ",update_user_seq" +
                             ",notice_file");
             FROM("t_notice");
             if(keyword != null && !keyword.equals("")) {
-                WHERE("notice_title LIKE" + keyword);
+                WHERE("notice_title LIKE '" + keyword + "'");
+            }
+            if(startDt != null && !startDt.equals("")) {
+                WHERE("insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
+            }
+            if(endDt != null && !endDt.equals("")) {
+                WHERE("insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
             }
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
