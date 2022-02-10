@@ -28,14 +28,9 @@ public class Drone {
     @Column(name="drone_device_name",unique = true,nullable = false)
     private String droneDeviceName;
 
-    @Column(name="insert_user_id")
-    private Long insertUserId;
 
-    @Column(name="insert_dt")
-    private Date insertDt;
-
-    @Column(name="update_user_id")
-    private Long updateUserId;
+    @Column(name="user_id")
+    private String userId;
 
     @Column(name="update_dt")
     private Date updateDt;

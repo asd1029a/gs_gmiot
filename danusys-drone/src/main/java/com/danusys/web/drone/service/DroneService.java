@@ -35,7 +35,8 @@ public class DroneService {
         Drone updateDrone = (Drone) optionalDrone.get();
 
         updateDrone.setDroneDeviceName(drone.getDroneDeviceName());
-        updateDrone.setUpdateUserId(drone.getUpdateUserId());
+        updateDrone.setUserId(drone.getUserId());
+
         updateDrone.setUpdateDt(date);
 
         return "success";
