@@ -630,16 +630,16 @@ var comm = {
                 let listEle =
                     `<li>
                         <span>
-                            <input type="checkbox" id="${tData.codeId}All" name="checkAll">
-                            <label for="${tData.codeId}All"><span></span>전체</label>
+                            <input type="checkbox" id="${tData.codeSeq}All" name="checkAll">
+                            <label for="${tData.codeSeq}All"><span></span>전체</label>
                         </span>
                     </li>`;
 
                 data.forEach((item, idx) => {
                     let spanEle =
                         `<span>
-                            <input type="checkbox" id="${item.codeId}" name="" value="${item.codeValue}">
-                            <label for="${item.codeId}"><span></span>${item.codeName}</label>
+                            <input type="checkbox" id="${item.codeSeq}" name="" value="${item.codeValue}">
+                            <label for="${item.codeSeq}"><span></span>${item.codeName}</label>
                         </span>`;
 
                     listEle += !(idx % 2) ? "<li>" + spanEle : spanEle + "</li>";
