@@ -27,6 +27,20 @@ public class EventSqlProvider {
         }};
         return sql.toString();
     }
+
+    public String selectCountQry(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+            String keyword = paramMap.get("keyword").toString();
+
+            SELECT("COUNT(*) as count");
+            FROM("t_event");
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("event_kind LIKE" + keyword);
+            }
+        }};
+        return sql.toString();
+    }
+
     public String selectOneQry(int seq) {
         SQL sql = new SQL() {{
 
