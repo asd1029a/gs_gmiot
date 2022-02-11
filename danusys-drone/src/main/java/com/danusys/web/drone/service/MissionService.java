@@ -56,7 +56,7 @@ public class MissionService {
 
         MissionResponse missionResponse = new MissionResponse(mission.getId(), mission.getName(), mission.getUserId(),
                 mission.getUpdateDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"))
-                , mission.getDrone().getId().intValue());
+                , mission.getDrone().getId().intValue(), mission.getTotalDistance(), mission.getEstimatedTime());
 
         return missionResponse;
     }
