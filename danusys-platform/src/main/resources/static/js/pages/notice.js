@@ -1,11 +1,25 @@
 /**
  * 공지사항
  */
-
 const notice = {
     eventHandler : () => {
-        $("#searchBtn").on('click', (e) => {
+        $("#searchBtn").on('click', () => {
             notice.create();
+        });
+        $("#addNoticeProcBtn").on('click', () => {
+           notice.addProc();
+        });
+        $("#modNoticeProcBtn").on('click', () => {
+            notice.modProc($("#noticeForm").data("noticeSeq"));
+        });
+        $("#delNoticeProcBtn").on('click', () => {
+            notice.delProc($("#noticeForm").data("noticeSeq"));
+        });
+        $("#noticePopup .title dd").on('click', () => {
+            notice.hidePopup();
+        });
+        $("#addNoticeBtn").on('click', () => {
+            notice.showPopup("add");
         });
     }
     , create : () => {
@@ -15,7 +29,7 @@ const notice = {
             dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
             pageLength: 15, //$("#noticeListCntSel").val(),
-            scrollY: "calc(100% - 45px)",
+            scrollY: "calc(100% - 40px)",
             ajax :
                 {
                     'url' : "/notice",
@@ -26,7 +40,6 @@ const notice = {
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
-                        console.log(result);
                         $('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
@@ -72,11 +85,15 @@ const notice = {
 
         const evt = {
             click : function(e) {
+                const $form = $('#noticeForm');
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
                 if($(e.target).hasClass('button')) {
-                    //notice.showPopup('mod');
-                    //$('#noticeForm').setItemValue(rowData);
-                    notice.get(rowData.noticeSeq ,(result) => console.log(result));
+                    notice.showPopup('mod');
+                    $('#noticeForm').setItemValue(rowData);
+                    notice.get(rowData.noticeSeq ,(result) => {
+                        $form.data("noticeSeq", rowData.noticeSeq);
+                        $form.setItemValue(result);
+                    });
                 }
             }
         }
@@ -100,60 +117,75 @@ const notice = {
         });
     },
     showPopup : (type) => {
-        $('#noticePopup .popupContents').scrollTop(0);
         comm.showModal($('#noticePopup'));
         $('#noticePopup').css("display", "flex");
         $('#noticeForm').initForm();
         $('#noticePopup [data-mode]').hide();
         if(type === "add") {
-            $('#noticePopup .popupTitle h4').text("공지사항 게시글 등록");
-            $('#noticePopup').css('height', '480px');
+            $('#noticePopup .title dt').text("공지사항 등록");
             $('#noticePopup [data-mode="'+type+'"]').show();
         } else if(type === "mod") {
-            $('#noticePopup .popupTitle h4').text('공지사항 게시글 수정');
-            $('#noticePopup').css('height', '780px');
+            $('#noticePopup .title dt').text('공지사항 수정');
             $('#noticePopup [data-mode="'+type+'"]').show();
         }
     },
     hidePopup : () => {
-        $('#noticePopup .popupContents').scrollTop(0);
         comm.hideModal($('#noticePopup'));
         $('#noticePopup').hide();
     },
-    addProc : (pSeq) => {
+    addProc : () => {
         const formObj = $('#noticeForm').serializeJSON();
 
-        $.ajax({
-            url : "/notice"
-            , type: "PUT"
-            , data : formObj
-        }).done((result) => {
-            comm.showAlert("공지사항이 등록되었습니다");
-            notice.create($('#noticeTable'));
-            notice.hidePopup();
-        });
+        if($('#noticeForm').doValidation()) {
+            $.ajax({
+                url : "/notice"
+                , type: "PUT"
+                , contentType : "application/json; charset=utf-8"
+                , data : JSON.stringify(formObj)
+            }).done((result) => {
+                comm.showAlert("공지사항이 등록되었습니다");
+                notice.create($('#noticeTable'));
+                notice.hidePopup();
+            });
+        } else {
+            return false;
+        }
     },
     modProc : (pSeq) => {
         const formObj = $('#noticeForm').serializeJSON();
+        formObj.noticeSeq = pSeq;
 
-        $.ajax({
-            url : "/notice"
-            , type: "PATCH"
-            , data : formObj
-        }).done((result) => {
-            comm.showAlert("공지사항이 수정되었습니다");
-            notice.create($('#noticeTable'));
-            notice.hidePopup();
-        });
+        if($('#noticeForm').doValidation()) {
+            $.ajax({
+                url: "/notice"
+                , type: "PATCH"
+                , contentType: "application/json; charset=utf-8"
+                , data: JSON.stringify(formObj)
+            }).done((result) => {
+                comm.showAlert("공지사항이 수정되었습니다");
+                notice.create($('#noticeTable'));
+                notice.hidePopup();
+            });
+        } else {
+            return false;
+        }
     },
     delProc : (pSeq) => {
-        $.ajax({
-            url : "/notice/"+pSeq
-            , type: "DELETE"
-        }).done((result) => {
-            comm.showAlert("공지사항이 삭제되었습니다");
-            notice.create($('#noticeTable'));
-            notice.hidePopup();
-        });
+        comm.confirm(
+            "공지사항을 삭제하시겠습니까?"
+        , {}
+        , () => {
+                $.ajax({
+                    url : "/notice/"+pSeq
+                    , type: "DELETE"
+                }).done((result) => {
+                    comm.showAlert("공지사항이 삭제되었습니다");
+                    notice.create($('#noticeTable'));
+                    notice.hidePopup();
+                });
+            }
+        ,() => {
+            return false;
+        })
     }
 }

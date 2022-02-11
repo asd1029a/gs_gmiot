@@ -104,6 +104,8 @@ $.fn.extend({
 
             if(typeof($labelElement.attr("data-hidden-value"))!="undefined") {
                 txtLabel = $labelElement.attr("data-hidden-value");
+            } else if($labelElement.length === 0) {
+                txtLabel = $(element).parent().parent().find('dt').text();
             } else {
                 txtLabel = $labelElement.text();
             }
