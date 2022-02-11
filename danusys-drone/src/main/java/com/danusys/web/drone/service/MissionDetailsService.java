@@ -76,7 +76,7 @@ public class MissionDetailsService {
             r.setMission(mission);
         });
         log.info("estimatedTime={},timeCountNumber={}", estimatedTime, timeCountNumber);
-        mission.setTotalDistance(totalDistance);
+        mission.setTotalDistance((int)totalDistance);
         mission.setEstimatedTime((int) (totalDistance / estimatedTime * timeCountNumber / 60));
         missionRepository.save(mission);
 

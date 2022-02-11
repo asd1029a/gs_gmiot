@@ -16,6 +16,7 @@ public class MissionDetailResponse {
     private int speed;
     private int time;
     private double yaw;
+    private int radius;
     public MissionDetailResponse(MissionDetails missonDetails){
         this.id = missonDetails.getId();
         this.name= missonDetails.getName() ;
@@ -26,6 +27,7 @@ public class MissionDetailResponse {
         this.speed=missonDetails.getSpeed();
         this.time= missonDetails.getTime();
         this.yaw=missonDetails.getYaw();
+        this.radius=missonDetails.getRadius();
 
     }
 }

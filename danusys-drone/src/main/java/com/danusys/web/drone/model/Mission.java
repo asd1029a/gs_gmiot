@@ -44,7 +44,7 @@ public class Mission {
 //    @Column(name="update_user_seq")
 //    private int updateUserSeq;
     @Column(name ="total_distance")
-    private double totalDistance;
+    private int totalDistance;
 
     @Column(name="estimated_time")
     private int estimatedTime;

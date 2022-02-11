@@ -24,6 +24,8 @@ public class MissionResponse {
     private String UserId;
     private String updateDt;
     private int droneId;
+    private int totalDistance;
+    private int estimatedTime;
     
 
     //private List<MissionDetailResponse> missionDetailResponseList;
@@ -36,7 +38,8 @@ public class MissionResponse {
         this.UserId=mission.getUserId();
         this.droneId= mission.getDrone().getId().intValue();
         this.updateDt=mission.getUpdateDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
-
+        this.totalDistance=mission.getTotalDistance();
+        this.estimatedTime=mission.getEstimatedTime();
 
         //this.missionDetailResponseList= mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
