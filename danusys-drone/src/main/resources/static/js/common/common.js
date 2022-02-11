@@ -32,11 +32,11 @@ const common = {
             });
         }
     },
-    postAxios: (data) => {
+    /*postAxios: (data) => {
         let key = Object.keys(data.data);
         const dataArr = data.data[key];
         return dataArr;
-    },
+    },*/
 }
 const commonPopup = {
     openPopup: function(page,list,popupFnc,option) {

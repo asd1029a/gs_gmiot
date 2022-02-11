@@ -2,18 +2,18 @@
   "missionList": [
     {
       "id":1,
-      "name":"takeOff",
-      "koName":"이륙"
+      "name":"waypoint",
+      "koName":"경유지"
     },
     {
       "id":2,
-      "name":"return",
-      "koName":"귀환"
+      "name":"roi",
+      "koName":"ROI"
     },
     {
       "id":3,
-      "name":"wayPoint",
-      "koName":"경유지"
-    },
+      "name":"return",
+      "koName":"귀환"
+    }
   ]
 }
