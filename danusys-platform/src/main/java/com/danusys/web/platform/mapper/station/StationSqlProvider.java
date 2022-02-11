@@ -29,6 +29,21 @@ public class StationSqlProvider {
         return sql.toString();
     }
 
+    public String selectCountQry(Map<String, Object> paramMap) {
+
+        String keyword = CommonUtil.validOneNull(paramMap,"keyword");
+
+        SQL sql = new SQL() {{
+            SELECT("COUNT(*) AS count");
+            FROM("t_station ts");
+            LEFT_OUTER_JOIN("t_facility tf ON ts.station_seq = tf.station_seq");
+            if(!keyword.equals("")) {
+                WHERE("ts.station_name LIKE" + keyword);
+            }
+        }};
+        return sql.toString();
+    }
+
     public String selectOneQry(int stationSeq) {
         SQL sql = new SQL() {{
             SELECT("*");

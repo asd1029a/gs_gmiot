@@ -6,6 +6,7 @@ import com.danusys.web.platform.mapper.config.ConfigSqlProvider;
 import com.danusys.web.platform.util.PagingUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -20,7 +21,10 @@ public class ConfigServiceImpl implements ConfigService {
     public EgovMap getListCode(Map<String, Object> paramMap) throws Exception {
 
         if (paramMap.get("draw") != null) {
-            return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(csp.selectListCodeQry(paramMap)));
+            Map<String, Object> pagingMap = new HashMap<>();
+            pagingMap.put("data", commonMapper.selectList(csp.selectListCodeQry(paramMap)));
+            pagingMap.put("count", commonMapper.selectOne(csp.selectCountCodeQry(paramMap)).get("count"));
+            return PagingUtil.createPagingMap(paramMap, pagingMap);
         } else {
             EgovMap resultMap = new EgovMap();
             switch (paramMap.get("type").toString()) {

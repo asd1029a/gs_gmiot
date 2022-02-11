@@ -50,7 +50,7 @@ const notice = {
             columns : [
                 {data: "noticeTitle", className: "alignLeft"},
                 {data: "noticeContent", className: "alignLeft"},
-                {data: "insertUserSeq"},
+                {data: "insertUserId"},
                 {data: "insertDt"},
                 {data: "noticeFile"},
                 {data: null}

@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/ws/**"
                         , "/home"
                         , "/dashboard"
-                        , "/misn"
+                        , "/mission"
                         , "/log"
                         , "/config"
                         , "/webjars/**"

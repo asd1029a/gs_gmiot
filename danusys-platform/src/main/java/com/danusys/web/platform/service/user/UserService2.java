@@ -190,8 +190,12 @@ public class UserService2 {
         //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
-            if (paramMap.get("draw") != null) resultMap = PagingUtil.createPagingMap(paramMap, userDtoList);
-            else {
+            if (paramMap.get("draw") != null) {
+                Map<String, Object> pagingMap = new HashMap<>();
+                pagingMap.put("data", userDtoList); // 페이징 + 검색조건 결과
+                pagingMap.put("count", userDtoList.size()); // 검색조건이 반영된 총 카운트
+                resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
+            } else {
                 resultMap.put("data", userDtoList);
                 resultMap.put("count",count);
             }

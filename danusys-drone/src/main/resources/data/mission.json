@@ -1,34 +1,38 @@
-{
-  "mission": [
-    {
-      "id": "1",
-      "name": "wayPoint",
-      "lon": 127,
-      "lat": 30,
-      "stop": 10,
-      "speed": 20,
-      "alt": 30,
-      "order": 1
-    },
-    {
-      "id": "2"
-      ,"name": "takeOff",
-      "lon": 127,
-      "lat": 30,
-      "stop": 20,
-      "speed": 20,
-      "alt": 30,
-      "order": 2
-    },
-    {
-      "id": "3",
-      "name": "return",
-      "lon": 127,
-      "lat": 30,
-      "stop": 30,
-      "speed": 20,
-      "alt": 30,
-      "order": 3
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "미션테스트",
+    "missionDetailResponseList": [
+      {
+        "id": 1,
+        "name": "takeoff",
+        "index": 1,
+        "mapX": 0.0,
+        "mapY": 0.0,
+        "mapZ": 100.0,
+        "speed": 0.0,
+        "time": 0.0
+      },
+      {
+        "id": 2,
+        "name": "waypoint",
+        "index": 2,
+        "mapX": 3.744568E8,
+        "mapY": 1.26891725E9,
+        "mapZ": 100.0,
+        "speed": 0.0,
+        "time": 0.0
+      },
+      {
+        "id": 3,
+        "name": "waypoint",
+        "index": 3,
+        "mapX": 3.7443536E8,
+        "mapY": 1.26893184E9,
+        "mapZ": 100.0,
+        "speed": 0.0,
+        "time": 0.0
+      },
+    ]
+  }
+]
