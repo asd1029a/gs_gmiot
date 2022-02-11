@@ -11,7 +11,7 @@
     <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
     <meta http-equiv="Cache-Control" content="no-cache" />
     <meta http-equiv="Pragma" content="no-cache" />
-    <meta name="context-path" th:content="@{/}"/>
+    <meta name="context-path" th:href="@{/}"/>
 
     <!-- common css files -->
     <link rel="stylesheet" type="text/css" href="css/default/layout.css">
@@ -21,6 +21,7 @@
     <script src="/webjars/axios/0.21.1/dist/axios.js"></script>
     <script src="/js/default/default.js" defer></script>
     <script src="/js/common/common.js" defer></script>
+    <th:block th:insert="/view/commons/map"/>
 </head>
 
 <body>

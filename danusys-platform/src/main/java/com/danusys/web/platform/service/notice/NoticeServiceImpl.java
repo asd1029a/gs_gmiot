@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,10 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         if(paramMap.get("draw") != null) {
-            return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(nsp.selectListQry(paramMap)));
+            Map<String, Object> pagingMap = new HashMap<>();
+            pagingMap.put("data", commonMapper.selectList(nsp.selectListQry(paramMap)));
+            pagingMap.put("count", commonMapper.selectOne(nsp.selectCountQry(paramMap)).get("count"));
+            return PagingUtil.createPagingMap(paramMap, pagingMap);
         } else {
             EgovMap resultMap = new EgovMap();
             resultMap.put("data", commonMapper.selectList(nsp.selectListQry(paramMap)));

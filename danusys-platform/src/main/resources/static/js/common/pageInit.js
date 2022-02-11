@@ -50,6 +50,11 @@ $(document).ready(() => {
         station.create();
     } else if(path === "/pages/inqry/facilities") {
         facility.create();
+    } else if(path === "/pages/inqry/eventCabinet") {
+        event.eventHandler($('#cabinetEventTable'), 'cabinet');
+        event.create($('#cabinetEventTable'), 'cabinet');
+    } else if(path === "/pages/inqry/eventDron") {
+        event.create($('#dronEventTable'), 'dron');
     }
     // 환경설정
     else if(path === "/pages/config/dimmingGroup") {

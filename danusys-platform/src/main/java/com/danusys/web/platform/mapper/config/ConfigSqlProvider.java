@@ -23,6 +23,18 @@ public class ConfigSqlProvider {
         return sql.toString();
     }
 
+    public String selectCountCodeQry(Map<String, Object> paramMap) {
+        String keyword = paramMap.get("keyword").toString();
+        int pParentCode = (int) paramMap.get("pParentCode");
+
+        SQL sql = new SQL() {{
+            SELECT("COUNT(*) AS count");
+            FROM("t_common_code");
+            WHERE("parent_code_seq = "+pParentCode);
+        }};
+        return sql.toString();
+    }
+
     public String selectListViewStationQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
             SELECT("*");

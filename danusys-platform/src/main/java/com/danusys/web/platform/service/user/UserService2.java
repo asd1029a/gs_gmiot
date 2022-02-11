@@ -7,6 +7,7 @@ import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
 import com.danusys.web.commons.util.EgovMap;
 import com.danusys.web.platform.service.event.EventServiceImpl;
@@ -15,6 +16,10 @@ import com.danusys.web.platform.service.notice.NoticeServiceImpl;
 import com.danusys.web.platform.util.PagingUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -132,16 +137,14 @@ public class UserService2 {
             return 0;
         SHA256 sha256 = new SHA256();
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
-        // log.info("{}",userDetails.getUserSeq());
+
         try {
             String cryptoPassword = sha256.encrypt(user.getPassword());
             user.setPassword("{SHA-256}" + cryptoPassword);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        user.setInsertUserSeq(userDetails.getUserSeq());
+        user.setInsertUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         user.setInsertDt(timestamp);
 
@@ -152,14 +155,56 @@ public class UserService2 {
 
     // public List<UserDto> findListUser() {
     public Map<String, Object> findListUser(Map<String, Object> paramMap) {
-        List<User> userList = userRepository.findAll();
+
+        int start = 0;
+        int length = 1;
+        int count = 0;
+        if (paramMap.get("start") != null)
+            start = Integer.parseInt(paramMap.get("start").toString());
+        if (paramMap.get("length") != null)
+            length = Integer.parseInt(paramMap.get("length").toString());
+
+        PageRequest pageRequest = PageRequest.of(start, length);
+
+        Page<User> userPageList = null;
+        //   log.info("totalPage={}",userList2.getTotalPages());
+
+
+        List<User> userList = null;
+        if (paramMap.get("userName") != null && length != 1) {
+//            String userName = paramMap.get("userName").toString();
+//            userPageList = userRepository.findAllByUserNameLike("%" + userName + "%", pageRequest);
+//            userList = userPageList.toList();
+//            count = (int) userPageList.getTotalElements();
+            Map<String, Object> filter = new HashMap<>();
+            filter.put("userName", paramMap.get("userName"));
+            if (paramMap.get("tel") != null)
+                filter.put("tel", paramMap.get("tel"));
+            userPageList = userRepository.findAll(UserSpecs.withTitle(filter), pageRequest);
+            userList = userPageList.toList();
+            count = (int) userPageList.getTotalElements();
+            log.info("count={}", count);
+        } else if (paramMap.get("userName") == null) {
+            userList = userRepository.findAll();
+            count = userList.size();
+        } else if (length == 1) {
+            String userName = paramMap.get("userName").toString();
+            userList = userRepository.findAllByUserNameLike("%" + userName + "%");
+            count = userList.size();
+        }
+
         List<UserDto> userDtoList = userList.stream().map(UserDto::new).collect(Collectors.toList());
         //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
-            if (paramMap.get("draw") != null) resultMap = PagingUtil.createPagingMap(paramMap, userDtoList);
-            else {
+            if (paramMap.get("draw") != null) {
+                Map<String, Object> pagingMap = new HashMap<>();
+                pagingMap.put("data", userDtoList); // 페이징 + 검색조건 결과
+                pagingMap.put("count", userDtoList.size()); // 검색조건이 반영된 총 카운트
+                resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
+            } else {
                 resultMap.put("data", userDtoList);
+                resultMap.put("count", count);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,5 +214,7 @@ public class UserService2 {
     //userList.stream().map(UserDto::new).collect(Collectors.toList());
     // return userList.stream().collect(Collectors.toMap(User::getUserId, UserDto::new));
 
-
+    public int getUserSize() {
+        return userRepository.findAll().size();
+    }
 }

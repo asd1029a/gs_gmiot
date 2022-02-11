@@ -20,15 +20,17 @@ public class NoticeSqlProvider {
         String endDt = paramMap.get("endDt").toString();
 
         SQL sql = new SQL() {{
-            SELECT("notice_seq" +
-                            ",notice_title" +
-                            ",notice_content" +
-                            ", TO_CHAR(insert_dt, 'YYYY-DD-MM HH:MI:SS') AS insert_dt" +
-                            ",insert_user_seq" +
-                            ", TO_CHAR(update_dt, 'YYYY-DD-MM HH:MI:SS') AS update_dt" +
-                            ",update_user_seq" +
-                            ",notice_file");
-            FROM("t_notice");
+            SELECT("t1.notice_seq" +
+                            ", t1.notice_title" +
+                            ", t1.notice_content" +
+                            ", TO_CHAR(t1.insert_dt, 'YYYY-DD-MM HH:MI:SS') AS insert_dt" +
+                            ", t2.user_id AS insert_user_id" +
+                            ", TO_CHAR(t1.update_dt, 'YYYY-DD-MM HH:MI:SS') AS update_dt" +
+                            ", t3.user_id AS update_user_id" +
+                            ", t1.notice_file");
+            FROM("t_notice t1");
+            INNER_JOIN("t_user t2 on t1.insert_user_seq = t2.id");
+            LEFT_OUTER_JOIN("t_user t3 on t1.update_user_seq = t3.id");
             if(!keyword.equals("")) {
                 WHERE("notice_title LIKE '%" + keyword + "%'");
             }
@@ -46,18 +48,47 @@ public class NoticeSqlProvider {
         return sql.toString();
     }
 
+    public String selectCountQry(Map<String, Object> paramMap) {
+
+        CommonUtil.validMapNull(paramMap);
+
+        String keyword = paramMap.get("keyword").toString();
+        String startDt = paramMap.get("startDt").toString();
+        String endDt = paramMap.get("endDt").toString();
+
+        SQL sql = new SQL() {{
+            SELECT("COUNT(*) AS count");
+            FROM("t_notice t1");
+            INNER_JOIN("t_user t2 on t1.insert_user_seq = t2.id");
+            LEFT_OUTER_JOIN("t_user t3 on t1.update_user_seq = t3.id");
+            if(!keyword.equals("")) {
+                WHERE("notice_title LIKE '%" + keyword + "%'");
+            }
+            if(!startDt.equals("")) {
+                WHERE("insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
+            }
+            if(!endDt.equals("")) {
+                WHERE("insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
+            }
+        }};
+
+        return sql.toString();
+    }
+
     public String selectOneQry(int noticeSeq) {
         SQL sql = new SQL() {{
 
-            SELECT("notice_seq" +
-                    ",notice_title" +
-                    ",notice_content" +
-                    ", TO_CHAR(insert_dt, 'YYYY-DD-MM HH:MI:SS') AS insert_dt" +
-                    ",insert_user_seq" +
-                    ", TO_CHAR(update_dt, 'YYYY-DD-MM HH:MI:SS') AS update_dt" +
-                    ",update_user_seq" +
-                    ",notice_file");
-            FROM("t_notice");
+            SELECT("t1.notice_seq" +
+                    ", t1.notice_title" +
+                    ", t1.notice_content" +
+                    ", TO_CHAR(t1.insert_dt, 'YYYY-DD-MM HH:MI:SS') AS insert_dt" +
+                    ", t2.user_id AS insert_user_id" +
+                    ", TO_CHAR(t1.update_dt, 'YYYY-DD-MM HH:MI:SS') AS update_dt" +
+                    ", t3.user_id AS update_user_id" +
+                    ", t1.notice_file");
+            FROM("t_notice t1");
+            INNER_JOIN("t_user t2 on t1.insert_user_seq = t2.id");
+            LEFT_OUTER_JOIN("t_user t3 on t1.update_user_seq = t3.id");
             WHERE("notice_seq =" + noticeSeq);
         }};
         return sql.toString();

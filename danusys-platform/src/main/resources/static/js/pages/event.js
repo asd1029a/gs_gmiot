@@ -7,14 +7,8 @@ const event = {
         $("#searchBtn").on('click', () => {
             event.create($target, pEventType);
         });
-        $("#addEventProcBtn").on('click', () => {
-            event.addProc($target, pEventType);
-        });
         $("#eventPopup .title dd").on('click', () => {
             event.hidePopup();
-        });
-        $("#addEventBtn").on('click', () => {
-            event.showPopup("add");
         });
     }
     , create : ($target, pEventType) => {
@@ -75,6 +69,7 @@ const event = {
                     });
                 }
             }
+            // 클릭시 디테일 select 추가해야함
         }
         comm.createTable($target ,optionObj, evt);
     },
@@ -109,6 +104,28 @@ const event = {
             columns.push({data: "eventEndDt"});
         }
         else if(pEventType === 'trouble') {
+            columns.push({data: "eventProcStat"});
+            columns.push({data: "facilitySeq", className: "alignLeft"});
+            columns.push({data: "facilityKind"});
+            columns.push({data: "stationKind"})
+            columns.push({data: "stationName"})
+            columns.push({data: "dongShortNm"});
+            columns.push({data: "address"});
+            columns.push({data: "eventStartDt"});
+            columns.push({data: "eventEndDt"});
+        }
+        else if(pEventType === 'cabinet') {
+            columns.push({data: "eventProcStat"});
+            columns.push({data: "facilitySeq", className: "alignLeft"});
+            columns.push({data: "facilityKind"});
+            columns.push({data: "stationKind"})
+            columns.push({data: "stationName"})
+            columns.push({data: "dongShortNm"});
+            columns.push({data: "address"});
+            columns.push({data: "eventStartDt"});
+            columns.push({data: "eventEndDt"});
+        }
+        else if(pEventType === 'dron') {
             columns.push({data: "eventProcStat"});
             columns.push({data: "facilitySeq", className: "alignLeft"});
             columns.push({data: "facilityKind"});

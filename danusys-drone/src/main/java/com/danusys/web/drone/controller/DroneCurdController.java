@@ -97,6 +97,14 @@ public class DroneCurdController {
 
     }
 
+//    @GetMapping("/drone/{droneId}")
+//    public ResponseEntity<?> findOneDrnoe(@PathVariable long droneId){
+//
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(droneService.findDrone(droneId));
+//    }
+
 }
 
 
