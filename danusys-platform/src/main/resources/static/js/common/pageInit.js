@@ -1,5 +1,6 @@
 /* document 공통 기능 */
 $(document).ready(() => {
+    comm.initModal();
     const path = location.pathname;
     const pathArr = path.split("/");
     
@@ -23,7 +24,6 @@ $(document).ready(() => {
     $.each($(".dropdown_checkbox"), (idx, item) => {
         comm.createMultiSelectBox(item)
     });
-
 
     /* 검색조건 초기화 버튼 */
     $("#resetFormBtn").on("click", (e) => {
