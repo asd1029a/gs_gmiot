@@ -198,8 +198,8 @@ public class Flight {
                     int z = globalPositionIntMavlinkMessage.getPayload().alt();
                     int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
 
-                    gps.setGpsX(y);
-                    gps.setGpsY(x);
+                    gps.setGpsX((double)y/10000000);
+                    gps.setGpsY((double)x/10000000);
                     gps.setCurrentHeight(z);
                     gps.setHeading(heading);
 
@@ -370,8 +370,8 @@ public class Flight {
                     int z = globalPositionIntMavlinkMessage.getPayload().alt();
                     int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
 
-                    gps.setGpsX(y);
-                    gps.setGpsY(x);
+                    gps.setGpsX((double)y/10000000);
+                    gps.setGpsY((double)x/10000000);
                     gps.setCurrentHeight(z);
                     gps.setHeading(heading);
 
@@ -516,8 +516,8 @@ public class Flight {
                     int z = globalPositionIntMavlinkMessage.getPayload().alt();
                     int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
 
-                    gps.setGpsX(y);
-                    gps.setGpsY(x);
+                    gps.setGpsX((double)y/10000000);
+                    gps.setGpsY((double)x/10000000);
                     gps.setCurrentHeight(z);
                     gps.setHeading(heading);
 
@@ -647,8 +647,8 @@ public class Flight {
                     int z = globalPositionIntMavlinkMessage.getPayload().alt();
                     int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
 
-                    gps.setGpsX(y);
-                    gps.setGpsY(z);
+                    gps.setGpsX((double)y/10000000);
+                    gps.setGpsY((double)x/10000000);
                     gps.setCurrentHeight(z);
                     gps.setHeading(heading);
 
@@ -800,8 +800,8 @@ public class Flight {
                     int z = globalPositionIntMavlinkMessage.getPayload().alt();
                     int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
 
-                    gps.setGpsX(y);
-                    gps.setGpsY(z);
+                    gps.setGpsX((double)y/10000000);
+                    gps.setGpsY((double)x/10000000);
                     gps.setCurrentHeight(z);
                     gps.setHeading(heading);
 
@@ -986,8 +986,8 @@ public class Flight {
                     int z = globalPositionIntMavlinkMessage.getPayload().alt();
                     int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
 
-                    gps.setGpsX(y);
-                    gps.setGpsY(z);
+                    gps.setGpsX((double)y/10000000);
+                    gps.setGpsY((double)x/10000000);
                     gps.setCurrentHeight(z);
                     gps.setHeading(heading);
 
