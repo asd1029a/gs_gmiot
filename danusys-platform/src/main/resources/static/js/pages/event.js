@@ -3,7 +3,21 @@
  */
 
 const event = {
-    create : ($target, pEventType) => {
+    eventHandler : ($target, pEventType) => {
+        $("#searchBtn").on('click', () => {
+            event.create($target, pEventType);
+        });
+        $("#addEventProcBtn").on('click', () => {
+            event.addProc($target, pEventType);
+        });
+        $("#eventPopup .title dd").on('click', () => {
+            event.hidePopup();
+        });
+        $("#addEventBtn").on('click', () => {
+            event.showPopup("add");
+        });
+    }
+    , create : ($target, pEventType) => {
         const optionObj = {
             dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
@@ -48,14 +62,19 @@ const event = {
 
         const evt = {
             click : function(e) {
+                const $form = $('#eventPopup form');
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
                 if($(e.target).hasClass('button')) {
-                    //commonCode.showPopup('mod');
-                    //$('#commonCodeForm').setItemValue(rowData);
-                    event.get(rowData.eventSeq, (result) => console.log(result));
+                    event.showPopup(rowData);
+                    $('#eventForm').setItemValue(rowData);
+                    event.get(rowData.eventSeq ,(result) => {
+                        $.each($form, (idx, item) => {
+                            $(item).data("eventSeq", rowData.eventSeq);
+                            $(item).setItemValue(result);
+                        })
+                    });
                 }
             }
-            // 클릭시 디테일 select 추가해야함
         }
         comm.createTable($target ,optionObj, evt);
     },
@@ -104,44 +123,37 @@ const event = {
 
         return columns;
     },
-    showPopup : (type) => {
-        // $('#commonCodePopup .popupContents').scrollTop(0);
-        // comm.showModal($('#commonCodePopup'));
-        // $('#commonCodePopup').css("display", "flex");
-        // $('#commonCodeForm').initForm();
-        // $('#commonCodePopup [data-mode]').hide();
-        // if(type === "add") {
-        //     $('#commonCodePopup .popupTitle h4').text("게시글 등록");
-        //     $('#commonCodePopup').css('height', '480px');
-        //     $('#commonCodePopup [data-mode="'+type+'"]').show();
-        // } else if(type === "mod") {
-        //     $('#commonCodePopup .popupTitle h4').text('게시글 수정');
-        //     $('#commonCodePopup').css('height', '780px');
-        //     $('#commonCodePopup [data-mode="'+type+'"]').show();
-        // } else if(type === "detail") {
-        //     $('#commonCodePopup .popupTitle h4').text("상세");
-        //     $('#commonCodePopup').css('height', '610px');
-        //     $('#commonCodePopup [data-mode="'+type+'"]').show();
-        // }
+    showPopup : (pData) => {
+        comm.showModal($('#eventPopup'));
+        $('#eventPopup').css("display", "flex");
+
+        $.each($('#eventPopup form'), (idx, item)=> {
+            $(item).initForm();
+        });
+        $('#eventPopup [data-mode]').hide();
+        $('#eventPopup .title dt').text(pData.eventSeq + " " + pData.eventKind + " " + pData.stationName);
     },
     hidePopup : () => {
-        // $('#commonCodePopup .popupContents').scrollTop(0);
-        // comm.hideModal($('#commonCodePopup'));
-        // $('#commonCodePopup').hide();
+        comm.hideModal($('#eventPopup'));
+        $('#eventPopup').hide();
     },
     addProc : ($target, pEventType) => {
         const formObj = $target.serializeJSON();
 
-        comm.ajaxPost({
+        if($target.doValidation()) {
+            $.ajax({
                 url : "/event"
-                , type : "PUT"
-                , data : formObj
-            },
-            (result) => {
+                , type: "PUT"
+                , contentType : "application/json; charset=utf-8"
+                , data : JSON.stringify(formObj)
+            }).done((result) => {
                 comm.showAlert("등록되었습니다");
-                commonCode.create($target, pEventType);
-                commonCode.hidePopup();
+                notice.create($target, pEventType);
+                notice.hidePopup();
             });
+        } else {
+            return false;
+        }
     },
     modProc : ($target, pEventType) => {
         const formObj = $target.serializeJSON();
