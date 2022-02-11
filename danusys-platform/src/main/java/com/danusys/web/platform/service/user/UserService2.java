@@ -18,13 +18,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -155,35 +156,41 @@ public class UserService2 {
     // public List<UserDto> findListUser() {
     public Map<String, Object> findListUser(Map<String, Object> paramMap) {
 
-        int start=0;
-        int length=1;
-        int count=0;
-        if(paramMap.get("start")!=null)
-        start=Integer.parseInt(paramMap.get("start").toString());
-        if(paramMap.get("length")!=null)
-        length=Integer.parseInt(paramMap.get("length").toString());
+        int start = 0;
+        int length = 1;
+        int count = 0;
+        if (paramMap.get("start") != null)
+            start = Integer.parseInt(paramMap.get("start").toString());
+        if (paramMap.get("length") != null)
+            length = Integer.parseInt(paramMap.get("length").toString());
 
         PageRequest pageRequest = PageRequest.of(start, length);
 
-       Page<User> userPageList =null;
-     //   log.info("totalPage={}",userList2.getTotalPages());
+        Page<User> userPageList = null;
+        //   log.info("totalPage={}",userList2.getTotalPages());
 
 
-        List<User> userList=null;
-        if(paramMap.get("userName")!=null && length!=1) {
-            String userName=paramMap.get("userName").toString();
-                userPageList=userRepository.findAllByUserNameLike("%"+userName+"%",pageRequest);
-            userList=userPageList.toList();
-            count=(int)userPageList.getTotalElements();
-            log.info("count={}",count);
-        }
-        else if (paramMap.get("userName")==null){
-            userList= userRepository.findAll();
-            count=userList.size();
+        List<User> userList = null;
+        if (paramMap.get("userName") != null && length != 1) {
+//            String userName = paramMap.get("userName").toString();
+//            userPageList = userRepository.findAllByUserNameLike("%" + userName + "%", pageRequest);
+//            userList = userPageList.toList();
+//            count = (int) userPageList.getTotalElements();
+            Map<String, Object> filter = new HashMap<>();
+            filter.put("userName", paramMap.get("userName"));
+            if (paramMap.get("tel") != null)
+                filter.put("tel", paramMap.get("tel"));
+            userPageList = userRepository.findAll(UserSpecs.withTitle(filter), pageRequest);
+            userList = userPageList.toList();
+            count = (int) userPageList.getTotalElements();
+            log.info("count={}", count);
+        } else if (paramMap.get("userName") == null) {
+            userList = userRepository.findAll();
+            count = userList.size();
         } else if (length == 1) {
-            String userName=paramMap.get("userName").toString();
-            userList=userRepository.findAllByUserNameLike("%"+userName+"%");
-            count=userList.size();
+            String userName = paramMap.get("userName").toString();
+            userList = userRepository.findAllByUserNameLike("%" + userName + "%");
+            count = userList.size();
         }
 
         List<UserDto> userDtoList = userList.stream().map(UserDto::new).collect(Collectors.toList());
@@ -197,7 +204,7 @@ public class UserService2 {
                 resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
             } else {
                 resultMap.put("data", userDtoList);
-                resultMap.put("count",count);
+                resultMap.put("count", count);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -207,7 +214,7 @@ public class UserService2 {
     //userList.stream().map(UserDto::new).collect(Collectors.toList());
     // return userList.stream().collect(Collectors.toMap(User::getUserId, UserDto::new));
 
-    public int getUserSize(){
+    public int getUserSize() {
         return userRepository.findAll().size();
     }
 }
