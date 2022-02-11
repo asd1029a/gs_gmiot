@@ -3,6 +3,11 @@
  */
 
 const event = {
+    eventHandler : ($target, pEventType) => {
+        $("#searchBtn").on('click', () => {
+            event.create($target, pEventType);
+        });
+    },
     create : ($target, pEventType) => {
         const optionObj = {
             dom: '<"table_body"rt><"table_bottom"p>',
@@ -90,6 +95,28 @@ const event = {
             columns.push({data: "eventEndDt"});
         }
         else if(pEventType === 'trouble') {
+            columns.push({data: "eventProcStat"});
+            columns.push({data: "facilitySeq", className: "alignLeft"});
+            columns.push({data: "facilityKind"});
+            columns.push({data: "stationKind"})
+            columns.push({data: "stationName"})
+            columns.push({data: "dongShortNm"});
+            columns.push({data: "address"});
+            columns.push({data: "eventStartDt"});
+            columns.push({data: "eventEndDt"});
+        }
+        else if(pEventType === 'cabinet') {
+            columns.push({data: "eventProcStat"});
+            columns.push({data: "facilitySeq", className: "alignLeft"});
+            columns.push({data: "facilityKind"});
+            columns.push({data: "stationKind"})
+            columns.push({data: "stationName"})
+            columns.push({data: "dongShortNm"});
+            columns.push({data: "address"});
+            columns.push({data: "eventStartDt"});
+            columns.push({data: "eventEndDt"});
+        }
+        else if(pEventType === 'dron') {
             columns.push({data: "eventProcStat"});
             columns.push({data: "facilitySeq", className: "alignLeft"});
             columns.push({data: "facilityKind"});
