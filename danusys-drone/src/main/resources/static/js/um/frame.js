@@ -4,12 +4,6 @@ $(document).ready(function () {
 
     let param = {"droneDeviceName": ""}
     loadDroneList(param);
-    for (let j = 0; j < drone_total_count; j++) {
-       // console.log(j);
-        $(document).on("click", $(`.drone_info${j}`), function () {
-            console.log($(`.drone_info${j}`).attr('class'));
-        });
-    }
 
 
 });
@@ -17,7 +11,6 @@ $(document).ready(function () {
 function loadDroneList(param) {
     let deviceName = $(".add_drone_device_name").val();
     let countMissionList = 0;
-    let droneUserId = null;
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: "/drone/api/drone",
@@ -26,16 +19,22 @@ function loadDroneList(param) {
         async :false,
         success: function (resultData) {
             console.log(resultData);
+
+            let droneUserId = null;
+
             $(".listScroll ul").html("");
+
             $.each(resultData, function (i, item) {
                 drone_total_count = i;
+
                 if (item.userId != null)
                     droneUserId = item.userId;
                 else
                     droneUserId = "";
+
                 if (item.id !== 0) {
                     $(".listScroll ul").append(`
-                        <li class="drone_info${i}">
+                        <li class="drone_info" data-drone-id="${item.id}">
                             <dl>
                                 <dt><span class="green">${item.droneDetails.status}</span>${item.droneDeviceName}</dt>
                                 <dd><i><img src="images/um/listMore.svg"></i></dd>
@@ -43,11 +42,13 @@ function loadDroneList(param) {
                             <p>ID : ${droneUserId}</p>
                             <p>${item.updateDt}</p>
                         </li>
-            `)
+                    `)
                 }
-                //     $(`.drone_info${i}`).on('click', function () {
-                //         console.log($(`.drone_info${i}`).attr('class'));
-                //     })
+            });
+            $('.drone_info').on('click', function (e) {
+
+                let id = $(e.currentTarget).data("droneId");
+
             });
 
             console.log(drone_total_count);
@@ -117,3 +118,15 @@ $(".update_drone_detail_button").on("click", function () {
 
 
 });
+
+function getDroneDetails(){
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        url: "/drone/api/dronedetails",
+        type: "PUT",
+        data: JSON.stringify(param),
+        success: function (resultData) {
+            console.log(resultData);
+        }
+    });
+}

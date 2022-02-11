@@ -100,4 +100,8 @@ public class DroneService {
 
 
     }
+
+//    public Drone findOneDrone(long droneId){
+//        return Drone droneRepository.findById(droneId);
+//    }
 }
