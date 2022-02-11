@@ -8,7 +8,7 @@ const event = {
             dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
             pageLength: 15,
-            scrollY: "calc(100% - 45px)",
+            scrollY: "calc(100% - 40px)",
             ajax :
                 {
                     'url' : "/event",

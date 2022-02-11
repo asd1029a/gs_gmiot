@@ -247,3 +247,5 @@
 .search_table .dataTables_wrapper{height: 100%; display: flex; flex-direction: column;}
 .search_table .dataTables_wrapper .tableBody{flex: 1;}
 
+/* table scroll head fix */
+.search_table .dataTables_wrapper .dataTables_scroll {height: 100%;}
