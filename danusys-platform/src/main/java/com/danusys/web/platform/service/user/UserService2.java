@@ -7,6 +7,7 @@ import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
 import com.danusys.web.commons.util.EgovMap;
 import com.danusys.web.platform.service.event.EventServiceImpl;
@@ -132,16 +133,14 @@ public class UserService2 {
             return 0;
         SHA256 sha256 = new SHA256();
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
-        // log.info("{}",userDetails.getUserSeq());
+
         try {
             String cryptoPassword = sha256.encrypt(user.getPassword());
             user.setPassword("{SHA-256}" + cryptoPassword);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        user.setInsertUserSeq(userDetails.getUserSeq());
+        user.setInsertUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         user.setInsertDt(timestamp);
 
@@ -169,5 +168,7 @@ public class UserService2 {
     //userList.stream().map(UserDto::new).collect(Collectors.toList());
     // return userList.stream().collect(Collectors.toMap(User::getUserId, UserDto::new));
 
-
+    public int getUserSize(){
+        return userRepository.findAll().size();
+    }
 }

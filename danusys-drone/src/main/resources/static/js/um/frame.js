@@ -1,31 +1,41 @@
+let drone_total_count = 0;
+
 $(document).ready(function () {
 
     let param = {"droneDeviceName": ""}
     loadDroneList(param);
+    for (let j = 0; j < drone_total_count; j++) {
+       // console.log(j);
+        $(document).on("click", $(`.drone_info${j}`), function () {
+            console.log($(`.drone_info${j}`).attr('class'));
+        });
+    }
+
 
 });
 
-function loadDroneList(param){
+function loadDroneList(param) {
     let deviceName = $(".add_drone_device_name").val();
     let countMissionList = 0;
-    let droneUserId=null;
+    let droneUserId = null;
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: "/drone/api/drone",
         type: "POST",
         data: JSON.stringify(param),
+        async :false,
         success: function (resultData) {
             console.log(resultData);
             $(".listScroll ul").html("");
             $.each(resultData, function (i, item) {
-                countMissionList = i;
-                if(item.userId!=null)
-                    droneUserId=item.userId;
+                drone_total_count = i;
+                if (item.userId != null)
+                    droneUserId = item.userId;
                 else
-                    droneUserId="";
+                    droneUserId = "";
                 if (item.id !== 0) {
                     $(".listScroll ul").append(`
-                        <li>
+                        <li class="drone_info${i}">
                             <dl>
                                 <dt><span class="green">${item.droneDetails.status}</span>${item.droneDeviceName}</dt>
                                 <dd><i><img src="images/um/listMore.svg"></i></dd>
@@ -35,10 +45,13 @@ function loadDroneList(param){
                         </li>
             `)
                 }
-
+                //     $(`.drone_info${i}`).on('click', function () {
+                //         console.log($(`.drone_info${i}`).attr('class'));
+                //     })
             });
-            console.log(countMissionList);
-            $(".count_mission_list").text(countMissionList);
+
+            console.log(drone_total_count);
+            $(".count_mission_list").text(drone_total_count);
         }
     });
 }
@@ -61,14 +74,14 @@ $(".add_drone").on("click", function () {
         }
 
     });
-    let droneUserId=null;
+    let droneUserId = null;
     param = {"droneDeviceName": ""};
     if (flag) {
 
-
+        loadDroneList(param);
     }
     console.log(flag);
-    loadDroneList(param);
+
 
 });
 
@@ -101,4 +114,6 @@ $(".update_drone_detail_button").on("click", function () {
             console.log(resultData);
         }
     });
+
+
 });

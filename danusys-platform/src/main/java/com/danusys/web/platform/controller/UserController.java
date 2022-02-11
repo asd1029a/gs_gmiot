@@ -250,6 +250,13 @@ public class UserController {
                 .status(HttpStatus.OK).build();
     }
 
+    @GetMapping("/usercount")
+    public ResponseEntity<?> getUserCountProc(){
+            return ResponseEntity.status(HttpStatus.OK).body(userService.getUserSize());
+
+    }
+
+
 
 //
 //    @PatchMapping("/groupinuser")
