@@ -53,10 +53,13 @@ $(document).ready(() => {
     else if(path === "/pages/config/dimmingGroup") {
 
     } else if(path === "/pages/config/userAccount") {
+        account.user.eventHandler();
         account.user.create();
     } else if(path === "/pages/config/userGroup") {
-
+        account.group.eventHandler();
+        account.group.create();
     } else if(path === "/pages/config/commonCode") {
+        commonCode.eventHandler($("[data-table-seq='0']"),0);
         commonCode.create($("[data-table-seq='0']"),0);
     } else if(path === "/pages/config/notice") {
         notice.eventHandler();

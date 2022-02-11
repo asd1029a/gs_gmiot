@@ -161,14 +161,16 @@ $.fn.extend({
                     if(eleAttr.type === "checkbox"){
                         isCheckboxInit = true;
                         objEle.prop("checked", objEle.attr("data-init-value"));
-                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
+                        if($(".dropdown_checkbox").length > 0)
+                            comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val(objEle.attr("data-init-value"));
                     }
                 } else if(eleAttr.tagName == "INPUT" || eleAttr.tagName == "TEXTAREA") {
                     if(eleAttr.type === "checkbox" && !isCheckboxInit){
                         objEle.prop("checked", false);
-                        comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
+                        if($(".dropdown_checkbox").length > 0)
+                            comm.createMultiSelectBox.prototype.listSelect(objEle.parent());
                     }else{
                         objEle.val("");
                     }
@@ -632,16 +634,16 @@ var comm = {
                 let listEle =
                     `<li>
                         <span>
-                            <input type="checkbox" id="${tData.codeId}All" name="checkAll">
-                            <label for="${tData.codeId}All"><span></span>전체</label>
+                            <input type="checkbox" id="${tData.codeSeq}All" name="checkAll">
+                            <label for="${tData.codeSeq}All"><span></span>전체</label>
                         </span>
                     </li>`;
 
                 data.forEach((item, idx) => {
                     let spanEle =
                         `<span>
-                            <input type="checkbox" id="${item.codeId}" name="" value="${item.codeValue}">
-                            <label for="${item.codeId}"><span></span>${item.codeName}</label>
+                            <input type="checkbox" id="${item.codeSeq}" name="" value="${item.codeValue}">
+                            <label for="${item.codeSeq}"><span></span>${item.codeName}</label>
                         </span>`;
 
                     listEle += !(idx % 2) ? "<li>" + spanEle : spanEle + "</li>";

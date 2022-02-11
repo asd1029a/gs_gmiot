@@ -75,9 +75,9 @@ public class MissionDetailsService {
 
             r.setMission(mission);
         });
-        log.info("estimatedTime={},timeCountNumber={}",estimatedTime,timeCountNumber);
+        log.info("estimatedTime={},timeCountNumber={}", estimatedTime, timeCountNumber);
         mission.setTotalDistance(totalDistance);
-        mission.setEstimatedTime((int) (totalDistance / estimatedTime * timeCountNumber / 60 ));
+        mission.setEstimatedTime((int) (totalDistance / estimatedTime * timeCountNumber / 60));
         missionRepository.save(mission);
 
         List<MissionDetails> isExist = missionDetailsRepository.findAllByMission(mission);
@@ -149,11 +149,11 @@ public class MissionDetailsService {
         Long id = null;
         int inputid = 0;
         if (paramMap.get("name") != null) {
-            name = (String) paramMap.get("name");
+            name = paramMap.get("name").toString();
             mission = missionRepository.findByName(name);
         }
         if (paramMap.get("id") != null) {
-            inputid = (int) paramMap.get("id");
+            inputid = Integer.parseInt(paramMap.get("id").toString());
             id = Long.valueOf(inputid);
             optionalMission = missionRepository.findById(id);
             if (!optionalMission.isPresent()) return null;

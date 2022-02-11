@@ -4,6 +4,11 @@
 
 const account = {
     user : {
+        eventHandler : () => {
+            $("#searchBtn").on('click', (e) => {
+                account.user.create();
+            });
+        },
         create : () => {
             const $target = $('#userAccountTable');
 
@@ -60,7 +65,7 @@ const account = {
         },
         getList : (pCallback) => {
             comm.ajaxPost({
-                url : "/user/getListUser"
+                url : "/user"
                 , data : {}
             }, (result) => {
                 pCallback(result);
@@ -95,7 +100,7 @@ const account = {
             const formObj = $('#userAccountForm').serializeJSON();
 
             comm.ajaxPost({
-                    url : "/user/addUserProc"
+                    url : "/user"
                     , type : "PUT"
                     , data : formObj
                 },
@@ -109,7 +114,7 @@ const account = {
             const formObj = $('#userAccountForm').serializeJSON();
 
             comm.ajaxPost({
-                    url : "/user/modUserProc"
+                    url : "/user"
                     , type : "PATCH"
                     , data : formObj
                 },
@@ -121,9 +126,8 @@ const account = {
         },
         delProc : (pSeq) => {
             comm.ajaxPost({
-                    url : "/user/delUserProc"
+                    url : "/user"+pSeq
                     , type : "DELETE"
-                    , data : {pSeq : pSeq}
                 },
                 (result) => {
                     comm.showAlert("사용자 계정이 삭제되었습니다");
@@ -133,6 +137,11 @@ const account = {
         }
     }
     , group : {
+        eventHandler : () => {
+            $("#searchBtn").on('click', (e) => {
+                account.group.create();
+            });
+        },
         create : () => {
             const $target = $('#userAccountTable');
 
@@ -143,7 +152,7 @@ const account = {
                 scrollY: "calc(100% - 45px)",
                 ajax :
                     {
-                        'url' : "/user/getListUserGroup",
+                        'url' : "/user/group",
                         'contentType' : "application/json; charset=utf-8",
                         'type' : "POST",
                         'data' : function ( d ) {
@@ -161,25 +170,17 @@ const account = {
                     toggleable: false
                 },
                 columns : [
-                    {data: "title", className: "alignLeft"},
-                    {data: "content", className: "alignLeft"},
-                    {data: "insertAdminId"},
-                    {data: "insertDt"},
+                    {data: "userGroupSeq", className: "alignLeft"},
+                    {data: "groupName"},
+                    {data: "groupName"},
+                    {data: "groupDesc"},
                     {data: null}
                 ]
-                // "columnDefs": [{
-                //     "targets": -1,
-                //     "data": null,
-                //     "defaultContent": '<span class="writeButton"><i></i></span>'
-                // }
-                //     , {
-                //         targets: 0,
-                //         render: $.fn.dataTable.render.ellipsis( 30, true )
-                //     }
-                //     , {
-                //         targets: 1,
-                //         render: $.fn.dataTable.render.ellipsis( 50, true )
-                //     }]
+                , "columnDefs": [{
+                    "targets": -1,
+                    "data": null,
+                    "defaultContent": '<span class="button">상세보기</span>'
+                }]
                 , excelDownload : true
             }
 
@@ -196,7 +197,7 @@ const account = {
         },
         getList : (pCallback) => {
             comm.ajaxPost({
-                url : "/user/getListUserGroup"
+                url : "/user/group"
                 , data : {}
             }, (result) => {
                 pCallback(result);
@@ -231,7 +232,7 @@ const account = {
             const formObj = $('#userGroupForm').serializeJSON();
 
             comm.ajaxPost({
-                    url : "/user/addUserGroupProc"
+                    url : "/user/group"
                     , type : "PUT"
                     , data : formObj
                 },
@@ -245,7 +246,7 @@ const account = {
             const formObj = $('#userGroupForm').serializeJSON();
 
             comm.ajaxPost({
-                    url : "/user/modUserGroupProc"
+                    url : "/user/group"
                     , type : "PATCH"
                     , data : formObj
                 },
@@ -257,9 +258,8 @@ const account = {
         },
         delProc : (pSeq) => {
             comm.ajaxPost({
-                    url : "/user/delUserGroupProc"
+                    url : "/user/group"+pSeq
                     , type : "DELETE"
-                    , data : {pSeq : pSeq}
                 },
                 (result) => {
                     comm.showAlert("사용자 그룹이 삭제되었습니다");

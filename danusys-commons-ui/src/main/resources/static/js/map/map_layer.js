@@ -17,7 +17,7 @@ class dataLayer {
 
         if(projFlag){
             features.forEach( feature => {
-                feature.getGeometry().transform('EPSG:4326', this.map.realProjection[this.map.type]);
+                feature.getGeometry().transform('EPSG:4326', this.map.projection);
             });
         }
         source.addFeatures(features);
@@ -44,7 +44,7 @@ class dataLayer {
         data.forEach( each => {
             let coordinates = [Number(each.longitude), Number(each.latitude)];
             if(projFlag){
-                coordinates = ol.proj.transform(coordinates, 'EPSG:4326', baseProjection);
+                coordinates = ol.proj.transform(coordinates, 'EPSG:4326', this.map.projection);
             }
             const featureOne = new ol.Feature({
                 geometry: new ol.geom.Point(coordinates),
@@ -72,7 +72,7 @@ class dataLayer {
 
         if(projFlag){
             data.forEach( each => {
-                each.getGeometry().transform('EPSG:4326',baseProjection);
+                each.getGeometry().transform('EPSG:4326',this.map.projection);
             });
         }
 
@@ -99,7 +99,7 @@ class dataLayer {
 
         if(projFlag){
             wfsFeatures.forEach( each => {
-                each.getGeometry().transform('EPSG:4326',baseProjection);
+                each.getGeometry().transform('EPSG:4326',this.map.projection);
             });
         }
 

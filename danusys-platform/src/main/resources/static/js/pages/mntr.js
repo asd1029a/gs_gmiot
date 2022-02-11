@@ -30,6 +30,13 @@ const mntr = {
                     console.log(coordinate);
 
                     //팝업 붙이기
+                    let popup = new mapPopup('map');
+
+                    popup.create('testpopup');
+                    popup.move('testpopup',e.coordinate);
+                    popup.content('testpopup',mapPopupContent.address(e));
+
+                    window.popup = popup;
                 }
             }
         ];
@@ -54,7 +61,7 @@ const mntr = {
         station.getListGeoJson({} ,(result) => {
             let dataLy = new dataLayer('map');
             let stationLayer = dataLy.fromGeoJSon(result, 'stationLayer', true, layerStyle.station());
-            //map.addLayer(stationLayer);
+            map.addLayer(stationLayer);
 
             //열지도 test
             const heat = new ol.layer.Heatmap({

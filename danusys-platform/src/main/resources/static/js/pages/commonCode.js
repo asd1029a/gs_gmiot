@@ -3,6 +3,11 @@
  */
 
 const commonCode = {
+    eventHandler : ($target, pParentCode) => {
+        $("#searchBtn").on('click', (e) => {
+            commonCode.create($target, pParentCode);
+        });
+    },
     create : ($target, pParentCode) => {
         const optionObj = {
             dom: '<"table_body"rt><"table_bottom"p>',

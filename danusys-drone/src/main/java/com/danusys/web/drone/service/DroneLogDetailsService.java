@@ -12,7 +12,7 @@ public class DroneLogDetailsService {
 
     private final DroneLogDetailsRepository droneLogDetailsRepository;
 
-    public DroneLogDetails saveDroneLogDetails(DroneLogDetails droneLogDetails){
+    public DroneLogDetails saveDroneLogDetails(DroneLogDetails droneLogDetails) {
 
 
         return droneLogDetailsRepository.save(droneLogDetails);

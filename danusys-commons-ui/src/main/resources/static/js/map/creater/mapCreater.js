@@ -201,10 +201,16 @@ class mapCreater {
     ];
 
     constructor(id, type) {
+        //맵 객체명
         this.id = id;
+        //{ 0 : daum, 1 : naver, 2 : vworld }
         this.type = type;
-        this.projection = 'EPSG:4326';
+        //map의 기본 설정 좌표계
+        this.projection = this.realProjection[this.type];
+        //표출용 범용(위경도) 좌표계
+        this.baseProjection = 'EPSG:4326';
 
+        //기본 중심점
         this.lat = 37.44457599567139;
         this.lon = 126.89482519279865;
         this.center = [this.lon, this.lat];
@@ -248,7 +254,7 @@ class mapCreater {
                 source: new ol.source.XYZ({
                     tileSize: 256,
                     tileGrid: this.tileGrid,
-                    projection: ol.proj.get(this.realProjection[this.type]),
+                    projection: ol.proj.get(this.projection),
                     maxZoom: this.maxZoom[this.type],
                     minZoom: this.minZoom[this.type],
                     this: this,
@@ -277,13 +283,13 @@ class mapCreater {
             controls: [],
             logo: false,
             view: new ol.View({
-                projection: ol.proj.get(this.realProjection[this.type]),
+                projection: ol.proj.get(this.projection),
                 extent: this.extents[this.type],
                 resolutions: this.resolutions[this.type],
                 // maxResolution : this.resolutions ? this.resolutions[this.type][0] : undefined,
                 center: new ol.proj.transform([this.lon, this.lat]
-                    , this.projection
-                    , this.realProjection[this.type]),
+                    , this.baseProjection
+                    , this.projection),
                 zoom: this.defaultZoom[this.type],
                 zoomFactor: this.zoomFactor[this.type],
                 maxZoom: this.maxZoom[this.type],
@@ -304,7 +310,7 @@ class mapCreater {
     createMousePosition(textArea){
         let mousePosition = new ol.control.MousePosition({
             coordinateFormat: ol.coordinate.createStringXY(6), // 좌표 표시 포맷
-            projection: "EPSG:4326", // 표출 좌표계
+            projection: this.baseProjection, // 표출 좌표계
             className : 'custom-mouse-position',
             target: document.getElementById(textArea), // 표출할 영역 (id값)
             undefinedHTML:''
@@ -390,11 +396,11 @@ class mapCreater {
         const center = this.map.getView().getCenter();
         const resolution = this.map.getView().getResolution() * 1;
         const a = ol.proj.transform(center
-            , this.realProjection[this.type]
-            , this.projection);
+            , this.projection
+            , this.baseProjection);
         const b = ol.proj.transform(coord
-            , this.realProjection[this.type]
-            , this.projection);
+            , this.projection
+            , this.baseProjection);
 
         //const distance = this.wgs84Sphere.haversineDistance(a, b);
         const duration = 500;
@@ -455,20 +461,20 @@ class mapCreater {
 }
 
 
-const olProjection = {
-    addProjection : (epsg,param) => {
-        proj4.defs(epsg,param);
-        ol.proj.proj4.register(proj4);
-    },
-    createProjection : (code,extent) => {
-        const makedProjection = new ol.proj.Projection({
-            code : code,
-            extent : extent,
-            units : 'm'
-        });
-        return makedProjection;
-    }
-};
+// const olProjection = {
+//     addProjection : (epsg,param) => {
+//         proj4.defs(epsg,param);
+//         ol.proj.proj4.register(proj4);
+//     },
+//     createProjection : (code,extent) => {
+//         const makedProjection = new ol.proj.Projection({
+//             code : code,
+//             extent : extent,
+//             units : 'm'
+//         });
+//         return makedProjection;
+//     }
+// };
 
 
 

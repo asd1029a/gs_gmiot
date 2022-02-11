@@ -19,9 +19,21 @@ import java.util.regex.Pattern;
 public class CommonUtil {
 	private static int SEQ = 0;
 
-	public static String checkParamNull(Map<String, Object> paramMap, String key) {
+	/*
+	*
+	* */
+	public static String validOneNull(Map<String, Object> paramMap, String key) {
 		return paramMap.get(key) != null ? paramMap.get(key).toString() : "";
 	}
+
+	public static void validMapNull(Map<String, Object> paramMap) {
+		paramMap.values()
+				.stream()
+				.map(value -> {
+					return value != null ? value : "";
+				});
+	}
+
 
 	public static boolean checkDataFilter(Map<String, String> map) {
 		for (String key : map.keySet()) {

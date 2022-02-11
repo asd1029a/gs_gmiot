@@ -36,6 +36,8 @@ public class DroneDetailsService {
     public DroneDetails findDroneDetails(Long droneId) {
 
         Optional<DroneDetails> droneDetailsOptional = droneDetailsRepository.findById(droneId);
+        if(!droneDetailsOptional.isPresent())
+            return null;
         log.info("log={}", droneDetailsOptional.get().getId());
         return (DroneDetails) droneDetailsOptional.get();
     }
@@ -44,11 +46,37 @@ public class DroneDetailsService {
     public String updateDroneDetails(DroneDetails droneDetails, Long droneId) {
 
         DroneDetails updateDroneDetails = this.findDroneDetails(droneId);
-        Drone drone = new Drone();
-        updateDroneDetails.setDrone(drone);
+
+        if(updateDroneDetails==null){
+            return "fail";
+        }
+        if(droneDetails.getLocation()!=null){
+            updateDroneDetails.setLocation(droneDetails.getLocation());
+        }
+        if(droneDetails.getStatus()!=null){
+            updateDroneDetails.setStatus(droneDetails.getStatus());
+        }
+        if(droneDetails.getMasterManager()!=null){
+            updateDroneDetails.setMasterManager(droneDetails.getMasterManager());
+        }
+        if(droneDetails.getSubManager()!=null){
+            updateDroneDetails.setSubManager(droneDetails.getSubManager());
+        }
+
+            updateDroneDetails.setManufacturer(droneDetails.getManufacturer());
+            updateDroneDetails.setType(droneDetails.getType());
+            updateDroneDetails.setWeight(droneDetails.getWeight());
+            updateDroneDetails.setMaximumOperatingDistance(droneDetails.getMaximumOperatingDistance());
+            updateDroneDetails.setMaximumManagementAltitude(droneDetails.getMaximumManagementAltitude());
+            updateDroneDetails.setMaximumOperatingSpeed(droneDetails.getMaximumOperatingSpeed());
+            updateDroneDetails.setSimNumber(droneDetails.getSimNumber());
+            updateDroneDetails.setMaximumSpeed(droneDetails.getMaximumSpeed());
+
+
 
         return "success";
     }
+
 
     @Transactional
     public String updateDroneDetails(Long droneId) {
