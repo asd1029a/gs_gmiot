@@ -22,6 +22,8 @@ public interface MissionRepository extends CrudRepository<Mission,Long> {
 
         List<Mission> findAllByDrone(Drone drone);
 
+        List<Mission> findByDroneNot(Drone drone);
+
 
 
 }

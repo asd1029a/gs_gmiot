@@ -81,9 +81,16 @@ public class MissionService {
         }
         if (paramMap.get("droneId") != null) {
             Long id = Long.parseLong(paramMap.get("droneId").toString());
-            Drone drone = new Drone();
-            drone.setId(id);
-            missionList = missionRepository.findAllByDrone(drone);
+            if(id==0l){
+                Drone drone = new Drone();
+                drone.setId(id);
+                missionList = missionRepository.findAllByDrone(drone);
+            }else{
+                Drone drone = new Drone();
+                drone.setId(0l);
+                missionList = missionRepository.findByDroneNot(drone);
+            }
+
 
         }
 
