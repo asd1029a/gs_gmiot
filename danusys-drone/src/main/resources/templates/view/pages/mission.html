@@ -9,9 +9,34 @@
 </head>
 
 <th:block layout:fragment="content">
+    <div class="popup" style="display: none;">
+        <div class="popupTitle"><span>미션명 등록</span></div>
+        <div class="popupContent">
+            <ul>
+                <li>
+                    <span>미션 명</span>
+                    <span><input type="text" id="mission-name"></span>
+                </li>
+                <li>
+                    <span>ID</span>
+                    <span><input type="text" id="mission-id" value="admin" disabled></span>
+                </li>
+            </ul>
+        </div>
+        <div class="popupButton">
+            <span class="button" onclick="pageMission.saveMission()">저장</span>
+            <span class="button" onclick="pageMission.closePopup()">취소</span>
+        </div>
+
+    </div>
+    <div class="listMore">
+        <ul>
+            <li onclick="pageMission.changeMissionName(this)"><span>미션명 변경</span></li>
+            <li onclick="pageMission.deleteMission(this)"><span>삭제</span></li>
+        </ul>
+    </div>
     <div class="droneMap">
-        <th:block th:insert="/view/commons/map">
-        </th:block>
+        <div id="map" class="map_wrap">
         <!--           mapComponent -->
         <div class="mapComponent">
             <div class="mapComponentMission">
@@ -23,12 +48,18 @@
                     <p class="missionStart">미션 시작<i><img src="images/default/arrowBottom.svg"></i></p>
                     <div class="routeContents">
                     </div>
+                    <div class="routeContentsButton" style="margin-top: 15px;">
+                        <div class="popupButton">
+                            <span class="button" onclick="createPopup.saveMissionDetail()">저장</span>
+                            <span class="button" onclick="createPopup.clearPopup()">초기화</span>
+                        </div>
+                    </div>
                 </article>
             </div>
-            <article class="flightAltitude">
+            <!--<article class="flightAltitude">
                 <h6>비행 고도</h6>
                 <div class="graph"></div>
-            </article>
+            </article>-->
         </div>
     </div>
         <!--           //mapComponent -->
@@ -48,101 +79,34 @@
                     </div>
                     <p class="radioButton">
                             <span class="radio">
-                                <input type="radio" id="missionName" name="" checked="">
+                                <input type="radio" id="missionName" name="radio" checked="">
                                 <label for="missionName"><span class="round">라디오버튼</span>미션명</label>
                             </span>
                         <span class="radio">
-                                <input type="radio" id="ID" name="">
-                                <label for="ID"><span class="round">라디오버튼</span>ID</label>
+                                <input type="radio" id="adminUserId" name="radio">
+                                <label for="adminUserId"><span class="round">라디오버튼</span>ID</label>
                             </span>
                     </p>
                     <p class="searchInput">
-                        <input type="text" placeholder="검색어 입력">
+                        <input type="text" placeholder="검색어 입력" id="searchText">
                         <i><img src="images/default/search.svg"></i>
                     </p>
 
                 </article>
                 <dl class="subTitle">
-                    <dt>목록<span>59</span></dt>
-                    <dd class="button">신규등록</dd>
+                    <dt>목록<span>0</span></dt>
+                    <dd class="button" onclick="pageMission.createMissionPopup()">신규등록</dd>
                 </dl>
                 <div class="listScroll">
-                    <ul>
-                        <li>
-                            <dl>
-                                <dt><span class="green">비행중</span>DJI신림 5호</dt>
-                                <dd><i><img src="images/default/listMore.svg"></i></dd>
-                            </dl>
-                            <p>ID : administrator01</p>
-                            <p>2021-07-06 09:23:56</p>
-                        </li>
-                        <li>
-                            <dl>
-                                <dt><span class="gray">임시저장</span>DJI신림 5호</dt>
-                                <dd><i><img src="images/default/listMore.svg"></i></dd>
-                            </dl>
-                            <p>ID : administrator01</p>
-                            <p>2021-07-06 09:23:56</p>
-                        </li>
-                        <li>
-                            <dl>
-                                <dt><span class="green">비행중</span>DJI신림 5호</dt>
-                                <dd><i><img src="images/default/listMore.svg"></i></dd>
 
-
-                            </dl>
-                            <p>ID : administrator01</p>
-                            <p>2021-07-06 09:23:56</p>
-                        </li>
-                        <li>
-                            <dl>
-                                <dt><span class="gray">임시저장</span>DJI신림 5호</dt>
-                                <dd><i><img src="images/default/listMore.svg"></i></dd>
-                            </dl>
-                            <p>ID : administrator01</p>
-                            <p>2021-07-06 09:23:56</p>
-                        </li>
-                        <li>
-                            <dl>
-                                <dt><span class="gray">임시저장</span>DJI신림 5호</dt>
-                                <dd><i><img src="images/default/listMore.svg"></i></dd>
-                            </dl>
-                            <p>ID : administrator01</p>
-                            <p>2021-07-06 09:23:56</p>
-                        </li>
-                        <li>
-                            <dl>
-                                <dt><span class="gray">임시저장</span>DJI신림 5호</dt>
-                                <dd><i><img src="images/default/listMore.svg"></i></dd>
-                            </dl>
-                            <p>ID : administrator01</p>
-                            <p>2021-07-06 09:23:56</p>
-                        </li>
-                        <li>
-                            <dl>
-                                <dt><span class="green">비행중</span>DJI신림 5호</dt>
-                                <dd><i><img src="images/default/listMore.svg"></i></dd>
-                            </dl>
-                            <p>ID : administrator01</p>
-                            <p>2021-07-06 09:23:56</p>
-                        </li>
-                        <li>
-                            <dl>
-                                <dt><span class="green">비행중</span>DJI신림 5호</dt>
-                                <dd><i><img src="images/default/listMore.svg"></i></dd>
-                            </dl>
-                            <p>ID : administrator01</p>
-                            <p>2021-07-06 09:23:56</p>
-                        </li>
-                    </ul>
                 </div>
             </section>
-            <div class="missionSummary">
+            <div class="missionSummary" style="display: none;">
                 <ul>
-                    <li><span>미션명</span>산림구역 정기비행</li>
-                    <li><span>총 거리</span>00.00000<small>km</small></li>
-                    <li><span>예상 시간</span>000<small>분</small></li>
-                    <li><span>최종 수정</span>윤자민<small>(2021-09-14 10:15)</small></li>
+                    <li><span>미션명</span><p id="summaryName"></p></li>
+                    <li><span>총 거리</span><p id="summaryDistance"></p><small>km</small></li>
+                    <li><span>예상 시간</span><p id="summaryTime"></p><small>분</small></li>
+                    <li><span>최종 수정</span><p id="summaryUserId"></p><small><p id="summaryUpdateDt"></p></small></li>
                 </ul>
             </div>
             <div class="missionEdit">
@@ -157,6 +121,13 @@
             </div>
             <button class="lnbToggle"><span></span></button>
         </div>
+    </div>
+    <script>
+        const mapManager = new mapCreater('map',2);
+        //map.createMousePosition('mousePosition');
+        //map.scaleLine();
+        window.mapManager = mapManager;
+    </script>
 </th:block>
 
 <footer layout:fragment="footer">

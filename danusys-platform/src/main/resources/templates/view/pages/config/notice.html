@@ -38,24 +38,82 @@
                         <dd><span class="count">0</span>건</dd>
                     </dl>
                     <ul>
-                        <li><i><img src="/images/default/add.svg"></i>작성하기</li>
+                        <li id="addNoticeBtn"><i><img src="/images/default/add.svg"></i>작성하기</li>
                     </ul>
                 </div>
                 <div class="search_table">
                     <table id="noticeTable">
+                        <colgroup>
+                            <col width="20%">
+                            <col width="40%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                        </colgroup>
                         <thead>
-                        <tr>
-                            <th>제목</th>
-                            <th>내용</th>
-                            <th>작성자</th>
-                            <th>작성일시</th>
-                            <th>첨부파일</th>
-                            <th>상세보기</th>
-                        </tr>
+                            <tr>
+                                <th scope="col">제목</th>
+                                <th scope="col">내용</th>
+                                <th scope="col">작성자</th>
+                                <th scope="col">작성일시</th>
+                                <th scope="col">첨부파일</th>
+                                <th scope="col">상세보기</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
             </article>
+
+            <!-- 공지사항 팝업 -->
+
+            <div class="popup" id="noticePopup">
+                <dl class="title">
+                    <dt></dt>
+                    <dd><i><img src="/images/default/close.svg"></i></dd>
+                </dl>
+                <div class="popup_writing">
+                    <fieldset>
+                        <form id="noticeForm">
+                            <dl>
+                                <dt>제목</dt>
+                                <dd><input id="noticeTitle" data-required="true" name="noticeTitle" type="text" /></dd>
+                            </dl>
+                            <dl>
+                                <dt>본문</dt>
+                                <dd><textarea id="noticeContent" name="noticeContent" placeholder="내용을 입력해 주세요." style="height: 320px;"></textarea></dd>
+                            </dl>
+                            <dl>
+                                <dt>첨부 파일</dt>
+                                <dd>
+                                    <div class="fileBox">
+                                        <input class="uploadName" id="noticeFile" name="noticeFile" placeholder="첨부파일" readonly/>
+                                        <label for="file">파일찾기</label>
+                                        <input type="file" id="file">
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>작성자</dt>
+                                <dd><input type="text" id="insertUserId" readonly /></dd>
+                                <dt>작성 일시</dt>
+                                <dd><input type="text" id="insertDt" readonly /></dd>
+                            </dl>
+                            <dl data-mode="mod">
+                                <dt>수정자</dt>
+                                <dd><input type="text" id="updateUserId" readonly /></dd>
+                                <dt>수정 일시</dt>
+                                <dd><input type="text" id="updateDt" readonly /></dd>
+                            </dl>
+                        </form>
+                    </fieldset>
+                </div>
+                <ul class="bottom">
+                    <li data-mode="mod" id="delNoticeProcBtn">삭제</li>
+                    <li data-mode="mod" id="modNoticeProcBtn">정보 수정</li>
+                    <li class="color" data-mode="add" id="addNoticeProcBtn">등록</li>
+                </ul>
+            </div>
         </section>
     </th:block>
 </html>

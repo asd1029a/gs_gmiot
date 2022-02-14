@@ -2,6 +2,7 @@ package com.danusys.web.drone.repository;
 
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.Mission;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface DroneRepository extends CrudRepository<Drone,Long> {
 
     List<Drone> findAllById(Long id);
 
-    List<Drone> findAllByDroneDeviceNameLike(String droneDeviceName);
+    List<Drone> findAllByDroneDeviceNameLike(String droneDeviceName, Sort sort);
 
     Drone findByDroneDeviceName(String droneDeviceName);
 }

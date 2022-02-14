@@ -14,15 +14,30 @@ public class StationSqlProvider {
         String length =  CommonUtil.validOneNull(paramMap,"length");
 
         SQL sql = new SQL() {{
-            //SELECT("*, '' as facility_status, '' as facility_kind");
             SELECT("*");
-            FROM("t_station");
+            FROM("t_station ts");
+            LEFT_OUTER_JOIN("t_facility tf ON ts.station_seq = tf.station_seq");
             if(!keyword.equals("")) {
-                WHERE("station_name LIKE" + keyword);
+                WHERE("ts.station_name LIKE" + keyword);
             }
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);
+            }
+        }};
+        return sql.toString();
+    }
+
+    public String selectCountQry(Map<String, Object> paramMap) {
+
+        String keyword = CommonUtil.validOneNull(paramMap,"keyword");
+
+        SQL sql = new SQL() {{
+            SELECT("COUNT(*) AS count");
+            FROM("t_station ts");
+            LEFT_OUTER_JOIN("t_facility tf ON ts.station_seq = tf.station_seq");
+            if(!keyword.equals("")) {
+                WHERE("ts.station_name LIKE" + keyword);
             }
         }};
         return sql.toString();

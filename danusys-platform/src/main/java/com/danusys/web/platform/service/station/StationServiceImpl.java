@@ -6,6 +6,7 @@ import com.danusys.web.platform.mapper.station.StationSqlProvider;
 import com.danusys.web.platform.util.PagingUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -19,7 +20,10 @@ public class StationServiceImpl implements StationService{
     @Override
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         if(paramMap.get("draw") != null) {
-            return PagingUtil.createPagingMap(paramMap, commonMapper.selectList(ssp.selectListQry(paramMap)));
+            Map<String, Object> pagingMap = new HashMap<>();
+            pagingMap.put("data", commonMapper.selectList(ssp.selectListQry(paramMap)));
+            pagingMap.put("count", commonMapper.selectOne(ssp.selectCountQry(paramMap)).get("count"));
+            return PagingUtil.createPagingMap(paramMap, pagingMap);
         } else {
             EgovMap resultMap = new EgovMap();
             resultMap.put("data", commonMapper.selectList(ssp.selectListQry(paramMap)));

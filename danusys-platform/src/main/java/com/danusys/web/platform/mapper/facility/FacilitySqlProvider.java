@@ -28,6 +28,20 @@ public class FacilitySqlProvider {
         return sql.toString();
     }
 
+    public String selectCountQry(Map<String, Object> paramMap) {
+        String keyword = paramMap.get("keyword").toString();
+
+        SQL sql = new SQL() {{
+            SELECT("COUNT(*) AS count");
+            FROM("t_facility t1");
+            INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("facility_kind LIKE" + keyword);
+            }
+        }};
+        return sql.toString();
+    }
+
     public String selectOneQry(int seq) {
         SQL sql = new SQL() {{
             SELECT("*");

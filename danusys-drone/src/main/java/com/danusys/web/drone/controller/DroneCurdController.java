@@ -1,6 +1,7 @@
 package com.danusys.web.drone.controller;
 
 
+import com.danusys.web.drone.dto.request.DroneDetailRequest;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.service.DroneDetailsService;
@@ -57,13 +58,15 @@ public class DroneCurdController {
     public ResponseEntity<?> updateDrone(Drone drone) {
 
 
+
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(droneService.updateDrone(drone));
     }
 
     @DeleteMapping("/drone")
-    public ResponseEntity<?> deleteDrone(Drone drone) {
+    public ResponseEntity<?> deleteDrone(@RequestBody Drone drone) {
 
 
         return ResponseEntity
@@ -77,12 +80,32 @@ public class DroneCurdController {
 
 
     @PostMapping("/drone")
-    public ResponseEntity findAllDrone(@RequestBody Drone drone) {
+    public ResponseEntity<?> findAllDrone(@RequestBody Drone drone) {
 
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(droneService.findDroneList(drone));
+    }
+    @PatchMapping("/dronedetails")
+    public ResponseEntity<?> updateDroneDetails(@RequestBody DroneDetailRequest droneDetailRequest){
+
+            long droneId = droneDetailRequest.getDroneId();
+            DroneDetails droneDetails=droneDetailRequest.getDroneDetails();
+            log.info("droneId={}",droneId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId));
+
+    }
+
+    @GetMapping("/drone/{droneId}")
+    public ResponseEntity<?> findOneDrone(@PathVariable long droneId){
+
+        // input 이 drone_id라면
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(droneService.findOneDrone(droneId));
     }
 
 

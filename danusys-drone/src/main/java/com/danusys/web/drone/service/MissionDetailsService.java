@@ -31,6 +31,7 @@ public class MissionDetailsService {
     private int estimatedTime = 0;
     private int timeCountNumber = 0;
 
+
     @Transactional
     public MissionDetails saveMission(MissionDetails missonDetails, long mission_id) {
         Optional<Mission> mission = missionRepository.findById(mission_id);
@@ -69,14 +70,18 @@ public class MissionDetailsService {
 
         missionDetailsList.forEach(r -> {
             if (r.getName().equals("waypoint")) {
-                estimatedTime += r.getSpeed();
+                if(r.getSpeed()==0)
+                    estimatedTime+=10;
+                else
+                    estimatedTime+= r.getSpeed();
+
                 timeCountNumber++;
             }
 
             r.setMission(mission);
         });
         log.info("estimatedTime={},timeCountNumber={}", estimatedTime, timeCountNumber);
-        mission.setTotalDistance(totalDistance);
+        mission.setTotalDistance((int)totalDistance);
         mission.setEstimatedTime((int) (totalDistance / estimatedTime * timeCountNumber / 60));
         missionRepository.save(mission);
 

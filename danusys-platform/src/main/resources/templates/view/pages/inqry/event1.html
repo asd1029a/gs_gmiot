@@ -219,7 +219,7 @@
                     <dl class="search_text_set">
                         <dd><input type="text" name="keyword" placeholder="검색어를 입력하세요."></dd>
                         <dd class="button" id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
-                        <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
+                        <dd class="button" id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</dd>
                     </dl>
                 </div>
             </form>
@@ -235,9 +235,6 @@
                         <li><span class="red"></span>미처리 : 5</li>
                         <li><span class="yellow"></span>조치 완료 : 3</li>
                         <li><span class="green"></span>이벤트 종료 : 14</li>
-                    </ul>
-                    <ul>
-                        <li><i><img src="/images/default/add.svg"></i>추가</li>
                     </ul>
                 </div>
             </div>
@@ -259,24 +256,82 @@
                         <th>상세보기</th>
                     </tr>
                     </thead>
-                    <!--<tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>CEB000001</td>
-                        <td>금연벨</td>
-                        <td>주의</td>
-                        <td><span class="status red"></span></td>
-                        <td>BG001</td>
-                        <td>광명시청</td>
-                        <td>철산 3동</td>
-                        <td>경기 광명시 시청로 20 광명시청</td>
-                        <td>2021.11.25 15:49</td>
-                        <td>2021.11.25 15:49</td>
-                        <td><span class="button">상세보기</span></td>
-                    </tr>
-                    </tbody>-->
                 </table>
             </div>
+
+            <section class="inquiry_content">
+                <div class="popup" id="eventPopup">
+                    <dl class="title">
+                        <dt>스마트 도시 이벤트 추가</dt>
+                        <dd><i><img src="/images/default/close.svg"></i></dd>
+                    </dl>
+                    <div class="popup_writing">
+                        <fieldset>
+                            <legend>이벤트 분류</legend>
+                            <form id="eventForm">
+                                <dl>
+                                    <dt>이벤트 관리 ID</dt>
+                                    <dd><input type="text" id="eventSeq" disabled></dd>
+                                    <dt>이벤트 등급</dt>
+                                    <dd><input type="text" id="eventGrade" disabled></dd>
+                                </dl>
+                                <dl>
+                                    <dt>이벤트 종류</dt>
+                                    <dd><input type="text" id="eventKind" disabled></dd>
+                                    <dt>처리 상태</dt>
+                                    <dd><input type="text" disabled></dd>
+                                </dl>
+                            </form>
+                        </fieldset>
+                        <fieldset>
+                            <legend>이벤트 발생 주소/일시</legend>
+                            <form>
+                                <dl>
+                                    <dt>개소 관리 ID</dt>
+                                    <dd><input type="text" id="stationSeq" disabled></dd>
+                                </dl>
+                                <dl>
+                                    <dt>개소 종류</dt>
+                                    <dd><input type="text" id="stationKind" disabled></dd>
+                                    <dt>개소 이름</dt>
+                                    <dd><input type="text" id="stationName" disabled></dd>
+                                </dl>
+                                <dl>
+                                    <dt>행정 구역</dt>
+                                    <dd><input type="text" id="eventDistrict" disabled></dd>
+                                    <dt>개소 주소</dt>
+                                    <dd><input type="text" id="eventAddress" disabled></dd>
+                                </dl>
+                                <dl>
+                                    <dt>이벤트 발생일시</dt>
+                                    <dd><input type="text" id="insertDt" disabled></dd>
+                                </dl>
+                            </form>
+                        </fieldset>
+                        <fieldset>
+                            <legend>이벤트 조치</legend>
+                            <form>
+                                <dl>
+                                    <dt>조치자</dt>
+                                    <dd><input type="text" id="eventManager" disabled></dd>
+                                </dl>
+                                <dl>
+                                    <dt>이벤트 조치일시</dt>
+                                    <dd><input type="text" id="eventStartDt" disabled></dd>
+                                    <dt>이벤트 종료일시</dt>
+                                    <dd><input type="text" id="eventEndDt" disabled></dd>
+                                </dl>
+                                <dl>
+                                    <dt>조치 내용</dt>
+                                    <dd><textarea id="eventMngContent" disabled></textarea></dd>
+                                </dl>
+                            </form>
+                        </fieldset>
+                    </div>
+                </div>
+            </section>
+
+
         </article>
     </section>
 </th:block>
