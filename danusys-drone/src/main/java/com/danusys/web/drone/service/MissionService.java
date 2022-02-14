@@ -73,32 +73,40 @@ public class MissionService {
         Sort sort = sortByupdateDt();
         log.info("paramMap={}", paramMap);
         Long id = null;
-        if (paramMap.get("name") != null) {
+        if (paramMap.get("name") != null && paramMap.get("droneId") != null) {
             String name = paramMap.get("name").toString();
-            missionList = missionRepository.findAllByNameLike("%" + name + "%", sort);
-        }
-        if (paramMap.get("adminUserId") != null) {
-            String adminUserId = paramMap.get("adminUserId").toString();
-            missionList = missionRepository.findAllByUserIdLike("%" + adminUserId + "%", sort);
-        }
-        if (paramMap.get("droneId") != null) {
             if (paramMap.get("droneId").equals("")) {
-                missionList = missionRepository.findAll(sort);
+                missionList = missionRepository.findAllByNameLike("%" + name + "%", sort);
             } else {
                 id = Long.parseLong(paramMap.get("droneId").toString());
                 if (id == 0l) {
                     Drone drone = new Drone();
                     drone.setId(id);
-                    missionList = missionRepository.findAllByDrone(drone);
+                    missionList = missionRepository.findAllByNameLikeAndDrone("%" + name + "%", drone, sort);
                 } else {
                     Drone drone = new Drone();
                     drone.setId(0l);
-                    missionList = missionRepository.findByDroneNot(drone);
+                    missionList = missionRepository.findAllByNameLikeAndDroneNot("%" + name + "%", drone, sort);
                 }
-
             }
+        }
+        if (paramMap.get("adminUserId") != null && paramMap.get("droneId") != null) {
+            String adminUserId = paramMap.get("adminUserId").toString();
+            if (paramMap.get("droneId").equals("")) {
+                missionList = missionRepository.findAllByUserIdLike("%" + adminUserId + "%", sort);
+            } else {
+                id = Long.parseLong(paramMap.get("droneId").toString());
+                if (id == 0l) {
+                    Drone drone = new Drone();
+                    drone.setId(id);
+                    missionList = missionRepository.findAllByUserIdLikeAndDrone("%" + adminUserId + "%", drone, sort);
 
-
+                } else {
+                    Drone drone = new Drone();
+                    drone.setId(0l);
+                    missionList = missionRepository.findAllByUserIdLikeAndDroneNot("%" + adminUserId + "%", drone, sort);
+                }
+            }
         }
 
 
@@ -118,7 +126,11 @@ public class MissionService {
 //
 //        });
 
-        return missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
+        return missionList.stream().
+
+                map(MissionResponse::new).
+
+                collect(Collectors.toList());
     }
 
     private Sort sortByupdateDt() {
