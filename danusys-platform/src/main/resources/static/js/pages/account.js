@@ -8,6 +8,12 @@ const account = {
             $("#searchBtn").on('click', (e) => {
                 account.user.create();
             });
+            $("#addUserAccountBtn").on('click', () => {
+                account.user.showPopup("add");
+            });
+            $("#userAccountPopup .title dd").on('click', () => {
+                account.user.hidePopup();
+            });
         },
         create : () => {
             const $target = $('#userAccountTable');
@@ -54,10 +60,19 @@ const account = {
 
             const evt = {
                 click : function(e) {
+                    const $form = $('#userAccountForm');
                     const rowData = $target.DataTable().row($(e.currentTarget)).data();
-                    if($(e.target).hasClass('writeButton') || $(e.target).prop('tagName') === "I") {
+                    /*if($(e.target).hasClass('writeButton') || $(e.target).prop('tagName') === "I") {
                         account.user.showPopup('mod');
                         $('#userAccountForm').setItemValue(rowData);
+                    }*/
+                    if($(e.target).hasClass('button')) {
+                        account.user.showPopup('mod');
+                        $('#userAccountForm').setItemValue(rowData);
+                        account.user.get(rowData.userSeq ,(result) => {
+                            $form.data("eventSeq", rowData.userSeq);
+                            $form.setItemValue(result);
+                        });
                     }
                 }
             }
@@ -71,6 +86,14 @@ const account = {
                 pCallback(result);
             });
         },
+        get : (pSeq, pCallback) => {
+            $.ajax({
+                url : "/user/" + pSeq
+                , type : "GET"
+            }).done((result) => {
+                pCallback(result);
+            });
+        },
         showPopup : (type) => {
             $('#userAccountPopup .popupContents').scrollTop(0);
             comm.showModal($('#userAccountPopup'));
@@ -79,15 +102,12 @@ const account = {
             $('#userAccountPopup [data-mode]').hide();
             if(type === "add") {
                 $('#userAccountPopup .popupTitle h4').text("사용자 계정 등록");
-                $('#userAccountPopup').css('height', '480px');
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
             } else if(type === "mod") {
                 $('#userAccountPopup .popupTitle h4').text('사용자 계정 수정');
-                $('#userAccountPopup').css('height', '780px');
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
             } else if(type === "detail") {
                 $('#userAccountPopup .popupTitle h4').text("사용자 계정 상세");
-                $('#userAccountPopup').css('height', '610px');
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
             }
         },

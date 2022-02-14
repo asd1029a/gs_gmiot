@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     let param = {"droneDeviceName": ""}
     loadDroneList(param);
-
+    getListMission();
 
 });
 
@@ -16,7 +16,7 @@ function loadDroneList(param) {
         url: "/drone/api/drone",
         type: "POST",
         data: JSON.stringify(param),
-        async :false,
+        async: false,
         success: function (resultData) {
             console.log(resultData);
             let droneUserId = null;
@@ -116,7 +116,7 @@ $(".update_drone_detail_button").on("click", function () {
 
 });
 
-function getDroneDetails(id){
+function getDroneDetails(id) {
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: `/drone/api/drone/${id}`,
@@ -124,7 +124,7 @@ function getDroneDetails(id){
 
         success: function (resultData) {
             console.log(resultData);
-            let droneDetails=resultData.droneDetails;
+            let droneDetails = resultData.droneDetails;
             $(".drone_location").val(droneDetails.location);
             $(".drone_status").val(droneDetails.status);
             $(".drone_master_manager").val(droneDetails.masterManager);
@@ -143,17 +143,13 @@ function getDroneDetails(id){
             $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
 
 
-
-
-
-
         }
     });
 }
 
-$(".delete_drone_detail_button").on("click",function (){
+$(".delete_drone_detail_button").on("click", function () {
     console.log($(".drone_id").val());
-    let param={"id":$(".drone_id").val()};
+    let param = {"id": $(".drone_id").val()};
 
     $.ajax({
         contentType: "application/json; charset=utf-8",
@@ -163,7 +159,7 @@ $(".delete_drone_detail_button").on("click",function (){
         data: JSON.stringify(param),
         success: function (resultData) {
             console.log(resultData);
-            if(resultData==="success"){
+            if (resultData === "success") {
                 $(".drone_location").val("");
                 $(".drone_status").val("");
                 $(".drone_master_manager").val("");
@@ -189,3 +185,25 @@ $(".delete_drone_detail_button").on("click",function (){
 
 
 });
+
+function getListMission() {
+    let param = {"name": "" , "droneId":""};
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        url: "/drone/api/mission",
+        type: "POST",
+        data: JSON.stringify(param),
+        success: function (resultData) {
+            console.log(resultData);
+            $(".droneFrameLeft dl dt select").html("");
+            $.each(resultData, function (i, item) {
+                $(".droneFrameLeft dl dt select").append(`
+                <option>${item.name}</option>
+                `)
+            });
+
+        }
+     });
+}
+
+
