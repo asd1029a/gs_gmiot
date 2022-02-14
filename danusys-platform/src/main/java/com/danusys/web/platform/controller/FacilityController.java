@@ -2,9 +2,11 @@ package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.util.EgovMap;
 import com.danusys.web.platform.service.facility.FacilityService;
+import com.danusys.web.platform.util.GisUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,6 +23,16 @@ public class FacilityController {
     @PostMapping
     public ResponseEntity<EgovMap> getListFacility(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(facilityService.getList(paramMap));
+    }
+
+    /**
+     * 시설물 : 시설물 GEOJSON 목록 조회
+     */
+    @PostMapping(value="/geojson")
+    public String getListFacilityGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
+        EgovMap resultEgov = facilityService.getList(paramMap);
+        List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
+        return GisUtil.getGeoJson(list,"facility");
     }
 
     /**

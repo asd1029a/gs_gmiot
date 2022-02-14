@@ -162,6 +162,8 @@
 
 
 /* map_popup*/
+.my-ol-popup i{width: 16px; height: 16px; margin: 0px 0px 0px 20px; cursor: pointer; float: right; position: absolute; right: 10px; top: 6px;}
+.my-ol-popup i img{z-index: 2;}
 .popup{position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); overflow: hidden; display: flex; flex-direction: column; width: 860px; border-radius: 10px; box-shadow: 0px 0px 20px rgba(0,0,0,0.5); background: #1e1f23;}
 .popup .title{display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0px 20px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
 .popup .title dt{font-size: 16px;}
@@ -201,12 +203,12 @@
 .popup div.list_search .list_table table tbody td{vertical-align: middle; text-align: center; font-size: 14px; color: #dee0e4;}
 
 
-.popup_mini{overflow: inherit; position: relative; top: 50%; left: 50%; transform: translate(-50%, -7%); display: flex; flex-direction: column; width: 280px;  padding: 14px 16px; border-radius: 10px; box-shadow: 0px 0px 20px rgba(0,0,0,0.5); background: #1e1f23;}
-.popup_mini::after{content: '▼'; position: absolute; bottom: 0px; left: 50%; transform: translate(-50%, 20px); z-index: 10; font-size: 28px; color: #1e1f23;}
+.popup_mini{overflow: inherit; position: relative; top: 50%; left: 50%; transform: translate(-50%, -5%); display: flex; flex-direction: column; width: 280px;  padding: 14px 16px; border-radius: 10px; box-shadow: 0px 0px 20px rgba(0,0,0,0.5); background: #1e1f23;}
+.popup_mini::after{content: '▼'; position: absolute; bottom: 0px; left: 50%; transform: translate(-50%, 19px); z-index: 10; font-size: 28px; color: #1e1f23;}
 
 .popup_mini dl{display: flex; flex-direction: column;}
 .popup_mini dl dt{display: flex; align-items: center; justify-content: space-between; margin: 0px 0px 12px; color: #dee0e4; font-size: 16px;}
-.popup_mini dl dt i{width: 16px; height: 16px; margin: 0px 0px 0px 20px; cursor: pointer;}
+/*.popup_mini dl dt i{width: 16px; height: 16px; margin: 0px 0px 0px 20px; cursor: pointer;}*/
 .popup_mini dl dd{display: flex; align-items: center; justify-content: space-between; grid-gap: 20px; line-height: 1.268rem;  color: #797d87; font-size: 14px;}
 
 .popup_mini dl dd span.state{width:82px; height:26px; line-height:22px; color:#797d87; font-size:13px; font-weight:normal; text-align:center; border:2px solid #797d87; border-radius:26px;}
