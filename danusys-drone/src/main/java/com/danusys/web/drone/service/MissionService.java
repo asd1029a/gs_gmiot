@@ -61,7 +61,7 @@ public class MissionService {
         return missionResponse;
     }
 
-    
+
     /*
     
         missionList 조회
@@ -71,6 +71,8 @@ public class MissionService {
 
         List<Mission> missionList = null;
         Sort sort = sortByupdateDt();
+        log.info("paramMap={}", paramMap);
+        Long id = null;
         if (paramMap.get("name") != null) {
             String name = paramMap.get("name").toString();
             missionList = missionRepository.findAllByNameLike("%" + name + "%", sort);
@@ -80,15 +82,20 @@ public class MissionService {
             missionList = missionRepository.findAllByUserIdLike("%" + adminUserId + "%", sort);
         }
         if (paramMap.get("droneId") != null) {
-            Long id = Long.parseLong(paramMap.get("droneId").toString());
-            if(id==0l){
-                Drone drone = new Drone();
-                drone.setId(id);
-                missionList = missionRepository.findAllByDrone(drone);
-            }else{
-                Drone drone = new Drone();
-                drone.setId(0l);
-                missionList = missionRepository.findByDroneNot(drone);
+            if (paramMap.get("droneId").equals("")) {
+                missionList = missionRepository.findAll(sort);
+            } else {
+                id = Long.parseLong(paramMap.get("droneId").toString());
+                if (id == 0l) {
+                    Drone drone = new Drone();
+                    drone.setId(id);
+                    missionList = missionRepository.findAllByDrone(drone);
+                } else {
+                    Drone drone = new Drone();
+                    drone.setId(0l);
+                    missionList = missionRepository.findByDroneNot(drone);
+                }
+
             }
 
 
