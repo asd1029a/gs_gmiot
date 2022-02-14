@@ -58,13 +58,15 @@ public class DroneCurdController {
     public ResponseEntity<?> updateDrone(Drone drone) {
 
 
+
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(droneService.updateDrone(drone));
     }
 
     @DeleteMapping("/drone")
-    public ResponseEntity<?> deleteDrone(Drone drone) {
+    public ResponseEntity<?> deleteDrone(@RequestBody Drone drone) {
 
 
         return ResponseEntity
@@ -85,7 +87,7 @@ public class DroneCurdController {
                 .status(HttpStatus.OK)
                 .body(droneService.findDroneList(drone));
     }
-    @PutMapping("/dronedetails")
+    @PatchMapping("/dronedetails")
     public ResponseEntity<?> updateDroneDetails(@RequestBody DroneDetailRequest droneDetailRequest){
 
             long droneId = droneDetailRequest.getDroneId();
@@ -97,13 +99,15 @@ public class DroneCurdController {
 
     }
 
-//    @GetMapping("/drone/{droneId}")
-//    public ResponseEntity<?> findOneDrnoe(@PathVariable long droneId){
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(droneService.findDrone(droneId));
-//    }
+    @GetMapping("/drone/{droneId}")
+    public ResponseEntity<?> findOneDrone(@PathVariable long droneId){
+
+        // input 이 drone_id라면
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(droneService.findOneDrone(droneId));
+    }
+
 
 }
 

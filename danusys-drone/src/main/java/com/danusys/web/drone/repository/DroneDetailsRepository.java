@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface DroneDetailsRepository extends CrudRepository<DroneDetails,Long> {
         
 
+
     DroneDetails findByDrone(Drone drone);
 
     void deleteByDrone(Drone drone);

@@ -18,7 +18,7 @@ public class UserSpecs {
 
     public static Specification<User> withTitle(Map<String, Object> filter) {
         return (root, query, criteriaBuilder) -> {
-            // Predicate 는 criteria 에서 제공하는 클래스이다. 이상한 클래스 임포트 받지 말자.
+
             List<Predicate> predicates = new ArrayList<>();
 
             filter.forEach((key, value) -> {
@@ -27,6 +27,8 @@ public class UserSpecs {
                 switch (key) {
                     case "userName":
                     case "tel":
+
+
                         predicates.add(criteriaBuilder.like(root.get(key).as(String.class), likeValue));
                         break;
 

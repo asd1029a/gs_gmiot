@@ -37,6 +37,7 @@ public class DroneService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Drone updateDrone = (Drone) optionalDrone.get();
 
+        if(drone.getDroneDeviceName()!=null)
         updateDrone.setDroneDeviceName(drone.getDroneDeviceName());
         updateDrone.setUserId(drone.getUserId());
 
@@ -57,7 +58,7 @@ public class DroneService {
         return "success";
     }
 
-
+    @Transactional
     public String deleteDrone(Drone drone) {
         DroneDetails droneDetails = droneDetailsRepository.findByDrone(drone);
         if(droneDetails==null) {
@@ -101,7 +102,10 @@ public class DroneService {
 
     }
 
-//    public Drone findOneDrone(long droneId){
-//        return Drone droneRepository.findById(droneId);
-//    }
+    public Drone findOneDrone(long droneId){
+        Optional<Drone> optionalDrone=droneRepository.findById(droneId);
+        if(!optionalDrone.isPresent())
+            return null;
+        return  optionalDrone.get();
+    }
 }

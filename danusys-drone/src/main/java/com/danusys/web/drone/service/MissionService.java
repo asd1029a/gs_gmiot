@@ -61,6 +61,12 @@ public class MissionService {
         return missionResponse;
     }
 
+    
+    /*
+    
+        missionList 조회
+     
+     */
     public List<?> missionResponseList(Map<String, Object> paramMap) {
 
         List<Mission> missionList = null;
@@ -70,9 +76,17 @@ public class MissionService {
             missionList = missionRepository.findAllByNameLike("%" + name + "%", sort);
         }
         if (paramMap.get("adminUserId") != null) {
-            String adminUserId =  paramMap.get("adminUserId").toString();
+            String adminUserId = paramMap.get("adminUserId").toString();
             missionList = missionRepository.findAllByUserIdLike("%" + adminUserId + "%", sort);
         }
+        if (paramMap.get("droneId") != null) {
+            Long id = Long.parseLong(paramMap.get("droneId").toString());
+            Drone drone = new Drone();
+            drone.setId(id);
+            missionList = missionRepository.findAllByDrone(drone);
+
+        }
+
 
         if (missionList == null) {
             return null;
@@ -103,7 +117,7 @@ public class MissionService {
         Drone drone = new Drone();
         drone.setId(0l);
         mission.setDrone(drone);
-        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         mission.setUpdateDt(timestamp);
         if (findMission == null) {
             missionRepository.save(mission);
@@ -117,13 +131,13 @@ public class MissionService {
     public int updateMission(Mission mission) {
 
         Optional<Mission> optionalMission = missionRepository.findById(mission.getId());
-        if(!optionalMission.isPresent())
+        if (!optionalMission.isPresent())
             return 0;
         Mission updateMission = optionalMission.get();
         if (updateMission.getName() != null) {
             updateMission.setName(mission.getName());
             updateMission.setUserId(mission.getUserId());
-            Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             updateMission.setUpdateDt(timestamp);
         }
 
