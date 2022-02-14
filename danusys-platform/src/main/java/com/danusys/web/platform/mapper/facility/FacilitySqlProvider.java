@@ -1,5 +1,6 @@
 package com.danusys.web.platform.mapper.facility;
 
+import com.danusys.web.commons.util.CommonUtil;
 import com.danusys.web.platform.util.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -8,9 +9,9 @@ import java.util.Map;
 public class FacilitySqlProvider {
 
     public String selectListQry(Map<String, Object> paramMap) {
-        String keyword = paramMap.get("keyword").toString();
-        String start = paramMap.get("start").toString();
-        String length = paramMap.get("length").toString();
+        String keyword = CommonUtil.validOneNull(paramMap,"keyword");
+        String start = CommonUtil.validOneNull(paramMap,"start");
+        String length = CommonUtil.validOneNull(paramMap,"keyword");
 
         SQL sql = new SQL() {{
             SELECT("*, '' as station_kind, '' as station_name, '' as address");

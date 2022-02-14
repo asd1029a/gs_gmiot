@@ -1,3 +1,11 @@
+const a = {
+    init : (function () {
+
+    })
+}
+
+const b = a.init();
+
 /**
  * 맵 위의 팝업
  * */
@@ -11,6 +19,10 @@ class mapPopup {
 
     //팝업 생성
     create(id) {
+        if(this.find(id)){
+            this.remove(id);
+        }
+
         const popupElement = document.createElement('div');
         popupElement.id = id;
         popupElement.className = 'my-ol-popup';

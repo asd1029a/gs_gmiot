@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CommonUtil {
 	private static int SEQ = 0;
@@ -31,7 +32,9 @@ public class CommonUtil {
 				.stream()
 				.map(value -> {
 					return value != null ? value : "";
-				});
+					//System.out.println(value.getClass().getName());
+					//return value;
+				}).collect(Collectors.toList());
 	}
 
 

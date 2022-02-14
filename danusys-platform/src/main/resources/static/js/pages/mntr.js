@@ -1,7 +1,6 @@
 /**
  * 관제
  */
-
 const mntr = {
     init : () => {
         $(document).contextmenu( e => {
@@ -34,7 +33,7 @@ const mntr = {
 
                     popup.create('testpopup');
                     popup.move('testpopup',e.coordinate);
-                    popup.content('testpopup',mapPopupContent.address(e));
+                    popup.content('testpopup',mapPopupContent.address(coordinate));
 
                     window.popup = popup;
                 }
@@ -49,14 +48,11 @@ const mntr = {
         window.map = map;
         //레이어 도구
         let lyControl = new layerControl('map', 'title');
-        window.lc = lyControl;
+        window.lyControl = lyControl;
         //측정 도구
         let measure = new measureTool('map');
         window.measure = measure;
 
-        // station.getList({} ,(result) => {
-        //     console.log(result.data);
-        // });
         //개소 레이어
         station.getListGeoJson({} ,(result) => {
             let dataLy = new dataLayer('map');
@@ -83,8 +79,13 @@ const mntr = {
             window.map.addLayer(heat);
         });
 
-
-
+        // facility.getList({}, (result) => {
+        //     console.log(result);
+        // });
+        //
+        event.getListGeoJson({}, (result) => {
+            console.log(result);
+        });
 
     },
     eventHandler : () => {
@@ -129,10 +130,10 @@ const mntr = {
             const type = $(e.currentTarget).attr('data-value');
             switch(type) {
                 case "roadView" :
-                    if(window.lc.find(type).getVisible()){
-                        window.lc.off(type);
+                    if(window.lyControl.find(type).getVisible()){
+                        window.lyControl.off(type);
                     } else {
-                        window.lc.on(type);
+                        window.lyControl.on(type);
                     }
                     break;
                 case "plus" : window.map.zoomInOut('plus'); break;

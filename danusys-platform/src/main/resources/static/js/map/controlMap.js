@@ -25,9 +25,9 @@ const layerStyle = {
                 })
             })
         });
-    },
+    }
     //이벤트
-    event : () => {
+    , event : () => {
         return null;
     }
 }
@@ -47,12 +47,33 @@ const mapPopupContent = {
         //     content += "<div class='address-tooltip-header'>[도로명]</div>"
         //         + "<p>" + r.documents[0].road_address.address_name + "<p>"  ;
         // }
-        // addressPopupElement.innerHTML =
-        //     "<a class='address-tooltip-closer icon_closed'><img src='/images/common/iconClosed.svg' /></a></div>"
-        //     + "<div class='address-tooltip-header'> [좌표] </div>"
-        //     + "<p>" + clickLonLat[1] +", "+ clickLonLat[0] +"</p>"
-        //     + "<div class='address-tooltip-header'> [지번] </div>"
-        //     + "<p>" + content + "</p>"  ;
-        //return content;
+        //////////////////////////////////////////////////////////////////////
+        let info = "infotest";
+        let content =
+            "<div class='popup_mini'>" +
+                "<dl>" +
+                    "<dt>전북 김제시 죽산면 석산길<i><img src='/images/default/close.svg'></i></dt>" +
+                    "<dd>(지번)&nbsp;" + info + "</dd>" +
+                    "<dd>(위도)&nbsp;" + data.coordinate[1] + "</dd>" +
+                    "<dd>(경도)&nbsp;" + data.coordinate[0] + "</dd>" +
+                "</dl>" +
+            "</div>"
+        ;
+            // "<a class='address-tooltip-closer icon_closed'><img src='/images/common/iconClosed.svg' /></a></div>"
+            // + "<div class='address-tooltip-header'> [좌표] </div>"
+            // //+ "<p>" + clickLonLat[1] +", "+ clickLonLat[0] +"</p>"
+            // + "<p>" + data.coordinate[1] +", "+ data.coordinate[0] +"</p>"
+            // + "<div class='address-tooltip-header'> [지번] </div>"
+            // + "<p>" + info + "</p>"
+
+        return content;
+    }
+    //개소
+    , station() {
+
+    }
+    //이벤트
+    , event() {
+
     }
 }
