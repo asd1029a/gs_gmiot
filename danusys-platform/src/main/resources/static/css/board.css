@@ -281,6 +281,7 @@
 .popup div.popup_writing fieldset form dl.checkbox dd{justify-content: flex-start; grid-gap: 20px;}
 .popup div.popup_writing fieldset form dl.checkbox dd > span{flex: 0.3;}
 .popup div.popup_writing fieldset form dl.checkbox dd > span input[type="checkbox"] + label{line-height: 34px;}
+.popup div.popup_writing fieldset form dl.checkbox dd > span input[type="radio"] + label{line-height: 34px;}
 .popup div > .half_layout{display: flex; flex-direction: row; margin: 10px 20px 0px; padding: 0px 0px 20px; border-bottom: 1px solid #292c34;}
 .popup div > .half_layout fieldset{border: none;}
 .popup div > .half_layout .list_search{border: none;}
