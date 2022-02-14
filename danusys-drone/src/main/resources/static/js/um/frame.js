@@ -187,7 +187,7 @@ $(".delete_drone_detail_button").on("click", function () {
 });
 
 function getListMission() {
-    let param = {"name": ""};
+    let param = {"name": "" , "droneId":""};
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: "/drone/api/mission",
