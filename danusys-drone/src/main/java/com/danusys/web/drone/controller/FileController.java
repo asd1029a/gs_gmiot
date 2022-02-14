@@ -43,6 +43,9 @@ public class FileController {
     private String uploadPath = "";
 
 
+    @Value("#{'${danusys.file.extension}'.split(',')}")
+    private String[] extensionList;
+
     @Autowired
     public FileController(FileService fileService) {
         this.fileService = fileService;
@@ -732,6 +735,7 @@ public class FileController {
         }
 
         for (MultipartFile multipartFile : uploadFile) {
+
             log.info("Upload File Name : " + multipartFile.getOriginalFilename());
             log.info("Upload File Size : " + multipartFile.getSize());
 
@@ -740,6 +744,13 @@ public class FileController {
             uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
             log.info("only file name: " + uploadFileName);
 
+
+            for(String extension : extensionList){
+                if(uploadFileName.contains(extension))
+                    return ;
+            }
+
+            log.info("여기오나요?");
             File savefile = new File(uploadPath, uploadFileName);
 
             try {
