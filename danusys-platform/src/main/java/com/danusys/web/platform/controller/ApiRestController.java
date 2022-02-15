@@ -17,13 +17,13 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 public class ApiRestController {
 
 	@Value("${danusys.api.air.service.key}")
 	private String serviceKey = "";
 	
-	@RequestMapping(value="/getMsrstnAcctoRltmMesureDnsty", method=RequestMethod.POST)
+	@RequestMapping(value="/api/getMsrstnAcctoRltmMesureDnsty", method=RequestMethod.POST)
 	public void getMsrstnAcctoRltmMesureDnsty(@RequestBody Map<String, Object> param,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 //		String serviceKey = config.getProperty("api.airServiceKey");

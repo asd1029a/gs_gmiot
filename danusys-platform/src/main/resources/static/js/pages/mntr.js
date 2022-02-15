@@ -1,7 +1,6 @@
 /**
  * 관제
  */
-
 const mntr = {
     init : () => {
         $(document).contextmenu( e => {
@@ -34,7 +33,7 @@ const mntr = {
 
                     popup.create('testpopup');
                     popup.move('testpopup',e.coordinate);
-                    popup.content('testpopup',mapPopupContent.address(e));
+                    popup.content('testpopup',mapPopupContent.address(coordinate));
 
                     window.popup = popup;
                 }
@@ -49,42 +48,48 @@ const mntr = {
         window.map = map;
         //레이어 도구
         let lyControl = new layerControl('map', 'title');
-        window.lc = lyControl;
+        window.lyControl = lyControl;
         //측정 도구
         let measure = new measureTool('map');
         window.measure = measure;
 
-        // station.getList({} ,(result) => {
-        //     console.log(result.data);
-        // });
         //개소 레이어
         station.getListGeoJson({} ,(result) => {
-            let dataLy = new dataLayer('map');
-            let stationLayer = dataLy.fromGeoJSon(result, 'stationLayer', true, layerStyle.station());
+            console.log(result);
+            let stationLayer = new dataLayer('map')
+                .fromGeoJSon(result, 'stationLayer', true, layerStyle.station());
             map.addLayer(stationLayer);
 
-            //열지도 test
-            const heat = new ol.layer.Heatmap({
-                source: new ol.source.Vector({
-                    features: new ol.format.GeoJSON().readFeatures(result, {
-                        dataProjection: "EPSG:4326"
-                        , featureProjection: "EPSG:5181"
-                    })
-                }),
-                blur: 15,
-                radius: 8,
-                weight: function (feature) {
-                    //var magnitude = parseFloat(feature.get('magnitude'));
-                    //return magnitude - 5;
-                    return 0.4;
-                },
-            });
-
-            window.map.addLayer(heat);
+            // //열지도 test
+            // const heat = new ol.layer.Heatmap({
+            //     source: new ol.source.Vector({
+            //         features: new ol.format.GeoJSON().readFeatures(result, {
+            //             dataProjection: "EPSG:4326"
+            //             , featureProjection: "EPSG:5181"
+            //         })
+            //     }),
+            //     blur: 15,
+            //     radius: 8,
+            //     weight: function (feature) {
+            //         //var magnitude = parseFloat(feature.get('magnitude'));
+            //         //return magnitude - 5;
+            //         return 0.4;
+            //     },
+            // });
+            //
+            // window.map.addLayer(heat);
         });
 
+        // facility.getListGeoJson({}, (result) => {
+        //    // console.log(result);
+        //     let facilityLayer = new dataLayer('map')
+        //         .fromGeoJSon(result,'facilityLayer', true, layerStyle.facility());
+        //     map.addLayer(facilityLayer);
+        // });
 
-
+        event.getListGeoJson({}, (result) => {
+           // console.log(result);
+        });
 
     },
     eventHandler : () => {
@@ -129,10 +134,10 @@ const mntr = {
             const type = $(e.currentTarget).attr('data-value');
             switch(type) {
                 case "roadView" :
-                    if(window.lc.find(type).getVisible()){
-                        window.lc.off(type);
+                    if(window.lyControl.find(type).getVisible()){
+                        window.lyControl.off(type);
                     } else {
-                        window.lc.on(type);
+                        window.lyControl.on(type);
                     }
                     break;
                 case "plus" : window.map.zoomInOut('plus'); break;

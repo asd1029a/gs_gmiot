@@ -47,7 +47,7 @@ public class GisUtil {
 	 * @return geoJson
 	 * @throws Exception
 	 */
-	public String getGeoJson(List<Map<String,Object>> geoList, String id) throws Exception {
+	public static String getGeoJson(List<Map<String, Object>> geoList, String id) throws Exception {
 
 		LinkedHashMap<String,Object> geoObj = new LinkedHashMap<String,Object>();
 		geoObj.put("type","FeatureCollection");
@@ -55,10 +55,10 @@ public class GisUtil {
 		ArrayList<Map<String, Object>> ary = new ArrayList<Map<String, Object>>();
 		Integer i = 1;
 		for(Map<String,Object> map : geoList) {
+			CommonUtil.validMapNull(map);
 			LinkedHashMap<String,Object> each = new LinkedHashMap<String,Object>();
 
 			each.put("type", "Feature");
-
 			each.put("id", id+i);
 			i++;
 
@@ -67,8 +67,8 @@ public class GisUtil {
 
 			ArrayList<Double> coordinates = new ArrayList<Double>();
 
-			coordinates.add(Double.parseDouble(map.get("longitude").toString()));
-			coordinates.add(Double.parseDouble(map.get("latitude").toString()));
+			coordinates.add(Double.parseDouble(CommonUtil.validOneNull(map,"longitude")));
+			coordinates.add(Double.parseDouble(CommonUtil.validOneNull(map,"latitude")));
 
 			geom.put("coordinates",coordinates);
 			each.put("geometry",geom);

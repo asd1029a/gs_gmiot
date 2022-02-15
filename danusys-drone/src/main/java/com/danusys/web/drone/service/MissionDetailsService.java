@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -146,12 +147,15 @@ public class MissionDetailsService {
         return missonDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
     }
-
+    private Sort sortByIndex() {
+        return Sort.by(Sort.Direction.ASC, "index");
+    }
     public List<MissionDetailResponse> findMission(Map<String, Object> paramMap) {
         String name = null;
         Mission mission = null;
         Optional<Mission> optionalMission = null;
         Long id = null;
+        Sort sort =sortByIndex();
         int inputid = 0;
         if (paramMap.get("name") != null) {
             name = paramMap.get("name").toString();
@@ -170,7 +174,7 @@ public class MissionDetailsService {
         }
 
 
-        List<MissionDetails> missionDetails = missionDetailsRepository.findAllByMission(mission);
+        List<MissionDetails> missionDetails = missionDetailsRepository.findAllByMission(mission,sort);
 
         if (missionDetails.isEmpty()) {
             log.info("비엇음");

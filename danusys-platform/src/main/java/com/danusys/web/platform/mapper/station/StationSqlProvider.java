@@ -9,22 +9,27 @@ import java.util.Map;
 public class StationSqlProvider {
 
     public String selectListQry(Map<String, Object> paramMap) {
-
         String keyword = CommonUtil.validOneNull(paramMap,"keyword");
         String start =  CommonUtil.validOneNull(paramMap,"start");
         String length =  CommonUtil.validOneNull(paramMap,"length");
 
+        SQL innerSql = new SQL() {{
+            SELECT("tf.station_seq, count(*) as facility_cnt");
+            FROM("t_facility tf");
+            GROUP_BY("tf.station_seq");
+        }};
+
         SQL sql = new SQL() {{
-            SELECT("*");
+            SELECT("ts.*, t1.facility_cnt");
             FROM("t_station ts");
-            LEFT_OUTER_JOIN("t_facility tf ON ts.station_seq = tf.station_seq");
             if(!keyword.equals("")) {
-                WHERE("ts.station_name LIKE" + keyword);
+                WHERE("ts.station_name LIKE '%" + keyword +"%'");
             }
             if (!start.equals("") && !length.equals("")) {
-                LIMIT(length);
-                OFFSET(start);
+                LIMIT(start);
+                OFFSET(length);
             }
+            INNER_JOIN("(" + innerSql.toString() + ") t1 on ts.station_seq = t1.station_seq");
         }};
         return sql.toString();
     }

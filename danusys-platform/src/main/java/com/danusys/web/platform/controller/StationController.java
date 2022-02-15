@@ -17,9 +17,6 @@ public class StationController {
 
     private final StationService stationService;
 
-    @Autowired
-    GisUtil gisUtil;
-
     /**
      * 개소 : 개소 목록 조회
      */
@@ -35,7 +32,7 @@ public class StationController {
     public String getListStationGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = stationService.getList(paramMap);
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
-        return gisUtil.getGeoJson(list,"station");
+        return GisUtil.getGeoJson(list,"station");
     }
 
     /**

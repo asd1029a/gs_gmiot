@@ -1,3 +1,11 @@
+const a = {
+    init : (function () {
+
+    })
+}
+
+const b = a.init();
+
 /**
  * 맵 위의 팝업
  * */
@@ -11,6 +19,10 @@ class mapPopup {
 
     //팝업 생성
     create(id) {
+        if(this.find(id)){
+            this.remove(id);
+        }
+
         const popupElement = document.createElement('div');
         popupElement.id = id;
         popupElement.className = 'my-ol-popup';
@@ -23,15 +35,19 @@ class mapPopup {
         });
 
         popupElement.innerHTML =
-            "<a id="+ id +"Closer class='my-ol-popup-closer'></a>"
-            + "<div id="+ id +"Content></div>"
+            "<i id="+ id +"Closer class='my-ol-popup-closer'>" +
+                "<img src='/images/default/close.svg'>" +
+            "</i>"
+            + "<div id="+ id +"Content class='popup_mini'></div>"
         ;
 
         this.map.addOverlay(popup);
         popup.setPosition(undefined);
 
+        //POPUP CLOSE BUTTON
         $(".my-ol-popup-closer").on('click', e => {
-            //this.remove(id);
+            const targetId = $(e.currentTarget).parents('.my-ol-popup').attr('id');
+            this.remove(targetId);
             //this.map.getInteractions().forEach( e => {} );
         });
     }

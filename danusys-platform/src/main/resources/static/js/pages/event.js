@@ -74,10 +74,22 @@ const event = {
         comm.createTable($target ,optionObj, evt);
     },
     getList : (param, pCallback) => {
-        comm.ajaxPost({
+        $.ajax({
             url : "/event"
-            , data : {}
-        }, (result) => {
+            , type : "POST"
+            , data : JSON.stringify(param)
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
+            pCallback(result);
+        });
+    },
+    getListGeoJson : (param, pCallback) => {
+        $.ajax({
+            url : "/event/geojson"
+            , type : "POST"
+            , data : JSON.stringify(param)
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
             pCallback(result);
         });
     },
