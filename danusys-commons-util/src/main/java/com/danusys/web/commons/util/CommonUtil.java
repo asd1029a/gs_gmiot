@@ -37,6 +37,18 @@ public class CommonUtil {
 				}).collect(Collectors.toList());
 	}
 
+	public static ArrayList valiArrNull(Map<String, Object> paramMap, String key){
+		if(paramMap.get(key) != null && paramMap.get(key).getClass().getSimpleName().equals("ArrayList")){
+			return (ArrayList) paramMap.get(key);
+		}else if(paramMap.get(key) != null){
+			ArrayList arr = new ArrayList<String>();
+			arr.add(paramMap.get(key));
+			return arr;
+		}else{
+			return new ArrayList();
+		}
+	}
+
 
 	public static boolean checkDataFilter(Map<String, String> map) {
 		for (String key : map.keySet()) {

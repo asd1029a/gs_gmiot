@@ -24,7 +24,16 @@ $.fn.extend({
                 var arr = this.serializeArray();
                 if (arr) {
                     jQuery.each(arr, function() {
-                        obj[this.name] = stringFunc.changeXSSInputValue(this.value, 0);
+                        if (this.value !== "all"){
+                            if (obj[this.name]){
+                                let val = stringFunc.changeXSSInputValue(this.value, 0);
+                                Array.isArray(obj[this.name])
+                                    ? obj[this.name].push(val)
+                                    : obj[this.name] = Array.of(obj[this.name], val);
+                            }else{
+                                obj[this.name] = this.value;
+                            }
+                        }
                     });
                 }
                 $.each( this[0], function (idx, element ) {
@@ -632,10 +641,11 @@ var comm = {
                 comm.createMultiSelectBox.prototype.$select.html(tData.codeName);
                 comm.createMultiSelectBox.prototype.$select.data("placeholder", tData.codeName);
 
+                let codeValue = stringFunc.camelize(tData.codeValue);
                 let listEle =
                     `<li>
                         <span>
-                            <input type="checkbox" id="${tData.codeSeq}All" name="checkAll">
+                            <input type="checkbox" class="checkAll" id="${tData.codeSeq}All" name="${codeValue}" value="all">
                             <label for="${tData.codeSeq}All"><span></span>전체</label>
                         </span>
                     </li>`;
@@ -643,7 +653,7 @@ var comm = {
                 data.forEach((item, idx) => {
                     let spanEle =
                         `<span>
-                            <input type="checkbox" id="${item.codeSeq}" name="" value="${item.codeValue}">
+                            <input type="checkbox" id="${item.codeSeq}" name="${codeValue}" value="${item.codeSeq}">
                             <label for="${item.codeSeq}"><span></span>${item.codeName}</label>
                         </span>`;
 
@@ -687,15 +697,15 @@ var comm = {
             let $targetSelect = $targetSelectBox.find(".select");
             let $targetListLi = $targetSelectBox.find("li> span");
 
-            if($targetInput.attr("name").indexOf("checkAll") > -1){
+            if($targetInput.hasClass("checkAll")){
                 selectStr = $targetInput.prop('checked') ? $target.text() : $targetSelect.data("placeholder");
                 $targetListLi.children("input[type=checkbox]").prop('checked', $targetInput.prop('checked'));
             }else{
                 let totalLen = $targetListLi.length - 1;
-                let checkedLen = $targetListLi.find("input[type=checkbox]:checked").not("[name=checkAll]").length;
+                let checkedLen = $targetListLi.find("input[type=checkbox]:checked").not(".checkAll").length;
 
                 if(totalLen !== checkedLen){
-                    $targetListLi.find("[name=checkAll]").prop("checked", false);
+                    $targetListLi.find(".checkAll").prop("checked", false);
                     if($($targetListLi).children("input[type=checkbox]:checked").length > 0){
                         for (let i = 0; i < $targetListLi.length; i++){
                             if($($targetListLi[i]).children("input[type=checkbox]").prop("checked")) selectStr += $($targetListLi[i]).text();
@@ -705,8 +715,8 @@ var comm = {
                     }
 
                 }else{
-                    $targetListLi.find("[name=checkAll]").prop("checked", true);
-                    selectStr = $targetListLi.find("[name=checkAll] + label").text();
+                    $targetListLi.find(".checkAll").prop("checked", true);
+                    selectStr = $targetListLi.find(".checkAll + label").text();
                 }
             }
             $targetSelect.text(selectStr);
