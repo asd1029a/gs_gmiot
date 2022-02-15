@@ -1,5 +1,6 @@
 package com.danusys.web.platform.service.notice;
 
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.util.EgovMap;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.notice.NoticeSqlProvider;
@@ -47,11 +48,13 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public int add(Map<String, Object> paramMap) throws Exception {
+        paramMap.put("insertUserSeq", LoginInfoUtil.getUserDetails().getUserSeq());
         return commonMapper.insert(nsp.insertQry(paramMap));
     }
 
     @Override
     public int mod(Map<String, Object> paramMap) throws Exception {
+        paramMap.put("updateUserSeq", LoginInfoUtil.getUserDetails().getUserSeq());
         return commonMapper.update(nsp.updateQry(paramMap));
     }
 

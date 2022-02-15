@@ -24,7 +24,7 @@ $.fn.extend({
                 var arr = this.serializeArray();
                 if (arr) {
                     jQuery.each(arr, function() {
-                        obj[this.name] = this.value;
+                        obj[this.name] = stringFunc.changeXSSInputValue(this.value, 0);
                     });
                 }
                 $.each( this[0], function (idx, element ) {
@@ -202,6 +202,8 @@ $.fn.extend({
                 } else {
                     strValue = objValue[element.id];
                 }
+                strValue = stringFunc.changeXSSOutputValue(strValue);
+                console.log(strValue);
                 if(strValue == undefined) { return; }
 
                 if(element.type == "checkbox") {
@@ -907,6 +909,25 @@ var stringFunc = {
             return true;
         else
             return false;
+    },
+    changeXSSInputValue : (str, level) => {
+        let returnStr = "";
+        if(typeof str !== "undefined" && str !== null) {
+            if(typeof level === "undefined" || level === 0) {
+                returnStr = str.replace(/&/gi, '&amp;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;').replace(/"/gi, '&quot;').replace(/'/gi, '&apos;');
+            } else if (typeof level !== "undefined" && level === 1) {
+                returnStr = str.replace(/\</g, "&lt;");
+                returnStr = str.replace(/\>/g, "&gt;");
+            }
+        }
+        return returnStr;
+    },
+    changeXSSOutputValue : (str) => {
+        let returnStr = "";
+        if(typeof str !== "undefined" && str !== null){
+            returnStr = str.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&apos;/gi, '\'').replace(/&nbsp;/gi, ' ');
+        }
+        return returnStr;
     }
 }
 
@@ -932,26 +953,27 @@ var dateFunc = {
      * @param 이전날짜, 이후날짜
      * @returns EX) 201908191500
      */
-    getCurrentDateYyyyMmDdHh24Mi: function (d) {
-        var dateStr;
-        var year = dateFunc.getCurrentDate(d).getFullYear();
-        var month = dateFunc.getCurrentDate(d).getMonth() + 1;
-        var day = dateFunc.getCurrentDate(d).getDate();
-        var hour = dateFunc.getCurrentDate(d).getHours();
-        var min = dateFunc.getCurrentDate(d).getMinutes();
-        var sec = dateFunc.getCurrentDate(d).getSeconds();
+    getCurrentDateYyyyMmDdHh24Mi: function (d, dateSep, timeSep) {
+        const dateArr = [
+            dateFunc.getCurrentDate(d).getFullYear()
+            , this.getZeroString(dateFunc.getCurrentDate(d).getMonth() + 1)
+            , this.getZeroString(dateFunc.getCurrentDate(d).getDate())
+        ];
+        const timeArr = [
+            this.getZeroString(dateFunc.getCurrentDate(d).getHours())
+            , this.getZeroString(dateFunc.getCurrentDate(d).getMinutes())
+            , this.getZeroString(dateFunc.getCurrentDate(d).getSeconds())
+        ];
 
-        dateStr = year + this.getZeroString(month) + this.getZeroString(day) + this.getZeroString(hour) + this.getZeroString(min) + this.getZeroString(sec);
-        return dateStr;
+        return dateArr.join(dateSep) + " " + timeArr.join(timeSep);
     },
-    getCurrentDateYyyyMmDd: function (d) {
-        var dateStr;
-        var year = dateFunc.getCurrentDate(d).getFullYear();
-        var month = dateFunc.getCurrentDate(d).getMonth() + 1;
-        var day = dateFunc.getCurrentDate(d).getDate();
-
-        dateStr = year + "-" + (month > 9 ? '' : '0') + month + "-" + (day > 9 ? '' : '0') + day;
-        return dateStr;
+    getCurrentDateYyyyMmDd: function (d, sep) {
+        const dateArr = [
+            dateFunc.getCurrentDate(d).getFullYear()
+            , this.getZeroString(dateFunc.getCurrentDate(d).getMonth() + 1)
+            , this.getZeroString(dateFunc.getCurrentDate(d).getDate())
+        ];
+        return dateArr.join(sep);
     },
     /**
      * 날짜에 따른 한글 텍스트 출력
