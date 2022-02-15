@@ -1,16 +1,17 @@
-package com.danusys.web.drone.controller;
+package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.util.CommonUtil;
 import com.danusys.web.commons.util.JsonUtil;
-import com.danusys.web.drone.service.FileService;
-
+import com.danusys.web.platform.service.file.FileService;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -25,9 +26,7 @@ import java.io.*;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
 @Slf4j
 @Controller
 public class FileController {
