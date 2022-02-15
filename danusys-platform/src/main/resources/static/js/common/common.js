@@ -921,20 +921,24 @@ var stringFunc = {
     },
     changeXSSInputValue : (str, level) => {
         let returnStr = "";
-        if(typeof str !== "undefined" && str !== null) {
+        if(typeof(str) === "String") {
             if(typeof level === "undefined" || level === 0) {
                 returnStr = str.replace(/&/gi, '&amp;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;').replace(/"/gi, '&quot;').replace(/'/gi, '&apos;');
             } else if (typeof level !== "undefined" && level === 1) {
                 returnStr = str.replace(/\</g, "&lt;");
                 returnStr = str.replace(/\>/g, "&gt;");
             }
+        }else{
+            returnStr = str;
         }
         return returnStr;
     },
     changeXSSOutputValue : (str) => {
         let returnStr = "";
-        if(typeof str !== "undefined" && str !== null){
+        if(typeof(str) === "String"){
             returnStr = str.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&apos;/gi, '\'').replace(/&nbsp;/gi, ' ');
+        }else{
+            returnStr = str;
         }
         return returnStr;
     }
