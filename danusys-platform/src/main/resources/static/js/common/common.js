@@ -203,7 +203,6 @@ $.fn.extend({
                     strValue = objValue[element.id];
                 }
                 strValue = stringFunc.changeXSSOutputValue(strValue);
-                console.log(strValue);
                 if(strValue == undefined) { return; }
 
                 if(element.type == "checkbox") {
