@@ -20,54 +20,7 @@
                         <dd>
                             <div class="dropdown_checkbox" data-selectbox-type="eventKind">
                                 <p class="checkbox_title checkbox_title_event select" data-placeholder="이벤트 종류 선택">이벤트 종류 선택</p>
-                                <ul class="checkbox_list checkbox_list_event list">
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="eventALL" name="checkAll">
-                                            <label for="eventALL"><span></span>전체</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="eventFind01" name="">
-                                            <label for="eventFind01"><span></span>지능형 CCTV 감지</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="eventFind02" name="">
-                                            <label for="eventFind02"><span></span>이상음원 감지</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="eventFind03" name="">
-                                            <label for="eventFind03"><span></span>AED 사용</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="eventFind04" name="">
-                                            <label for="eventFind04"><span></span>비상벨</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="eventFind05" name="">
-                                            <label for="eventFind05"><span></span>금연벨</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="eventFind06" name="">
-                                            <label for="eventFind06"><span></span>장기체류자</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="eventFind07" name="">
-                                            <label for="eventFind07"><span></span>실내공기질 나쁨</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="eventFind08" name="">
-                                            <label for="eventFind08"><span></span>기타</label>
-                                        </span>
-                                    </li>
-                                </ul>
+                                <ul class="checkbox_list checkbox_list_event list"></ul>
                             </div>
                         </dd>
                     </dl>
@@ -75,11 +28,11 @@
                         <dt>이벤트 등급</dt>
                         <dd>
 							<span>
-								<input type="checkbox" id="urgent" name="">
+								<input type="checkbox" id="urgent" name="eventGrade" value="1">
 								<label for="urgent"><span></span>긴급</label>
 							</span>
                             <span>
-								<input type="checkbox" id="caution" name="">
+								<input type="checkbox" id="caution" name="eventGrade" value="2">
 								<label for="caution"><span></span>주의</label>
 							</span>
                         </dd>
@@ -88,16 +41,16 @@
                         <dt>처리 상태</dt>
                         <dd>
 							<span>
-								<input type="checkbox" id="staus01" name="">
-								<label for="staus01"><span></span>미처리</label>
+								<input type="checkbox" id="staus00" name="eventState" value="0" multiple="multiple">
+								<label for="staus00"><span></span>미처리</label>
 							</span>
                             <span>
-								<input type="checkbox" id="staus02" name="">
-								<label for="staus02"><span></span>조치완료</label>
+								<input type="checkbox" id="staus01" name="eventState" value="1" multiple="multiple">
+								<label for="staus01"><span></span>조치완료</label>
 							</span>
                             <span>
-								<input type="checkbox" id="staus03" name="">
-								<label for="staus03"><span></span>종료</label>
+								<input type="checkbox" id="staus02" name="eventState" value="2" multiple="multiple">
+								<label for="staus02"><span></span>종료</label>
 							</span>
                         </dd>
                     </dl>
@@ -108,112 +61,15 @@
                         <dd>
                             <div class="dropdown_checkbox" data-selectbox-type="district">
                                 <p class="checkbox_title checkbox_title_district select" data-placeholder="행정구역 선택">행정구역 선택</p>
-                                <ul class="checkbox_list checkbox_list_district list">
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtALL" name="checkAll">
-                                            <label for="districtALL"><span></span>전체</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtFind01" name="">
-                                            <label for="districtFind01"><span></span>광명1동</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="districtFind02" name="">
-                                            <label for="districtFind02"><span></span>광명2동</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtFind03" name="">
-                                            <label for="districtFind03"><span></span>광명3동</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="districtFind04" name="">
-                                            <label for="districtFind04"><span></span>광명4동</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtFind05" name="">
-                                            <label for="districtFind05"><span></span>광명5동</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="districtFind06" name="">
-                                            <label for="districtFind06"><span></span>광명6동</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtFind07" name="">
-                                            <label for="districtFind07"><span></span>광명7동</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="districtFind08" name="">
-                                            <label for="districtFind08"><span></span>소하1동</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtFind09" name="">
-                                            <label for="districtFind09"><span></span>소하2동</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="districtFind10" name="">
-                                            <label for="districtFind10"><span></span>철산1동</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtFind11" name="">
-                                            <label for="districtFind11"><span></span>철산2동</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="districtFind12" name="">
-                                            <label for="districtFind12"><span></span>철산3동</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtFind13" name="">
-                                            <label for="districtFind13"><span></span>철산4동</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="districtFind14" name="">
-                                            <label for="districtFind14"><span></span>하안1동</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtFind15" name="">
-                                            <label for="districtFind15"><span></span>하안2동</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="districtFind16" name="">
-                                            <label for="districtFind16"><span></span>하안3동</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-                                            <input type="checkbox" id="districtFind17" name="">
-                                            <label for="districtFind17"><span></span>하안4동</label>
-                                        </span>
-                                        <span>
-                                            <input type="checkbox" id="districtFind18" name="">
-                                            <label for="districtFind18"><span></span>학온동</label>
-                                        </span>
-                                    </li>
-                                </ul>
+                                <ul class="checkbox_list checkbox_list_district list"></ul>
                             </div>
                         </dd>
                     </dl>
                     <dl class="date_set">
                         <dt>발생 기간</dt>
-                        <dd><input type="text" id="startDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
+                        <dd><input type="text" id="startDt" placeholder="날짜를 입력하세요" name="startDt" class="input_date"></dd>
                         <span>부터</span>
-                        <dd><input type="text" id="endDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
+                        <dd><input type="text" id="endDt" placeholder="날짜를 입력하세요" name="endDt" class="input_date"></dd>
                         <span>까지</span>
                     </dl>
                     <dl class="search_text_set">
@@ -279,7 +135,7 @@
                                     <dt>이벤트 종류</dt>
                                     <dd><input type="text" id="eventKind" disabled></dd>
                                     <dt>처리 상태</dt>
-                                    <dd><input type="text" disabled></dd>
+                                    <dd><input type="text" id="eventState" disabled></dd>
                                 </dl>
                             </form>
                         </fieldset>

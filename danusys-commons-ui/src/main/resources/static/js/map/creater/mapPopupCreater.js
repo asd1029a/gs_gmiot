@@ -35,15 +35,19 @@ class mapPopup {
         });
 
         popupElement.innerHTML =
-            "<a id="+ id +"Closer class='my-ol-popup-closer'></a>"
-            + "<div id="+ id +"Content></div>"
+            "<i id="+ id +"Closer class='my-ol-popup-closer'>" +
+                "<img src='/images/default/close.svg'>" +
+            "</i>"
+            + "<div id="+ id +"Content class='popup_mini'></div>"
         ;
 
         this.map.addOverlay(popup);
         popup.setPosition(undefined);
 
+        //POPUP CLOSE BUTTON
         $(".my-ol-popup-closer").on('click', e => {
-            //this.remove(id);
+            const targetId = $(e.currentTarget).parents('.my-ol-popup').attr('id');
+            this.remove(targetId);
             //this.map.getInteractions().forEach( e => {} );
         });
     }

@@ -85,16 +85,16 @@ const facility = {
             pCallback(result);
         });
     }
-    // , getListGeoJson : (param, pCallback) => {
-    //     $.ajax({
-    //         url : "/facility/geojson"
-    //         , type : "POST"
-    //         , data : JSON.stringify(param)
-    //         , contentType : "application/json; charset=utf-8"
-    //     }).done((result) => {
-    //         pCallback(result);
-    //     });
-    // }
+    , getListGeoJson : (param, pCallback) => {
+        $.ajax({
+            url : "/facility/geojson"
+            , type : "POST"
+            , data : JSON.stringify(param)
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
+            pCallback(result);
+        });
+    }
     , get : (pSeq, pCallback) => {
         $.ajax({
             url : "/facility/" + pSeq

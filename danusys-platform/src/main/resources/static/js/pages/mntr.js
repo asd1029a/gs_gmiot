@@ -55,36 +55,40 @@ const mntr = {
 
         //개소 레이어
         station.getListGeoJson({} ,(result) => {
-            let dataLy = new dataLayer('map');
-            let stationLayer = dataLy.fromGeoJSon(result, 'stationLayer', true, layerStyle.station());
+            console.log(result);
+            let stationLayer = new dataLayer('map')
+                .fromGeoJSon(result, 'stationLayer', true, layerStyle.station());
             map.addLayer(stationLayer);
 
-            //열지도 test
-            const heat = new ol.layer.Heatmap({
-                source: new ol.source.Vector({
-                    features: new ol.format.GeoJSON().readFeatures(result, {
-                        dataProjection: "EPSG:4326"
-                        , featureProjection: "EPSG:5181"
-                    })
-                }),
-                blur: 15,
-                radius: 8,
-                weight: function (feature) {
-                    //var magnitude = parseFloat(feature.get('magnitude'));
-                    //return magnitude - 5;
-                    return 0.4;
-                },
-            });
-
-            window.map.addLayer(heat);
+            // //열지도 test
+            // const heat = new ol.layer.Heatmap({
+            //     source: new ol.source.Vector({
+            //         features: new ol.format.GeoJSON().readFeatures(result, {
+            //             dataProjection: "EPSG:4326"
+            //             , featureProjection: "EPSG:5181"
+            //         })
+            //     }),
+            //     blur: 15,
+            //     radius: 8,
+            //     weight: function (feature) {
+            //         //var magnitude = parseFloat(feature.get('magnitude'));
+            //         //return magnitude - 5;
+            //         return 0.4;
+            //     },
+            // });
+            //
+            // window.map.addLayer(heat);
         });
 
-        // facility.getList({}, (result) => {
-        //     console.log(result);
+        // facility.getListGeoJson({}, (result) => {
+        //    // console.log(result);
+        //     let facilityLayer = new dataLayer('map')
+        //         .fromGeoJSon(result,'facilityLayer', true, layerStyle.facility());
+        //     map.addLayer(facilityLayer);
         // });
-        //
+
         event.getListGeoJson({}, (result) => {
-            console.log(result);
+           // console.log(result);
         });
 
     },

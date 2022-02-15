@@ -16,7 +16,7 @@ public class FacilitySqlProvider {
         SQL sql = new SQL() {{
             SELECT("*, '' as station_kind, '' as station_name, '' as address");
             FROM("t_facility t1");
-            INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
+            //INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
             if(keyword != null && !keyword.equals("")) {
                 WHERE("facility_kind LIKE" + keyword);
             }

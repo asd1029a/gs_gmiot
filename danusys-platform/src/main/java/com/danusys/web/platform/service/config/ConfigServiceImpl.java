@@ -27,13 +27,7 @@ public class ConfigServiceImpl implements ConfigService {
             return PagingUtil.createPagingMap(paramMap, pagingMap);
         } else {
             EgovMap resultMap = new EgovMap();
-            switch (paramMap.get("type").toString()) {
-                case "stationKind" : resultMap.put("data", commonMapper.selectList(csp.selectListViewStationQry(paramMap))); break;
-                case "district" : resultMap.put("data", commonMapper.selectList(csp.selectListViewDistrictQry(paramMap))); break;
-                case "facilityKind" : resultMap.put("data", commonMapper.selectList(csp.selectListViewKindQry(paramMap))); break;
-                case "eventKind" : resultMap.put("data", commonMapper.selectList(csp.selectListViewProblemQry(paramMap))); break;
-                default : resultMap.put("data", commonMapper.selectList(csp.selectListCodeQry(paramMap))); break;
-            }
+            resultMap.put("data", commonMapper.selectList(csp.selectListTypeQry(paramMap)));
             return resultMap;
         }
     }
