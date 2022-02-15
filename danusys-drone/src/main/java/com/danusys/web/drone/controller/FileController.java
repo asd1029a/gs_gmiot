@@ -10,10 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -25,6 +22,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -45,6 +43,8 @@ public class FileController {
 
     @Value("#{'${danusys.file.extension}'.split(',')}")
     private String[] extensionList;
+
+    private static final String EXTERNAL_FILE_PATH = "D:/test/";
 
     @Autowired
     public FileController(FileService fileService) {
@@ -724,10 +724,11 @@ public class FileController {
 //    }
     @ResponseBody
     @PostMapping("/file/upload")
-    public void uploadAjaxPost(MultipartFile[] uploadFile, String sPath, String folderPath) {
+    public ResponseEntity<?> uploadAjaxPost(MultipartFile[] uploadFile, String sPath, String folderPath) {
 
-
+        log.info("sPath={},folderPath={}",sPath,folderPath);
         File uploadPath = new File(sPath, folderPath);
+        String filePath = null;
         log.info("upload path : " + uploadPath);
 
         if (uploadPath.exists() == false) {
@@ -738,19 +739,19 @@ public class FileController {
 
             log.info("Upload File Name : " + multipartFile.getOriginalFilename());
             log.info("Upload File Size : " + multipartFile.getSize());
-
+            filePath = multipartFile.getOriginalFilename();
             String uploadFileName = multipartFile.getOriginalFilename();
 
             uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
             log.info("only file name: " + uploadFileName);
 
 
-            for(String extension : extensionList){
-                if(uploadFileName.contains(extension))
-                    return ;
+            for (String extension : extensionList) {
+                if (uploadFileName.contains(extension))
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("extension Error");
             }
 
-            log.info("여기오나요?");
+
             File savefile = new File(uploadPath, uploadFileName);
 
             try {
@@ -759,9 +760,54 @@ public class FileController {
                 e.printStackTrace();
             }
         }
+        return ResponseEntity.status(HttpStatus.OK).body(filePath);
     }
 
-//    private String getFolder(){
+    @ResponseBody
+    @RequestMapping("/file/{fileName:.+}")
+    public void downloadPDFResource(HttpServletRequest request, HttpServletResponse response,
+                                    @PathVariable("fileName") String fileName) throws IOException {
+
+        File file = new File(EXTERNAL_FILE_PATH + fileName);
+        if (file.exists()) {
+
+            //get the mimetype
+            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+            if (mimeType == null) {
+                //unknown mimetype so set the mimetype to application/octet-stream
+                mimeType = "application/octet-stream";
+            }
+
+            response.setContentType(mimeType);
+            //response.setContentType("application/download; UTF-8");
+            /**
+             * In a regular HTTP response, the Content-Disposition response header is a
+             * header indicating if the content is expected to be displayed inline in the
+             * browser, that is, as a Web page or as part of a Web page, or as an
+             * attachment, that is downloaded and saved locally.
+             *
+             */
+
+            /**
+             * Here we have mentioned it to show inline
+             */
+//            response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+
+            String fileNameOrg = file.getName();
+            log.info("file.getName()={}", file.getName());
+            fileNameOrg = new String(fileNameOrg.getBytes("UTF-8"), "ISO-8859-1");
+            response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + fileNameOrg + "\""));
+
+            response.setContentLength((int) file.length());
+
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+            FileCopyUtils.copy(inputStream, response.getOutputStream());
+
+        }
+    }
+
+    //    private String getFolder(){
 //        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-mm-dd");
 //        Date date= new Date();
 //        String str =sdf.format(date);
@@ -769,4 +815,11 @@ public class FileController {
 //    }
 
 
+    @GetMapping(value = "/image/{imagename:.+}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> userSearch(@PathVariable("imagename") String imagename) throws IOException {
+        InputStream imageStream = new FileInputStream(EXTERNAL_FILE_PATH + imagename);
+        byte[] imageByteArray = IOUtils.toByteArray(imageStream);
+        imageStream.close();
+        return new ResponseEntity<byte[]>(imageByteArray, HttpStatus.OK);
+    }
 }

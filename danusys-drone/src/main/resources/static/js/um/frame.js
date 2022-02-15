@@ -187,7 +187,7 @@ $(".delete_drone_detail_button").on("click", function () {
 });
 
 function getListMission() {
-    let param = {"name": "" , "droneId":""};
+    let param = {"name": "", "droneId": ""};
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: "/drone/api/mission",
@@ -203,7 +203,36 @@ function getListMission() {
             });
 
         }
-     });
+    });
 }
+
+
+$("#file").on("change", function () {
+
+    let formData=new FormData();
+    formData.append('uploadFile',$('#file')[0].files[0]);
+    formData.append('sPath',"d:\\te3/123/q");
+    formData.append("folderPath","123123123");
+    console.log(formData);
+    // let param={"uploadFile":formData,
+    //             "sPath":"d:\\te3/123/q",
+    //             "folderPath":"123123123"}
+
+    $.ajax({
+       url:"/file/upload",
+        type:"POST",
+        data:formData,
+        processData:false,
+        contentType:false,
+        enctype:"multipart/form-data",
+        success:function (resultData){
+           console.log(resultData);
+        }
+    })
+
+
+});
+
+
 
 
