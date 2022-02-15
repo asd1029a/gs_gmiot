@@ -10,10 +10,14 @@ import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
 import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.service.event.EventServiceImpl;
 import com.danusys.web.platform.service.notice.NoticeService;
 import com.danusys.web.platform.service.notice.NoticeServiceImpl;
+import com.danusys.web.platform.util.Paging;
 import com.danusys.web.platform.util.PagingUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,6 +30,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -217,4 +222,27 @@ public class UserService2 {
     public int getUserSize() {
         return userRepository.findAll().size();
     }
+
+//
+//    public com.danusys.web.platform.model.paging.Page<List<Map<String, Object>>> getLists(PagingRequest pagingRequest) {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//
+//
+////            List<Map<String, Object>> lists = objectMapper
+////                    .readValue(getClass().getClassLoader().getResourceAsStream("notice.json"),
+////                            new TypeReference<List<Map<String, Object>>>() {});
+//
+////            Map<String, Object> lists=  userRepository.findByUserId("asd").stream().collect(Collectors.toMap(
+////                    User::getUserId,User::getUserSeq,(oldValue,newValue) ->{
+////                            log.info("oldValue:{} new VAlue: {}", oldValue,newValue);
+////                            return oldValue;
+////                    })
+////            );
+//            List<Map<String,Object>> lists =userRepository.findAllByAddressLike("%"+"독"+"%");
+//
+//            return Paging.getPage(lists, pagingRequest);
+//
+//
+//        //return new com.danusys.web.platform.model.paging.Page<>();
+//    }
 }
