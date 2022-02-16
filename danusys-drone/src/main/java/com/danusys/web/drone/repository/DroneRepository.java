@@ -20,4 +20,6 @@ public interface DroneRepository extends CrudRepository<Drone,Long> {
     List<Drone> findAllByDroneDeviceNameLike(String droneDeviceName, Sort sort);
 
     Drone findByDroneDeviceName(String droneDeviceName);
+
+    List<Drone> findAllByIdNot(long id);
 }

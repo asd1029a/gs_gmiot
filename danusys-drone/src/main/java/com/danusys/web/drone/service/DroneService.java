@@ -108,4 +108,9 @@ public class DroneService {
             return null;
         return  optionalDrone.get();
     }
+
+    public List<Drone> findAllDrone(){
+        return droneRepository.findAllByIdNot(0l);
+    }
+
 }
