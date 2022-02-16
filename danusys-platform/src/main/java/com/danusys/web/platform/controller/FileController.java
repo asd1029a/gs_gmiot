@@ -42,8 +42,8 @@ public class FileController {
 
 	@Value("#{'${danusys.file.extension}'.split(',')}")
 	private String[] extensionList;
-
-	private static final String EXTERNAL_FILE_PATH = "D:/test/";
+	@Value("${danusys.path.root}")
+	private  String EXTERNAL_FILE_PATH = "D:/test/";
 
 	@Autowired
 	public FileController(FileService fileService) {
@@ -814,8 +814,9 @@ public class FileController {
 //    }
 
 
-	@GetMapping(value = "/image/{imagename:.+}", produces = MediaType.IMAGE_PNG_VALUE)
-	public ResponseEntity<byte[]> userSearch(@PathVariable("imagename") String imagename) throws IOException {
+	@GetMapping(value = "/image/{imagename:.+}", produces = MediaType.IMAGE_PNG_VALUE )
+	public ResponseEntity<byte[]> userSearch(@PathVariable("imagename") String imagename,HttpServletRequest request) throws IOException {
+
 		InputStream imageStream = new FileInputStream(EXTERNAL_FILE_PATH + imagename);
 		byte[] imageByteArray = IOUtils.toByteArray(imageStream);
 		imageStream.close();

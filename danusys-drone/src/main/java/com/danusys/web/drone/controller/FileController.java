@@ -728,55 +728,13 @@ public class FileController {
     public String fileUpload(MultipartFile[] uploadFile, HttpServletRequest request) {
 
         String folderPath=request.getRequestURI();
-        log.info(FileUtil.uploadAjaxPost(uploadFile,folderPath));
+     //   log.info(FileUtil.uploadAjaxPost(uploadFile,folderPath));
 
 
         return null;
     }
 
-    @ResponseBody
-    @RequestMapping("/file/{fileName:.+}")
-    public void downloadPDFResource(HttpServletRequest request, HttpServletResponse response,
-                                    @PathVariable("fileName") String fileName) throws IOException {
 
-        File file = new File(EXTERNAL_FILE_PATH + fileName);
-        if (file.exists()) {
-
-            //get the mimetype
-            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-            if (mimeType == null) {
-                //unknown mimetype so set the mimetype to application/octet-stream
-                mimeType = "application/octet-stream";
-            }
-
-            response.setContentType(mimeType);
-            //response.setContentType("application/download; UTF-8");
-            /**
-             * In a regular HTTP response, the Content-Disposition response header is a
-             * header indicating if the content is expected to be displayed inline in the
-             * browser, that is, as a Web page or as part of a Web page, or as an
-             * attachment, that is downloaded and saved locally.
-             *
-             */
-
-            /**
-             * Here we have mentioned it to show inline
-             */
-//            response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
-
-            String fileNameOrg = file.getName();
-            log.info("file.getName()={}", file.getName());
-            fileNameOrg = new String(fileNameOrg.getBytes("UTF-8"), "ISO-8859-1");
-            response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + fileNameOrg + "\""));
-
-            response.setContentLength((int) file.length());
-
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-
-            FileCopyUtils.copy(inputStream, response.getOutputStream());
-
-        }
-    }
 
     private String getFolder() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -787,11 +745,5 @@ public class FileController {
     }
 
 
-    @GetMapping(value = "/image/{imagename:.+}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> userSearch(@PathVariable("imagename") String imagename) throws IOException {
-        InputStream imageStream = new FileInputStream(EXTERNAL_FILE_PATH + imagename);
-        byte[] imageByteArray = IOUtils.toByteArray(imageStream);
-        imageStream.close();
-        return new ResponseEntity<byte[]>(imageByteArray, HttpStatus.OK);
-    }
+
 }

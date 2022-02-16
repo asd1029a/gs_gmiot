@@ -142,7 +142,7 @@ function getDroneDetails(id) {
             $(".drone_sim_number").val(droneDetails.simNumber);
             $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
             $(".uploadName").val(droneDetails.thumbnailImg);
-            // $(".picture").attr("img",src:/image/)
+            $(".picture img").attr("src","/file/image/"+droneDetails.thumbnailImg);
 
         }
     });
@@ -239,6 +239,7 @@ $("#file").on("change", function () {
 
 
 });
+
 
 
 
