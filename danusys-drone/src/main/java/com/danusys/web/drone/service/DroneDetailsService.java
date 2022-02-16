@@ -35,11 +35,11 @@ public class DroneDetailsService {
     public DroneDetails findDroneDetails(Long droneId) {
 
 
-        Drone setDrone= new Drone();
+        Drone setDrone = new Drone();
         setDrone.setId(droneId);
-        DroneDetails droneDetails= droneDetailsRepository.findByDrone(setDrone);
+        DroneDetails droneDetails = droneDetailsRepository.findByDrone(setDrone);
 
-        log.info("log={}",droneDetails.getId());
+       // log.info("droneDetailsId={}", droneDetails.getId());
         return droneDetails;
     }
 
@@ -89,6 +89,9 @@ public class DroneDetailsService {
         }
         if (droneDetails.getManufacturer() != null) {
             updateDroneDetails.setManufacturer(droneDetails.getManufacturer());
+        }
+        if (droneDetails.getThumbnailImg() != null) {
+            updateDroneDetails.setThumbnailImg(droneDetails.getThumbnailImg());
         }
 
 

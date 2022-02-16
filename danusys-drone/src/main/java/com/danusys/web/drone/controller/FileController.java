@@ -1,6 +1,7 @@
 package com.danusys.web.drone.controller;
 
 import com.danusys.web.commons.util.CommonUtil;
+import com.danusys.web.commons.util.FileUtil;
 import com.danusys.web.commons.util.JsonUtil;
 import com.danusys.web.drone.service.FileService;
 
@@ -43,8 +44,8 @@ public class FileController {
 
     @Value("#{'${danusys.file.extension}'.split(',')}")
     private String[] extensionList;
-
-    private static final String EXTERNAL_FILE_PATH = "D:/test/";
+    @Value("${danusys.path.root}")
+    private String EXTERNAL_FILE_PATH = "";
 
     @Autowired
     public FileController(FileService fileService) {
@@ -723,44 +724,14 @@ public class FileController {
 //        out.write(String.valueOf(flag));
 //    }
     @ResponseBody
-    @PostMapping("/file/upload")
-    public ResponseEntity<?> uploadAjaxPost(MultipartFile[] uploadFile, String sPath, String folderPath) {
+    @PostMapping(value = "/file/upload", produces = "application/json;charset=UTF-8")
+    public String fileUpload(MultipartFile[] uploadFile, HttpServletRequest request) {
 
-        log.info("sPath={},folderPath={}",sPath,folderPath);
-        File uploadPath = new File(sPath, folderPath);
-        String filePath = null;
-        log.info("upload path : " + uploadPath);
-
-        if (uploadPath.exists() == false) {
-            uploadPath.mkdirs();
-        }
-
-        for (MultipartFile multipartFile : uploadFile) {
-
-            log.info("Upload File Name : " + multipartFile.getOriginalFilename());
-            log.info("Upload File Size : " + multipartFile.getSize());
-            filePath = multipartFile.getOriginalFilename();
-            String uploadFileName = multipartFile.getOriginalFilename();
-
-            uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
-            log.info("only file name: " + uploadFileName);
+        String folderPath=request.getRequestURI();
+        log.info(FileUtil.uploadAjaxPost(uploadFile,folderPath));
 
 
-            for (String extension : extensionList) {
-                if (uploadFileName.contains(extension))
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("extension Error");
-            }
-
-
-            File savefile = new File(uploadPath, uploadFileName);
-
-            try {
-                multipartFile.transferTo(savefile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(filePath);
+        return null;
     }
 
     @ResponseBody
@@ -807,12 +778,13 @@ public class FileController {
         }
     }
 
-    //    private String getFolder(){
-//        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-mm-dd");
-//        Date date= new Date();
-//        String str =sdf.format(date);
-//        return str.replace("-",File.separator);
-//    }
+    private String getFolder() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        Date date = new Date();
+        String str = sdf.format(date);
+//        return str.replace("-","_");
+        return str + "_";
+    }
 
 
     @GetMapping(value = "/image/{imagename:.+}", produces = MediaType.IMAGE_PNG_VALUE)

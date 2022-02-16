@@ -4,7 +4,9 @@ package com.danusys.web.drone.service;
 import com.danusys.web.drone.dto.response.MissionDetailResponse;
 import com.danusys.web.drone.dto.response.MissionResponse;
 import com.danusys.web.drone.model.Drone;
+import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.model.Mission;
+import com.danusys.web.drone.repository.DroneDetailsRepository;
 import com.danusys.web.drone.repository.MissionDetailsRepository;
 import com.danusys.web.drone.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class MissionService {
 
     private final MissionRepository missionRepository;
     private final MissionDetailsRepository missionDetailsRepository;
+    private final DroneDetailsRepository droneDetailsRepository;
     private String returnType;
     private List<Mission> missionList = null;
 

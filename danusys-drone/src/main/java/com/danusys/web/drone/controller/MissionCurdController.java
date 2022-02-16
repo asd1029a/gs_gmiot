@@ -1,8 +1,11 @@
 package com.danusys.web.drone.controller;
 
 
+import com.danusys.web.drone.dto.response.DroneMissionDetailsResponse;
+import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.Mission;
 import com.danusys.web.drone.model.MissionDetails;
+import com.danusys.web.drone.service.DroneService;
 import com.danusys.web.drone.service.MissionDetailsService;
 import com.danusys.web.drone.service.MissionService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/drone/api")
@@ -24,6 +28,7 @@ public class MissionCurdController {
 
     private final MissionService missionService;
     private final MissionDetailsService missionDetailsService;
+    private final DroneService droneSerivce;
 
 
     @PutMapping("/missiondetails")
@@ -138,7 +143,15 @@ public class MissionCurdController {
 
 
 
+    @PostMapping("/dronemissiondetails")
+    public ResponseEntity<?> getListDroneMissionDetails(){
+        List<Drone> droneList=droneSerivce.findAllDrone();
 
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(droneList.stream().map(DroneMissionDetailsResponse::new).collect(Collectors.toList()));
+    }
 
 }
 
