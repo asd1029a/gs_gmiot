@@ -1,6 +1,7 @@
 package com.danusys.web.drone.dto.response;
 
 import com.danusys.web.drone.model.Drone;
+import com.danusys.web.drone.model.DroneBase;
 import com.danusys.web.drone.model.Mission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class DroneMissionDetailsResponse {
     private Long id;
     private String droneDeviceName;
     private Mission mission;
-
+    private String droneBase;
 
     //private List<MissionDetailResponse> missionDetailResponseList;
 
@@ -29,6 +30,7 @@ public class DroneMissionDetailsResponse {
         this.id = drone.getId();
         this.droneDeviceName=drone.getDroneDeviceName();
         this.mission=drone.getMission();
+        this.droneBase=drone.getDroneBase().getBaseName();
         //this.missionDetailResponseList= mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
 

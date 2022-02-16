@@ -14,11 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.util.UrlPathHelper;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLConnection;
 
@@ -36,6 +39,19 @@ public class DroneFileController {
     public ResponseEntity<?> fileUpload(MultipartFile[] uploadFile, HttpServletRequest request, long droneId) {
         log.info("droneId={}", droneId);
 
+
+//        for (MultipartFile multipartFile : uploadFile) {
+//            BufferedImage image = null;
+//            try {
+//                image = ImageIO.read(multipartFile.getInputStream());
+//                Integer width = image.getWidth();
+//                Integer height = image.getHeight();
+//                log.info("width={},height={}", width, height);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
 
 
         if (droneId == 0) {
@@ -70,9 +86,9 @@ public class DroneFileController {
     public void downloadPDFResource(HttpServletRequest request, HttpServletResponse response,
                                     @PathVariable("fileName") String fileName) throws IOException {
 
-        FileUtil.fileDownload(request,response,fileName);
+        FileUtil.fileDownload(request, response, fileName);
 
-        }
     }
+}
 
 

@@ -142,7 +142,7 @@ function getDroneDetails(id) {
             $(".drone_sim_number").val(droneDetails.simNumber);
             $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
             $(".uploadName").val(droneDetails.thumbnailImg);
-            $(".picture img").attr("src","/file/image/"+droneDetails.thumbnailImg);
+            $(".picture img").attr("src", "/file/image/" + droneDetails.thumbnailImg);
 
         }
     });
@@ -213,6 +213,7 @@ $("#file").on("change", function () {
 
     let formData = new FormData();
     formData.append('uploadFile', $('#file')[0].files[0]);
+    imgCheck($('#file')[0].files[0]);
     let droneId = 0;
     if ($(".drone_id").val() != "")
         droneId = $(".drone_id").val();
@@ -239,6 +240,12 @@ $("#file").on("change", function () {
 
 
 });
+
+
+function imgCheck(img){
+    alert(img.clientWidth);
+}
+
 
 
 
