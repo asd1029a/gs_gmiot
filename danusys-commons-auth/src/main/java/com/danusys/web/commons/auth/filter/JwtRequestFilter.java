@@ -57,75 +57,80 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-     //   log.info("oncefilter");
-        String authorizationHeader = request.getHeader("Authorization");
-        String refreshToken = request.getHeader("RefreshHeader");
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
+        final String uri = request.getRequestURI();
 
-                if (cookie.getName().equals("accessToken")) {
-                    authorizationHeader = "Bearer " + cookie.getValue();
+//        log.info("request.getRequestURI() : {}", request.getRequestURI());
 
-                    //  log.info("cookie.getValue()={}", authorizationHeader.substring(7));
+        if (uri.contains("/t1-daumcdn-net/") || uri.contains("/webjar/")) {
+        } else {
+            //   log.info("oncefilter");
+            String authorizationHeader = request.getHeader("Authorization");
+            String refreshToken = request.getHeader("RefreshHeader");
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+
+                    if (cookie.getName().equals("accessToken")) {
+                        authorizationHeader = "Bearer " + cookie.getValue();
+
+                        //  log.info("cookie.getValue()={}", authorizationHeader.substring(7));
+                    }
+
+
+                }
+            }
+
+
+            String username = null;
+            String jwt = null;
+
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+
+                jwt = authorizationHeader.substring(7); //beaer 뒤에 붙은것들
+
+                try {
+                    username = jwtUtil.extractUsername(jwt); //extractUsername에서 유효기간이 지났다면 exception 발생
+                } catch (ExpiredJwtException e) {
+                    //   log.info("Error");
+
+                    request.setAttribute("exception", "ExpiredJwtException");
+
+
+                } catch (JwtException e) {
+                    //          log.info("Error2");
+                    e.printStackTrace();
+
+                    request.setAttribute("exception", "JwtException");
                 }
 
-
             }
-        }
-
-
-        String username = null;
-        String jwt = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-
-            jwt = authorizationHeader.substring(7); //beaer 뒤에 붙은것들
-
-            try {
-                username = jwtUtil.extractUsername(jwt); //extractUsername에서 유효기간이 지났다면 exception 발생
-            } catch (ExpiredJwtException e) {
-             //   log.info("Error");
-
-                request.setAttribute("exception", "ExpiredJwtException");
-
-
-
-            } catch (JwtException e) {
-      //          log.info("Error2");
-                e.printStackTrace();
-
-                request.setAttribute("exception", "JwtException");
-            }
-
-        }
 
 //  1.AccessToken 유효성 체크
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            //2.토큰 사용자 조회
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                //2.토큰 사용자 조회
 
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-      //      log.info("userDetails={}", userDetails);
-      //      log.info("2");
-
-
-            if (jwtUtil.validateToken(jwt, userDetails)) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                //      log.info("userDetails={}", userDetails);
+                //      log.info("2");
 
 
-                //userDetails.getAuthorities().forEach(r-> log.info("test={}",r));
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                if (jwtUtil.validateToken(jwt, userDetails)) {
 
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
+                    //userDetails.getAuthorities().forEach(r-> log.info("test={}",r));
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+
+                    usernamePasswordAuthenticationToken
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
+                }
             }
+
+            chain.doFilter(request, response);
         }
-
-
-        chain.doFilter(request, response);
     }
 
 }

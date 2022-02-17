@@ -39,6 +39,14 @@ public class DroneLogController {
 
     }
 
+    @PostMapping("/dronelog")
+    public ResponseEntity<?> findAllDroneLog(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(droneLogService.findAllDroneLog());
+    }
+
+
 //
 //    @PostMapping("/logtest2")
 //    public ResponseEntity<?> logtest2() {

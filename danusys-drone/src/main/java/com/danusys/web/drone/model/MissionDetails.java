@@ -42,6 +42,8 @@ public class MissionDetails {
    //@JoinColumn(name ="mission_id")
 
     private int radius;
+    @Column(name="ko_name")
+    private String koName;
 
     @ManyToOne(fetch = FetchType.EAGER)     //마지막에수정됨
     @JoinColumn(name ="mission_id")

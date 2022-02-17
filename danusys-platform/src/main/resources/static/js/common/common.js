@@ -24,7 +24,16 @@ $.fn.extend({
                 var arr = this.serializeArray();
                 if (arr) {
                     jQuery.each(arr, function() {
-                        obj[this.name] = this.value;
+                        if (this.value !== "all"){
+                            if (obj[this.name]){
+                                let val = stringFunc.changeXSSInputValue(this.value, 0);
+                                Array.isArray(obj[this.name])
+                                    ? obj[this.name].push(val)
+                                    : obj[this.name] = Array.of(obj[this.name], val);
+                            }else{
+                                obj[this.name] = this.value;
+                            }
+                        }
                     });
                 }
                 $.each( this[0], function (idx, element ) {
@@ -202,6 +211,7 @@ $.fn.extend({
                 } else {
                     strValue = objValue[element.id];
                 }
+                strValue = stringFunc.changeXSSOutputValue(strValue);
                 if(strValue == undefined) { return; }
 
                 if(element.type == "checkbox") {
@@ -631,10 +641,11 @@ var comm = {
                 comm.createMultiSelectBox.prototype.$select.html(tData.codeName);
                 comm.createMultiSelectBox.prototype.$select.data("placeholder", tData.codeName);
 
+                let codeValue = stringFunc.camelize(tData.codeValue);
                 let listEle =
                     `<li>
                         <span>
-                            <input type="checkbox" id="${tData.codeSeq}All" name="checkAll">
+                            <input type="checkbox" class="checkAll" id="${tData.codeSeq}All" name="${codeValue}" value="all">
                             <label for="${tData.codeSeq}All"><span></span>전체</label>
                         </span>
                     </li>`;
@@ -642,7 +653,7 @@ var comm = {
                 data.forEach((item, idx) => {
                     let spanEle =
                         `<span>
-                            <input type="checkbox" id="${item.codeSeq}" name="" value="${item.codeValue}">
+                            <input type="checkbox" id="${item.codeSeq}" name="${codeValue}" value="${item.codeSeq}">
                             <label for="${item.codeSeq}"><span></span>${item.codeName}</label>
                         </span>`;
 
@@ -686,15 +697,15 @@ var comm = {
             let $targetSelect = $targetSelectBox.find(".select");
             let $targetListLi = $targetSelectBox.find("li> span");
 
-            if($targetInput.attr("name").indexOf("checkAll") > -1){
+            if($targetInput.hasClass("checkAll")){
                 selectStr = $targetInput.prop('checked') ? $target.text() : $targetSelect.data("placeholder");
                 $targetListLi.children("input[type=checkbox]").prop('checked', $targetInput.prop('checked'));
             }else{
                 let totalLen = $targetListLi.length - 1;
-                let checkedLen = $targetListLi.find("input[type=checkbox]:checked").not("[name=checkAll]").length;
+                let checkedLen = $targetListLi.find("input[type=checkbox]:checked").not(".checkAll").length;
 
                 if(totalLen !== checkedLen){
-                    $targetListLi.find("[name=checkAll]").prop("checked", false);
+                    $targetListLi.find(".checkAll").prop("checked", false);
                     if($($targetListLi).children("input[type=checkbox]:checked").length > 0){
                         for (let i = 0; i < $targetListLi.length; i++){
                             if($($targetListLi[i]).children("input[type=checkbox]").prop("checked")) selectStr += $($targetListLi[i]).text();
@@ -704,8 +715,8 @@ var comm = {
                     }
 
                 }else{
-                    $targetListLi.find("[name=checkAll]").prop("checked", true);
-                    selectStr = $targetListLi.find("[name=checkAll] + label").text();
+                    $targetListLi.find(".checkAll").prop("checked", true);
+                    selectStr = $targetListLi.find(".checkAll + label").text();
                 }
             }
             $targetSelect.text(selectStr);
@@ -907,6 +918,29 @@ var stringFunc = {
             return true;
         else
             return false;
+    },
+    changeXSSInputValue : (str, level) => {
+        let returnStr = "";
+        if(typeof(str) === "String") {
+            if(typeof level === "undefined" || level === 0) {
+                returnStr = str.replace(/&/gi, '&amp;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;').replace(/"/gi, '&quot;').replace(/'/gi, '&apos;');
+            } else if (typeof level !== "undefined" && level === 1) {
+                returnStr = str.replace(/\</g, "&lt;");
+                returnStr = str.replace(/\>/g, "&gt;");
+            }
+        }else{
+            returnStr = str;
+        }
+        return returnStr;
+    },
+    changeXSSOutputValue : (str) => {
+        let returnStr = "";
+        if(typeof(str) === "String"){
+            returnStr = str.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&apos;/gi, '\'').replace(/&nbsp;/gi, ' ');
+        }else{
+            returnStr = str;
+        }
+        return returnStr;
     }
 }
 
@@ -932,26 +966,27 @@ var dateFunc = {
      * @param 이전날짜, 이후날짜
      * @returns EX) 201908191500
      */
-    getCurrentDateYyyyMmDdHh24Mi: function (d) {
-        var dateStr;
-        var year = dateFunc.getCurrentDate(d).getFullYear();
-        var month = dateFunc.getCurrentDate(d).getMonth() + 1;
-        var day = dateFunc.getCurrentDate(d).getDate();
-        var hour = dateFunc.getCurrentDate(d).getHours();
-        var min = dateFunc.getCurrentDate(d).getMinutes();
-        var sec = dateFunc.getCurrentDate(d).getSeconds();
+    getCurrentDateYyyyMmDdHh24Mi: function (d, dateSep, timeSep) {
+        const dateArr = [
+            dateFunc.getCurrentDate(d).getFullYear()
+            , this.getZeroString(dateFunc.getCurrentDate(d).getMonth() + 1)
+            , this.getZeroString(dateFunc.getCurrentDate(d).getDate())
+        ];
+        const timeArr = [
+            this.getZeroString(dateFunc.getCurrentDate(d).getHours())
+            , this.getZeroString(dateFunc.getCurrentDate(d).getMinutes())
+            , this.getZeroString(dateFunc.getCurrentDate(d).getSeconds())
+        ];
 
-        dateStr = year + this.getZeroString(month) + this.getZeroString(day) + this.getZeroString(hour) + this.getZeroString(min) + this.getZeroString(sec);
-        return dateStr;
+        return dateArr.join(dateSep) + " " + timeArr.join(timeSep);
     },
-    getCurrentDateYyyyMmDd: function (d) {
-        var dateStr;
-        var year = dateFunc.getCurrentDate(d).getFullYear();
-        var month = dateFunc.getCurrentDate(d).getMonth() + 1;
-        var day = dateFunc.getCurrentDate(d).getDate();
-
-        dateStr = year + "-" + (month > 9 ? '' : '0') + month + "-" + (day > 9 ? '' : '0') + day;
-        return dateStr;
+    getCurrentDateYyyyMmDd: function (d, sep) {
+        const dateArr = [
+            dateFunc.getCurrentDate(d).getFullYear()
+            , this.getZeroString(dateFunc.getCurrentDate(d).getMonth() + 1)
+            , this.getZeroString(dateFunc.getCurrentDate(d).getDate())
+        ];
+        return dateArr.join(sep);
     },
     /**
      * 날짜에 따른 한글 텍스트 출력

@@ -1,10 +1,12 @@
 package com.danusys.web.drone.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,8 +32,10 @@ public class DroneLog {
     @Column(name = "mission_name")
     private String missionName;
 
-
-    @OneToMany(mappedBy = "droneLog" ,fetch = FetchType.EAGER)
+    @Column(name = "insert_dt")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
+    private Timestamp insertDt;
+    @OneToMany(mappedBy = "droneLog", fetch = FetchType.EAGER)
     @JsonManagedReference
-    private final List<DroneLogDetails> droneLogDetails= new ArrayList<>();
+    private final List<DroneLogDetails> droneLogDetails = new ArrayList<>();
 }

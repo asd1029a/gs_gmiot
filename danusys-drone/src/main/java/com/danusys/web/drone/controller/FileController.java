@@ -1,6 +1,7 @@
 package com.danusys.web.drone.controller;
 
 import com.danusys.web.commons.util.CommonUtil;
+import com.danusys.web.commons.util.FileUtil;
 import com.danusys.web.commons.util.JsonUtil;
 import com.danusys.web.drone.service.FileService;
 
@@ -10,10 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -25,6 +23,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -45,6 +44,8 @@ public class FileController {
 
     @Value("#{'${danusys.file.extension}'.split(',')}")
     private String[] extensionList;
+    @Value("${danusys.path.root}")
+    private String EXTERNAL_FILE_PATH = "";
 
     @Autowired
     public FileController(FileService fileService) {
@@ -723,50 +724,26 @@ public class FileController {
 //        out.write(String.valueOf(flag));
 //    }
     @ResponseBody
-    @PostMapping("/file/upload")
-    public void uploadAjaxPost(MultipartFile[] uploadFile, String sPath, String folderPath) {
+    @PostMapping(value = "/file/upload", produces = "application/json;charset=UTF-8")
+    public String fileUpload(MultipartFile[] uploadFile, HttpServletRequest request) {
+
+        String folderPath=request.getRequestURI();
+     //   log.info(FileUtil.uploadAjaxPost(uploadFile,folderPath));
 
 
-        File uploadPath = new File(sPath, folderPath);
-        log.info("upload path : " + uploadPath);
-
-        if (uploadPath.exists() == false) {
-            uploadPath.mkdirs();
-        }
-
-        for (MultipartFile multipartFile : uploadFile) {
-
-            log.info("Upload File Name : " + multipartFile.getOriginalFilename());
-            log.info("Upload File Size : " + multipartFile.getSize());
-
-            String uploadFileName = multipartFile.getOriginalFilename();
-
-            uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
-            log.info("only file name: " + uploadFileName);
-
-
-            for(String extension : extensionList){
-                if(uploadFileName.contains(extension))
-                    return ;
-            }
-
-            log.info("여기오나요?");
-            File savefile = new File(uploadPath, uploadFileName);
-
-            try {
-                multipartFile.transferTo(savefile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        return null;
     }
 
-//    private String getFolder(){
-//        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-mm-dd");
-//        Date date= new Date();
-//        String str =sdf.format(date);
-//        return str.replace("-",File.separator);
-//    }
+
+
+    private String getFolder() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        Date date = new Date();
+        String str = sdf.format(date);
+//        return str.replace("-","_");
+        return str + "_";
+    }
+
 
 
 }

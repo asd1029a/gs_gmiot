@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserRepository extends JpaRepository<User,Long> , JpaSpecificationExecutor<User> {
 
@@ -32,4 +33,7 @@ public interface UserRepository extends JpaRepository<User,Long> , JpaSpecificat
     Page<User> findAll(Specification<User> spec,Pageable pageable);
     Page<User> findAllByUserNameLike(String userName,Pageable pageable);
     List<User> findAllByUserNameLike(String userName);
+
+
+
 }

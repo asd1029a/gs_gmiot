@@ -35,42 +35,16 @@ public class ConfigSqlProvider {
         return sql.toString();
     }
 
-    public String selectListViewStationQry(Map<String, Object> paramMap) {
+    public String selectListTypeQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
             SELECT("*");
-            FROM("v_facility_station");
-        }};
-        return sql.toString();
-    }
-
-    public String selectListViewDirectionQry(Map<String, Object> paramMap) {
-        SQL sql = new SQL() {{
-            SELECT("*");
-            FROM("v_facility_direction");
-        }};
-        return sql.toString();
-    }
-
-    public String selectListViewDistrictQry(Map<String, Object> paramMap) {
-        SQL sql = new SQL() {{
-            SELECT("*");
-            FROM("v_facility_district");
-        }};
-        return sql.toString();
-    }
-
-    public String selectListViewKindQry(Map<String, Object> paramMap) {
-        SQL sql = new SQL() {{
-            SELECT("*");
-            FROM("v_facility_kind");
-        }};
-        return sql.toString();
-    }
-
-    public String selectListViewProblemQry(Map<String, Object> paramMap) {
-        SQL sql = new SQL() {{
-            SELECT("*");
-            FROM("v_facility_problem");
+            switch (paramMap.get("type").toString()) {
+                case "stationKind" : FROM("v_facility_station"); break;
+                case "district" : FROM("v_facility_district"); break;
+                case "facilityKind" : FROM("v_facility_kind"); break;
+                case "eventKind" : FROM("v_facility_problem"); break;
+                default : FROM("t_common_code"); break;
+            }
         }};
         return sql.toString();
     }

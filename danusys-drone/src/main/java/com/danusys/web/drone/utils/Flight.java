@@ -62,7 +62,7 @@ public class Flight {
         Gson gson = new Gson();
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         droneLog = inputDroneLog;
-        gps.setMissionType("takeoff");
+        gps.setMissionType("takeOff");
         try {
 
             socket = new Socket(tcpServerHost, tcpServerPort);

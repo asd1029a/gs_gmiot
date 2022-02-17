@@ -89,7 +89,6 @@ const notice = {
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
                 if($(e.target).hasClass('button')) {
                     notice.showPopup('mod');
-                    $('#noticeForm').setItemValue(rowData);
                     notice.get(rowData.noticeSeq ,(result) => {
                         $form.data("noticeSeq", rowData.noticeSeq);
                         $form.setItemValue(result);

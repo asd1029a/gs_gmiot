@@ -17,7 +17,7 @@
         <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>
         <ul class="gnm">
             <li><a>Home</a></li>
-            <li><a>대시보드</a></li>
+            <li><a href="/file/20220216_161850_소프트웨어등록.PNG">대시보드</a></li>
             <li class="on"><a>드론</a></li>
             <li><a>미션</a></li>
             <li><a>비행</a></li>
@@ -150,7 +150,7 @@
                     <dd>
                         <div class="fileBox">
                             <input class="uploadName" value="첨부파일" placeholder="첨부파일">
-                            <label for="file">파일찾기</label> 
+                            <label class="upload_file"for="file">파일찾기</label>
                             <input type="file" id="file">
                         </div>
                     </dd>
@@ -351,9 +351,10 @@
             </section>
         </div>
     </div>
-</div>    
-    
+</div>
+
 <script type="text/javascript">
+
     $(function() {
         $(".lnbToggle").on("click", function() {
             $(".lnb").toggleClass("toggle");
@@ -374,17 +375,17 @@
             $('.camera ul').slideToggle('slow');
         })
     })
-        
-    
-    
-    
-    $(function(){        
+
+
+
+
+    $(function(){
         // 각각의 셀렉트 박스 인스턴스 생성
         var selectType01 = new CustomSelectBox('.selectBox.type01');
         var selectType01 = new CustomSelectBox('.selectBox.type02');
         var selectType01 = new CustomSelectBox('.selectBox.type03');
     });
-    
+
 //    selectbox custom
     function CustomSelectBox(selector){
         this.$selectBox = null,
@@ -432,17 +433,17 @@
         this.init(selector);
         this.initEvent();
     }
-    
-    
-    
-    $("#file").on('change',function(){
-        var fileName = $("#file").val();
-        $(".uploadName").val(fileName);
-    });
 
-    
+
+
+    // $("#file").on('change',function(){
+    //     var fileName = $("#file").val();
+    //     $(".uploadName").val(fileName);
+    // });
+
+
 </script>
-    
-    
+
+
 </body>
 </html>

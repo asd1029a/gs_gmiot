@@ -62,7 +62,7 @@ public class Join2Controller {
     public ModelAndView loginpage() {
 
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/view/login/test1");
+        mav.setViewName("/layout/layout_login");
 
         return mav;
     }

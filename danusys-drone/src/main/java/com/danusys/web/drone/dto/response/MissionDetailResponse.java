@@ -17,6 +17,7 @@ public class MissionDetailResponse {
     private int time;
     private double yaw;
     private int radius;
+    private String koName;
     public MissionDetailResponse(MissionDetails missonDetails){
         this.id = missonDetails.getId();
         this.name= missonDetails.getName() ;
@@ -28,6 +29,7 @@ public class MissionDetailResponse {
         this.time= missonDetails.getTime();
         this.yaw=missonDetails.getYaw();
         this.radius=missonDetails.getRadius();
+        this.koName=missonDetails.getKoName();
 
     }
 }

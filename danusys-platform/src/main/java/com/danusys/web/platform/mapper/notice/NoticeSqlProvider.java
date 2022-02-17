@@ -4,9 +4,7 @@ import com.danusys.web.commons.util.CommonUtil;
 import com.danusys.web.platform.util.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class NoticeSqlProvider {
     public String selectListQry(Map<String, Object> paramMap) {
@@ -23,9 +21,9 @@ public class NoticeSqlProvider {
             SELECT("t1.notice_seq" +
                             ", t1.notice_title" +
                             ", t1.notice_content" +
-                            ", TO_CHAR(t1.insert_dt, 'YYYY-DD-MM HH:MI:SS') AS insert_dt" +
+                            ", TO_CHAR(t1.insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
                             ", t2.user_id AS insert_user_id" +
-                            ", TO_CHAR(t1.update_dt, 'YYYY-DD-MM HH:MI:SS') AS update_dt" +
+                            ", TO_CHAR(t1.update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt" +
                             ", t3.user_id AS update_user_id" +
                             ", t1.notice_file");
             FROM("t_notice t1");
@@ -81,9 +79,9 @@ public class NoticeSqlProvider {
             SELECT("t1.notice_seq" +
                     ", t1.notice_title" +
                     ", t1.notice_content" +
-                    ", TO_CHAR(t1.insert_dt, 'YYYY-DD-MM HH:MI:SS') AS insert_dt" +
+                    ", TO_CHAR(t1.insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
                     ", t2.user_id AS insert_user_id" +
-                    ", TO_CHAR(t1.update_dt, 'YYYY-DD-MM HH:MI:SS') AS update_dt" +
+                    ", TO_CHAR(t1.update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt" +
                     ", t3.user_id AS update_user_id" +
                     ", t1.notice_file");
             FROM("t_notice t1");
@@ -105,6 +103,7 @@ public class NoticeSqlProvider {
     }
 
     public String updateQry(Map<String, Object> paramMap) {
+        System.out.println(paramMap);
         String noticeSeq = paramMap.get("noticeSeq").toString();
 
         SQL sql = new SQL() {{

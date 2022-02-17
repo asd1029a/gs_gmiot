@@ -112,16 +112,17 @@
 .article_title ul li i{width: 16px; height: 16px;}
 
 /* search_table */
-.search_table{overflow: auto; flex: 1; border-top: 2px solid #292c34; border-bottom: 2px solid #292c34;}
+.search_table{overflow: auto; flex: 1; border-top: 2px solid #292c34;}
 .search_table table{width: 100%;}
 .search_table table thead{}
+.search_table table thead th, .search_table table thead td{padding: 10px 18px; border-bottom: 2px solid #292c34;}
 .search_table table thead tr{height: 40px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
 .search_table table thead tr th{vertical-align: middle; font-size: 14px; color: #797d87; font-weight: bold;}
 .search_table table tbody{}
 .search_table table tbody tr{height: 50px; border-bottom: 1px solid #292c34; box-sizing: border-box; background-color: #1a1b1d;}
 .search_table table tbody tr:hover{background: #23252b;}
 .search_table table tbody tr:hover td span.button{background: #434751;}
-.search_table table tbody tr td{vertical-align: middle; text-align: center; font-size: 14px; color: #dee0e4;}
+.search_table table tbody tr td{vertical-align: middle; text-align: center; font-size: 14px; border-bottom: 1px solid #292c34; color: #dee0e4;}
 .search_table table tbody tr td i{margin: 0px auto; cursor: pointer;}
 .search_table table tbody tr td i img{max-width: 20px; max-height: 20px; margin: auto;}
 .search_table table tbody tr td i:hover{filter: brightness(1.75);}
@@ -133,26 +134,29 @@
 .search_table table tbody tr td span.status.green{background: #357d33;}
 .search_table table tbody tr td span.station_type{display: block; width: 36px; height: 36px; margin: auto;}
 .search_table table tbody tr td span.station_type img{width: 100%; height: 100%;}
-.table_bottom{display: flex; align-items: center; justify-content: center; height: 40px; margin: 14px 0px 0px;}
-.table_bottom .page_nav{flex: 1;  display: flex; align-items: center; justify-content: center; grid-gap: 10px;}
-.table_bottom .page_nav li{display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; line-height: 32px; text-align: center; font-size: 14px; color: #7f8491; border-radius: 100%; background: #292c34; cursor: pointer;}
-.table_bottom .page_nav li:hover{color: #dee0e4;}
-.table_bottom .page_nav li.on{color: #dee0e4; font-weight: bold; background: #3a66e5;}
-.table_bottom .page_nav li:active{color: #dee0e4; font-weight: bold; background: #3a66e5;}
-.table_bottom .page_nav li.prev,
-.table_bottom .page_nav li.next{background: none;}
-.table_bottom .page_nav li.prev i,
-.table_bottom .page_nav li.next i{max-width: 20px; max-height: 20px; margin: 0px auto;}
-.table_bottom .page_nav li.prev i img,
-.table_bottom .page_nav li.next i img{display: block; width: 20px; height: 20px; margin: 0px auto;}
-.table_bottom .page_nav li.prev:hover,
-.table_bottom .page_nav li.next:hover{filter: brightness(1.75);}
-.table_bottom .button{float: right; display: flex; align-items: center; grid-gap: 6px; height: 34px; line-height: 32px; padding: 0px 14px; color: #7f8491;}
-.table_bottom .button:hover{color: #dee0e4;}
+.search_table .table_body{height: 100%; overflow: auto; border-bottom: 2px solid #292c34;}
+.search_table .table_bottom{display: flex; align-items: center; justify-content: center; height: 40px; margin: 14px 0px 0px;}
+.search_table .table_bottom .page_nav{flex: 1;  display: flex; align-items: center; justify-content: center; grid-gap: 10px;}
+.search_table .table_bottom .page_nav li{display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; line-height: 32px; text-align: center; font-size: 14px; color: #7f8491; border-radius: 100%; background: #292c34; cursor: pointer;}
+.search_table .table_bottom .page_nav li:hover{color: #dee0e4;}
+.search_table .table_bottom .page_nav li.on{color: #dee0e4; font-weight: bold; background: #3a66e5;}
+.search_table .table_bottom .page_nav li:active{color: #dee0e4; font-weight: bold; background: #3a66e5;}
+.search_table .table_bottom .page_nav li.prev,
+.search_table .table_bottom .page_nav li.next{background: none;}
+.search_table .table_bottom .page_nav li.prev i,
+.search_table .table_bottom .page_nav li.next i{max-width: 20px; max-height: 20px; margin: 0px auto;}
+.search_table .table_bottom .page_nav li.prev i img,
+.search_table .table_bottom .page_nav li.next i img{display: block; width: 20px; height: 20px; margin: 0px auto;}
+.search_table .table_bottom .page_nav li.prev:hover,
+.search_table .table_bottom .page_nav li.next:hover{filter: brightness(1.75);}
+.search_table .table_bottom .button{float: right; display: flex; align-items: center; grid-gap: 6px; height: 34px; line-height: 32px; padding: 0px 14px; color: #7f8491;}
+.search_table .table_bottom .button:hover{color: #dee0e4;}
 
 /* table scroll head fix */
 .search_table .dataTables_wrapper .table_body {overflow: hidden;}
 .search_table .dataTables_wrapper .dataTables_scroll {height: 100%;}
+
+.search_table .dataTables_wrapper.no-footer .dataTables_scrollBody{border: none;}
 
 /* inquiry */
 .inquiry{display: flex; height: calc(100% - 60px);}
@@ -176,7 +180,7 @@
 
 /* dropdown_checkbox */
 .dropdown_checkbox{min-width: 220px; margin: 0px;}
-.checkbox_title{width: 100%; height: 34px; line-height: 32px; margin: 0px; padding: 0px 14px; color: #dee0e4; font-size: 14px; box-sizing: border-box; border: 1px solid #292c34; border-radius: 3px; background: url("../images/default/arrowSelectBox.svg") 194px center no-repeat #1a1b1d; background-size: 14px; cursor: pointer;}
+.checkbox_title{width: 15.7rem; height: 34px; line-height: 32px; margin: 0px; padding: 0px 14px; color: #dee0e4; font-size: 14px; box-sizing: border-box; border: 1px solid #292c34; border-radius: 3px; background: url("../images/default/arrowSelectBox.svg") 194px center no-repeat #1a1b1d; background-size: 14px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 2rem;}
 .checkbox_list{position: absolute; top: 34px; display: none; overflow: auto; width: 360px; min-height: 86px; max-height: 140px; z-index: 1; margin: -1px 0px 0px 0px; padding:10px 14px; box-sizing: border-box; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border: 1px solid #292c34; background: #1a1b1d;}
 .checkbox_list li{display: flex; align-items: center; justify-content: flex-start; grid-gap: 12px; line-height: 28px; padding: 4px 0px; color: #dee0e4;}
 .checkbox_list li > span{flex: 1;}

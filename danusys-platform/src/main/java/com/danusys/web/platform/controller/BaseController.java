@@ -30,7 +30,7 @@ public class BaseController {
 	 */
 	@RequestMapping(value = "/")
 	public String index() {
-		return "view/login/test1";
+		return "/layout/layout_login";
 	}
 
 //	/**

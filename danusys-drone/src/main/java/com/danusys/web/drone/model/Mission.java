@@ -1,6 +1,7 @@
 package com.danusys.web.drone.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -36,6 +37,7 @@ public class Mission {
 //    private Timestamp insertDt;
 //
     @Column(name = "update_dt")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp updateDt;
 
 //    @Column(name="insert_user_seq")

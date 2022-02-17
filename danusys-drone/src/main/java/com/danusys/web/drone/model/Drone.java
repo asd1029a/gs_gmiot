@@ -49,4 +49,9 @@ public class Drone {
     @OneToOne(mappedBy = "drone")
     @JsonManagedReference
     private Mission mission;
+
+    @ManyToOne
+    @JoinColumn(name="drone_base_id")
+    @JsonBackReference
+    private DroneBase droneBase;
 }

@@ -141,7 +141,8 @@ function getDroneDetails(id) {
             $(".drone_maximum_operating_speed").val(droneDetails.maximumOperatingSpeed);
             $(".drone_sim_number").val(droneDetails.simNumber);
             $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
-
+            $(".uploadName").val(droneDetails.thumbnailImg);
+            $(".picture img").attr("src", "/file/image/" + droneDetails.thumbnailImg);
 
         }
     });
@@ -176,6 +177,7 @@ $(".delete_drone_detail_button").on("click", function () {
                 $(".drone_maximum_operating_speed").val("");
                 $(".drone_sim_number").val("");
                 $(".drone_maximum_speed").val("");
+                $(".uploadName").val("");
                 param = {"droneDeviceName": ""};
                 loadDroneList(param);
             }
@@ -187,7 +189,7 @@ $(".delete_drone_detail_button").on("click", function () {
 });
 
 function getListMission() {
-    let param = {"name": "" , "droneId":""};
+    let param = {"name": "", "droneId": ""};
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: "/drone/api/mission",
@@ -203,7 +205,49 @@ function getListMission() {
             });
 
         }
-     });
+    });
 }
+
+
+$("#file").on("change", function () {
+
+    let formData = new FormData();
+    formData.append('uploadFile', $('#file')[0].files[0]);
+    imgCheck($('#file')[0].files[0]);
+    let droneId = 0;
+    if ($(".drone_id").val() != "")
+        droneId = $(".drone_id").val();
+    console.log("droneId=", droneId);
+    formData.append("droneId", droneId);
+    console.log(formData);
+    // let param={"uploadFile":formData,
+    //             "sPath":"d:\\te3/123/q",
+    //             "folderPath":"123123123"}
+
+    $.ajax({
+        url: "/file/upload/drone",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        enctype: "multipart/form-data",
+        success: function (resultData) {
+            console.log("resultData", resultData);
+            $(".uploadName").val(resultData);
+
+        }
+    })
+
+
+});
+
+
+function imgCheck(img){
+    alert(img.clientWidth);
+}
+
+
+
+
 
 

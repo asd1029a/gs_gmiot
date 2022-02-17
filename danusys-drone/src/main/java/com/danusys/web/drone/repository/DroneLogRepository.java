@@ -12,5 +12,6 @@ public interface DroneLogRepository extends CrudRepository<DroneLog,Long> {
 
     DroneLog findById(String missionName);
 
+    List<DroneLog> findAll();
 
 }

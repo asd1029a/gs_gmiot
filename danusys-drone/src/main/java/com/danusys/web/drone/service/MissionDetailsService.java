@@ -71,10 +71,10 @@ public class MissionDetailsService {
 
         missionDetailsList.forEach(r -> {
             if (r.getName().equals("waypoint")) {
-                if(r.getSpeed()==0)
-                    estimatedTime+=10;
+                if (r.getSpeed() == 0)
+                    estimatedTime += 10;
                 else
-                    estimatedTime+= r.getSpeed();
+                    estimatedTime += r.getSpeed();
 
                 timeCountNumber++;
             }
@@ -82,7 +82,7 @@ public class MissionDetailsService {
             r.setMission(mission);
         });
         log.info("estimatedTime={},timeCountNumber={}", estimatedTime, timeCountNumber);
-        mission.setTotalDistance((int)totalDistance);
+        mission.setTotalDistance((int) totalDistance);
         mission.setEstimatedTime((int) (totalDistance / estimatedTime * timeCountNumber / 60));
         missionRepository.save(mission);
 
@@ -90,6 +90,15 @@ public class MissionDetailsService {
         log.info("isExist={}", isExist);
         if (isExist.isEmpty()) {
             missionDetailsList.forEach(r -> {
+                
+                if(r.getName().equals("takeOff"))
+                    r.setKoName("이륙");
+                else if(r.getName().equals("loiter"))
+                    r.setKoName("로이터");
+                else if(r.getName().equals("return"))
+                    r.setKoName("귀환");
+                else if(r.getName().equals("waypont"))
+                    r.setKoName("경유지");
                 missionDetailsRepository.save(r);
             });
             return "success";
@@ -147,15 +156,17 @@ public class MissionDetailsService {
         return missonDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
     }
+
     private Sort sortByIndex() {
         return Sort.by(Sort.Direction.ASC, "index");
     }
+
     public List<MissionDetailResponse> findMission(Map<String, Object> paramMap) {
         String name = null;
         Mission mission = null;
         Optional<Mission> optionalMission = null;
         Long id = null;
-        Sort sort =sortByIndex();
+        Sort sort = sortByIndex();
         int inputid = 0;
         if (paramMap.get("name") != null) {
             name = paramMap.get("name").toString();
@@ -174,7 +185,7 @@ public class MissionDetailsService {
         }
 
 
-        List<MissionDetails> missionDetails = missionDetailsRepository.findAllByMission(mission,sort);
+        List<MissionDetails> missionDetails = missionDetailsRepository.findAllByMission(mission, sort);
 
         if (missionDetails.isEmpty()) {
             log.info("비엇음");
