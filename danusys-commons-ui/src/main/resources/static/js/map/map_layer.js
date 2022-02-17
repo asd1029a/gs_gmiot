@@ -18,13 +18,15 @@ class dataLayer {
         if(projFlag){
             features.forEach( feature => {
                 feature.getGeometry().transform('EPSG:4326', this.map.projection);
+                feature.setProperties(propObj);
             });
         }
         source.addFeatures(features);
 
         const pointsLayer = new ol.layer.Vector({
             source : source,
-            name : layerName,
+            title : layerName,
+            //name : layerName,
             style : style
         });
 

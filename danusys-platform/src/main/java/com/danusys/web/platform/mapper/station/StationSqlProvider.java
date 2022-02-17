@@ -31,6 +31,7 @@ public class StationSqlProvider {
             }
             INNER_JOIN("(" + innerSql.toString() + ") t1 on ts.station_seq = t1.station_seq");
         }};
+        System.out.println(sql.toString());
         return sql.toString();
     }
 

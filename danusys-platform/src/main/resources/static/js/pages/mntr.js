@@ -53,12 +53,18 @@ const mntr = {
         let measure = new measureTool('map');
         window.measure = measure;
 
+        // station.getList({}, (result) => {
+        //     console.log(result);
+        // });
         //개소 레이어
         station.getListGeoJson({} ,(result) => {
             console.log(result);
             let stationLayer = new dataLayer('map')
-                .fromGeoJSon(result, 'stationLayer', true, layerStyle.station());
+                .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
             map.addLayer(stationLayer);
+
+            //select
+           //window.lyControl.find('stationLayer').set('selectable', true);
 
             // //열지도 test
             // const heat = new ol.layer.Heatmap({
@@ -80,16 +86,53 @@ const mntr = {
             // window.map.addLayer(heat);
         });
 
-        // facility.getListGeoJson({}, (result) => {
+        facility.getListGeoJson({}, (result) => {
+           // console.log(result);
+            let result1 =
+            {
+                type: 'FeatureCollection',
+                name: 'sample',
+                crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+                features: [
+                    { type: 'Feature', properties: { id: 123 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
+                    { type: 'Feature', properties: { id: 234 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
+                    { type: 'Feature', properties: { id: 345 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+                    { type: 'Feature', properties: { id: 567 }, geometry: { type: 'Point', coordinates: [ 126.73797079693405, 37.3197810464005 ] } },
+                    { type: 'Feature', properties: { id: 456 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
+                    { type: 'Feature', properties: { id: 678 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
+                    { type: 'Feature', properties: { id: 789 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
+                ]
+            };
+
+            let facilityLayer = new dataLayer('map')
+                .fromGeoJSon(result1,'facilityLayer', true, layerStyle.facility(false));
+            map.addLayer(facilityLayer);
+
+        });
+
+        // event.getListGeoJson({}, (result) => {
         //    // console.log(result);
-        //     let facilityLayer = new dataLayer('map')
-        //         .fromGeoJSon(result,'facilityLayer', true, layerStyle.facility());
-        //     map.addLayer(facilityLayer);
         // });
 
-        event.getListGeoJson({}, (result) => {
-           // console.log(result);
-        });
+        const select =
+            new ol.interaction.Select({
+                layers : //[window.lyControl.find('stationLayer')]
+                    layer => {
+                        return layer.get('selectable') === true;
+                    }
+                , style :
+                    feature => {
+                        //console.log(feature.getProperties());
+                    }
+
+                }
+            );
+        window.map.map.addInteraction(select);
+        // window.map.map.addInteraction(
+        //     select
+        //     //layerSelect.add(window.lyControl.find('stationLayer'))
+        // );
+
 
     },
     eventHandler : () => {

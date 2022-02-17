@@ -220,9 +220,31 @@ class mapCreater {
         this.map = this.createMap();
         this.view = this.map.getView();
 
+        this.cursorStyle();
+
         this.createTileLayers();
 
         this.switchTileMap('btnImgmap');
+    }
+
+    /**
+     * 맵 레이어 커서 지정
+     * * */
+    cursorStyle() {
+        let target = this.map.getTarget();
+        let jTarget = typeof target === "string" ? $("#" + target) : $(target);
+
+        this.map.on("pointermove", e => {
+            const pixel = this.map.getEventPixel(e.originalEvent);
+            let hit = this.map.forEachFeatureAtPixel(pixel, (feature,layer) => true);
+            const cTarget = $(e.target);
+
+            if(hit) {
+                jTarget.css("cursor", "pointer");
+            } else {
+                jTarget.css("cursor", "");
+            }
+        });
     }
 
     createTileGrid() {

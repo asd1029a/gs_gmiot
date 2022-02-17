@@ -100,6 +100,7 @@ const station = {
             , type : "POST"
             , data : JSON.stringify(param)
             , contentType : "application/json; charset=utf-8"
+            , async : false
         }).done((result) => {
             pCallback(result);
         });

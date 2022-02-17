@@ -48,7 +48,6 @@ public class GisUtil {
 	 * @throws Exception
 	 */
 	public static String getGeoJson(List<Map<String, Object>> geoList, String id) throws Exception {
-
 		LinkedHashMap<String,Object> geoObj = new LinkedHashMap<String,Object>();
 		geoObj.put("type","FeatureCollection");
 		//features

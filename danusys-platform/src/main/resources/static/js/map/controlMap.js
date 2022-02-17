@@ -4,27 +4,39 @@
  * 플랫폼 당 스타일 지정
  * */
 const layerStyle = {
-    //개소
-    station : () => {
+    /**
+     * 개소의 스타일
+     * @selectFlag 선택시 스타일
+     * */
+    station : (selectFlag) => {
         return feature => {
+            let fillColor = selectFlag ? "white" : "red";
+            let strokeColor =  selectFlag ? "red" : "white";
+
             const cnt = feature.getProperties().facilityCnt;
             const sty = new ol.style.Style({
                     image: new ol.style.Circle({
                         radius:13,
                         stroke: new ol.style.Stroke({
-                            color:'rgba(255,255,255,1)',
+                            color: strokeColor,
                             width: 2,
                         }),
                         fill: new ol.style.Fill({
-                            color: 'red',
+                            color: fillColor,
                         })
                     }),
                     text: new ol.style.Text({
                         scale: 2,
-                        text: String(cnt),
+                        offsetY: -12,
+                        offsetX: 14,
+                        text: "+" + String(cnt),
                         fill: new ol.style.Fill({
-                            color:'white',
+                            color:'black',
                             font: '13px'
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: 'white',
+                            width: 1
                         })
                     })
                 });
@@ -36,26 +48,25 @@ const layerStyle = {
         return null;
     }
     //시설물
-    , facility : () => {
-        return new ol.style.Style({
-            image: new ol.style.Circle({
-                radius:13,
-                stroke: new ol.style.Stroke({
-                    color:'rgba(255,255,255,1)',
-                    width: 2,
-                }),
-                fill: new ol.style.Fill({
-                    color: 'blue',
+    , facility : (selectFlag) => {
+        return feature => {
+            let fillColor = selectFlag ? "white" : "blue";
+            let strokeColor =  selectFlag ? "blue" : "white";
+
+            const style = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 13,
+                    stroke: new ol.style.Stroke({
+                        color : strokeColor,
+                        width: 2
+                    }),
+                    fill: new ol.style.Fill({
+                        color: fillColor,
+                    })
                 })
-            }),
-            text: new ol.style.Text({
-                text: '10',
-                fill: new ol.style.Fill({
-                    color:'white',
-                    font: '13px'
-                })
-            })
-        });
+            });
+            return style;
+        }
     }
 }
 
@@ -100,5 +111,26 @@ const mapPopupContent = {
     //이벤트
     , event() {
 
+    }
+}
+
+/**
+ * 레이어 선택 조작
+ */
+const layerSelect = {
+    add(layer) {
+        const select =
+            new ol.interaction.Select({
+                layers : [layer]
+                // layer => {
+                //     return layer.get('selectable') === true;
+                // }
+                , style : feature => {
+                    let layerName = feature.getId().replace(/[0-9]/g,"");
+                    console.log(layerStyle[layerName](true));
+                    return eval(layerStyle[layerName](true));
+                }
+            });
+        return select;
     }
 }

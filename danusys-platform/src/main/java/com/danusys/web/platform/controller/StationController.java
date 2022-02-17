@@ -28,7 +28,7 @@ public class StationController {
     /**
      * 개소 : 개소 GEOJSON 목록 조회
      */
-    @PostMapping(value="/geojson")
+    @PostMapping(value="/geojson", produces ="application/json; charset=utf8")
     public String getListStationGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = stationService.getList(paramMap);
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");

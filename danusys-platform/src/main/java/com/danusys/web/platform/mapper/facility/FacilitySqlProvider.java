@@ -36,7 +36,7 @@ public class FacilitySqlProvider {
             FROM("t_facility t1");
             INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
             if(keyword != null && !keyword.equals("")) {
-                WHERE("facility_kind LIKE" + keyword);
+                WHERE("facility_ki]nd LIKE" + keyword);
             }
         }};
         return sql.toString();
