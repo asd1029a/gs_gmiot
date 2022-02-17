@@ -18,6 +18,7 @@ class dataLayer {
         if(projFlag){
             features.forEach( feature => {
                 feature.getGeometry().transform('EPSG:4326', this.map.projection);
+                const propObj = {'styleFunc': layerStyle.facility(false)};
                 feature.setProperties(propObj);
             });
         }
