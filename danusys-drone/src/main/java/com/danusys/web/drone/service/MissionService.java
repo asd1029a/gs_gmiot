@@ -42,8 +42,11 @@ public class MissionService {
     }
 
     public Mission missionResponseList2(Long id) {
-        Optional<Mission> missonList = missionRepository.findById(id);
-        return missonList.get();
+        Optional<Mission> missionList = missionRepository.findById(id);
+        if (!missionList.isPresent())
+            return null;
+        else
+            return missionList.get();
     }
 
     public MissionResponse missionResponse(Long id) {

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class DroneLogService {
@@ -22,4 +24,8 @@ public class DroneLogService {
 
         return droneLogRepository.findById(id).get();
     }
+
+    public List<DroneLog> findAllDroneLog(){
+        return droneLogRepository.findAll();
+    };
 }
