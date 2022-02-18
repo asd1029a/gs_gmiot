@@ -201,7 +201,7 @@ public class UserService2 {
             if (paramMap.get("draw") != null) {
                 Map<String, Object> pagingMap = new HashMap<>();
                 pagingMap.put("data", userDtoList); // 페이징 + 검색조건 결과
-                pagingMap.put("count", userDtoList.size()); // 검색조건이 반영된 총 카운트
+                pagingMap.put("count", count); // 검색조건이 반영된 총 카운트
                 resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
             } else {
                 resultMap.put("data", userDtoList);
