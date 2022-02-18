@@ -190,14 +190,10 @@ public class UserService2 {
             count = (int) userPageList.getTotalElements();
             log.info("count={}", count);
         } else if (paramMap.get("userName") == null) {
-            userList = userRepository.findAll();
-            count = userList.size();
-        } else if (length == 1) {
-            String userName = paramMap.get("userName").toString();
-            userList = userRepository.findAllByUserNameLike("%" + userName + "%");
-            count = userList.size();
+            userPageList = userRepository.findAll(pageRequest);
+            userList = userPageList.toList();
+            count = (int) userPageList.getTotalElements();
         }
-
         List<UserDto> userDtoList = userList.stream().map(UserDto::new).collect(Collectors.toList());
         //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
         Map<String, Object> resultMap = new HashMap<String, Object>();
