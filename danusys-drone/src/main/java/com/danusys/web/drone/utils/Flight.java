@@ -439,7 +439,8 @@ public class Flight {
 
     //public String wayPoint(Socket socket, MavlinkConnection connection, float x, float y, float z, float speed) {
     // try {
-    public String wayPoint(int gpsX, int gpsY, int gpsZ, int speed) {
+    //x,y 반대로 넣어야되기떄문에
+    public String wayPoint(int gpsY, int gpsX, int gpsZ) {
         socket = null;
         connection = null;
         Timer t = null;
@@ -480,13 +481,13 @@ public class Flight {
             droneLogDetailsWayPoint.setParam7(Integer.toString(gpsZ));
             droneLogDetailsService.saveDroneLogDetails(droneLogDetailsWayPoint);
 
-            connection.send2(systemId, componentId, new CommandLong.Builder()
-                    .command(MavCmd.MAV_CMD_DO_CHANGE_SPEED)
-                    .param1(0)
-                    .param2(speed)
-                    .param3(-1)
-                    .param4(0)
-                    .build(), linkId, timestamp, secretKey);
+//            connection.send2(systemId, componentId, new CommandLong.Builder()
+//                    .command(MavCmd.MAV_CMD_DO_CHANGE_SPEED)
+//                    .param1(0)
+//                    .param2(speed)
+//                    .param3(-1)
+//                    .param4(0)
+//                    .build(), linkId, timestamp, secretKey);
 
 
             Heartbeat heartbeat = null;
