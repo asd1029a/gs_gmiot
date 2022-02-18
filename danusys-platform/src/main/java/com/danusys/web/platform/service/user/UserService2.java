@@ -223,6 +223,10 @@ public class UserService2 {
         return userRepository.findAll().size();
     }
 
+    public UserDto testtest(){
+        return userRepository.getList();
+    }
+
 //
 //    public com.danusys.web.platform.model.paging.Page<List<Map<String, Object>>> getLists(PagingRequest pagingRequest) {
 //        ObjectMapper objectMapper = new ObjectMapper();

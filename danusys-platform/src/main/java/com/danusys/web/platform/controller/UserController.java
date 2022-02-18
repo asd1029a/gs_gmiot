@@ -77,8 +77,7 @@ public class UserController {
      */
     @PostMapping()
     public ResponseEntity<?> getListUserProc(@RequestBody Map<String, Object> paramMap) {
-        log.info("paramMap={}",paramMap);;
-        log.info("여기??");
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.findListUser(paramMap));
@@ -311,6 +310,13 @@ public class UserController {
 //                .status(HttpStatus.CREATED)
 //                .body(userService.updateUser(user));
 //
+//    }
+//
+//    @PostMapping("/test")
+//    public ResponseEntity<?> testtest(){
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(userService.)
 //    }
 
 

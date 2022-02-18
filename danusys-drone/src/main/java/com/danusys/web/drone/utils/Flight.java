@@ -200,8 +200,8 @@ public class Flight {
 
                     gps.setGpsX((double)y/10000000);
                     gps.setGpsY((double)x/10000000);
-                    gps.setCurrentHeight(z);
-                    gps.setHeading(heading);
+                    gps.setCurrentHeight((double)z/1000);
+                    gps.setHeading((double)heading/100);
 
                 } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
                     MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;
@@ -372,8 +372,8 @@ public class Flight {
 
                     gps.setGpsX((double)y/10000000);
                     gps.setGpsY((double)x/10000000);
-                    gps.setCurrentHeight(z);
-                    gps.setHeading(heading);
+                    gps.setCurrentHeight((double)z/1000);
+                    gps.setHeading((double)heading/100);
 
                 } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
                     MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;
@@ -518,8 +518,8 @@ public class Flight {
 
                     gps.setGpsX((double)y/10000000);
                     gps.setGpsY((double)x/10000000);
-                    gps.setCurrentHeight(z);
-                    gps.setHeading(heading);
+                    gps.setCurrentHeight((double)z/1000);
+                    gps.setHeading((double)heading/100);
 
                 } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
                     MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;
@@ -649,14 +649,13 @@ public class Flight {
 
                     gps.setGpsX((double)y/10000000);
                     gps.setGpsY((double)x/10000000);
-                    gps.setCurrentHeight(z);
-                    gps.setHeading(heading);
+                    gps.setCurrentHeight((double)z/1000);
+                    gps.setHeading((double)heading/100);
 
                 } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
                     MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;
 
                     int wpDist = navControllerOutputMavlinkMessage.getPayload().wpDist();
-
                     gps.setWpDist(wpDist);
 
 
@@ -802,8 +801,8 @@ public class Flight {
 
                     gps.setGpsX((double)y/10000000);
                     gps.setGpsY((double)x/10000000);
-                    gps.setCurrentHeight(z);
-                    gps.setHeading(heading);
+                    gps.setCurrentHeight((double)z/1000);
+                    gps.setHeading((double)heading/100);
 
                 } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
                     MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;
@@ -990,8 +989,8 @@ public class Flight {
 
                     gps.setGpsX((double)y/10000000);
                     gps.setGpsY((double)x/10000000);
-                    gps.setCurrentHeight(z);
-                    gps.setHeading(heading);
+                    gps.setCurrentHeight((double)z/1000);
+                    gps.setHeading((double)heading/100);
 
                 } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
                     MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;

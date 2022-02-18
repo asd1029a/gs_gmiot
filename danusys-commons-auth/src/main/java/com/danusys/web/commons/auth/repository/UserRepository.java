@@ -20,8 +20,8 @@ public interface UserRepository extends JpaRepository<User,Long> , JpaSpecificat
     User findByUserId(String username);
 
 
-//    @Query("SELECT u FROM User u WHERE u.status = :status and u.name = :name")
-//    USerDto
+    @Query("SELECT u FROM User u left join UserStatus us WHERE u.status = us.codeValue ")
+    UserDto getList();
     User findByUserSeq(int userSeq);
 
     Long deleteByUserSeq(int id);
