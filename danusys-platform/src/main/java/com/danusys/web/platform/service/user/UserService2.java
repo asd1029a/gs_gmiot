@@ -164,16 +164,20 @@ public class UserService2 {
         int start = 0;
         int length = 1;
         int count = 0;
+        int draw =0;
+
         if (paramMap.get("start") != null)
             start = Integer.parseInt(paramMap.get("start").toString());
         if (paramMap.get("length") != null)
             length = Integer.parseInt(paramMap.get("length").toString());
 
-        PageRequest pageRequest = PageRequest.of(start, length);
+        if (paramMap.get("draw") != null) {
+            draw = Integer.parseInt(paramMap.get("draw").toString());
+        }
+        PageRequest pageRequest = PageRequest.of(start/length, length);
 
         Page<User> userPageList = null;
         //   log.info("totalPage={}",userList2.getTotalPages());
-
 
         List<User> userList = null;
         if (paramMap.get("userName") != null && length != 1) {

@@ -1,6 +1,7 @@
 package com.danusys.web.commons.auth.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,7 +41,7 @@ public class User {
 
     @Column(name = "detail_address")
     private String detailAddress;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     @Column(name = "last_login_dt")
     private Timestamp lastLoginDt;
 
@@ -49,10 +50,10 @@ public class User {
 
     @Column(name = "update_user_seq")
     private int updateUserSeq;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     @Column(name = "insert_dt")
     private Timestamp insertDt;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     @Column(name = "update_dt")
     private Timestamp updateDt;
 
