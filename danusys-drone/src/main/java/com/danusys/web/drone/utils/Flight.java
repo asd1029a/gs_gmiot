@@ -925,7 +925,9 @@ public class Flight {
         //       connection = null;
         //       socket = null;
         log.info("speeds={}", speeds); //speeds={return5=0, waypoint4=4, waypoint3=6, waypoint2=8}
-
+        missionItemMap.forEach((r,r2)->{
+            log.info("missionMap={}:{}",r,r2);
+        });
         try {
             socket = new Socket(tcpServerHost, tcpServerPort);
             connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
@@ -1067,6 +1069,7 @@ public class Flight {
 
                 while (message.getPayload() instanceof MissionRequest && flag <= maxFlag - 1) {     //missioncount
                     // log.info("찾았다{}", missionItemMap.get("missionItemInt" + flag));
+                    log.info("loginfo={}",message.getPayload());
                     log.info("maxFlag={}", maxFlag);
                     log.debug("flag={}", flag);
                     connection.send2(systemId, componentId, missionItemMap.get("missionItemInt" + flag), linkId, timestamp, secretKey);
