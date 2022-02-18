@@ -81,8 +81,8 @@ public class MissionApiController {
             gpsX = Double.parseDouble(paramMap.get("gpsX").toString()) * 10000000;
         if (paramMap.get("gpsY") != null)
             gpsY = Double.parseDouble(paramMap.get("gpsY").toString()) * 10000000;
-        if (paramMap.get("gpsZ") != null)
-            gpsZ = Double.parseDouble(paramMap.get("gpsZ").toString());
+        if (paramMap.get("alt") != null)
+            gpsZ = Double.parseDouble(paramMap.get("alt").toString());
         intGpsX=(int)gpsX;
         intGpsY=(int)gpsY;
         intGpsZ=(int)gpsZ;
