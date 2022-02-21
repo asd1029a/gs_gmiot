@@ -27,36 +27,17 @@ public class DroneLogController {
 
 
     private final DroneLogService droneLogService;
-    private final DroneLogDetailsService droneLogDetailsService;
 
 
-    @PostMapping("/logtest")
-    public ResponseEntity<?> saveMissionDetails(DroneLog droneLog) {
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(droneLogService.saveDroneLog(droneLog));
-
-    }
 
     @PostMapping("/dronelog")
-    public ResponseEntity<?> findAllDroneLog(){
+    public ResponseEntity<?> findAllDroneLog(Map<String,Object> paramMap){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(droneLogService.findAllDroneLog());
+                .body(droneLogService.findAllDroneLog(paramMap));
     }
 
 
-//
-//    @PostMapping("/logtest2")
-//    public ResponseEntity<?> logtest2() {
-//
-//        DroneLogDetails
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body(droneLogDetailsService.saveDroneLogDetails(droneLog));
-//
-//    }
 
 }
 

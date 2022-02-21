@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>로그</title>
+    <meta charset="utf-8">
+    <title>로그</title>
     <link rel="stylesheet" type="text/css" href="css/um/drone.css">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -12,7 +12,7 @@
 
 <body>
 <div class="wrap">
-<!--    헤더 영역 -->
+    <!--    헤더 영역 -->
     <header>
         <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>
         <ul class="gnm">
@@ -67,8 +67,8 @@
                             <dd>
                                 <select>
                                     <option selected>전체</option>
-                                    <option>전체</option>
-                                    <option>전체</option>
+                                    <option>기기명</option>
+                                    <option>미션명</option>
                                 </select>
                             </dd>
                             <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
@@ -96,28 +96,29 @@
                 <div class="searchTable">
                     <table>
                         <thead>
-                            <tr>
-                                <th>Index</th>
-                                <th>Thumbnail</th>
-                                <th>형식</th>
-                                <th>용량</th>
-                                <th>촬영 기기</th>
-                                <th>미션명</th>
-                                <th>등록일시</th>
-                                <th>Geo Tag</th>
-                            </tr>
+                        <tr>
+                            <th>Id</th>
+                            <!--                               <th>Thumbnail</th>-->
+                            <!--                                <th>형식</th>-->
+                            <!--                                <th>용량</th>-->
+                            <th>촬영 기기</th>
+                            <th>미션명</th>
+                            <th>등록일시</th>
+                            <th>상세 다운로드</th>
+                        </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td><p>Thumbnail image area</p></td>
-                                <td>동영상</td>
-                                <td>000 GB</td>
-                                <td>DJI 신림 11호</td>
-                                <td>신림면 11구역 정기 순찰</td>
-                                <td>2022.02.01 14:55</td>
-                                <td><span class="button">다운로드</span></td>
-                            </tr>
+                        <tbody class="search_body">
+
+                        <!--                            <tr>-->
+                        <!--                                <td>1</td>-->
+                        <!--                                &lt;!&ndash;                                <td><p>Thumbnail image area</p></td>&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                <td>동영상</td>&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                <td>000 GB</td>&ndash;&gt;-->
+                        <!--                                <td>DJI 신림 11호</td>-->
+                        <!--                                <td>신림면 11구역 정기 순찰</td>-->
+                        <!--                                <td>2022.02.01 14:55</td>-->
+                        <!--                                <td><span class="button">다운로드</span></td>-->
+                        <!--                            </tr>-->
                         </tbody>
                     </table>
                 </div>
@@ -136,12 +137,12 @@
             </article>
         </section>
     </div>
-</div>    
-    
+</div>
+
 <script type="text/javascript">
 
 </script>
 
-    
+
 </body>
 </html>
