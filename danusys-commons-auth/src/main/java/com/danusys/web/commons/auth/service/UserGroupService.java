@@ -127,7 +127,10 @@ public class UserGroupService {
             groupDesc = paramMap.get("groupDesc").toString();
         }
 
-
+        if(groupName==null)
+            groupName="";
+        if(groupDesc==null)
+            groupDesc="";
         userGroupPageList = userGroupRepository
                 .findByGroupNameLikeAndGroupDescLike("%" + groupName + "%", "%" + groupDesc + "%", pageRequest);
         count = (int) userGroupPageList.getTotalElements();
@@ -155,7 +158,7 @@ public class UserGroupService {
                 Map<String, Object> pagingMap = new HashMap<>();
                 pagingMap.put("data", userGroupList); // 페이징 + 검색조건 결과
                 pagingMap.put("count", count); // 검색조건이 반영된 총 카운트
-                resultMap = PagingUtil.createPagingMap(paramMap, (List<?>) pagingMap);
+                resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
             } else {
                 resultMap.put("data", userGroupList);
                 resultMap.put("count", count);
