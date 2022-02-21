@@ -36,10 +36,10 @@ public class GroupResponse {
         this.updateUserSeq = userGroup.getUpdateUserSeq();
         userGroup.getUserGroupInUser().forEach(r->{
 
-            this.inUserId+=r.getUser().getUserName()+",";
+            this.inUserId+=r.getUser().getUserName()+", ";
 
         });
-        this.inUserId= StringUtils.substring(inUserId,0,-1);
+        this.inUserId= StringUtils.substring(inUserId,0,-2);
 
 
     }

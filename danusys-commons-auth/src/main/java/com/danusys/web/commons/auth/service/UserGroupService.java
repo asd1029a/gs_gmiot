@@ -44,9 +44,10 @@ public class UserGroupService {
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(groupSeq);
 
         findUserGroup.getUserGroupInUser().forEach(r -> {
-            inUserId += r.getUser().getUserName() + ",";
+            inUserId += r.getUser().getUserName() + ", ";
         });
-        inUserId= StringUtils.substring(inUserId,0,-1);
+        inUserId= StringUtils.substring(inUserId,0,-2);
+
 
         GroupResponse groupResponse = new GroupResponse(findUserGroup.getUserGroupSeq(), findUserGroup.getGroupName(),
                 findUserGroup.getGroupDesc(), findUserGroup.getInsertDt(),
