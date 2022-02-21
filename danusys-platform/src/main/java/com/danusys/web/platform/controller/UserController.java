@@ -51,6 +51,21 @@ public class UserController {
                 .body(userService.saveUser(user));
 
     }
+    /*
+      name: idCheck
+      url: /checkid/{userSeq}
+      type: get
+      do: 아이디 중복 체크
+      return : 아이디 중복일경우 0 , 중복아닐경우 1 리턴
+
+     */
+    @GetMapping("/checkid/{userId}")
+    public ResponseEntity<?> idCheck(@PathVariable String userId){
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.idCheck(userId));
+    }
 
     /*
       name: modUserProc
@@ -140,6 +155,8 @@ public class UserController {
        do: paramMap 조건에 맞는 list 출력
        return : paramMap 조건에 맞는 list
      */
+
+
     @PostMapping("/group")
     public ResponseEntity<?> getListGroupProc(@RequestBody Map<String, Object> paramMap) {
 

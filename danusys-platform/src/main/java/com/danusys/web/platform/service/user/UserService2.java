@@ -148,7 +148,7 @@ public class UserService2 {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-      //  user.setInsertUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
+        //  user.setInsertUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         user.setInsertDt(timestamp);
 
@@ -229,6 +229,11 @@ public class UserService2 {
         return userRepository.findAll().size();
     }
 
+    public int idCheck(String userId) {
+
+        User user = userRepository.findByUserId(userId);
+        return (user == null) ? 1 : 0;
+    }
 
 
 //

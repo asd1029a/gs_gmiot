@@ -8,6 +8,7 @@ import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.PagingUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserGroupService {
 
     private final UserGroupRepository userGroupRepository;
@@ -127,31 +129,19 @@ public class UserGroupService {
             groupDesc = paramMap.get("groupDesc").toString();
         }
 
-        if(groupName==null)
-            groupName="";
-        if(groupDesc==null)
-            groupDesc="";
+        if (groupName == null)
+            groupName = "";
+        if (groupDesc == null)
+            groupDesc = "";
         userGroupPageList = userGroupRepository
                 .findByGroupNameLikeAndGroupDescLike("%" + groupName + "%", "%" + groupDesc + "%", pageRequest);
+
         count = (int) userGroupPageList.getTotalElements();
         userGroupList = userGroupPageList.toList();
-//            List<UserGroup> userGroupList = userGroupRepository.findAll();
-//        List<GroupResponse> groupResponseList = userGroupList.stream().map(GroupResponse::new).collect(Collectors.toList());
-//        //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
-//        Map<String, Object> resultMap = new HashMap<String, Object>();
-//        try {
-//            if (paramMap.get("draw") != null) resultMap = PagingUtil.createPagingMap(paramMap, groupResponseList);
-//            else {
-//                resultMap.put("data", groupResponseList);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        return resultMap;
-
-        //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
+        userGroupList.forEach(r -> {
+            if (r.getUserGroupInUser()!= null)
+                log.info("user={}", r.getUserGroupInUser().getUser().getUserName());
+        });
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
             if (paramMap.get("draw") != null) {

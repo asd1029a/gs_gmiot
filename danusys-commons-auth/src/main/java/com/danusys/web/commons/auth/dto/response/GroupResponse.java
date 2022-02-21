@@ -22,6 +22,7 @@ public class GroupResponse {
 
 
 
+
     public GroupResponse(UserGroup userGroup) {
         this.userGroupSeq = userGroup.getUserGroupSeq();
         this.groupName = userGroup.getGroupName();
