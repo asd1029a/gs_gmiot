@@ -32,13 +32,13 @@ public class UserGroupInUser {
 
     //@OneToOne(fetch = FetchType.EAGER)
     // @ManyToOne
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_seq")
     @JsonBackReference
     private User user;
 
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_group_seq")
     @JsonManagedReference
     private UserGroup userGroup;

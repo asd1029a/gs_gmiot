@@ -9,6 +9,7 @@ import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.PagingUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class UserGroupService {
 
     private final UserGroupRepository userGroupRepository;
-
+    String inUserId = null;
 
     public UserGroupService(UserGroupRepository userGroupRepository) {
         this.userGroupRepository = userGroupRepository;
@@ -41,8 +42,15 @@ public class UserGroupService {
     //    @Transactional(readOnly = true)
     public GroupResponse findUserGroupResponseByGroupSeq(int groupSeq) {
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(groupSeq);
-        GroupResponse groupResponse = new GroupResponse(findUserGroup.getUserGroupSeq(), findUserGroup.getGroupName(), findUserGroup.getGroupDesc(), findUserGroup.getInsertDt(),
-                findUserGroup.getInsertUserSeq(), findUserGroup.getUpdateDt(), findUserGroup.getUpdateUserSeq());
+
+        findUserGroup.getUserGroupInUser().forEach(r -> {
+            inUserId += r.getUser().getUserName() + ",";
+        });
+        inUserId= StringUtils.substring(inUserId,0,-1);
+
+        GroupResponse groupResponse = new GroupResponse(findUserGroup.getUserGroupSeq(), findUserGroup.getGroupName(),
+                findUserGroup.getGroupDesc(), findUserGroup.getInsertDt(),
+                findUserGroup.getInsertUserSeq(), findUserGroup.getUpdateDt(), findUserGroup.getUpdateUserSeq(), inUserId);
 
         return groupResponse;
     }
@@ -101,7 +109,7 @@ public class UserGroupService {
         userGroupRepository.deleteById(userGroup.getUserGroupSeq());
     }
 
-
+    @Transactional
     public Map<String, Object> findListGroup(Map<String, Object> paramMap) {
         int start = 0;
         int length = 1;
@@ -134,23 +142,27 @@ public class UserGroupService {
         if (groupDesc == null)
             groupDesc = "";
         userGroupPageList = userGroupRepository
-                .findByGroupNameLikeAndGroupDescLike("%" + groupName + "%", "%" + groupDesc + "%", pageRequest);
+                .findByGroupNameIgnoreCaseLikeAndGroupDescIgnoreCaseLike("%" + groupName + "%", "%" + groupDesc + "%", pageRequest);
 
         count = (int) userGroupPageList.getTotalElements();
         userGroupList = userGroupPageList.toList();
-        userGroupList.forEach(r -> {
-            if (r.getUserGroupInUser()!= null)
-                log.info("user={}", r.getUserGroupInUser().getUser().getUserName());
-        });
+
+        List<GroupResponse> groupResponseList = userGroupList.stream().map(GroupResponse::new).collect(Collectors.toList());
+//        userGroupList.forEach(r -> {
+//            if (r.getUserGroupInUser() != null)
+//                r.getUserGroupInUser().forEach(rr -> {
+//                    log.info("user={},{}", r.getGroupName(), rr.getUser().getUserName());
+//                });
+//        });
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
             if (paramMap.get("draw") != null) {
                 Map<String, Object> pagingMap = new HashMap<>();
-                pagingMap.put("data", userGroupList); // 페이징 + 검색조건 결과
+                pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과
                 pagingMap.put("count", count); // 검색조건이 반영된 총 카운트
                 resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
             } else {
-                resultMap.put("data", userGroupList);
+                resultMap.put("data", groupResponseList);
                 resultMap.put("count", count);
             }
         } catch (Exception e) {

@@ -12,6 +12,8 @@ public interface UserGroupRepository extends JpaRepository<UserGroup,Integer> {
 
     UserGroup findByUserGroupSeq(int userGroupSeq);
 
-    Page<UserGroup> findByGroupNameLikeAndGroupDescLike(String groupName, String groupDesc, Pageable pageable);
+    Page<UserGroup> findByGroupNameIgnoreCaseLikeAndGroupDescIgnoreCaseLike(String groupName, String groupDesc, Pageable pageable);
+
+
 
 }

@@ -41,9 +41,9 @@ public class UserGroup implements Serializable {
     @Column(name = "update_user_seq")
     private int updateUserSeq;
 
-    @OneToOne(mappedBy = "userGroup", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userGroup", fetch = FetchType.LAZY)
     @JsonBackReference
-    private UserGroupInUser userGroupInUser;
+    private final List<UserGroupInUser> userGroupInUser =new ArrayList<>();
 
     @OneToMany(mappedBy = "userGroup2", fetch = FetchType.EAGER)
     @JsonManagedReference

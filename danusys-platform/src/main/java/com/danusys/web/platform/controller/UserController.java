@@ -152,6 +152,12 @@ public class UserController {
        url: /group/
        type: post
        param : Map<String, Object> paramMap
+       ex  :{
+            "groupName":"groupb43",
+            "start":0,
+            "length":15,
+            "draw":"1"
+}
        do: paramMap 조건에 맞는 list 출력
        return : paramMap 조건에 맞는 list
      */
