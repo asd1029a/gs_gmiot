@@ -31,7 +31,7 @@ public class DroneLogController {
 
 
     @PostMapping("/dronelog")
-    public ResponseEntity<?> findAllDroneLog(Map<String,Object> paramMap){
+    public ResponseEntity<?> findAllDroneLog(@RequestBody Map<String,Object> paramMap){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(droneLogService.findAllDroneLog(paramMap));

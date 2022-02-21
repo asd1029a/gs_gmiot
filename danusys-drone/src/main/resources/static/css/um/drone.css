@@ -367,6 +367,7 @@ header ul.utmenu li{display: flex; align-items: center; height: 100%; padding: 0
 .tableBottom .pageNav li.next i img{display: block; width: 20px; height: 20px; margin: 0px auto;}
 .tableBottom .pageNav li.prev:hover,
 .tableBottom .pageNav li.next:hover{filter: brightness(1.75);}
+.tableBottom .pageNav li.on{color: #dee0e4; font-weight: bold; background: #26282f;}
 .tableBottom p.button{float: right; display: flex; align-items: center; grid-gap: 6px; height: 34px; padding: 0px 14px; color: #7f8491; font-size: 14px; font-weight: normal; border-radius: 4px; background: #292c34; cursor: pointer;}
 
 .droneFrameRight .eventInfo{flex: 1; overflow: auto;}

@@ -45,12 +45,18 @@ public class MissionApiController {
     private final DroneLogService droneLogService;
 
 
-    @GetMapping("/return")
-    public ResponseEntity<?> returnDrone() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(flight.returnDrone());
-
+    //    @GetMapping("/return")
+    @MessageMapping("/return")
+    @SendTo("/topic/return")
+//    public ResponseEntity<?> returnDrone() {
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(flight.returnDrone());
+//
+//    }
+    public void returnDrone(){
+        flight.returnDrone();
     }
+
 
 
     @GetMapping("/takeoff")
@@ -77,17 +83,20 @@ public class MissionApiController {
         int intGpsX = 0;
         int intGpsY = 0;
         int intGpsZ = 0;
+        int yaw = 0;
         if (paramMap.get("gpsX") != null)
             gpsX = Double.parseDouble(paramMap.get("gpsX").toString()) * 10000000;
         if (paramMap.get("gpsY") != null)
             gpsY = Double.parseDouble(paramMap.get("gpsY").toString()) * 10000000;
         if (paramMap.get("alt") != null)
             gpsZ = Double.parseDouble(paramMap.get("alt").toString());
-        intGpsX=(int)gpsX;
-        intGpsY=(int)gpsY;
-        intGpsZ=(int)gpsZ;
+        if (paramMap.get("yaw") != null)
+            yaw = Integer.parseInt(paramMap.get("Yaw").toString());
+        intGpsX = (int) gpsX;
+        intGpsY = (int) gpsY;
+        intGpsZ = (int) gpsZ;
         return ResponseEntity.status(HttpStatus.OK)
-                .body(flight.wayPoint(intGpsX, intGpsY, intGpsZ));
+                .body(flight.wayPoint(intGpsX, intGpsY, intGpsZ,yaw));
 
     }
 
@@ -273,7 +282,7 @@ public class MissionApiController {
 
         }
 
-        flight.doMission(missionMap, flag, speeds, yaws,missionIndex);
+        flight.doMission(missionMap, flag, speeds, yaws, missionIndex);
 
 
     }

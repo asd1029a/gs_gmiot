@@ -16,7 +16,7 @@ public interface DroneLogRepository extends CrudRepository<DroneLog, Long> {
 
     List<DroneLog> findAll();
 
-    Page<DroneLog> findByDroneDeviceNameLikeAndAndMissionNameLike(String droneDeviceName, String missionName, Pageable pageable);
+    Page<DroneLog> findByDroneDeviceNameIgnoreCaseLikeAndAndMissionNameIgnoreCaseLike(String droneDeviceName, String missionName, Pageable pageable);
 
 
 }
