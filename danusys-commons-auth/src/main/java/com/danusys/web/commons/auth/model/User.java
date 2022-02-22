@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -73,9 +75,9 @@ public class User {
     */
     //@JsonIgnore
     // @OneToOne(mappedBy ="user",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
-    private UserGroupInUser userGroupInUser;
+    private List<UserGroupInUser> userGroupInUser=new ArrayList<>();
 
 //    @OneToOne(mappedBy = "userCommonCode",fetch =FetchType.EAGER)
 //

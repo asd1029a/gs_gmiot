@@ -213,7 +213,7 @@ $("#file").on("change", function () {
 
     let formData = new FormData();
     formData.append('uploadFile', $('#file')[0].files[0]);
-    imgCheck($('#file')[0].files[0]);
+    //imgCheck($('#file')[0].files[0]);
     let droneId = 0;
     if ($(".drone_id").val() != "")
         droneId = $(".drone_id").val();

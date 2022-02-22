@@ -40,7 +40,8 @@ public class UserController {
       type: put
       param: User user
       do: 유저 저장
-      return: 저장된 userSeq,   userId로 이미 가입한 회원이 있을 경우  return 0 ,id와 패스워드를 빼고 넣었을경우 return -1 ,
+      return: 저장된 userSeq,   userId로 이미 가입한 회원이 있을 경우(아이디중복)  return 0
+      ,id와 패스워드를 빼고 넣었을경우 return -1 ,
      */
     @PutMapping()
     public ResponseEntity<?> addUserProc(@RequestBody User user) {
@@ -50,14 +51,35 @@ public class UserController {
                 .body(userService.saveUser(user));
 
     }
+    /*
+      name: idCheck
+      url: /checkid/{userSeq}
+      type: get
+      do: 아이디 중복 체크
+      return : 아이디 중복일경우 0 , 중복아닐경우 1 리턴
+
+     */
+    @GetMapping("/checkid/{userId}")
+    public ResponseEntity<?> idCheck(@PathVariable String userId){
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.idCheck(userId));
+    }
 
     /*
       name: modUserProc
       url: /user
       type: patch
       param: User user
+      ex)
+      {
+                "userSeq":52,
+                "password":"1324"
+        }
       do: 유저 수정
       return : update된 userSeq , 잘못된 userSeq를 입력했을 경우 0 return
+
     */
     @PatchMapping()
     public ResponseEntity<?> modUserProc(@RequestBody User user) {
@@ -77,8 +99,7 @@ public class UserController {
      */
     @PostMapping()
     public ResponseEntity<?> getListUserProc(@RequestBody Map<String, Object> paramMap) {
-        log.info("paramMap={}",paramMap);;
-        log.info("여기??");
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.findListUser(paramMap));
@@ -131,9 +152,17 @@ public class UserController {
        url: /group/
        type: post
        param : Map<String, Object> paramMap
+       ex  :{
+            "groupName":"groupb43",
+            "start":0,
+            "length":15,
+            "draw":"1"
+}
        do: paramMap 조건에 맞는 list 출력
        return : paramMap 조건에 맞는 list
      */
+
+
     @PostMapping("/group")
     public ResponseEntity<?> getListGroupProc(@RequestBody Map<String, Object> paramMap) {
 
@@ -205,21 +234,29 @@ public class UserController {
        name: addGroupInUserProc
        url: /groupinuser/
        type: put
-       param : UserGroupInUserRequest userGroupInUserRequest
+       param :Map<String,Object> paramMap
+              (List<Integer> userSeqList , List<Integer> userGroupSeqList)
+        ex){
+                "userSeqList":[49],
+             "userGroupSeqList":[7,9,10]
+            }
+
+
        do: paramMap조건에 맞는 groupinuser List 조회
-       return : groupinuser seq, 잘못됫을때는 0 리턴
+       return : seq List 리턴 ,이미 있을 경우 null 리턴
      */
 
     @PutMapping("/groupinuser")
-    public ResponseEntity<?> addGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
+   // public ResponseEntity<?> addGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
+    public ResponseEntity<?> addGroupInUserProc(@RequestBody Map<String,Object> paramMap) {
 
-        log.info("usergroupInUser={}", userGroupInUserRequest);
-        UserGroupInUser userGroupInUser = new UserGroupInUser();
-        userGroupInUser.setInsertUserSeq(userGroupInUserRequest.getInsertUserSeq());
+//        log.info("usergroupInUser={}", userGroupInUserRequest);
+
+
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userGroupInUserService.saveUserGroupInUser(userGroupInUser,
-                        userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq()));
+                .body(userGroupInUserService.saveUserGroupInUser(paramMap));
     }
 
     @DeleteMapping("/groupinuser")
@@ -312,6 +349,7 @@ public class UserController {
 //                .body(userService.updateUser(user));
 //
 //    }
+//
 
 
 }

@@ -45,17 +45,26 @@ public class MissionApiController {
     private final DroneLogService droneLogService;
 
 
-    @GetMapping("/return")
-    public ResponseEntity<?> returnDrone() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(flight.returnDrone());
-
+    //    @GetMapping("/return")
+    @MessageMapping("/return")
+    @SendTo("/topic/return")
+//    public ResponseEntity<?> returnDrone() {
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(flight.returnDrone());
+//
+//    }
+    public void returnDrone(){
+        flight.returnDrone();
     }
 
 
-    @GetMapping("/takeoff")
-    public ResponseEntity<?> takeOffDrone(int takeOffAlt) {
 
+    @GetMapping("/takeoff")
+    public ResponseEntity<?> takeOffDrone(@RequestBody Map<String, Object> paramMap) {
+        int takeOffAlt = 0;
+        if (paramMap.get("alt") != null) {
+            takeOffAlt = Integer.parseInt(paramMap.get("alt").toString());
+        }
         return ResponseEntity.status(HttpStatus.OK)
                 .body(flight.flightTakeoff(takeOffAlt));
 
@@ -63,10 +72,31 @@ public class MissionApiController {
     }
 
     @GetMapping("/waypoint")
-    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ, int speed) {
+//    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
+    public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
 
+        double gpsX = 0;
+        double gpsY = 0;
+        double gpsZ = 0;
+
+
+        int intGpsX = 0;
+        int intGpsY = 0;
+        int intGpsZ = 0;
+        int yaw = 0;
+        if (paramMap.get("gpsX") != null)
+            gpsX = Double.parseDouble(paramMap.get("gpsX").toString()) * 10000000;
+        if (paramMap.get("gpsY") != null)
+            gpsY = Double.parseDouble(paramMap.get("gpsY").toString()) * 10000000;
+        if (paramMap.get("alt") != null)
+            gpsZ = Double.parseDouble(paramMap.get("alt").toString());
+        if (paramMap.get("yaw") != null)
+            yaw = Integer.parseInt(paramMap.get("Yaw").toString());
+        intGpsX = (int) gpsX;
+        intGpsY = (int) gpsY;
+        intGpsZ = (int) gpsZ;
         return ResponseEntity.status(HttpStatus.OK)
-                .body(flight.wayPoint(gpsX, gpsY, gpsZ, speed));
+                .body(flight.wayPoint(intGpsX, intGpsY, intGpsZ,yaw));
 
     }
 
@@ -98,7 +128,7 @@ public class MissionApiController {
 
         inputDroneLog.setMissionName(missionResponse.getName());
         inputDroneLog.setDroneDeviceName(missionResponse.getDrone().getDroneDeviceName());
-        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         inputDroneLog.setInsertDt(timestamp);
         DroneLog droneLog = droneLogService.saveDroneLog(inputDroneLog);
 
@@ -124,38 +154,38 @@ public class MissionApiController {
 
                 gpsZs.put("takeOff", missionDetails.getAlt());
                 log.info("Index={}", missionDetails.getIndex());
-                missionIndex.put(missionDetails.getIndex() , "takeOff");
+                missionIndex.put(missionDetails.getIndex(), "takeOff");
 
 
             } else if (missionDetails.getName().equals("waypoint")) {
                 //각 waypoint에 값 받아와서 넣기
-                missionIndex.put(missionDetails.getIndex() , "waypoint" + missionDetails.getIndex());
-                gpsXs.put("waypoint" + missionDetails.getIndex() , (int) (missionDetails.getGpsX() * 10000000));
-                speeds.put("waypoint" + missionDetails.getIndex() , missionDetails.getSpeed());
-                gpsYs.put("waypoint" + missionDetails.getIndex() , (int) (missionDetails.getGpsY() * 10000000));
-                gpsZs.put("waypoint" + missionDetails.getIndex() , missionDetails.getAlt());
-                yaws.put("waypoint" + missionDetails.getIndex() , (float) (missionDetails.getYaw()));
+                missionIndex.put(missionDetails.getIndex(), "waypoint" + missionDetails.getIndex());
+                gpsXs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getGpsX() * 10000000));
+                speeds.put("waypoint" + missionDetails.getIndex(), missionDetails.getSpeed());
+                gpsYs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getGpsY() * 10000000));
+                gpsZs.put("waypoint" + missionDetails.getIndex(), missionDetails.getAlt());
+                yaws.put("waypoint" + missionDetails.getIndex(), (float) (missionDetails.getYaw()));
             } else if (missionDetails.getName().equals("loi")) {
-                missionIndex.put(missionDetails.getIndex() , "loi" + missionDetails.getIndex());
-                times.put("loi" + missionDetails.getIndex() , missionDetails.getTime());
-                gpsXs.put("loi" + missionDetails.getIndex() , (int) (missionDetails.getGpsX() * 10000000));
-                gpsYs.put("loi" + missionDetails.getIndex() , (int) (missionDetails.getGpsY() * 10000000));
-                gpsZs.put("loi" + missionDetails.getIndex() , missionDetails.getAlt());
-                radiusMap.put("loi" + missionDetails.getIndex() , missionDetails.getRadius());
+                missionIndex.put(missionDetails.getIndex(), "loi" + missionDetails.getIndex());
+                times.put("loi" + missionDetails.getIndex(), missionDetails.getTime());
+                gpsXs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getGpsX() * 10000000));
+                gpsYs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getGpsY() * 10000000));
+                gpsZs.put("loi" + missionDetails.getIndex(), missionDetails.getAlt());
+                radiusMap.put("loi" + missionDetails.getIndex(), missionDetails.getRadius());
             } else if (missionDetails.getName().equals("return")) {
 
-                missionIndex.put(missionDetails.getIndex() , "return");
+                missionIndex.put(missionDetails.getIndex(), "return");
 
-                gpsXs.put("return" + missionDetails.getIndex() , (int) (missionDetails.getGpsX() * 10000000));
-                speeds.put("return" + missionDetails.getIndex() , missionDetails.getSpeed());
-                gpsYs.put("return" + missionDetails.getIndex() , (int) (missionDetails.getGpsY() * 10000000));
-                gpsZs.put("return" + missionDetails.getIndex() , missionDetails.getAlt());
+                gpsXs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getGpsX() * 10000000));
+                speeds.put("return" + missionDetails.getIndex(), missionDetails.getSpeed());
+                gpsYs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getGpsY() * 10000000));
+                gpsZs.put("return" + missionDetails.getIndex(), missionDetails.getAlt());
 
             }
         }
 
         log.info("{}", missionDetailsService.findByNameAndMission("takeOff", mission).getIndex());
-        float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex() ));
+        float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex()));
 
         //float takeOffAlt = gpsZs.get(missionIndex.get(1));
 
@@ -186,6 +216,7 @@ public class MissionApiController {
             } else if (missionIndex.getOrDefault(step, "finish").contains("waypoint")) {
 
 //                log.info("x={},y={},z{}", x, y, z);
+                log.info("yaw={}", yaw);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
                         .param1(time)
@@ -251,7 +282,7 @@ public class MissionApiController {
 
         }
 
-        flight.doMission(missionMap, flag, speeds, missionIndex);
+        flight.doMission(missionMap, flag, speeds, yaws, missionIndex);
 
 
     }

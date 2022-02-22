@@ -24,7 +24,7 @@ public class PermitService {
         this.permitRepository = permitRepository;
     }
 
-    public Permit findPermit(int permitSeq){
+    public Permit findPermit(int permitSeq) {
         return permitRepository.findByPermitSeq(permitSeq);
     }
 
@@ -45,8 +45,8 @@ public class PermitService {
     public Permit savePermit(Permit permit) {
 
 
-        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
-        if(permit.getInsertUserSeq()!=0)
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        if (permit.getInsertUserSeq() != 0)
             permit.setInsertDt(timestamp);
         return permitRepository.save(permit);
     }
