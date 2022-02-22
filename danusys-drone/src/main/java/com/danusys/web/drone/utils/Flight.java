@@ -80,13 +80,9 @@ public class Flight {
             ;
             byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
-//            t = new Timer();
-//            t.schedule(new TimerTask() {
-//                @Override
-//                public void run() {
-//                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-//                }
-//            }, 0, 2000);
+            t = new Timer();
+            t.schedule(tt, 0, 2000);
+
             MavlinkMessage message;
 
 
@@ -127,10 +123,7 @@ public class Flight {
             }
             //new connection
             connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-            t = new Timer();
 
-
-            t.schedule(tt, 0, 2000);
 
             //4 guided mode
 
