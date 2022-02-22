@@ -53,10 +53,9 @@ public class MissionApiController {
 //                .body(flight.returnDrone());
 //
 //    }
-    public void returnDrone(){
+    public void returnDrone() {
         flight.returnDrone();
     }
-
 
 
     @GetMapping("/takeoff")
@@ -71,9 +70,12 @@ public class MissionApiController {
 
     }
 
-    @GetMapping("/waypoint")
+    //   @GetMapping("/waypoint")
+    @MessageMapping("/waypoint")
+    @SendTo("/topic/waypoint")
 //    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
-    public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
+    // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
+    public void wayPointDrone(Map<String, Object> paramMap) {
 
         double gpsX = 0;
         double gpsY = 0;
@@ -91,31 +93,23 @@ public class MissionApiController {
         if (paramMap.get("alt") != null)
             gpsZ = Double.parseDouble(paramMap.get("alt").toString());
         if (paramMap.get("yaw") != null)
-            yaw = Integer.parseInt(paramMap.get("Yaw").toString());
-        intGpsX = (int) gpsX;
-        intGpsY = (int) gpsY;
+            yaw = Integer.parseInt(paramMap.get("yaw").toString());
+        intGpsX = (int) gpsX* 10000000;
+        intGpsY = (int) gpsY* 10000000;
         intGpsZ = (int) gpsZ;
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(flight.wayPoint(intGpsX, intGpsY, intGpsZ,yaw));
+        flight.wayPoint(intGpsX, intGpsY, intGpsZ, yaw);
+
 
     }
 
+    @MessageMapping("/changeyaw")
+    @SendTo("/topic/changeyaw")
+//    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
+    // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
+    public void changeYaw(int yaw) {
+        flight.changeYaw(yaw);
+    }
 
-//    @MessageMapping("/droneinfo")
-//    public void droneInfo() {
-//        String missionResult = null;
-//        do {
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            missionResult = flight.droneInfo();
-//            log.info(missionResult);
-//        }
-//        while (missionResult.equals("onemore"));
-//
-//    }
 
 
     @MessageMapping("/startmission")

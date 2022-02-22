@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -53,12 +54,9 @@ public class Flight {
     private Gson gson = new Gson();
     private Timer t = null;
     private DroneLog droneLog = null;
-    private TimerTask tt=new TimerTask() {
-        @Override
-        public void run() {
-            simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-        }
-    };
+    private int sec = 0;
+    private TimerTask tt = null;
+
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog) {
 
         connection = null;
@@ -68,6 +66,14 @@ public class Flight {
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         droneLog = inputDroneLog;
         gps.setMissionType("0");
+        tt = new TimerTask() {
+            @Override
+            public void run() {
+                gps.setSec(sec);
+                sec += 2;
+                simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
+            }
+        };
         try {
 
             socket = new Socket(tcpServerHost, tcpServerPort);
@@ -279,7 +285,7 @@ public class Flight {
     public String flightTakeoff(float takeOffAlt) {
         connection = null;
         socket = null;
-        Timer t = null;
+
         Gson gson = new Gson();
 
         try {
@@ -456,7 +462,7 @@ public class Flight {
     public String wayPoint(int gpsY, int gpsX, int gpsZ, int yaw) {
         socket = null;
         connection = null;
-        Timer t = null;
+
         Gson gson = new Gson();
         gps.setMissionType("waypoint");
 
@@ -1474,6 +1480,36 @@ public class Flight {
 
         }
         return "stop";
+    }
+
+    public void changeYaw(int yaw) {
+        try {
+            int systemId = 1;
+            int componentId = 1;
+            int linkId = 1;
+            long timeBootMs = 0;
+            long minTimeBootMs = 0;
+            long timestamp = System.currentTimeMillis();/* provide microsecond time */
+            byte[] secretKey = new byte[0];
+
+            secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+
+
+            MavlinkMessage message;
+
+
+            connection.send2(systemId, componentId, new CommandLong.Builder().
+                    command(MavCmd.MAV_CMD_CONDITION_YAW)
+                    .param1(yaw)
+                    .param2(0)
+                    .param3(1)
+                    .param4(0)
+                    .build(), linkId, timestamp, secretKey);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 }
 

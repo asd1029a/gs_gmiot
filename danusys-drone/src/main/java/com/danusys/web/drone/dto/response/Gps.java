@@ -16,6 +16,9 @@ public class Gps {
     private String missionType; //미션 종류 (귀환,이륙,이동 등등)
     private int heading; //방향 0이 north
     private float airSpeed;
+    private int sec;
+    private int min;
+    private int hour;
   //  private float airspeed; //수직속도
  //   private float groundspeed;//수평속도
 
