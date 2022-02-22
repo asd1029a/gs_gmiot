@@ -11,6 +11,7 @@ import com.danusys.web.platform.util.PagingUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int add(Map<String, Object> paramMap) throws Exception {
         paramMap.put("insertUserSeq", LoginInfoUtil.getUserDetails().getUserSeq());
         return commonMapper.insert(nsp.insertQry(paramMap));
