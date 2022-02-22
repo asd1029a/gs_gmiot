@@ -22,6 +22,9 @@ public interface CommonMapper {
     @SelectProvider(type=sqlProviderChain.class, method="selectOneQuery")
     EgovMap selectOne(@Param("qry") String qry);
 
+    @SelectProvider(type=sqlProviderChain.class, method="selectKeyQuery")
+    int selectKey(@Param("qry") String qry);
+
     @InsertProvider(type=sqlProviderChain.class, method="insertQuery")
     int insert(@Param("qry") String qry);
 

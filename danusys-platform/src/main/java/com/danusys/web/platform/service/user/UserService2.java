@@ -7,6 +7,7 @@ import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 
+import com.danusys.web.commons.auth.repository.UserStatusRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
 import com.danusys.web.commons.util.EgovMap;
@@ -45,11 +46,8 @@ public class UserService2 {
 
     private final UserRepository userRepository;
     private final UserGroupInUserRepository userGroupInUserRepository;
+    private final UserStatusRepository userStatusRepository;
 
-    /*
-
-
-     */
 
     public User findUser(String userName, String errorMessage) {
 
@@ -82,7 +80,7 @@ public class UserService2 {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
+//        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
         // log.info("{}",userDetails.getUserSeq());
 
         if (findUser != null) {
@@ -109,7 +107,7 @@ public class UserService2 {
             if (user.getDetailAddress() != null)
                 findUser.setDetailAddress(user.getDetailAddress());
 
-            findUser.setUpdateUserSeq(userDetails.getUserSeq());
+//            findUser.setUpdateUserSeq(userDetails.getUserSeq());
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             findUser.setUpdateDt(timestamp);
 
@@ -124,8 +122,9 @@ public class UserService2 {
 
     @Transactional
     public void deleteUser(User user) {
-
-        userRepository.deleteByUserSeq(user.getUserSeq());
+        User findUser = userRepository.findByUserSeq(user.getUserSeq());
+        findUser.setStatus("2");
+        //userRepository.deleteByUserSeq(user.getUserSeq());
 
 
     }
@@ -149,7 +148,7 @@ public class UserService2 {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        user.setInsertUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
+        //  user.setInsertUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         user.setInsertDt(timestamp);
 
@@ -159,12 +158,13 @@ public class UserService2 {
 
 
     // public List<UserDto> findListUser() {
+
     public Map<String, Object> findListUser(Map<String, Object> paramMap) {
 
         int start = 0;
         int length = 1;
         int count = 0;
-        int draw =0;
+        int draw = 0;
 
         if (paramMap.get("start") != null)
             start = Integer.parseInt(paramMap.get("start").toString());
@@ -174,7 +174,7 @@ public class UserService2 {
         if (paramMap.get("draw") != null) {
             draw = Integer.parseInt(paramMap.get("draw").toString());
         }
-        PageRequest pageRequest = PageRequest.of(start/length, length);
+        PageRequest pageRequest = PageRequest.of(start / length, length);
 
         Page<User> userPageList = null;
         //   log.info("totalPage={}",userList2.getTotalPages());
@@ -198,7 +198,13 @@ public class UserService2 {
             userList = userPageList.toList();
             count = (int) userPageList.getTotalElements();
         }
+        userList.forEach(r -> {
+            //log.info(r.getStatus());
+            r.setStatus(userStatusRepository.findByCodeValue(r.getStatus()).getCodeName());
+        });
         List<UserDto> userDtoList = userList.stream().map(UserDto::new).collect(Collectors.toList());
+
+
         //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
@@ -222,6 +228,13 @@ public class UserService2 {
     public int getUserSize() {
         return userRepository.findAll().size();
     }
+
+    public int idCheck(String userId) {
+
+        User user = userRepository.findByUserId(userId);
+        return (user == null) ? 1 : 0;
+    }
+
 
 //
 //    public com.danusys.web.platform.model.paging.Page<List<Map<String, Object>>> getLists(PagingRequest pagingRequest) {

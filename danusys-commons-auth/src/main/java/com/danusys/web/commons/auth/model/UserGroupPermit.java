@@ -1,6 +1,7 @@
 package com.danusys.web.commons.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,6 +28,7 @@ public class UserGroupPermit {
     //   @Column(name="permit_seq")
     //    private String permitSeq;
     @Column(name = "insert_dt")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp insertDt;
     @Column(name = "insert_user_seq")
     private int insertUserSeq;

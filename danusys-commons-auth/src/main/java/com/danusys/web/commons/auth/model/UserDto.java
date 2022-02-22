@@ -31,6 +31,7 @@ public class UserDto {
     private String status;
 
 
+
     private String detailAddress;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp lastLoginDt;

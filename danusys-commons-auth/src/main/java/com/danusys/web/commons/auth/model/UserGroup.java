@@ -1,6 +1,7 @@
 package com.danusys.web.commons.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,17 +31,19 @@ public class UserGroup implements Serializable {
     @Column(name = "user_group_remark")
     private String groupDesc;
     @Column(name = "insert_dt")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp insertDt;
     @Column(name = "insert_user_seq")
     private int insertUserSeq;
     @Column(name = "update_dt")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp updateDt;
     @Column(name = "update_user_seq")
     private int updateUserSeq;
 
-    @OneToOne(mappedBy = "userGroup", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userGroup", fetch = FetchType.LAZY)
     @JsonBackReference
-    private UserGroupInUser userGroupInUser;
+    private final List<UserGroupInUser> userGroupInUser =new ArrayList<>();
 
     @OneToMany(mappedBy = "userGroup2", fetch = FetchType.EAGER)
     @JsonManagedReference

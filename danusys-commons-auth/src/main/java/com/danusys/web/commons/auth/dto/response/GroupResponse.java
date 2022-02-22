@@ -5,8 +5,10 @@ import com.danusys.web.commons.auth.model.UserGroupInUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,10 +21,12 @@ public class GroupResponse {
     private int insertUserSeq;
     private Timestamp updateDt;
     private int updateUserSeq;
+    private String inUserId="";
 
 
 
     public GroupResponse(UserGroup userGroup) {
+
         this.userGroupSeq = userGroup.getUserGroupSeq();
         this.groupName = userGroup.getGroupName();
         this.groupDesc = userGroup.getGroupDesc();
@@ -30,6 +34,14 @@ public class GroupResponse {
         this.insertUserSeq = userGroup.getInsertUserSeq();
         this.updateDt = userGroup.getUpdateDt();
         this.updateUserSeq = userGroup.getUpdateUserSeq();
+        userGroup.getUserGroupInUser().forEach(r->{
+
+            this.inUserId+=r.getUser().getUserName()+", ";
+
+        });
+        this.inUserId= StringUtils.substring(inUserId,0,-2);
+
+
     }
 
 

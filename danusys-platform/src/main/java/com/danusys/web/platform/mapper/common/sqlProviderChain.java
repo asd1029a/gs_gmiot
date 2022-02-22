@@ -10,6 +10,9 @@ public class sqlProviderChain {
     public String selectOneQuery(Map<String, Object> paramMap){
         return paramMap.get("qry").toString();
     }
+    public String selectKeyQuery(Map<String, Object> paramMap){
+        return paramMap.get("qry").toString();
+    }
     public String insertQuery(Map<String, Object> paramMap){
         return paramMap.get("qry").toString();
     }

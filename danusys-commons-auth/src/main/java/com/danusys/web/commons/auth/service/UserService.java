@@ -36,7 +36,8 @@ public class UserService {
 
     @Transactional
     public User updateUser(String userName, String refreshToken) {
-        User findUser = this.findUser(userName, "Error update user id");
+        User findUser = this.findUser(userName, "Error update user id" +
+                "");
         if(findUser!=null)
         findUser.setRefreshToken(refreshToken);
 

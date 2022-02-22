@@ -133,8 +133,8 @@ $.fn.extend({
                     returnVal = false;
                     return false;
 
-                } else if($(element).val()!="" && typeof($(element).attr("data-regex"))!="undefined") {
-                    if(!stringFunc.validRegex($(element).val(), $(element).attr("data-regex"))) {
+                } else if($(element).val()!="" && typeof($(element).data("regex"))!="undefined") {
+                    if(!stringFunc.validRegex($(element).val(), $(element).data("regex"))) {
                         $(element).focus();
                         validType = 2;
                         returnVal = false;
@@ -867,7 +867,7 @@ var stringFunc = {
 
         // 로그인 ID : 3~25 자리 영숫자.
         if(type=="loginId") {
-            regex =  /^[A-Za-z0-9가-힣]{3,25}$/g;
+            regex =  /^[A-Za-z0-9]{3,25}$/g;
             // 로그인 이름
         } else if(type=="loginName") {
             regex =  /^[A-Za-z0-9가-힣]+$/g;
