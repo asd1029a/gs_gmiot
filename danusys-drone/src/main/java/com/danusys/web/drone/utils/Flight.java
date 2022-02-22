@@ -1328,6 +1328,7 @@ public class Flight {
 
             try {
                 socket.close();
+                connection=null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
