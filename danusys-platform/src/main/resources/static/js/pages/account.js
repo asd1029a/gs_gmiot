@@ -11,6 +11,15 @@ const account = {
             $("#addUserAccountBtn").on('click', () => {
                 account.user.showPopup("add");
             });
+            $("#addUserAccountProcBtn").on('click', () => {
+                account.user.addProc();
+            });
+            $("#modUserAccountProcBtn").on('click', () => {
+                account.user.modProc($("userAccountForm").data("userSeq"));
+            });
+            $("#delUserAccountProcBtn").on('click', () => {
+                account.user.delProc($("userAccountForm").data("userSeq"));
+            });
             $("#userAccountPopup .title dd").on('click', () => {
                 account.user.hidePopup();
             });
@@ -62,15 +71,11 @@ const account = {
                 click : function(e) {
                     const $form = $('#userAccountForm');
                     const rowData = $target.DataTable().row($(e.currentTarget)).data();
-                    /*if($(e.target).hasClass('writeButton') || $(e.target).prop('tagName') === "I") {
-                        account.user.showPopup('mod');
-                        $('#userAccountForm').setItemValue(rowData);
-                    }*/
                     if($(e.target).hasClass('button')) {
                         account.user.showPopup('mod');
                         $('#userAccountForm').setItemValue(rowData);
                         account.user.get(rowData.userSeq ,(result) => {
-                            $form.data("eventSeq", rowData.userSeq);
+                            $form.data("userSeq", rowData.userSeq);
                             $form.setItemValue(result);
                         });
                     }
@@ -95,19 +100,23 @@ const account = {
             });
         },
         showPopup : (type) => {
+            const $popup = $("#userAccountPopup");
+
             $('#userAccountPopup .popupContents').scrollTop(0);
             comm.showModal($('#userAccountPopup'));
-            $('#userAccountPopup').css("display", "flex");
+            $popup.css("display", "flex");
             $('#userAccountForm').initForm();
             $('#userAccountPopup [data-mode]').hide();
+            $popup.find("#userId").data("required", true).data("regex", "loginId");
+            $popup.find("#password").data("required", true).data("regex", "sPassword");
+            $popup.find("#userName").data("required", true).data("regex", "name");
+            $popup.find("#tel").data("required", true).data("regex", "loginId");
+            $popup.find("#email").data("required", true).data("regex", "email");
             if(type === "add") {
                 $('#userAccountPopup .popupTitle h4').text("사용자 계정 등록");
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
             } else if(type === "mod") {
                 $('#userAccountPopup .popupTitle h4').text('사용자 계정 수정');
-                $('#userAccountPopup [data-mode="'+type+'"]').show();
-            } else if(type === "detail") {
-                $('#userAccountPopup .popupTitle h4').text("사용자 계정 상세");
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
             }
         },
@@ -118,42 +127,69 @@ const account = {
         },
         addProc : () => {
             const formObj = $('#userAccountForm').serializeJSON();
+            const $checkPassword = $("#checkPassword");
 
-            comm.ajaxPost({
-                    url : "/user"
-                    , type : "PUT"
-                    , data : formObj
-                },
-                (result) => {
-                    comm.showAlert("사용자 계정이 등록되었습니다");
-                    account.user.create($('#userAccountTable'));
-                    account.user.hidePopup();
-                });
+            if(formObj.password === $checkPassword.val()) {
+                if($('#userAccountForm').doValidation()) {
+                    $.ajax({
+                        url: "/user"
+                        , type: "PUT"
+                        , contentType : "application/json; charset=utf-8"
+                        , data : JSON.stringify(formObj)
+                    }).done((result) => {
+                        comm.showAlert("사용자 계정이 등록되었습니다");
+                        account.user.create($('#userAccountTable'));
+                        account.user.hidePopup();
+                    });
+                } else {
+                    return false;
+                }
+            } else {
+                $checkPassword.focus();
+                comm.showAlert("비밀번호 확인이 일치하지 않습니다.")
+            }
         },
-        modProc : () => {
+        modProc : (pSeq) => {
             const formObj = $('#userAccountForm').serializeJSON();
+            formObj.userSeq = pSeq;
+            const $checkPassword = $("#checkPassword");
 
-            comm.ajaxPost({
+            if(formObj.password === $checkPassword.val()) {
+                if(formObj.password === ""
+                    && $checkPassword.val() === "") {
+                    delete formObj.password;
+                    $('#userAccountForm').find("#password").removeData("required", true).removeData("regex", "sPassword");
+                }
+            } else {
+                $checkPassword.focus();
+                comm.showAlert("비밀번호 확인이 일치하지 않습니다.");
+                return false;
+            }
+
+            if($('#userAccountForm').doValidation()) {
+                $.ajax({
                     url : "/user"
                     , type : "PATCH"
-                    , data : formObj
-                },
-                (result) => {
+                    , contentType : "application/json; charset=utf-8"
+                    , data : JSON.stringify(formObj)
+                }).done((result) => {
                     comm.showAlert("사용자 계정이 수정되었습니다");
                     account.user.create($('#userAccountTable'));
                     account.user.hidePopup();
                 });
+            } else {
+                return false;
+            }
         },
         delProc : (pSeq) => {
-            comm.ajaxPost({
-                    url : "/user"+pSeq
-                    , type : "DELETE"
-                },
-                (result) => {
-                    comm.showAlert("사용자 계정이 삭제되었습니다");
-                    account.user.create($('#userAccountTable'));
-                    account.user.hidePopup();
-                });
+            $.ajax({
+                url : "/user/"+pSeq
+                , type : "DELETE"
+            }).done((result) => {
+                comm.showAlert("사용자 계정이 삭제되었습니다");
+                account.user.create($('#userAccountTable'));
+                account.user.hidePopup();
+            });
         }
     }
     , group : {

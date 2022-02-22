@@ -92,6 +92,13 @@ public class NoticeSqlProvider {
         return sql.toString();
     }
 
+    public String selectKeyQry() {
+        SQL sql = new SQL() {{
+            SELECT("currval('t_notice_seq')");
+        }};
+        return sql.toString();
+    }
+
     public String insertQry(Map<String, Object> paramMap) {
         Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
 

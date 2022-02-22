@@ -14,7 +14,7 @@ public class SqlUtil {
         paramMap.forEach((k, v) -> columnMap.put(StringUtil.camelToSnake(k), v));
 
         resultMap.put("columns", String.join(",", columnMap.keySet()));
-        resultMap.put("values", paramMap.values().stream()
+        resultMap.put("values", columnMap.values().stream()
                 .map(value -> {
                         if (value instanceof String) {
                             return "'" + value + "'";

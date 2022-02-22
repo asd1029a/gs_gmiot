@@ -133,8 +133,8 @@ $.fn.extend({
                     returnVal = false;
                     return false;
 
-                } else if($(element).val()!="" && typeof($(element).attr("data-regex"))!="undefined") {
-                    if(!stringFunc.validRegex($(element).val(), $(element).attr("data-regex"))) {
+                } else if($(element).val()!="" && typeof($(element).data("regex"))!="undefined") {
+                    if(!stringFunc.validRegex($(element).val(), $(element).data("regex"))) {
                         $(element).focus();
                         validType = 2;
                         returnVal = false;
@@ -675,11 +675,17 @@ var comm = {
             this.$listLi.on('click', function(e){
                 that.listSelect($(this));
             });
+            $(document).on('click', function(e){
+                that.listOff($(e.target));
+            });
         }
         comm.createMultiSelectBox.prototype.listOn = function($target){
             let $box = $($target).parent();
-            $box.toggleClass('on');
-            if($box.hasClass('on')){
+
+            this.listOff($target);
+
+            $box.toggleClass('selected_box');
+            if($box.hasClass('selected_box')){
                 $box.find(".list").css('display', 'block');
             }else{
                 $box.find(".list").css('display', 'none');
@@ -722,9 +728,10 @@ var comm = {
             $targetSelect.text(selectStr);
         }
         comm.createMultiSelectBox.prototype.listOff = function($target){
-            if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
-                this.$selectBox.removeClass('on');
-                this.$list.css('display', 'none');
+            if($(".selected_box").length && !($($target).parents(".selected_box").length) && !($($target).hasClass("selected_box"))){
+                let selectedBox = $(".selected_box");
+                selectedBox.removeClass('selected_box');
+                selectedBox.children(".list").css('display', 'none');
             };
         }
 
@@ -860,7 +867,7 @@ var stringFunc = {
 
         // 로그인 ID : 3~25 자리 영숫자.
         if(type=="loginId") {
-            regex =  /^[A-Za-z0-9가-힣]{3,25}$/g;
+            regex =  /^[A-Za-z0-9]{3,25}$/g;
             // 로그인 이름
         } else if(type=="loginName") {
             regex =  /^[A-Za-z0-9가-힣]+$/g;

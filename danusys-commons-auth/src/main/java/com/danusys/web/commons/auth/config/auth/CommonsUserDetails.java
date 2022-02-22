@@ -24,7 +24,7 @@ public class CommonsUserDetails implements UserDetails {
     private List<String> permitList;
 
     public CommonsUserDetails(User user) {
-        this.user =  user;
+        this.user = user;
 
         //   this.permit = permit;
         permitList = new ArrayList<>();
@@ -47,7 +47,7 @@ public class CommonsUserDetails implements UserDetails {
         return user.getUserId();
     }
 
-    public int getUserSeq(){
+    public int getUserSeq() {
 
         return user.getUserSeq();
     }
@@ -58,8 +58,7 @@ public class CommonsUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-       //  log.info("here={}",user.getUserGroupInUser());
-
+        //  log.info("here={}",user.getUserGroupInUser());
 
 
         if (user == null) {
@@ -68,8 +67,11 @@ public class CommonsUserDetails implements UserDetails {
         } else {
 
             //permitList.add(user.getUserGroupInUser().getUserGroup().getUserGroupPermit().getPermit().getPermitName());
-          user.getUserGroupInUser().getUserGroup().getUserGroupPermit().forEach(r -> {
-              permitList.add( r.getPermit().getPermitName());
+            user.getUserGroupInUser().forEach(r -> {
+                r.getUserGroup().getUserGroupPermit().forEach(rr -> {
+                    permitList.add(rr.getPermit().getPermitName());
+                });
+
             });
             permitList.forEach(r -> {
                 authorities.add(() -> {

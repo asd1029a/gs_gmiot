@@ -21,6 +21,16 @@ const notice = {
         $("#addNoticeBtn").on('click', () => {
             notice.showPopup("add");
         });
+        $("#file").on('change', (e) => {
+            const maxSize = 10 * 1024 * 1024 // 10MB
+            const fileSize = e.currentTarget.files[0].size
+            if( fileSize > maxSize){
+                comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
+            } else {
+                const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
+                $("#noticeFile").val(fileName);
+            }
+        });
     }
     , create : () => {
         const $target = $('#noticeTable');
@@ -55,13 +65,7 @@ const notice = {
                 {data: "noticeFile"},
                 {data: null}
             ],
-            "columnDefs": [
-                {
-                    "targets": -1,
-                    "data": null,
-                    "defaultContent": '<span class="button">상세보기</span>'
-                }
-                , {
+            columnDefs: [{
                     targets: 0,
                     render: $.fn.dataTable.render.ellipsis( 30, true )
                 }
@@ -79,7 +83,18 @@ const notice = {
                             $(td).text("없음");
                         }
                     }
-                }]
+                }
+                , {
+                    "targets": 5,
+                    "data": null,
+                    "defaultContent": '<span class="button detail">상세보기</span>'
+                }
+                , {
+                    "targets": 6,
+                    "data": null,
+                    "defaultContent": '<span class="button mod">수정</span>'
+                }
+            ]
             , excelDownload : true
         }
 
@@ -88,7 +103,8 @@ const notice = {
                 const $form = $('#noticeForm');
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
                 if($(e.target).hasClass('button')) {
-                    notice.showPopup('mod');
+                    const buttonType = $(e.target).attr("class").split(' ')[1];
+                    notice.showPopup(buttonType);
                     notice.get(rowData.noticeSeq ,(result) => {
                         $form.data("noticeSeq", rowData.noticeSeq);
                         $form.setItemValue(result);
@@ -116,54 +132,88 @@ const notice = {
         });
     },
     showPopup : (type) => {
+        const fileHtml = '<label For="file">파일찾기</label>'
+        + '<input type="file" name="file" id="file">';
+        const downloadBtnHtml = '<span class="download_btn">내려받기</span>'
+
         comm.showModal($('#noticePopup'));
         $('#noticePopup').css("display", "flex");
         $('#noticeForm').initForm();
-        $('#noticePopup [data-mode]').hide();
+        $('#noticePopup [data-add], [data-mod], [data-detail]').hide();
+        $('#noticePopup [data-'+type+'="true"]').show();
+        $("#noticePopup #file, [for='file'], .download_btn").remove();
         if(type === "add") {
             $('#noticePopup .title dt').text("공지사항 등록");
-            $('#noticePopup [data-mode="'+type+'"]').show();
+            $('#noticePopup .fileBox').append(fileHtml);
         } else if(type === "mod") {
             $('#noticePopup .title dt').text('공지사항 수정');
-            $('#noticePopup [data-mode="'+type+'"]').show();
+            $('#noticePopup .fileBox').append(fileHtml);
+        } else if(type === "detail") {
+            $('#noticePopup .title dt').text('공지사항 상세');
+            $('#noticePopup .fileBox').append(downloadBtnHtml);
         }
     },
     hidePopup : () => {
         comm.hideModal($('#noticePopup'));
         $('#noticePopup').hide();
     },
+    fileUpload : (pSeq, $form, doneFunc, failFunc) => {
+        const formData = new FormData();
+        formData.append("noticeSeq", pSeq);
+        formData.append("file", $("#noticeForm").find("#file")[0].files[0]);
+
+        $.ajax({
+            url: "/notice/upload",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            enctype: "multipart/form-data"
+        }
+        ).done(doneFunc)
+        .fail(failFunc)
+
+    },
     addProc : () => {
-        const formObj = $('#noticeForm').serializeJSON();
+        const formData = new FormData($("#noticeForm")[0]);
 
         if($('#noticeForm').doValidation()) {
             $.ajax({
-                url : "/notice"
-                , type: "PUT"
-                , contentType : "application/json; charset=utf-8"
-                , data : JSON.stringify(formObj)
-            }).done((result) => {
+                url : "/notice/add"
+                , type: "POST"
+                , enctype : "multipart/form-data"
+                , processData: false
+                , contentType: false
+                , data : formData
+            }).done(() => {
                 comm.showAlert("공지사항이 등록되었습니다");
                 notice.create($('#noticeTable'));
                 notice.hidePopup();
+            }).fail(() => {
+                comm.showAlert("공지사항 등록에 실패했습니다.");
             });
         } else {
             return false;
         }
     },
     modProc : (pSeq) => {
-        const formObj = $('#noticeForm').serializeJSON();
-        formObj.noticeSeq = pSeq;
+        const formData = new FormData($("#noticeForm")[0]);
+        formData.append("noticeSeq", pSeq);
 
         if($('#noticeForm').doValidation()) {
             $.ajax({
-                url: "/notice"
-                , type: "PATCH"
-                , contentType: "application/json; charset=utf-8"
-                , data: JSON.stringify(formObj)
+                url : "/notice/mod"
+                , type: "POST"
+                , enctype : "multipart/form-data"
+                , processData: false
+                , contentType: false
+                , data : formData
             }).done((result) => {
                 comm.showAlert("공지사항이 수정되었습니다");
                 notice.create($('#noticeTable'));
                 notice.hidePopup();
+            }).fail(() => {
+                comm.showAlert("공지사항 수정에 실패했습니다.");
             });
         } else {
             return false;

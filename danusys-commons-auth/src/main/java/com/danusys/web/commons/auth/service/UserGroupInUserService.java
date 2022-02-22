@@ -9,6 +9,7 @@ import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.PagingUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +28,7 @@ public class UserGroupInUserService {
     private final UserGroupInUserRepository userGroupInUserRepository;
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
-
+    private Boolean flag;
 
     public UserGroupInUser findUserGroupSeq(int UserGroupSeq, String errorMessage) {
 
@@ -52,29 +53,66 @@ public class UserGroupInUserService {
         return findUserGroupInUser;
     }
 
-    @Transactional
-    public int saveUserGroupInUser(UserGroupInUser userGroupInUser, int userSeq, int userGroupSeq) {
-        User user = userRepository.findByUserSeq(userSeq);
-        if (user == null)
-            return 0;
 
-        // log.info("user={}",user);
-        userGroupInUser.setUser(user);
-        UserGroup userGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
-        if (userGroup == null)
-            return 0;
-        userGroupInUser.setUserGroup(userGroup);
+    public List<Integer> saveUserGroupInUser(Map<String, Object> paramMap) {
+        List<Integer> userSeqList = (List<Integer>) paramMap.get("userSeqList");
+        List<Integer> userGroupSeqList = (List<Integer>) paramMap.get("userGroupSeqList");
+        //int userGroupSeq = Integer.parseInt(paramMap.get("userGroupSeq").toString());
+        flag = false;
+        List<UserGroupInUser> userGroupInUserList = new ArrayList<>();
 
 
-        CommonsUserDetails userDetails = LoginInfoUtil.getUserDetails();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        userGroupInUser.setInsertUserSeq(userDetails.getUserSeq());
-        userGroupInUser.setInsertDt(timestamp);
+        userSeqList.forEach(userSeq -> {
+            userGroupSeqList.forEach(userGroupSeq -> {
+                UserGroupInUser userGroupInUser = new UserGroupInUser();
+                UserGroup userGroup = new UserGroup();
+                userGroup.setUserGroupSeq(userGroupSeq);
+                User user = new User();
+                user.setUserSeq(userSeq);
+                //  log.info("ㅠㅠ={}",userGroupInUserRepository.findByUserAndUserGroup(user, userGroup) );
+                if (userGroupInUserRepository.findByUserAndUserGroup(user, userGroup).isEmpty()) {
 
-        userGroupInUserRepository.save(userGroupInUser);
-        return userSeq;
+                    flag = true;
+                } else {
 
+                    flag = false;
+                }
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
+                userGroupInUser.setUser(user);
+                userGroupInUser.setUserGroup(userGroup);
+                userGroupInUser.setInsertDt(timestamp);
+                userGroupInUserList.add(userGroupInUser);
+            });
+
+        });
+        if (flag) {
+            userGroupInUserRepository.saveAll(userGroupInUserList);
+        } else if (!flag) {
+            userSeqList = null;
+        }
+
+//        User user = userRepository.findByUserSeq(userSeq);
+//        if (user == null)
+//            return 0;
+//
+//        // log.info("user={}",user);
+//        userGroupInUser.setUser(user);
+//        UserGroup userGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
+//        if (userGroup == null)
+//            return 0;
+//        userGroupInUser.setUserGroup(userGroup);
+//
+//
+//        CommonsUserDetails userDetails = LoginInfoUtil.getUserDetails();
+//        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+//        userGroupInUser.setInsertUserSeq(userDetails.getUserSeq());
+//        userGroupInUser.setInsertDt(timestamp);
+//
+//        userGroupInUserRepository.save(userGroupInUser);
+//        return userSeq;
+
+        return userSeqList;
     }
 
 

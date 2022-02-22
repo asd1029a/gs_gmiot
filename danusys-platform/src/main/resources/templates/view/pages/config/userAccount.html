@@ -81,33 +81,33 @@
                         <form id="userAccountForm">
                             <dl>
                                 <dt>ID</dt>
-                                <dd><input type="text" id="userId" placeholder="*필수 입력"><span class="button">중복 확인</span></dd>
+                                <dd><input type="text" id="userId" name="userId" placeholder="*필수 입력(3~25 자리 영어 + 숫자 조합)" ><span class="button">중복 확인</span></dd>
                             </dl>
                             <dl>
                                 <dt>비밀번호</dt>
-                                <dd><input type="password" placeholder="*필수 입력"></dd>
+                                <dd><input type="password" id="password" name="password" placeholder="*필수 입력(8~15 문자 + 숫자 + 특수문자 조합)" ></dd>
                             </dl>
                             <dl>
                                 <dt>비밀번호 확인</dt>
-                                <dd><input type="password" placeholder="*필수 입력"></dd>
+                                <dd><input type="password" id="checkPassword" placeholder="*필수 입력" ></dd>
                             </dl>
                             <dl>
                                 <dt>이름</dt>
-                                <dd><input type="text" id="userName" placeholder="*필수 입력"></dd>
+                                <dd><input type="text" id="userName" name="userName" placeholder="*필수 입력" ></dd>
                             </dl>
                             <dl>
                                 <dt>전화번호</dt>
-                                <dd><input type="text" id="tel" placeholder="*필수 입력"></dd>
+                                <dd><input type="text" id="tel" name="tel" placeholder="*필수 입력(하이픈'-' 제외 작성)" ></dd>
                             </dl>
                             <dl>
                                 <dt>이메일</dt>
-                                <dd><input type="text" id="email" placeholder="*필수 입력"></dd>
+                                <dd><input type="text" id="email" name="email" placeholder="*필수 입력(예.example@example.com)" ></dd>
                             </dl>
                             <dl class="checkbox">
                                 <dt>계정 상태</dt>
                                 <dd>
                                     <span>
-                                        <input type="radio" id="account_status_use" name="status" data-value="2"> <!--value 임시값-->
+                                        <input type="radio" id="account_status_use" name="status" data-value="2" checked> <!--value 임시값-->
                                         <label for="account_status_use"><span class="round"></span>사용</label>
                                     </span>
                                     <span>
@@ -121,57 +121,20 @@
                     <div class="list_search">
                         <p class="legend">소속 그룹</p>
                         <div class="list_table">
-                            <table>
+                            <table id="userInGroupTable">
                                 <thead>
                                 <tr>
-                                    <th>Index</th>
+                                    <th>소속</th>
                                     <th>그룹 이름</th>
                                     <th>설명</th>
                                     <th>선택</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>그룹 이름</td>
-                                    <td>설명</td>
-                                    <td>
-                                            <span>
-                                                <input type="checkbox" id="group01" name="">
-                                                <label for="group01"><span></span></label>
-                                            </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>그룹 이름</td>
-                                    <td>설명</td>
-                                    <td>
-                                            <span>
-                                                <input type="checkbox" id="group02" name="">
-                                                <label for="group02"><span></span></label>
-                                            </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>관리자</td>
-                                    <td>관리자 그룹</td>
-                                    <td>
-                                            <span>
-                                                <input type="checkbox" id="group03" name="">
-                                                <label for="group03"><span></span></label>
-                                            </span>
-                                    </td>
-                                </tr>
-                                </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
                 <ul class="bottom">
-                    <!--<li>취소</li>
-                    <li class="color">추가</li>-->
                     <li data-mode="mod" id="delUserAccountProcBtn">삭제</li>
                     <li data-mode="mod" id="modUserAccountProcBtn">정보 수정</li>
                     <li class="color" data-mode="add" id="addUserAccountProcBtn">등록</li>
