@@ -53,12 +53,17 @@ public class Flight {
     private Gson gson = new Gson();
     private Timer t = null;
     private DroneLog droneLog = null;
-
+    private TimerTask tt=new TimerTask() {
+        @Override
+        public void run() {
+            simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
+        }
+    };
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog) {
 
         connection = null;
         socket = null;
-        Timer t = null;
+        //Timer t = null;
         Gson gson = new Gson();
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         droneLog = inputDroneLog;
@@ -75,13 +80,13 @@ public class Flight {
             ;
             byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
-            t = new Timer();
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-                }
-            }, 0, 2000);
+//            t = new Timer();
+//            t.schedule(new TimerTask() {
+//                @Override
+//                public void run() {
+//                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
+//                }
+//            }, 0, 2000);
             MavlinkMessage message;
 
 
@@ -122,6 +127,10 @@ public class Flight {
             }
             //new connection
             connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+            t = new Timer();
+
+
+            t.schedule(tt, 0, 2000);
 
             //4 guided mode
 
@@ -257,7 +266,7 @@ public class Flight {
             ioe.printStackTrace();
 
         } finally {
-            t.purge();
+//            t.purge();
             log.info("endtakeoff");
             try {
                 socket.close();
@@ -291,13 +300,13 @@ public class Flight {
             ;
             byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
-            t = new Timer();
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-                }
-            }, 0, 2000);
+//            t = new Timer();
+//            t.schedule(new TimerTask() {
+//                @Override
+//                public void run() {
+//                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
+//                }
+//            }, 0, 2000);
             MavlinkMessage message;
 
             //4 guided mode
@@ -435,7 +444,7 @@ public class Flight {
             ioe.printStackTrace();
         } finally {
 
-            t.purge();
+//            t.purge();
             System.out.println("takeoff");
             try {
                 socket.close();
@@ -511,13 +520,13 @@ public class Flight {
 
             droneLogDetailsService.saveDroneLogDetails(droneLogDetailsConditionYaw);
             Heartbeat heartbeat = null;
-            t = new Timer();
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-                }
-            }, 0, 2000);
+//            t = new Timer();
+//            t.schedule(new TimerTask() {
+//                @Override
+//                public void run() {
+//                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
+//                }
+//            }, 0, 2000);
 
             while ((message = connection.next()) != null) {
 
@@ -592,7 +601,7 @@ public class Flight {
 
 
         } finally {
-            t.purge();
+//            t.purge();
             try {
                 socket.close();
 
@@ -768,13 +777,10 @@ public class Flight {
             droneLogDetailsService.saveDroneLogDetails(droneLogDetailsReturnToLaunch);
 
             Heartbeat heartbeat = null;
-            t = new Timer();
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-                }
-            }, 0, 2000);
+//            t = new Timer();
+//
+//
+//            t.schedule(tt, 0, 2000);
 
 
             while ((message = connection.next()) != null) {
@@ -853,7 +859,7 @@ public class Flight {
         } catch (Exception ioe) {
 
         } finally {
-            t.purge();
+
             try {
                 socket.close();
 
@@ -1117,14 +1123,14 @@ public class Flight {
 
 
             //    Gson gson = new Gson();
-            t = new Timer();
-
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-                }
-            }, 0, 2000);
+//            t = new Timer();
+//
+//            t.schedule(new TimerTask() {
+//                @Override
+//                public void run() {
+//                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
+//                }
+//            }, 0, 2000);
             int flag = 0;
             while ((message = connection.next()) != null) {
 
@@ -1304,7 +1310,9 @@ public class Flight {
 
         } finally {
             System.out.println("Mission");
-            t.purge();
+//            t.purge();
+            tt.cancel();
+            t.cancel();
 
             try {
                 socket.close();
