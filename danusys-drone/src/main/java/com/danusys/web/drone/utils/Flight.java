@@ -55,9 +55,11 @@ public class Flight {
     private Timer t = null;
     private DroneLog droneLog = null;
     private int sec = 0;
+    private int min = 0;
+    private int hour = 0;
     private TimerTask tt = null;
 
-    public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog) {
+    public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog,int droneId) {
 
         connection = null;
         socket = null;
@@ -66,11 +68,22 @@ public class Flight {
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         droneLog = inputDroneLog;
         gps.setMissionType("0");
+        gps.setDroneId(droneId);
         tt = new TimerTask() {
             @Override
             public void run() {
                 gps.setSec(sec);
+                gps.setMin(min);
+                gps.setHour(hour);
                 sec += 2;
+                if (sec == 60) {
+                    sec = 0;
+                    min++;
+                }
+                if (min == 60) {
+                    min = 0;
+                    hour++;
+                }
                 simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
             }
         };

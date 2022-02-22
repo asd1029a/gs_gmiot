@@ -44,16 +44,20 @@ public class MissionApiController {
     private final Flight flight;
     private final DroneLogService droneLogService;
 
+/*
 
-    //    @GetMapping("/return")
+    url:/return
+    do: 해당 드론 귀환
+    param: paramMap{droneSeq}
+
+ */
+
     @MessageMapping("/return")
     @SendTo("/topic/return")
-//    public ResponseEntity<?> returnDrone() {
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(flight.returnDrone());
-//
-//    }
-    public void returnDrone() {
+    public void returnDrone(Map<String, Object> paramMap) {
+        int droneSeq=0;
+        if(paramMap.get("droneSeq")!=null)
+            droneSeq=Integer.parseInt(paramMap.get("droneSeq").toString());
         flight.returnDrone();
     }
 
@@ -204,7 +208,7 @@ public class MissionApiController {
             log.info("x={},y={},z={}", x, y, z);
             if (missionIndex.getOrDefault(step, "finish").equals("takeOff")) {
 
-                missionMap = flight.missionTakeoff(droneLog);
+                missionMap = flight.missionTakeoff(droneLog,missionResponse.getDrone().getId().intValue());
                 flag++;
 
             } else if (missionIndex.getOrDefault(step, "finish").contains("waypoint")) {

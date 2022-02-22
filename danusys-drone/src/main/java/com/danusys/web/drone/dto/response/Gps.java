@@ -19,6 +19,7 @@ public class Gps {
     private int sec;
     private int min;
     private int hour;
+    private int droneId;
   //  private float airspeed; //수직속도
  //   private float groundspeed;//수평속도
 
