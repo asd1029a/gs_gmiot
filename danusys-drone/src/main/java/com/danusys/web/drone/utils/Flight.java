@@ -257,7 +257,7 @@ public class Flight {
             ioe.printStackTrace();
 
         } finally {
-            t.cancel();
+            t.purge();
             log.info("endtakeoff");
             try {
                 socket.close();
@@ -435,7 +435,7 @@ public class Flight {
             ioe.printStackTrace();
         } finally {
 
-            t.cancel();
+            t.purge();
             System.out.println("takeoff");
             try {
                 socket.close();
@@ -592,7 +592,7 @@ public class Flight {
 
 
         } finally {
-            t.cancel();
+            t.purge();
             try {
                 socket.close();
 
@@ -749,7 +749,7 @@ public class Flight {
             long timestamp = System.currentTimeMillis();/* provide microsecond time */
             ;
             byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
-
+            gps.setMissionType("return");
             MavlinkMessage message;
 
             connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_RETURN_TO_LAUNCH).build(), linkId, timestamp, secretKey);
@@ -853,10 +853,10 @@ public class Flight {
         } catch (Exception ioe) {
 
         } finally {
-
+            t.purge();
             try {
                 socket.close();
-                t.cancel(); //타이머 종료
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1304,7 +1304,7 @@ public class Flight {
 
         } finally {
             System.out.println("Mission");
-            t.cancel(); //타이머 종료
+            t.purge();
 
             try {
                 socket.close();
