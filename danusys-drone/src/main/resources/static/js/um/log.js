@@ -20,6 +20,8 @@ function ajaxLog(paramMap) {
             console.log(resultData);
             $(".search_body").html("");
             $(".pageNav").html("");
+            $(".count").html(resultData.count);
+
             $.each(resultData.data, function (i, item) {
                 $(".search_body").append(`
            <tr>
@@ -32,7 +34,7 @@ function ajaxLog(paramMap) {
          
           `);
             });
-            $(".pageNav").append(`<li class="prev" data-id=${resultData.startPage-1} ><i><img src="images/um/navPrev.svg"></i></li>`);
+            $(".pageNav").append(`<li class="prev" data-id=${resultData.startPage - 1} ><i><img src="images/um/navPrev.svg"></i></li>`);
             for (let i = resultData.startPage; i <= resultData.endPage; i++) {
                 if (i === (paramMap.start) + 1) {
                     $(".pageNav").append(`<li class="page_button on" data-id="${i}">${i}</li>`);
@@ -41,14 +43,14 @@ function ajaxLog(paramMap) {
                 }
 
             }
-            $(".pageNav").append(`<li class="next" data-id=${resultData.endPage+1}><i><img src="images/um/navNext.svg"></i></li>`);
+            $(".pageNav").append(`<li class="next" data-id=${resultData.endPage + 1}><i><img src="images/um/navNext.svg"></i></li>`);
 
             $(".pageNav li").on("click", function (e) {
                 let id = $(e.currentTarget).data("id");
                 console.log(id);
                 let paramMap = {"start": id - 1, "length": 15};
-                if(id<=resultData.pages)
-                ajaxLog(paramMap);
+                if (id <= resultData.pages)
+                    ajaxLog(paramMap);
             })
 
         }
