@@ -675,11 +675,17 @@ var comm = {
             this.$listLi.on('click', function(e){
                 that.listSelect($(this));
             });
+            $(document).on('click', function(e){
+                that.listOff($(e.target));
+            });
         }
         comm.createMultiSelectBox.prototype.listOn = function($target){
             let $box = $($target).parent();
-            $box.toggleClass('on');
-            if($box.hasClass('on')){
+
+            this.listOff($target);
+
+            $box.toggleClass('selected_box');
+            if($box.hasClass('selected_box')){
                 $box.find(".list").css('display', 'block');
             }else{
                 $box.find(".list").css('display', 'none');
@@ -722,9 +728,10 @@ var comm = {
             $targetSelect.text(selectStr);
         }
         comm.createMultiSelectBox.prototype.listOff = function($target){
-            if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
-                this.$selectBox.removeClass('on');
-                this.$list.css('display', 'none');
+            if($(".selected_box").length && !($($target).parents(".selected_box").length) && !($($target).hasClass("selected_box"))){
+                let selectedBox = $(".selected_box");
+                selectedBox.removeClass('selected_box');
+                selectedBox.children(".list").css('display', 'none');
             };
         }
 
