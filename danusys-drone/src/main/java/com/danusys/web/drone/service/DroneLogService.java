@@ -41,27 +41,40 @@ public class DroneLogService {
         int pageGroupCount = 3;
         String deviceName = "";
         String missionName = "";
+        boolean needAll=false;
+
         if (paramMap.get("start") != null){
             start = Integer.parseInt(paramMap.get("start").toString());
             if(start ==-1)
                 start=0;
-
         }
 
         if (paramMap.get("length") != null)
             length = Integer.parseInt(paramMap.get("length").toString());
+
 
         if (paramMap.get("deviceName") != null)
             deviceName = paramMap.get("deviceName").toString();
         if (paramMap.get("missionName") != null)
             missionName = paramMap.get("missionName").toString();
 
-        PageRequest pageRequest = PageRequest.of(start , length);
 
-        Page<DroneLog> droneLogPage = droneLogRepository.findByDroneDeviceNameIgnoreCaseLikeAndAndMissionNameIgnoreCaseLike(
-                "%" + deviceName + "%", "%" + missionName + "%", pageRequest);
-        count = (int) droneLogPage.getTotalElements();
-        List<DroneLog> droneLogList = droneLogPage.toList();
+        Page<DroneLog> droneLogPage=null;
+        List<DroneLog> droneLogList=null;
+
+        if(length==1){
+            droneLogList =droneLogRepository.findByDroneDeviceNameIgnoreCaseLikeAndAndMissionNameIgnoreCaseLike(
+                    "%" + deviceName + "%", "%" + missionName + "%"
+            );
+        }else{
+            PageRequest pageRequest = PageRequest.of(start , length);
+            droneLogPage = droneLogRepository.findByDroneDeviceNameIgnoreCaseLikeAndAndMissionNameIgnoreCaseLike(
+                    "%" + deviceName + "%", "%" + missionName + "%", pageRequest);
+            count = (int) droneLogPage.getTotalElements();
+            droneLogList  = droneLogPage.toList();
+
+        }
+
 
         //  Map<String, Object> resultMap = new HashMap<String, Object>();
         Map<String, Object> pagingMap = new HashMap<>();

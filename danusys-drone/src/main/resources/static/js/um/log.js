@@ -8,15 +8,35 @@ $(document).ready(function () {
     ajaxLog(paramMap);
 })
 
+$(".excel_download").on("click", function () {
+    let paramMap = {
+        "start": 0,
+        "length": 1
+    }
+    let resultData = ajaxLog(paramMap);
+    $.ajax({
+
+        url: "/excel/download",
+        success: function () {
+          //window.location.href="/file/donwload/example.xlsx"
+        }
+
+    })
+
+})
+
 
 function ajaxLog(paramMap) {
     let pagePerCount = 3;
+    let returnValue = null;
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: "drone/api/dronelog",
         type: "POST",
+        async: false,
         data: JSON.stringify(paramMap),
         success: function (resultData) {
+            returnValue = resultData.data;
             console.log(resultData);
             $(".search_body").html("");
             $(".pageNav").html("");
@@ -56,5 +76,6 @@ function ajaxLog(paramMap) {
         }
 
     });
+    return returnValue;
 }
 

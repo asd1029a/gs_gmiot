@@ -280,13 +280,13 @@ public class Flight {
         } finally {
 //            t.purge();
             log.info("endtakeoff");
-            try {
-                socket.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-
-            }
+//            try {
+//                //socket.close();
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//
+//            }
 
 
         }
@@ -1099,8 +1099,8 @@ public class Flight {
             log.info("missionIndex={}:{}", r, r2);
         });
         try {
-            socket = new Socket(tcpServerHost, tcpServerPort);
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+       //     socket = new Socket(tcpServerHost, tcpServerPort);
+       //     connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
             //      Gps gps = new Gps();
             int systemId = 1;
             int componentId = 1;
