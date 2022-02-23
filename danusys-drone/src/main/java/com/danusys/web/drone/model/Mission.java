@@ -55,7 +55,7 @@ public class Mission {
     //  @OneToMany(mappedBy ="mission",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
     @OneToMany(mappedBy = "mission", fetch = FetchType.EAGER)  //마지막에 수정됨
     @JsonManagedReference
-    private final List<MissionDetails> missonDetails = new ArrayList<>();
+    private final List<MissionDetails> missionDetails = new ArrayList<>();
 
 
     @OneToOne

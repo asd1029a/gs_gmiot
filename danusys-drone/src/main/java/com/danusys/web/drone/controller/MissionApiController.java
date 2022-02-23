@@ -145,7 +145,7 @@ public class MissionApiController {
         HashMap<String, Float> yaws = new HashMap<>();
         HashMap<String, MissionItemInt> missionMap = new HashMap<>();
         HashMap<String, Integer> radiusMap = new HashMap<>();
-        Iterator iterator = missionResponse.getMissonDetails().iterator();
+        Iterator iterator = missionResponse.getMissionDetails().iterator();
         while (iterator.hasNext()) {
             MissionDetails missionDetails = (MissionDetails) iterator.next();
             if (missionDetails.getName().equals("takeOff")) {
