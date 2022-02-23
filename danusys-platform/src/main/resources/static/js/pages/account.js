@@ -113,10 +113,13 @@ const account = {
             $popup.find("#tel").data("required", true).data("regex", "loginId");
             $popup.find("#email").data("required", true).data("regex", "email");
             if(type === "add") {
-                $('#userAccountPopup .popupTitle h4').text("사용자 계정 등록");
+                $('#userAccountPopup .title dt').text("사용자 계정 등록");
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
             } else if(type === "mod") {
-                $('#userAccountPopup .popupTitle h4').text('사용자 계정 수정');
+                $('#userAccountPopup .title dt').text('사용자 계정 수정');
+                $('#userAccountPopup [data-mode="'+type+'"]').show();
+            } else if(type === "detail") {
+                $('#userAccountPopup .title dt').text("사용자 계정 상세");
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
             }
         },
@@ -197,6 +200,21 @@ const account = {
             $("#searchBtn").on('click', (e) => {
                 account.group.create();
             });
+            $("#addUserGroupBtn").on('click', () => {
+                account.group.showPopup("add");
+            });
+            $("#userGroupPopup .title dd").on('click', () => {
+                account.group.hidePopup();
+            });
+            $("#addUserGroupProcBtn").on('click', () => {
+                account.group.addProc();
+            });
+            $("#modUserGroupProcBtn").on('click', () => {
+                account.group.modProc($("#userGroupForm").data("userGroupSeq"));
+            });
+            $("#delUserGroupProcBtn").on('click', () => {
+                account.group.delProc($("#userGroupForm").data("userGroupSeq"));
+            });
         },
         create : () => {
             const $target = $('#userAccountTable');
@@ -242,11 +260,17 @@ const account = {
 
             const evt = {
                 click : function(e) {
+                    const $form = $('#userGroupForm');
                     const rowData = $target.DataTable().row($(e.currentTarget)).data();
-                    if($(e.target).hasClass('writeButton') || $(e.target).prop('tagName') === "I") {
+                    if($(e.target).hasClass('button')) {
                         account.group.showPopup('mod');
-                        $('#userGrouptForm').setItemValue(rowData);
+                        $('#userAccountForm').setItemValue(rowData);
+                        account.group.get(rowData.userGroupSeq ,(result) => {
+                            $form.data("userGroupSeq", rowData.userGroupSeq);
+                            $form.setItemValue(result);
+                        });
                     }
+
                 }
             }
             comm.createTable($target ,optionObj, evt);
@@ -259,6 +283,14 @@ const account = {
                 pCallback(result);
             });
         },
+        get : (pSeq, pCallback) => {
+            $.ajax({
+                url : "/user/group/" + pSeq
+                , type : "GET"
+            }).done((result) => {
+                pCallback(result);
+            });
+        },
         showPopup : (type) => {
             $('#userGroupPopup .popupContents').scrollTop(0);
             comm.showModal($('#userGroupPopup'));
@@ -266,16 +298,13 @@ const account = {
             $('#userGroupForm').initForm();
             $('#userGroupPopup [data-mode]').hide();
             if(type === "add") {
-                $('#userGroupnPopup .popupTitle h4').text("사용자 그룹 등록");
-                $('#userGroupPopup').css('height', '480px');
+                $('#userGroupPopup .title dt').text("사용자 그룹 등록");
                 $('#userGroupPopup [data-mode="'+type+'"]').show();
             } else if(type === "mod") {
-                $('#userGroupPopup .popupTitle h4').text('사용자 그룹 수정');
-                $('#userGroupPopup').css('height', '780px');
+                $('#userGroupPopup .title dt').text('사용자 그룹 수정');
                 $('#userGroupPopup [data-mode="'+type+'"]').show();
             } else if(type === "detail") {
-                $('#userGroupPopup .popupTitle h4').text("사용자 그룹 상세");
-                $('#userGroupPopup').css('height', '610px');
+                $('#userGroupPopup .title dt').text("사용자 그룹 상세");
                 $('#userGroupPopup [data-mode="'+type+'"]').show();
             }
         },
@@ -287,41 +316,42 @@ const account = {
         addProc : () => {
             const formObj = $('#userGroupForm').serializeJSON();
 
-            comm.ajaxPost({
-                    url : "/user/group"
-                    , type : "PUT"
-                    , data : formObj
-                },
-                (result) => {
-                    comm.showAlert("사용자 그룹이 등록되었습니다");
-                    account.group.create($('#userGroupTable'));
-                    account.group.hidePopup();
-                });
+            $.ajax({
+                url : "/user/group"
+                , type : "PUT"
+                , data : JSON.stringify(formObj)
+                , contentType : "application/json; charset=utf-8"
+                , dataType : "json"
+            }).done((result) => {
+                comm.showAlert("사용자 그룹이 등록되었습니다");
+                account.group.create($('#userGroupTable'));
+                account.group.hidePopup();
+            });
         },
         modProc : () => {
             const formObj = $('#userGroupForm').serializeJSON();
 
-            comm.ajaxPost({
-                    url : "/user/group"
-                    , type : "PATCH"
-                    , data : formObj
-                },
-                (result) => {
-                    comm.showAlert("사용자 그룹이 수정되었습니다");
-                    account.group.create($('#userGroupTable'));
-                    account.group.hidePopup();
-                });
+            $.ajax({
+                url : "/user/group"
+                , type : "PATCH"
+                , data : JSON.stringify(formObj)
+                , contentType : "application/json; charset=utf-8"
+                , dataType : "json"
+            }).done((result) => {
+                comm.showAlert("사용자 그룹이 수정되었습니다");
+                account.group.create($('#userGroupTable'));
+                account.group.hidePopup();
+            });
         },
         delProc : (pSeq) => {
-            comm.ajaxPost({
-                    url : "/user/group"+pSeq
-                    , type : "DELETE"
-                },
-                (result) => {
-                    comm.showAlert("사용자 그룹이 삭제되었습니다");
-                    account.group.create($('#userGroupTable'));
-                    account.group.hidePopup();
-                });
+            $.ajax({
+                url : "/user/group/"+pSeq
+                , type : "DELETE"
+            }).done((result) => {
+                comm.showAlert("사용자 그룹이 삭제되었습니다");
+                account.group.create($('#userGroupTable'));
+                account.group.hidePopup();
+            });
         }
     }
 }
