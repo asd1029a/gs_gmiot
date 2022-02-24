@@ -99,24 +99,54 @@ const account = {
                 pCallback(result);
             });
         },
+        checkId : (pId, pCallback) => {
+            $.ajax({
+                url : "/user/checkid/" + pId
+                , type : "GET"
+            }).done((result) => {
+                pCallback(result);
+            });
+        },
         showPopup : (type) => {
             const $popup = $("#userAccountPopup");
 
             $('#userAccountPopup .popupContents').scrollTop(0);
             comm.showModal($('#userAccountPopup'));
-            $popup.css("display", "flex");
+            account.group.createUserInGroup();
             $('#userAccountForm').initForm();
             $('#userAccountPopup [data-mode]').hide();
+
+            $popup.css("display", "flex");
             $popup.find("#userId").data("required", true).data("regex", "loginId");
             $popup.find("#password").data("required", true).data("regex", "sPassword");
             $popup.find("#userName").data("required", true).data("regex", "name");
             $popup.find("#tel").data("required", true).data("regex", "loginId");
             $popup.find("#email").data("required", true).data("regex", "email");
+            $popup.find("#userId").prop("disabled", false);
+            $("#checkIdBtn").remove();
             if(type === "add") {
-                $('#userAccountPopup .popupTitle h4').text("사용자 계정 등록");
+                $('#userAccountPopup .title dt').text("사용자 계정 등록");
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
+                $("#userId").parent().append('<span class="button" id="checkIdBtn">중복 확인</span>');
+                $("#checkIdBtn").on('click', (e) => {
+                    const userId = $("#userId").val();
+                    if(stringFunc.validRegex(userId, "loginId")) {
+                        account.user.checkId(userId, (result) => {
+                            if (result === 0) {
+                                comm.showAlert("사용중인 아이디입니다.<br/> 다른 아이디를 입력해주십시오.");
+                            } else {
+                                comm.showAlert("사용가능한 아이디입니다.");
+                                $(e.currentTarget).data("duplCheck", "true");
+                            }
+                        });
+                    } else {
+                        comm.showAlert("[ID] <br/> * 형식에 맞지 않는 문자 * </br> 다시 입력해 주십시오.");
+                    }
+                });
             } else if(type === "mod") {
-                $('#userAccountPopup .popupTitle h4').text('사용자 계정 수정');
+                $('#userAccountPopup .title dt').text('사용자 계정 수정');
+                $popup.find("#userId").removeData("required").removeData("regex");
+                $popup.find("#userId").prop("disabled", true);
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
             }
         },
@@ -128,13 +158,13 @@ const account = {
         addProc : () => {
             const formObj = $('#userAccountForm').serializeJSON();
             const $checkPassword = $("#checkPassword");
-
+            formObj.userGroupSeq = [7,8];
             if(formObj.password === $checkPassword.val()) {
                 if($('#userAccountForm').doValidation()) {
                     $.ajax({
                         url: "/user"
                         , type: "PUT"
-                        , contentType : "application/json; charset=utf-8"
+                        , contentType : "application/json;charset=utf-8"
                         , data : JSON.stringify(formObj)
                     }).done((result) => {
                         comm.showAlert("사용자 계정이 등록되었습니다");
@@ -212,12 +242,10 @@ const account = {
                         'contentType' : "application/json; charset=utf-8",
                         'type' : "POST",
                         'data' : function ( d ) {
-                            console.log(d);
                             const param = $.extend({}, d, $("#searchForm form").serializeJSON());
                             return JSON.stringify( param );
                         },
                         'dataSrc' : function (result) {
-                            console.log(result);
                             $('.title dd .count').text(result.recordsTotal);
                             return result.data;
                         }
@@ -245,8 +273,61 @@ const account = {
                     const rowData = $target.DataTable().row($(e.currentTarget)).data();
                     if($(e.target).hasClass('writeButton') || $(e.target).prop('tagName') === "I") {
                         account.group.showPopup('mod');
-                        $('#userGrouptForm').setItemValue(rowData);
+                        $('#userGroupForm').setItemValue(rowData);
                     }
+                }
+            }
+            comm.createTable($target ,optionObj, evt);
+        },
+        createUserInGroup : () => {
+            const $target = $('#userInGroupTable');
+
+            const optionObj = {
+                dom: '<"table_body"rt>',
+                destroy: true,
+                bPaginate: false,
+                bServerSide: false,
+                scrollY: "calc(100% - 30px)",
+                ajax :
+                    {
+                        'url' : "/user/group",
+                        'contentType' : "application/json; charset=utf-8",
+                        'type' : "POST",
+                        'data' : function ( d ) {
+                            const param = $.extend({}, d, $("#searchForm form").serializeJSON());
+                            return JSON.stringify( param );
+                        }
+                    },
+                select: {
+                    toggleable: false
+                },
+                columns : [
+                    {data: "userGroupSeq", className: "alignLeft"},
+                    {data: "groupName"},
+                    {data: "groupName"},
+                    {data: null}
+                ]
+                , columnDefs: [{
+                    "targets": -1,
+                    "data": null,
+                    "defaultContent": '<span><input type="checkbox"/><label><span></span></label></span>'
+                }]
+                ,
+                fnCreatedRow: (nRow, aaData, iDataIndex) => {
+                    const userGroupSeq = aaData.userGroupSeq;
+                    $(nRow).find('input').prop('id', "check"+userGroupSeq);
+                    $(nRow).find('input').prop('value', userGroupSeq);
+                    $(nRow).find('label').prop('for', "check"+userGroupSeq);
+                    // if(aaData.checked === 'checked' || $('#adminInGroupPopup').data('adminSeqList').indexOf(aaData.userGroupSeq) > -1) {
+                    //     $(nRow).find('input').prop('checked', true);
+                    // }
+                }
+                , excelDownload : false
+            }
+
+            const evt = {
+                click : function(e) {
+                    const rowData = $target.DataTable().row($(e.currentTarget)).data();
                 }
             }
             comm.createTable($target ,optionObj, evt);

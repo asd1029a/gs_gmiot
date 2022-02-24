@@ -127,7 +127,7 @@ public class UserGroupService {
         if (paramMap.get("draw") != null) {
             draw = Integer.parseInt(paramMap.get("draw").toString());
         }
-        PageRequest pageRequest = PageRequest.of(start / length, length);
+        PageRequest pageRequest = length == 1 ? null : PageRequest.of(start / length, length);
         Page<UserGroup> userGroupPageList = null;
         List<UserGroup> userGroupList = null;
         if (paramMap.get("groupName") != null) {
@@ -169,6 +169,7 @@ public class UserGroupService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return resultMap;
     }
 }
