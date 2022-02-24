@@ -53,6 +53,31 @@ const mntr = {
         let measure = new measureTool('map');
         window.measure = measure;
 
+        /**
+         * 레이어 선택 조작
+         */
+        const layerSelect = new ol.interaction.Select({
+            layers :
+                layer => {
+                    return layer.get('selectable') === true;
+                }
+            , style :
+                feature => {
+                    const id = feature.getId().replace(/[0-9]/gi, '');
+                    const styleFunc = layerStyle[id](true);
+                    return styleFunc(feature);
+                }
+        });
+        window.map.map.addInteraction(layerSelect);
+
+        layerSelect.on('select', function(evt){
+            const target = evt.selected[0];
+            if(target) {
+                const targetType = target.getId().replace(/[0-9]/gi,'');
+                clickIcon(targetType,target.getProperties());
+            }
+        });
+
         // station.getList({}, (result) => {
         //     console.log(result);
         // });
@@ -62,7 +87,7 @@ const mntr = {
             let stationLayer = new dataLayer('map')
                 .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
             map.addLayer(stationLayer);
-
+            window.lyControl.find('stationLayer').set('selectable',true);
             //select
            //window.lyControl.find('stationLayer').set('selectable', true);
 
@@ -94,48 +119,36 @@ const mntr = {
                 name: 'sample',
                 crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
                 features: [
-                    { type: 'Feature', properties: { id: 123 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
-                    { type: 'Feature', properties: { id: 234 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
-                    { type: 'Feature', properties: { id: 345 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
-                    { type: 'Feature', properties: { id: 567 }, geometry: { type: 'Point', coordinates: [ 126.73797079693405, 37.3197810464005 ] } },
-                    { type: 'Feature', properties: { id: 456 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
-                    { type: 'Feature', properties: { id: 678 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
-                    { type: 'Feature', properties: { id: 789 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
+                    { type: 'Feature', id: 'facility123', properties: { id: 123 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
+                    { type: 'Feature', id: 'facility234', properties: { id: 234 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
+                    { type: 'Feature', id: 'facility345', properties: { id: 345 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+                    { type: 'Feature', id: 'facility456', properties: { id: 456 }, geometry: { type: 'Point', coordinates: [ 126.73797079693405, 37.3197810464005 ] } },
+                    { type: 'Feature', id: 'facility567', properties: { id: 567 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
+                    { type: 'Feature', id: 'facility678', properties: { id: 678 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
+                    { type: 'Feature', id: 'facility789', properties: { id: 789 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
                 ]
             };
 
             let facilityLayer = new dataLayer('map')
                 .fromGeoJSon(result1,'facilityLayer', true, layerStyle.facility(false));
             map.addLayer(facilityLayer);
-
+            window.lyControl.find('facilityLayer').set('selectable',true);
         });
 
         // event.getListGeoJson({}, (result) => {
         //    // console.log(result);
         // });
-
-        const select =
-            new ol.interaction.Select({
-                layers : //[window.lyControl.find('stationLayer')]
-                    layer => {
-                        return layer.get('selectable') === true;
-                    }
-                , style :
-                    feature => {
-                        //console.log(feature.getProperties());
-                    }
-
-                }
-            );
-        window.map.map.addInteraction(select);
-        // window.map.map.addInteraction(
-        //     select
-        //     //layerSelect.add(window.lyControl.find('stationLayer'))
-        // );
+        //
+        // const clickObjs = {
+        //     'stationLayer':[]
+        //     , 'facilityLayer':[]
+        // };
+        // window.map.clickLayer(clickObjs);
+        //
 
 
-    },
-    eventHandler : () => {
+    }
+    , eventHandler : () => {
         //LNM FOLD
         $('.mntr_container .lnb_fold').on("click", function(e){
             $('.mntr_container .menu_fold').hide();
@@ -172,6 +185,8 @@ const mntr = {
             $('.area_info').hide();
             window.map.updateSize();
         });
+        //LAYER ORDER LIST
+        $("#layerViewer").hide();
         //MAP TOOL
         $('.map_options li').on("click", function(e){
             const type = $(e.currentTarget).attr('data-value');
@@ -189,6 +204,54 @@ const mntr = {
                 case "measure" : window.measure.initDraw('Polygon'); break;
                 case "radius" : window.measure.initDraw('Circle'); break;
                 case "eraser" : window.measure.removeMeasureTool(); break;
+                case "layer" :
+                    const target = $("#layerViewer");
+                    target.toggle('show');
+                    $("#layerViewer ul").empty();
+
+                    const ary = window.map.map.getLayers().getArray();
+                    let layerAry = ary.filter(value => {
+                        return value.getProperties().title.includes("Layer");
+                    });
+                    layerAry.sort((a,b)=> {
+                        return a.getZIndex() - b.getZIndex();
+                    });
+
+                    for(let i in layerAry){
+                        const layerNm = layerAry[i].getProperties().title;
+                        const zIdx = window.lyControl.find(layerNm).getZIndex();
+
+                        const li = "<li data-zindex='"+ zIdx +"'>" + layerNm + "</li>";
+                        $("#layers").append(li);
+                    }
+
+                    $("#layers").sortable({
+                        start: (e, ui) => {
+                            $(this).attr("prev-index", ui.item.index());
+                        }
+                        , update: (e, ui) => {
+                            // let newOrd = Number(ui.item.index());
+                            // let oldOrd = Number($(this).attr("prev-index"));
+                            // let targetLayer = ui.item.text();
+                            //console.log(targetLayer + " : " + oldOrd + " => " + newOrd);
+                           const totalLen = window.map.map.getLayers().getArray().length;
+                           const liLen = $("#layers li").length;
+                           const startIdx = totalLen - liLen;
+
+                            //LAYER SHIFT
+                            $.each($("#layers li"), (i,v)=> {
+                                let origin = startIdx + i;
+                                let zIdx = $(v).attr('data-zindex');
+
+                                if(origin != zIdx){
+                                    const layer = $(v).text();
+                                    $("#layers li").eq(i).attr('data-zindex',origin);
+                                    window.lyControl.find(layer).setZIndex(origin);
+                                }
+                            });
+                        }
+                    });
+                    break;
                 default:
             }
         });
@@ -205,8 +268,13 @@ const mntr = {
             $(e.currentTarget).parent('div').scrollTop(0);
         });
 
-
-
+    }
+    , create : () => {
+        /* 다중 셀렉트 박스 */
+        $.each($(".dropdown_checkbox"), (idx, item) => {
+            comm.createMultiSelectBox(item);
+        });
     }
 
 }
+

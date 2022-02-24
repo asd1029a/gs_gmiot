@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -40,6 +41,7 @@ public class UserGroup implements Serializable {
     private Timestamp updateDt;
     @Column(name = "update_user_seq")
     private int updateUserSeq;
+
 
     @OneToMany(mappedBy = "userGroup", fetch = FetchType.LAZY)
     @JsonBackReference
