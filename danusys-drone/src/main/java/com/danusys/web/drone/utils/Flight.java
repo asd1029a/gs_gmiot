@@ -727,9 +727,7 @@ public class Flight {
                     if (statustextMavlinkMessage.getPayload().text().contains("Hit ground")) {
 
                     } else if (statustextMavlinkMessage.getPayload().text().equals("Disarming motors")) {
-                        gps.setMissionType("end");
-                        gps.setStatus(0);
-                        Thread.sleep(2000);
+
                         break;
                     }
 
@@ -1121,9 +1119,8 @@ public class Flight {
 
                     if (missionText.equals("Disarming motors")) {
                         //gps.setMissionType("mission end");
-                        gps.setMissionType("end");
-                        gps.setStatus(0);
-                        Thread.sleep(2000);
+
+
                         break;
                     }
 
@@ -1219,10 +1216,13 @@ public class Flight {
 
         } finally {
             System.out.println("Mission");
+
 //            t.purge();
             tt.cancel();
             t.cancel();
-
+            gps.setMissionType("end");
+            gps.setStatus(0);
+            simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
             try {
                 socket.close();
                 connection = null;
