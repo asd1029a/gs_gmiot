@@ -83,20 +83,20 @@ public class DroneLogService {
         List<DroneLog> droneLogList = null;
 
         if (length == 1) {
-            droneLogList = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
-                    beforeDate, afterDate, "%" + deviceName + "%", "%" + missionName + "%"
+            droneLogList = droneLogRepository.findByInsertDtBeforeAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
+                    beforeDate,  "%" + deviceName + "%", "%" + missionName + "%"
             );
         } else {
             if (searchType == 0) {
                 PageRequest pageRequest = PageRequest.of(start, length);
-                droneLogPage = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
-                        beforeDate, afterDate,   "%" + deviceName + "%", "%" + missionName + "%", pageRequest);
+                droneLogPage = droneLogRepository.findByInsertDtBeforeAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
+                        beforeDate,   "%" + deviceName + "%", "%" + missionName + "%", pageRequest);
                 count = (int) droneLogPage.getTotalElements();
                 droneLogList = droneLogPage.toList();
             } else if (searchType == 1) {
                 PageRequest pageRequest = PageRequest.of(start, length);
-                droneLogPage = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrMissionNameIgnoreCaseLike(
-                        beforeDate, afterDate, "%" + deviceName + "%", "%" + deviceName + "%", pageRequest); //droneDevice로 or 검색함
+                droneLogPage = droneLogRepository.findByInsertDtBeforeAndDroneDeviceNameIgnoreCaseLikeOrMissionNameIgnoreCaseLike(
+                        beforeDate,  "%" + deviceName + "%", "%" + deviceName + "%", pageRequest); //droneDevice로 or 검색함
                 count = (int) droneLogPage.getTotalElements();
                 droneLogList = droneLogPage.toList();
             }

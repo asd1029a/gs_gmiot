@@ -506,7 +506,8 @@ public class MissionApiController {
     public void test() {
         // flight.loiter(30);
         //flight.camera();
-        flight.returnDrone();
+        //flight.returnDrone();
+        flight.setHome();
     }
 
 

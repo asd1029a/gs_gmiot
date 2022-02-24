@@ -225,10 +225,10 @@ public class Flight {
 
                 if (message.getPayload() instanceof TerrainReport) {
                     MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
-                    float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
-                    if (takeoff > 40 - 1.5) {
-                        break;
-                    }
+//                    float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
+//                    if (takeoff > 40 - 1.5) {
+//                        break;
+//                    }
 
                 } else if (message.getPayload() instanceof Heartbeat) {
                     MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
@@ -254,7 +254,10 @@ public class Flight {
 
                 } else if (message.getPayload().getClass().getName().contains("VfrHud")) {
                     MavlinkMessage<VfrHud> vfrHudMavlinkMessage = (MavlinkMessage<VfrHud>) message;
-
+                    float takeoff = vfrHudMavlinkMessage.getPayload().alt();
+                    if (takeoff > 40 - 1.5) {
+                        break;
+                    }
                     float airSpeed = vfrHudMavlinkMessage.getPayload().airspeed();
 
                     gps.setAirSpeed(Float.parseFloat(String.format("%.1f", airSpeed)));
@@ -740,12 +743,11 @@ public class Flight {
                     }
 
                     String missionText = statustextMavlinkMessage.getPayload().text();
-                    log.info(missionText);
-                    gps.setMissionType(missionText);
+
 
 
                 } else if (message.getPayload() instanceof CommandAck) {
-                    MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
+                    MavlinkMessage<CommandAck> commandAckMavlingkMessage = (MavlinkMessage<CommandAck>) message;
                     log.info("commandAck={}", message);
                     DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
                     droneLogDetailsCommandAck.setFromTarget("drone");
@@ -800,7 +802,7 @@ public class Flight {
             String currentHeight = null;
             float currentHeightFloat = 0;
             //돌아가기
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_HOME).param1(0).param2(0).param3(0).param4(0).param5(37.4556f).param6(126.8963f).param7(22.012743f).build(), linkId, timestamp, secretKey);
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_HOME).param1(0).param2(0).param3(0).param4(0).param5(37.44666089f).param6(126.8953259f).param7(22.012743f).build(), linkId, timestamp, secretKey);
 
 
         } catch (Exception ioe) {
@@ -1064,6 +1066,7 @@ public class Flight {
 
                 } else if (message.getPayload().getClass().getName().contains("VfrHud")) {
                     MavlinkMessage<VfrHud> vfrHudMavlinkMessage = (MavlinkMessage<VfrHud>) message;
+                    log.info("{}",vfrHudMavlinkMessage.getPayload().alt());
 
                     float airSpeed = vfrHudMavlinkMessage.getPayload().airspeed();
                     gps.setAirSpeed(Float.parseFloat(String.format("%.1f", airSpeed)));
