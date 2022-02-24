@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.CrudRepository;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface DroneLogRepository extends CrudRepository<DroneLog, Long> {
@@ -16,9 +18,11 @@ public interface DroneLogRepository extends CrudRepository<DroneLog, Long> {
 
     List<DroneLog> findAll();
 
-    Page<DroneLog> findByDroneDeviceNameIgnoreCaseLikeAndAndMissionNameIgnoreCaseLike(String droneDeviceName, String missionName, Pageable pageable);
+    Page<DroneLog> findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(Date beforeDate, Date afterDate, String droneDeviceName, String missionName, Pageable pageable);
 
-    List<DroneLog> findByDroneDeviceNameIgnoreCaseLikeAndAndMissionNameIgnoreCaseLike(String droneDeviceName, String missionName);
+    Page<DroneLog> findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrMissionNameIgnoreCaseLike(Date beforeDate, Date afterDate, String droneDeviceName, String missionName, Pageable pageable);
+
+    List<DroneLog> findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(Date beforeDate, Date afterDate, String droneDeviceName, String missionName);
 
 
 }

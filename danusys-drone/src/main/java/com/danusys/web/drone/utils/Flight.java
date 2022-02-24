@@ -57,12 +57,20 @@ public class Flight {
     private int sec = 0;
     private int min = 0;
     private int hour = 0;
-    private String stringSeconds=null;
-    private String stringMinutes=null;
-    private String stringHours=null;
+    private String stringSeconds = null;
+    private String stringMinutes = null;
+    private String stringHours = null;
     private TimerTask tt = null;
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
+        //시간 초기화
+        sec = 0;
+        min = 0;
+        hour = 0;
+        stringSeconds = null;
+        stringMinutes = null;
+        stringHours = null;
+
 
         connection = null;
         socket = null;
@@ -77,18 +85,18 @@ public class Flight {
             @Override
             public void run() {
 
-                stringSeconds=Integer.toString(sec);
-                stringMinutes=Integer.toString(min);
-                stringHours=Integer.toString(hour);
+                stringSeconds = Integer.toString(sec);
+                stringMinutes = Integer.toString(min);
+                stringHours = Integer.toString(hour);
 
-                if(sec<10){
-                    stringSeconds="0"+stringSeconds;
+                if (sec < 10) {
+                    stringSeconds = "0" + stringSeconds;
                 }
-                if(min<10){
-                    stringMinutes="0"+stringMinutes;
+                if (min < 10) {
+                    stringMinutes = "0" + stringMinutes;
                 }
-                if(hour<10){
-                    stringHours="0"+stringHours;
+                if (hour < 10) {
+                    stringHours = "0" + stringHours;
                 }
                 gps.setSec(stringSeconds);
                 gps.setMin(stringMinutes);
@@ -761,12 +769,7 @@ public class Flight {
 
         } finally {
 
-            try {
-                socket.close();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             System.out.println("returnDrone");
 
 

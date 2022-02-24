@@ -22,12 +22,50 @@ $(".excel_download").on("click", function () {
         url: "/file/excel/download",
         data: JSON.stringify(resultData),
         type: "POST",
-        success:function (){
-            window.location.href="/file/excel.xlsx";
+        success: function () {
+            window.location.href = "/file/excel.xlsx";
         }
 
     })
 
+})
+
+
+$(".search_button").on("click", function () {
+    let beforeDate=$(".before_date").val();
+    let afterDate=$(".after_date").val();
+    console.log(beforeDate,afterDate);
+    let selectType = $("#selectType option:selected").val();
+    let searchWord = $(".search_word").val();
+    if (selectType === "all") {
+        let paramMap = {
+            "start": 0,
+            "length": 15,
+            "searchType":1,
+            "deviceName": searchWord,
+            "beforeDate":beforeDate,
+            "afterDate":afterDate
+        }
+        ajaxLog(paramMap);
+    } else if (selectType == "device_name") {
+        let paramMap = {
+            "start": 0,
+            "length": 15,
+            "deviceName": searchWord,
+            "beforeDate":beforeDate,
+            "afterDate":afterDate
+        }
+        ajaxLog(paramMap);
+    } else if (selectType == "mission_name") {
+        let paramMap = {
+            "start": 0,
+            "length": 15,
+            "missionName": searchWord,
+            "beforeDate":beforeDate,
+            "afterDate":afterDate
+        }
+        ajaxLog(paramMap);
+    }
 })
 
 
@@ -60,6 +98,7 @@ function ajaxLog(paramMap) {
           `);
             });
             $(".pageNav").append(`<li class="prev" data-id=${resultData.startPage - 1} ><i><img src="images/um/navPrev.svg"></i></li>`);
+
             for (let i = resultData.startPage; i <= resultData.endPage; i++) {
                 if (i === (paramMap.start) + 1) {
                     $(".pageNav").append(`<li class="page_button on" data-id="${i}">${i}</li>`);
@@ -71,11 +110,43 @@ function ajaxLog(paramMap) {
             $(".pageNav").append(`<li class="next" data-id=${resultData.endPage + 1}><i><img src="images/um/navNext.svg"></i></li>`);
 
             $(".pageNav li").on("click", function (e) {
+                let beforeDate=$(".before_date").val();
+                let afterDate=$(".after_date").val();
+                let selectType = $("#selectType option:selected").val();
+                let searchWord = $(".search_word").val();
                 let id = $(e.currentTarget).data("id");
                 console.log(id);
-                let paramMap = {"start": id - 1, "length": 15};
-                if (id <= resultData.pages)
+                if (selectType === "all") {
+                    let paramMap = {
+                        "start": id-1,
+                        "length": 15,
+                        "searchType":1,
+                        "deviceName": searchWord,
+                        "beforeDate":beforeDate,
+                        "afterDate":afterDate
+                    }
                     ajaxLog(paramMap);
+                } else if (selectType == "device_name") {
+                    let paramMap = {
+                        "start": id - 1, "length": 15,
+                        "deviceName": searchWord,
+                        "beforeDate":beforeDate,
+                        "afterDate":afterDate
+                    }
+                    if (id <= resultData.pages)
+                        ajaxLog(paramMap);
+
+                } else if (selectType == "mission_name") {
+                    let paramMap = {
+                        "start": id - 1, "length": 15,
+                        "missionName": searchWord,
+                        "beforeDate":beforeDate,
+                        "afterDate":afterDate
+                    }
+                    if (id <= resultData.pages)
+                        ajaxLog(paramMap);
+
+                }
             })
 
         }
