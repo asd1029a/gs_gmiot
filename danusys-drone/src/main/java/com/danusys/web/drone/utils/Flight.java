@@ -1102,6 +1102,7 @@ public class Flight {
 
                     if (missionText.equals("Disarming motors")) {
                         //gps.setMissionType("mission end");
+                        gps.setMissionType("end");
                         gps.setStatus(0);
                         break;
                     }

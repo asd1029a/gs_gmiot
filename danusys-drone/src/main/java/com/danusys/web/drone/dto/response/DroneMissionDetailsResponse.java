@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 public class DroneMissionDetailsResponse {
     private Long id;
     private String droneDeviceName;
-    private Mission mission;
+    private MissionDto missionDto;
     private String droneBase;
 
     //private List<MissionDetailResponse> missionDetailResponseList;
@@ -29,7 +29,7 @@ public class DroneMissionDetailsResponse {
     public DroneMissionDetailsResponse(Drone drone){
         this.id = drone.getId();
         this.droneDeviceName=drone.getDroneDeviceName();
-        this.mission=drone.getMission();
+        this.missionDto=new MissionDto(drone.getMission());
         this.droneBase=drone.getDroneBase().getBaseName();
         //this.missionDetailResponseList= mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 

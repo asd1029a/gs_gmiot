@@ -133,7 +133,6 @@ public class FileUtil {
         for (int i = 0; i < folder.length; i++) {
             if (i >= 3)
                 folderPath += folder[i] + "/";
-
         }
         File file = new File(STATIC_EXTERNAL_FILE_PATH + folderPath + fileName);
         if (file.exists()) {
