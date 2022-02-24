@@ -76,7 +76,7 @@ public class Flight {
                 gps.setSec(sec);
                 gps.setMin(min);
                 gps.setHour(hour);
-                sec += 2;
+                sec += 1;
                 if (sec == 60) {
                     sec = 0;
                     min++;
@@ -101,7 +101,7 @@ public class Flight {
             byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
             t = new Timer();
-            t.schedule(tt, 0, 2000);
+            t.schedule(tt, 0, 1000);
 
             MavlinkMessage message;
 
@@ -706,11 +706,11 @@ public class Flight {
                     MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
 
                     if (statustextMavlinkMessage.getPayload().text().contains("Hit ground")) {
-                        gps.setMissionType("end");
-                        gps.setStatus(0);
+
                     } else if (statustextMavlinkMessage.getPayload().text().equals("Disarming motors")) {
                         gps.setMissionType("end");
                         gps.setStatus(0);
+                        Thread.sleep(2000);
                         break;
                     }
 
@@ -1104,6 +1104,7 @@ public class Flight {
                         //gps.setMissionType("mission end");
                         gps.setMissionType("end");
                         gps.setStatus(0);
+                        Thread.sleep(2000);
                         break;
                     }
 

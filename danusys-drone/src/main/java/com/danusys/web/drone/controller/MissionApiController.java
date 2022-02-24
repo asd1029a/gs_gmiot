@@ -91,8 +91,8 @@ public class MissionApiController {
         int intGpsZ = 0;
         int yaw = 0;
         int droneId=0;
-        if (paramMap.get("droneId")!=null)
-            droneId=Integer.parseInt(paramMap.get("droneId").toString());
+        if (paramMap.get("droneSeq")!=null)
+            droneId=Integer.parseInt(paramMap.get("droneSeq").toString());
         if (paramMap.get("gpsX") != null)
             gpsX = Double.parseDouble(paramMap.get("gpsX").toString()) * 10000000;
         if (paramMap.get("gpsY") != null)
@@ -128,8 +128,8 @@ public class MissionApiController {
         if (paramMap.get("id") != null)
             id = Long.parseLong(paramMap.get("id").toString());
         int droneId=0;
-        if (paramMap.get("droneId")!=null)
-            droneId=Integer.parseInt(paramMap.get("droneId").toString());
+        if (paramMap.get("droneSeq")!=null)
+            droneId=Integer.parseInt(paramMap.get("droneSeq").toString());
         Mission mission=new Mission();
         mission.setId(id);
 
@@ -304,8 +304,8 @@ public class MissionApiController {
     @SendTo("/topic/pause")
     public void pause(@RequestBody Map<String,Object> paramMap) {
         int droneId=0;
-        if (paramMap.get("droneId")!=null)
-            droneId=Integer.parseInt(paramMap.get("droneId").toString());
+        if (paramMap.get("droneSeq")!=null)
+            droneId=Integer.parseInt(paramMap.get("droneSeq").toString());
         // flight.loiter(30);
         flight.pauseOrPlay(0);
         // flight.returnDrone();
@@ -315,8 +315,8 @@ public class MissionApiController {
     @SendTo("/topic/play")
     public void play(@RequestBody Map<String,Object> paramMap) {
         int droneId=0;
-        if (paramMap.get("droneId")!=null)
-            droneId=Integer.parseInt(paramMap.get("droneId").toString());
+        if (paramMap.get("droneSeq")!=null)
+            droneId=Integer.parseInt(paramMap.get("droneSeq").toString());
         // flight.loiter(30);
         flight.pauseOrPlay(1);
         // flight.returnDrone();
