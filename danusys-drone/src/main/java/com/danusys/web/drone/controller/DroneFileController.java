@@ -38,7 +38,7 @@ public class DroneFileController {
 
 
     @PostMapping(value = "/upload/drone", produces = "multipart/form-data;charset=UTF-8")
-    public ResponseEntity<?> fileUpload(MultipartFile[g] uploadFile, HttpServletRequest request, long droneId) {
+    public ResponseEntity<?> fileUpload(MultipartFile[] uploadFile, HttpServletRequest request, long droneId) {
         log.info("droneId={}", droneId);
 
 
