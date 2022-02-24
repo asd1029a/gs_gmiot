@@ -128,19 +128,24 @@ const account = {
                 $('#userAccountPopup .title dt').text("사용자 계정 등록");
                 $('#userAccountPopup [data-mode="'+type+'"]').show();
                 $("#userId").parent().append('<span class="button" id="checkIdBtn">중복 확인</span>');
+                $("#userId").on('change', (e) => {
+                    $("#checkIdBtn").data("duplCheck", false);
+                });
                 $("#checkIdBtn").on('click', (e) => {
                     const userId = $("#userId").val();
                     if(stringFunc.validRegex(userId, "loginId")) {
                         account.user.checkId(userId, (result) => {
                             if (result === 0) {
                                 comm.showAlert("사용중인 아이디입니다.<br/> 다른 아이디를 입력해주십시오.");
+                                $(e.currentTarget).data("duplCheck", false);
                             } else {
                                 comm.showAlert("사용가능한 아이디입니다.");
-                                $(e.currentTarget).data("duplCheck", "true");
+                                $(e.currentTarget).data("duplCheck", true);
                             }
                         });
                     } else {
                         comm.showAlert("[ID] <br/> * 형식에 맞지 않는 문자 * </br> 다시 입력해 주십시오.");
+                        $(e.currentTarget).data("duplCheck", false);
                     }
                 });
             } else if(type === "mod") {
@@ -159,7 +164,7 @@ const account = {
             const formObj = $('#userAccountForm').serializeJSON();
             const $checkPassword = $("#checkPassword");
             formObj.userGroupSeq = [7,8];
-            if(formObj.password === $checkPassword.val()) {
+            if(formObj.password === $checkPassword.val() && $("#checkIdBtn").data("duplCheck") === true) {
                 if($('#userAccountForm').doValidation()) {
                     $.ajax({
                         url: "/user"
@@ -174,9 +179,11 @@ const account = {
                 } else {
                     return false;
                 }
-            } else {
+            } else if(formObj.password !== $checkPassword.val()) {
                 $checkPassword.focus();
-                comm.showAlert("비밀번호 확인이 일치하지 않습니다.")
+                comm.showAlert("비밀번호 확인이 일치하지 않습니다.");
+            } else if($("#checkIdBtn").data("duplCheck") === false) {
+                comm.showAlert("아이디 중복확인이 필요합니다.");
             }
         },
         modProc : (pSeq) => {
