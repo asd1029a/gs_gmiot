@@ -76,7 +76,7 @@ public class User {
     //@JsonIgnore
     // @OneToOne(mappedBy ="user",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    @JsonManagedReference
+//    @JsonManagedReference
     private List<UserGroupInUser> userGroupInUser=new ArrayList<>();
 
 //    @OneToOne(mappedBy = "userCommonCode",fetch =FetchType.EAGER)

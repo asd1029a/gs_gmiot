@@ -34,11 +34,11 @@ public class MissionDetailsService {
 
 
     @Transactional
-    public MissionDetails saveMission(MissionDetails missonDetails, long mission_id) {
+    public MissionDetails saveMission(MissionDetails missionDetails, long mission_id) {
         Optional<Mission> mission = missionRepository.findById(mission_id);
 
-        missonDetails.setMission(mission.get());
-        return missionDetailsRepository.save(missonDetails);
+        missionDetails.setMission(mission.get());
+        return missionDetailsRepository.save(missionDetails);
     }
 
     /*
@@ -93,11 +93,11 @@ public class MissionDetailsService {
                 
                 if(r.getName().equals("takeOff"))
                     r.setKoName("이륙");
-                else if(r.getName().equals("loiter"))
+                else if(r.getName().equals("loi"))
                     r.setKoName("로이터");
                 else if(r.getName().equals("return"))
                     r.setKoName("귀환");
-                else if(r.getName().equals("waypont"))
+                else if(r.getName().equals("waypoint"))
                     r.setKoName("경유지");
                 missionDetailsRepository.save(r);
             });
@@ -112,9 +112,9 @@ public class MissionDetailsService {
     public String updateMissionDetails(List<MissionDetails> missionDetails, long mission_id) {
 
 
-        log.info("mission_id={}", mission_id);
+//        log.info("mission_id={}", mission_id);
         Optional<Mission> mission = missionRepository.findById(mission_id);
-        log.info("mission={}", mission);
+//        log.info("mission={}", mission);
         ObjectMapper mapper = new ObjectMapper();
         List<MissionDetails> missionDetailsList = mapper.convertValue(missionDetails, new TypeReference<List<MissionDetails>>() {
         });
@@ -150,10 +150,10 @@ public class MissionDetailsService {
 
 
     public List<MissionDetailResponse> findMissionDetails(String name) {
-        List<MissionDetails> missonDetails = missionDetailsRepository.findAllByName(name);
+        List<MissionDetails> missionDetails = missionDetailsRepository.findAllByName(name);
 
 
-        return missonDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
+        return missionDetails.stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
     }
 

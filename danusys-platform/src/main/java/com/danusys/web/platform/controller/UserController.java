@@ -108,7 +108,7 @@ public class UserController {
        name: delUserProc
        url: /user
        type: delete
-       param: User user
+       param: User user (userSeq)
        do: userSeq로 조회하여 삭제함
      */
     @DeleteMapping()

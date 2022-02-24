@@ -115,22 +115,25 @@ const mapPopupContent = {
 }
 
 /**
- * 레이어 선택 조작
- */
-const layerSelect = {
-    add(layer) {
-        const select =
-            new ol.interaction.Select({
-                layers : [layer]
-                // layer => {
-                //     return layer.get('selectable') === true;
-                // }
-                , style : feature => {
-                    let layerName = feature.getId().replace(/[0-9]/g,"");
-                    console.log(layerStyle[layerName](true));
-                    return eval(layerStyle[layerName](true));
-                }
-            });
-        return select;
+ * 레이어별 클릭 이벤트
+ * */
+function clickIcon(layerType, layerObj) {
+    $('.area_info').show();
+    window.map.updateSize();
+    switch (layerType)  {
+        case "station":
+            ///개소 클릭 이벤트
+            console.log(layerObj);
+            return false;
+        case "facility" :
+            //시설물 클릭 이벤트
+            console.log(layerObj);
+            return false;
+        default :
+            ////////////////////
     }
+
+
 }
+
+

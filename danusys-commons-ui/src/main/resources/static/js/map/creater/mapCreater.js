@@ -211,8 +211,8 @@ class mapCreater {
         this.baseProjection = 'EPSG:4326';
 
         //기본 중심점
-        this.lat = 37.44457599567139;
-        this.lon = 126.89482519279865;
+        this.lat = 37.323351; //37.44457599567139;
+        this.lon = 126.726054; //126.89482519279865;
         this.center = [this.lon, this.lat];
 
         this.createTileGrid();
@@ -225,6 +225,11 @@ class mapCreater {
         this.createTileLayers();
 
         this.switchTileMap('btnImgmap');
+
+
+        this.map.getLayers().getArray().forEach((layer, idx) => {
+            layer.setZIndex(idx);
+        });
     }
 
     /**
@@ -246,6 +251,30 @@ class mapCreater {
             }
         });
     }
+
+    //제거 예정
+    // clickLayer(layers) {
+    //     //LAYER SELECT EVENT
+    //     window.map.map.on('click', evt => {
+    //         const pixel = window.map.map.getEventPixel(evt.originalEvent);
+    //         let clickLayer = new Array();
+    //         let flag = true;
+    //
+    //         map.forEachFeatureAtPixel(pixel,(feature,layer) => {
+    //             // if(layer){
+    //             //     const selectLayer = layer.get('name');
+    //             //     clickLayers.push(selectLayer);
+    //             //     if(clickObjs[selectLayer]){
+    //             //         clickObjs[selectLayer].push(feature);
+    //             //     } else {
+    //             //         flag = false;
+    //             //     }
+    //             // }
+    //
+    //         });
+    //
+    //     });
+    // }
 
     createTileGrid() {
         let tileGrid = this.extents[this.type] == undefined ? undefined :
@@ -372,6 +401,9 @@ class mapCreater {
     }
 
     addLayer(layer) {
+        //order 전처리
+        const lastIdx = this.map.getLayers().getArray().length;
+        layer.setZIndex(lastIdx);
         this.map.addLayer(layer);
     }
 

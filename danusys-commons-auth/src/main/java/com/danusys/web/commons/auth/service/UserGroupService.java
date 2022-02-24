@@ -90,14 +90,14 @@ public class UserGroupService {
 
     @Transactional
     public int saveUserGroup(UserGroup userGroup) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
 
         // log.info("{}",userDetails.getUserSeq());
         if (userGroup.getGroupName() == null || userGroup.getGroupDesc() == null) {
             return 0;
         }
-        userGroup.setInsertUserSeq(userDetails.getUserSeq());
+//        userGroup.setInsertUserSeq(userDetails.getUserSeq());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userGroup.setInsertDt(timestamp);
 

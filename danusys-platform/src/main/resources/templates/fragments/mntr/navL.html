@@ -145,98 +145,83 @@
                 <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
             </dl>
             <div class="search_form">
-                <dl>
-                    <dt><input type="text" placeholder="Tab 1 검색"><i><img src="/images/default/search.svg"></i></dt>
-                    <dd class="detail_btn">상세<i><img src="/images/default/arrowBottom.svg"></i></dd>
-                </dl>
-                <div class="search_fold" style="display: none;">
+                <form>
                     <dl>
-                        <dt>Type 1</dt>
-                        <dd>
-                            <ul>
-                                <li>
+                        <dt><input type="text" placeholder="Tab 1 검색"><i><img src="/images/default/search.svg"></i></dt>
+                        <dd class="detail_btn">상세<i><img src="/images/default/arrowBottom.svg"></i></dd>
+                    </dl>
+                    <div class="search_fold" style="display: none;">
+                        <dl class="selectbox_set">
+                            <dt>개소 종류</dt>
+                            <dd>
+                                <div class="dropdown_checkbox" data-selectbox-type=
+                                        "stationKind">
+                                    <ul class="checkbox_list checkbox_list_station list">
+                                        <li>
                                             <span>
-                                                <input type="checkbox" id="type01" name="">
-                                                <label for="type01"><span></span>종류 1</label>
+                                                <input type="checkbox" id="stationALL" name="checkAll">
+                                                <label for="stationAll"><span></span>전체</label>
                                             </span>
-                                    <span>
-                                                <input type="checkbox" id="type02" name="">
-                                                <label for="type02"><span></span>종류 2</label>
-                                            </span>
-                                </li>
-                                <li>
                                             <span>
-                                                <input type="checkbox" id="type03" name="">
-                                                <label for="type03"><span></span>종류 3</label>
+                                                 <input type="checkbox" id="station01" name="">
+                                                <label for="station01"><span></span></label>
                                             </span>
-                                    <span>
-                                                <input type="checkbox" id="type04" name="">
-                                                <label for="type04"><span></span>종류 4</label>
-                                            </span>
-                                </li>
-                                <li>
-                                            <span>
-                                                <input type="checkbox" id="type05" name="">
-                                                <label for="type05"><span></span>종류 5</label>
-                                            </span>
-                                    <span>
-                                                <input type="checkbox" id="type06" name="">
-                                                <label for="type06"><span></span>종류 6</label>
-                                            </span>
-                                </li>
-                            </ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>Type 2</dt>
-                        <dd>
-                            <select>
-                                <option selected>선택 </option>
-                                <option>선택 1</option>
-                                <option>선택 2</option>
-                                <option>선택 3</option>
-                                <option>선택 4</option>
-                                <option>선택 5</option>
-                            </select>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>Type 3</dt>
-                        <dd>
-                            <select>
-                                <option selected>선택 </option>
-                                <option>선택 1</option>
-                                <option>선택 2</option>
-                                <option>선택 3</option>
-                                <option>선택 4</option>
-                                <option>선택 5</option>
-                            </select>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>Type 4</dt>
-                        <dd>
-                            <ul>
-                                <li><input type="date"></li>
-                                <li><input type="month"></li>
-                                <li><input type="week"></li>
-                                <li><input type="time"></li>
-                            </ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>Type 5</dt>
-                        <dd>
-                                    <span>
-                                        <input type="checkbox" id="type07" name="">
-                                        <label for="type07"><span></span>즐겨찾기만 보기</label>
-                                    </span>
-                        </dd>
-                    </dl>
-                    <ul class="button">
-                        <li>검색</li>
-                    </ul>
-                </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </dd>
+                        </dl>
+    <!--                    <dl>-->
+    <!--                        <dt>Type 2</dt>-->
+    <!--                        <dd>-->
+    <!--                            <select>-->
+    <!--                                <option selected>선택 </option>-->
+    <!--                                <option>선택 1</option>-->
+    <!--                                <option>선택 2</option>-->
+    <!--                                <option>선택 3</option>-->
+    <!--                                <option>선택 4</option>-->
+    <!--                                <option>선택 5</option>-->
+    <!--                            </select>-->
+    <!--                        </dd>-->
+    <!--                    </dl>-->
+    <!--                    <dl>-->
+    <!--                        <dt>Type 3</dt>-->
+    <!--                        <dd>-->
+    <!--                            <select>-->
+    <!--                                <option selected>선택 </option>-->
+    <!--                                <option>선택 1</option>-->
+    <!--                                <option>선택 2</option>-->
+    <!--                                <option>선택 3</option>-->
+    <!--                                <option>선택 4</option>-->
+    <!--                                <option>선택 5</option>-->
+    <!--                            </select>-->
+    <!--                        </dd>-->
+    <!--                    </dl>-->
+    <!--                    <dl>-->
+    <!--                        <dt>Type 4</dt>-->
+    <!--                        <dd>-->
+    <!--                            <ul>-->
+    <!--                                <li><input type="date"></li>-->
+    <!--                                <li><input type="month"></li>-->
+    <!--                                <li><input type="week"></li>-->
+    <!--                                <li><input type="time"></li>-->
+    <!--                            </ul>-->
+    <!--                        </dd>-->
+    <!--                    </dl>-->
+    <!--                    <dl>-->
+    <!--                        <dt>Type 5</dt>-->
+    <!--                        <dd>-->
+    <!--                                    <span>-->
+    <!--                                        <input type="checkbox" id="type07" name="">-->
+    <!--                                        <label for="type07"><span></span>즐겨찾기만 보기</label>-->
+    <!--                                    </span>-->
+    <!--                        </dd>-->
+    <!--                    </dl>-->
+                        <ul class="button">
+                            <li>검색</li>
+                        </ul>
+                    </div>
+                </form>
             </div>
             <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon02.svg"></i>Tab 1 목록<span class="count">11</span></dt>

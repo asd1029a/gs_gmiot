@@ -2,6 +2,7 @@ package com.danusys.web.commons.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,13 +35,14 @@ public class UserGroupInUser {
     // @ManyToOne
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_seq")
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonIgnore
     private User user;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_group_seq")
-    @JsonManagedReference
+//    @JsonManagedReference
     private UserGroup userGroup;
 
 
