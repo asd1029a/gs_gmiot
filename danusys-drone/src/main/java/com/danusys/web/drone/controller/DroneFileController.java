@@ -24,6 +24,8 @@ import javax.xml.ws.Response;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/file")
@@ -87,6 +89,15 @@ public class DroneFileController {
                                     @PathVariable("fileName") String fileName) throws IOException {
 
         FileUtil.fileDownload(request, response, fileName);
+
+    }
+    @ResponseBody
+    @PostMapping("/excel/download")
+    public void excelDownload(HttpServletRequest request , HttpServletResponse response, @RequestBody ArrayList<Map<String, Object>> paramMap) throws IOException {
+
+
+        FileUtil.excelDownload(request,response,paramMap);
+
 
     }
 }

@@ -20,7 +20,7 @@ import java.util.Map;
 @RequestMapping("/drone/api")
 @Slf4j
 @RequiredArgsConstructor
-public class DroneCurdController {
+public class  DroneCurdController {
 
     private final DroneService droneService;
     private final DroneDetailsService droneDetailsService;

@@ -748,87 +748,9 @@ public class FileController {
         return str + "_";
     }
 
-    private int rowNum = 0;
-    private int cellNum = 0;
-
-    @PostMapping("/excel/download")
-    public void excelDownload(HttpServletResponse response, @RequestBody ArrayList<Map<String, Object>> paramMap) throws IOException {
-
-
-//        Workbook wb = new HSSFWorkbook();
-        Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("첫번째 시트");
-        //  Row row = null;
-//        Cell cell = null;
-        rowNum = 0;
-        // Header
-//        row = sheet.createRow(rowNum++);
-//        cell = row.createCell(0);
-//        cell.setCellValue("번호");
-//        cell = row.createCell(1);
-//        cell.setCellValue("이름");
-//        cell = row.createCell(2);
-//        cell.setCellValue("제목");
-//
-//        // Body
-//        for (int i=0; i<3; i++) {
-//            row = sheet.createRow(rowNum++);
-//            cell = row.createCell(0);
-//            cell.setCellValue(i);
-//            cell = row.createCell(1);
-//            cell.setCellValue(i+"_name");
-//            cell = row.createCell(2);
-//            cell.setCellValue(i+"_title");
-//        }
-
-        // 컨텐츠 타입과 파일명 지정
-        //  response.setContentType("ms-vnd/excel");
-//        response.setHeader("Content-Disposition", "attachment;filename=example.xls");
-        //   response.setHeader("Content-Disposition", "attachment;filename=example.xlsx");
-
-        for (Map<String, Object> data : paramMap) {
-            //row 생성
-            Row row = sheet.createRow(rowNum);
-            cellNum = 0;
-
-            //map에 있는 데이터를 한개씩 조회해서 열을 생성한다.
-//            for (String key : data.keySet()) {
-//                data.
-//                //cell 생성
-//                Cell cell = row.createCell(cellNum++);
-//
-//                //cell에 데이터 삽입
-//                cell.setCellValue(data.get(key).toString());
-//            }
-            data.forEach((k, v) -> {
-                Cell cell = row.createCell(cellNum++);
-
-                if (rowNum == 0) {
-                    log.info("rowNum==0");
-                    cell.setCellValue(k);
-                } else {
-                    //cell에 데이터 삽입
-                    cell.setCellValue(v.toString());
-                }
-                sheet.autoSizeColumn(cellNum);
-               // sheet.setColumnWidth(cellNum, (sheet.getColumnWidth(cellNum))+512 ); //이건 자동으로 조절 하면 너무 딱딱해 보여서 자동조정한 사이즈에 (short)512를 추가해 주니 한결 보기 나아졌다.
-
-            });
-            rowNum++;
-
-        }
-        // Excel File Output
-        FileOutputStream fos = new FileOutputStream(new File("D:/example.xlsx"));
-        wb.write(response.getOutputStream());
-        wb.write(fos);
-        wb.close();
-        fos.close();
 
 
 
-
-
-    }
 
 
 

@@ -5,6 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.net.URLConnection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -29,6 +37,7 @@ public class FileUtil {
     }
 
     private static String STATIC_EXTERNAL_FILE_PATH;
+
 
     @Value("${danusys.path.root}")
     public void setExternalFilePath(String EXTERNAL_FILE_PATH) {
@@ -179,6 +188,85 @@ public class FileUtil {
             }
 
         }
+
+    }
+
+    public static void excelDownload(HttpServletRequest request, HttpServletResponse response,
+                                     List<Map<String, Object>> paramMap) {
+        int rowNum = 0;
+        AtomicInteger cellNum = new AtomicInteger();
+
+
+        String sPath = STATIC_EXTERNAL_FILE_PATH;
+        String folderPath = "";
+        String folder[] = request.getHeader("REFERER").split("/");
+        for (int i = 0; i < folder.length; i++) {
+            if (i >= 3)
+                folderPath += folder[i] + "/";
+
+        }
+        File uploadPath = new File(sPath, folderPath);
+        if (uploadPath.exists() == false) {
+            uploadPath.mkdirs();
+        }
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("sheet 1");
+
+        rowNum = 0;
+
+
+        for (Map<String, Object> data : paramMap) {
+            //row 생성
+            Integer finalRowNum = rowNum;
+            Row row = sheet.createRow(finalRowNum);
+
+
+            cellNum.set(0);
+            data.forEach((k, v) -> {
+
+                Cell cell = row.createCell(cellNum.get());
+
+                if (finalRowNum == 0) {
+                    cell.setCellValue(k);
+                } else {
+                    //cell에 데이터 삽입
+                    cell.setCellValue(v.toString());
+                }
+
+
+
+                cellNum.incrementAndGet();
+            });
+            sheet.autoSizeColumn(finalRowNum);
+            sheet.setColumnWidth(finalRowNum, (sheet.getColumnWidth(finalRowNum))+512 );
+            rowNum++;
+
+        }
+        // Excel File Output
+        FileOutputStream fos = null;
+        log.info("here");
+        File saveFile=new File(uploadPath,"/excel.xlsx");
+        log.info("{},{}", sPath, folderPath);
+        try {
+
+            fos = new FileOutputStream(saveFile);
+            wb.write(response.getOutputStream());
+            wb.write(fos);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                wb.close();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
 
     }
 }

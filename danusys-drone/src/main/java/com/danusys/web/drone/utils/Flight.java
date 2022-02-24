@@ -57,6 +57,9 @@ public class Flight {
     private int sec = 0;
     private int min = 0;
     private int hour = 0;
+    private String stringSeconds=null;
+    private String stringMinutes=null;
+    private String stringHours=null;
     private TimerTask tt = null;
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
@@ -73,9 +76,25 @@ public class Flight {
         tt = new TimerTask() {
             @Override
             public void run() {
-                gps.setSec(sec);
-                gps.setMin(min);
-                gps.setHour(hour);
+
+                stringSeconds=Integer.toString(sec);
+                stringMinutes=Integer.toString(min);
+                stringHours=Integer.toString(hour);
+
+                if(sec<10){
+                    stringSeconds="0"+stringSeconds;
+                }
+                if(min<10){
+                    stringMinutes="0"+stringMinutes;
+                }
+                if(hour<10){
+                    stringHours="0"+stringHours;
+                }
+                gps.setSec(stringSeconds);
+                gps.setMin(stringMinutes);
+                gps.setHour(stringHours);
+
+
                 sec += 1;
                 if (sec == 60) {
                     sec = 0;

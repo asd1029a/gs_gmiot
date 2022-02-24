@@ -316,7 +316,7 @@ public class MissionApiController {
     public void play(@RequestBody Map<String,Object> paramMap) {
         int droneId=0;
         if (paramMap.get("droneId")!=null)
-            droneId=Integer.parseInt(paramMap.get("droneSeq").toString());
+            droneId=Integer.parseInt(paramMap.get("droneId").toString());
         // flight.loiter(30);
         flight.pauseOrPlay(1);
         // flight.returnDrone();
