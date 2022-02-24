@@ -1,7 +1,7 @@
 package com.danusys.web.platform.service.notice;
 
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
-import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.notice.NoticeSqlProvider;
 import com.danusys.web.platform.model.paging.Page;

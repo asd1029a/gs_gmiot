@@ -38,42 +38,42 @@
                     <div>
                         <dl class="dateSet">
                             <dt>조회 기간</dt>
-                            <dd><input type="date" class="input_date"></dd>
+                            <dd><input type="date" class="input_date before_date"></dd>
                             <span>부터</span>
-                            <dd><input type="date" class="input_date"></dd>
+                            <dd><input type="date" class="input_date after_date"></dd>
                             <span>까지</span>
                         </dl>
-                        <dl class="checkboxSet">
-                            <dt>파일 형식</dt>
-                            <dd>
-                                <span>
-                                    <input type="checkbox" id="video" name="">
-                                    <label for="video"><span></span>동영상</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="picture" name="">
-                                    <label for="picture"><span></span>사진</label>
-                                </span>
-                                <span>
-                                    <input type="checkbox" id="etc" name="">
-                                    <label for="etc"><span></span>기타</label>
-                                </span>
-                            </dd>
-                        </dl>
+<!--                        <dl class="checkboxSet">-->
+<!--                            <dt>파일 형식</dt>-->
+<!--                            <dd>-->
+<!--                                <span>-->
+<!--                                    <input type="checkbox" id="video" name="">-->
+<!--                                    <label for="video"><span></span>동영상</label>-->
+<!--                                </span>-->
+<!--                                <span>-->
+<!--                                    <input type="checkbox" id="picture" name="">-->
+<!--                                    <label for="picture"><span></span>사진</label>-->
+<!--                                </span>-->
+<!--                                <span>-->
+<!--                                    <input type="checkbox" id="etc" name="">-->
+<!--                                    <label for="etc"><span></span>기타</label>-->
+<!--                                </span>-->
+<!--                            </dd>-->
+<!--                        </dl>-->
                     </div>
                     <div>
                         <dl class="searchTextSet">
                             <dt>조회</dt>
                             <dd>
-                                <select>
-                                    <option selected>전체</option>
-                                    <option>기기명</option>
-                                    <option>미션명</option>
+                                <select id="selectType">
+                                    <option selected value="all">전체</option>
+                                    <option value="device_name">기기명</option>
+                                    <option value="mission_name">미션명</option>
                                 </select>
                             </dd>
-                            <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
+                            <dd><input class="search_word" type="text" placeholder="검색어를 입력하세요."></dd>
                             <dd class="button"><i><img src="images/um/refresh.svg"></i>검색조건 초기화</dd>
-                            <dd class="button"><i><img src="images/um/search.svg"></i>검색</dd>
+                            <dd class="button search_button"><i><img src="images/um/search.svg"></i>검색</dd>
                         </dl>
                     </div>
                 </form>

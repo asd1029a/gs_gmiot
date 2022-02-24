@@ -1,6 +1,6 @@
 package com.danusys.web.platform.mapper.common;
 
-import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.mapper.notice.NoticeSqlProvider;
 import org.apache.ibatis.annotations.*;
 
