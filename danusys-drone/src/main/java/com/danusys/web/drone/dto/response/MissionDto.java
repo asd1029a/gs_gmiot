@@ -31,7 +31,7 @@ public class MissionDto {
     private int totalDistance;
     private int estimatedTime;
 
-    private List<MissionDetailsDto> missionDetailsDto = new ArrayList<>();
+    private List<MissionDetailsDto> missionDetails = new ArrayList<>();
 
 
     public MissionDto(Mission mission) {
@@ -41,7 +41,7 @@ public class MissionDto {
             this.updateDt = mission.getUpdateDt();
             this.totalDistance = mission.getTotalDistance();
             this.estimatedTime = mission.getEstimatedTime();
-            this.missionDetailsDto= mission.getMissionDetails().stream().map(MissionDetailsDto::new).collect(Collectors.toList());
+            this.missionDetails= mission.getMissionDetails().stream().map(MissionDetailsDto::new).collect(Collectors.toList());
         }
 
     }
