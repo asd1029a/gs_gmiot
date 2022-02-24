@@ -38,7 +38,7 @@ public class DroneFileController {
 
 
     @PostMapping(value = "/upload/drone", produces = "multipart/form-data;charset=UTF-8")
-    public ResponseEntity<?> fileUpload(MultipartFile[] uploadFile, HttpServletRequest request, long droneId) {
+    public ResponseEntity<?> fileUpload(MultipartFile[g] uploadFile, HttpServletRequest request, long droneId) {
         log.info("droneId={}", droneId);
 
 
@@ -76,7 +76,7 @@ public class DroneFileController {
 
     }
 
-    @GetMapping(value = "/image/{imageName:.+}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/image/{imageName:.+}")
     public ResponseEntity<byte[]> userSearch(@PathVariable("imageName") String imageName, HttpServletRequest request) throws IOException {
 
         byte[] image = FileUtil.getImage(imageName, request);

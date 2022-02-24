@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import io.dronefleet.mavlink.Mavlink2Message;
 import io.dronefleet.mavlink.MavlinkConnection;
 import io.dronefleet.mavlink.MavlinkMessage;
-import io.dronefleet.mavlink.ardupilotmega.GimbalControl;
+
 import io.dronefleet.mavlink.common.*;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -61,6 +62,8 @@ public class Flight {
     private String stringMinutes = null;
     private String stringHours = null;
     private TimerTask tt = null;
+    private boolean isEnd = false;
+    private boolean isPauseOrStopEnd=false;
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
         //시간 초기화
@@ -70,8 +73,8 @@ public class Flight {
         stringSeconds = null;
         stringMinutes = null;
         stringHours = null;
-
-
+        isEnd = false;
+        isPauseOrStopEnd=false;
         connection = null;
         socket = null;
         //Timer t = null;
@@ -206,7 +209,7 @@ public class Flight {
             droneLogDetailsArmDisarm.setParam7("0");
             droneLogDetailsService.saveDroneLogDetails(droneLogDetailsArmDisarm);
 
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(40).build(), linkId, timestamp, secretKey);
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100).build(), linkId, timestamp, secretKey);
             DroneLogDetails droneLogDetailsTakeOff = new DroneLogDetails();
             droneLogDetailsTakeOff.setDroneLog(droneLog);
             droneLogDetailsTakeOff.setFromTarget("gcs");
@@ -225,10 +228,8 @@ public class Flight {
 
                 if (message.getPayload() instanceof TerrainReport) {
                     MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
-//                    float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
-//                    if (takeoff > 40 - 1.5) {
-//                        break;
-//                    }
+                    float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
+
 
                 } else if (message.getPayload() instanceof Heartbeat) {
                     MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
@@ -250,14 +251,16 @@ public class Flight {
                     gps.setGpsX((double) y / 10000000);
                     gps.setGpsY((double) x / 10000000);
                     gps.setCurrentHeight((double) z / 1000);
+
+                    if ((double) z / 1000 > 80 - 1.5) {
+                        break;
+                    }
+
                     gps.setHeading(heading / 100);
 
                 } else if (message.getPayload().getClass().getName().contains("VfrHud")) {
                     MavlinkMessage<VfrHud> vfrHudMavlinkMessage = (MavlinkMessage<VfrHud>) message;
-                    float takeoff = vfrHudMavlinkMessage.getPayload().alt();
-                    if (takeoff > 40 - 1.5) {
-                        break;
-                    }
+
                     float airSpeed = vfrHudMavlinkMessage.getPayload().airspeed();
 
                     gps.setAirSpeed(Float.parseFloat(String.format("%.1f", airSpeed)));
@@ -532,6 +535,7 @@ public class Flight {
                     .z(gpsZ).build(), linkId, timestamp, secretKey);
 
             DroneLogDetails droneLogDetailsWayPoint = new DroneLogDetails();
+            droneLogDetailsWayPoint.setDroneLog(droneLog);
             droneLogDetailsWayPoint.setFromTarget("gcs");
             droneLogDetailsWayPoint.setToTarget("drone");
             droneLogDetailsWayPoint.setType("MAV_CMD_NAV_WAYPOINT");
@@ -664,6 +668,8 @@ public class Flight {
     public String returnDrone() {
 
         try {
+
+
             int systemId = 1;
             int componentId = 1;
             int linkId = 1;
@@ -676,6 +682,7 @@ public class Flight {
             connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_RETURN_TO_LAUNCH).build(), linkId, timestamp, secretKey);
 
             DroneLogDetails droneLogDetailsReturnToLaunch = new DroneLogDetails();
+            droneLogDetailsReturnToLaunch.setDroneLog(droneLog);
             droneLogDetailsReturnToLaunch.setFromTarget("gcs");
             droneLogDetailsReturnToLaunch.setToTarget("drone");
             droneLogDetailsReturnToLaunch.setType("MAV_CMD_NAV_RETURN_TO_LAUNCH");
@@ -697,6 +704,8 @@ public class Flight {
 
             while ((message = connection.next()) != null) {
 
+                if (isEnd)
+                    break;
                 if (message.getPayload() instanceof Heartbeat) {
                     MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
                     heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
@@ -734,20 +743,25 @@ public class Flight {
 
 
                     MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
-
+                    String missionText = statustextMavlinkMessage.getPayload().text();
+                    log.info("missionText={}", missionText);
                     if (statustextMavlinkMessage.getPayload().text().contains("Hit ground")) {
 
                     } else if (statustextMavlinkMessage.getPayload().text().equals("Disarming motors")) {
+                        isEnd = true;
 
                         break;
                     }
+                    if (missionText.equals("Paused mission")) {
+                        isPauseOrStopEnd=true;
 
-                    String missionText = statustextMavlinkMessage.getPayload().text();
-
+                    } else if (missionText.equals("Resumed mission")) {
+                        isPauseOrStopEnd=true;
+                    }
 
 
                 } else if (message.getPayload() instanceof CommandAck) {
-                    MavlinkMessage<CommandAck> commandAckMavlingkMessage = (MavlinkMessage<CommandAck>) message;
+                    MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
                     log.info("commandAck={}", message);
                     DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
                     droneLogDetailsCommandAck.setFromTarget("drone");
@@ -802,7 +816,7 @@ public class Flight {
             String currentHeight = null;
             float currentHeightFloat = 0;
             //돌아가기
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_HOME).param1(0).param2(0).param3(0).param4(0).param5(37.44666089f).param6(126.8953259f).param7(22.012743f).build(), linkId, timestamp, secretKey);
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_HOME).param1(0).param2(0).param3(0).param4(0).param5(37.4455876f).param6(126.8953259f).param7(19.012743f).build(), linkId, timestamp, secretKey);
 
 
         } catch (Exception ioe) {
@@ -827,15 +841,21 @@ public class Flight {
 
     public String pauseOrPlay(int pauseOrPlay) {
         try {
+
             int systemId = 1;
             int componentId = 1;
             int linkId = 1;
             long timestamp = System.currentTimeMillis();/* provide microsecond time */
-            ;
-            byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
+            byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+            if (pauseOrPlay == 0)
+                gps.setStatus(2);
+            else if (pauseOrPlay == 1)
+                gps.setStatus(1);
             Heartbeat heartbeat = null;
             //1 play 0 pause
+
+            MavlinkMessage message;
             connection.send2(systemId, componentId, new CommandInt.Builder().command(MavCmd.MAV_CMD_DO_PAUSE_CONTINUE)
                     .param1(pauseOrPlay).param2(0).param3(0).param4(0).x(0).y(0).z(0).frame(MavFrame.MAV_FRAME_GLOBAL_INT).build());
 
@@ -854,9 +874,10 @@ public class Flight {
             droneLogDetailsDoPauseContinue.setParam7("0");
             droneLogDetailsService.saveDroneLogDetails(droneLogDetailsDoPauseContinue);
 
-            MavlinkMessage message;
-            while ((message = connection.next()) != null) {
 
+            while ((message = connection.next()) != null) {
+                if(isPauseOrStopEnd)
+                    break;
                 if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
                     MavlinkMessage<GlobalPositionInt> globalPositionIntMavlinkMessage = (MavlinkMessage<GlobalPositionInt>) message;
                     int x = globalPositionIntMavlinkMessage.getPayload().lat();
@@ -883,18 +904,23 @@ public class Flight {
 
                     String missionText = statustextMavlinkMessage.getPayload().text();
                     log.info(missionText);
-                    gps.setMissionType(missionText);
+                    //  gps.setMissionType(missionText);
 
                     if (missionText.equals("Paused mission")) {
                         log.info("break");
+                        isPauseOrStopEnd=true;
                         break;
                     } else if (missionText.equals("Resumed mission")) {
                         log.info("break");
+                        isPauseOrStopEnd=true;
                         break;
                     }
 
 
+
+
                 } else if (message.getPayload() instanceof Heartbeat) {     //heartbaet
+
                     MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
                     heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
                             .type(heartbeatMavlinkMessage.getPayload().type())
@@ -1044,7 +1070,8 @@ public class Flight {
                 //if(message.getPayload().getClass().getName().contains("MavlinkMessage")){
                 //     if(message.getPayload() instanceof MissionAck){
 
-
+                if (isEnd)
+                    break;
                 if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
                     MavlinkMessage<GlobalPositionInt> globalPositionIntMavlinkMessage = (MavlinkMessage<GlobalPositionInt>) message;
                     int x = globalPositionIntMavlinkMessage.getPayload().lat();
@@ -1066,7 +1093,7 @@ public class Flight {
 
                 } else if (message.getPayload().getClass().getName().contains("VfrHud")) {
                     MavlinkMessage<VfrHud> vfrHudMavlinkMessage = (MavlinkMessage<VfrHud>) message;
-                    log.info("{}",vfrHudMavlinkMessage.getPayload().alt());
+//                    log.info("{}",vfrHudMavlinkMessage.getPayload().);
 
                     float airSpeed = vfrHudMavlinkMessage.getPayload().airspeed();
                     gps.setAirSpeed(Float.parseFloat(String.format("%.1f", airSpeed)));
@@ -1125,9 +1152,16 @@ public class Flight {
 
                     if (missionText.equals("Disarming motors")) {
                         //gps.setMissionType("mission end");
-
+                        isEnd = true;
 
                         break;
+                    }
+
+                    if (missionText.equals("Paused mission")) {
+                        isPauseOrStopEnd=true;
+
+                    } else if (missionText.equals("Resumed mission")) {
+                        isPauseOrStopEnd=true;
                     }
 
 
@@ -1137,6 +1171,7 @@ public class Flight {
 
 
                 } else if (message.getPayload() instanceof Heartbeat) {     //heartbaet
+
                     MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
                     heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
                             .type(heartbeatMavlinkMessage.getPayload().type())
@@ -1222,7 +1257,6 @@ public class Flight {
 
         } finally {
             System.out.println("Mission");
-
 //            t.purge();
             tt.cancel();
             t.cancel();

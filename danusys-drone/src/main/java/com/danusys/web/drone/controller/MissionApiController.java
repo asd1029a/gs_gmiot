@@ -53,13 +53,15 @@ public class MissionApiController {
  */
 
     @MessageMapping("/return")
-    @SendTo("/topic/return")
+    //@SendTo("/topic/return")
     public void returnDrone(Map<String, Object> paramMap) {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
         flight.returnDrone();
     }
+
+
 
 
     @GetMapping("/takeoff")
@@ -76,7 +78,7 @@ public class MissionApiController {
 
     //   @GetMapping("/waypoint")
     @MessageMapping("/waypoint")
-    @SendTo("/topic/waypoint")
+    //@SendTo("/topic/waypoint")
 //    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
     // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
     public void wayPointDrone(Map<String, Object> paramMap) {
@@ -110,16 +112,21 @@ public class MissionApiController {
     }
 
     @MessageMapping("/changeyaw")
-    @SendTo("/topic/changeyaw")
+//    @SendTo("/topic/changeyaw")
 //    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
     // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
-    public void changeYaw(int yaw) {
-        flight.changeYaw(yaw);
+    public void changeYaw(@RequestBody Map<String, Object> paramMap) {
+
+        int yaw=0;
+        if(paramMap.get("yaw")!=null)
+            yaw=Integer.parseInt(paramMap.get("yaw").toString());
+
+            flight.changeYaw(yaw);
     }
 
 
     @MessageMapping("/startmission")
-    @SendTo("/topic/startmission")
+   // @SendTo("/topic/startmission")
 //    public void startMission(Mission mission) {
     public void startMission(@RequestBody Map<String, Object> paramMap) {
 
@@ -301,7 +308,7 @@ public class MissionApiController {
 
 
     @MessageMapping("/pause")
-    @SendTo("/topic/pause")
+  //  @SendTo("/topic/pause")
     public void pause(@RequestBody Map<String,Object> paramMap) {
         int droneId=0;
         if (paramMap.get("droneId")!=null)
@@ -312,7 +319,7 @@ public class MissionApiController {
     }
 
     @MessageMapping("/play")
-    @SendTo("/topic/play")
+   // @SendTo("/topic/play")
     public void play(@RequestBody Map<String,Object> paramMap) {
         int droneId=0;
         if (paramMap.get("droneId")!=null)
@@ -506,8 +513,17 @@ public class MissionApiController {
     public void test() {
         // flight.loiter(30);
         //flight.camera();
+        flight.flightTakeoff(100);
         //flight.returnDrone();
-        flight.setHome();
+       // flight.setHome();
+    }
+    @GetMapping("/test2")
+    public void test2() {
+        // flight.loiter(30);
+        //flight.camera();
+        //flight.flightTakeoff(100);
+        flight.returnDrone();
+        // flight.setHome();
     }
 
 
