@@ -14,12 +14,18 @@ $(".excel_download").on("click", function () {
         "length": 1
     }
     let resultData = ajaxLog(paramMap);
+    console.log(resultData);
     $.ajax({
-
+        contentType: "application/json; charset=utf-8",
         url: "/excel/download",
-        success: function () {
-          //window.location.href="/file/donwload/example.xlsx"
-        }
+        data: JSON.stringify(resultData),
+        type: "POST"
+
+        // success: function (data) {
+        //     alert(data);
+
+        //window.location.href="/file/donwload/example.xlsx"
+        // }
 
     })
 

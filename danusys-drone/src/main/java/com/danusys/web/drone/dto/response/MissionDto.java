@@ -36,6 +36,7 @@ public class MissionDto {
 
     public MissionDto(Mission mission) {
         if (mission != null) {
+            this.id=mission.getId();
             this.name = mission.getName();
             this.userId = mission.getUserId();
             this.updateDt = mission.getUpdateDt();
