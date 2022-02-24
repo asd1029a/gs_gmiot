@@ -2,7 +2,7 @@ package com.danusys.web.commons.api.service.executor;
 
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
-import com.danusys.web.commons.util.StrUtils;
+import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

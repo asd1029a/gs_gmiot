@@ -1,6 +1,6 @@
 package com.danusys.web.platform.service.station;
 
-import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.station.StationSqlProvider;
 import com.danusys.web.platform.util.PagingUtil;

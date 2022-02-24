@@ -2,6 +2,7 @@ package com.danusys.web.commons.api.service;
 
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.Station;
+import com.danusys.web.commons.api.repository.FacilityOptRepository;
 import com.danusys.web.commons.api.repository.FacilityRepository;
 import com.danusys.web.commons.api.repository.StationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +24,14 @@ import java.util.Map;
 public class FacilityService {
     private FacilityRepository facilityRepository;
     private StationRepository stationRepository;
+    private FacilityOptRepository facilityOptRepository;
 
     public FacilityService(FacilityRepository facilityRepository
-            , StationRepository stationRepository) {
+            , StationRepository stationRepository
+            , FacilityOptRepository facilityOptRepository) {
         this.facilityRepository = facilityRepository;
         this.stationRepository = stationRepository;
+        this.facilityOptRepository = facilityOptRepository;
     }
 
     public List<Facility> findAll() {
@@ -41,7 +45,7 @@ public class FacilityService {
     public void saveAll(List<Map<String, Object>> list) {
         List<Facility> facilityList = new ArrayList<Facility>();
         list.stream().forEach((d) -> {
-            String facilityId = d.get("facility_id").toString();
+            String facilityId = d.get("facility_id").toString() + "DDD";
             Facility originFacility = this.findByFacilityId(facilityId);
             Facility facility = originFacility == null ? new Facility() : originFacility;
             Station station = stationRepository.findByStationName(d.get("station_name").toString());
@@ -51,7 +55,7 @@ public class FacilityService {
             facility.setLongitude(Double.parseDouble(d.get("longitude").toString()));
             facility.setFacilityId(facilityId);
             facility.setStationSeq(station.getStationSeq());
-            facility.setFacilityStatus(1);
+            facility.setFacilityStatus(0);
             facility.setFacilityKind(Integer.parseInt(codeSeq.toString()));
 
             facilityList.add(facility);

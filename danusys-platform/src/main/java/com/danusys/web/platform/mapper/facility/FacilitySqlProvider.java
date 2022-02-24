@@ -1,6 +1,6 @@
 package com.danusys.web.platform.mapper.facility;
 
-import com.danusys.web.commons.util.CommonUtil;
+import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.platform.util.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 

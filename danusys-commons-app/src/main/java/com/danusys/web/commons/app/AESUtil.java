@@ -1,4 +1,4 @@
-package com.danusys.web.commons.util;
+package com.danusys.web.commons.app;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

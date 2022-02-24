@@ -15,7 +15,7 @@
  *
  */
 
-package com.danusys.web.commons.util;
+package com.danusys.web.commons.app;
 
 /*
  * Copyright 2001-2006 The Apache Software Foundation.

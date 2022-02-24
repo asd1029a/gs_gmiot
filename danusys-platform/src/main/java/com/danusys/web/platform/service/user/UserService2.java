@@ -10,7 +10,7 @@ import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.repository.UserStatusRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
-import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.service.event.EventServiceImpl;
 import com.danusys.web.platform.service.notice.NoticeService;

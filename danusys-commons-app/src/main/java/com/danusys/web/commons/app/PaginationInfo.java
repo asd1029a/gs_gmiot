@@ -1,4 +1,4 @@
-package com.danusys.web.commons.util;
+package com.danusys.web.commons.app;
 
 /*
  * Copyright 2008-2009 MOPAS(Ministry of Public Administration and Security).

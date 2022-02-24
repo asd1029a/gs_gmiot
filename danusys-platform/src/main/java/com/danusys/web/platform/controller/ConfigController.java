@@ -1,6 +1,6 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.service.config.ConfigService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

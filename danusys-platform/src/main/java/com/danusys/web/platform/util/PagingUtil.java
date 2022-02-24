@@ -1,6 +1,6 @@
 package com.danusys.web.platform.util;
 
-import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.commons.app.EgovMap;
 
 import java.util.HashMap;
 import java.util.List;

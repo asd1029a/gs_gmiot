@@ -1,12 +1,14 @@
 package com.danusys.web.commons.api.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Project : danusys-webservice-parent
@@ -20,7 +22,7 @@ import java.sql.Timestamp;
 @Table(name = "t_facility")
 public class Facility implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long facilitySeq;
 
     @Column(nullable = false)
@@ -61,4 +63,9 @@ public class Facility implements Serializable {
 
     @Column(nullable = false)
     private Long stationSeq;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "facilitySeq")
+    @JsonManagedReference
+    private List<FacilityOpt> facilityOpts = new ArrayList<FacilityOpt>();
 }

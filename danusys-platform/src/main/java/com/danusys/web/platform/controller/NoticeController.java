@@ -1,7 +1,7 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.commons.util.EgovMap;
-import com.danusys.web.commons.util.FileUtil;
+import com.danusys.web.commons.app.EgovMap;
+import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.platform.model.paging.Page;
 import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.service.notice.NoticeService;

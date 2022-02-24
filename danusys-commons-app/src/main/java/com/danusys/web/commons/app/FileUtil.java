@@ -1,4 +1,4 @@
-package com.danusys.web.commons.util;
+package com.danusys.web.commons.app;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
