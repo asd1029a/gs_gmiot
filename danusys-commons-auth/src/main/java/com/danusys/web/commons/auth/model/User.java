@@ -18,11 +18,11 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_seq")
     private int userSeq;
 
 
-    @Column(name = "user_id")
+    @Column(name = "id")
     private String userId;
     //만약에 에러가 날경우 userId-> username auth 쪽에있는 get set userId username으로 바꿀껏
     //repository도수정햇음

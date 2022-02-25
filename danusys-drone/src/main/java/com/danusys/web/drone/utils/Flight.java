@@ -1460,6 +1460,31 @@ public class Flight {
             e.printStackTrace();
         }
     }
+
+    public void setMissionCurrent(int seq) {
+
+
+        try {
+            int systemId = 1;
+            int componentId = 1;
+            int linkId = 1;
+            long timeBootMs = 0;
+            long minTimeBootMs = 0;
+            long timestamp = System.currentTimeMillis();/* provide microsecond time */
+            byte[] secretKey = new byte[0];
+            secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+            connection.send2(systemId, componentId, new CommandLong.Builder().
+                    command(MavCmd.MAV_CMD_DO_SET_MISSION_CURRENT)
+                    .param1(seq)
+                    .build(), linkId, timestamp, secretKey);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }
 
 

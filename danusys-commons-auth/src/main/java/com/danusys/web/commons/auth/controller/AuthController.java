@@ -3,9 +3,7 @@ package com.danusys.web.commons.auth.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
-import com.danusys.web.commons.auth.config.security.CustomAuthenticationEntryPoint;
 import com.danusys.web.commons.auth.model.*;
-import com.danusys.web.commons.auth.repository.PermitRepository;
 import com.danusys.web.commons.auth.service.PermitService;
 import com.danusys.web.commons.auth.service.UserGroupInUserService;
 import com.danusys.web.commons.auth.service.UserGroupService;
@@ -14,21 +12,17 @@ import com.danusys.web.commons.auth.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 @RestController
