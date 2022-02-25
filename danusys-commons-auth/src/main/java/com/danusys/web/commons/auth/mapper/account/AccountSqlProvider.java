@@ -12,8 +12,8 @@ public class AccountSqlProvider {
         String length = paramMap.get("length").toString();
 
         SQL sql = new SQL() {{
-            SELECT("user_seq, id, email, tel, last_login_dt" +
-                    ", status, update_user_seq, insert_dt, user_name");
+            SELECT("user_seq, id, email, tel, TO_CHAR(last_login_dt, 'YYYY-MM-DD HH24:MI:SS') AS last_login_dt" +
+                    ", status, update_user_seq, TO_CHAR(insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt, user_name");
             FROM("t_user");
             if (!keyword.equals("")){
                 WHERE("user_name = '%" + keyword + "%'");
@@ -32,6 +32,9 @@ public class AccountSqlProvider {
         SQL sql = new SQL() {{
             SELECT("COUNT(*) AS count");
             FROM("t_user");
+            if (!keyword.equals("")){
+                WHERE("user_name = '%" + keyword + "%'");
+            }
         }};
         return sql.toString();
     }
