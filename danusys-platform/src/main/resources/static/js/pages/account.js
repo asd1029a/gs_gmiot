@@ -50,7 +50,7 @@ const account = {
                     toggleable: false
                 }
                 , columns : [
-                    {data: "userId", className: "alignLeft"},
+                    {data: "id", className: "alignLeft"},
                     {data: "userName"},
                     {data: "tel"},
                     {data: "email", className: "alignLeft"},

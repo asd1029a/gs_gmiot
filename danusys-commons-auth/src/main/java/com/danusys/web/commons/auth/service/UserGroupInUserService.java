@@ -8,7 +8,7 @@ import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
-import com.danusys.web.commons.auth.util.PagingUtil;
+import com.danusys.web.commons.util.PagingUtil;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,4 @@
-package com.danusys.web.platform.util;
-
-import java.util.Locale;
+package com.danusys.web.commons.util;
 
 public class StringUtil {
     public static String camelToSnake(String camelStr) {
@@ -25,12 +23,13 @@ public class StringUtil {
         while (snakeStr.contains("_")) {
             camelStr = snakeStr
                     .replaceFirst(
-                        "_[a-z]",
-                        String.valueOf(
-                            Character.toUpperCase(
-                                snakeStr.charAt(
-                                    snakeStr.indexOf("_") + 1))));
+                            "_[a-z]",
+                            String.valueOf(
+                                    Character.toUpperCase(
+                                            snakeStr.charAt(
+                                                    snakeStr.indexOf("_") + 1))));
         }
         return camelStr;
+
     }
 }

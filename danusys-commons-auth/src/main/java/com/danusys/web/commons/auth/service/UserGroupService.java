@@ -7,7 +7,7 @@ import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
-import com.danusys.web.commons.auth.util.PagingUtil;
+import com.danusys.web.commons.util.PagingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;

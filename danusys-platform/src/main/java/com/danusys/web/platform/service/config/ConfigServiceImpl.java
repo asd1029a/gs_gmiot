@@ -1,9 +1,9 @@
 package com.danusys.web.platform.service.config;
 
+import com.danusys.web.commons.auth.mapper.common.CommonMapper;
 import com.danusys.web.commons.util.EgovMap;
-import com.danusys.web.platform.mapper.common.CommonMapper;
+import com.danusys.web.commons.util.PagingUtil;
 import com.danusys.web.platform.mapper.config.ConfigSqlProvider;
-import com.danusys.web.platform.util.PagingUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     public ConfigServiceImpl(CommonMapper commonMapper) {this.commonMapper = commonMapper;}
 
-    private final CommonMapper commonMapper;
+    private CommonMapper commonMapper;
     private final ConfigSqlProvider csp = new ConfigSqlProvider();
 
     @Override
