@@ -151,28 +151,23 @@ const notice = {
         } else if(type === "detail") {
             $('#noticePopup .title dt').text('공지사항 상세');
             $('#noticePopup .fileBox').append(downloadBtnHtml);
+            $("#noticePopup .download_btn").on('click', (e) => {
+                const fileName = $("#noticeFile").val();
+                if(fileName !== '') {
+                    notice.fileDownLoad(fileName);
+                } else {
+                    comm.showAlert("업로드된 파일이 없습니다.");
+                }
+            });
         }
     },
     hidePopup : () => {
         comm.hideModal($('#noticePopup'));
         $('#noticePopup').hide();
     },
-    fileUpload : (pSeq, $form, doneFunc, failFunc) => {
-        const formData = new FormData();
-        formData.append("noticeSeq", pSeq);
-        formData.append("file", $("#noticeForm").find("#file")[0].files[0]);
-
-        $.ajax({
-            url: "/notice/upload",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            enctype: "multipart/form-data"
-        }
-        ).done(doneFunc)
-        .fail(failFunc)
-
+    fileDownLoad : (fileName) => {
+        const encFileName = encodeURI(fileName);
+        window.location = '/notice/download/'+encFileName;
     },
     addProc : () => {
         const formData = new FormData($("#noticeForm")[0]);
