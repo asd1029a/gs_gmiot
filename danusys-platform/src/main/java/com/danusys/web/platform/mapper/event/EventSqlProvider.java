@@ -1,6 +1,6 @@
 package com.danusys.web.platform.mapper.event;
 
-import com.danusys.web.commons.util.CommonUtil;
+import com.danusys.web.commons.app.CommonUtil;
 import org.apache.ibatis.jdbc.SQL;
 import org.thymeleaf.util.StringUtils;
 

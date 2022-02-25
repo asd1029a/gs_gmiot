@@ -1,6 +1,6 @@
 package com.danusys.web.commons.auth.mapper.common;
 
-import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.commons.app.EgovMap;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 

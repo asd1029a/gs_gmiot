@@ -1,6 +1,6 @@
 package com.danusys.web.platform.config.security;
 
-import com.danusys.web.commons.util.EgovFileScrty;
+import com.danusys.web.commons.app.EgovFileScrty;
 import com.danusys.web.platform.model.LoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

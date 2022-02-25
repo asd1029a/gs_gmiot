@@ -1,8 +1,7 @@
 package com.danusys.web.commons.auth.controller;
 
+import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.auth.service.account.AccountService;
-import com.danusys.web.commons.util.EgovMap;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

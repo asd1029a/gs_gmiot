@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <modules>
 
-        <module>danusys-commons-util</module>
+        <module>danusys-commons-app</module>
         <module>danusys-commons-auth</module>
         <module>danusys-commons-api</module>
         <module>danusys-commons-ui</module>

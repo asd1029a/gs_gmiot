@@ -6,7 +6,7 @@
 ### danusys-commons-api
 * 모듈명 : API 통신 공통 라이브러리
 * 서버포트 : X
-### danusys-commons-util
+### danusys-commons-app
 * 모듈명 : API 통신 공통 라이브러리
 * 서버포트 : X
 

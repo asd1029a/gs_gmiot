@@ -1,6 +1,6 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.service.station.StationService;
 import com.danusys.web.platform.util.GisUtil;
 import org.springframework.beans.factory.annotation.Autowired;

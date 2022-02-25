@@ -2,8 +2,8 @@ package com.danusys.web.commons.auth.service.account;
 
 import com.danusys.web.commons.auth.mapper.account.AccountSqlProvider;
 import com.danusys.web.commons.auth.mapper.common.CommonMapper;
-import com.danusys.web.commons.util.EgovMap;
-import com.danusys.web.commons.util.PagingUtil;
+import com.danusys.web.commons.app.EgovMap;
+import com.danusys.web.commons.app.PagingUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

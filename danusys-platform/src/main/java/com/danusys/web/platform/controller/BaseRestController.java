@@ -1,9 +1,9 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.commons.util.CommonUtil;
-import com.danusys.web.commons.util.EgovFileScrty;
-import com.danusys.web.commons.util.JsonUtil;
-import com.danusys.web.commons.util.PaginationInfo;
+import com.danusys.web.commons.app.CommonUtil;
+import com.danusys.web.commons.app.EgovFileScrty;
+import com.danusys.web.commons.app.JsonUtil;
+import com.danusys.web.commons.app.PaginationInfo;
 import com.danusys.web.platform.model.ComDefaultVO;
 import com.danusys.web.platform.model.LoginVO;
 import com.danusys.web.platform.service.base.BaseService;

@@ -1,6 +1,6 @@
 package com.danusys.web.commons.auth.mapper.account;
 
-import com.danusys.web.commons.util.SqlUtil;
+import com.danusys.web.commons.app.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;

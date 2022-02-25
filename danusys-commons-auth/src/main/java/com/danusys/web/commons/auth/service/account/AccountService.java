@@ -1,6 +1,6 @@
 package com.danusys.web.commons.auth.service.account;
 
-import com.danusys.web.commons.util.EgovMap;
+import com.danusys.web.commons.app.EgovMap;
 
 import java.util.Map;
 

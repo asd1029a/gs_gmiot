@@ -57,7 +57,7 @@
         </dependency>
         <dependency>
             <groupId>com.danusys.web</groupId>
-            <artifactId>danusys-commons-util</artifactId>
+            <artifactId>danusys-commons-app</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>

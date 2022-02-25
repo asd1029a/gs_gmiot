@@ -1,8 +1,8 @@
 package com.danusys.web.platform.util;
 
-import com.danusys.web.commons.util.CommonUtil;
-import com.danusys.web.commons.util.EgovMap;
-import com.danusys.web.commons.util.EgovStringUtil;
+import com.danusys.web.commons.app.CommonUtil;
+import com.danusys.web.commons.app.EgovMap;
+import com.danusys.web.commons.app.EgovStringUtil;
 import com.danusys.web.platform.controller.GisRestController;
 import com.jhlabs.map.proj.Projection;
 import com.jhlabs.map.proj.ProjectionException;

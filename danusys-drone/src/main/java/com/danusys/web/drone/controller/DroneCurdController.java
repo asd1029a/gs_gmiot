@@ -20,7 +20,7 @@ import java.util.Map;
 @RequestMapping("/drone/api")
 @Slf4j
 @RequiredArgsConstructor
-public class DroneCurdController {
+public class  DroneCurdController {
 
     private final DroneService droneService;
     private final DroneDetailsService droneDetailsService;
@@ -93,9 +93,13 @@ public class DroneCurdController {
             long droneId = droneDetailRequest.getDroneId();
             DroneDetails droneDetails=droneDetailRequest.getDroneDetails();
             log.info("droneId={}",droneId);
+
+            long droneBaseId = droneDetailRequest.getDroneBase();
+            log.info("droneBaseId={}",droneBaseId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId));
+                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId,droneBaseId));
 
     }
 
