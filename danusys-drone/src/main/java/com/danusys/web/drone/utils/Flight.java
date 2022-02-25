@@ -260,7 +260,7 @@ public class Flight {
                         gps.setGpsY((double) x / 10000000);
                         gps.setCurrentHeight((double) z / 1000);
 
-                        if ((double) z / 1000 > 80 - 1.5) {
+                        if ((double) z / 1000 > 50 - 1.5) {
                             break;
                         }
 

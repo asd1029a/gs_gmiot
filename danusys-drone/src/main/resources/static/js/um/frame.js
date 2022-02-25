@@ -84,6 +84,7 @@ $(".add_drone").on("click", function () {
 });
 
 $(".update_drone_detail_button").on("click", function () {
+    console.log($(".location_select option:selected").data("id"));
     let param = {
         "droneId": $(".drone_id").val(),
         "droneDetails": {
@@ -99,9 +100,8 @@ $(".update_drone_detail_button").on("click", function () {
             "maximumOperatingSpeed": $(".drone_maximum_operating_speed").val(),
             "simNumber": $(".drone_sim_number").val(),
             "maximumSpeed": $(".drone_maximum_speed").val()
-
-
-        }
+        },
+        "droneBase":$(".location_select option:selected").data("id")
     }
     $.ajax({
         contentType: "application/json; charset=utf-8",
@@ -117,36 +117,6 @@ $(".update_drone_detail_button").on("click", function () {
 });
 
 function getDroneDetails(id) {
-    $.ajax({
-        contentType: "application/json; charset=utf-8",
-        url: `/drone/api/drone/${id}`,
-        type: "GET",
-        async: false,
-        success: function (resultData) {
-            console.log(resultData);
-            let droneDetails = resultData.droneDetails;
-            $(".drone_status").val(droneDetails.status);
-            $(".drone_master_manager").val(droneDetails.masterManager);
-            $(".drone_id").val(resultData.id);
-            $(".drone_sub_manager").val(droneDetails.subManager);
-            $(".drone_name").val(resultData.droneDeviceName);
-            $(".drone_manufacturer").val(droneDetails.manufacturer);
-            $(".drone_insert_dt").val(droneDetails.insertDt);
-            $(".drone_type").val(droneDetails.type);
-            $(".drone_weight").val(droneDetails.weight);
-            $(".drone_maximum_operating_distance").val(droneDetails.maximumOperatingDistance);
-            $(".drone_maximum_management_altitude").val(droneDetails.maximumManagementAltitude);
-            //$(".drone_operating_temperature_range").val("");
-            $(".drone_maximum_operating_speed").val(droneDetails.maximumOperatingSpeed);
-            $(".drone_sim_number").val(droneDetails.simNumber);
-            $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
-            $(".uploadName").val(droneDetails.thumbnailImg);
-            $(".picture img").attr("src", "/file/image/" + droneDetails.thumbnailImg);
-
-        }
-
-
-    });
 
     $.ajax({
         contentType: "application/json; charset=utf-8",
@@ -159,11 +129,45 @@ function getDroneDetails(id) {
             $(".location_select").html(``);
             $.each(resultData, function (i, item) {
                 console.log("item", item.baseName);
-                $(".location_select").append(`<option>${item.baseName}</option>`);
+                $(".location_select").append(`<option data-id="${item.id}">${item.baseName}</option>`);
+            })
+                $.ajax({
+                    contentType: "application/json; charset=utf-8",
+                    url: `/drone/api/drone/${id}`,
+                    type: "GET",
+                    async: false,
+                    success: function (result) {
+                        console.log(result);
+                        document.querySelectorAll(`.location_select option[data-id='${result.droneBase.id}']`)[0].selected = true;
+                        let droneDetails = result.droneDetails;
+                        $(".drone_status").val(droneDetails.status);
+                        $(".drone_master_manager").val(droneDetails.masterManager);
+                        $(".drone_id").val(result.id);
+                        $(".drone_sub_manager").val(droneDetails.subManager);
+                        $(".drone_name").val(result.droneDeviceName);
+                        $(".drone_manufacturer").val(droneDetails.manufacturer);
+                        $(".drone_insert_dt").val(droneDetails.insertDt);
+                        $(".drone_type").val(droneDetails.type);
+                        $(".drone_weight").val(droneDetails.weight);
+                        $(".drone_maximum_operating_distance").val(droneDetails.maximumOperatingDistance);
+                        $(".drone_maximum_management_altitude").val(droneDetails.maximumManagementAltitude);
+                        //$(".drone_operating_temperature_range").val("");
+                        $(".drone_maximum_operating_speed").val(droneDetails.maximumOperatingSpeed);
+                        $(".drone_sim_number").val(droneDetails.simNumber);
+                        $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
+                        $(".uploadName").val(droneDetails.thumbnailImg);
+                        $(".picture img").attr("src", "/file/image/" + droneDetails.thumbnailImg);
+
+                    }
             });
 
         }
     });
+
+
+
+
+
 }
 
 $(".delete_drone_detail_button").on("click", function () {
