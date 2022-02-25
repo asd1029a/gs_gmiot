@@ -2,6 +2,7 @@ package com.danusys.web.drone.service;
 
 
 import com.danusys.web.drone.model.Drone;
+import com.danusys.web.drone.model.DroneBase;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.model.Mission;
 import com.danusys.web.drone.repository.DroneDetailsRepository;
@@ -39,13 +40,21 @@ public class DroneDetailsService {
         setDrone.setId(droneId);
         DroneDetails droneDetails = droneDetailsRepository.findByDrone(setDrone);
 
-       // log.info("droneDetailsId={}", droneDetails.getId());
+        // log.info("droneDetailsId={}", droneDetails.getId());
         return droneDetails;
     }
 
     @Transactional
     public String updateDroneDetails(DroneDetails droneDetails, Long droneId) {
 
+        Optional<Drone> optionalDrone = droneRepository.findById(droneId);
+        Drone updateDrone = null;
+        if (!optionalDrone.isPresent())
+            return null;
+        else
+            updateDrone = optionalDrone.get();
+//        DroneBase droneBase=new DroneBase();
+//        updateDrone.setDroneBase(droneBase);
         DroneDetails updateDroneDetails = this.findDroneDetails(droneId);
 
         if (updateDroneDetails == null) {

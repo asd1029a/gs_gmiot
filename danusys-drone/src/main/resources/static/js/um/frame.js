@@ -121,11 +121,10 @@ function getDroneDetails(id) {
         contentType: "application/json; charset=utf-8",
         url: `/drone/api/drone/${id}`,
         type: "GET",
-
+        async: false,
         success: function (resultData) {
             console.log(resultData);
             let droneDetails = resultData.droneDetails;
-            $(".drone_location").val(droneDetails.location);
             $(".drone_status").val(droneDetails.status);
             $(".drone_master_manager").val(droneDetails.masterManager);
             $(".drone_id").val(resultData.id);
@@ -143,6 +142,25 @@ function getDroneDetails(id) {
             $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
             $(".uploadName").val(droneDetails.thumbnailImg);
             $(".picture img").attr("src", "/file/image/" + droneDetails.thumbnailImg);
+
+        }
+
+
+    });
+
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        url: `/drone/api/dronebase`,
+        type: "POST",
+        data: JSON.stringify({}),
+        async: false,
+        success: function (resultData) {
+            console.log(resultData);
+            $(".location_select").html(``);
+            $.each(resultData, function (i, item) {
+                console.log("item",item.baseName);
+                $(".location_select").append(`<option>${item.baseName}</option>`);
+            });
 
         }
     });
@@ -242,7 +260,7 @@ $("#file").on("change", function () {
 });
 
 
-function imgCheck(img){
+function imgCheck(img) {
     alert(img.clientWidth);
 }
 

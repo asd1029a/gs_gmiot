@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 public class DroneDetailRequest {
     private long droneId;
     private DroneDetails droneDetails;
+    private long droneBase;
 
 }

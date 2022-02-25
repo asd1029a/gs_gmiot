@@ -76,7 +76,7 @@ public class DroneFileController {
 
     }
 
-    @GetMapping(value = "/image/{imageName:.+}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/image/{imageName:.+}")
     public ResponseEntity<byte[]> userSearch(@PathVariable("imageName") String imageName, HttpServletRequest request) throws IOException {
 
         byte[] image = FileUtil.getImage(imageName, request);
