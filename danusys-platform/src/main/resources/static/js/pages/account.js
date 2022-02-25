@@ -163,7 +163,13 @@ const account = {
         addProc : () => {
             const formObj = $('#userAccountForm').serializeJSON();
             const $checkPassword = $("#checkPassword");
-            formObj.userGroupSeq = [7,8];
+            formObj.userGroupSeq = [];
+            $('#userInGroupTable tbody tr').each((i, e) => {
+                if($(e).find("input").prop('checked')) {
+                    formObj.userGroupSeq.push($(e).find("input").val());
+                }
+            })
+
             if(formObj.password === $checkPassword.val() && $("#checkIdBtn").data("duplCheck") === true) {
                 if($('#userAccountForm').doValidation()) {
                     $.ajax({
@@ -188,9 +194,14 @@ const account = {
         },
         modProc : (pSeq) => {
             const formObj = $('#userAccountForm').serializeJSON();
-            formObj.userSeq = pSeq;
             const $checkPassword = $("#checkPassword");
-
+            formObj.userSeq = pSeq;
+            formObj.userGroupSeq = [];
+            $('#userInGroupTable tbody tr').each((i, e) => {
+                if($(e).find("input").prop('checked')) {
+                    formObj.userGroupSeq.push($(e).find("input").val());
+                }
+            })
             if(formObj.password === $checkPassword.val()) {
                 if(formObj.password === ""
                     && $checkPassword.val() === "") {
