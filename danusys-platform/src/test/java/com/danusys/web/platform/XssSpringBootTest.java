@@ -1,17 +1,19 @@
 package com.danusys.web.platform;
 
-import com.danusys.web.platform.model.XssRequestDto;
+import com.danusys.web.commons.app.model.XssRequestDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
@@ -29,16 +31,21 @@ import static org.junit.Assert.assertEquals;
 public class XssSpringBootTest {
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
+    private RestTemplate restTemplate;
 
     // HTMLCharacterEscapes
     @Test
     public void xssJsonTest() {
 
-        String content = "{'content':'<script></script>'}";
+        String content = "<script></script>";
         String expected = "&lt;script&gt;&lt;/script&gt;";
 
-        ResponseEntity<String> response = testRestTemplate.postForEntity("/xss", content, String.class);
+        Map<String, Object> param = new HashMap<>();
+        param.put("content", content);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:8082/xssMap", param, Map.class);
+
+//        assertEquals(response.getHeaders().getContentType(), ContentType.APPLICATION_JSON);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertEquals(Objects.requireNonNull(response.getBody()), expected);
@@ -48,6 +55,7 @@ public class XssSpringBootTest {
     @Test
     public void xssFormTest() {
         String content = "<li>content</li>";
+        String expected = "&lt;li&gt;content&lt;/li&gt;";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -55,7 +63,7 @@ public class XssSpringBootTest {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        ResponseEntity<XssRequestDto> response = testRestTemplate.exchange("/form",
+        ResponseEntity<XssRequestDto> response = restTemplate.exchange("/form",
                 HttpMethod.POST,
                 entity,
                 XssRequestDto.class);
@@ -63,7 +71,7 @@ public class XssSpringBootTest {
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 //        assertEquals(Objects.requireNonNull(response.getHeaders().getContentType()).toString(), "text/plain;charset=UTF-8");
 
-        assertEquals(Objects.requireNonNull(response.getBody()).getContent(), content);
+        assertEquals(Objects.requireNonNull(response.getBody()).getContent(), expected);
     }
 
 }
