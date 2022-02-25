@@ -44,6 +44,8 @@ public class MissionApiController {
     private final Flight flight;
     private final DroneLogService droneLogService;
 
+
+
 /*
 
     url:/return
@@ -126,7 +128,7 @@ public class MissionApiController {
 
 
     @MessageMapping("/startmission")
-   // @SendTo("/topic/startmission")
+    @SendTo("/topic/startmission")
 //    public void startMission(Mission mission) {
     public void startMission(@RequestBody Map<String, Object> paramMap) {
 

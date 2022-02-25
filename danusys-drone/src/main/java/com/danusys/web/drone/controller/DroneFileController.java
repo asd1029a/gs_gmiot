@@ -79,6 +79,11 @@ public class DroneFileController {
     @GetMapping(value = "/image/{imageName:.+}")
     public ResponseEntity<byte[]> userSearch(@PathVariable("imageName") String imageName, HttpServletRequest request) throws IOException {
 
+
+
+        if(imageName==null || imageName.isEmpty() || imageName.equals("null")){
+            return null;
+        }
         byte[] image = FileUtil.getImage(imageName, request);
         return ResponseEntity.status(HttpStatus.OK).body(image);
     }

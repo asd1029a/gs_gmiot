@@ -63,257 +63,260 @@ public class Flight {
     private String stringHours = null;
     private TimerTask tt = null;
     private boolean isEnd = false;
-    private boolean isPauseOrStopEnd=false;
+    private boolean isPauseOrStopEnd = false;
+    private boolean alreadyDo = false;
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
-        //시간 초기화
-        sec = 0;
-        min = 0;
-        hour = 0;
-        stringSeconds = null;
-        stringMinutes = null;
-        stringHours = null;
-        isEnd = false;
-        isPauseOrStopEnd=false;
-        connection = null;
-        socket = null;
-        //Timer t = null;
-        Gson gson = new Gson();
+
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
-        droneLog = inputDroneLog;
-        gps.setMissionType("0");
-        gps.setStatus(1);
-        gps.setDroneId(droneId);
-        tt = new TimerTask() {
-            @Override
-            public void run() {
+        //시간 초기화
 
-                stringSeconds = Integer.toString(sec);
-                stringMinutes = Integer.toString(min);
-                stringHours = Integer.toString(hour);
 
-                if (sec < 10) {
-                    stringSeconds = "0" + stringSeconds;
+        log.info("alreadyDo={}", alreadyDo);
+        if (!alreadyDo) {
+            Gson gson = new Gson();
+
+            droneLog = inputDroneLog;
+            gps.setMissionType("0");
+            gps.setStatus(1);
+            gps.setDroneId(droneId);
+            isEnd = false;
+            isPauseOrStopEnd = false;
+            sec = 0;
+            min = 0;
+            hour = 0;
+            stringSeconds = null;
+            stringMinutes = null;
+            stringHours = null;
+            tt = new TimerTask() {
+                @Override
+                public void run() {
+
+                    stringSeconds = Integer.toString(sec);
+                    stringMinutes = Integer.toString(min);
+                    stringHours = Integer.toString(hour);
+
+                    if (sec < 10) {
+                        stringSeconds = "0" + stringSeconds;
+                    }
+                    if (min < 10) {
+                        stringMinutes = "0" + stringMinutes;
+                    }
+                    if (hour < 10) {
+                        stringHours = "0" + stringHours;
+                    }
+                    gps.setSec(stringSeconds);
+                    gps.setMin(stringMinutes);
+                    gps.setHour(stringHours);
+
+
+                    sec += 1;
+                    if (sec == 60) {
+                        sec = 0;
+                        min++;
+                    }
+                    if (min == 60) {
+                        min = 0;
+                        hour++;
+                    }
+                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
                 }
-                if (min < 10) {
-                    stringMinutes = "0" + stringMinutes;
-                }
-                if (hour < 10) {
-                    stringHours = "0" + stringHours;
-                }
-                gps.setSec(stringSeconds);
-                gps.setMin(stringMinutes);
-                gps.setHour(stringHours);
+            };
+
+            try {
+
+                socket = new Socket(tcpServerHost, tcpServerPort);
+                connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
 
 
-                sec += 1;
-                if (sec == 60) {
-                    sec = 0;
-                    min++;
-                }
-                if (min == 60) {
-                    min = 0;
-                    hour++;
-                }
-                simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-            }
-        };
-        try {
+                Heartbeat heartbeat = null;
+                int systemId = 1;
+                int componentId = 1;
+                int linkId = 1;
+                long timestamp = System.currentTimeMillis();/* provide microsecond time */
+                ;
+                byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
-            socket = new Socket(tcpServerHost, tcpServerPort);
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-            Heartbeat heartbeat = null;
-            int systemId = 1;
-            int componentId = 1;
-            int linkId = 1;
-            long timestamp = System.currentTimeMillis();/* provide microsecond time */
-            ;
-            byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+                t = new Timer();
 
-            t = new Timer();
-            t.schedule(tt, 0, 1000);
+                t.schedule(tt, 0, 1000);
 
-            MavlinkMessage message;
+                MavlinkMessage message;
 
 
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_GET_HOME_POSITION).build(), linkId, timestamp, secretKey);
-            DroneLogDetails droneLogDetailsHomePosition = new DroneLogDetails();
+                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_GET_HOME_POSITION).build(), linkId, timestamp, secretKey);
+                DroneLogDetails droneLogDetailsHomePosition = new DroneLogDetails();
 
-            droneLogDetailsHomePosition.setDroneLog(droneLog);
-            droneLogDetailsHomePosition.setFromTarget("gcs");
-            droneLogDetailsHomePosition.setToTarget("drone");
-            droneLogDetailsHomePosition.setType("MAV_CMD_GET_HOME_POSITION");
-            droneLogDetailsHomePosition.setParam1("0");
-            droneLogDetailsHomePosition.setParam2("0");
-            droneLogDetailsHomePosition.setParam3("0");
-            droneLogDetailsHomePosition.setParam4("0");
-            droneLogDetailsHomePosition.setParam5("0");
-            droneLogDetailsHomePosition.setParam6("0");
-            droneLogDetailsHomePosition.setParam7("0");
+                droneLogDetailsHomePosition.setDroneLog(droneLog);
+                droneLogDetailsHomePosition.setFromTarget("gcs");
+                droneLogDetailsHomePosition.setToTarget("drone");
+                droneLogDetailsHomePosition.setType("MAV_CMD_GET_HOME_POSITION");
+                droneLogDetailsHomePosition.setParam1("0");
+                droneLogDetailsHomePosition.setParam2("0");
+                droneLogDetailsHomePosition.setParam3("0");
+                droneLogDetailsHomePosition.setParam4("0");
+                droneLogDetailsHomePosition.setParam5("0");
+                droneLogDetailsHomePosition.setParam6("0");
+                droneLogDetailsHomePosition.setParam7("0");
 
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsHomePosition);
-            while ((message = connection.next()) != null) {
+                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsHomePosition);
+                while ((message = connection.next()) != null) {
 
-                if (message.getPayload() instanceof HomePosition) {
-                    MavlinkMessage<HomePosition> homePositionMavlinkMessage = (MavlinkMessage<HomePosition>) message;
-                    log.info("home Position = {}", homePositionMavlinkMessage.getPayload());
-                    int latitude = homePositionMavlinkMessage.getPayload().latitude();//x
-                    int longitude = homePositionMavlinkMessage.getPayload().longitude();//y
-                    int altitude = homePositionMavlinkMessage.getPayload().altitude();//z
+                    if (message.getPayload() instanceof HomePosition) {
+                        MavlinkMessage<HomePosition> homePositionMavlinkMessage = (MavlinkMessage<HomePosition>) message;
+                        log.info("home Position = {}", homePositionMavlinkMessage.getPayload());
+                        int latitude = homePositionMavlinkMessage.getPayload().latitude();//x
+                        int longitude = homePositionMavlinkMessage.getPayload().longitude();//y
+                        int altitude = homePositionMavlinkMessage.getPayload().altitude();//z
 
-                    MissionItemInt missionItemInt0 = new MissionItemInt.Builder().command(MavCmd.MAV_CMD_NAV_WAYPOINT).
-                            param1(0).param2(0).param3(0).param4(0)
-                            .x(latitude).y(longitude).z(altitude).seq(0)
-                            .targetComponent(0).targetSystem(0).current(0).autocontinue(1)
-                            .frame(MavFrame.MAV_FRAME_GLOBAL_INT).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION).build();
+                        MissionItemInt missionItemInt0 = new MissionItemInt.Builder().command(MavCmd.MAV_CMD_NAV_WAYPOINT).
+                                param1(0).param2(0).param3(0).param4(0)
+                                .x(latitude).y(longitude).z(altitude).seq(0)
+                                .targetComponent(0).targetSystem(0).current(0).autocontinue(1)
+                                .frame(MavFrame.MAV_FRAME_GLOBAL_INT).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION).build();
 
-                    missionItemMap.put("missionItemInt0", missionItemInt0);
-                    break;
-                }
-            }
-            //new connection
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-
-
-            //4 guided mode
-
-
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
-            DroneLogDetails droneLogDetailsDoSetMode = new DroneLogDetails();
-            droneLogDetailsDoSetMode.setDroneLog(droneLog);
-            droneLogDetailsDoSetMode.setFromTarget("gcs");
-            droneLogDetailsDoSetMode.setToTarget("drone");
-            droneLogDetailsDoSetMode.setType("MAV_CMD_DO_SET_MODE");
-            droneLogDetailsDoSetMode.setParam1("1");
-            droneLogDetailsDoSetMode.setParam2("4");
-            droneLogDetailsDoSetMode.setParam3("0");
-            droneLogDetailsDoSetMode.setParam4("0");
-            droneLogDetailsDoSetMode.setParam5("0");
-            droneLogDetailsDoSetMode.setParam6("0");
-            droneLogDetailsDoSetMode.setParam7("0");
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsDoSetMode);
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(1).param2(0).build(), linkId, timestamp, secretKey);
-
-
-            DroneLogDetails droneLogDetailsArmDisarm = new DroneLogDetails();
-            droneLogDetailsArmDisarm.setDroneLog(droneLog);
-            droneLogDetailsArmDisarm.setFromTarget("gcs");
-            droneLogDetailsArmDisarm.setToTarget("drone");
-            droneLogDetailsArmDisarm.setType("MAV_CMD_COMPONENT_ARM_DISARM");
-            droneLogDetailsArmDisarm.setParam1("1");
-            droneLogDetailsArmDisarm.setParam2("0");
-            droneLogDetailsArmDisarm.setParam3("0");
-            droneLogDetailsArmDisarm.setParam4("0");
-            droneLogDetailsArmDisarm.setParam5("0");
-            droneLogDetailsArmDisarm.setParam6("0");
-            droneLogDetailsArmDisarm.setParam7("0");
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsArmDisarm);
-
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100).build(), linkId, timestamp, secretKey);
-            DroneLogDetails droneLogDetailsTakeOff = new DroneLogDetails();
-            droneLogDetailsTakeOff.setDroneLog(droneLog);
-            droneLogDetailsTakeOff.setFromTarget("gcs");
-            droneLogDetailsTakeOff.setToTarget("drone");
-            droneLogDetailsTakeOff.setType("MAV_CMD_NAV_TAKEOFF");
-            droneLogDetailsTakeOff.setParam1("15");
-            droneLogDetailsTakeOff.setParam2("0");
-            droneLogDetailsTakeOff.setParam3("0");
-            droneLogDetailsTakeOff.setParam4("0");
-            droneLogDetailsTakeOff.setParam5("0");
-            droneLogDetailsTakeOff.setParam6("0");
-            droneLogDetailsTakeOff.setParam7("40");
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsTakeOff);
-            int flag = 0;
-            while ((message = connection.next()) != null) {
-
-                if (message.getPayload() instanceof TerrainReport) {
-                    MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
-                    float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
-
-
-                } else if (message.getPayload() instanceof Heartbeat) {
-                    MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
-                    heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
-                            .type(heartbeatMavlinkMessage.getPayload().type())
-                            .systemStatus(heartbeatMavlinkMessage.getPayload().systemStatus())
-                            .baseMode()
-                            .mavlinkVersion(heartbeatMavlinkMessage.getPayload().mavlinkVersion())
-                            .build();
-                    connection.send2(systemId, componentId, heartbeat, linkId, timestamp, secretKey);
-
-                } else if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
-                    MavlinkMessage<GlobalPositionInt> globalPositionIntMavlinkMessage = (MavlinkMessage<GlobalPositionInt>) message;
-                    int x = globalPositionIntMavlinkMessage.getPayload().lat();
-                    int y = globalPositionIntMavlinkMessage.getPayload().lon();
-                    int z = globalPositionIntMavlinkMessage.getPayload().alt();
-                    int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
-
-                    gps.setGpsX((double) y / 10000000);
-                    gps.setGpsY((double) x / 10000000);
-                    gps.setCurrentHeight((double) z / 1000);
-
-                    if ((double) z / 1000 > 80 - 1.5) {
+                        missionItemMap.put("missionItemInt0", missionItemInt0);
                         break;
                     }
-
-                    gps.setHeading(heading / 100);
-
-                } else if (message.getPayload().getClass().getName().contains("VfrHud")) {
-                    MavlinkMessage<VfrHud> vfrHudMavlinkMessage = (MavlinkMessage<VfrHud>) message;
-
-                    float airSpeed = vfrHudMavlinkMessage.getPayload().airspeed();
-
-                    gps.setAirSpeed(Float.parseFloat(String.format("%.1f", airSpeed)));
-                } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
-                    MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;
-
-                    int wpDist = navControllerOutputMavlinkMessage.getPayload().wpDist();
-
-                    gps.setWpDist(wpDist);
-
-                } else if (message.getPayload() instanceof Statustext) {        //statusMessage
-
-
-                    log.info(message.toString());
-
-
-                    MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
-
-
-                    String missionText = statustextMavlinkMessage.getPayload().text();
-                    log.info(missionText);
-                    //   gps.setMissionType(missionText);
-
-
-                } else if (message.getPayload() instanceof CommandAck) {
-                    MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
-                    DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
-                    droneLogDetailsCommandAck.setDroneLog(droneLog);
-                    droneLogDetailsCommandAck.setFromTarget("drone");
-                    droneLogDetailsCommandAck.setToTarget("gcs");
-                    droneLogDetailsCommandAck.setType("CommandAck");
-                    droneLogDetailsCommandAck.setParam1(commandAckMavlinkMessage.getPayload().command().toString());
-                    droneLogDetailsCommandAck.setParam2(commandAckMavlinkMessage.getPayload().result().toString());
-                    droneLogDetailsCommandAck.setParam3("0");
-                    droneLogDetailsCommandAck.setParam4("0");
-                    droneLogDetailsCommandAck.setParam5("0");
-                    droneLogDetailsCommandAck.setParam6("0");
-                    droneLogDetailsCommandAck.setParam7("0");
-                    droneLogDetailsService.saveDroneLogDetails(droneLogDetailsCommandAck);
-                    log.info("commandAck={}", message);
                 }
+                //new connection
+                //  connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
 
 
-            }
-            //end while
+                //4 guided mode
 
 
-        } catch (Exception ioe) {
-            ioe.printStackTrace();
+                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
+                DroneLogDetails droneLogDetailsDoSetMode = new DroneLogDetails();
+                droneLogDetailsDoSetMode.setDroneLog(droneLog);
+                droneLogDetailsDoSetMode.setFromTarget("gcs");
+                droneLogDetailsDoSetMode.setToTarget("drone");
+                droneLogDetailsDoSetMode.setType("MAV_CMD_DO_SET_MODE");
+                droneLogDetailsDoSetMode.setParam1("1");
+                droneLogDetailsDoSetMode.setParam2("4");
+                droneLogDetailsDoSetMode.setParam3("0");
+                droneLogDetailsDoSetMode.setParam4("0");
+                droneLogDetailsDoSetMode.setParam5("0");
+                droneLogDetailsDoSetMode.setParam6("0");
+                droneLogDetailsDoSetMode.setParam7("0");
+                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsDoSetMode);
+                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(1).param2(0).build(), linkId, timestamp, secretKey);
 
-        } finally {
+
+                DroneLogDetails droneLogDetailsArmDisarm = new DroneLogDetails();
+                droneLogDetailsArmDisarm.setDroneLog(droneLog);
+                droneLogDetailsArmDisarm.setFromTarget("gcs");
+                droneLogDetailsArmDisarm.setToTarget("drone");
+                droneLogDetailsArmDisarm.setType("MAV_CMD_COMPONENT_ARM_DISARM");
+                droneLogDetailsArmDisarm.setParam1("1");
+                droneLogDetailsArmDisarm.setParam2("0");
+                droneLogDetailsArmDisarm.setParam3("0");
+                droneLogDetailsArmDisarm.setParam4("0");
+                droneLogDetailsArmDisarm.setParam5("0");
+                droneLogDetailsArmDisarm.setParam6("0");
+                droneLogDetailsArmDisarm.setParam7("0");
+                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsArmDisarm);
+
+                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100).build(), linkId, timestamp, secretKey);
+                DroneLogDetails droneLogDetailsTakeOff = new DroneLogDetails();
+                droneLogDetailsTakeOff.setDroneLog(droneLog);
+                droneLogDetailsTakeOff.setFromTarget("gcs");
+                droneLogDetailsTakeOff.setToTarget("drone");
+                droneLogDetailsTakeOff.setType("MAV_CMD_NAV_TAKEOFF");
+                droneLogDetailsTakeOff.setParam1("15");
+                droneLogDetailsTakeOff.setParam2("0");
+                droneLogDetailsTakeOff.setParam3("0");
+                droneLogDetailsTakeOff.setParam4("0");
+                droneLogDetailsTakeOff.setParam5("0");
+                droneLogDetailsTakeOff.setParam6("0");
+                droneLogDetailsTakeOff.setParam7("40");
+                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsTakeOff);
+                int flag = 0;
+                while ((message = connection.next()) != null) {
+
+                    if (message.getPayload() instanceof TerrainReport) {
+                        MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
+                        float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
+
+
+                    } else if (message.getPayload() instanceof Heartbeat) {
+                        MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
+                        heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
+                                .type(heartbeatMavlinkMessage.getPayload().type())
+                                .systemStatus(heartbeatMavlinkMessage.getPayload().systemStatus())
+                                .baseMode()
+                                .mavlinkVersion(heartbeatMavlinkMessage.getPayload().mavlinkVersion())
+                                .build();
+                        connection.send2(systemId, componentId, heartbeat, linkId, timestamp, secretKey);
+
+                    } else if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
+                        MavlinkMessage<GlobalPositionInt> globalPositionIntMavlinkMessage = (MavlinkMessage<GlobalPositionInt>) message;
+                        int x = globalPositionIntMavlinkMessage.getPayload().lat();
+                        int y = globalPositionIntMavlinkMessage.getPayload().lon();
+                        int z = globalPositionIntMavlinkMessage.getPayload().alt();
+                        int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
+
+                        gps.setGpsX((double) y / 10000000);
+                        gps.setGpsY((double) x / 10000000);
+                        gps.setCurrentHeight((double) z / 1000);
+
+                        if ((double) z / 1000 > 50 - 1.5) {
+                            break;
+                        }
+
+                        gps.setHeading(heading / 100);
+
+                    } else if (message.getPayload().getClass().getName().contains("VfrHud")) {
+                        MavlinkMessage<VfrHud> vfrHudMavlinkMessage = (MavlinkMessage<VfrHud>) message;
+
+                        float airSpeed = vfrHudMavlinkMessage.getPayload().airspeed();
+
+                        gps.setAirSpeed(Float.parseFloat(String.format("%.1f", airSpeed)));
+                    } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
+                        MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;
+
+                        int wpDist = navControllerOutputMavlinkMessage.getPayload().wpDist();
+
+                        gps.setWpDist(wpDist);
+
+                    } else if (message.getPayload() instanceof Statustext) {        //statusMessage
+
+                        log.info(message.toString());
+                        MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
+                        String missionText = statustextMavlinkMessage.getPayload().text();
+                        log.info(missionText);
+                        //   gps.setMissionType(missionText);
+
+
+                    } else if (message.getPayload() instanceof CommandAck) {
+                        MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
+                        DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
+                        droneLogDetailsCommandAck.setDroneLog(droneLog);
+                        droneLogDetailsCommandAck.setFromTarget("drone");
+                        droneLogDetailsCommandAck.setToTarget("gcs");
+                        droneLogDetailsCommandAck.setType("CommandAck");
+                        droneLogDetailsCommandAck.setParam1(commandAckMavlinkMessage.getPayload().command().toString());
+                        droneLogDetailsCommandAck.setParam2(commandAckMavlinkMessage.getPayload().result().toString());
+                        droneLogDetailsCommandAck.setParam3("0");
+                        droneLogDetailsCommandAck.setParam4("0");
+                        droneLogDetailsCommandAck.setParam5("0");
+                        droneLogDetailsCommandAck.setParam6("0");
+                        droneLogDetailsCommandAck.setParam7("0");
+                        droneLogDetailsService.saveDroneLogDetails(droneLogDetailsCommandAck);
+                        log.info("commandAck={}", message);
+                    }
+
+
+                }
+                //end while
+
+
+            } catch (Exception ioe) {
+                ioe.printStackTrace();
+
+            } finally {
 //            t.purge();
-            log.info("endtakeoff");
+                log.info("endtakeoff");
 //            try {
 //                //socket.close();
 //
@@ -322,6 +325,8 @@ public class Flight {
 //
 //            }
 
+
+            }
 
         }
         return missionItemMap;
@@ -507,16 +512,13 @@ public class Flight {
     // try {
     //x,y 반대로 넣어야되기떄문에
     public String wayPoint(int gpsY, int gpsX, int gpsZ, int yaw) {
-        socket = null;
-        connection = null;
+
 
         Gson gson = new Gson();
         gps.setMissionType("waypoint");
 
         try {
 
-            socket = new Socket(tcpServerHost, tcpServerPort);
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
 
             int systemId = 1;
             int componentId = 1;
@@ -648,13 +650,7 @@ public class Flight {
 
 
         } finally {
-//            t.purge();
-            try {
-                socket.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//
             System.out.println("wayPoint");
 
 
@@ -753,10 +749,10 @@ public class Flight {
                         break;
                     }
                     if (missionText.equals("Paused mission")) {
-                        isPauseOrStopEnd=true;
+                        isPauseOrStopEnd = true;
 
                     } else if (missionText.equals("Resumed mission")) {
-                        isPauseOrStopEnd=true;
+                        isPauseOrStopEnd = true;
                     }
 
 
@@ -876,7 +872,7 @@ public class Flight {
 
 
             while ((message = connection.next()) != null) {
-                if(isPauseOrStopEnd)
+                if (isPauseOrStopEnd)
                     break;
                 if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
                     MavlinkMessage<GlobalPositionInt> globalPositionIntMavlinkMessage = (MavlinkMessage<GlobalPositionInt>) message;
@@ -908,15 +904,13 @@ public class Flight {
 
                     if (missionText.equals("Paused mission")) {
                         log.info("break");
-                        isPauseOrStopEnd=true;
+                        isPauseOrStopEnd = true;
                         break;
                     } else if (missionText.equals("Resumed mission")) {
                         log.info("break");
-                        isPauseOrStopEnd=true;
+                        isPauseOrStopEnd = true;
                         break;
                     }
-
-
 
 
                 } else if (message.getPayload() instanceof Heartbeat) {     //heartbaet
@@ -1014,47 +1008,49 @@ public class Flight {
             , HashMap<String, Float> yaws, HashMap<Integer, String> missionIndex) {
         //       connection = null;
         //       socket = null;
-        log.info("speeds={}", speeds); //speeds={return5=0, waypoint4=4, waypoint3=6, waypoint2=8}
-        missionIndex.forEach((r, r2) -> {
-            log.info("missionIndex={}:{}", r, r2);
-        });
-        try {
-            //     socket = new Socket(tcpServerHost, tcpServerPort);
-            //     connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-            //      Gps gps = new Gps();
-            int systemId = 1;
-            int componentId = 1;
-            int linkId = 1;
-            long timeBootMs = 0;
-            long minTimeBootMs = 0;
-            long timestamp = System.currentTimeMillis();/* provide microsecond time */
-            byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+        //log.info("speeds={}", speeds); //speeds={return5=0, waypoint4=4, waypoint3=6, waypoint2=8}
+        //  missionIndex.forEach((r, r2) -> {
+        //  log.info("missionIndex={}:{}", r, r2);
+        //    });
+        if (!alreadyDo) {
+            try {
+                //     socket = new Socket(tcpServerHost, tcpServerPort);
+                //     connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+                //      Gps gps = new Gps();
+                alreadyDo = true;
+                int systemId = 1;
+                int componentId = 1;
+                int linkId = 1;
+                long timeBootMs = 0;
+                long minTimeBootMs = 0;
+                long timestamp = System.currentTimeMillis();/* provide microsecond time */
+                byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
-            MavlinkMessage message;
+                MavlinkMessage message;
 
-            MissionCount count = MissionCount.builder().count(maxFlag).targetComponent(1).targetSystem(1).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION).build();
-            connection.send2(systemId, componentId, count, linkId, timestamp, secretKey);
+                MissionCount count = MissionCount.builder().count(maxFlag).targetComponent(1).targetSystem(1).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION).build();
+                connection.send2(systemId, componentId, count, linkId, timestamp, secretKey);
 
-            DroneLogDetails droneLogDetailsMissionCount = new DroneLogDetails();
-            droneLogDetailsMissionCount.setDroneLog(droneLog);
-            droneLogDetailsMissionCount.setFromTarget("drone");
-            droneLogDetailsMissionCount.setToTarget("gcs");
-            droneLogDetailsMissionCount.setType("MissionCount");
-            droneLogDetailsMissionCount.setParam1(Integer.toString(maxFlag));
-            droneLogDetailsMissionCount.setParam2("0");
-            droneLogDetailsMissionCount.setParam3("0");
-            droneLogDetailsMissionCount.setParam4("0");
-            droneLogDetailsMissionCount.setParam5("0");
-            droneLogDetailsMissionCount.setParam6("0");
-            droneLogDetailsMissionCount.setParam7("0");
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsMissionCount);
-            //    connection.send2(systemId, componentId, count);
+                DroneLogDetails droneLogDetailsMissionCount = new DroneLogDetails();
+                droneLogDetailsMissionCount.setDroneLog(droneLog);
+                droneLogDetailsMissionCount.setFromTarget("drone");
+                droneLogDetailsMissionCount.setToTarget("gcs");
+                droneLogDetailsMissionCount.setType("MissionCount");
+                droneLogDetailsMissionCount.setParam1(Integer.toString(maxFlag));
+                droneLogDetailsMissionCount.setParam2("0");
+                droneLogDetailsMissionCount.setParam3("0");
+                droneLogDetailsMissionCount.setParam4("0");
+                droneLogDetailsMissionCount.setParam5("0");
+                droneLogDetailsMissionCount.setParam6("0");
+                droneLogDetailsMissionCount.setParam7("0");
+                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsMissionCount);
+                //    connection.send2(systemId, componentId, count);
 
-            //  Heartbeat heartbeat = Heartbeat.builder().autopilot(MavAutopilot.MAV_AUTOPILOT_GENERIC).type(MavType.MAV_TYPE_GENERIC).systemStatus(MavState.MAV_STATE_UNINIT).baseMode().mavlinkVersion(3).build();
-            Heartbeat heartbeat = null;
+                //  Heartbeat heartbeat = Heartbeat.builder().autopilot(MavAutopilot.MAV_AUTOPILOT_GENERIC).type(MavType.MAV_TYPE_GENERIC).systemStatus(MavState.MAV_STATE_UNINIT).baseMode().mavlinkVersion(3).build();
+                Heartbeat heartbeat = null;
 
 
-            //    Gson gson = new Gson();
+                //    Gson gson = new Gson();
 //            t = new Timer();
 //
 //            t.schedule(new TimerTask() {
@@ -1063,214 +1059,216 @@ public class Flight {
 //                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
 //                }
 //            }, 0, 2000);
-            int flag = 0;
-            while ((message = connection.next()) != null) {
+                int flag = 0;
+                while ((message = connection.next()) != null) {
 
-                //  log.info("messageCount");
-                //if(message.getPayload().getClass().getName().contains("MavlinkMessage")){
-                //     if(message.getPayload() instanceof MissionAck){
+                    //  log.info("messageCount");
+                    //if(message.getPayload().getClass().getName().contains("MavlinkMessage")){
+                    //     if(message.getPayload() instanceof MissionAck){
 
-                if (isEnd)
-                    break;
-                if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
-                    MavlinkMessage<GlobalPositionInt> globalPositionIntMavlinkMessage = (MavlinkMessage<GlobalPositionInt>) message;
-                    int x = globalPositionIntMavlinkMessage.getPayload().lat();
-                    int y = globalPositionIntMavlinkMessage.getPayload().lon();
-                    int z = globalPositionIntMavlinkMessage.getPayload().alt();
-                    int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
+                    if (isEnd)
+                        break;
+                    if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
+                        MavlinkMessage<GlobalPositionInt> globalPositionIntMavlinkMessage = (MavlinkMessage<GlobalPositionInt>) message;
+                        int x = globalPositionIntMavlinkMessage.getPayload().lat();
+                        int y = globalPositionIntMavlinkMessage.getPayload().lon();
+                        int z = globalPositionIntMavlinkMessage.getPayload().alt();
+                        int heading = globalPositionIntMavlinkMessage.getPayload().hdg();
 
-                    gps.setGpsX((double) y / 10000000);
-                    gps.setGpsY((double) x / 10000000);
-                    gps.setCurrentHeight((double) z / 1000);
-                    gps.setHeading(heading / 100);
+                        gps.setGpsX((double) y / 10000000);
+                        gps.setGpsY((double) x / 10000000);
+                        gps.setCurrentHeight((double) z / 1000);
+                        gps.setHeading(heading / 100);
 
-                } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
-                    MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;
+                    } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
+                        MavlinkMessage<NavControllerOutput> navControllerOutputMavlinkMessage = (MavlinkMessage<NavControllerOutput>) message;
 
-                    int wpDist = navControllerOutputMavlinkMessage.getPayload().wpDist();
+                        int wpDist = navControllerOutputMavlinkMessage.getPayload().wpDist();
 
-                    gps.setWpDist(wpDist);
+                        gps.setWpDist(wpDist);
 
-                } else if (message.getPayload().getClass().getName().contains("VfrHud")) {
-                    MavlinkMessage<VfrHud> vfrHudMavlinkMessage = (MavlinkMessage<VfrHud>) message;
+                    } else if (message.getPayload().getClass().getName().contains("VfrHud")) {
+                        MavlinkMessage<VfrHud> vfrHudMavlinkMessage = (MavlinkMessage<VfrHud>) message;
 //                    log.info("{}",vfrHudMavlinkMessage.getPayload().);
 
-                    float airSpeed = vfrHudMavlinkMessage.getPayload().airspeed();
-                    gps.setAirSpeed(Float.parseFloat(String.format("%.1f", airSpeed)));
-                } else if (message.getPayload().getClass().getName().contains("Attitude")) {    //time
-                    MavlinkMessage<Attitude> attitudeMavlinkMessage = (MavlinkMessage<Attitude>) message;
+                        float airSpeed = vfrHudMavlinkMessage.getPayload().airspeed();
+                        gps.setAirSpeed(Float.parseFloat(String.format("%.1f", airSpeed)));
+                    } else if (message.getPayload().getClass().getName().contains("Attitude")) {    //time
+                        MavlinkMessage<Attitude> attitudeMavlinkMessage = (MavlinkMessage<Attitude>) message;
 
-                    timeBootMs = attitudeMavlinkMessage.getPayload().timeBootMs();
+                        timeBootMs = attitudeMavlinkMessage.getPayload().timeBootMs();
 
-                    if (timeBootMs <= minTimeBootMs || minTimeBootMs == 0) {
-                        minTimeBootMs = timeBootMs;
-                    }
+                        if (timeBootMs <= minTimeBootMs || minTimeBootMs == 0) {
+                            minTimeBootMs = timeBootMs;
+                        }
 
-                } else if (message.getPayload() instanceof Statustext) {        //statusMessage
-
-
-                    log.info(message.toString());
+                    } else if (message.getPayload() instanceof Statustext) {        //statusMessage
 
 
-                    MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
-                    String missionText = statustextMavlinkMessage.getPayload().text();
-                    log.info(missionText);
-                    String missionNumber = missionText.substring(9, 10);
-                    if (missionText.contains("Mission")) {
+                        log.info(message.toString());
 
-                        if (missionText.contains("RTL"))
-                            gps.setMissionType("return");
-                        else {
 
-                            gps.setMissionType(missionNumber);
+                        MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
+                        String missionText = statustextMavlinkMessage.getPayload().text();
+                        log.info(missionText);
+                        String missionNumber = missionText.substring(9, 10);
+                        if (missionText.contains("Mission")) {
+
+                            if (missionText.contains("RTL"))
+                                gps.setMissionType("return");
+                            else {
+
+                                gps.setMissionType(missionNumber);
+                            }
+
+
+                            int speed = speeds.getOrDefault(missionIndex.get(Integer.parseInt(missionNumber)), 0);
+                            float yaw = yaws.getOrDefault(missionIndex.get(Integer.parseInt(missionNumber)), 0f);
+                            if (speed != 0) {
+                                connection.send2(systemId, componentId, new CommandLong.Builder().
+                                        command(MavCmd.MAV_CMD_DO_CHANGE_SPEED)
+                                        .param1(0)
+                                        .param2(speed)
+                                        .param3(-1)
+                                        .param4(0)
+                                        .build(), linkId, timestamp, secretKey);
+                            }
+                            if (yaw != 0) {
+                                connection.send2(systemId, componentId, new CommandLong.Builder().
+                                        command(MavCmd.MAV_CMD_CONDITION_YAW)
+                                        .param1(yaw)
+                                        .param2(0)
+                                        .param3(1)
+                                        .param4(0)
+                                        .build(), linkId, timestamp, secretKey);
+                            }
+
+
+                        }
+
+                        if (missionText.equals("Disarming motors")) {
+                            //gps.setMissionType("mission end");
+                            isEnd = true;
+
+                            break;
+                        }
+
+                        if (missionText.equals("Paused mission")) {
+                            isPauseOrStopEnd = true;
+
+                        } else if (missionText.equals("Resumed mission")) {
+                            isPauseOrStopEnd = true;
                         }
 
 
-                        int speed = speeds.getOrDefault(missionIndex.get(Integer.parseInt(missionNumber)), 0);
-                        float yaw = yaws.getOrDefault(missionIndex.get(Integer.parseInt(missionNumber)), 0f);
-                        if (speed != 0) {
-                            connection.send2(systemId, componentId, new CommandLong.Builder().
-                                    command(MavCmd.MAV_CMD_DO_CHANGE_SPEED)
-                                    .param1(0)
-                                    .param2(speed)
-                                    .param3(-1)
-                                    .param4(0)
-                                    .build(), linkId, timestamp, secretKey);
-                        }
-                        if (yaw != 0) {
-                            connection.send2(systemId, componentId, new CommandLong.Builder().
-                                    command(MavCmd.MAV_CMD_CONDITION_YAW)
-                                    .param1(yaw)
-                                    .param2(0)
-                                    .param3(1)
-                                    .param4(0)
-                                    .build(), linkId, timestamp, secretKey);
+                        if (missionText.contains("WP")) {
+                            //      speed = speeds.getOrDefault(missionIndex.get(step), 0);
                         }
 
 
+                    } else if (message.getPayload() instanceof Heartbeat) {     //heartbaet
+
+                        MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
+                        heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
+                                .type(heartbeatMavlinkMessage.getPayload().type())
+                                .systemStatus(heartbeatMavlinkMessage.getPayload().systemStatus())
+                                .baseMode()
+                                .mavlinkVersion(heartbeatMavlinkMessage.getPayload().mavlinkVersion())
+                                .build();
+
+
+                        connection.send2(systemId, componentId, heartbeat, linkId, timestamp, secretKey);
+                    } else if (message.getPayload() instanceof CommandAck) {
+                        MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
+                        log.info("commandAck={}", message);
+                        DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
+                        droneLogDetailsCommandAck.setDroneLog(droneLog);
+                        droneLogDetailsCommandAck.setFromTarget("drone");
+                        droneLogDetailsCommandAck.setToTarget("gcs");
+                        droneLogDetailsCommandAck.setType("CommandAck");
+                        droneLogDetailsCommandAck.setParam1(commandAckMavlinkMessage.getPayload().command().toString());
+                        droneLogDetailsCommandAck.setParam2(commandAckMavlinkMessage.getPayload().result().toString());
+                        droneLogDetailsCommandAck.setParam3("0");
+                        droneLogDetailsCommandAck.setParam4("0");
+                        droneLogDetailsCommandAck.setParam5("0");
+                        droneLogDetailsCommandAck.setParam6("0");
+                        droneLogDetailsCommandAck.setParam7("0");
+                        droneLogDetailsService.saveDroneLogDetails(droneLogDetailsCommandAck);
                     }
 
-                    if (missionText.equals("Disarming motors")) {
-                        //gps.setMissionType("mission end");
-                        isEnd = true;
-
-                        break;
-                    }
-
-                    if (missionText.equals("Paused mission")) {
-                        isPauseOrStopEnd=true;
-
-                    } else if (missionText.equals("Resumed mission")) {
-                        isPauseOrStopEnd=true;
-                    }
-
-
-                    if (missionText.contains("WP")) {
-                        //      speed = speeds.getOrDefault(missionIndex.get(step), 0);
-                    }
-
-
-                } else if (message.getPayload() instanceof Heartbeat) {     //heartbaet
-
-                    MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
-                    heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
-                            .type(heartbeatMavlinkMessage.getPayload().type())
-                            .systemStatus(heartbeatMavlinkMessage.getPayload().systemStatus())
-                            .baseMode()
-                            .mavlinkVersion(heartbeatMavlinkMessage.getPayload().mavlinkVersion())
-                            .build();
+                    while (message.getPayload() instanceof MissionRequest && flag <= maxFlag - 1) {     //missioncount
+                        // log.info("찾았다{}", missionItemMap.get("missionItemInt" + flag));
+                        log.info("loginfo={}", message.getPayload());
+                        log.info("maxFlag={}", maxFlag);
+                        log.debug("flag={}", flag);
+                        connection.send2(systemId, componentId, missionItemMap.get("missionItemInt" + flag), linkId, timestamp, secretKey);
+                        MissionItemInt missionItemInt = missionItemMap.get("missionItemInt" + flag);
+                        DroneLogDetails droneLogDetailsMissionRequest = new DroneLogDetails();
+                        droneLogDetailsMissionRequest.setDroneLog(droneLog);
+                        droneLogDetailsMissionRequest.setFromTarget("gcs");
+                        droneLogDetailsMissionRequest.setToTarget("drone");
+                        droneLogDetailsMissionRequest.setType("missionItemInt" + missionItemInt.command());
+                        droneLogDetailsMissionRequest.setParam1(Float.toString(missionItemInt.param1()));
+                        droneLogDetailsMissionRequest.setParam2(Float.toString(missionItemInt.param2()));
+                        droneLogDetailsMissionRequest.setParam3(Float.toString(missionItemInt.param3()));
+                        droneLogDetailsMissionRequest.setParam4(Float.toString(missionItemInt.param4()));
+                        droneLogDetailsMissionRequest.setParam5(Integer.toString(missionItemInt.x()));
+                        droneLogDetailsMissionRequest.setParam6(Integer.toString(missionItemInt.y()));
+                        droneLogDetailsMissionRequest.setParam7(Float.toString(missionItemInt.z()));
+                        droneLogDetailsService.saveDroneLogDetails(droneLogDetailsMissionRequest);
 
 
-                    connection.send2(systemId, componentId, heartbeat, linkId, timestamp, secretKey);
-                } else if (message.getPayload() instanceof CommandAck) {
-                    MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
-                    log.info("commandAck={}", message);
-                    DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
-                    droneLogDetailsCommandAck.setDroneLog(droneLog);
-                    droneLogDetailsCommandAck.setFromTarget("drone");
-                    droneLogDetailsCommandAck.setToTarget("gcs");
-                    droneLogDetailsCommandAck.setType("CommandAck");
-                    droneLogDetailsCommandAck.setParam1(commandAckMavlinkMessage.getPayload().command().toString());
-                    droneLogDetailsCommandAck.setParam2(commandAckMavlinkMessage.getPayload().result().toString());
-                    droneLogDetailsCommandAck.setParam3("0");
-                    droneLogDetailsCommandAck.setParam4("0");
-                    droneLogDetailsCommandAck.setParam5("0");
-                    droneLogDetailsCommandAck.setParam6("0");
-                    droneLogDetailsCommandAck.setParam7("0");
-                    droneLogDetailsService.saveDroneLogDetails(droneLogDetailsCommandAck);
-                }
-
-                while (message.getPayload() instanceof MissionRequest && flag <= maxFlag - 1) {     //missioncount
-                    // log.info("찾았다{}", missionItemMap.get("missionItemInt" + flag));
-                    log.info("loginfo={}", message.getPayload());
-                    log.info("maxFlag={}", maxFlag);
-                    log.debug("flag={}", flag);
-                    connection.send2(systemId, componentId, missionItemMap.get("missionItemInt" + flag), linkId, timestamp, secretKey);
-                    MissionItemInt missionItemInt = missionItemMap.get("missionItemInt" + flag);
-                    DroneLogDetails droneLogDetailsMissionRequest = new DroneLogDetails();
-                    droneLogDetailsMissionRequest.setDroneLog(droneLog);
-                    droneLogDetailsMissionRequest.setFromTarget("gcs");
-                    droneLogDetailsMissionRequest.setToTarget("drone");
-                    droneLogDetailsMissionRequest.setType("missionItemInt" + missionItemInt.command());
-                    droneLogDetailsMissionRequest.setParam1(Float.toString(missionItemInt.param1()));
-                    droneLogDetailsMissionRequest.setParam2(Float.toString(missionItemInt.param2()));
-                    droneLogDetailsMissionRequest.setParam3(Float.toString(missionItemInt.param3()));
-                    droneLogDetailsMissionRequest.setParam4(Float.toString(missionItemInt.param4()));
-                    droneLogDetailsMissionRequest.setParam5(Integer.toString(missionItemInt.x()));
-                    droneLogDetailsMissionRequest.setParam6(Integer.toString(missionItemInt.y()));
-                    droneLogDetailsMissionRequest.setParam7(Float.toString(missionItemInt.z()));
-                    droneLogDetailsService.saveDroneLogDetails(droneLogDetailsMissionRequest);
-
-
-                    flag++;
-                    if (message.getPayload() instanceof MissionRequest && flag == maxFlag) {    //changemode
-                        log.info("미션등록");
-                        //param2 automode
-                        connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE)
-                                .param1(1).param2(3).build(), linkId, timestamp, secretKey);
-
-                        DroneLogDetails droneLogDetailsSetMode = new DroneLogDetails();
-                        droneLogDetailsSetMode.setDroneLog(droneLog);
-                        droneLogDetailsSetMode.setFromTarget("gcs");
-                        droneLogDetailsSetMode.setToTarget("drone");
-                        droneLogDetailsSetMode.setType("MAV_CMD_DO_SET_MODE");
-                        droneLogDetailsSetMode.setParam1("1");
-                        droneLogDetailsSetMode.setParam2("3");
-                        droneLogDetailsSetMode.setParam3("0");
-                        droneLogDetailsSetMode.setParam4("0");
-                        droneLogDetailsSetMode.setParam5("0");
-                        droneLogDetailsSetMode.setParam6("0");
-                        droneLogDetailsSetMode.setParam7("0");
-                        droneLogDetailsService.saveDroneLogDetails(droneLogDetailsSetMode);
                         flag++;
+                        if (message.getPayload() instanceof MissionRequest && flag == maxFlag) {    //changemode
+                            log.info("미션등록");
+                            //param2 automode
+                            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE)
+                                    .param1(1).param2(3).build(), linkId, timestamp, secretKey);
+
+                            DroneLogDetails droneLogDetailsSetMode = new DroneLogDetails();
+                            droneLogDetailsSetMode.setDroneLog(droneLog);
+                            droneLogDetailsSetMode.setFromTarget("gcs");
+                            droneLogDetailsSetMode.setToTarget("drone");
+                            droneLogDetailsSetMode.setType("MAV_CMD_DO_SET_MODE");
+                            droneLogDetailsSetMode.setParam1("1");
+                            droneLogDetailsSetMode.setParam2("3");
+                            droneLogDetailsSetMode.setParam3("0");
+                            droneLogDetailsSetMode.setParam4("0");
+                            droneLogDetailsSetMode.setParam5("0");
+                            droneLogDetailsSetMode.setParam6("0");
+                            droneLogDetailsSetMode.setParam7("0");
+                            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsSetMode);
+                            flag++;
+                        }
+
+
                     }
 
 
                 }
 
+            } catch (Exception ioe) {
+                ioe.printStackTrace();
+
+
+            } finally {
+                System.out.println("Mission");
+                alreadyDo = false;
+                tt.cancel();
+                t.cancel();
+                gps.setMissionType("end");
+                gps.setStatus(0);
+                simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
+                try {
+                    socket.close();
+                    connection = null;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             }
-
-        } catch (Exception ioe) {
-            ioe.printStackTrace();
-
-
-        } finally {
-            System.out.println("Mission");
-//            t.purge();
-            tt.cancel();
-            t.cancel();
-            gps.setMissionType("end");
-            gps.setStatus(0);
-            simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-            try {
-                socket.close();
-                connection = null;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         }
+
         return "stop";
     }
 
