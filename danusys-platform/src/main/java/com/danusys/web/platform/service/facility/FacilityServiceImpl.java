@@ -1,9 +1,9 @@
 package com.danusys.web.platform.service.facility;
 
 import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.platform.mapper.common.CommonMapper;
+import com.danusys.web.commons.auth.mapper.common.CommonMapper;
+import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
-import com.danusys.web.platform.util.PagingUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
