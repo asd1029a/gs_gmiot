@@ -1,6 +1,6 @@
-package com.danusys.web.platform.controller;
+package com.danusys.web.commons.app.controller;
 
-import com.danusys.web.platform.model.XssRequestDto;
+import com.danusys.web.commons.app.model.XssRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,14 +20,14 @@ import java.util.Map;
 @RestController
 public class XssRequestController {
 
-    @PostMapping(value = "/xssMap", produces = "application/json")
+    @PostMapping(value = "/xssMap")
     public Map<String, Object> xssMap(@RequestBody Map<String, Object> param) {
         log.trace("xssMap >>> {}", param);
 
         return param;
     }
 
-    @PostMapping(value = "/xss", produces = "application/json")
+    @PostMapping(value = "/xss")
     public XssRequestDto xss(@RequestBody XssRequestDto xssRequestDto) {
         log.trace("xss >>> {}", xssRequestDto);
 

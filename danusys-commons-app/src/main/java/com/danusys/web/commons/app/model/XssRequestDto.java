@@ -1,4 +1,4 @@
-package com.danusys.web.platform.model;
+package com.danusys.web.commons.app.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
