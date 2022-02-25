@@ -2,7 +2,7 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/layout_config">
+      layout:decorate="layout/layout_config">
 
     <th:block layout:fragment="content">
         <h4>
@@ -19,7 +19,7 @@
                 <form>
                     <div>
                         <dl class="search_text_set">
-                            <dd><input type="text" placeholder="검색어를 입력하세요."></dd>
+                            <dd><input type="text" placeholder="검색어를 입력하세요." name="keyword"></dd>
                         </Dl>
                         <dl class="checkbox_set">
                             <dt>계정 상태</dt>

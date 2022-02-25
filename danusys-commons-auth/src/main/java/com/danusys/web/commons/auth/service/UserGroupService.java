@@ -1,13 +1,10 @@
 package com.danusys.web.commons.auth.service;
 
+import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.commons.auth.dto.response.GroupResponse;
-import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
-import com.danusys.web.commons.auth.util.LoginInfoUtil;
-import com.danusys.web.commons.auth.util.PagingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;

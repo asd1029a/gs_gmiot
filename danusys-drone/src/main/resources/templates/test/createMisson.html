@@ -22,6 +22,7 @@
     <button id="pause"> 누르면 일시정지되요</button>
     <button id="testtest">누르면파일 다운로드되요</button>
     <button id="return">누르면 리턴되요 </button>
+    <button id="setmissioncurrent">미션이바뀌어요</button>
 
 </table>
 
@@ -89,7 +90,9 @@
 
 
     });
-
+    $("#setmissioncurrent").on("click",function (){
+        stompClient.send("/app/setmissioncurrent",{},JSON.stringify({'seq':4}));
+    })
     $("#play").on("click",function (){
         stompClient.send("/app/play",{},JSON.stringify({'droneId':0}));
     });
@@ -134,6 +137,9 @@
                 console.log(drone);
             })
 
+            stompClient.subscribe('/topic/setmissioncurrent',function (drone){
+                console.log(drone);
+            })
 
 
         });

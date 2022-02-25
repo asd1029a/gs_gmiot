@@ -16,6 +16,7 @@ import io.dronefleet.mavlink.MavlinkMessage;
 import io.dronefleet.mavlink.common.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+//import org.omg.CORBA.Object;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.http.HttpStatus;
@@ -127,8 +128,18 @@ public class MissionApiController {
     }
 
 
+    @MessageMapping("/setmissioncurrent")
+    public void setMissionCurrent(@RequestBody Map<String, Object >paramMap)
+    {
+
+        int seq=0;
+        if(paramMap.get("seq")!=null)
+            seq=Integer.parseInt(paramMap.get("seq").toString());
+        flight.setMissionCurrent(seq);
+    }
+
     @MessageMapping("/startmission")
-    @SendTo("/topic/startmission")
+  //  @SendTo("/topic/startmission")
 //    public void startMission(Mission mission) {
     public void startMission(@RequestBody Map<String, Object> paramMap) {
 
