@@ -23,7 +23,7 @@
     <button id="testtest">누르면파일 다운로드되요</button>
     <button id="return">누르면 리턴되요 </button>
     <button id="setmissioncurrent">미션이바뀌어요</button>
-
+    <button id="waypoint">경유지</button>
 </table>
 
 </body>
@@ -31,6 +31,9 @@
 
 <script>
 
+    $("#waypoint").on("click",function (){
+        stompClient.send("/app/waypoint",{},JSON.stringify({'gpsX':126.9005227,'gpsY':37.4452554,'alt':150,'yaw':120}));
+    })
     $("#testtest").on("click",function (){
         $.ajax({
             url:"/file/2022 인사고과_목표설정_부서(서비스개발부-O-Lab)_OOO.xlsx",
@@ -138,6 +141,9 @@
             })
 
             stompClient.subscribe('/topic/setmissioncurrent',function (drone){
+                console.log(drone);
+            })
+            stompClient.subscribe('/topic/waypoint',function (drone){
                 console.log(drone);
             })
 
