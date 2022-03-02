@@ -44,7 +44,6 @@ public class MissionCurdController {
         List<MissionDetails> missionDetailsList = new ArrayList<>();
         missionDetailsList = (List<MissionDetails>) missionList.get("missionList");
 
-
         int missionId = 0;
         missionId = Integer.parseInt(missionList.get("missionId").toString());
 

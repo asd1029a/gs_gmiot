@@ -138,6 +138,8 @@ function getDroneDetails(id) {
                     async: false,
                     success: function (result) {
                         console.log(result);
+                        console.log("result",$(`.mission_list option[data-id='${result.mission.id}']`)[0]);
+                        document.querySelectorAll(`.mission_list option[data-id='${result.mission.id}']`)[3].selected = true;
                         document.querySelectorAll(`.location_select option[data-id='${result.droneBase.id}']`)[0].selected = true;
                         let droneDetails = result.droneDetails;
                         $(".drone_status").val(droneDetails.status);
@@ -222,7 +224,7 @@ function getListMission() {
             $(".droneFrameLeft dl dt select").html("");
             $.each(resultData, function (i, item) {
                 $(".droneFrameLeft dl dt select").append(`
-                <option>${item.name}</option>
+                <option data-drone-id=${item.id}>${item.name}</option>
                 `)
             });
 
