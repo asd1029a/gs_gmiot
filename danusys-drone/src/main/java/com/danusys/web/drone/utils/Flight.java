@@ -738,7 +738,7 @@ public class Flight {
 
         try {
 
-
+            isMissionAndDrone=true;
             int systemId = 1;
             int componentId = 1;
             int linkId = 1;
