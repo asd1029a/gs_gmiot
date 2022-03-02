@@ -721,7 +721,7 @@ public class Flight {
 
         } finally {
 //
-
+            alreadyWayPoint=false;
             waypointTimer.cancel();
             waypointTimerTask.cancel();
             System.out.println("wayPoint");
