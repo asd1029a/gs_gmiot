@@ -13,16 +13,45 @@
 
 <body>
 <th:block layout:fragment="content">
+    <div class="popup" style="display: none;">
+        <div class="popupTitle"><span>GO TO 미션 등록</span></div>
+        <div class="popupContent">
+            <ul>
+                <li>
+                    <span>경도</span>
+                    <span><input type="text" id="goToGpsX"></span>
+                </li>
+                <li>
+                    <span>위도</span>
+                    <span><input type="text" id="goToGpsY"></span>
+                </li>
+                <li>
+                    <span>고도</span>
+                    <span><input type="text" id="goToAlt"></span>
+                </li>
+                <li>
+                    <span>YAW</span>
+                    <span><input type="text" id="goToYaw"></span>
+                </li>
+            </ul>
+        </div>
+        <div class="popupButton">
+            <span class="button" onclick="setDrawDrone.createGoToMission(this)">실행</span>
+            <span class="button" onclick="setDrawDrone.closePopup(this)">취소</span>
+        </div>
+
+    </div>
+
     <div class="droneMap">
         <div id="map" class="map_wrap"/>
         <!--           mapComponent -->
         <div class="mapComponent">
             <div class="mapComponentSet">
-                <article class="altitude">
+                <article class="altitude" style="display: none;">
                     <h6>고도</h6>
                     <div class="graph"></div>
                 </article>
-                <article class="panel">
+                <article class="panel" style="display: none;">
                     <div></div>
                     <div></div>
                 </article>
@@ -31,14 +60,14 @@
                         <h6>미션 제어</h6>
                         <ul>
                             <li onclick="droneSocket.startMission()"><i class="controlButton"><img src="images/default/controlsPlay.svg"></i>재생</li>
-                            <li><i class="controlButton"><img src="images/default/controlsStop.svg"></i>일시정지</li>
+                            <li onclick="droneSocket.pauseMission()"><i class="controlButton"><img src="images/default/controlsStop.svg"></i>일시정지</li>
                         </ul>
                     </div>
                     <div class="drone">
                         <h6>드론 제어</h6>
                         <ul>
-                            <li><i class="controlButton"><img src="images/default/controlsHome.svg"></i>귀환</li>
-                            <li><i class="controlButton"><img src="images/default/controlsGoto.svg"></i>Go To</li>
+                            <li onclick="droneSocket.returnMission()"><i class="controlButton"><img src="images/default/controlsHome.svg"></i>귀환</li>
+                            <li onclick="setDrawDrone.clickGoToMission()"><i class="controlButton"><img src="images/default/controlsGoto.svg"></i>Go To</li>
                         </ul>
                     </div>
                 </article>
@@ -48,7 +77,7 @@
                         <li><span>고도 (상대) m</span><p id="flyAlt">0</p></li>
                         <li><span>속도 m/s</span><p id="flySpeed">0</p></li>
                         <li><span>비행 시간</span><p id="flyTime">00:00:00</p></li>
-                        <li><span>YAW (도)</span><p id="flyYaw"></p>0</li>
+                        <li><span>YAW</span><p id="flyYaw">0</p></li>
                     </ul>
                 </article>
             </div>
