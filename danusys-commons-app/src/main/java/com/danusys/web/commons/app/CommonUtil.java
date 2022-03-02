@@ -37,15 +37,15 @@ public class CommonUtil {
 				}).collect(Collectors.toList());
 	}
 
-	public static ArrayList valiArrNull(Map<String, Object> paramMap, String key){
+	public static ArrayList<String> valiArrNull(Map<String, Object> paramMap, String key){
 		if(paramMap.get(key) != null && paramMap.get(key).getClass().getSimpleName().equals("ArrayList")){
-			return (ArrayList) paramMap.get(key);
+			return (ArrayList<String>) paramMap.get(key);
 		}else if(paramMap.get(key) != null){
-			ArrayList arr = new ArrayList<String>();
-			arr.add(paramMap.get(key));
+			ArrayList<String> arr = new ArrayList<>();
+			arr.add(paramMap.get(key).toString());
 			return arr;
 		}else{
-			return new ArrayList();
+			return new ArrayList<String>();
 		}
 	}
 

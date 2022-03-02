@@ -330,11 +330,7 @@ const account = {
                     {
                         'url' : "/user/group",
                         'contentType' : "application/json; charset=utf-8",
-                        'type' : "POST",
-                        'data' : function ( d ) {
-                            const param = $.extend({}, d, $("#searchForm form").serializeJSON());
-                            return JSON.stringify( param );
-                        }
+                        'type' : "POST"
                     },
                 select: {
                     toggleable: false

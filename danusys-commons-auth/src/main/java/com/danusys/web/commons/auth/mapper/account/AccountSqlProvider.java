@@ -3,7 +3,7 @@ package com.danusys.web.commons.auth.mapper.account;
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
-import org.thymeleaf.util.StringUtils;
+
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -14,7 +14,7 @@ public class AccountSqlProvider {
     public String selectListUserQry(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
 
-        ArrayList status = CommonUtil.valiArrNull(paramMap,"status");
+        String status = String.join("', '", CommonUtil.valiArrNull(paramMap,"status"));
 
         String start = paramMap.get("start").toString();
         String length = paramMap.get("length").toString();
@@ -28,8 +28,8 @@ public class AccountSqlProvider {
             if (!keyword.equals("")){
                 WHERE("user_name = '%" + keyword + "%'");
             }
-            if(status != null && !status.isEmpty()){
-                WHERE("status in ('" + StringUtils.join(status, "', '") + "')");
+            if(!status.equals("")){
+                WHERE("status in ('" + status + "')");
             }
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
@@ -42,7 +42,8 @@ public class AccountSqlProvider {
     public String selectCountUserQry(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
 
-        ArrayList status = CommonUtil.valiArrNull(paramMap,"status");
+        //ArrayList status = CommonUtil.valiArrNull(paramMap,"status");
+        String status = String.join("', '", CommonUtil.valiArrNull(paramMap,"status"));
 
         SQL sql = new SQL() {{
             SELECT("COUNT(*) AS count");
@@ -50,8 +51,8 @@ public class AccountSqlProvider {
             if (!keyword.equals("")){
                 WHERE("user_name = '%" + keyword + "%'");
             }
-            if(status != null && !status.isEmpty()){
-                WHERE("status in ('" + StringUtils.join(status, "', '") + "')");
+            if(!status.equals("")){
+                WHERE("status in ('" + status + "')");
             }
         }};
         return sql.toString();
