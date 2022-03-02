@@ -20,13 +20,26 @@ public class AccountController {
      * 공통코드관리: 공통코드 목록 조회
      */
     @PostMapping(value = "")
-    public ResponseEntity<EgovMap> getListCommonCode(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<EgovMap> getListUser(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(commonService.getListUser(paramMap));
     }
 
     @GetMapping(value = "/{pSeq}")
-    public ResponseEntity<EgovMap> getCommonCode(@PathVariable("pSeq") int seq) throws Exception {
+    public ResponseEntity<EgovMap> getUser(@PathVariable("pSeq") int seq) throws Exception {
         return ResponseEntity.ok().body(commonService.getOneUser(seq));
+    }
+
+    /*
+     * 공통코드관리: 공통코드 목록 조회
+     */
+    @PostMapping(value = "/group")
+    public ResponseEntity<EgovMap> getListUserGroupList(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(commonService.getListUserGroup(paramMap));
+    }
+
+    @GetMapping(value = "/group/{pSeq}")
+    public ResponseEntity<EgovMap> getUserGroup(@PathVariable("pSeq") int seq) throws Exception {
+        return ResponseEntity.ok().body(commonService.getOneUserGroup(seq));
     }
 
 }

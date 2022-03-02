@@ -17,6 +17,7 @@ public class AccountServiceImpl implements AccountService{
     private final CommonMapper commonMapper;
     private final AccountSqlProvider asp = new AccountSqlProvider();
 
+    /* 사용자 CRUD */
     @Override
     public EgovMap getListUser(Map<String, Object> paramMap) throws Exception {
 
@@ -32,7 +33,29 @@ public class AccountServiceImpl implements AccountService{
         }
     }
 
+    @Override
     public EgovMap getOneUser(int seq) throws Exception {
         return commonMapper.selectOne(asp.selectOneUserQry(seq));
+    }
+
+    /* 사용자 그룹 CRUD */
+    @Override
+    public EgovMap getListUserGroup(Map<String, Object> paramMap) throws Exception {
+
+        if (paramMap.get("draw") != null) {
+            Map<String, Object> pagingMap = new HashMap<>();
+            pagingMap.put("data", commonMapper.selectList(asp.selectListUserGroupQry(paramMap)));
+            pagingMap.put("count", commonMapper.selectOne(asp.selectCountUserGroupQry(paramMap)).get("count"));
+            return PagingUtil.createPagingMap(paramMap, pagingMap);
+        } else {
+            EgovMap resultMap = new EgovMap();
+            resultMap.put("data", commonMapper.selectList(asp.selectListUserGroupQry(paramMap)));
+            return resultMap;
+        }
+    }
+
+    @Override
+    public EgovMap getOneUserGroup(int seq) throws Exception {
+        return commonMapper.selectOne(asp.selectOneUserGroupQry(seq));
     }
 }

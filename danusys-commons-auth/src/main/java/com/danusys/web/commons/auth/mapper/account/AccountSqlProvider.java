@@ -1,22 +1,35 @@
 package com.danusys.web.commons.auth.mapper.account;
 
+import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
+import org.thymeleaf.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class AccountSqlProvider {
+
+    /* 사용자 CRUD */
     public String selectListUserQry(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
+
+        ArrayList status = CommonUtil.valiArrNull(paramMap,"status");
+
         String start = paramMap.get("start").toString();
         String length = paramMap.get("length").toString();
 
         SQL sql = new SQL() {{
-            SELECT("user_seq, id, email, tel, TO_CHAR(last_login_dt, 'YYYY-MM-DD HH24:MI:SS') AS last_login_dt" +
-                    ", status, update_user_seq, TO_CHAR(insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt, user_name");
-            FROM("t_user");
+            SELECT("t1.user_seq, t1.id, t1.email, t1.tel, TO_CHAR(t1.last_login_dt, 'YYYY-MM-DD HH24:MI:SS') AS last_login_dt" +
+                    ", t1.status, t1.update_user_seq, TO_CHAR(t1.insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt, t1.user_name" +
+                    ", t2.code_seq, t2.code_id, t2.code_value, t2.code_name");
+            FROM("t_user t1");
+            JOIN("v_user_status t2 on t1.status = t2.code_value");
             if (!keyword.equals("")){
                 WHERE("user_name = '%" + keyword + "%'");
+            }
+            if(status != null && !status.isEmpty()){
+                WHERE("status in ('" + StringUtils.join(status, "', '") + "')");
             }
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
@@ -29,16 +42,20 @@ public class AccountSqlProvider {
     public String selectCountUserQry(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
 
+        ArrayList status = CommonUtil.valiArrNull(paramMap,"status");
+
         SQL sql = new SQL() {{
             SELECT("COUNT(*) AS count");
             FROM("t_user");
             if (!keyword.equals("")){
                 WHERE("user_name = '%" + keyword + "%'");
             }
+            if(status != null && !status.isEmpty()){
+                WHERE("status in ('" + StringUtils.join(status, "', '") + "')");
+            }
         }};
         return sql.toString();
     }
-
 
     public String selectOneUserQry(int seq) {
         SQL sql = new SQL() {{
@@ -69,6 +86,47 @@ public class AccountSqlProvider {
             UPDATE("t_user");
             SET(SqlUtil.getMultiSetStr(paramMap));
             WHERE("user_seq =" + userSeq);
+        }};
+        return sql.toString();
+    }
+
+    /* 사용자 그룹 CRUD */
+    public String selectListUserGroupQry(Map<String, Object> paramMap) {
+        String keyword = paramMap.get("keyword").toString();
+        String start = paramMap.get("start").toString();
+        String length = paramMap.get("length").toString();
+
+        SQL sql = new SQL() {{
+            SELECT("user_group_seq, user_group_name, user_group_remark, TO_CHAR(insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
+                    ", insert_user_seq, TO_CHAR(update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt, update_user_seq, user_group_status");
+            FROM("t_user_group");
+            if (!keyword.equals("")){
+                WHERE("user_group_name = '%" + keyword + "%'");
+            }
+            if (!start.equals("") && !length.equals("")) {
+                LIMIT(length);
+                OFFSET(start);
+            };
+        }};
+        return sql.toString();
+    }
+
+    public String selectCountUserGroupQry(Map<String, Object> paramMap) {
+        String keyword = paramMap.get("keyword").toString();
+
+        SQL sql = new SQL() {{
+            SELECT("COUNT(*) AS count");
+            FROM("t_user_group");
+        }};
+        return sql.toString();
+    }
+
+    public String selectOneUserGroupQry(int seq) {
+        SQL sql = new SQL() {{
+            SELECT("user_group_seq, user_group_name, user_group_remark, TO_CHAR(insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
+                    ", insert_user_seq, TO_CHAR(update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt, update_user_seq, user_group_status");
+            FROM("t_user_group");
+            WHERE("user_group_seq =" + seq);
         }};
         return sql.toString();
     }

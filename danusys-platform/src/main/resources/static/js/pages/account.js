@@ -288,9 +288,9 @@ const account = {
                 },
                 columns : [
                     {data: "userGroupSeq", className: "alignLeft"},
-                    {data: "groupName"},
-                    {data: "groupName"},
-                    {data: "groupDesc"},
+                    {data: "userGroupName"},
+                    {data: "userGroupName"},
+                    {data: "userGroupRemark"},
                     {data: null}
                 ]
                 , "columnDefs": [{
@@ -341,8 +341,8 @@ const account = {
                 },
                 columns : [
                     {data: "userGroupSeq", className: "alignLeft"},
-                    {data: "groupName"},
-                    {data: "groupName"},
+                    {data: "userGroupName"},
+                    {data: "userGroupName"},
                     {data: null}
                 ]
                 , columnDefs: [{

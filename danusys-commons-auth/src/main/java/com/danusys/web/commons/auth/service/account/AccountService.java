@@ -7,4 +7,7 @@ import java.util.Map;
 public interface AccountService {
     EgovMap getListUser(Map<String, Object> paramMap) throws Exception;
     EgovMap getOneUser(int seq) throws Exception;
+
+    EgovMap getListUserGroup(Map<String, Object> paramMap) throws Exception;
+    EgovMap getOneUserGroup(int seq) throws Exception;
 }
