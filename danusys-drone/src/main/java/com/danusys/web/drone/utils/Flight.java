@@ -725,7 +725,7 @@ public class Flight {
             waypointTimer.cancel();
             waypointTimerTask.cancel();
 
-            gps.setStatus(3); //0 종료 1 비행 2 일시정지 3 웨이포인트 목적지까지 이동
+            gps.setStatus(2); //0 종료 1 비행 2 일시정지
             simpMessagingTemplate.convertAndSend("/topic/waypoint", gson.toJson(gps));
             System.out.println("wayPoint");
 
