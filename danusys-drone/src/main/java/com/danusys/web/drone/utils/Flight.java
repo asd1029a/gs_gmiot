@@ -65,6 +65,10 @@ public class Flight {
     private boolean isEnd = false;
     private boolean isPauseOrStopEnd = false;
     private boolean alreadyDo = false;
+    private boolean alreadyWayPoint = false;
+    private Timer waypointTimer = null;
+    private TimerTask waypointTimerTask = null;
+
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
 
@@ -541,8 +545,28 @@ public class Flight {
     public String wayPoint(int gpsY, int gpsX, int gpsZ, int yaw) {
 
 
-        Gson gson = new Gson();
+        log.info("yaw={}", yaw);
         gps.setMissionType("waypoint");
+
+        Gson gson = new Gson();
+
+
+        gps.setMissionType("0");
+        gps.setStatus(1);
+        if (!alreadyWayPoint) {
+            waypointTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+
+                    simpMessagingTemplate.convertAndSend("/topic/waypoint", gson.toJson(gps));
+                }
+            };
+            waypointTimer = new Timer();
+
+            waypointTimer.schedule(waypointTimerTask, 0, 1000);
+
+        }
+        alreadyWayPoint = true;
 
         try {
 
@@ -694,6 +718,9 @@ public class Flight {
 
         } finally {
 //
+
+            waypointTimer.cancel();
+            waypointTimerTask.cancel();
             System.out.println("wayPoint");
 
 
@@ -824,7 +851,7 @@ public class Flight {
 
         } finally {
 
-
+            alreadyWayPoint = false;
             System.out.println("returnDrone");
 
 

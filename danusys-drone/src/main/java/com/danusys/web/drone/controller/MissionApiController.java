@@ -56,7 +56,7 @@ public class MissionApiController {
  */
 
     @MessageMapping("/return")
-    //@SendTo("/topic/return")
+    @SendTo("/topic/return")
     public void returnDrone(Map<String, Object> paramMap) {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
@@ -81,7 +81,7 @@ public class MissionApiController {
 
     //   @GetMapping("/waypoint")
     @MessageMapping("/waypoint")
-    //@SendTo("/topic/waypoint")
+    @SendTo("/topic/waypoint")
 //    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
     // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
     public void wayPointDrone(Map<String, Object> paramMap) {

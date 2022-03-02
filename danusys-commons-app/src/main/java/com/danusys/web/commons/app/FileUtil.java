@@ -117,7 +117,6 @@ public class FileUtil {
         for (int i = 0; i < folder.length; i++) {
             if (i >= 3)
                 folderPath += folder[i] + "/";
-
         }
         InputStream imageStream = null;
         byte[] imageByteArray = null;
