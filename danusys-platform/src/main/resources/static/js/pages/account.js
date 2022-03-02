@@ -50,7 +50,7 @@ const account = {
                     toggleable: false
                 }
                 , columns : [
-                    {data: "userId", className: "alignLeft"},
+                    {data: "id", className: "alignLeft"},
                     {data: "userName"},
                     {data: "tel"},
                     {data: "email", className: "alignLeft"},
@@ -163,7 +163,13 @@ const account = {
         addProc : () => {
             const formObj = $('#userAccountForm').serializeJSON();
             const $checkPassword = $("#checkPassword");
-            formObj.userGroupSeq = [7,8];
+            formObj.userGroupSeq = [];
+            $('#userInGroupTable tbody tr').each((i, e) => {
+                if($(e).find("input").prop('checked')) {
+                    formObj.userGroupSeq.push($(e).find("input").val());
+                }
+            })
+
             if(formObj.password === $checkPassword.val() && $("#checkIdBtn").data("duplCheck") === true) {
                 if($('#userAccountForm').doValidation()) {
                     $.ajax({
@@ -188,9 +194,14 @@ const account = {
         },
         modProc : (pSeq) => {
             const formObj = $('#userAccountForm').serializeJSON();
-            formObj.userSeq = pSeq;
             const $checkPassword = $("#checkPassword");
-
+            formObj.userSeq = pSeq;
+            formObj.userGroupSeq = [];
+            $('#userInGroupTable tbody tr').each((i, e) => {
+                if($(e).find("input").prop('checked')) {
+                    formObj.userGroupSeq.push($(e).find("input").val());
+                }
+            })
             if(formObj.password === $checkPassword.val()) {
                 if(formObj.password === ""
                     && $checkPassword.val() === "") {
@@ -277,9 +288,9 @@ const account = {
                 },
                 columns : [
                     {data: "userGroupSeq", className: "alignLeft"},
-                    {data: "groupName"},
-                    {data: "groupName"},
-                    {data: "groupDesc"},
+                    {data: "userGroupName"},
+                    {data: "userGroupName"},
+                    {data: "userGroupRemark"},
                     {data: null}
                 ]
                 , "columnDefs": [{
@@ -319,19 +330,15 @@ const account = {
                     {
                         'url' : "/user/group",
                         'contentType' : "application/json; charset=utf-8",
-                        'type' : "POST",
-                        'data' : function ( d ) {
-                            const param = $.extend({}, d, $("#searchForm form").serializeJSON());
-                            return JSON.stringify( param );
-                        }
+                        'type' : "POST"
                     },
                 select: {
                     toggleable: false
                 },
                 columns : [
                     {data: "userGroupSeq", className: "alignLeft"},
-                    {data: "groupName"},
-                    {data: "groupName"},
+                    {data: "userGroupName"},
+                    {data: "userGroupName"},
                     {data: null}
                 ]
                 , columnDefs: [{

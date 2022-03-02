@@ -1,23 +1,23 @@
 package com.danusys.web.commons.auth.service;
 
-import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
+import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.auth.dto.response.GroupInUserResponse;
-import com.danusys.web.commons.auth.dto.response.GroupResponse;
-import com.danusys.web.commons.auth.model.*;
+import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.model.UserGroup;
+import com.danusys.web.commons.auth.model.UserGroupInUser;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
-import com.danusys.web.commons.auth.util.LoginInfoUtil;
-import com.danusys.web.commons.auth.util.PagingUtil;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
