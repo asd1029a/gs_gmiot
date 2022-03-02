@@ -115,7 +115,7 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/resources/**", "/**").addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/")
                 .resourceChain(false);
-        registry.addResourceHandler("/droneImage/**").addResourceLocations("file:///C:\\Users\\owner//dev/upload/135/");
+        registry.addResourceHandler("/result/**").addResourceLocations("file:///C:\\Users\\owner//dev/upload/135/");
         registry.setOrder(1);
 
         super.addResourceHandlers(registry);
