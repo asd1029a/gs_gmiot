@@ -1,7 +1,7 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.commons.util.EgovMap;
-import com.danusys.web.commons.util.FileUtil;
+import com.danusys.web.commons.app.EgovMap;
+import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.platform.model.paging.Page;
 import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.service.notice.NoticeService;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +75,12 @@ public class NoticeController {
     public ResponseEntity<?> del (@PathVariable("noticeSeq") int noticeSeq) throws Exception {
         noticeService.del(noticeSeq);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/download/{fileName:.+}")
+    public void download (HttpServletRequest request, HttpServletResponse response,
+                          @PathVariable("fileName") String fileName) throws Exception {
+        FileUtil.fileDownload(request, response, fileName);
     }
 
     @PostMapping(value = "/paging")

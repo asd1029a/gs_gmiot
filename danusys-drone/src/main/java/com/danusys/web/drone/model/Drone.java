@@ -52,6 +52,6 @@ public class Drone {
 
     @ManyToOne
     @JoinColumn(name="drone_base_id")
-    @JsonBackReference
+
     private DroneBase droneBase;
 }

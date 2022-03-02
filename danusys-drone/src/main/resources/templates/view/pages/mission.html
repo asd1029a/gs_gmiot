@@ -2,7 +2,7 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="~{layout/base_layout}">
+      layout:decorate="~{layout/base_layout}">
 <head>
     <title>미션</title>
     <script src="/js/pages/mission.js" defer></script>
@@ -123,10 +123,29 @@
         </div>
     </div>
     <script>
-        const mapManager = new mapCreater('map',2);
-        //map.createMousePosition('mousePosition');
-        //map.scaleLine();
-        window.mapManager = mapManager;
+        document.addEventListener("DOMContentLoaded",function () {
+            const mapManager = new mapCreater('map', 2);
+            //map.createMousePosition('mousePosition');
+            //map.scaleLine();
+            window.mapManager = mapManager;
+            pageMission.init();
+            common.getQs(".lnbToggle").addEventListener("click", function () {
+                common.getQs(".lnb").classList.toggle("toggle");
+            });
+
+            const selectType = new CustomSelectBox(common.getQs(".selectBox.type03"));
+            selectType.listLi.map((data) => {
+                data.addEventListener("click", function () {
+                    pageMission.searchMission();
+                });
+            });
+            common.getQs(".searchInput input").addEventListener("keyup", function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    pageMission.searchMission();
+                }
+            });
+        });
     </script>
 </th:block>
 

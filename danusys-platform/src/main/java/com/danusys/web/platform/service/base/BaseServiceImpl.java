@@ -1,6 +1,6 @@
 package com.danusys.web.platform.service.base;
 
-import com.danusys.web.commons.util.JsonUtil;
+import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.platform.model.BaseDao;
 import org.json.JSONArray;
 import org.json.JSONObject;

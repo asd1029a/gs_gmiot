@@ -1,6 +1,6 @@
 package com.danusys.web.drone.controller;
 
-import com.danusys.web.commons.util.FileUtil;
+import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.service.DroneDetailsService;
@@ -24,6 +24,8 @@ import javax.xml.ws.Response;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/file")
@@ -74,9 +76,14 @@ public class DroneFileController {
 
     }
 
-    @GetMapping(value = "/image/{imageName:.+}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/image/{imageName:.+}")
     public ResponseEntity<byte[]> userSearch(@PathVariable("imageName") String imageName, HttpServletRequest request) throws IOException {
 
+
+
+        if(imageName==null || imageName.isEmpty() || imageName.equals("null")){
+            return null;
+        }
         byte[] image = FileUtil.getImage(imageName, request);
         return ResponseEntity.status(HttpStatus.OK).body(image);
     }
@@ -87,6 +94,15 @@ public class DroneFileController {
                                     @PathVariable("fileName") String fileName) throws IOException {
 
         FileUtil.fileDownload(request, response, fileName);
+
+    }
+    @ResponseBody
+    @PostMapping("/excel/download")
+    public void excelDownload(HttpServletRequest request , HttpServletResponse response, @RequestBody ArrayList<Map<String, Object>> paramMap) throws IOException {
+
+
+        FileUtil.excelDownload(request,response,paramMap);
+
 
     }
 }

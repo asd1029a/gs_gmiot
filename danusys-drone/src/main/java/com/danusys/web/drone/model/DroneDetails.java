@@ -1,10 +1,12 @@
 package com.danusys.web.drone.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -69,13 +71,15 @@ public class DroneDetails {
     private long insertUserId;
 
     @Column(name="insert_dt")
-    private Date insertDt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
+    private Timestamp insertDt;
 
     @Column(name="update_user_id")
     private long updateUserId;
 
     @Column(name="update_dt")
-    private Date updateDt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
+    private Timestamp updateDt;
 
     @Column(name="thumbnail_img")
     private String thumbnailImg;

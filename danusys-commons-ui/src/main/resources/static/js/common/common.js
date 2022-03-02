@@ -788,9 +788,9 @@ var stringFunc = {
         var result = true;
         var regex = "";
 
-        // 로그인 ID : 3~25 자리 영숫자.
+        // 로그인 ID : 5~25 자리 영숫자.
         if(type=="loginId") {
-            regex =  /^[A-Za-z0-9가-힣]{3,25}$/g;
+            regex =  /^[A-Za-z0-9]{5,25}$/g;
             // 로그인 이름
         } else if(type=="loginName") {
             regex =  /^[A-Za-z0-9가-힣]+$/g;

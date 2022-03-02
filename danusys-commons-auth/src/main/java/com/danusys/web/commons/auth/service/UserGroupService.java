@@ -1,13 +1,10 @@
 package com.danusys.web.commons.auth.service;
 
+import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.commons.auth.dto.response.GroupResponse;
-import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
-import com.danusys.web.commons.auth.util.LoginInfoUtil;
-import com.danusys.web.commons.auth.util.PagingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -127,7 +124,7 @@ public class UserGroupService {
         if (paramMap.get("draw") != null) {
             draw = Integer.parseInt(paramMap.get("draw").toString());
         }
-        PageRequest pageRequest = PageRequest.of(start / length, length);
+        PageRequest pageRequest = length == 1 ? null : PageRequest.of(start / length, length);
         Page<UserGroup> userGroupPageList = null;
         List<UserGroup> userGroupList = null;
         if (paramMap.get("groupName") != null) {
@@ -169,6 +166,7 @@ public class UserGroupService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return resultMap;
     }
 }
