@@ -71,6 +71,38 @@ public class Flight {
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         //시간 초기화
 
+        int systemId = 1;
+        int componentId = 1;
+        int linkId = 1;
+        long timestamp = System.currentTimeMillis();/* provide microsecond time */
+        ;
+        byte[] secretKey = new byte[0];
+        if (alreadyDo) {
+            try {
+                secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE)
+                        .param1(1).param2(3).build(), linkId, timestamp, secretKey);
+
+                DroneLogDetails droneLogDetailsSetMode = new DroneLogDetails();
+                droneLogDetailsSetMode.setDroneLog(droneLog);
+                droneLogDetailsSetMode.setFromTarget("gcs");
+                droneLogDetailsSetMode.setToTarget("drone");
+                droneLogDetailsSetMode.setType("MAV_CMD_DO_SET_MODE");
+                droneLogDetailsSetMode.setParam1("1");
+                droneLogDetailsSetMode.setParam2("3");
+                droneLogDetailsSetMode.setParam3("0");
+                droneLogDetailsSetMode.setParam4("0");
+                droneLogDetailsSetMode.setParam5("0");
+                droneLogDetailsSetMode.setParam6("0");
+                droneLogDetailsSetMode.setParam7("0");
+                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsSetMode);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         log.info("alreadyDo={}", alreadyDo);
         if (!alreadyDo) {
@@ -130,12 +162,7 @@ public class Flight {
 
 
                 Heartbeat heartbeat = null;
-                int systemId = 1;
-                int componentId = 1;
-                int linkId = 1;
-                long timestamp = System.currentTimeMillis();/* provide microsecond time */
-                ;
-                byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+
 
                 t = new Timer();
 
@@ -529,6 +556,22 @@ public class Flight {
 
             MavlinkMessage message;
             log.info("x={},y={}", gpsX, gpsY);
+
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
+            DroneLogDetails droneLogDetailsDoSetMode2 = new DroneLogDetails();
+            droneLogDetailsDoSetMode2.setDroneLog(droneLog);
+            droneLogDetailsDoSetMode2.setFromTarget("gcs");
+            droneLogDetailsDoSetMode2.setToTarget("drone");
+            droneLogDetailsDoSetMode2.setType("MAV_CMD_DO_SET_MODE");
+            droneLogDetailsDoSetMode2.setParam1("1");
+            droneLogDetailsDoSetMode2.setParam2("4");
+            droneLogDetailsDoSetMode2.setParam3("0");
+            droneLogDetailsDoSetMode2.setParam4("0");
+            droneLogDetailsDoSetMode2.setParam5("0");
+            droneLogDetailsDoSetMode2.setParam6("0");
+            droneLogDetailsDoSetMode2.setParam7("0");
+            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsDoSetMode2);
+
 
             connection.send2(systemId, componentId, new MissionItemInt.Builder().command(MavCmd.MAV_CMD_NAV_WAYPOINT).param1(0)
                     .targetSystem(0).targetComponent(0).seq(0).current(2).autocontinue(1).frame(MavFrame.MAV_FRAME_GLOBAL_INT)
