@@ -1,19 +1,146 @@
-<!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="~{layout/base_layout}">
+<!doctype html>
+<html>
 <head>
+    <meta charset="utf-8">
     <title>로그</title>
+    <link rel="stylesheet" type="text/css" href="css/um/drone.css">
+    <link rel="stylesheet" type="text/css" href="/css/default/layout.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="./script.js"></script>
+    <script src="/js/um/log.js" defer></script>
 </head>
-<th:block layout:fragment="css">
-</th:block>
 
-<th:block layout:fragment="content">
-    <h1>Inquiry &amp; Management</h1>
-</th:block>
+<body>
+<div class="wrap">
+    <!--    헤더 영역 -->
+    <header>
+        <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>
+        <ul class="gnm">
+            <li><a href="/drone">드론</a></li>
+            <li><a href="/mission">미션</a></li>
+            <li><a href="/flying">비행</a></li>
+            <li class="on"><a href="/log">로그</a></li>
+        </ul>
+        <ul class="utmenu">
+            <li><i><img src="images/um/utmenuUser.svg"></i></li>
+            <li><i><img src="images/um/utmenuBell.svg"></i></li>
+        </ul>
+    </header>
+    <!-- droneFrame -->
+    <div class="droneFrameWrap">
+        <section class="droneLog">
+            <article class="searchForm">
+                <h6>비행로그</h6>
+                <form>
+                    <div>
+                        <dl class="dateSet">
+                            <dt>조회 기간</dt>
+                            <dd><input type="date" class="input_date before_date"></dd>
+                            <span>부터</span>
+                            <dd><input type="date" class="input_date after_date"></dd>
+                            <span>까지</span>
+                        </dl>
+                        <!--                        <dl class="checkboxSet">-->
+                        <!--                            <dt>파일 형식</dt>-->
+                        <!--                            <dd>-->
+                        <!--                                <span>-->
+                        <!--                                    <input type="checkbox" id="video" name="">-->
+                        <!--                                    <label for="video"><span></span>동영상</label>-->
+                        <!--                                </span>-->
+                        <!--                                <span>-->
+                        <!--                                    <input type="checkbox" id="picture" name="">-->
+                        <!--                                    <label for="picture"><span></span>사진</label>-->
+                        <!--                                </span>-->
+                        <!--                                <span>-->
+                        <!--                                    <input type="checkbox" id="etc" name="">-->
+                        <!--                                    <label for="etc"><span></span>기타</label>-->
+                        <!--                                </span>-->
+                        <!--                            </dd>-->
+                        <!--                        </dl>-->
+                    </div>
+                    <div>
+                        <dl class="searchTextSet">
+                            <dt>조회</dt>
+                            <dd>
+                                <select id="selectType">
+                                    <option selected value="all">전체</option>
+                                    <option value="device_name">기기명</option>
+                                    <option value="mission_name">미션명</option>
+                                </select>
+                            </dd>
+                            <dd><input class="search_word" type="text" placeholder="검색어를 입력하세요."></dd>
+                            <dd class="button search_reset"><i><img src="images/um/refresh.svg"></i>검색조건 초기화</dd>
+                            <dd class="button search_button"><i><img src="images/um/search.svg"></i>검색</dd>
+                        </dl>
+                    </div>
+                </form>
+            </article>
+            <article class="searchList">
+                <div class="articleTitle">
+                    <dl class="title">
+                        <dt>조회 결과</dt>
+                        <dd><span class="count"></span>건</dd>
+                    </dl>
+                    <!--                    <p>-->
+                    <!--                        <select>-->
+                    <!--                            <option selected>15개씩 보기</option>-->
+                    <!--                            <option>20개씩 보기</option>-->
+                    <!--                            <option>25개씩 보기</option>-->
+                    <!--                            <option>30개씩 보기</option>-->
+                    <!--                        </select>-->
+                    <!--                    </p>-->
+                </div>
+                <div class="searchTable">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <!--                               <th>Thumbnail</th>-->
+                            <!--                                <th>형식</th>-->
+                            <!--                                <th>용량</th>-->
+                            <th>촬영 기기</th>
+                            <th>미션명</th>
+                            <th>등록일시</th>
+                            <th>상세 다운로드</th>
+                        </tr>
+                        </thead>
+                        <tbody class="search_body">
 
-<th:block th:fragment="pagesScript">
-</th:block>
+                        <!--                            <tr>-->
+                        <!--                                <td>1</td>-->
+                        <!--                                &lt;!&ndash;                                <td><p>Thumbnail image area</p></td>&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                <td>동영상</td>&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                <td>000 GB</td>&ndash;&gt;-->
+                        <!--                                <td>DJI 신림 11호</td>-->
+                        <!--                                <td>신림면 11구역 정기 순찰</td>-->
+                        <!--                                <td>2022.02.01 14:55</td>-->
+                        <!--                                <td><span class="button">다운로드</span></td>-->
+                        <!--                            </tr>-->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tableBottom">
+                    <ul class="pageNav">
+                        <li class="prev"><i><img src="images/um/navPrev.svg"></i></li>
+                        <li class="on">1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                        <li class="next"><i><img src="images/um/navNext.svg"></i></li>
+                    </ul>
+                    <p class="button excel_download"><i><img src="images/um/excel.svg"></i>엑셀로 내보내기</p>
+                </div>
+            </article>
+        </section>
+    </div>
+</div>
 
+<script type="text/javascript">
+
+</script>
+
+
+</body>
 </html>

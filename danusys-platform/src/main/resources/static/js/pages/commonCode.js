@@ -7,6 +7,16 @@ const commonCode = {
         $("#searchBtn").on('click', (e) => {
             commonCode.create($target, pParentCode);
         });
+
+        $("[data-add-popup]").on('click', (e) => {
+            commonCode.showPopup('add',$(e.target).data('addPopup'));
+        });
+        $("[data-add-popup]").hide();
+        $("[data-add-popup='0']").show();
+
+        $("#commonCodePopup .title dd").on('click', () => {
+            commonCode.hidePopup();
+        });
     },
     create : ($target, pParentCode) => {
         const optionObj = {
@@ -27,7 +37,7 @@ const commonCode = {
                     },
                     'dataSrc' : function (result) {
                         console.log(result);
-                        const targetSeq = Number($target.attr('data-table-seq'));
+                        const targetSeq = Number($target.data('tableSeq'));
                         $('.search_list:nth-of-type('+(targetSeq+1)+') .title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
@@ -44,7 +54,7 @@ const commonCode = {
             columnDefs: [{
                 "targets": -1,
                 "data": null,
-                "defaultContent": '<span class="button">상세보기</span>'
+                "defaultContent": '<span class="button detail" data-add-popup="'+Number($target.data('tableSeq'))+'">상세보기</span>'
             }
             , {
                 targets: 2,
@@ -62,16 +72,21 @@ const commonCode = {
 
         const evt = {
             click : function(e) {
-                const targetSeq = Number($target.attr('data-table-seq'));
+                const targetSeq = Number($target.data('tableSeq'));
+                const $form = $('#commonCodeForm');
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
-
                 if($(e.target).hasClass('button')) {
-                    //commonCode.showPopup('mod');
-                    //$('#commonCodeForm').setItemValue(rowData);
-                    commonCode.get(rowData.codeSeq, (result) => console.log(result));
+                    const buttonType = $(e.target).attr("class").split(' ')[1];
+                    commonCode.showPopup(buttonType,$(e.target).data('addPopup'));
+                    commonCode.get(rowData.codeSeq ,(result) => {
+                        $form.data("codeSeq", rowData.codeSeq);
+                        $form.setItemValue(result);
+                    });
                 }
                 else if(targetSeq !== 2) {
+                    $(".search_list:nth-of-type("+(targetSeq+2)+") .title dt span").text("["+rowData.codeName+"]");
                     commonCode.create($("[data-table-seq='"+(targetSeq+1)+"']"),rowData.codeSeq);
+                    $("[data-add-popup='"+(targetSeq+1)+"']").show();
                 }
             }
             // 클릭시 디테일 select 추가해야함
@@ -108,23 +123,26 @@ const commonCode = {
             pCallback(result);
         });
     },
-    showPopup : (type) => {
-        $('#commonCodePopup .popupContents').scrollTop(0);
+    showPopup : (type, seq) => {
+        //$('#commonCodePopup .popupContents').scrollTop(0);
         comm.showModal($('#commonCodePopup'));
         $('#commonCodePopup').css("display", "flex");
         $('#commonCodeForm').initForm();
-        $('#commonCodePopup [data-mode]').hide();
+        $('#commonCodePopup [data-add], [data-mod], [data-detail]').hide();
+
+        /*/!*$('#commonCodePopup [data-popup]').hide();
+        $('#commonCodePopup [data-popup] input').attr('disabled',true);*!/
+        $('#commonCodePopup [data-popup="'+$targetId+'"] input').attr('disabled',false);*/
+        let title = "";
+        title = seq !== 0 ? $('.search_list:nth-of-type('+(seq+1)+') [data-popup-title]').text() : "";
         if(type === "add") {
-            $('#commonCodePopup .popupTitle h4').text("게시글 등록");
-            $('#commonCodePopup').css('height', '480px');
+            $('#commonCodePopup .title dt').text(title+"코드 등록");
             $('#commonCodePopup [data-mode="'+type+'"]').show();
         } else if(type === "mod") {
-            $('#commonCodePopup .popupTitle h4').text('게시글 수정');
-            $('#commonCodePopup').css('height', '780px');
+            $('#commonCodePopup .title dt').text(title+'코드 수정');
             $('#commonCodePopup [data-mode="'+type+'"]').show();
         } else if(type === "detail") {
-            $('#commonCodePopup .popupTitle h4').text("상세");
-            $('#commonCodePopup').css('height', '610px');
+            $('#commonCodePopup .title dt').text(title+"코드 상세");
             $('#commonCodePopup [data-mode="'+type+'"]').show();
         }
     },

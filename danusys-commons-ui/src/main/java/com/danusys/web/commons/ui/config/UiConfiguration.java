@@ -1,10 +1,13 @@
 package com.danusys.web.commons.ui.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Description;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -13,6 +16,8 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
+
+import java.util.List;
 
 /**
  * Project : danusys-webservice-parent
@@ -28,6 +33,23 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
     @Autowired
     public UiConfiguration(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(jsonMessageConverter());
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(jsonMessageConverter());
+    }
+
+    private MappingJackson2HttpMessageConverter jsonMessageConverter() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.getFactory().setCharacterEscapes(new HTMLCharacterEscapes());
+
+        return new MappingJackson2HttpMessageConverter(objectMapper);
     }
 
     @Bean
@@ -93,7 +115,7 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/resources/**", "/**").addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/")
                 .resourceChain(false);
-        registry.addResourceHandler("/droneImage/**").addResourceLocations("file:///C:\\Users\\owner//dev/upload/135/");
+        registry.addResourceHandler("/result/**").addResourceLocations("file:///C:\\Users\\owner//dev/upload/135/");
         registry.setOrder(1);
 
         super.addResourceHandlers(registry);

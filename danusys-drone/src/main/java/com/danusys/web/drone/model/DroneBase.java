@@ -1,6 +1,7 @@
 package com.danusys.web.drone.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -29,7 +30,8 @@ public class DroneBase {
     private String baseName;
 
     @OneToMany(mappedBy = "droneBase")
-    private List<Drone> drone =new ArrayList<>();
+    @JsonIgnore
+    private final List<Drone> drone =new ArrayList<>();
 
 
 }

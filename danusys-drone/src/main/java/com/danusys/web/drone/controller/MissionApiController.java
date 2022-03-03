@@ -16,6 +16,7 @@ import io.dronefleet.mavlink.MavlinkMessage;
 import io.dronefleet.mavlink.common.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+//import org.omg.CORBA.Object;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,8 @@ public class MissionApiController {
     private final Flight flight;
     private final DroneLogService droneLogService;
 
+
+
 /*
 
     url:/return
@@ -60,6 +63,8 @@ public class MissionApiController {
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
         flight.returnDrone();
     }
+
+
 
 
     @GetMapping("/takeoff")
@@ -101,8 +106,8 @@ public class MissionApiController {
             gpsZ = Double.parseDouble(paramMap.get("alt").toString());
         if (paramMap.get("yaw") != null)
             yaw = Integer.parseInt(paramMap.get("yaw").toString());
-        intGpsX = (int) gpsX * 10000000;
-        intGpsY = (int) gpsY * 10000000;
+        intGpsX = (int) gpsX ;
+        intGpsY = (int) gpsY ;
         intGpsZ = (int) gpsZ;
         flight.wayPoint(intGpsX, intGpsY, intGpsZ, yaw);
 
@@ -110,16 +115,31 @@ public class MissionApiController {
     }
 
     @MessageMapping("/changeyaw")
-    @SendTo("/topic/changeyaw")
+//    @SendTo("/topic/changeyaw")
 //    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
     // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
-    public void changeYaw(int yaw) {
-        flight.changeYaw(yaw);
+    public void changeYaw(@RequestBody Map<String, Object> paramMap) {
+
+        int yaw=0;
+        if(paramMap.get("yaw")!=null)
+            yaw=Integer.parseInt(paramMap.get("yaw").toString());
+
+            flight.changeYaw(yaw);
     }
 
 
+    @MessageMapping("/setmissioncurrent")
+    public void setMissionCurrent(@RequestBody Map<String, Object >paramMap)
+    {
+
+        int seq=0;
+        if(paramMap.get("seq")!=null)
+            seq=Integer.parseInt(paramMap.get("seq").toString());
+        flight.setMissionCurrent(seq);
+    }
+
     @MessageMapping("/startmission")
-    @SendTo("/topic/startmission")
+  //  @SendTo("/topic/startmission")
 //    public void startMission(Mission mission) {
     public void startMission(@RequestBody Map<String, Object> paramMap) {
 
@@ -165,7 +185,7 @@ public class MissionApiController {
             if (missionDetails.getName().equals("takeOff")) {
 
                 gpsZs.put("takeOff", missionDetails.getAlt());
-                log.info("Index={}", missionDetails.getIndex());
+              //  log.info("Index={}", missionDetails.getIndex());
                 missionIndex.put(missionDetails.getIndex(), "takeOff");
 
 
@@ -196,7 +216,7 @@ public class MissionApiController {
             }
         }
 
-        log.info("{}", missionDetailsService.findByNameAndMission("takeOff", mission).getIndex());
+       // log.info("{}", missionDetailsService.findByNameAndMission("takeOff", mission).getIndex());
         float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex()));
 
         //float takeOffAlt = gpsZs.get(missionIndex.get(1));
@@ -210,7 +230,7 @@ public class MissionApiController {
             int speed = 0;
             int radius = 0;
             float yaw = 0;
-            log.info("step={}", step);
+      //      log.info("step={}", step);
 //x,y 지금 바뀐 상황임 latitude longtitude 떄문에 바꿧음
             y = gpsXs.getOrDefault(missionIndex.get(step), 0);
             x = gpsYs.getOrDefault(missionIndex.get(step), 0);
@@ -219,7 +239,7 @@ public class MissionApiController {
             time = times.getOrDefault(missionIndex.get(step), 0);
             speed = speeds.getOrDefault(missionIndex.get(step), 0);
             radius = radiusMap.getOrDefault(missionIndex.get(step), 0);
-            log.info("x={},y={},z={}", x, y, z);
+        //    log.info("x={},y={},z={}", x, y, z);
             if (missionIndex.getOrDefault(step, "finish").equals("takeOff")) {
 
                 missionMap = flight.missionTakeoff(droneLog, missionResponse.getDrone().getId().intValue());
@@ -228,7 +248,7 @@ public class MissionApiController {
             } else if (missionIndex.getOrDefault(step, "finish").contains("waypoint")) {
 
 //                log.info("x={},y={},z{}", x, y, z);
-                log.info("yaw={}", yaw);
+            //    log.info("yaw={}", yaw);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
                         .param1(time)
@@ -301,7 +321,7 @@ public class MissionApiController {
 
 
     @MessageMapping("/pause")
-    @SendTo("/topic/pause")
+  //  @SendTo("/topic/pause")
     public void pause(@RequestBody Map<String,Object> paramMap) {
         int droneId=0;
         if (paramMap.get("droneId")!=null)
@@ -312,7 +332,7 @@ public class MissionApiController {
     }
 
     @MessageMapping("/play")
-    @SendTo("/topic/play")
+   // @SendTo("/topic/play")
     public void play(@RequestBody Map<String,Object> paramMap) {
         int droneId=0;
         if (paramMap.get("droneId")!=null)
@@ -506,7 +526,17 @@ public class MissionApiController {
     public void test() {
         // flight.loiter(30);
         //flight.camera();
+        flight.flightTakeoff(100);
+        //flight.returnDrone();
+       // flight.setHome();
+    }
+    @GetMapping("/test2")
+    public void test2() {
+        // flight.loiter(30);
+        //flight.camera();
+        //flight.flightTakeoff(100);
         flight.returnDrone();
+        // flight.setHome();
     }
 
 

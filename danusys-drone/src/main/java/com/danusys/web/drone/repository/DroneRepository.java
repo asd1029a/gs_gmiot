@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface DroneRepository extends CrudRepository<Drone,Long> {
@@ -24,6 +25,15 @@ public interface DroneRepository extends CrudRepository<Drone,Long> {
 
 
     List<Drone> findAllByIdNot(long id);
+
+    @Query (value="select * from drone",nativeQuery = true)
+    List<Map<String,Object>> test();
+
+    @Query (value="SELECT m.name,md.index FROM MISSION m INNER JOIN MISSION_DETAILS md " +
+            "ON(m.id = md.MISSION_ID )  WHERE m.id = 40 ORDER BY md.INDEX ",nativeQuery = true)
+    List<Map<String,Object>> test2();
+
+
 }
 //@Query(value ="SELECT *\n" +
 //            "FROM\n" +

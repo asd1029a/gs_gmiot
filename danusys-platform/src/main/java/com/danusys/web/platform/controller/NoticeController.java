@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +75,12 @@ public class NoticeController {
     public ResponseEntity<?> del (@PathVariable("noticeSeq") int noticeSeq) throws Exception {
         noticeService.del(noticeSeq);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/download/{fileName:.+}")
+    public void download (HttpServletRequest request, HttpServletResponse response,
+                          @PathVariable("fileName") String fileName) throws Exception {
+        FileUtil.fileDownload(request, response, fileName);
     }
 
     @PostMapping(value = "/paging")

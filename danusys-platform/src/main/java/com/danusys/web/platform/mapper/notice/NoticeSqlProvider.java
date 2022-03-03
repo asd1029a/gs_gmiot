@@ -1,7 +1,7 @@
 package com.danusys.web.platform.mapper.notice;
 
 import com.danusys.web.commons.app.CommonUtil;
-import com.danusys.web.platform.util.SqlUtil;
+import com.danusys.web.commons.app.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;
@@ -22,13 +22,13 @@ public class NoticeSqlProvider {
                             ", t1.notice_title" +
                             ", t1.notice_content" +
                             ", TO_CHAR(t1.insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
-                            ", t2.user_id AS insert_user_id" +
+                            ", t2.user_seq AS insert_user_id" +
                             ", TO_CHAR(t1.update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt" +
-                            ", t3.user_id AS update_user_id" +
+                            ", t3.user_seq AS update_user_id" +
                             ", t1.notice_file");
             FROM("t_notice t1");
-            INNER_JOIN("t_user t2 on t1.insert_user_seq = t2.id");
-            LEFT_OUTER_JOIN("t_user t3 on t1.update_user_seq = t3.id");
+            INNER_JOIN("t_user t2 on t1.insert_user_seq = t2.user_seq");
+            LEFT_OUTER_JOIN("t_user t3 on t1.update_user_seq = t3.user_seq");
             if(!keyword.equals("")) {
                 WHERE("notice_title LIKE '%" + keyword + "%'");
             }
@@ -57,8 +57,8 @@ public class NoticeSqlProvider {
         SQL sql = new SQL() {{
             SELECT("COUNT(*) AS count");
             FROM("t_notice t1");
-            INNER_JOIN("t_user t2 on t1.insert_user_seq = t2.id");
-            LEFT_OUTER_JOIN("t_user t3 on t1.update_user_seq = t3.id");
+            INNER_JOIN("t_user t2 on t1.insert_user_seq = t2.user_seq");
+            LEFT_OUTER_JOIN("t_user t3 on t1.update_user_seq = t3.user_seq");
             if(!keyword.equals("")) {
                 WHERE("notice_title LIKE '%" + keyword + "%'");
             }
@@ -80,13 +80,13 @@ public class NoticeSqlProvider {
                     ", t1.notice_title" +
                     ", t1.notice_content" +
                     ", TO_CHAR(t1.insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
-                    ", t2.user_id AS insert_user_id" +
+                    ", t2.user_seq AS insert_user_id" +
                     ", TO_CHAR(t1.update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt" +
-                    ", t3.user_id AS update_user_id" +
+                    ", t3.user_seq AS update_user_id" +
                     ", t1.notice_file");
             FROM("t_notice t1");
-            INNER_JOIN("t_user t2 on t1.insert_user_seq = t2.id");
-            LEFT_OUTER_JOIN("t_user t3 on t1.update_user_seq = t3.id");
+            INNER_JOIN("t_user t2 on t1.insert_user_seq = t2.user_seq");
+            LEFT_OUTER_JOIN("t_user t3 on t1.update_user_seq = t3.user_seq");
             WHERE("notice_seq =" + noticeSeq);
         }};
         return sql.toString();

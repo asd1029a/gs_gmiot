@@ -1,12 +1,10 @@
-package com.danusys.web.platform.util;
+package com.danusys.web.commons.app;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SqlUtil {
-
     public static Map<String, Object> getInsertValuesStr(Map<String, Object> paramMap){
         Map<String, Object> resultMap = new HashMap<String, Object>();
         Map<String, Object> columnMap = new HashMap<String, Object>();
@@ -16,14 +14,14 @@ public class SqlUtil {
         resultMap.put("columns", String.join(",", columnMap.keySet()));
         resultMap.put("values", columnMap.values().stream()
                 .map(value -> {
-                        if (value instanceof String) {
-                            return "'" + value + "'";
-                        } else if (value instanceof Integer) {
-                            return String.valueOf(value);
-                        } else {
-                            return "'" + value + "'";
-                        }
-                    })
+                    if (value instanceof String) {
+                        return "'" + value + "'";
+                    } else if (value instanceof Integer) {
+                        return String.valueOf(value);
+                    } else {
+                        return "'" + value + "'";
+                    }
+                })
                 .collect(Collectors.joining(",")));
         return resultMap;
     }
@@ -46,4 +44,5 @@ public class SqlUtil {
                 );
         return setStr.toString();
     }
+
 }

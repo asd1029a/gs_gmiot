@@ -6,45 +6,90 @@ $(document).ready(function () {
     }
 
     ajaxLog(paramMap);
-})
+});
 
 $(".excel_download").on("click", function () {
-    let paramMap = {
-        "start": 0,
-        "length": 1
-    }
-    let resultData = ajaxLog(paramMap);
+        let beforeDate = $(".before_date").val();
+        let afterDate = $(".after_date").val();
+        let selectType = $("#selectType option:selected").val();
+        let searchWord = $(".search_word").val();
 
 
-    console.log(resultData);
-    $.ajax({
-        contentType: "application/json; charset=utf-8",
-        url: "/file/excel/download",
-        data: JSON.stringify(resultData),
-        type: "POST",
-        success: function () {
-            window.location.href = "/file/excel.xlsx";
+        let paramMap;
+
+
+        if (selectType === "all") {
+            paramMap = {
+                "start": 0,
+                "length": 1,
+                "searchType": 1,
+                "deviceName": searchWord,
+                "beforeDate": beforeDate,
+                "afterDate": afterDate
+            }
+
+        } else if (selectType == "device_name") {
+            paramMap = {
+                "start": 0,
+                "length": 1,
+                "deviceName": searchWord,
+                "beforeDate": beforeDate,
+                "afterDate": afterDate
+            }
+
+        } else if (selectType == "mission_name") {
+            paramMap = {
+                "start": 0,
+                "length": 1,
+                "missionName": searchWord,
+                "beforeDate": beforeDate,
+                "afterDate": afterDate
+            }
         }
 
-    })
+        let resultData = null;
+        $.ajax({
+            contentType: "application/json; charset=utf-8",
+            url: "drone/api/dronelog",
+            type: "POST",
+            async: false,
+            data: JSON.stringify(paramMap),
+            success: function (result) {
+                resultData = result.data;
+            }
+        });
 
-})
+
+        console.log(resultData);
+        $.ajax({
+            contentType: "application/json; charset=utf-8",
+            url: "/file/excel/download",
+            data: JSON.stringify(resultData),
+            type: "POST",
+            success: function () {
+                window.location.href = "/file/excel.xlsx";
+            }
+
+        })
+
+    }
+)
 
 
 $(".search_button").on("click", function () {
-    let beforeDate=$(".before_date").val();
-    let afterDate=$(".after_date").val();
-    console.log(beforeDate,afterDate);
+    let beforeDate = $(".before_date").val();
+    let afterDate = $(".after_date").val();
+    console.log(beforeDate, afterDate);
     let selectType = $("#selectType option:selected").val();
     let searchWord = $(".search_word").val();
     if (selectType === "all") {
         let paramMap = {
             "start": 0,
             "length": 15,
-            "searchType":1,
+            "searchType": 1,
             "deviceName": searchWord,
-            "beforeDate":beforeDate,
-            "afterDate":afterDate
+            "beforeDate": beforeDate,
+            "afterDate": afterDate
         }
         ajaxLog(paramMap);
     } else if (selectType == "device_name") {
@@ -52,8 +97,8 @@ $(".search_button").on("click", function () {
             "start": 0,
             "length": 15,
             "deviceName": searchWord,
-            "beforeDate":beforeDate,
-            "afterDate":afterDate
+            "beforeDate": beforeDate,
+            "afterDate": afterDate
         }
         ajaxLog(paramMap);
     } else if (selectType == "mission_name") {
@@ -61,8 +106,8 @@ $(".search_button").on("click", function () {
             "start": 0,
             "length": 15,
             "missionName": searchWord,
-            "beforeDate":beforeDate,
-            "afterDate":afterDate
+            "beforeDate": beforeDate,
+            "afterDate": afterDate
         }
         ajaxLog(paramMap);
     }
@@ -92,12 +137,30 @@ function ajaxLog(paramMap) {
                 <td>${item.droneDeviceName}</td>
                 <td>${item.missionName}</td>
                 <td>${item.insertDt}</td>
-                <td><span className="button">다운로드</span></td>
+                <td><span class="button download_button" data-id="${i}">다운로드</span></td>
             </tr>
          
           `);
+
+
             });
-            $(".pageNav").append(`<li class="prev" data-id=${resultData.startPage - 1} ><i><img src="images/um/navPrev.svg"></i></li>`);
+            $(".download_button").on("click", function (e) {
+                let id = $(e.currentTarget).data("id");
+                console.log(id);
+                console.log("data",resultData.data[id].droneLogDetails);
+                $.ajax({
+                    contentType: "application/json; charset=utf-8",
+                    url: "/file/excel/download",
+                    data: JSON.stringify(resultData.data[id].droneLogDetails),
+                    type: "POST",
+                    success: function () {
+                        window.location.href = "/file/excel.xlsx";
+                    }
+
+                });
+            });
+            if (resultData.startPage != 1)
+                $(".pageNav").append(`<li class="prev" data-id=${resultData.startPage - 1} ><i><img src="images/um/navPrev.svg"></i></li>`);
 
             for (let i = resultData.startPage; i <= resultData.endPage; i++) {
                 if (i === (paramMap.start) + 1) {
@@ -107,31 +170,33 @@ function ajaxLog(paramMap) {
                 }
 
             }
-            $(".pageNav").append(`<li class="next" data-id=${resultData.endPage + 1}><i><img src="images/um/navNext.svg"></i></li>`);
+            console.log(resultData.endPage, resultData.pages);
+            if (resultData.endPage < resultData.pages)
+                $(".pageNav").append(`<li class="next" data-id=${resultData.endPage + 1}><i><img src="images/um/navNext.svg"></i></li>`);
 
             $(".pageNav li").on("click", function (e) {
-                let beforeDate=$(".before_date").val();
-                let afterDate=$(".after_date").val();
+                let beforeDate = $(".before_date").val();
+                let afterDate = $(".after_date").val();
                 let selectType = $("#selectType option:selected").val();
                 let searchWord = $(".search_word").val();
                 let id = $(e.currentTarget).data("id");
                 console.log(id);
                 if (selectType === "all") {
                     let paramMap = {
-                        "start": id-1,
+                        "start": id - 1,
                         "length": 15,
-                        "searchType":1,
+                        "searchType": 1,
                         "deviceName": searchWord,
-                        "beforeDate":beforeDate,
-                        "afterDate":afterDate
+                        "beforeDate": beforeDate,
+                        "afterDate": afterDate
                     }
                     ajaxLog(paramMap);
                 } else if (selectType == "device_name") {
                     let paramMap = {
                         "start": id - 1, "length": 15,
                         "deviceName": searchWord,
-                        "beforeDate":beforeDate,
-                        "afterDate":afterDate
+                        "beforeDate": beforeDate,
+                        "afterDate": afterDate
                     }
                     if (id <= resultData.pages)
                         ajaxLog(paramMap);
@@ -140,8 +205,8 @@ function ajaxLog(paramMap) {
                     let paramMap = {
                         "start": id - 1, "length": 15,
                         "missionName": searchWord,
-                        "beforeDate":beforeDate,
-                        "afterDate":afterDate
+                        "beforeDate": beforeDate,
+                        "afterDate": afterDate
                     }
                     if (id <= resultData.pages)
                         ajaxLog(paramMap);
@@ -154,4 +219,16 @@ function ajaxLog(paramMap) {
     });
     return returnValue;
 }
+
+$(".search_reset").on("click", function () {
+    let paramMap = {
+        "start": 0,
+        "length": 15
+
+    }
+    $(".before_date").val("");
+    $(".after_date").val("");
+    $("#selectType option:eq(0)").prop("selected", true);
+    ajaxLog(paramMap);
+})
 

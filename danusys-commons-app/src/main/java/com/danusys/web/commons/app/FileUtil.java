@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.net.URLConnection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -116,7 +117,6 @@ public class FileUtil {
         for (int i = 0; i < folder.length; i++) {
             if (i >= 3)
                 folderPath += folder[i] + "/";
-
         }
         InputStream imageStream = null;
         byte[] imageByteArray = null;
@@ -195,7 +195,7 @@ public class FileUtil {
                                      List<Map<String, Object>> paramMap) {
         int rowNum = 0;
         AtomicInteger cellNum = new AtomicInteger();
-
+        log.info("{}", paramMap);
 
         String sPath = STATIC_EXTERNAL_FILE_PATH;
         String folderPath = "";
@@ -212,40 +212,47 @@ public class FileUtil {
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("sheet 1");
 
-        rowNum = 0;
-
+        rowNum = 1;
 
         for (Map<String, Object> data : paramMap) {
             //row 생성
             Integer finalRowNum = rowNum;
             Row row = sheet.createRow(finalRowNum);
-
+            Row headRow = sheet.createRow(0);
 
             cellNum.set(0);
             data.forEach((k, v) -> {
 
+                Cell cell = headRow.createCell(cellNum.get());
+
+                cell.setCellValue(k);
+
+                cellNum.incrementAndGet();
+            });
+            cellNum.set(0);
+            data.forEach((k, v) -> {
+
+
                 Cell cell = row.createCell(cellNum.get());
 
-                if (finalRowNum == 0) {
-                    cell.setCellValue(k);
-                } else {
-                    //cell에 데이터 삽입
-                    cell.setCellValue(v.toString());
-                }
+                cell.setCellValue(v.toString());
 
+
+                //cell에 데이터 삽입
 
 
                 cellNum.incrementAndGet();
             });
+
             sheet.autoSizeColumn(finalRowNum);
-            sheet.setColumnWidth(finalRowNum, (sheet.getColumnWidth(finalRowNum))+512 );
+            //  sheet.setColumnWidth(finalRowNum, (sheet.getColumnWidth(finalRowNum))+100 );
             rowNum++;
 
         }
         // Excel File Output
         FileOutputStream fos = null;
         log.info("here");
-        File saveFile=new File(uploadPath,"/excel.xlsx");
+        File saveFile = new File(uploadPath, "/excel.xlsx");
         log.info("{},{}", sPath, folderPath);
         try {
 

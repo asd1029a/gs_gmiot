@@ -76,27 +76,35 @@ public class DroneFileController {
 
     }
 
-    @GetMapping(value = "/image/{imageName:.+}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> userSearch(@PathVariable("imageName") String imageName, HttpServletRequest request) throws IOException {
+    //  @ResponseBody
+    // @GetMapping(value = "/image/{imageName:.+}",produces = {MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_GIF_VALUE,MediaType.IMAGE_PNG_VALUE})
+    @GetMapping(value = "/image/{imageName:.+}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
+    public ResponseEntity<byte[]> getImage(@PathVariable("imageName") String imageName, HttpServletRequest request) throws IOException {
 
+
+        if (imageName == null || imageName.isEmpty() || imageName.equals("null")) {
+            return null;
+        }
         byte[] image = FileUtil.getImage(imageName, request);
+        //    log.info("에러왜나??{}",image);
         return ResponseEntity.status(HttpStatus.OK).body(image);
     }
 
     @ResponseBody
-    @RequestMapping("/{fileName:.+}")
+    @RequestMapping(value = "/{fileName:.+}")
     public void downloadPDFResource(HttpServletRequest request, HttpServletResponse response,
                                     @PathVariable("fileName") String fileName) throws IOException {
 
         FileUtil.fileDownload(request, response, fileName);
 
     }
+
     @ResponseBody
     @PostMapping("/excel/download")
-    public void excelDownload(HttpServletRequest request , HttpServletResponse response, @RequestBody ArrayList<Map<String, Object>> paramMap) throws IOException {
+    public void excelDownload(HttpServletRequest request, HttpServletResponse response, @RequestBody ArrayList<Map<String, Object>> paramMap) throws IOException {
 
 
-        FileUtil.excelDownload(request,response,paramMap);
+        FileUtil.excelDownload(request, response, paramMap);
 
 
     }

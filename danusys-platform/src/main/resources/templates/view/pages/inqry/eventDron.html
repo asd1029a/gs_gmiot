@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout_inqry">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/layout_inqry">
 
 <th:block layout:fragment="content">
     <h4>
@@ -15,6 +15,15 @@
             <h6>드론 관제 이벤트 검색</h6>
             <form>
                 <div>
+                    <dl class="selectbox_set">
+                        <dt>이벤트 종류</dt>
+                        <dd>
+                            <div class="dropdown_checkbox" data-selectbox-type="eventKind">
+                                <p class="checkbox_title checkbox_title_event select" data-placeholder="이벤트 종류 선택">이벤트 종류 선택</p>
+                                <ul class="checkbox_list checkbox_list_event list"></ul>
+                            </div>
+                        </dd>
+                    </dl>
                     <dl class="checkbox_set">
                         <dt>이벤트 등급</dt>
                         <dd>
@@ -28,33 +37,7 @@
 							</span>
                         </dd>
                     </dl>
-                    <dl class="date_set">
-                        <dt>발생 기간</dt>
-                        <dd><input type="text" id="startDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
-                        <span>부터</span>
-                        <dd><input type="text" id="endDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
-                        <span>까지</span>
-                    </dl>
-                </div>
-                <div>
-                    <dl class="selectbox_set">
-                        <dt>이벤트 종류</dt>
-                        <dd>
-                            <div class="dropdown_checkbox" data-selectbox-type="eventKind">
-                                <p class="checkbox_title checkbox_title_event select" data-placeholder="이벤트 종류 선택">이벤트 종류 선택</p>
-                                <ul class="checkbox_list checkbox_list_event list"></ul>
-                            </div>
-                        </dd>
-                    </dl>
-                    <dl class="selectbox_set">
-                        <dt>행정구역</dt>
-                        <dd>
-                            <div class="dropdown_checkbox" data-selectbox-type="district">
-                                <p class="checkbox_title checkbox_title_district select" data-placeholder="행정구역 선택">행정구역 선택</p>
-                                <ul class="checkbox_list checkbox_list_district list"></ul>
-                            </div>
-                        </dd>
-                    </dl>
+
                     <dl class="checkbox_set">
                         <dt>처리 상태</dt>
                         <dd>
@@ -71,6 +54,25 @@
 								<label for="staus03"><span></span>종료</label>
 							</span>
                         </dd>
+                    </dl>
+                </div>
+                <div>
+
+                    <dl class="selectbox_set">
+                        <dt>행정구역</dt>
+                        <dd>
+                            <div class="dropdown_checkbox" data-selectbox-type="district">
+                                <p class="checkbox_title checkbox_title_district select" data-placeholder="행정구역 선택">행정구역 선택</p>
+                                <ul class="checkbox_list checkbox_list_district list"></ul>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl class="date_set">
+                        <dt>발생 기간</dt>
+                        <dd><input type="text" id="startDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
+                        <span>부터</span>
+                        <dd><input type="text" id="endDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
+                        <span>까지</span>
                     </dl>
 
                     <dl class="search_text_set">

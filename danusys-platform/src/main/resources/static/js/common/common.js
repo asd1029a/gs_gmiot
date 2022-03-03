@@ -21,16 +21,16 @@ $.fn.extend({
             var curThis = this;
 
             if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
-                var arr = this.serializeArray();
+                const arr = this.serializeArray();
                 if (arr) {
-                    jQuery.each(arr, function() {
+                    $.each(arr, function() {
                         if (this.value !== "all"){
                             if (obj[this.name]){
                                 let val = stringFunc.changeXSSInputValue(this.value, 0);
                                 Array.isArray(obj[this.name])
                                     ? obj[this.name].push(val)
                                     : obj[this.name] = Array.of(obj[this.name], val);
-                            }else{
+                            } else {
                                 obj[this.name] = this.value;
                             }
                         }
@@ -39,6 +39,8 @@ $.fn.extend({
                 $.each( this[0], function (idx, element ) {
                     if(element.tagName=="SELECT" && $(element).attr("multiple")=="multiple") {
                         obj[$(element).attr("id")] = $(element).selectpicker("val");
+                    } else if($(element).prop('checked') === true) {
+                        obj[$(element).attr("name")] = $(element).data('value');
                     }
                 });
             }
@@ -422,11 +424,11 @@ var comm = {
 
         if(newOptionObj.excelDownload) {
             const html = ' <p class="button"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>';
-            $target.parents('.tableBody').siblings('.tableBottom').append(html);
+            $target.parents('.table_body').siblings('.table_bottom').append(html);
             const path = $target.attr('id').split('Table')[0];
             $('.excelDownloadBtn').on('click', (e) => {
                 let paramObj = {
-                    url : "/"+path+"/exportExcel.do"
+                    url : "/"+path+"/exportExcel"
                 }
                 comm.downloadExcelFile(paramObj);
             });

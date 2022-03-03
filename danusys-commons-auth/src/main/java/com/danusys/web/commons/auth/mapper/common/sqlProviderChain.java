@@ -1,4 +1,4 @@
-package com.danusys.web.platform.mapper.common;
+package com.danusys.web.commons.auth.mapper.common;
 
 import java.util.Map;
 

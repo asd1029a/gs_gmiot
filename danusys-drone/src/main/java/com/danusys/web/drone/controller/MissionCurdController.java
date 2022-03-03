@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -42,7 +43,6 @@ public class MissionCurdController {
         log.info("missionId={}", missionList);
         List<MissionDetails> missionDetailsList = new ArrayList<>();
         missionDetailsList = (List<MissionDetails>) missionList.get("missionList");
-
 
         int missionId = 0;
         missionId = Integer.parseInt(missionList.get("missionId").toString());
@@ -149,6 +149,7 @@ public class MissionCurdController {
 
 
     @PostMapping("/dronemissiondetails")
+    @Transactional
     public ResponseEntity<?> getListDroneMissionDetails() {
         List<Drone> droneList = droneSerivce.findAllDrone();
 

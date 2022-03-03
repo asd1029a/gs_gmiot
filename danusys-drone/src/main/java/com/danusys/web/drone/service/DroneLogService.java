@@ -1,5 +1,6 @@
 package com.danusys.web.drone.service;
 
+import com.danusys.web.drone.dto.response.DroneLogResponse;
 import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.repository.DroneLogRepository;
 import com.danusys.web.drone.utils.PagingUtil;
@@ -15,6 +16,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -24,7 +26,6 @@ public class DroneLogService {
     private final DroneLogRepository droneLogRepository;
 
     public DroneLog saveDroneLog(DroneLog droneLog) {
-
 
         return droneLogRepository.save(droneLog);
     }
@@ -44,8 +45,8 @@ public class DroneLogService {
         int searchType = 0; //1 -> all(db 조회 or )  0 ->  db조회 (and)
         String deviceName = "";
         String missionName = "";
-        Date beforeDate=Date.valueOf("2000-01-01");
-        Date afterDate=Date.valueOf("9999-12-31");
+        Date beforeDate = Date.valueOf("2000-01-01");
+        Date afterDate = Date.valueOf("9999-12-31");
         //Timestamp beforeDate = new Timestamp(Date.valueOf("2000-01-01").getTime());
         //Timestamp afterDate = new Timestamp(Date.valueOf("9999-12-31").getTime());
         boolean needAll = false;
@@ -81,22 +82,28 @@ public class DroneLogService {
         log.info("" + beforeDate + " " + afterDate);
         Page<DroneLog> droneLogPage = null;
         List<DroneLog> droneLogList = null;
-
+        List<DroneLogResponse> droneLogResponseList=null;
         if (length == 1) {
-            droneLogList = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
-                    beforeDate, afterDate, "%" + deviceName + "%", "%" + missionName + "%"
-            );
+            if (searchType == 0) {
+                droneLogList = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
+                        beforeDate, afterDate, "%" + deviceName + "%", "%" + missionName + "%"
+                );
+            } else if(searchType==1){
+                droneLogList = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrInsertDtBetweenAndMissionNameIgnoreCaseLike(
+                        beforeDate, afterDate, "%" + deviceName + "%", beforeDate, afterDate, "%" + deviceName + "%");
+            }
+            droneLogResponseList=droneLogList.stream().map(DroneLogResponse::new).collect(Collectors.toList());
         } else {
             if (searchType == 0) {
                 PageRequest pageRequest = PageRequest.of(start, length);
                 droneLogPage = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
-                        beforeDate, afterDate,   "%" + deviceName + "%", "%" + missionName + "%", pageRequest);
+                        beforeDate, afterDate, "%" + deviceName + "%", "%" + missionName + "%", pageRequest);
                 count = (int) droneLogPage.getTotalElements();
                 droneLogList = droneLogPage.toList();
             } else if (searchType == 1) {
                 PageRequest pageRequest = PageRequest.of(start, length);
-                droneLogPage = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrMissionNameIgnoreCaseLike(
-                        beforeDate, afterDate, "%" + deviceName + "%", "%" + deviceName + "%", pageRequest); //droneDevice로 or 검색함
+                droneLogPage = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrInsertDtBetweenAndMissionNameIgnoreCaseLike(
+                        beforeDate, afterDate, "%" + deviceName + "%", beforeDate, afterDate, "%" + deviceName + "%", pageRequest); //droneDevice로 or 검색함
                 count = (int) droneLogPage.getTotalElements();
                 droneLogList = droneLogPage.toList();
             }
@@ -110,7 +117,12 @@ public class DroneLogService {
         try {
 
             int lastPage = count / length + 1;
-            pagingMap.put("data", droneLogList); // 페이징 + 검색조건 결과
+            if(length==1){
+                pagingMap.put("data", droneLogResponseList); // 페이징 + 검색조건 결과
+            }else{
+                pagingMap.put("data", droneLogList); // 페이징 + 검색조건 결과
+            }
+
             pagingMap.put("count", count); // 검색조건이 반영된 총 카운트
             pagingMap.put("pages", lastPage);
             pagingMap.put("pageGroupCount", pageGroupCount);
