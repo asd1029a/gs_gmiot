@@ -7,10 +7,7 @@ import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.model.DroneInMission;
 import com.danusys.web.drone.model.Mission;
-import com.danusys.web.drone.repository.DroneDetailsRepository;
-import com.danusys.web.drone.repository.DroneRepository;
-import com.danusys.web.drone.repository.MissionDetailsRepository;
-import com.danusys.web.drone.repository.MissionRepository;
+import com.danusys.web.drone.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -37,6 +34,7 @@ public class MissionService {
     private final MissionDetailsRepository missionDetailsRepository;
     private final DroneDetailsRepository droneDetailsRepository;
     private final DroneRepository droneRepository;
+    private final DroneInMissionRepository droneInMissionRepository;
     private String returnType;
     private List<Mission> missionList = null;
 
@@ -203,7 +201,10 @@ public class MissionService {
 
         Long result = missionDetailsRepository.deleteByMission(mission);
         log.info("result={}", result);
+        droneInMissionRepository.deleteDroneInMission(mission.getId());
         missionRepository.deleteById(mission.getId());
+
+        //droneInMissionRepository.deleteByMission(mission);
         return "success";
     }
 

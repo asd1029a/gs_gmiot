@@ -23,7 +23,7 @@ public interface DroneLogRepository extends CrudRepository<DroneLog, Long> {
 
     Page<DroneLog> findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrInsertDtBetweenAndMissionNameIgnoreCaseLike(Date beforeDate, Date afterDate, String droneDeviceName, Date beforeDate2, Date afterDate2, String missionName, Pageable pageable);
 
-    List<DroneLog> findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(Date beforeDate, Date afterDate, String droneDeviceName, String missionName, Sort sort);
+    List<DroneLog> findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(Date beforeDate, Date afterDate, String droneDeviceName, String missionName,Sort sort);
 
-    List<DroneLog> findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrInsertDtBetweenAndMissionNameIgnoreCaseLike(Date beforeDate, Date afterDate, String droneDeviceName, Date beforeDate2, Date afterDate2, String missionName, Sort sort);
+    List<DroneLog> findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrInsertDtBetweenAndMissionNameIgnoreCaseLike(Date beforeDate, Date afterDate, String droneDeviceName, Date beforeDate2, Date afterDate2, String missionName,Sort sort);
 }
