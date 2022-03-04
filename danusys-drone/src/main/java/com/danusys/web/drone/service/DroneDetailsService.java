@@ -59,9 +59,9 @@ public class DroneDetailsService {
         if (updateDroneDetails == null) {
             return "fail";
         }
-        if (droneDetails.getLocation() != null) {
-            updateDroneDetails.setLocation(droneDetails.getLocation());
-        }
+//        if (droneDetails.getLocation() != null) {
+//            updateDroneDetails.setLocation(droneDetails.getLocation());
+//        }
 
         if (droneDetails.getMasterManager() != null) {
             updateDroneDetails.setMasterManager(droneDetails.getMasterManager());
@@ -152,9 +152,9 @@ public class DroneDetailsService {
         if (updateDroneDetails == null) {
             return "fail";
         }
-        if (droneDetails.getLocation() != null) {
-            updateDroneDetails.setLocation(droneDetails.getLocation());
-        }
+//        if (droneDetails.getLocation() != null) {
+//            updateDroneDetails.setLocation(droneDetails.getLocation());
+//        }
 
         if (droneDetails.getMasterManager() != null) {
             updateDroneDetails.setMasterManager(droneDetails.getMasterManager());

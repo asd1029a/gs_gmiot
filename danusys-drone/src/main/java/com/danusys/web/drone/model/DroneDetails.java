@@ -27,8 +27,8 @@ public class DroneDetails {
 //    private String status;
 
 
-    @Column(name="location")
-    private String location;
+//    @Column(name="location")
+//    private String location;
 
     private String size;
 

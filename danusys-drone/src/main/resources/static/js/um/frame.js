@@ -191,11 +191,11 @@ function getDroneDetails(id) {
                     $(".drone_manufacturer").val(droneDetails.manufacturer);
                     $(".drone_insert_dt").val(droneDetails.insertDt);
                     $(".drone_type").val(droneDetails.type);
-                    $(".drone_weight").val(droneDetails.weight + " kg");
-                    $(".drone_maximum_operating_distance").val(droneDetails.maximumOperatingDistance +" km");
+                    $(".drone_weight").val(droneDetails.weight );
+                    $(".drone_maximum_operating_distance").val(droneDetails.maximumOperatingDistance );
                     $(".drone_maximum_management_altitude").val(droneDetails.maximumManagementAltitude);
                     //$(".drone_operating_temperature_range").val("");
-                    $(".drone_maximum_operating_speed").val(droneDetails.maximumOperatingSpeed+" m/s");
+                    $(".drone_maximum_operating_speed").val(droneDetails.maximumOperatingSpeed);
                     $(".drone_sim_number").val(droneDetails.simNumber);
                     $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
                     $(".uploadName").val(droneDetails.thumbnailImg);

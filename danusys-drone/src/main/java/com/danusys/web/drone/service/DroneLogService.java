@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +51,7 @@ public class DroneLogService {
         //Timestamp beforeDate = new Timestamp(Date.valueOf("2000-01-01").getTime());
         //Timestamp afterDate = new Timestamp(Date.valueOf("9999-12-31").getTime());
         boolean needAll = false;
+        Sort sort = sortByInsertDt();
 
         if (paramMap.get("start") != null) {
             start = Integer.parseInt(paramMap.get("start").toString());
@@ -82,22 +84,22 @@ public class DroneLogService {
         log.info("" + beforeDate + " " + afterDate);
         Page<DroneLog> droneLogPage = null;
         List<DroneLog> droneLogList = null;
-        List<DroneLogResponse> droneLogResponseList=null;
+        List<DroneLogResponse> droneLogResponseList = null;
         if (length == 1) {
             if (searchType == 0) {
                 droneLogList = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
-                        beforeDate, afterDate, "%" + deviceName + "%", "%" + missionName + "%"
+                        beforeDate, afterDate, "%" + deviceName + "%", "%" + missionName + "%", sort
                 );
-            } else if(searchType==1){
+            } else if (searchType == 1) {
                 droneLogList = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrInsertDtBetweenAndMissionNameIgnoreCaseLike(
-                        beforeDate, afterDate, "%" + deviceName + "%", beforeDate, afterDate, "%" + deviceName + "%");
+                        beforeDate, afterDate, "%" + deviceName + "%", beforeDate, afterDate, "%" + deviceName + "%", sort);
             }
-            droneLogResponseList=droneLogList.stream().map(DroneLogResponse::new).collect(Collectors.toList());
+            droneLogResponseList = droneLogList.stream().map(DroneLogResponse::new).collect(Collectors.toList());
         } else {
             if (searchType == 0) {
-                PageRequest pageRequest = PageRequest.of(start, length);
+                PageRequest pageRequest = PageRequest.of(start, length,Sort.by(""));
                 droneLogPage = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
-                        beforeDate, afterDate, "%" + deviceName + "%", "%" + missionName + "%", pageRequest);
+                        beforeDate, afterDate, "%" + deviceName + "%", "%" + missionName + "%",  pageRequest);
                 count = (int) droneLogPage.getTotalElements();
                 droneLogList = droneLogPage.toList();
             } else if (searchType == 1) {
@@ -116,11 +118,11 @@ public class DroneLogService {
         Map<String, Object> pagingMap = new HashMap<>();
         try {
 
-          //  int lastPage = count / length + 1;
-            int lastPage =(int) Math.ceil(count*1.0/length);
-            if(length==1){
+            //  int lastPage = count / length + 1;
+            int lastPage = (int) Math.ceil(count * 1.0 / length);
+            if (length == 1) {
                 pagingMap.put("data", droneLogResponseList); // 페이징 + 검색조건 결과
-            }else{
+            } else {
                 pagingMap.put("data", droneLogList); // 페이징 + 검색조건 결과
             }
 
@@ -145,4 +147,9 @@ public class DroneLogService {
     }
 
     ;
+
+    private Sort sortByInsertDt() {
+        return Sort.by(Sort.Direction.DESC, "insertDt");
+    }
+
 }
