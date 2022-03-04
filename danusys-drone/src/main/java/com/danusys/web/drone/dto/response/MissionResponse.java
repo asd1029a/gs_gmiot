@@ -23,7 +23,7 @@ public class MissionResponse {
     private String name;
     private String UserId;
     private String updateDt;
-    private int droneId;
+ //   private int droneId;
     private int totalDistance;
     private int estimatedTime;
     
@@ -36,7 +36,7 @@ public class MissionResponse {
         this.id = mission.getId();
         this.name=mission.getName();
         this.UserId=mission.getUserId();
-        this.droneId= mission.getDrone().getId().intValue();
+  //      this.droneId= mission.getDroneInMission().getDrone().getId().intValue();
         this.updateDt=mission.getUpdateDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
         this.totalDistance=mission.getTotalDistance();
         this.estimatedTime=mission.getEstimatedTime();

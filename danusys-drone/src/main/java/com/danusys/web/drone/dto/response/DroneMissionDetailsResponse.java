@@ -29,7 +29,8 @@ public class DroneMissionDetailsResponse {
     public DroneMissionDetailsResponse(Drone drone){
         this.id = drone.getId();
         this.droneDeviceName=drone.getDroneDeviceName();
-        this.mission=new MissionDto(drone.getMission());
+        log.info("droneGet={}",drone.getId());
+        this.mission=new MissionDto(drone.getDroneInmission().getMission());
         this.droneBase=drone.getDroneBase().getBaseName();
         //this.missionDetailResponseList= mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 

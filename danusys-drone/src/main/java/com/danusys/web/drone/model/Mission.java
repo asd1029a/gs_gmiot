@@ -58,10 +58,14 @@ public class Mission {
     private final List<MissionDetails> missionDetails = new ArrayList<>();
 
 
-    @OneToOne
-    @JoinColumn(name = "drone_id")
-    @JsonBackReference
-    private Drone drone;
+//    @OneToOne
+//    @JoinColumn(name = "drone_id")
+//    @JsonBackReference
+//    private Drone drone;
+
+    @OneToMany(mappedBy = "mission")
+    @JsonIgnore
+    private final List<DroneInMission> droneInMission =new ArrayList<>();
 
 
 }

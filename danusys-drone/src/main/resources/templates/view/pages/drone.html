@@ -1,8 +1,8 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="utf-8">
-<title>레이아웃</title>
+    <meta charset="utf-8">
+    <title>레이아웃</title>
     <link rel="stylesheet" type="text/css" href="/css/um/drone.css">
     <link rel="stylesheet" type="text/css" href="/css/default/layout.css">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -15,7 +15,7 @@
 
 <body>
 <div class="wrap">
-<!--    헤더 영역 -->
+    <!--    헤더 영역 -->
 
     <div class="popup" style="display: none;">
         <div class="popupTitle"><span>미션명 등록</span></div>
@@ -40,13 +40,13 @@
     <header>
         <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>
         <ul class="gnm">
-<!--            <li><a>Home</a></li>-->
-<!--            <li><a th:href="/drone">대시보드</a></li>-->
-            <li class="on"><a href="/drone" >드론</a></li>
+            <!--            <li><a>Home</a></li>-->
+            <!--            <li><a th:href="/drone">대시보드</a></li>-->
+            <li class="on"><a href="/drone">드론</a></li>
             <li><a href="/mission">미션</a></li>
             <li><a href="/flying">비행</a></li>
             <li><a href="/log">로그</a></li>
-<!--            <li><a>설정</a></li>-->
+            <!--            <li><a>설정</a></li>-->
         </ul>
         <ul class="utmenu">
             <li><i><img src="images/um/utmenuUser.svg"></i></li>
@@ -86,77 +86,77 @@
                 </article>
                 <dl class="subTitle">
                     <dt>목록<span class="count_mission_list">59</span></dt>
-<!--                    <dd class="button add_drone" ">신규등록</dd>-->
+                    <!--                    <dd class="button add_drone" ">신규등록</dd>-->
                     <dd class="button " onclick="pageDrone.createMissionPopup()">신규등록</dd>
                 </dl>
                 <div class="listScroll">
                     <ul>
-<!--                        <li>-->
-<!--                            <dl>-->
-<!--                                <dt><span class="green">충전완료</span>DJI신림 5호</dt>-->
-<!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
-<!--                            </dl>-->
-<!--                            <p>ID : administrator01</p>-->
-<!--                            <p>2021-07-06 09:23:56</p>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <dl>-->
-<!--                                <dt><span class="gray">수리중</span>DJI신림 5호</dt>-->
-<!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
-<!--                            </dl>-->
-<!--                            <p>ID : administrator01</p>-->
-<!--                            <p>2021-07-06 09:23:56</p>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <dl>-->
-<!--                                <dt><span class="green">충전완료</span>DJI신림 5호</dt>-->
-<!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
+                        <!--                        <li>-->
+                        <!--                            <dl>-->
+                        <!--                                <dt><span class="green">충전완료</span>DJI신림 5호</dt>-->
+                        <!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
+                        <!--                            </dl>-->
+                        <!--                            <p>ID : administrator01</p>-->
+                        <!--                            <p>2021-07-06 09:23:56</p>-->
+                        <!--                        </li>-->
+                        <!--                        <li>-->
+                        <!--                            <dl>-->
+                        <!--                                <dt><span class="gray">수리중</span>DJI신림 5호</dt>-->
+                        <!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
+                        <!--                            </dl>-->
+                        <!--                            <p>ID : administrator01</p>-->
+                        <!--                            <p>2021-07-06 09:23:56</p>-->
+                        <!--                        </li>-->
+                        <!--                        <li>-->
+                        <!--                            <dl>-->
+                        <!--                                <dt><span class="green">충전완료</span>DJI신림 5호</dt>-->
+                        <!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
 
 
-<!--                            </dl>-->
-<!--                            <p>ID : administrator01</p>-->
-<!--                            <p>2021-07-06 09:23:56</p>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <dl>-->
-<!--                                <dt><span class="gray">수리중</span>DJI신림 5호</dt>-->
-<!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
-<!--                            </dl>-->
-<!--                            <p>ID : administrator01</p>-->
-<!--                            <p>2021-07-06 09:23:56</p>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <dl>-->
-<!--                                <dt><span class="yellow">충전중</span>DJI신림 5호</dt>-->
-<!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
-<!--                            </dl>-->
-<!--                            <p>ID : administrator01</p>-->
-<!--                            <p>2021-07-06 09:23:56</p>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <dl>-->
-<!--                                <dt><span class="gray">임시저장</span>DJI신림 5호</dt>-->
-<!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
-<!--                            </dl>-->
-<!--                            <p>ID : administrator01</p>-->
-<!--                            <p>2021-07-06 09:23:56</p>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <dl>-->
-<!--                                <dt><span class="yellow">충전중</span>DJI신림 5호</dt>-->
-<!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
-<!--                            </dl>-->
-<!--                            <p>ID : administrator01</p>-->
-<!--                            <p>2021-07-06 09:23:56</p>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <dl>-->
-<!--                                <dt><span class="green">충전완료</span>DJI신림 5호</dt>-->
-<!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
-<!--                            </dl>-->
-<!--                            <p>ID : administrator01</p>-->
-<!--                            <p>2021-07-06 09:23:56</p>-->
-<!--                        </li>-->
+                        <!--                            </dl>-->
+                        <!--                            <p>ID : administrator01</p>-->
+                        <!--                            <p>2021-07-06 09:23:56</p>-->
+                        <!--                        </li>-->
+                        <!--                        <li>-->
+                        <!--                            <dl>-->
+                        <!--                                <dt><span class="gray">수리중</span>DJI신림 5호</dt>-->
+                        <!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
+                        <!--                            </dl>-->
+                        <!--                            <p>ID : administrator01</p>-->
+                        <!--                            <p>2021-07-06 09:23:56</p>-->
+                        <!--                        </li>-->
+                        <!--                        <li>-->
+                        <!--                            <dl>-->
+                        <!--                                <dt><span class="yellow">충전중</span>DJI신림 5호</dt>-->
+                        <!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
+                        <!--                            </dl>-->
+                        <!--                            <p>ID : administrator01</p>-->
+                        <!--                            <p>2021-07-06 09:23:56</p>-->
+                        <!--                        </li>-->
+                        <!--                        <li>-->
+                        <!--                            <dl>-->
+                        <!--                                <dt><span class="gray">임시저장</span>DJI신림 5호</dt>-->
+                        <!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
+                        <!--                            </dl>-->
+                        <!--                            <p>ID : administrator01</p>-->
+                        <!--                            <p>2021-07-06 09:23:56</p>-->
+                        <!--                        </li>-->
+                        <!--                        <li>-->
+                        <!--                            <dl>-->
+                        <!--                                <dt><span class="yellow">충전중</span>DJI신림 5호</dt>-->
+                        <!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
+                        <!--                            </dl>-->
+                        <!--                            <p>ID : administrator01</p>-->
+                        <!--                            <p>2021-07-06 09:23:56</p>-->
+                        <!--                        </li>-->
+                        <!--                        <li>-->
+                        <!--                            <dl>-->
+                        <!--                                <dt><span class="green">충전완료</span>DJI신림 5호</dt>-->
+                        <!--                                <dd><i><img src="images/um/listMore.svg"></i></dd>-->
+                        <!--                            </dl>-->
+                        <!--                            <p>ID : administrator01</p>-->
+                        <!--                            <p>2021-07-06 09:23:56</p>-->
+                        <!--                        </li>-->
                     </ul>
                 </div>
             </section>
@@ -167,15 +167,15 @@
                 <dl>
                     <dt>
                         <select class="mission_list">
-               <!--             <option>신림면 11구역 정기 순찰</option>
-                            <option>신림면 12구역 정기 순찰</option>
-                            <option>신림면 13구역 정기 순찰</option>-->
+                            <!--             <option>신림면 11구역 정기 순찰</option>
+                                         <option>신림면 12구역 정기 순찰</option>
+                                         <option>신림면 13구역 정기 순찰</option>-->
                         </select>
                     </dt>
                     <dd>
                         <div class="fileBox">
                             <input class="uploadName" value="첨부파일" placeholder="첨부파일">
-                            <label class="upload_file"for="file">파일찾기</label>
+                            <label class="upload_file" for="file">파일찾기</label>
                             <input type="file" id="file">
                         </div>
                     </dd>
@@ -188,7 +188,7 @@
                 <div class="articleTitle">
                     <dl class="title">
                         <dt>조회 결과</dt>
-<!--                        <dd><span class="count">123</span>건</dd>-->
+                        <!--                        <dd><span class="count">123</span>건</dd>-->
                     </dl>
                     <ul class="button">
                         <li class="update_drone_detail_button">수정</li>
@@ -200,7 +200,7 @@
                     <dl>
                         <dt>위치</dt>
                         <dd>
-<!--                            <input type="text" placeholder="신림면 드론 기지 01" class="drone_location">-->
+                            <!--                            <input type="text" placeholder="신림면 드론 기지 01" class="drone_location">-->
                             <select class="location_select">
                                 <option>1</option>
                                 <option>2</option>
@@ -250,13 +250,13 @@
                     <dl>
                         <dt>크기</dt>
                         <dd>
-                            <input type="text" placeholder="000 mm"> X
-                            <input type="text" placeholder="000 mm"> X
-                            <input type="text" placeholder="000 mm">
+                            <input type="text" class="size1" placeholder="000 mm"> X
+                            <input type="text" class="size2" placeholder="000 mm"> X
+                            <input type="text" class="size3" placeholder="000 mm">
                         </dd>
                         <dt>최대 이륙 증량</dt>
                         <dd>
-                            <input type="text" placeholder="00 kg" class="">
+                            <input type="text" placeholder="00 kg" class=maximum_operating_weight>
                         </dd>
                     </dl>
                     <dl>
@@ -266,7 +266,7 @@
                         </dd>
                         <dt>비행 시간</dt>
                         <dd>
-                            <input type="text" placeholder="00 분 " >
+                            <input type="text" placeholder="00 분" class="flight_time" disabled >
                         </dd>
                     </dl>
                     <dl>
@@ -281,8 +281,10 @@
                     </dl>
                     <dl>
                         <dt>운용 온도 범위</dt>
-                        <dd><!--아직 작업안함-->
-                            <input type="text" placeholder="00 ℃ ~ 00 ℃" class="drone_operating_temperature_range">
+                        <dd>
+                            <input type="text" placeholder="00 ℃" class="drone_operating_temperature_min">
+                            ~
+                            <input type="text" placeholder="00 ℃" class="drone_operating_temperature_max">
                         </dd>
                         <dt>최대 운용 풍속</dt>
                         <dd>
@@ -300,83 +302,83 @@
                         </dd>
                     </dl>
                 </div>
-<!--                <p class="subTitle">이벤트 정보</p>-->
-<!--                <div class="eventInfo">-->
-<!--                    <ul>-->
-<!--                        <li>-->
-<!--                            <span>누적 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <span>### 이벤트</span>-->
-<!--                            <span class="count">000</span>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
+                <!--                <p class="subTitle">이벤트 정보</p>-->
+                <!--                <div class="eventInfo">-->
+                <!--                    <ul>-->
+                <!--                        <li>-->
+                <!--                            <span>누적 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                        <li>-->
+                <!--                            <span>### 이벤트</span>-->
+                <!--                            <span class="count">000</span>-->
+                <!--                        </li>-->
+                <!--                    </ul>-->
+                <!--                </div>-->
             </section>
         </div>
     </div>
@@ -384,85 +386,84 @@
 
 <script type="text/javascript">
 
-    $(function() {
-        $(".lnbToggle").on("click", function() {
+    $(function () {
+        $(".lnbToggle").on("click", function () {
             $(".lnb").toggleClass("toggle");
         })
-        $(".selectboxCheck_title").click(function(){
+        $(".selectboxCheck_title").click(function () {
             $(".selectCheckList").show();
         })
-        $('.lnb .tabButton li').click(function(){
+        $('.lnb .tabButton li').click(function () {
             $(this).addClass('on');
         });
-        $(".infoTitle i").click(function(){
+        $(".infoTitle i").click(function () {
             $(".infoArea").hide("2000");
         })
-        $(".routeSet .routeTitle").on("click", function() {
+        $(".routeSet .routeTitle").on("click", function () {
             $('.routeSet .routeToggle').slideToggle('slow');
         })
-        $(".camera .button").on("click", function() {
+        $(".camera .button").on("click", function () {
             $('.camera ul').slideToggle('slow');
         })
     })
 
 
-
-
-    $(function(){
+    $(function () {
         // 각각의 셀렉트 박스 인스턴스 생성
         var selectType01 = new CustomSelectBox('.selectBox.type01');
         var selectType01 = new CustomSelectBox('.selectBox.type02');
         var selectType01 = new CustomSelectBox('.selectBox.type03');
     });
 
-//    selectbox custom
-    function CustomSelectBox(selector){
+    //    selectbox custom
+    function CustomSelectBox(selector) {
         this.$selectBox = null,
-        this.$select = null,
-        this.$list = null,
-        this.$listLi = null;
-        CustomSelectBox.prototype.init = function(selector){
+            this.$select = null,
+            this.$list = null,
+            this.$listLi = null;
+        CustomSelectBox.prototype.init = function (selector) {
             this.$selectBox = $(selector);
             this.$select = this.$selectBox.find('.box .select');
             this.$list = this.$selectBox.find('.box .list');
             this.$listLi = this.$list.children('li');
         }
-        CustomSelectBox.prototype.initEvent = function(e){
+        CustomSelectBox.prototype.initEvent = function (e) {
             var that = this;
-            this.$select.on('click', function(e){
+            this.$select.on('click', function (e) {
                 that.listOn();
             });
-            this.$listLi.on('click', function(e){
+            this.$listLi.on('click', function (e) {
                 that.listSelect($(this));
             });
-            $(document).on('click', function(e){
+            $(document).on('click', function (e) {
                 that.listOff($(e.target));
             });
         }
-        CustomSelectBox.prototype.listOn = function(){
+        CustomSelectBox.prototype.listOn = function () {
             this.$selectBox.toggleClass('on');
-            if(this.$selectBox.hasClass('on')){
+            if (this.$selectBox.hasClass('on')) {
                 this.$list.css('display', 'block');
-            }else{
+            } else {
                 this.$list.css('display', 'none');
-            };
+            }
+            ;
         }
-        CustomSelectBox.prototype.listSelect = function($target){
+        CustomSelectBox.prototype.listSelect = function ($target) {
             $target.addClass('selected').siblings('li').removeClass('selected');
             this.$selectBox.removeClass('on');
             this.$select.text($target.text());
             this.$list.css('display', 'none');
         }
-        CustomSelectBox.prototype.listOff = function($target){
-            if(!$target.is(this.$select) && this.$selectBox.hasClass('on')){
+        CustomSelectBox.prototype.listOff = function ($target) {
+            if (!$target.is(this.$select) && this.$selectBox.hasClass('on')) {
                 this.$selectBox.removeClass('on');
                 this.$list.css('display', 'none');
-            };
+            }
+            ;
         }
         this.init(selector);
         this.initEvent();
     }
-
 
 
     // $("#file").on('change',function(){

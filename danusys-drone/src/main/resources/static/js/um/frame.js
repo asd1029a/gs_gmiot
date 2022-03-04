@@ -1,5 +1,3 @@
-let drone_total_count = 0;
-
 $(document).ready(function () {
 
     let param = {"droneDeviceName": ""}
@@ -9,6 +7,7 @@ $(document).ready(function () {
 });
 
 function loadDroneList(param) {
+    let drone_total_count = 0;
     let deviceName = $(".add_drone_device_name").val();
     let countMissionList = 0;
     $.ajax({
@@ -22,14 +21,16 @@ function loadDroneList(param) {
             let droneUserId = null;
             $(".listScroll ul").html("");
             $.each(resultData, function (i, item) {
-                drone_total_count = i;
 
+
+                console.log("i=", i);
                 if (item.userId != null)
                     droneUserId = item.userId;
                 else
                     droneUserId = "";
 
                 if (item.id !== 0) {
+                    drone_total_count++;
                     $(".listScroll ul").append(`
                         <li class="drone_info" data-drone-id="${item.id}">
                             <dl>
@@ -89,7 +90,7 @@ $(".update_drone_detail_button").on("click", function () {
         "droneId": $(".drone_id").val(),
         "droneDetails": {
             "location": $(".drone_location").val(),
-            "status": $(".drone_status").val(),
+            "status": "대기중",
             "masterManager": $(".drone_master_manager").val(),
             "subManager": $(".drone_sub_manager").val(),
             "manufacturer": $(".drone_manufacturer").val(),
@@ -99,9 +100,18 @@ $(".update_drone_detail_button").on("click", function () {
             "maximumManagementAltitude": $(".drone_maximum_management_altitude").val(),
             "maximumOperatingSpeed": $(".drone_maximum_operating_speed").val(),
             "simNumber": $(".drone_sim_number").val(),
-            "maximumSpeed": $(".drone_maximum_speed").val()
+            "maximumSpeed": $(".drone_maximum_speed").val(),
+            "size1": $(".size1").val(),
+            "size2": $(".size2").val(),
+            "size3": $(".size3").val(),
+            "maximumOperatingWeight": $(".maximum_operating_weight").val(),
+            "operationTemperatureRangeMin": $(".drone_operating_temperature_min").val(),
+            "operationTemperatureRangeMax": $(".drone_operating_temperature_max").val(),
+
+
         },
-        "droneBase": $(".location_select option:selected").data("id")
+        "droneBase": $(".location_select option:selected").data("id"),
+        "droneMission": $(".mission_list option:selected").data("id")
     }
     $.ajax({
         contentType: "application/json; charset=utf-8",
@@ -139,9 +149,9 @@ function getDroneDetails(id) {
                 success: function (result) {
                     console.log(result);
                     //   console.log("result",$(`.mission_list option[data-id='${result.mission.id}']`)[0]);
-                    console.log("resultMissionId", result.mission);
-                    if (result.mission !== null)
-                        document.querySelectorAll(`.mission_list option[data-id='${result.mission.id}']`)[0].selected = true;
+                  //  console.log("resultMissionId", result.droneInmission.mission);
+                    if (result.droneInmission !== null)
+                        document.querySelectorAll(`.mission_list option[data-id='${result.droneInmission.mission.id}']`)[0].selected = true;
                     document.querySelectorAll(`.location_select option[data-id='${result.droneBase.id}']`)[0].selected = true;
                     let droneDetails = result.droneDetails;
                     $(".drone_status").val(droneDetails.status);
@@ -161,6 +171,13 @@ function getDroneDetails(id) {
                     $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
                     $(".uploadName").val(droneDetails.thumbnailImg);
                     $(".picture img").attr("src", "/file/image/" + droneDetails.thumbnailImg);
+
+                    $(".size1").val(droneDetails.size1);
+                    $(".size2").val(droneDetails.size2);
+                    $(".size3").val(droneDetails.size3);
+                    $(".maximum_operating_weight").val(droneDetails.maximumOperatingWeight);
+                    $(".drone_operating_temperature_min").val(droneDetails.operationTemperatureRangeMin);
+                    $(".drone_operating_temperature_max").val(droneDetails.operationTemperatureRangeMax);
 
                 }
             });
@@ -313,7 +330,8 @@ const pageDrone = {
 //        let deviceName = $(".add_drone_device_name").val();
         let param = {
             "droneDeviceName": name,
-            "userId": userId
+            "userId": userId,
+
         };
         let flag = false;
 
@@ -346,10 +364,24 @@ const pageDrone = {
 
 $(".add_drone_device_name").on("input", function () {
     console.log($("input:radio[name=drone]:checked").val());
+
+    let checkedRadioName = $("input:radio[name=drone]:checked").val();
+    let param = {};
+    if (checkedRadioName === "droneName") {
+        param = {
+            "droneDeviceName": $(".add_drone_device_name").val()
+        }
+        loadDroneList(param);
+    } else if (checkedRadioName == "id") {
+        param = {
+            "userId": $(".add_drone_device_name").val()
+        }
+        loadDroneList(param);
+
+    }
+
+
 })
-
-
-
 
 
 

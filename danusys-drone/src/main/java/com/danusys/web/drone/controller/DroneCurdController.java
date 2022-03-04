@@ -3,6 +3,7 @@ package com.danusys.web.drone.controller;
 
 import com.danusys.web.drone.dto.request.DroneDetailRequest;
 import com.danusys.web.drone.model.Drone;
+import com.danusys.web.drone.model.DroneBase;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.service.DroneDetailsService;
 import com.danusys.web.drone.service.DroneService;
@@ -44,7 +45,9 @@ public class  DroneCurdController {
                     .status(HttpStatus.CREATED)
                     .body(returnResult);
         }
-
+        DroneBase droneBase=new DroneBase();
+        droneBase.setId(1l);
+        drone.setDroneBase(droneBase);
 
         droneService.saveDrone(drone);
         DroneDetails saveDroneDetails = droneDetailsService.saveDroneDetails(droneDetails, drone.getId());
@@ -97,9 +100,13 @@ public class  DroneCurdController {
             long droneBaseId = droneDetailRequest.getDroneBase();
             log.info("droneBaseId={}",droneBaseId);
 
+
+
+            long droneMissionId =droneDetailRequest.getDroneMission();
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId,droneBaseId));
+                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId,droneBaseId,droneMissionId));
 
     }
 

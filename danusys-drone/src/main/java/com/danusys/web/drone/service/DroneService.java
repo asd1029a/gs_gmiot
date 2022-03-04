@@ -75,9 +75,9 @@ public class DroneService {
 
         List<Drone> droneList = null;
         Sort sort = sortByupdateDt();
-        if (drone.getId() != null) {
+        if (drone.getUserId() != null) {
             log.info("id로검색");
-            droneList = droneRepository.findAllById(drone.getId());
+            droneList = droneRepository.findAllByUserIdLike("%"+drone.getUserId()+"%",sort);
 
         } else if (drone.getDroneDeviceName()!=null) {
             log.info("devicename으로검색");
