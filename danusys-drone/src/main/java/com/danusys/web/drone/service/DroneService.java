@@ -6,6 +6,7 @@ import com.danusys.web.drone.dto.response.DroneMissionDetailsResponse;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.repository.DroneDetailsRepository;
+import com.danusys.web.drone.repository.DroneInMissionRepository;
 import com.danusys.web.drone.repository.DroneRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class DroneService {
 
     private final DroneRepository droneRepository;
     private final DroneDetailsRepository droneDetailsRepository;
-
+    private final DroneInMissionRepository droneInMissionRepository;
 
     @Transactional
     public String updateDrone(Drone drone) {
@@ -64,8 +65,11 @@ public class DroneService {
         if (droneDetails == null) {
             return "fail";
         }
+
+
         droneDetailsRepository.deleteByDrone(drone);
         droneRepository.deleteById(drone.getId());
+        droneInMissionRepository.deleteDroneInMissionbySeq(drone.getId());
 
         return "success";
     }

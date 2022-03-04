@@ -12,12 +12,17 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Map;
 
-public interface DroneInMissionRepository extends CrudRepository<DroneInMission,Long> {
+public interface DroneInMissionRepository extends CrudRepository<DroneInMission, Long> {
 
     long deleteByDrone(Drone drone);
+
     DroneInMission findByDrone(Drone drone);
 
     @Modifying
-    @Query(value="delete from drone_in_mission  where mission_seq=:case_1", nativeQuery = true)
-            void deleteDroneInMission(@Param("case_1") long mission_seq);
+    @Query(value = "delete from drone_in_mission  where mission_seq=:case_1", nativeQuery = true)
+    void deleteDroneInMission(@Param("case_1") long mission_seq);
+
+    @Modifying
+    @Query(value = "delete from drone_in_mission  where drone_seq=:case_1", nativeQuery = true)
+    void deleteDroneInMissionbySeq(@Param("case_1") long drone_seq);
 }
