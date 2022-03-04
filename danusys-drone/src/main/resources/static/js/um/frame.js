@@ -295,8 +295,9 @@ function readImage(input) {
 }
 
 $("#file").on("change", function (e) {
+
     readImage(e.target);
-    console.log("바뀜");
+
 
 
 });
