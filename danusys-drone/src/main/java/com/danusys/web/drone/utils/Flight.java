@@ -725,7 +725,7 @@ public class Flight {
             waypointTimer.cancel();
             waypointTimerTask.cancel();
 
-            gps.setStatus(2); //0 종료 1 비행 2 일시정지
+            gps.setMissionType("end");
             simpMessagingTemplate.convertAndSend("/topic/waypoint", gson.toJson(gps));
             System.out.println("wayPoint");
 
@@ -821,7 +821,6 @@ public class Flight {
 
                     } else if (statustextMavlinkMessage.getPayload().text().equals("Disarming motors")) {
                         isEnd = true;
-
                         break;
                     }
                     if (missionText.equals("Paused mission")) {

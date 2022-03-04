@@ -18,18 +18,19 @@ public class MissionDetailResponse {
     private double yaw;
     private int radius;
     private String koName;
-    public MissionDetailResponse(MissionDetails missionDetails){
+
+    public MissionDetailResponse(MissionDetails missionDetails) {
         this.id = missionDetails.getId();
-        this.name= missionDetails.getName() ;
-        this.index= missionDetails.getIndex();
-        this.mapX= missionDetails.getGpsX();
-        this.mapY= missionDetails.getGpsY();
-        this.mapZ= missionDetails.getAlt();
-        this.speed=missionDetails.getSpeed();
-        this.time= missionDetails.getTime();
-        this.yaw=missionDetails.getYaw();
-        this.radius=missionDetails.getRadius();
-        this.koName=missionDetails.getKoName();
+        this.name = missionDetails.getName();
+        this.index = missionDetails.getIndex();
+        this.mapX = missionDetails.getGpsX();
+        this.mapY = missionDetails.getGpsY();
+        this.mapZ = missionDetails.getAlt();
+        this.speed = missionDetails.getSpeed();
+        this.time = missionDetails.getTime();
+        this.yaw = missionDetails.getYaw();
+        this.radius = missionDetails.getRadius();
+        this.koName = missionDetails.getKoName();
 
     }
 }
