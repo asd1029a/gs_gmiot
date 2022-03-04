@@ -99,6 +99,8 @@ public class MissionDetailsService {
                     r.setKoName("귀환");
                 else if(r.getName().equals("waypoint"))
                     r.setKoName("경유지");
+                else if(r.getName().equals("roi"))
+                    r.setKoName("관심영역");
                 missionDetailsRepository.save(r);
             });
             return "success";

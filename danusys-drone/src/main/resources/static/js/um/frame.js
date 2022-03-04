@@ -17,13 +17,13 @@ function loadDroneList(param) {
         data: JSON.stringify(param),
         async: false,
         success: function (resultData) {
-            console.log(resultData);
+            //   console.log(resultData);
             let droneUserId = null;
             $(".listScroll ul").html("");
             $.each(resultData, function (i, item) {
 
 
-                console.log("i=", i);
+                //     console.log("i=", i);
                 if (item.userId != null)
                     droneUserId = item.userId;
                 else
@@ -34,7 +34,7 @@ function loadDroneList(param) {
                     $(".listScroll ul").append(`
                         <li class="drone_info" data-drone-id="${item.id}">
                             <dl>
-                                <dt><span class="green">${item.droneDetails.status}</span>${item.droneDeviceName}</dt>
+                                <dt><span class="green">${item.status}</span>${item.droneDeviceName}</dt>
                                 <dd><i><img src="images/um/listMore.svg"></i></dd>
                             </dl>
                             <p>ID : ${droneUserId}</p>
@@ -45,11 +45,12 @@ function loadDroneList(param) {
             });
             $('.drone_info').on('click', function (e) {
                 let id = $(e.currentTarget).data("droneId");
-                console.log(id);
+                //     console.log(id);
+                $("#file").val("");
                 getDroneDetails(id);
             });
 
-            console.log(drone_total_count);
+            //   console.log(drone_total_count);
             $(".count_mission_list").text(drone_total_count);
         }
     });
@@ -85,12 +86,11 @@ $(".add_drone").on("click", function () {
 });
 
 $(".update_drone_detail_button").on("click", function () {
-    console.log($(".location_select option:selected").data("id"));
+    // console.log($(".location_select option:selected").data("id"));
     let param = {
         "droneId": $(".drone_id").val(),
         "droneDetails": {
             "location": $(".drone_location").val(),
-            "status": "대기중",
             "masterManager": $(".drone_master_manager").val(),
             "subManager": $(".drone_sub_manager").val(),
             "manufacturer": $(".drone_manufacturer").val(),
@@ -110,6 +110,7 @@ $(".update_drone_detail_button").on("click", function () {
 
 
         },
+        "droneStatus": "대기중",
         "droneBase": $(".location_select option:selected").data("id"),
         "droneMission": $(".mission_list option:selected").data("id")
     }
@@ -117,11 +118,39 @@ $(".update_drone_detail_button").on("click", function () {
         contentType: "application/json; charset=utf-8",
         url: "/drone/api/dronedetails",
         type: "PATCH",
+        async: false,
         data: JSON.stringify(param),
         success: function (resultData) {
-            console.log(resultData);
+            //    console.log(resultData);
         }
     });
+
+    let formData = new FormData();
+    formData.append('uploadFile', $('#file')[0].files[0]);
+    //imgCheck($('#file')[0].files[0]);
+    let droneId = 0;
+    if ($(".drone_id").val() != "")
+        droneId = $(".drone_id").val();
+    console.log("droneId=", droneId);
+    formData.append("droneId", droneId);
+    console.log(formData);
+    // let param={"uploadFile":formData,
+    //             "sPath":"d:\\te3/123/q",
+    //             "folderPath":"123123123"}
+
+    $.ajax({
+        url: "/file/upload/drone",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        enctype: "multipart/form-data",
+        success: function (resultData) {
+            //   console.log("resultData", resultData);
+            $(".uploadName").val(resultData);
+
+        }
+    })
 
 
 });
@@ -135,10 +164,10 @@ function getDroneDetails(id) {
         data: JSON.stringify({}),
         async: false,
         success: function (resultData) {
-            console.log(resultData);
+            //   console.log(resultData);
             $(".location_select").html(``);
             $.each(resultData, function (i, item) {
-                console.log("item", item.baseName);
+                //   console.log("item", item.baseName);
                 $(".location_select").append(`<option data-id="${item.id}">${item.baseName}</option>`);
             })
             $.ajax({
@@ -147,14 +176,14 @@ function getDroneDetails(id) {
                 type: "GET",
                 async: false,
                 success: function (result) {
-                    console.log(result);
+                    //     console.log(result);
                     //   console.log("result",$(`.mission_list option[data-id='${result.mission.id}']`)[0]);
-                  //  console.log("resultMissionId", result.droneInmission.mission);
+                    //  console.log("resultMissionId", result.droneInmission.mission);
                     if (result.droneInmission !== null)
                         document.querySelectorAll(`.mission_list option[data-id='${result.droneInmission.mission.id}']`)[0].selected = true;
                     document.querySelectorAll(`.location_select option[data-id='${result.droneBase.id}']`)[0].selected = true;
                     let droneDetails = result.droneDetails;
-                    $(".drone_status").val(droneDetails.status);
+                    $(".drone_status").val(result.status);
                     $(".drone_master_manager").val(droneDetails.masterManager);
                     $(".drone_id").val(result.id);
                     $(".drone_sub_manager").val(droneDetails.subManager);
@@ -162,11 +191,11 @@ function getDroneDetails(id) {
                     $(".drone_manufacturer").val(droneDetails.manufacturer);
                     $(".drone_insert_dt").val(droneDetails.insertDt);
                     $(".drone_type").val(droneDetails.type);
-                    $(".drone_weight").val(droneDetails.weight);
-                    $(".drone_maximum_operating_distance").val(droneDetails.maximumOperatingDistance);
+                    $(".drone_weight").val(droneDetails.weight + " kg");
+                    $(".drone_maximum_operating_distance").val(droneDetails.maximumOperatingDistance +" km");
                     $(".drone_maximum_management_altitude").val(droneDetails.maximumManagementAltitude);
                     //$(".drone_operating_temperature_range").val("");
-                    $(".drone_maximum_operating_speed").val(droneDetails.maximumOperatingSpeed);
+                    $(".drone_maximum_operating_speed").val(droneDetails.maximumOperatingSpeed+" m/s");
                     $(".drone_sim_number").val(droneDetails.simNumber);
                     $(".drone_maximum_speed").val(droneDetails.maximumSpeed);
                     $(".uploadName").val(droneDetails.thumbnailImg);
@@ -189,7 +218,7 @@ function getDroneDetails(id) {
 }
 
 $(".delete_drone_detail_button").on("click", function () {
-    console.log($(".drone_id").val());
+    //   console.log($(".drone_id").val());
     let param = {"id": $(".drone_id").val()};
 
     $.ajax({
@@ -199,7 +228,7 @@ $(".delete_drone_detail_button").on("click", function () {
         async: false,
         data: JSON.stringify(param),
         success: function (resultData) {
-            console.log(resultData);
+            //    console.log(resultData);
             if (resultData === "success") {
                 $(".drone_location").val("");
                 $(".drone_status").val("");
@@ -236,7 +265,7 @@ function getListMission() {
         type: "POST",
         data: JSON.stringify(param),
         success: function (resultData) {
-            console.log(resultData);
+            //  console.log(resultData);
             $(".droneFrameLeft dl dt select").html("");
             $.each(resultData, function (i, item) {
                 $(".droneFrameLeft dl dt select").append(`
@@ -248,35 +277,26 @@ function getListMission() {
     });
 }
 
-
-$("#file").on("change", function () {
-
-    let formData = new FormData();
-    formData.append('uploadFile', $('#file')[0].files[0]);
-    //imgCheck($('#file')[0].files[0]);
-    let droneId = 0;
-    if ($(".drone_id").val() != "")
-        droneId = $(".drone_id").val();
-    console.log("droneId=", droneId);
-    formData.append("droneId", droneId);
-    console.log(formData);
-    // let param={"uploadFile":formData,
-    //             "sPath":"d:\\te3/123/q",
-    //             "folderPath":"123123123"}
-
-    $.ajax({
-        url: "/file/upload/drone",
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        enctype: "multipart/form-data",
-        success: function (resultData) {
-            console.log("resultData", resultData);
-            $(".uploadName").val(resultData);
-
+//
+function readImage(input) {
+    // 인풋 태그에 파일이 있는 경우
+    if (input.files && input.files[0]) {
+        // 이미지 파일인지 검사 (생략)
+        // FileReader 인스턴스 생성
+        const reader = new FileReader()
+        // 이미지가 로드가 된 경우
+        reader.onload = e => {
+            const previewImage = document.getElementById("preview-image")
+            previewImage.src = e.target.result
         }
-    })
+        // reader가 이미지 읽도록 하기
+        reader.readAsDataURL(input.files[0])
+    }
+}
+
+$("#file").on("change", function (e) {
+    readImage(e.target);
+    console.log("바뀜");
 
 
 });
@@ -363,18 +383,21 @@ const pageDrone = {
 }
 
 $(".add_drone_device_name").on("input", function () {
-    console.log($("input:radio[name=drone]:checked").val());
+    // console.log($("input:radio[name=drone]:checked").val());
+    let checkedComboBoxName = $(".selectBox .box .list .selected").data("id");
 
     let checkedRadioName = $("input:radio[name=drone]:checked").val();
     let param = {};
     if (checkedRadioName === "droneName") {
         param = {
-            "droneDeviceName": $(".add_drone_device_name").val()
+            "droneDeviceName": $(".add_drone_device_name").val(),
+            "droneStatus": checkedComboBoxName
         }
         loadDroneList(param);
     } else if (checkedRadioName == "id") {
         param = {
-            "userId": $(".add_drone_device_name").val()
+            "userId": $(".add_drone_device_name").val(),
+            "droneStatus": checkedComboBoxName
         }
         loadDroneList(param);
 

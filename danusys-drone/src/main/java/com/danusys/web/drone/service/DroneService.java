@@ -1,6 +1,7 @@
 package com.danusys.web.drone.service;
 
 
+import com.danusys.web.drone.dto.request.DroneRequest;
 import com.danusys.web.drone.dto.response.DroneMissionDetailsResponse;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneDetails;
@@ -32,14 +33,14 @@ public class DroneService {
     public String updateDrone(Drone drone) {
 
         Optional optionalDrone = droneRepository.findById(drone.getId());
-        if(!optionalDrone.isPresent()){
+        if (!optionalDrone.isPresent()) {
             return "fail";
         }
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Drone updateDrone = (Drone) optionalDrone.get();
 
-        if(drone.getDroneDeviceName()!=null)
-        updateDrone.setDroneDeviceName(drone.getDroneDeviceName());
+        if (drone.getDroneDeviceName() != null)
+            updateDrone.setDroneDeviceName(drone.getDroneDeviceName());
         updateDrone.setUserId(drone.getUserId());
 
         updateDrone.setUpdateDt(timestamp);
@@ -47,8 +48,6 @@ public class DroneService {
         return "success";
 
     }
-
-
 
 
     @Transactional
@@ -62,7 +61,7 @@ public class DroneService {
     @Transactional
     public String deleteDrone(Drone drone) {
         DroneDetails droneDetails = droneDetailsRepository.findByDrone(drone);
-        if(droneDetails==null) {
+        if (droneDetails == null) {
             return "fail";
         }
         droneDetailsRepository.deleteByDrone(drone);
@@ -71,50 +70,73 @@ public class DroneService {
         return "success";
     }
 
-    public List<Drone> findDroneList(Drone drone) {
+    public List<Drone> findDroneList(DroneRequest droneRequest) {
 
         List<Drone> droneList = null;
         Sort sort = sortByupdateDt();
-        if (drone.getUserId() != null) {
-            log.info("id로검색");
-            droneList = droneRepository.findAllByUserIdLike("%"+drone.getUserId()+"%",sort);
+        DroneDetails droneDetails = new DroneDetails();
+        String droneStatus = null;
+        if (droneRequest.getDroneStatus() != null) {
+            if (droneRequest.getDroneStatus().equals("all")) {
+                droneStatus = "대기중";
+            } else if (droneRequest.getDroneStatus().equals("wait")) {
+                droneStatus = "대기중";
+            } else if (droneRequest.getDroneStatus().equals("run")) {
+                droneStatus = "운영중";
+            }
+            if (droneRequest.getUserId() != null) {
+                log.info("id로검색");
+                droneList = droneRepository.findAllByUserIdLikeAndStatus("%" + droneRequest.getUserId() + "%", droneStatus, sort);
 
-        } else if (drone.getDroneDeviceName()!=null) {
-            log.info("devicename으로검색");
-            droneList = droneRepository.findAllByDroneDeviceNameLike("%"+drone.getDroneDeviceName()+"%",sort);
+            } else if (droneRequest.getDroneDeviceName() != null) {
+                log.info("devicename으로검색");
+                droneList = droneRepository.findAllByDroneDeviceNameLikeAndStatus("%" + droneRequest.getDroneDeviceName() + "%",
+                        droneStatus, sort);
+            }
+
+        } else {
+            if (droneRequest.getUserId() != null) {
+                log.info("id로검색");
+                droneList = droneRepository.findAllByUserIdLike("%" + droneRequest.getUserId() + "%", sort);
+
+            } else if (droneRequest.getDroneDeviceName() != null) {
+                log.info("devicename으로검색");
+                droneList = droneRepository.findAllByDroneDeviceNameLike("%" + droneRequest.getDroneDeviceName() + "%", sort);
+            }
         }
+
+
+        log.info("droneStatus={}", droneStatus);
+
 
         return droneList;
     }
+
     private Sort sortByupdateDt() {
         return Sort.by(Sort.Direction.DESC, "updateDt");
     }
 
 
     public Drone findDrone(Drone drone) {
-        log.info("droneName={}",drone.getDroneDeviceName());
-        if(drone.getDroneDeviceName()!=null){
+        log.info("droneName={}", drone.getDroneDeviceName());
+        if (drone.getDroneDeviceName() != null) {
             return droneRepository.findByDroneDeviceName(drone.getDroneDeviceName());
-        }else{
+        } else {
             return null;
         }
-
-
-
     }
 
-    public Drone findOneDrone(long droneId){
-        Optional<Drone> optionalDrone=droneRepository.findById(droneId);
-        if(!optionalDrone.isPresent())
+    public Drone findOneDrone(long droneId) {
+        Optional<Drone> optionalDrone = droneRepository.findById(droneId);
+        if (!optionalDrone.isPresent())
             return null;
-        return  optionalDrone.get();
+        return optionalDrone.get();
     }
 
-    public List<Drone> findAllDrone(){
+    public List<Drone> findAllDrone() {
 
         return droneRepository.findAllByIdNot(0l);
     }
-
 
 
 }

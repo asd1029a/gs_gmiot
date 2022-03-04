@@ -116,7 +116,8 @@ public class DroneLogService {
         Map<String, Object> pagingMap = new HashMap<>();
         try {
 
-            int lastPage = count / length + 1;
+          //  int lastPage = count / length + 1;
+            int lastPage =(int) Math.ceil(count*1.0/length);
             if(length==1){
                 pagingMap.put("data", droneLogResponseList); // 페이징 + 검색조건 결과
             }else{

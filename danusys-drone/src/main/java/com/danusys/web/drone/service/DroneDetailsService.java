@@ -62,9 +62,7 @@ public class DroneDetailsService {
         if (droneDetails.getLocation() != null) {
             updateDroneDetails.setLocation(droneDetails.getLocation());
         }
-        if (droneDetails.getStatus() != null) {
-            updateDroneDetails.setStatus(droneDetails.getStatus());
-        }
+
         if (droneDetails.getMasterManager() != null) {
             updateDroneDetails.setMasterManager(droneDetails.getMasterManager());
         }
@@ -107,7 +105,7 @@ public class DroneDetailsService {
     }
 
     @Transactional
-    public String updateDroneDetails(DroneDetails droneDetails, Long droneId, Long droneBaseId, Long droneMissionId) {
+    public String updateDroneDetails(DroneDetails droneDetails, Long droneId, Long droneBaseId, Long droneMissionId, String droneStatus) {
 
 
         //drone
@@ -126,6 +124,7 @@ public class DroneDetailsService {
         else
             droneBase = optionalDroneBase.get();
         updateDrone.setDroneBase(droneBase);
+        updateDrone.setStatus(droneStatus);
 
         //mission
         Optional<Mission> optionalMission = missionRepository.findById(droneMissionId);
@@ -134,11 +133,11 @@ public class DroneDetailsService {
             return null;
         else {
             mission = optionalMission.get();
-            DroneInMission droneInMission=new DroneInMission();
+            DroneInMission droneInMission = new DroneInMission();
             droneInMission.setDrone(updateDrone);
             droneInMission.setMission(mission);
-         //   log.info("drone={}",droneInMissionRepository.findByDroneAndMission(updateDrone,mission));
-            if(droneInMissionRepository.findByDrone(updateDrone)!=null) {
+            //   log.info("drone={}",droneInMissionRepository.findByDroneAndMission(updateDrone,mission));
+            if (droneInMissionRepository.findByDrone(updateDrone) != null) {
                 droneInMissionRepository.deleteByDrone(updateDrone);
             }
 
@@ -156,9 +155,7 @@ public class DroneDetailsService {
         if (droneDetails.getLocation() != null) {
             updateDroneDetails.setLocation(droneDetails.getLocation());
         }
-        if (droneDetails.getStatus() != null) {
-            updateDroneDetails.setStatus(droneDetails.getStatus());
-        }
+
         if (droneDetails.getMasterManager() != null) {
             updateDroneDetails.setMasterManager(droneDetails.getMasterManager());
         }
@@ -195,26 +192,24 @@ public class DroneDetailsService {
         if (droneDetails.getThumbnailImg() != null) {
             updateDroneDetails.setThumbnailImg(droneDetails.getThumbnailImg());
         }
-        if (droneDetails.getSize1() !=0){
+        if (droneDetails.getSize1() != 0) {
             updateDroneDetails.setSize1(droneDetails.getSize1());
         }
-        if (droneDetails.getSize2() !=0){
+        if (droneDetails.getSize2() != 0) {
             updateDroneDetails.setSize2(droneDetails.getSize2());
         }
-        if (droneDetails.getSize3() !=0){
+        if (droneDetails.getSize3() != 0) {
             updateDroneDetails.setSize3(droneDetails.getSize3());
         }
-        if( droneDetails.getOperationTemperatureRangeMin()!=0f){
+        if (droneDetails.getOperationTemperatureRangeMin() != 0f) {
             updateDroneDetails.setOperationTemperatureRangeMin(droneDetails.getOperationTemperatureRangeMin());
         }
-        if( droneDetails.getOperationTemperatureRangeMax()!=0f){
+        if (droneDetails.getOperationTemperatureRangeMax() != 0f) {
             updateDroneDetails.setOperationTemperatureRangeMax(droneDetails.getOperationTemperatureRangeMax());
-        } if( droneDetails.getMaximumOperatingWeight()!=0){
+        }
+        if (droneDetails.getMaximumOperatingWeight() != 0) {
             updateDroneDetails.setMaximumOperatingWeight(droneDetails.getMaximumOperatingWeight());
         }
-
-
-
 
 
         if (updateDroneDetails.getInsertDt() == null) {

@@ -24,7 +24,7 @@ public class DroneDetails {
     private Long id;
 
 
-    private String status;
+//    private String status;
 
 
     @Column(name="location")

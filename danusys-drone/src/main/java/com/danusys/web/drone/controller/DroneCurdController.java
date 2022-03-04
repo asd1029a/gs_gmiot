@@ -2,6 +2,7 @@ package com.danusys.web.drone.controller;
 
 
 import com.danusys.web.drone.dto.request.DroneDetailRequest;
+import com.danusys.web.drone.dto.request.DroneRequest;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneBase;
 import com.danusys.web.drone.model.DroneDetails;
@@ -37,7 +38,7 @@ public class  DroneCurdController {
     public ResponseEntity<?> saveDrone(@RequestBody Drone drone) {
         String returnResult = null;
         DroneDetails droneDetails = new DroneDetails();
-        droneDetails.setStatus("임시저장");
+//        droneDetails.setStatus("임시저장");
         Drone findDrone = droneService.findDrone(drone);
         if (findDrone != null) {
             returnResult = "fail";
@@ -48,6 +49,7 @@ public class  DroneCurdController {
         DroneBase droneBase=new DroneBase();
         droneBase.setId(1l);
         drone.setDroneBase(droneBase);
+        drone.setStatus("임시저장");
 
         droneService.saveDrone(drone);
         DroneDetails saveDroneDetails = droneDetailsService.saveDroneDetails(droneDetails, drone.getId());
@@ -83,13 +85,15 @@ public class  DroneCurdController {
 
 
     @PostMapping("/drone")
-    public ResponseEntity<?> findAllDrone(@RequestBody Drone drone) {
+    public ResponseEntity<?> findAllDrone(@RequestBody DroneRequest droneRequest) {
+
 
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(droneService.findDroneList(drone));
+                .body(droneService.findDroneList(droneRequest));
     }
+
     @PatchMapping("/dronedetails")
     public ResponseEntity<?> updateDroneDetails(@RequestBody DroneDetailRequest droneDetailRequest){
 
@@ -103,10 +107,10 @@ public class  DroneCurdController {
 
 
             long droneMissionId =droneDetailRequest.getDroneMission();
-
+            String droneStatus = droneDetailRequest.getDroneStatus();
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId,droneBaseId,droneMissionId));
+                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId,droneBaseId,droneMissionId,droneStatus));
 
     }
 

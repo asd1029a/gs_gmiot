@@ -46,6 +46,9 @@ public class Drone {
     private DroneDetails droneDetails;
 
 
+    private String status;
+
+
 //    @OneToOne(mappedBy = "drone")
 //    @JsonManagedReference
 //    private Mission mission;
