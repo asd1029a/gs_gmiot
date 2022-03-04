@@ -127,12 +127,14 @@ public class DroneDetailsService {
         updateDrone.setStatus(droneStatus);
 
         //mission
+
         Optional<Mission> optionalMission = missionRepository.findById(droneMissionId);
         Mission mission = null;
         if (!optionalMission.isPresent())
             return null;
         else {
             mission = optionalMission.get();
+            mission.setDroneId(1);
             DroneInMission droneInMission = new DroneInMission();
             droneInMission.setDrone(updateDrone);
             droneInMission.setMission(mission);

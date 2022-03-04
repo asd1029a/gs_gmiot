@@ -33,6 +33,8 @@ public class Mission {
     @Column(name = "user_id")
     private String userId;
 
+    @Column(name="drone_id")
+    private int droneId;
     //    @Column(name="insert_dt")
 //    private Timestamp insertDt;
 //
