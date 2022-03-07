@@ -5,10 +5,9 @@ import com.danusys.web.drone.dto.response.MissionDetailResponse;
 import com.danusys.web.drone.dto.response.MissionResponse;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneDetails;
+import com.danusys.web.drone.model.DroneInMission;
 import com.danusys.web.drone.model.Mission;
-import com.danusys.web.drone.repository.DroneDetailsRepository;
-import com.danusys.web.drone.repository.MissionDetailsRepository;
-import com.danusys.web.drone.repository.MissionRepository;
+import com.danusys.web.drone.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -34,6 +33,8 @@ public class MissionService {
     private final MissionRepository missionRepository;
     private final MissionDetailsRepository missionDetailsRepository;
     private final DroneDetailsRepository droneDetailsRepository;
+    private final DroneRepository droneRepository;
+    private final DroneInMissionRepository droneInMissionRepository;
     private String returnType;
     private List<Mission> missionList = null;
 
@@ -61,8 +62,9 @@ public class MissionService {
 //                mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList()));
 
         MissionResponse missionResponse = new MissionResponse(mission.getId(), mission.getName(), mission.getUserId(),
-                mission.getUpdateDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"))
-                , mission.getDrone().getId().intValue(), mission.getTotalDistance(), mission.getEstimatedTime());
+                mission.getUpdateDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")),
+                mission.getDroneId(),
+                mission.getTotalDistance(), mission.getEstimatedTime());
 
         return missionResponse;
     }
@@ -88,11 +90,17 @@ public class MissionService {
                 if (id == 0l) {
                     Drone drone = new Drone();
                     drone.setId(id);
-                    missionList = missionRepository.findAllByNameLikeAndDrone("%" + name + "%", drone, sort);
+                    DroneInMission droneInMission=new DroneInMission();
+                    droneInMission.setDrone(drone);
+                  //  missionList = missionRepository.findAllByNameLikeAndDrone("%" + name + "%", drone, sort);
+                    missionList = missionRepository.findAllByNameLikeAndDroneInMission("%" + name + "%", droneInMission, sort);
                 } else {
                     Drone drone = new Drone();
                     drone.setId(0l);
-                    missionList = missionRepository.findAllByNameLikeAndDroneNot("%" + name + "%", drone, sort);
+                    DroneInMission droneInMission=new DroneInMission();
+                    droneInMission.setDrone(drone);
+                    //missionList = missionRepository.findAllByNameLikeAndDroneNot("%" + name + "%", drone, sort);
+                    missionList = missionRepository.findAllByNameLikeAndDroneInMissionNot("%" + name + "%", droneInMission, sort);
                 }
             }
         }
@@ -105,12 +113,18 @@ public class MissionService {
                 if (id == 0l) {
                     Drone drone = new Drone();
                     drone.setId(id);
-                    missionList = missionRepository.findAllByUserIdLikeAndDrone("%" + adminUserId + "%", drone, sort);
+                    DroneInMission droneInMission=new DroneInMission();
+                    droneInMission.setDrone(drone);
+              //      missionList = missionRepository.findAllByUserIdLikeAndDrone("%" + adminUserId + "%", drone, sort);
+                    missionList = missionRepository.findAllByUserIdLikeAndDroneInMission("%" + adminUserId + "%", droneInMission, sort);
 
                 } else {
                     Drone drone = new Drone();
                     drone.setId(0l);
-                    missionList = missionRepository.findAllByUserIdLikeAndDroneNot("%" + adminUserId + "%", drone, sort);
+                    DroneInMission droneInMission=new DroneInMission();
+                    droneInMission.setDrone(drone);
+//                    missionList = missionRepository.findAllByUserIdLikeAndDroneNot("%" + adminUserId + "%", drone, sort);
+                    missionList = missionRepository.findAllByUserIdLikeAndDroneInMissionNot("%" + adminUserId + "%", droneInMission, sort);
                 }
             }
         }
@@ -147,8 +161,8 @@ public class MissionService {
     public Long saveMission(Mission mission) {
         Mission findMission = missionRepository.findByName(mission.getName());
         Drone drone = new Drone();
-        drone.setId(0l);
-        mission.setDrone(drone);
+        //drone.setId(0l);
+        //mission.setDrone(drone);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         mission.setUpdateDt(timestamp);
         if (findMission == null) {
@@ -187,7 +201,10 @@ public class MissionService {
 
         Long result = missionDetailsRepository.deleteByMission(mission);
         log.info("result={}", result);
+        droneInMissionRepository.deleteDroneInMission(mission.getId());
         missionRepository.deleteById(mission.getId());
+
+        //droneInMissionRepository.deleteByMission(mission);
         return "success";
     }
 

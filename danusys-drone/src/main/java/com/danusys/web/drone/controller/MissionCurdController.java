@@ -168,6 +168,7 @@ public class MissionCurdController {
 
 
         droneMissionDetailsResponses.forEach(r -> {
+                if(r.getMission()!=null)
             r.getMission().setMissionDetails(r.getMission().getMissionDetails().stream().sorted(Comparator.comparing((MissionDetailsDto d) -> d.getIndex())).collect(Collectors.toList())
             );
         });

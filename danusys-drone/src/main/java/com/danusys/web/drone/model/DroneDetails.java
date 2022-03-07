@@ -24,11 +24,11 @@ public class DroneDetails {
     private Long id;
 
 
-    private String status;
+//    private String status;
 
 
-    @Column(name="location")
-    private String location;
+//    @Column(name="location")
+//    private String location;
 
     private String size;
 
@@ -88,6 +88,14 @@ public class DroneDetails {
     private String thumbnailRealImg;
 
 
+    private int size1;
+    private int size2;
+    private int size3;
+    @Column(name="maximum_operating_weight")
+    private int maximumOperatingWeight;
+
+    @Column(name="flight_time")
+    private int flightTime;
 
 
 

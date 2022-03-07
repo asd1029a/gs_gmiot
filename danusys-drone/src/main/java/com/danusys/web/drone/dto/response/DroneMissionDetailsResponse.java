@@ -25,14 +25,15 @@ public class DroneMissionDetailsResponse {
     //private List<MissionDetailResponse> missionDetailResponseList;
 
 
-
-    public DroneMissionDetailsResponse(Drone drone){
+    public DroneMissionDetailsResponse(Drone drone) {
         this.id = drone.getId();
-        this.droneDeviceName=drone.getDroneDeviceName();
-        this.mission=new MissionDto(drone.getMission());
-        this.droneBase=drone.getDroneBase().getBaseName();
-        //this.missionDetailResponseList= mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
+        this.droneDeviceName = drone.getDroneDeviceName();
+        if (drone.getDroneInmission() != null) {
+            this.mission = new MissionDto(drone.getDroneInmission().getMission());
+        }
 
+        this.droneBase = drone.getDroneBase().getBaseName();
+        //this.missionDetailResponseList= mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
 
     }

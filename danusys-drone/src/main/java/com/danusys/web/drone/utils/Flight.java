@@ -52,6 +52,7 @@ public class Flight {
     private MavlinkConnection connection = null;
     private Socket socket = null;
     private Gps gps = new Gps();
+    private Gps wayPointGps =new Gps();
     private Gson gson = new Gson();
     private Timer t = null;
     private DroneLog droneLog = null;
@@ -548,7 +549,7 @@ public class Flight {
 
         isMissionAndDrone=false;
         log.info("yaw={}", yaw);
-        gps.setMissionType("waypoint");
+
 
         Gson gson = new Gson();
 
@@ -557,8 +558,19 @@ public class Flight {
             waypointTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-
-                    simpMessagingTemplate.convertAndSend("/topic/waypoint", gson.toJson(gps));
+                    wayPointGps.setGpsX(gps.getGpsX());
+                    wayPointGps.setGpsY(gps.getGpsY());
+                    wayPointGps.setCurrentHeight(gps.getCurrentHeight());
+                    wayPointGps.setWpDist(gps.getWpDist());
+                    wayPointGps.setHeading(gps.getHeading());
+                    wayPointGps.setAirSpeed(gps.getAirSpeed());
+                    wayPointGps.setSec(gps.getSec());
+                    wayPointGps.setMin(gps.getMin());
+                    wayPointGps.setHour(gps.getHour());
+                    wayPointGps.setDroneId(gps.getDroneId());
+                    wayPointGps.setStatus(gps.getStatus());
+                    wayPointGps.setMissionType("waypoint");
+                    simpMessagingTemplate.convertAndSend("/topic/waypoint", gson.toJson(wayPointGps));
 
                 }
             };
@@ -693,7 +705,8 @@ public class Flight {
 
                     String missionText = statustextMavlinkMessage.getPayload().text();
                     log.info(missionText);
-                    gps.setMissionType("waypoint");
+
+                    wayPointGps.setMissionType("waypoint");
 
 
                 } else if (message.getPayload() instanceof CommandAck) {
@@ -725,8 +738,8 @@ public class Flight {
             waypointTimer.cancel();
             waypointTimerTask.cancel();
 
-            gps.setStatus(2); //0 종료 1 비행 2 일시정지
-            simpMessagingTemplate.convertAndSend("/topic/waypoint", gson.toJson(gps));
+            wayPointGps.setMissionType("end");
+            simpMessagingTemplate.convertAndSend("/topic/waypoint", gson.toJson(wayPointGps));
             System.out.println("wayPoint");
 
 
@@ -821,7 +834,6 @@ public class Flight {
 
                     } else if (statustextMavlinkMessage.getPayload().text().equals("Disarming motors")) {
                         isEnd = true;
-
                         break;
                     }
                     if (missionText.equals("Paused mission")) {

@@ -1,4 +1,4 @@
-package com.danusys.web.drone.config;
+package com.danusys.web.drone.controller.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
