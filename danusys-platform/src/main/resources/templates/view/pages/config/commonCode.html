@@ -31,7 +31,9 @@
                             <dd><span class="count">0</span>건</dd>
                         </dl>
                         <ul>
-                            <li><i><img src="/images/default/add.svg"></i>코드 추가</li>
+                            <li id="addMainCodeBtn" data-add-popup="0">
+                                <i><img src="/images/default/add.svg"></i>코드 추가
+                            </li>
                         </ul>
                     </div>
                     <div class="search_table">
@@ -50,11 +52,13 @@
                 <article class="search_list">
                     <div class="article_title">
                         <dl class="title">
-                            <dt>상세 코드 목록</dt>
+                            <dt><span data-popup-title="true"></span>상세 코드 목록</dt>
                             <dd><span class="count">0</span>건</dd>
                         </dl>
                         <ul>
-                            <li><i><img src="/images/default/add.svg"></i>코드 추가</li>
+                            <li id="addSubCodeBtn" data-add-popup="1">
+                                <i><img src="/images/default/add.svg"></i>코드 추가
+                            </li>
                         </ul>
                     </div>
                     <div class="search_table">
@@ -73,11 +77,13 @@
                 <article class="search_list">
                     <div class="article_title">
                         <dl class="title">
-                            <dt>세부 코드 목록</dt>
+                            <dt><span data-popup-title="true"></span>세부 코드 목록</dt>
                             <dd><span class="count">0</span>건</dd>
                         </dl>
                         <ul>
-                            <li><i><img src="/images/default/add.svg"></i>코드 추가</li>
+                            <li id="addDetailCodeBtn" data-add-popup="2">
+                                <i><img src="/images/default/add.svg"></i>코드 추가
+                            </li>
                         </ul>
                     </div>
                     <div class="search_table">
@@ -94,6 +100,52 @@
                     </div>
                 </article>
             </section>
+
+            <div class="popup" id="commonCodePopup">
+                <dl class="title">
+                    <dt></dt>
+                    <dd><i><img src="/images/default/close.svg"></i></dd>
+                </dl>
+                <div class="popup_writing">
+                    <fieldset>
+                        <form id="commonCodeForm">
+                            <dl>
+                                <dt>코드</dt>
+                                <dd><input id="codeSeq" data-required="true" placeholder="코드를 입력해 주세요." name="codeSeq" type="text" /></dd>
+                            </dl>
+                            <dl>
+                                <dt>코드명</dt>
+                                <dd><input id="codeName" data-required="true" placeholder="코드명을 입력해 주세요." name="codeName" type="text" /></dd>
+                            </dl>
+                            <dl class="checkbox">
+                                <dt>사용여부</dt>
+                                <dd>
+                                    <span>
+                                        <input type="radio" id="code_status_use" name="useKind" data-value="Y" checked> <!--value 임시값-->
+                                        <label for="code_status_use"><span class="round"></span>사용</label>
+                                    </span>
+                                    <span>
+                                        <input type="radio" id="code_status_none" name="useKind" data-value="N">
+                                        <label for="code_status_none"><span class="round"></span>사용 안함</label>
+                                    </span>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>설명</dt>
+                                <dd><textarea id="codeContent" name="codeContent" placeholder="내용을 입력해 주세요." style="height: 120px;"></textarea></dd>
+                            </dl>
+                            <dl data-mod="true" data-detail="true">
+                                <dt>최초등록일</dt>
+                                <dd><input type="text" id="insertDt" readonly /></dd>
+                            </dl>
+                        </form>
+                    </fieldset>
+                </div>
+                <ul class="bottom">
+                    <li data-mod="true" id="modProcBtn">정보 수정</li>
+                    <li class="color" data-add="true" id="addProcBtn">등록</li>
+                </ul>
+            </div>
         </section>
     </th:block>
 </html>

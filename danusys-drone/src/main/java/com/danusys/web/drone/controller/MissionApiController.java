@@ -1,13 +1,11 @@
 package com.danusys.web.drone.controller;
 
 
+import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.model.Mission;
 import com.danusys.web.drone.model.MissionDetails;
-import com.danusys.web.drone.service.DroneDetailsService;
-import com.danusys.web.drone.service.DroneLogService;
-import com.danusys.web.drone.service.MissionDetailsService;
-import com.danusys.web.drone.service.MissionService;
+import com.danusys.web.drone.service.*;
 import com.danusys.web.drone.utils.Substring;
 import com.google.gson.Gson;
 import io.dronefleet.mavlink.Mavlink2Message;
@@ -44,6 +42,7 @@ public class MissionApiController {
     private final MissionDetailsService missionDetailsService;
     private final Flight flight;
     private final DroneLogService droneLogService;
+    private final DroneService droneService;
 
 
 
@@ -56,15 +55,13 @@ public class MissionApiController {
  */
 
     @MessageMapping("/return")
-    //@SendTo("/topic/return")
+    @SendTo("/topic/return")
     public void returnDrone(Map<String, Object> paramMap) {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
         flight.returnDrone();
     }
-
-
 
 
     @GetMapping("/takeoff")
@@ -81,7 +78,7 @@ public class MissionApiController {
 
     //   @GetMapping("/waypoint")
     @MessageMapping("/waypoint")
-    //@SendTo("/topic/waypoint")
+    @SendTo("/topic/waypoint")
 //    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
     // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
     public void wayPointDrone(Map<String, Object> paramMap) {
@@ -95,9 +92,9 @@ public class MissionApiController {
         int intGpsY = 0;
         int intGpsZ = 0;
         int yaw = 0;
-        int droneId=0;
-        if (paramMap.get("droneId")!=null)
-            droneId=Integer.parseInt(paramMap.get("droneId").toString());
+        int droneId = 0;
+        if (paramMap.get("droneId") != null)
+            droneId = Integer.parseInt(paramMap.get("droneId").toString());
         if (paramMap.get("gpsX") != null)
             gpsX = Double.parseDouble(paramMap.get("gpsX").toString()) * 10000000;
         if (paramMap.get("gpsY") != null)
@@ -106,8 +103,8 @@ public class MissionApiController {
             gpsZ = Double.parseDouble(paramMap.get("alt").toString());
         if (paramMap.get("yaw") != null)
             yaw = Integer.parseInt(paramMap.get("yaw").toString());
-        intGpsX = (int) gpsX ;
-        intGpsY = (int) gpsY ;
+        intGpsX = (int) gpsX;
+        intGpsY = (int) gpsY;
         intGpsZ = (int) gpsZ;
         flight.wayPoint(intGpsX, intGpsY, intGpsZ, yaw);
 
@@ -120,26 +117,25 @@ public class MissionApiController {
     // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
     public void changeYaw(@RequestBody Map<String, Object> paramMap) {
 
-        int yaw=0;
-        if(paramMap.get("yaw")!=null)
-            yaw=Integer.parseInt(paramMap.get("yaw").toString());
+        int yaw = 0;
+        if (paramMap.get("yaw") != null)
+            yaw = Integer.parseInt(paramMap.get("yaw").toString());
 
-            flight.changeYaw(yaw);
+        flight.changeYaw(yaw);
     }
 
 
     @MessageMapping("/setmissioncurrent")
-    public void setMissionCurrent(@RequestBody Map<String, Object >paramMap)
-    {
+    public void setMissionCurrent(@RequestBody Map<String, Object> paramMap) {
 
-        int seq=0;
-        if(paramMap.get("seq")!=null)
-            seq=Integer.parseInt(paramMap.get("seq").toString());
+        int seq = 0;
+        if (paramMap.get("seq") != null)
+            seq = Integer.parseInt(paramMap.get("seq").toString());
         flight.setMissionCurrent(seq);
     }
 
     @MessageMapping("/startmission")
-  //  @SendTo("/topic/startmission")
+    //  @SendTo("/topic/startmission")
 //    public void startMission(Mission mission) {
     public void startMission(@RequestBody Map<String, Object> paramMap) {
 
@@ -147,19 +143,26 @@ public class MissionApiController {
 
         if (paramMap.get("id") != null)
             id = Long.parseLong(paramMap.get("id").toString());
-        int droneId=0;
-        if (paramMap.get("droneId")!=null)
-            droneId=Integer.parseInt(paramMap.get("droneId").toString());
-        Mission mission=new Mission();
+        int droneId = 0;
+        if (paramMap.get("droneId") != null)
+            droneId = Integer.parseInt(paramMap.get("droneId").toString());
+        Mission mission = new Mission();
         mission.setId(id);
 
         //로그 저장
-      //  Mission missionResponse = missionService.missionResponseList2(mission.getId());
-        Mission missionResponse = missionService.missionResponseList2(id);
+        //  Mission missionResponse = missionService.missionResponseList2(mission.getId());
+        Drone drone = droneService.findOneDrone(droneId);
+        //수정
+      //  Mission missionResponse = missionService.missionResponseList2(id);
+        Mission missionResponse = drone.getDroneInmission().getMission();
         DroneLog inputDroneLog = new DroneLog();
 
         inputDroneLog.setMissionName(missionResponse.getName());
-        inputDroneLog.setDroneDeviceName(missionResponse.getDrone().getDroneDeviceName());
+
+        String droneName = drone.getDroneDeviceName();
+
+//        inputDroneLog.setDroneDeviceName(missionResponse.getDrone().getDroneDeviceName());
+        inputDroneLog.setDroneDeviceName(droneName);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         inputDroneLog.setInsertDt(timestamp);
         DroneLog droneLog = droneLogService.saveDroneLog(inputDroneLog);
@@ -185,7 +188,7 @@ public class MissionApiController {
             if (missionDetails.getName().equals("takeOff")) {
 
                 gpsZs.put("takeOff", missionDetails.getAlt());
-              //  log.info("Index={}", missionDetails.getIndex());
+                //  log.info("Index={}", missionDetails.getIndex());
                 missionIndex.put(missionDetails.getIndex(), "takeOff");
 
 
@@ -216,8 +219,8 @@ public class MissionApiController {
             }
         }
 
-       // log.info("{}", missionDetailsService.findByNameAndMission("takeOff", mission).getIndex());
-        float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex()));
+        // log.info("{}", missionDetailsService.findByNameAndMission("takeOff", mission).getIndex());
+       // float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex()));
 
         //float takeOffAlt = gpsZs.get(missionIndex.get(1));
 
@@ -230,7 +233,7 @@ public class MissionApiController {
             int speed = 0;
             int radius = 0;
             float yaw = 0;
-      //      log.info("step={}", step);
+            //      log.info("step={}", step);
 //x,y 지금 바뀐 상황임 latitude longtitude 떄문에 바꿧음
             y = gpsXs.getOrDefault(missionIndex.get(step), 0);
             x = gpsYs.getOrDefault(missionIndex.get(step), 0);
@@ -239,16 +242,17 @@ public class MissionApiController {
             time = times.getOrDefault(missionIndex.get(step), 0);
             speed = speeds.getOrDefault(missionIndex.get(step), 0);
             radius = radiusMap.getOrDefault(missionIndex.get(step), 0);
-        //    log.info("x={},y={},z={}", x, y, z);
+            //    log.info("x={},y={},z={}", x, y, z);
             if (missionIndex.getOrDefault(step, "finish").equals("takeOff")) {
-
-                missionMap = flight.missionTakeoff(droneLog, missionResponse.getDrone().getId().intValue());
+                //
+                //missionMap = flight.missionTakeoff(droneLog, missionResponse.getDrone().getId().intValue());
+                missionMap = flight.missionTakeoff(droneLog, droneId);
                 flag++;
 
             } else if (missionIndex.getOrDefault(step, "finish").contains("waypoint")) {
 
 //                log.info("x={},y={},z{}", x, y, z);
-            //    log.info("yaw={}", yaw);
+                //    log.info("yaw={}", yaw);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
                         .param1(time)
@@ -321,187 +325,26 @@ public class MissionApiController {
 
 
     @MessageMapping("/pause")
-  //  @SendTo("/topic/pause")
-    public void pause(@RequestBody Map<String,Object> paramMap) {
-        int droneId=0;
-        if (paramMap.get("droneId")!=null)
-            droneId=Integer.parseInt(paramMap.get("droneId").toString());
+    //  @SendTo("/topic/pause")
+    public void pause(@RequestBody Map<String, Object> paramMap) {
+        int droneId = 0;
+        if (paramMap.get("droneId") != null)
+            droneId = Integer.parseInt(paramMap.get("droneId").toString());
         // flight.loiter(30);
         flight.pauseOrPlay(0);
         // flight.returnDrone();
     }
 
     @MessageMapping("/play")
-   // @SendTo("/topic/play")
-    public void play(@RequestBody Map<String,Object> paramMap) {
-        int droneId=0;
-        if (paramMap.get("droneId")!=null)
-            droneId=Integer.parseInt(paramMap.get("droneId").toString());
+    // @SendTo("/topic/play")
+    public void play(@RequestBody Map<String, Object> paramMap) {
+        int droneId = 0;
+        if (paramMap.get("droneId") != null)
+            droneId = Integer.parseInt(paramMap.get("droneId").toString());
         // flight.loiter(30);
         flight.pauseOrPlay(1);
         // flight.returnDrone();
     }
-//    public void startMission(Mission mission) {
-//
-//        Mission missionResponse = missionService.missionResponseList(mission.getId());
-//        int i = 2;
-//        int step = 1;
-//        HashMap<Integer, String> missionIndex = new HashMap<>();
-//        HashMap<String, Float> gpsXs = new HashMap<>();
-//        HashMap<String, Float> gpsYs = new HashMap<>();
-//        HashMap<String, Float> gpsZs = new HashMap<>();
-//        HashMap<String, Float> speeds = new HashMap<>();
-//        HashMap<String, String> result = new HashMap<>();
-//        HashMap<String, Float> times =new HashMap<>();
-//        Iterator iterator = missionResponse.getMissonDetails().iterator();
-//        while (iterator.hasNext()) {
-//            MissionDetails missionDetails = (MissionDetails) iterator.next();
-//            if (missionDetails.getName().equals("takeoff")) {
-//
-//                gpsZs.put("takeoff", missionDetails.getAlt());
-//                missionIndex.put(missionDetails.getIndex(), "takeoff");
-//
-//
-//            } else if (missionDetails.getName().equals("waypoint")) {
-//                missionIndex.put(missionDetails.getIndex(), "waypoint" + missionDetails.getIndex());
-//
-//                gpsXs.put("waypoint" + missionDetails.getIndex(), missionDetails.getGpsX());
-//                speeds.put("waypoint" + missionDetails.getIndex(), missionDetails.getSpeed());
-//                gpsYs.put("waypoint" + missionDetails.getIndex(), missionDetails.getGpsY());
-//                gpsZs.put("waypoint" + missionDetails.getIndex(), missionDetails.getAlt());
-//            } else if (missionDetails.getName().equals("loiter")) {
-//                missionIndex.put(missionDetails.getIndex(), "loiter" + missionDetails.getIndex());
-//                times.put("loiter"+missionDetails.getIndex(),missionDetails.getTime());
-//
-//            } else if (missionDetails.getName().equals("return")) {
-//
-//                missionIndex.put(missionDetails.getIndex(), "return");
-//
-//                gpsXs.put("return" + missionDetails.getIndex(), missionDetails.getGpsX());
-//                speeds.put("return" + missionDetails.getIndex(), missionDetails.getSpeed());
-//                gpsYs.put("return" + missionDetails.getIndex(), missionDetails.getGpsY());
-//                gpsZs.put("return" + missionDetails.getIndex(), missionDetails.getAlt());
-//
-//            }
-//        }
-//
-//        float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeoff", mission).getIndex()));
-//
-//        //float takeOffAlt = gpsZs.get(missionIndex.get(1));
-//
-//
-//        while (!missionIndex.getOrDefault(step, "finish").equals("finish")) {
-//            float x = 0;
-//            float y = 0;
-//            float z = 0;
-//            float time=0;
-//            float speed = 0;
-//
-//            log.info("{}", step);
-//
-//            x = gpsXs.getOrDefault(missionIndex.get(step), 0f);
-//            y = gpsYs.getOrDefault(missionIndex.get(step), 0f);
-//            z = gpsZs.getOrDefault(missionIndex.get(step), 0f);
-//            time=times.getOrDefault(missionIndex.get(step),0f);
-//            speed = speeds.getOrDefault(missionIndex.get(step), 0f);
-//
-//            if (missionIndex.getOrDefault(step, "finish").equals("takeoff")) {
-//
-//                String missionResult = null;
-//                log.info("takeoffalt={}", takeOffAlt);
-//                do {
-//                    missionResult = flight.takeoff(takeOffAlt);
-//                }
-//                while (missionResult.equals("onemore"));
-//
-//            }
-//
-//
-//            if (missionIndex.getOrDefault(step, "finish").contains("waypoint")) {
-//
-//                String missionResult = null;
-//                do {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    missionResult = flight.wayPoint(x, y, z, speed);
-//                }
-//                while (missionResult.equals("onemore"));
-//            } else if (missionIndex.getOrDefault(step, "finish").contains("loiter")) {
-//                String missionResult = null;
-//                do {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    missionResult = flight.loiter(time);
-//                    log.info(missionResult);
-//                }
-//                while (missionResult.equals("onemore"));
-//
-//            } else if (missionIndex.getOrDefault(step, "finish").contains("return")) {
-//                String missionResult = null;
-//                do {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    missionResult = flight.returnDrone();
-//                    log.info(missionResult);
-//                }
-//                while (missionResult.equals("onemore"));
-//            } else if (missionIndex.getOrDefault(step, "finish").contains("finish")) {
-//                break;
-//            }
-//            step++;
-//
-//
-//        }
-//
-//
-////        if (!missionIndex.get(2).isEmpty()) {
-////            String missionResult=null;
-////            float x=gpsXs.get(missionIndex.get(step));
-////            float y=gpsXs.get(missionIndex.get(step));
-////            float z=gpsXs.get(missionIndex.get(step));
-////            float speed=speeds.get(missionIndex.get(step));
-////            do{
-////                try {
-////                    Thread.sleep(1000);
-////                } catch (InterruptedException e) {
-////                    e.printStackTrace();
-////                }
-////                missionResult= flight.wayPoint(x,y,z,speed);
-////            }
-////            while (missionResult.equals("onemore"));
-////
-////
-////        }
-////
-////        if (missionIndex.get(4).equals("return")) {
-////            String missionResult=null;
-////            do{
-////                try {
-////                    Thread.sleep(1000);
-////                } catch (InterruptedException e) {
-////                    e.printStackTrace();
-////                }
-////                missionResult=flight.returnDrone();
-////                log.info(missionResult);
-////            }
-////            while (missionResult.equals("onemore"));
-////
-////        }
-////
-////      //  this.simpMessagingTemplate.convertAndSend("/topic/drone3", gson.toJson(result));
-////
-//
-//
-//    }
 
 
     @GetMapping("/loiter")
@@ -528,8 +371,9 @@ public class MissionApiController {
         //flight.camera();
         flight.flightTakeoff(100);
         //flight.returnDrone();
-       // flight.setHome();
+        // flight.setHome();
     }
+
     @GetMapping("/test2")
     public void test2() {
         // flight.loiter(30);

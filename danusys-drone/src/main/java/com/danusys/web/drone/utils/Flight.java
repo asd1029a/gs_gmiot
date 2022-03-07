@@ -52,6 +52,7 @@ public class Flight {
     private MavlinkConnection connection = null;
     private Socket socket = null;
     private Gps gps = new Gps();
+    private Gps wayPointGps =new Gps();
     private Gson gson = new Gson();
     private Timer t = null;
     private DroneLog droneLog = null;
@@ -65,12 +66,17 @@ public class Flight {
     private boolean isEnd = false;
     private boolean isPauseOrStopEnd = false;
     private boolean alreadyDo = false;
+    private boolean alreadyWayPoint = false;
+    private Timer waypointTimer = null;
+    private TimerTask waypointTimerTask = null;
+    private boolean isMissionAndDrone=false;
+
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
 
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         //시간 초기화
-
+        isMissionAndDrone=true;
         int systemId = 1;
         int componentId = 1;
         int linkId = 1;
@@ -438,6 +444,7 @@ public class Flight {
             int flag = 0;
             while ((message = connection.next()) != null) {
 
+
                 if (message.getPayload() instanceof TerrainReport) {
                     MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
                     float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
@@ -540,9 +547,39 @@ public class Flight {
     //x,y 반대로 넣어야되기떄문에
     public String wayPoint(int gpsY, int gpsX, int gpsZ, int yaw) {
 
+        isMissionAndDrone=false;
+        log.info("yaw={}", yaw);
+
 
         Gson gson = new Gson();
-        gps.setMissionType("waypoint");
+
+        gps.setStatus(1);
+        if (!alreadyWayPoint) {
+            waypointTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    wayPointGps.setGpsX(gps.getGpsX());
+                    wayPointGps.setGpsY(gps.getGpsY());
+                    wayPointGps.setCurrentHeight(gps.getCurrentHeight());
+                    wayPointGps.setWpDist(gps.getWpDist());
+                    wayPointGps.setHeading(gps.getHeading());
+                    wayPointGps.setAirSpeed(gps.getAirSpeed());
+                    wayPointGps.setSec(gps.getSec());
+                    wayPointGps.setMin(gps.getMin());
+                    wayPointGps.setHour(gps.getHour());
+                    wayPointGps.setDroneId(gps.getDroneId());
+                    wayPointGps.setStatus(gps.getStatus());
+                    wayPointGps.setMissionType("waypoint");
+                    simpMessagingTemplate.convertAndSend("/topic/waypoint", gson.toJson(wayPointGps));
+
+                }
+            };
+            waypointTimer = new Timer();
+
+            waypointTimer.schedule(waypointTimerTask, 0, 1000);
+
+        }
+        alreadyWayPoint = true;
 
         try {
 
@@ -653,6 +690,8 @@ public class Flight {
 
                     int wpDist = navControllerOutputMavlinkMessage.getPayload().wpDist();
 
+                    if(isMissionAndDrone)
+                        break;
                     gps.setWpDist(wpDist);
                     if (wpDist == 0) {
                         break;
@@ -666,7 +705,8 @@ public class Flight {
 
                     String missionText = statustextMavlinkMessage.getPayload().text();
                     log.info(missionText);
-                    gps.setMissionType("waypoint");
+
+                    wayPointGps.setMissionType("waypoint");
 
 
                 } else if (message.getPayload() instanceof CommandAck) {
@@ -694,6 +734,12 @@ public class Flight {
 
         } finally {
 //
+            alreadyWayPoint=false;
+            waypointTimer.cancel();
+            waypointTimerTask.cancel();
+
+            wayPointGps.setMissionType("end");
+            simpMessagingTemplate.convertAndSend("/topic/waypoint", gson.toJson(wayPointGps));
             System.out.println("wayPoint");
 
 
@@ -708,7 +754,7 @@ public class Flight {
 
         try {
 
-
+            isMissionAndDrone=true;
             int systemId = 1;
             int componentId = 1;
             int linkId = 1;
@@ -788,7 +834,6 @@ public class Flight {
 
                     } else if (statustextMavlinkMessage.getPayload().text().equals("Disarming motors")) {
                         isEnd = true;
-
                         break;
                     }
                     if (missionText.equals("Paused mission")) {
@@ -824,7 +869,7 @@ public class Flight {
 
         } finally {
 
-
+            alreadyWayPoint = false;
             System.out.println("returnDrone");
 
 

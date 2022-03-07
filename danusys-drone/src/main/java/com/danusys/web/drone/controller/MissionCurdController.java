@@ -44,7 +44,6 @@ public class MissionCurdController {
         List<MissionDetails> missionDetailsList = new ArrayList<>();
         missionDetailsList = (List<MissionDetails>) missionList.get("missionList");
 
-
         int missionId = 0;
         missionId = Integer.parseInt(missionList.get("missionId").toString());
 
@@ -169,6 +168,7 @@ public class MissionCurdController {
 
 
         droneMissionDetailsResponses.forEach(r -> {
+                if(r.getMission()!=null)
             r.getMission().setMissionDetails(r.getMission().getMissionDetails().stream().sorted(Comparator.comparing((MissionDetailsDto d) -> d.getIndex())).collect(Collectors.toList())
             );
         });
