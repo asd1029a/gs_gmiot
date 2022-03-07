@@ -1,13 +1,13 @@
 package com.danusys.web.platform.service.notice;
 
-import com.danusys.web.commons.auth.mapper.common.CommonMapper;
+import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.mapper.notice.NoticeSqlProvider;
-import com.danusys.web.platform.model.paging.Page;
-import com.danusys.web.platform.model.paging.PagingRequest;
-import com.danusys.web.platform.util.Paging;
+import com.danusys.web.commons.app.model.paging.Page;
+import com.danusys.web.commons.app.model.paging.PagingRequest;
+import com.danusys.web.commons.app.Paging;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;

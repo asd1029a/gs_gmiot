@@ -2,8 +2,8 @@ package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
-import com.danusys.web.platform.model.paging.Page;
-import com.danusys.web.platform.model.paging.PagingRequest;
+import com.danusys.web.commons.app.model.paging.Page;
+import com.danusys.web.commons.app.model.paging.PagingRequest;
 import com.danusys.web.platform.service.notice.NoticeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;

@@ -1,7 +1,7 @@
 package com.danusys.web.platform.service.config;
 
 import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.commons.auth.mapper.common.CommonMapper;
+import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.platform.mapper.config.ConfigSqlProvider;
 import org.springframework.stereotype.Service;
