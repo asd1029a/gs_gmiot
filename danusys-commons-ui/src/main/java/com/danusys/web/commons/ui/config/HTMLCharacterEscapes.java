@@ -28,11 +28,14 @@ public class HTMLCharacterEscapes extends CharacterEscapes {
         asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
         asciiEscapes['<'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['>'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['"'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['('] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes[')'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['#'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
+
+        // TODO : json data 처리 중 문제 발생하여 추가 처리 필요(임시 적 조치)
+
+//        asciiEscapes['"'] = CharacterEscapes.ESCAPE_CUSTOM;
+//        asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
 
         Map<CharSequence, CharSequence> charSequenceMap = new HashMap<>();
         charSequenceMap.put("(", "&#40;");
