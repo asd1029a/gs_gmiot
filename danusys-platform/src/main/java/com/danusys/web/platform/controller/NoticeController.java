@@ -2,21 +2,31 @@ package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
+import com.danusys.web.platform.dto.request.NoticeRequestDto;
+import com.danusys.web.platform.dto.response.NoticeResponseDto;
 import com.danusys.web.platform.model.paging.Page;
 import com.danusys.web.platform.model.paging.PagingRequest;
 import com.danusys.web.platform.service.notice.NoticeService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+/**
+ *
+ * @클래스이름 : NoticeController
+ *
+ * @작성자 : 강명훈 주임연구원
+ * @작성일 : 2022-03-07
+ * @설명 : 공지사항 controller
+ *
+**/
 
 @Slf4j
 @RestController
@@ -39,7 +49,7 @@ public class NoticeController {
      * 공지사항 : 공지사항 단건 조회
      */
     @GetMapping(value="/{noticeSeq}")
-    public ResponseEntity<EgovMap> getNotice(@PathVariable("noticeSeq") int noticeSeq) throws Exception {
+    public ResponseEntity<NoticeResponseDto> getNotice(@PathVariable("noticeSeq") Long noticeSeq) throws Exception {
         return ResponseEntity.ok().body(noticeService.getOne(noticeSeq));
     }
 
@@ -47,32 +57,27 @@ public class NoticeController {
      * 공지사항 : 공지사항 등록
      */
     @PostMapping(value="/add", produces = "multipart/form-data")
-    public ResponseEntity<?> add(MultipartFile[] file, HttpServletRequest request) throws Exception {
-        Map<String, Object> paramMap = new HashMap<String, Object>();
-        paramMap.put("noticeTitle", request.getParameter("noticeTitle"));
-        paramMap.put("noticeContent", request.getParameter("noticeTitle"));
-        paramMap.put("noticeFile", FileUtil.uploadAjaxPost(file, request));
-        return ResponseEntity.ok().body(new HashMap<String, Object>().put("result", noticeService.add(paramMap)));
+    public ResponseEntity<?> add(MultipartFile[] file, HttpServletRequest request, NoticeRequestDto noticeRequestDto) throws Exception {
+        noticeRequestDto.setNoticeFile(FileUtil.uploadAjaxPost(file, request));
+        noticeService.add(noticeRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     /**
      * 공지사항 : 공지사항 수정
      */
-    @PostMapping(value="/mod", produces = "multipart/form-data")
-    public ResponseEntity<?> mod(MultipartFile[] file, HttpServletRequest request) throws Exception {
-        Map<String, Object> paramMap = new HashMap<String, Object>();
-        paramMap.put("noticeSeq", request.getParameter("noticeSeq"));
-        paramMap.put("noticeTitle", request.getParameter("noticeTitle"));
-        paramMap.put("noticeContent", request.getParameter("noticeTitle"));
-        paramMap.put("noticeFile", FileUtil.uploadAjaxPost(file, request));
-        return ResponseEntity.ok().body(new HashMap<String, Object>().put("result", noticeService.mod(paramMap)));
+    @PostMapping(value="/mod/{noticeSeq}", produces = "multipart/form-data")
+    public ResponseEntity<?> mod(MultipartFile[] file, HttpServletRequest request, @PathVariable Long noticeSeq, NoticeRequestDto noticeRequestDto) throws Exception {
+        noticeRequestDto.setNoticeFile(FileUtil.uploadAjaxPost(file, request));
+        noticeService.mod(noticeSeq, noticeRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     /**
      * 공지사항 : 공지사항 삭제
      */
     @DeleteMapping(value="/{noticeSeq}")
-    public ResponseEntity<?> del (@PathVariable("noticeSeq") int noticeSeq) throws Exception {
+    public ResponseEntity<?> del (@PathVariable("noticeSeq") Long noticeSeq) throws Exception {
         noticeService.del(noticeSeq);
         return ResponseEntity.noContent().build();
     }

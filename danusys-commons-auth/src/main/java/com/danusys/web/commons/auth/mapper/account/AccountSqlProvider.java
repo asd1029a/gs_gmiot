@@ -98,9 +98,23 @@ public class AccountSqlProvider {
         String length = paramMap.get("length").toString();
 
         SQL sql = new SQL() {{
-            SELECT("user_group_seq, user_group_name, user_group_remark, TO_CHAR(insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
-                    ", insert_user_seq, TO_CHAR(update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt, update_user_seq, user_group_status");
-            FROM("t_user_group");
+            SELECT("S1.user_group_seq" +
+                    ", S1.user_group_name" +
+                    ", S1.user_group_remark" +
+                    ", TO_CHAR(S1.insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
+                    ", TO_CHAR(S1.update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt" +
+                    ", CASE WHEN (S2.user_cnt=0 OR S2.user_cnt IS NULL)" +
+                    " THEN '-' WHEN S2.user_cnt=1" +
+                    " THEN S3.user_name" +
+                    " ELSE CONCAT(S3.user_name,' 외 ',(S2.user_cnt-1),'명')" +
+                    " END user_name");
+            FROM(" t_user_group AS S1");
+            LEFT_OUTER_JOIN("(" +
+                        "SELECT user_group_seq, COUNT(user_seq) AS user_cnt, MIN(user_seq) AS user_seq"+
+                        " FROM t_user_group_in_user"+
+                        " GROUP BY user_group_seq" +
+                        ") AS S2 ON S1.user_group_seq = S2.user_group_seq");
+            LEFT_OUTER_JOIN("t_user S3 ON S2.user_seq = S3.user_seq");
             if (!keyword.equals("")){
                 WHERE("user_group_name = '%" + keyword + "%'");
             }
