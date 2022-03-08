@@ -4,21 +4,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Data
-//@EqualsAndHashCode
 @Table(name = "t_user_group")
 public class UserGroup implements Serializable {
     @Id
@@ -50,5 +44,4 @@ public class UserGroup implements Serializable {
     @OneToMany(mappedBy = "userGroup2", fetch = FetchType.EAGER)
     @JsonManagedReference
     private final List<UserGroupPermit> userGroupPermit = new ArrayList<>();
-
 }

@@ -1,6 +1,6 @@
-package com.danusys.web.platform.model.paging;
+package com.danusys.web.commons.app.model.paging;
 
-import com.danusys.web.commons.api.types.DataType;
+import com.danusys.web.commons.app.types.DataType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

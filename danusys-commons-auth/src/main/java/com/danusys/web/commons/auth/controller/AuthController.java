@@ -7,7 +7,7 @@ import com.danusys.web.commons.auth.model.*;
 import com.danusys.web.commons.auth.service.PermitService;
 import com.danusys.web.commons.auth.service.UserGroupInUserService;
 import com.danusys.web.commons.auth.service.UserGroupService;
-import com.danusys.web.commons.auth.service.UserService;
+import com.danusys.web.commons.auth.service.user.UserService;
 import com.danusys.web.commons.auth.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

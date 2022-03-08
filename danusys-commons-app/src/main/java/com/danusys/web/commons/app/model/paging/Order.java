@@ -1,4 +1,4 @@
-package com.danusys.web.platform.model.paging;
+package com.danusys.web.commons.app.model.paging;
 
 import lombok.*;
 

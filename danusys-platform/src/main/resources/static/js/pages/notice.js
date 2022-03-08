@@ -38,7 +38,7 @@ const notice = {
         const optionObj = {
             dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
-            pageLength: 15, //$("#noticeListCntSel").val(),
+            pageLength: 15,
             scrollY: "calc(100% - 40px)",
             ajax :
                 {
@@ -193,11 +193,10 @@ const notice = {
     },
     modProc : (pSeq) => {
         const formData = new FormData($("#noticeForm")[0]);
-        formData.append("noticeSeq", pSeq);
 
         if($('#noticeForm').doValidation()) {
             $.ajax({
-                url : "/notice/mod"
+                url : "/notice/mod/"+pSeq
                 , type: "POST"
                 , enctype : "multipart/form-data"
                 , processData: false

@@ -1,10 +1,11 @@
-package com.danusys.web.platform.model.paging;
+package com.danusys.web.commons.app.model.paging;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+
 /**
  * Created by IntelliJ IDEA
  * Project   : danusys-webservice-parent

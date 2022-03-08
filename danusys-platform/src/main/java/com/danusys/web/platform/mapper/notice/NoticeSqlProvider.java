@@ -73,7 +73,7 @@ public class NoticeSqlProvider {
         return sql.toString();
     }
 
-    public String selectOneQry(int noticeSeq) {
+    public String selectOneQry(Long noticeSeq) {
         SQL sql = new SQL() {{
 
             SELECT("t1.notice_seq" +
@@ -121,7 +121,7 @@ public class NoticeSqlProvider {
         return sql.toString();
     }
 
-    public String deleteQry(int noticeSeq) {
+    public String deleteQry(Long noticeSeq) {
         SQL sql = new SQL() {{
             DELETE_FROM("t_notice");
             WHERE("notice_seq =" + noticeSeq);

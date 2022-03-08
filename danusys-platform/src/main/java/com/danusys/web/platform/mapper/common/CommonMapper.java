@@ -1,14 +1,13 @@
-package com.danusys.web.commons.auth.mapper.common;
+package com.danusys.web.platform.mapper.common;
 
 import com.danusys.web.commons.app.EgovMap;
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /*
-* 공통 Mapper
-*/
+ * 공통 Mapper
+ */
 
 @Mapper
 public interface CommonMapper {

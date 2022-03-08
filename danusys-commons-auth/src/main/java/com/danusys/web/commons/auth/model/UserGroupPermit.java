@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Date;
 
 @Entity
 @Data
@@ -20,10 +19,8 @@ public class UserGroupPermit {
     @Column(name = "idx")
     private int id;
 
-
     //  @Column(name="user_group_seq")
     //    private int userGroupSeq;
-
 
     //   @Column(name="permit_seq")
     //    private String permitSeq;
@@ -42,5 +39,4 @@ public class UserGroupPermit {
     @JoinColumn(name = "permit_seq")
     @JsonManagedReference
     private Permit permit;
-
 }

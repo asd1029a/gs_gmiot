@@ -16,7 +16,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan("com.danusys.web")
 @EnableJpaRepositories("com.danusys.web")
 @EnableZuulProxy
-@MapperScan("com.danusys.web.commons.auth.mapper.common")
 public class PlatformApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PlatformApplication.class, args);
