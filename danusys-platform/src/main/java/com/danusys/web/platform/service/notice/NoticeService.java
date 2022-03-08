@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.danusys.web.platform.dto.request.NoticeRequestDto;
 import com.danusys.web.platform.dto.response.NoticeResponseDto;
-import com.danusys.web.platform.model.paging.Page;
-import com.danusys.web.platform.model.paging.PagingRequest;
+import com.danusys.web.commons.app.model.paging.Page;
+import com.danusys.web.commons.app.model.paging.PagingRequest;
 
 import java.util.Map;
 
