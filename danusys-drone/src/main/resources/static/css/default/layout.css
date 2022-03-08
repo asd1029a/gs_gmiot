@@ -172,14 +172,14 @@ header ul.utmenu li{display: flex; align-items: center; height: 100%; padding: 0
 .mapComponent article.panel div{overflow: hidden; width: 180px; height: 180px; border-radius: 100%; background: #1c1d23;}
 .mapComponent article.control{display: flex; flex-direction: row; column-gap: 10px; background: none;}
 .mapComponent article.control div{display: flex; flex-direction: column; overflow: hidden; border-radius: 4px; background: #25262c;}
-.mapComponent article.control div.mission{width: 190px;}
+.mapComponent article.control div.mission{width: 310px;}
 .mapComponent article.control div.drone{width: 260px;}
 .mapComponent article.control div ul{flex: 1; display: flex; align-items: center; justify-content: center; column-gap: 20px; margin: 14px;}
 .mapComponent article.control div ul li{display: flex; flex-direction: column; align-items: center; color: #7f8491; cursor: pointer;}
 .mapComponent article.control div ul li:hover{color: #dee0e4;}
 .mapComponent article i.controlButton{display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; margin: 0px auto 8px; box-sizing: border-box; background: url(../../images/default/controlButtonBg.png) center center no-repeat;}
 .mapComponent article i.controlButton img{width: 20px; height: 20px; margin: 0px;}
-.mapComponent article.values{width: 460px; display: flex; flex-direction: column;}
+.mapComponent article.values{width: 740px; display: flex; flex-direction: column;}
 .mapComponent article.values ul{flex: 1; display: flex; align-items: center; margin: 14px;}
 .mapComponent article.values ul li{flex: 1; display: flex; flex-direction: column; grid-gap: 14px; align-items: center; font-size: 16px; font-weight: bold; letter-spacing: 1px;}
 .mapComponent article.values ul li span{color: #7f8491; font-size: 14px; letter-spacing: -0.5px;}
@@ -189,7 +189,7 @@ header ul.utmenu li{display: flex; align-items: center; height: 100%; padding: 0
 .mapComponent article.stream dl{display: flex; align-items: center; justify-content: space-between; height: 40px; line-height: 38px; padding: 0px 14px; font-size: 13px; font-weight: bold; color: #dee0e4; background: #1a1b1d;}
 .mapComponent article.stream dl dt{display: flex; align-items: center; column-gap: 14px;}
 .mapComponent article.stream dl dd{}
-.mapComponent article.stream .video{flex: 1; margin: 0px 14px; background: yellowgreen;}
+.mapComponent article.stream .video{flex: 1; margin: 0px 14px;}
 .mapComponent article.stream h6{}
 .mapComponent article.stream .streamValues{display: flex; align-items: center; justify-content: space-between; column-gap: 20px; overflow: hidden; min-width: 160px; width: auto; margin: 0px 14px; border-radius: 4px; background: #25262c;}
 .mapComponent article.stream .streamValues ul{flex: 1; display: flex; align-items: center; justify-content: center; column-gap: 14px; margin: 14px;}
