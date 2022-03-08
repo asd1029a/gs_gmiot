@@ -24,15 +24,8 @@ public class CommonsUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-   //     log.info("loadUserByUsername, id={}",username);
 
-        User user =userRepository.findByUserId(username);
-     //   log.info("End loadUserByUsername{}");
-//
-//       user.getUserGroupInUser().getUserGroup().getUserGroupPermit().forEach(r->{
-//
-//           log.info("r={}",r.getPermit().getPermitName());
-//       });
+        User user = userRepository.findByUserId(username);
 
         if(user==null){
             return null;

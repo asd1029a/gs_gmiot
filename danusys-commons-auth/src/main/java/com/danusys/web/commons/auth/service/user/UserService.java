@@ -1,4 +1,4 @@
-package com.danusys.web.platform.service.user;
+package com.danusys.web.commons.auth.service.user;
 
 
 import com.danusys.web.commons.app.PagingUtil;
@@ -8,6 +8,7 @@ import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.repository.UserStatusRepository;
 import com.danusys.web.commons.auth.util.SHA256;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,17 +27,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService2 {
+public class UserService {
 
     private final UserRepository userRepository;
     private final UserGroupInUserRepository userGroupInUserRepository;
     private final UserStatusRepository userStatusRepository;
 
-
     public User findUser(String userName, String errorMessage) {
-
         return userRepository.findByUserId(userName);
-
     }
 
     public User findUser(String userName) {
@@ -52,11 +50,9 @@ public class UserService2 {
         UserDto userDto = new UserDto(user.getUserSeq(), user.getUserId(), user.getUserName(), user.getEmail(), user.getTel(), user.getAddress(),
                 user.getStatus(), user.getDetailAddress(),
                 user.getLastLoginDt(), user.getInsertUserSeq(), user.getUpdateUserSeq(), user.getInsertDt(), user.getUpdateDt());
-        //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
-
+//        user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
 
         return userDto;
-
     }
 
     @Transactional
@@ -105,12 +101,17 @@ public class UserService2 {
     }
 
     @Transactional
+    public User updateUser(String userName, String refreshToken) {
+        User findUser = this.findUser(userName, "Error update user id");
+        if(findUser!=null)
+            findUser.setRefreshToken(refreshToken);
+        return findUser;
+    }
+
+    @Transactional
     public void deleteUser(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
         findUser.setStatus("2");
-        //userRepository.deleteByUserSeq(user.getUserSeq());
-
-
     }
 
 
@@ -139,7 +140,6 @@ public class UserService2 {
         userRepository.save(user);
         return user.getUserSeq();
     }
-
 
     public Map<String, Object> findListUser(Map<String, Object> paramMap) {
 
@@ -240,5 +240,5 @@ public class UserService2 {
 //
 //        //return new com.danusys.web.commons.app.model.paging.Page<>();
 //    }
-}
 
+}

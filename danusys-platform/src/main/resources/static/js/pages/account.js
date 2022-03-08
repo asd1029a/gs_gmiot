@@ -50,7 +50,7 @@ const account = {
                     toggleable: false
                 }
                 , columns : [
-                    {data: "id", className: "alignLeft"},
+                    {data: "userId", className: "alignLeft"},
                     {data: "userName"},
                     {data: "tel"},
                     {data: "email", className: "alignLeft"},
@@ -288,9 +288,9 @@ const account = {
                 },
                 columns : [
                     {data: "userGroupSeq", className: "alignLeft"},
-                    {data: "userGroupName"},
-                    {data: "userGroupName"},
-                    {data: "userGroupRemark"},
+                    {data: "groupName"},
+                    {data: "groupName"},
+                    {data: "groupDesc"},
                     {data: null}
                 ]
                 , "columnDefs": [{

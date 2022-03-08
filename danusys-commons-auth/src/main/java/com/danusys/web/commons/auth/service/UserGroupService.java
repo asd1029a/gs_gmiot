@@ -1,5 +1,6 @@
 package com.danusys.web.commons.auth.service;
 
+import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.commons.auth.dto.response.GroupResponse;
@@ -33,7 +34,6 @@ public class UserGroupService {
 
     public UserGroup findUserGroup(String groupName, String errorMessage) {
         return userGroupRepository.findByGroupName(groupName);
-
     }
 
     //    @Transactional(readOnly = true)
@@ -56,8 +56,6 @@ public class UserGroupService {
     //    @Transactional(readOnly = true)
     public UserGroup findUserGroupByGroupSeq(int groupSeq) {
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(groupSeq);
-
-
         return findUserGroup;
     }
 
@@ -109,41 +107,27 @@ public class UserGroupService {
 
     @Transactional
     public Map<String, Object> findListGroup(Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
         int start = 0;
         int length = 1;
         int count = 0;
-        int draw = 0;
-        String groupName = null;
-        String groupDesc = null;
+
+        String groupDesc = CommonUtil.validOneNull(paramMap, "groupDesc");
+        String groupName = CommonUtil.validOneNull(paramMap, "groupName");
 
         if (paramMap.get("start") != null)
-            start = Integer.parseInt(paramMap.get("start").toString());
+            start = (int) paramMap.get("start");
         if (paramMap.get("length") != null)
-            length = Integer.parseInt(paramMap.get("length").toString());
+            length = (int) paramMap.get("length");
 
-        if (paramMap.get("draw") != null) {
-            draw = Integer.parseInt(paramMap.get("draw").toString());
-        }
         PageRequest pageRequest = length == 1 ? null : PageRequest.of(start / length, length);
-        Page<UserGroup> userGroupPageList = null;
-        List<UserGroup> userGroupList = null;
-        if (paramMap.get("groupName") != null) {
-            groupName = paramMap.get("groupName").toString();
-        }
 
-        if (paramMap.get("groupDesc") != null) {
-            groupDesc = paramMap.get("groupDesc").toString();
-        }
-
-        if (groupName == null)
-            groupName = "";
-        if (groupDesc == null)
-            groupDesc = "";
-        userGroupPageList = userGroupRepository
+        Page<UserGroup> userGroupPageList = userGroupRepository
                 .findByGroupNameIgnoreCaseLikeAndGroupDescIgnoreCaseLike("%" + groupName + "%", "%" + groupDesc + "%", pageRequest);
 
         count = (int) userGroupPageList.getTotalElements();
-        userGroupList = userGroupPageList.toList();
+        List<UserGroup> userGroupList = userGroupPageList.toList();
 
         List<GroupResponse> groupResponseList = userGroupList.stream().map(GroupResponse::new).collect(Collectors.toList());
 //        userGroupList.forEach(r -> {
@@ -152,7 +136,8 @@ public class UserGroupService {
 //                    log.info("user={},{}", r.getGroupName(), rr.getUser().getUserName());
 //                });
 //        });
-        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+
         try {
             if (paramMap.get("draw") != null) {
                 Map<String, Object> pagingMap = new HashMap<>();
