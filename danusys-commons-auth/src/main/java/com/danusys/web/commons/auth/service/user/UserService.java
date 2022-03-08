@@ -8,7 +8,6 @@ import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.repository.UserStatusRepository;
 import com.danusys.web.commons.auth.util.SHA256;
-import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
