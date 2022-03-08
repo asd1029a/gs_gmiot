@@ -1,9 +1,6 @@
 package com.danusys.web.commons.api.controller;
 
-import com.danusys.web.commons.api.model.Api;
-import com.danusys.web.commons.api.model.ApiParam;
-import com.danusys.web.commons.api.model.Facility;
-import com.danusys.web.commons.api.model.Station;
+import com.danusys.web.commons.api.model.*;
 import com.danusys.web.commons.api.service.ApiExecutorFactoryService;
 import com.danusys.web.commons.api.service.ApiExecutorService;
 import com.danusys.web.commons.api.service.FacilityService;
@@ -118,7 +115,9 @@ public class ApiCallRestController {
     public ResponseEntity getWeatherData(@RequestBody Map<String, Object> param) throws Exception {
         Api api = getRequestApi(param);
 
-        System.out.println("#######################################");
+        //ForecastGridTransfer fcgt = new ForecastGridTransfer( 35.14420140402784, 129.11313119919697, 0);
+        ForecastGridTransfer fcgt = new ForecastGridTransfer(99, 75, 1);
+        System.out.println(fcgt.transfer());
 
         System.out.println("#######################################");
         System.out.println(api);
