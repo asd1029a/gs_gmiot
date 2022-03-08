@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <!--<springProfile name="!ddlauto">
+           <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+               <encoder>
+                   <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class{36}.%M %L - %msg%n</pattern>
+                   <charset>utf8</charset>
+               </encoder>
+           </appender>
+       </springProfile>
+       <springProfile name="ddlauto">
+           <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+               <encoder>
+                   <pattern>%msg%n;</pattern>
+                   <charset>utf8</charset>
+               </encoder>
+           </appender>
+       </springProfile>-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class{36}.%M %L - %msg%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+</included>

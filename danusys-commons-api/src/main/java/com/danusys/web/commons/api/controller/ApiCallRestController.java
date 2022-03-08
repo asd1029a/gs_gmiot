@@ -114,6 +114,34 @@ public class ApiCallRestController {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
+    @PostMapping(value="/getWeatherData")
+    public ResponseEntity getWeatherData(@RequestBody Map<String, Object> param) throws Exception {
+        Api api = getRequestApi(param);
+
+        System.out.println("#######################################");
+
+        System.out.println("#######################################");
+        System.out.println(api);
+
+        //API DB 정보로 외부 API 호출
+        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+
+        String body = (String) responseEntity.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println(body);
+        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+//        List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("");
+//
+//        this.facilityService.saveAll(list);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body("");
+        return null;
+
+
+        //return this.call(param);
+    }
 
     @PostMapping(value = "/call")
     public ResponseEntity call(@RequestBody Map<String, Object> param) throws Exception {

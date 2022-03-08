@@ -63,7 +63,7 @@ public class LogAspect {
         long beforeTimeMillis = System.currentTimeMillis();
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        log.info(mapper.writeValueAsString(loginfo));
+//        log.info(mapper.writeValueAsString(loginfo));
 //        System.out.println(">>> 실행시작 : "
 //            + pjp.getSignature().getDeclaringTypeName() + "."
 //            + pjp.getSignature().getName());
@@ -81,7 +81,7 @@ public class LogAspect {
         long afterTimeMillis = System.currentTimeMillis() - beforeTimeMillis;
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        log.info(mapper.writeValueAsString(loginfo));
+//        log.info(mapper.writeValueAsString(loginfo));
 //        System.out.println(">>> 실행끝 : " + afterTimeMillis + " 밀리초 소요 "
 //            + pjp.getSignature().getDeclaringTypeName() + "."
 //            + pjp.getSignature().getName());
@@ -121,7 +121,7 @@ public class LogAspect {
 //        System.out.println(returnObj);
         String timeStamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Timestamp(System.currentTimeMillis()));
 
-        log.info("{}",returnObj);
+        //log.info("{}",returnObj);
         System.out.println(jp.getSignature());
     }
 
