@@ -52,7 +52,33 @@ const mntr = {
         //측정 도구
         let measure = new measureTool('map');
         window.measure = measure;
-
+        //동네 날씨 기능를 위해
+        map.setMapEventListener('moveend',(e) => {
+            let mapProj = e.map.getView().getProjection().getCode();
+            let mapCenter = e.map.getView().getCenter();
+            let mapLonLat = ol.proj.transform(mapCenter,mapProj,'EPSG:4326');
+            console.log(mapLonLat);
+            const param = {
+                callUrl : '/getWeatherData',
+                serviceKey: 'nbQo9xd6dnjWGJvaD7D3I+kcOYj902IwTIhRuiApnbAfVxPvEK1vkHetxewOD9WXKwmQNSnSjJWGw1asioZtQA==',
+                numOfRows: 1,
+                pageNo: '1000',
+                base_date: '20220308',
+                base_time: '0630',
+                lon : mapLonLat[0],
+                lat : mapLonLat[1]
+            }
+            $.ajax({
+                contentType : "application/json; charset=utf-8",
+                type : "POST",
+                url : '/api/getWeatherData',
+                dataType : "json",
+                data : JSON.stringify(param),
+                async : false
+            }).done( result => {
+                console.log(result);
+            });
+        });
         /**
          * 레이어 선택 조작
          */
@@ -199,7 +225,7 @@ const mntr = {
         });
         //RNM CLOSER
         $('.rnm_closer').on("click", e => {
-            $('.area_info').hide();
+            $('.area_right').hide();
             window.map.updateSize();
         });
         //LAYER ORDER LIST
@@ -307,26 +333,9 @@ const mntr = {
             console.log(result);
         });
 
-        const param = {
-            callUrl : '/getWeatherData',
-            serviceKey: 'nbQo9xd6dnjWGJvaD7D3I+kcOYj902IwTIhRuiApnbAfVxPvEK1vkHetxewOD9WXKwmQNSnSjJWGw1asioZtQA==',
-            numOfRows: 1,
-            pageNo: '1000',
-            base_date: '20220308',
-            base_time: '0630',
-            nx: 55,
-            ny: 127
-        }
-        $.ajax({
-            contentType : "application/json; charset=utf-8",
-            type : "POST",
-            url : '/api/getWeatherData',
-            dataType : "json",
-            data : JSON.stringify(param),
-            async : false
-        }).done( result => {
-            console.log(result);
-        })
+
+
+
 
 
     }
