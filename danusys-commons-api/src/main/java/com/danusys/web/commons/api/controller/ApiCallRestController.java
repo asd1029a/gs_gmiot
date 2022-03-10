@@ -116,21 +116,24 @@ public class ApiCallRestController {
         Api api = getRequestApi(param);
 
         //ForecastGridTransfer fcgt = new ForecastGridTransfer( 35.14420140402784, 129.11313119919697, 0);
-        ForecastGridTransfer fcgt = new ForecastGridTransfer(99, 75, 1);
+        //ForecastGridTransfer fcgt = new ForecastGridTransfer(99, 75, 1);
+        Double lon = (Double) param.get("lon");
+        Double lat = (Double) param.get("lat");
+        ForecastGridTransfer fcgt = new ForecastGridTransfer(lat, lon,0);
         System.out.println(fcgt.transfer());
 
         System.out.println("#######################################");
         System.out.println(api);
 
         //API DB 정보로 외부 API 호출
-        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+//        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
 
-        String body = (String) responseEntity.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
+//        String body = (String) responseEntity.getBody();
+//        ObjectMapper objectMapper = new ObjectMapper();
 
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println(body);
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+        //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        //System.out.println(body);
+        //Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
 //        List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("");
 //
 //        this.facilityService.saveAll(list);
