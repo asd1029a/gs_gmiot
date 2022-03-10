@@ -38,12 +38,15 @@ public class StringUtil {
     }
     public static Timestamp stringToTimestamp(String dateStr) {
         String newDateStr = "";
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         if(dateStr.length() == 16) {
             newDateStr = dateStr.concat(":00");
         } else if(dateStr.length() == 19) {
             newDateStr = dateStr;
+        } else {
+            return null;
         }
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime ldt = LocalDateTime.parse(newDateStr, dtf);
         return Timestamp.valueOf(ldt);
     }

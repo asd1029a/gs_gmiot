@@ -48,13 +48,19 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         EgovMap responseData = new EgovMap();
-        Timestamp startDt = StringUtil.stringToTimestamp(paramMap.get("startDt").toString());
-        Timestamp endDt = StringUtil.stringToTimestamp(paramMap.get("endDt").toString());
-        String keyword = paramMap.get("keyword").toString();
 
         /* 키워드 검색조건 */
+        String keyword = paramMap.get("keyword").toString();
         Specification<Notice> spec = Specification.where(NoticeSpecification.likeContent(keyword))
-                .or(NoticeSpecification.likeTitle(keyword)).and(NoticeSpecification.betweenDateTime(startDt, endDt));
+                .or(NoticeSpecification.likeTitle(keyword));
+
+        /* 날짜 검색조건 */
+        Timestamp startDt = StringUtil.stringToTimestamp(paramMap.get("startDt").toString());
+        Timestamp endDt = StringUtil.stringToTimestamp(paramMap.get("endDt").toString());
+        if(startDt != null || endDt != null) {
+            spec = spec.and(NoticeSpecification.betweenDateTime(startDt, endDt));
+        }
+
 
         /* 데이터 테이블 리스트 조회*/
         if(paramMap.get("draw") != null) {
