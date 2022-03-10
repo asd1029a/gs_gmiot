@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -69,20 +70,10 @@ public class RestApiExecutor implements ApiExecutor {
             HttpMethod method = HttpMethod.valueOf(api.getMethodType().name());
             MediaType mediaType = MediaType.valueOf(api.getContentType());
 
-            headers.setContentType(mediaType);
-            headers.setAccept(Collections.singletonList(mediaType));
             log.trace("웹서비스 주소:{}, 메소드:{}, 미디어타입:{}, 파라미터:{}", targetUrl, method, mediaType, reqMap);
 
-            HttpEntity requestEntity = null;
-            if (method == HttpMethod.GET || method == HttpMethod.DELETE) {
+            ResponseEntity<String> responseEntity = getResponseEntity(targetUrl, method, mediaType, reqMap);
 
-            } else if (method == HttpMethod.POST || method == HttpMethod.PUT) {
-                final String json = new ObjectMapper().writeValueAsString(reqMap);
-                requestEntity = new HttpEntity(json, headers);
-            }
-
-            log.trace("restUrl:{}, method:{}, request:{}", targetUrl, method, requestEntity);
-            ResponseEntity<String> responseEntity = restTemplate.exchange(targetUrl, method, requestEntity, String.class);
             final String res = responseEntity.getBody();
 
             AtomicReference<String> body = new AtomicReference(res);
@@ -102,5 +93,42 @@ public class RestApiExecutor implements ApiExecutor {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
-     }
+    }
+
+    private ResponseEntity getResponseEntity(String targetUrl, HttpMethod method, MediaType mediaType, Map<String, Object> reqMap) {
+        URI uri = null;
+
+        HttpEntity requestEntity = null;
+        ResponseEntity<String> responseEntity = null;
+
+        try {
+            final HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(mediaType);
+            headers.setAccept(Collections.singletonList(mediaType));
+
+            if (method == HttpMethod.GET || method == HttpMethod.DELETE) {
+                String queryString = reqMap.entrySet()
+                        .stream().map(f -> {
+                            return f.getKey() + "=" + f.getValue() + "";
+                        })
+                        .collect(Collectors.joining("&"));
+
+                uri = new URI(targetUrl + "?" + queryString);
+            } else if (method == HttpMethod.POST || method == HttpMethod.PUT) {
+                final String json = new ObjectMapper().writeValueAsString(reqMap);
+                uri = new URI(targetUrl);
+                requestEntity = new HttpEntity(json, headers);
+            }
+
+            log.trace("restUrl:{}, method:{}, request:{}", targetUrl, method, requestEntity);
+
+            responseEntity = restTemplate.exchange(uri, method, requestEntity, String.class);
+        } catch (RestClientResponseException rcrex) {
+            return ResponseEntity.status(rcrex.getRawStatusCode()).body("");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
+        }
+
+        return responseEntity;
+    }
 }

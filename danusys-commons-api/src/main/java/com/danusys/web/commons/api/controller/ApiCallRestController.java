@@ -145,6 +145,7 @@ public class ApiCallRestController {
     @PostMapping(value = "/call")
     public ResponseEntity call(@RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
+        String callUrl = param.get("callUrl").toString();
 
         Api api = getRequestApi(param);
 
@@ -160,17 +161,62 @@ public class ApiCallRestController {
 
     private Api getRequestApi(Map<String, Object> param) {
         Api api = null;
+        ApiParam apiParam = null;
+        String callUrl = param.get("callUrl").toString();
+        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
+
+        //API 마스터 정보 가져오기
+        api = reqParams == null ? getRequestApi(callUrl) : getRequestApi(callUrl, reqParams);
+
+        return api;
+    }
+
+    private Api getRequestApi(String callUrl) {
+        Api api = null;
         try {
-            log.trace("callUrl : {}", param.get("callUrl"));
+            log.trace("callUrl : {}", callUrl);
 
             //API 마스터 정보 가져오기
-            api = apiExecutorService.findByCallUrl(StrUtils.getStr(param.get("callUrl")));
+            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
 
             //요청 컬럼 정보 가져오기
             api.setApiRequestParams(apiExecutorService
                     .findApiParam(api.getId(), ParamType.REQUEST)
                     .stream()
-                    .filter(f -> f.getParamType() == ParamType.REQUEST).collect(toList())
+                    .filter(f -> f.getParamType() == ParamType.REQUEST)
+                    .collect(toList())
+            );
+
+            //응답 컬럼 정보 가져오기
+            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
+
+        } catch (Exception ex) {
+            log.error(ex.toString());
+            throw ex;
+        }
+
+        return api;
+    }
+
+    private Api getRequestApi(String callUrl, Map<String, Object> reqParams) {
+        Api api = null;
+        try {
+            log.trace("callUrl : {}", callUrl);
+
+            //API 마스터 정보 가져오기
+            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
+
+            //요청 컬럼 정보 가져오기
+            api.setApiRequestParams(apiExecutorService
+                    .findApiParam(api.getId(), ParamType.REQUEST)
+                    .stream()
+                    .filter(f -> f.getParamType() == ParamType.REQUEST)
+                    .map((f) -> {
+                        final Object p = reqParams.get(f.getFieldNm());
+                        if (p != null) f.setValue(p.toString());
+                        return f;
+                    })
+                    .collect(toList())
             );
 
             //응답 컬럼 정보 가져오기
