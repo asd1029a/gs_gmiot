@@ -5,22 +5,23 @@
 ## Library 모듈
 ### danusys-commons-api
 * 모듈명 : API 통신 공통 라이브러리
-* 서버포트 : X
+
 ### danusys-commons-app
-* 모듈명 : API 통신 공통 라이브러리
-* 서버포트 : X
+* 모듈명 : 모든 어플래케이션의 기본 라이브러리
 
 ### danusys-commons-auth
-* 모듈명 : 인증 공통 라이브러리
-* 서버포트 : X
+* 모듈명 : 인증 라이브러리
+
+### danusys-commons-crypto
+* 모듈명 : 암호화 라이브러리
 
 ### danusys-platform
 * 모듈명 : 광명 스마트시티 확산 사업(IoT 연계)
 * 서버포트 : 8082
+
 ### danusys-drone
 * 모듈명 : 드론관제
 * 서버포트 : 8083
-
 
 ## 로컬 개발환경 시작하기
 ### 준비사항
