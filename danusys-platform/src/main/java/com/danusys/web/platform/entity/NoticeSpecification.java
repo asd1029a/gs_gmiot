@@ -29,6 +29,14 @@ public class NoticeSpecification {
     }
 
     public static Specification<Notice> betweenDateTime(Timestamp startDatetime, Timestamp endDatetime) {
-        return (root, query, cb) -> cb.between(root.get("insertDt"), startDatetime, endDatetime);
+        return (root, query, cb) -> {
+            if(startDatetime == null) {
+                return cb.lessThanOrEqualTo(root.get("insertDt"), endDatetime);
+            } else if(endDatetime == null) {
+                return cb.greaterThanOrEqualTo(root.get("insertDt"), startDatetime);
+            } else {
+                return cb.between(root.get("insertDt"), startDatetime, endDatetime);
+            }
+        };
     }
 }
