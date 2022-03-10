@@ -20,11 +20,11 @@ import java.util.Map;
 
 /**
  *
- * @클래스이름 : NoticeController
+ * 클래스이름 : NoticeController
  *
- * @작성자 : 강명훈 주임연구원
- * @작성일 : 2022-03-07
- * @설명 : 공지사항 controller
+ * 작성자 : 강명훈 주임연구원
+ * 작성일 : 2022-03-07
+ * 설명 : 공지사항 controller
  *
 **/
 
@@ -88,10 +88,10 @@ public class NoticeController {
         FileUtil.fileDownload(request, response, fileName);
     }
 
-    @PostMapping(value = "/paging")
-    public Page<List<Map<String, Object>>> list(@RequestBody PagingRequest pagingRequest) {
-        return noticeService.getLists(pagingRequest);
-    }
+//    @PostMapping(value = "/paging")
+//    public Page<List<Map<String, Object>>> list(@RequestBody PagingRequest pagingRequest) {
+//        return noticeService.getLists(pagingRequest);
+//    }
 
     /**
      * 공지사항 : 공지사항 엑셀

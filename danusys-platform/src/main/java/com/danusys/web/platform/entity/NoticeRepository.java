@@ -8,11 +8,11 @@ import java.util.List;
 
 /**
  *
- * @클래스이름 : NoticeRepository
+ * 클래스이름 : NoticeRepository
  *
- * @작성자 : 강명훈 주임연구원
- * @작성일 : 2022-03-07
- * @설명 : 공지사항 Repository 클래스
+ * 작성자 : 강명훈 주임연구원
+ * 작성일 : 2022-03-07
+ * 설명 : 공지사항 Repository 클래스
  *
 **/
 
