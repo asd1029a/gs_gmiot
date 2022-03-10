@@ -104,7 +104,7 @@
             <div class="missionSummary" style="display: none;">
                 <ul>
                     <li><span>미션명</span><p id="summaryName"></p></li>
-                    <li><span>총 거리</span><p id="summaryDistance"></p><small>km</small></li>
+                    <li><span>총 거리</span><p id="summaryDistance"></p><small>m</small></li>
                     <li><span>예상 시간</span><p id="summaryTime"></p><small>분</small></li>
                     <li><span>최종 수정</span><p id="summaryUserId"></p><small><p id="summaryUpdateDt"></p></small></li>
                 </ul>
@@ -124,7 +124,7 @@
     </div>
     <script>
         document.addEventListener("DOMContentLoaded",function () {
-            const mapManager = new mapCreater('map', 2);
+            const mapManager = new mapCreater('map', 0);
             //map.createMousePosition('mousePosition');
             //map.scaleLine();
             window.mapManager = mapManager;

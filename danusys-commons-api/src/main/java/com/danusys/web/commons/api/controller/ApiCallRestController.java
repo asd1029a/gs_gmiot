@@ -1,9 +1,6 @@
 package com.danusys.web.commons.api.controller;
 
-import com.danusys.web.commons.api.model.Api;
-import com.danusys.web.commons.api.model.ApiParam;
-import com.danusys.web.commons.api.model.Facility;
-import com.danusys.web.commons.api.model.Station;
+import com.danusys.web.commons.api.model.*;
 import com.danusys.web.commons.api.service.ApiExecutorFactoryService;
 import com.danusys.web.commons.api.service.ApiExecutorService;
 import com.danusys.web.commons.api.service.FacilityService;
@@ -114,10 +111,41 @@ public class ApiCallRestController {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
+    @PostMapping(value="/getWeatherData")
+    public ResponseEntity getWeatherData(@RequestBody Map<String, Object> param) throws Exception {
+        Api api = getRequestApi(param);
+
+        //ForecastGridTransfer fcgt = new ForecastGridTransfer( 35.14420140402784, 129.11313119919697, 0);
+        ForecastGridTransfer fcgt = new ForecastGridTransfer(99, 75, 1);
+        System.out.println(fcgt.transfer());
+
+        System.out.println("#######################################");
+        System.out.println(api);
+
+        //API DB 정보로 외부 API 호출
+        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+
+        String body = (String) responseEntity.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println(body);
+        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+//        List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("");
+//
+//        this.facilityService.saveAll(list);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body("");
+        return null;
+
+
+        //return this.call(param);
+    }
 
     @PostMapping(value = "/call")
     public ResponseEntity call(@RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
+        String callUrl = param.get("callUrl").toString();
 
         Api api = getRequestApi(param);
 
@@ -133,17 +161,62 @@ public class ApiCallRestController {
 
     private Api getRequestApi(Map<String, Object> param) {
         Api api = null;
+        ApiParam apiParam = null;
+        String callUrl = param.get("callUrl").toString();
+        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
+
+        //API 마스터 정보 가져오기
+        api = reqParams == null ? getRequestApi(callUrl) : getRequestApi(callUrl, reqParams);
+
+        return api;
+    }
+
+    private Api getRequestApi(String callUrl) {
+        Api api = null;
         try {
-            log.trace("callUrl : {}", param.get("callUrl"));
+            log.trace("callUrl : {}", callUrl);
 
             //API 마스터 정보 가져오기
-            api = apiExecutorService.findByCallUrl(StrUtils.getStr(param.get("callUrl")));
+            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
 
             //요청 컬럼 정보 가져오기
             api.setApiRequestParams(apiExecutorService
                     .findApiParam(api.getId(), ParamType.REQUEST)
                     .stream()
-                    .filter(f -> f.getParamType() == ParamType.REQUEST).collect(toList())
+                    .filter(f -> f.getParamType() == ParamType.REQUEST)
+                    .collect(toList())
+            );
+
+            //응답 컬럼 정보 가져오기
+            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
+
+        } catch (Exception ex) {
+            log.error(ex.toString());
+            throw ex;
+        }
+
+        return api;
+    }
+
+    private Api getRequestApi(String callUrl, Map<String, Object> reqParams) {
+        Api api = null;
+        try {
+            log.trace("callUrl : {}", callUrl);
+
+            //API 마스터 정보 가져오기
+            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
+
+            //요청 컬럼 정보 가져오기
+            api.setApiRequestParams(apiExecutorService
+                    .findApiParam(api.getId(), ParamType.REQUEST)
+                    .stream()
+                    .filter(f -> f.getParamType() == ParamType.REQUEST)
+                    .map((f) -> {
+                        final Object p = reqParams.get(f.getFieldNm());
+                        if (p != null) f.setValue(p.toString());
+                        return f;
+                    })
+                    .collect(toList())
             );
 
             //응답 컬럼 정보 가져오기

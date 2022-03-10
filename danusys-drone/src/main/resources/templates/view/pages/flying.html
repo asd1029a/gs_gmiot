@@ -59,17 +59,18 @@
                     <div class="mission">
                         <h6>미션 제어</h6>
                         <ul>
-                            <li onclick="droneSocket.startMission()"><i class="controlButton"><img src="images/default/controlsPlay.svg"></i>재생</li>
-                            <li onclick="droneSocket.pauseMission()"><i class="controlButton"><img src="images/default/controlsStop.svg"></i>일시정지</li>
+                            <li onclick="droneSocket.startMission()"><i class="controlButton"><img src="images/default/controlsPlay.svg"></i>미션시작</li>
+                            <li id="startAndStop" onclick="droneSocket.pauseMission()"><i class="controlButton"><img src="images/default/controlsStop.svg"></i><span>일시정지</span></li>
+                            <li onclick="droneSocket.returnMission()"><i class="controlButton"><img src="images/default/controlsHome.svg"></i>귀환</li>
                         </ul>
                     </div>
-                    <div class="drone">
+                    <!--<div class="drone">
                         <h6>드론 제어</h6>
                         <ul>
                             <li onclick="droneSocket.returnMission()"><i class="controlButton"><img src="images/default/controlsHome.svg"></i>귀환</li>
-                            <li onclick="setDrawDrone.clickGoToMission()"><i class="controlButton"><img src="images/default/controlsGoto.svg"></i>Go To</li>
+                            &lt;!&ndash;<li onclick="setDrawDrone.clickGoToMission()" id="goToText"><i class="controlButton"><img src="images/default/controlsGoto.svg"></i>Go To</li>&ndash;&gt;
                         </ul>
-                    </div>
+                    </div>-->
                 </article>
                 <article class="values">
                     <h6>Values</h6>
@@ -89,11 +90,14 @@
                     </dt>
                     <dd><i><img src="images/default/streamFull.svg"></i></dd>
                 </dl>
-                <div class="video"></div>
+                <div class="video" id="video">
+                    <video class="video-content" id="videoPlayer" autoplay= "autoplay" muted="true" style="height: 245px;"></video>
+                </div>
+
                 <h6>Values</h6>
                 <div class="streamValues">
                     <ul>
-                        <li><i class="controlButton"><img src="images/default/valuesRec.svg"></i>RED</li>
+                        <li onclick="flyingVideo.videoPlay();"><i class="controlButton"><img src="images/default/valuesRec.svg"></i>RED</li>
                         <li><i class="controlButton"><img src="images/default/valuesCamera.svg"></i>카메라</li>
                     </ul>
                     <div class="PTZ">
@@ -125,7 +129,7 @@
                 <dt>목록<span>0</span></dt>
                 <dd class="switchButton">
                     <span>모든 정보 OFF</span>
-                    <input type="checkbox" id="switchList" /><label for="switchList">Toggle</label>
+                    <input type="checkbox" id="switchList"/><label onclick="pageFlying.mapComponentDisplay()" for="switchList">Toggle</label>
                 </dd>
             </dl>
             <div class="listScroll">
@@ -136,7 +140,7 @@
         <div class="missionSummary" style="display: none;">
             <ul>
                 <li><span>미션명</span><p id="summaryName"></p></li>
-                <li><span>총 거리</span><p id="summaryDistance"></p><small>km</small></li>
+                <li><span>총 거리</span><p id="summaryDistance"></p><small>m</small></li>
                 <li><span>예상 시간</span><p id="summaryTime"></p><small>분</small></li>
                 <li><span>최종 수정</span><p id="summaryUserId"></p><small><p id="summaryUpdateDt"></p></small></li>
             </ul>
@@ -144,7 +148,7 @@
         <button class="lnbToggle"><span></span></button>
     </div>
     <script>
-        const mapManager = new mapCreater("map",2);
+        const mapManager = new mapCreater("map",0);
         window.mapManager = mapManager;
     </script>
 </th:block>
