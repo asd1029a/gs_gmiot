@@ -27,8 +27,8 @@ public class ForecastGridTransfer {
     class LatXLonY {
         public double originLat;
         public double originLon;
-        public double gridX;
-        public double gridY;
+        public int gridX;
+        public int gridY;
     }
 
     /**
@@ -89,14 +89,14 @@ public class ForecastGridTransfer {
                    if(theta > Math.PI) theta -=2.0 * Math.PI;
                    if(theta < -Math.PI) theta +=2.0 * Math.PI;
                    theta *= sn;
-            double x = Math.floor(ra * Math.sin(theta) + XO + 0.5);
-            double y = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
+            int x = (int) Math.floor(ra * Math.sin(theta) + XO + 0.5);
+            int y = (int) Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
 
             latXLonY.gridX = x;
             latXLonY.gridY = y;
         } else { //to_lonlat
-            latXLonY.gridX = this.xLat;
-            latXLonY.gridY = this.yLon;
+            latXLonY.gridX = (int) this.xLat;
+            latXLonY.gridY = (int) this.yLon;
 
             double xlat =  this.xLat;
             double ylon = this.yLon;
@@ -131,8 +131,8 @@ public class ForecastGridTransfer {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("lon", Double.toString(latXLonY.originLon));
         resultMap.put("lat", Double.toString(latXLonY.originLat));
-        resultMap.put("nx", Double.toString(latXLonY.gridX));
-        resultMap.put("ny", Double.toString(latXLonY.gridY));
+        resultMap.put("nx", Integer.toString(latXLonY.gridX));
+        resultMap.put("ny", Integer.toString(latXLonY.gridY));
         return resultMap;
     }
 

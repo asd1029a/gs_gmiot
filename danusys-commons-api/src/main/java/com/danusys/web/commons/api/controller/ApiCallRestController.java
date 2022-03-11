@@ -113,26 +113,33 @@ public class ApiCallRestController {
 
     @PostMapping(value="/getWeatherData")
     public ResponseEntity getWeatherData(@RequestBody Map<String, Object> param) throws Exception {
-        Api api = getRequestApi(param);
-
         //ForecastGridTransfer fcgt = new ForecastGridTransfer( 35.14420140402784, 129.11313119919697, 0);
         //ForecastGridTransfer fcgt = new ForecastGridTransfer(99, 75, 1);
-        Double lon = (Double) param.get("lon");
-        Double lat = (Double) param.get("lat");
+        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
+        Double lon = (Double) reqParams.get("lon");
+        Double lat = (Double) reqParams.get("lat");
         ForecastGridTransfer fcgt = new ForecastGridTransfer(lat, lon,0);
-        System.out.println(fcgt.transfer());
 
+        Map<String, Object> resultMap = fcgt.transfer();
+
+        reqParams.put("nx",resultMap.get("nx"));
+        reqParams.put("ny",resultMap.get("ny"));
+//        base_date: '20220311',
+//        base_time: '0630',
+
+        param.put("reqPrams", reqParams);
+
+        Api api = getRequestApi(param);
         System.out.println("#######################################");
         System.out.println(api);
-
         //API DB 정보로 외부 API 호출
-//        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
 
-//        String body = (String) responseEntity.getBody();
-//        ObjectMapper objectMapper = new ObjectMapper();
+        String body = (String) responseEntity.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        //System.out.println(body);
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println(body);
         //Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
 //        List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("");
 //
