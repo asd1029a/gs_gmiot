@@ -7,6 +7,7 @@ import com.danusys.web.commons.api.service.FacilityService;
 import com.danusys.web.commons.api.service.StationService;
 import com.danusys.web.commons.api.types.ParamType;
 import com.danusys.web.commons.app.CamelUtil;
+import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,9 +26,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -111,21 +111,30 @@ public class ApiCallRestController {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
-    @PostMapping(value="/getWeatherData")
-    public ResponseEntity getWeatherData(@RequestBody Map<String, Object> param) throws Exception {
+    @PostMapping(value="/getCurrentSkyData")
+    public ResponseEntity getCurrentSkyData(@RequestBody Map<String, Object> param) throws Exception {
         //ForecastGridTransfer fcgt = new ForecastGridTransfer( 35.14420140402784, 129.11313119919697, 0);
         //ForecastGridTransfer fcgt = new ForecastGridTransfer(99, 75, 1);
         Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
+
+        //nx, ny 기상청 격자 param 처리
         Double lon = (Double) reqParams.get("lon");
         Double lat = (Double) reqParams.get("lat");
         ForecastGridTransfer fcgt = new ForecastGridTransfer(lat, lon,0);
-
         Map<String, Object> resultMap = fcgt.transfer();
-
         reqParams.put("nx",resultMap.get("nx"));
         reqParams.put("ny",resultMap.get("ny"));
-//        base_date: '20220311',
-//        base_time: '0630',
+
+        //base_time, base_date param 처리
+        Date d = new Date();
+        SimpleDateFormat f1 = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat f2 = new SimpleDateFormat("HH");
+        String baseDate = f1.format(d);
+        String baseTime = Integer.parseInt(f2.format(d))-1+"30";
+
+        if(Integer.parseInt(baseTime) < 1000) baseTime="0"+baseTime;
+        reqParams.put("base_date", baseDate);
+        reqParams.put("base_time", baseTime);
 
         param.put("reqPrams", reqParams);
 
@@ -140,16 +149,57 @@ public class ApiCallRestController {
 
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         System.out.println(body);
-        //Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-//        List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("");
-//
-//        this.facilityService.saveAll(list);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body("");
-        return null;
 
+        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
 
-        //return this.call(param);
+        Map<String, Object> dep1 = (Map<String, Object>) resultBody.get("response");
+        Map<String, Object> dep2 = (Map<String, Object>) dep1.get("body");
+        Map<String, Object> dep3 = (Map<String, Object>) dep2.get("items");
+
+        List<Map<String, Object>> item = (List<Map<String, Object>>) dep3.get("item");
+
+        Map<String, Object > result = new HashMap<>();
+
+        Iterator iterObj = item.iterator();
+        while (iterObj.hasNext()) {
+            Map<String, Object> result2 = (Map<String, Object>) iterObj.next();
+            String category = result2.get("category").toString();
+            String fcstDate = result2.get("fcstDate").toString();
+            String fcstValue = result2.get("fcstValue").toString();
+
+            //하늘 상태
+            if("SKY".equals(category)) {
+                if("1".equals(fcstValue)) {
+                    result.put("sky", "sunny");
+                    result.put("skyNm", "맑음");
+                } else if("2".equals(fcstValue) || "4".equals(fcstValue)|| "3".equals(fcstValue) ) {
+                    result.put("sky", "cloudy");
+                    result.put("skyNm", "구름많음");
+                }
+            }
+            if("PTY".equals(category)) {
+                if("1".equals(fcstValue)) {
+                    result.put("sky", "rain");
+                    result.put("skyNm", "비");
+                } else if("2".equals(fcstValue)) {
+                    result.put("sky", "sleet");
+                    result.put("skyNm", "진눈깨비");
+                } else if("3".equals(fcstValue)) {
+                    result.put("sky", "snow");
+                    result.put("skyNm", "눈");
+                } else if("4".equals(fcstValue)) {
+                    result.put("sky", "rain");
+                    result.put("skyNm", "비");
+                }
+            }
+            //현재 온도
+            if("T1H".equals(category)) {
+                result.put("tmp", result2.get("fcstValue"));
+            }
+        };
+
+        System.out.println(result);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PostMapping(value = "/call")

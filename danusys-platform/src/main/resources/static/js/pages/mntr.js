@@ -57,11 +57,11 @@ const mntr = {
             let mapProj = e.map.getView().getProjection().getCode();
             let mapCenter = e.map.getView().getCenter();
             let mapLonLat = ol.proj.transform(mapCenter,mapProj,'EPSG:4326');
-            console.log(mapLonLat);
+            // 날씨 데이터 반환
             const param = {
                 callUrl : '/getWeatherData',
                 reqParams : {
-                    numOfRows: '10',
+                    numOfRows: '1000',
                     pageNo: '1',
                     dataType: "JSON",
                     lon : mapLonLat[0],
@@ -71,30 +71,35 @@ const mntr = {
             $.ajax({
                 contentType : "application/json; charset=utf-8",
                 type : "POST",
-                url : '/api/getWeatherData',
+                url : '/api/getCurrentSkyData',
                 dataType : "json",
                 data : JSON.stringify(param),
                 async : false
             }).done( result => {
-                console.log(result);
+                if (!result) return;
+                const html = "<i><img src='/images/default/icon_weather_"+ result["sky"] +".png'></i>"
+                    + result["skyNm"] + " " + result["tmp"] + "℃" ;
+                $(".map_location #admWeather").empty();
+                $(".map_location #admWeather").append(html);
             });
-
-            const param2 = {
-                lon : mapLonLat[0],
-                lat : mapLonLat[1]
-            }
+            // 현재 위치 시-군-동 반환
             $.ajax({
                 type : "POST",
                 url : '/adm/lonLatToAdm',
-                contentType : "application/json",
+                contentType : "application/json; charset=utf-8",
+                dataType : "JSON",
                 async : false,
-                data : JSON.stringify(param2)
+                data : JSON.stringify({
+                    lon : mapLonLat[0],
+                    lat : mapLonLat[1]
+                })
             }).done( result => {
-                console.log(result);
+                if (!result) return;
+                $(".map_location #admAreaName").text( result["areaName"]);
             });
 
+        }); // 지도 move end 이벤트
 
-        });
         /**
          * 레이어 선택 조작
          */
