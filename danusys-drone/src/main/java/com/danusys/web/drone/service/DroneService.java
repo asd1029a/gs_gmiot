@@ -89,7 +89,7 @@ public class DroneService {
                 droneStatus = "운영중";
             }
             if (droneRequest.getUserId() != null) {
-                log.info("id로검색");
+              //  log.info("id로검색");
                 droneList = droneRepository.findAllByUserIdLikeAndStatus("%" + droneRequest.getUserId() + "%", droneStatus, sort);
 
             } else if (droneRequest.getDroneDeviceName() != null) {
@@ -110,7 +110,7 @@ public class DroneService {
         }
 
 
-        log.info("droneStatus={}", droneStatus);
+       // log.info("droneStatus={}", droneStatus);
 
 
         return droneList;
@@ -122,7 +122,7 @@ public class DroneService {
 
 
     public Drone findDrone(Drone drone) {
-        log.info("droneName={}", drone.getDroneDeviceName());
+        //log.info("droneName={}", drone.getDroneDeviceName());
         if (drone.getDroneDeviceName() != null) {
             return droneRepository.findByDroneDeviceName(drone.getDroneDeviceName());
         } else {

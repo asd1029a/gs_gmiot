@@ -320,8 +320,31 @@
 .popup div.list_search .list_table table tbody td span input[type="radio"] + label,
 .popup div.list_search .list_table table tbody td span input[type="radio"] + label span{margin: 0px; padding: 0px;}
 
+/* statistics */
+.statistics{display: flex; height: calc(100% - 60px);}
+.statistics_container{position: relative; flex: 1; display: flex; flex-direction: column; background: #0c0c0d;}
+.statistics_container h4{display: flex; align-items: center; grid-gap: 10px; box-sizing: border-box; height: 60px; padding: 0px 26px; border-bottom: 1px solid #292c34;}
+.statistics_container h4 i{margin: 0px;}
+.statistics_container h4 i img{max-width: 20px; max-height: 20px; margin: auto;}
+.statistics_content{overflow: hidden; flex: 1; display: flex; flex-direction: column; grid-gap: 14px; padding: 26px;}
+.statistics_content article{padding: 26px; border-radius: 10px; background: #1a1b1d;}
+.statistics_content article h6{font-size: 16px; color: #dee0e4;}
+.statistics_content article.search_list{flex: 1; display: flex; flex-direction: column; overflow: hidden;}
 
-
+.statistics_content{overflow: hidden; flex: 1; display: grid; grid-gap: 14px; padding: 26px; grid-template-columns: 1fr 1fr; grid-template-rows: 180px 1fr;}
+.statistics_content article{padding: 26px; border-radius: 10px; background: #1a1b1d;}
+.statistics_content article h6{font-size: 16px; color: #dee0e4;}
+.statistics_content article.search_form{padding: 26px; border-radius: 10px; background: #1a1b1d; grid-column: span 2;}
+.statistics_content article.search_list{flex: 1; display: flex; flex-direction: column; grid-gap: 18px; overflow: hidden; grid-column: span 1;}
+.statistics_content .graph_contents{flex: 1; display: flex; flex-direction: column; grid-gap: 10px;}
+.statistics_content .graph_contents .graph_title{display: flex; align-items: center; justify-content: space-between;}
+.statistics_content .graph_contents .graph_title dt{font-size: 16px; color: #dee0e4;}
+.statistics_content .graph_contents .graph_title dd{overflow: hidden; display: flex; align-items: center; justify-content: space-between; font-size: 16px; color: #dee0e4; border-radius: 4px;}
+.statistics_content .graph_contents .graph_title dd span{display: flex; grid-gap: 6px; height: 34px; line-height: 32px; padding: 0px 14px; color: #7f8491; font-size: 14px; border-right: 1px solid #1a1b1d; background: #292c34; cursor: pointer;}
+.statistics_content .graph_contents .graph_title dd span:nth-last-child(1){border: none;}
+.statistics_content .graph_contents .graph_title dd span:hover{color: #dee0e4;}
+.statistics_content .graph_contents .graph_title dd span:active{color: #dee0e4; background: #3a66e5;}
+.statistics_content .graph_contents .graph_area{flex: 1; background: #26282f;}
 
 
 
