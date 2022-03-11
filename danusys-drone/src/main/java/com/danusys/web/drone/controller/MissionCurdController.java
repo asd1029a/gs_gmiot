@@ -40,7 +40,7 @@ public class MissionCurdController {
 
     @PutMapping("/missiondetails")
     public ResponseEntity<?> saveMissionDetails(@RequestBody Map<String, Object> missionList) {
-        log.info("missionId={}", missionList);
+     //   log.info("missionId={}", missionList);
         List<MissionDetails> missionDetailsList = new ArrayList<>();
         missionDetailsList = (List<MissionDetails>) missionList.get("missionList");
 

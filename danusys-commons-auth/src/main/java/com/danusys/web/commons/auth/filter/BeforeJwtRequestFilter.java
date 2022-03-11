@@ -52,11 +52,11 @@ public class BeforeJwtRequestFilter extends OncePerRequestFilter {
 
         Cookie[] cookies = request.getCookies();
         //쿠키안에
-        log.info("pre");
+       // log.info("pre");
         ctx.addZuulRequestHeader("a","b");
 
         if (cookies != null) {
-            log.info("hi2");
+            //log.info("hi2");
             for (Cookie cookie : cookies) {
 
                 //  log.info(cookie.getValue());

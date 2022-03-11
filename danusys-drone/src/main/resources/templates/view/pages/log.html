@@ -1,5 +1,8 @@
 <!doctype html>
-<html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base_layout}">
 <head>
     <meta charset="utf-8">
     <title>로그</title>
@@ -12,27 +15,28 @@
 </head>
 
 <body>
-<div class="wrap">
-    <!--    헤더 영역 -->
-    <header>
-        <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>
-        <ul class="gnm">
-            <li><a href="/drone">드론</a></li>
-            <li><a href="/mission">미션</a></li>
-            <li><a href="/flying">비행</a></li>
-            <li class="on"><a href="/log">로그</a></li>
-        </ul>
-        <ul class="utmenu">
-            <li><i><img src="images/um/utmenuUser.svg"></i></li>
-            <li><i><img src="images/um/utmenuBell.svg"></i></li>
-        </ul>
-    </header>
-    <!-- droneFrame -->
-    <div class="droneFrameWrap">
+<!--<div class="wrap">-->
+<!--    헤더 영역 -->
+<!--    <header>-->
+<!--        <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>-->
+<!--        <ul class="gnm">-->
+<!--            <li><a href="/drone">드론</a></li>-->
+<!--            <li><a href="/mission">미션</a></li>-->
+<!--            <li><a href="/flying">비행</a></li>-->
+<!--            <li class="on"><a href="/log">로그</a></li>-->
+<!--        </ul>-->
+<!--        <ul class="utmenu">-->
+<!--            <li class="test_button"><i><img src="images/um/utmenuUser.svg"></i></li>-->
+<!--            <li><i><img src="images/um/utmenuBell.svg"></i></li>-->
+<!--        </ul>-->
+<!--    </header>-->
+<!-- droneFrame -->
+<th:block layout:fragment="content">
+    <div class  ="droneFrameWrap">
         <section class="droneLog">
             <article class="searchForm">
                 <h6>비행로그</h6>
-                <form>
+                <form onsubmit="return false">
                     <div>
                         <dl class="dateSet">
                             <dt>조회 기간</dt>
@@ -135,12 +139,14 @@
             </article>
         </section>
     </div>
-</div>
+    <!--</div>-->
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-</script>
+    </script>
 
-
+</th:block>
+<footer layout:fragment="footer">
+</footer>
 </body>
 </html>

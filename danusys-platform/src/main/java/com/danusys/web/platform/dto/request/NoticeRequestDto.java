@@ -5,11 +5,11 @@ import lombok.*;
 
 /**
  *
- * @클래스이름 : NoticeRequestDto
+ * 클래스이름 : NoticeRequestDto
  *
- * @작성자 : 강명훈 주임연구원
- * @작성일 : 2022-03-07
- * @설명 : 공지사항 요청 Data Transfer Object, 데이터 요청시 해당 클래스로 매핑할 것
+ * 작성자 : 강명훈 주임연구원
+ * 작성일 : 2022-03-07
+ * 설명 : 공지사항 요청 Data Transfer Object, 데이터 요청시 해당 클래스로 매핑할 것
  *
 **/
 

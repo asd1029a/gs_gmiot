@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class MissionDetailsService {
     private final MissionRepository missionRepository;
     private int estimatedTime = 0;
     private int timeCountNumber = 0;
-
+    private double totalDistance = 0;
 
     @Transactional
     public MissionDetails saveMission(MissionDetails missionDetails, long mission_id) {
@@ -49,8 +50,10 @@ public class MissionDetailsService {
 
      */
     @Transactional
-    public String saveMission(List<MissionDetails> missionDetails, long mission_id, double totalDistance) {
-        log.info("mission_id={}", mission_id);
+    public String saveMission(List<MissionDetails> missionDetails, long mission_id, double Distance) {
+        //  log.info("mission_id={}", mission_id);
+
+        totalDistance = (int) Distance;
         Optional<Mission> optionalMission = missionRepository.findById(mission_id);
 
 
@@ -58,19 +61,20 @@ public class MissionDetailsService {
             return "fail";
         }
         Mission mission = optionalMission.get();
-
+        Timestamp timeStamp=new Timestamp(System.currentTimeMillis());
+        mission.setUpdateDt(timeStamp);
 
         ObjectMapper mapper = new ObjectMapper();
         List<MissionDetails> missionDetailsList =
                 mapper.convertValue(missionDetails, new TypeReference<List<MissionDetails>>() {
                 });
 
-        log.info("missionDetails={}", missionDetails);
+        //  log.info("missionDetails={}", missionDetails);
 
         Long deleteResult = missionDetailsRepository.deleteByMission(mission);
 
         missionDetailsList.forEach(r -> {
-            if (r.getName().equals("waypoint")) {
+            if (r.getName().equals("waypoint") || r.getName().equals("return")) {
                 if (r.getSpeed() == 0)
                     estimatedTime += 10;
                 else
@@ -78,28 +82,42 @@ public class MissionDetailsService {
 
                 timeCountNumber++;
             }
+            if (r.getName().equals("loi")) {
+                if (r.getSpeed() == 0)
+                    estimatedTime += 10;
+                else
+                    estimatedTime += r.getSpeed();
+
+
+                if (r.getRadius() != 0 && r.getTime() != 0) {
+                    this.increaseTotalDistance(r.getRadius() * 2 * 3.14 * r.getTime());
+                }
+                timeCountNumber++;
+            }
 
             r.setMission(mission);
         });
-        log.info("estimatedTime={},timeCountNumber={}", estimatedTime, timeCountNumber);
+        //  log.info("estimatedTime={},timeCountNumber={}", estimatedTime, timeCountNumber);
+
         mission.setTotalDistance((int) totalDistance);
-        mission.setEstimatedTime((int) (totalDistance / estimatedTime * timeCountNumber / 60));
+        mission.setEstimatedTime((int) Math.round(totalDistance / estimatedTime * timeCountNumber / 60));
+
         missionRepository.save(mission);
 
         List<MissionDetails> isExist = missionDetailsRepository.findAllByMission(mission);
-        log.info("isExist={}", isExist);
+        // log.info("isExist={}", isExist);
         if (isExist.isEmpty()) {
             missionDetailsList.forEach(r -> {
-                
-                if(r.getName().equals("takeOff"))
+
+                if (r.getName().equals("takeOff"))
                     r.setKoName("이륙");
-                else if(r.getName().equals("loi"))
+                else if (r.getName().equals("loi"))
                     r.setKoName("로이터");
-                else if(r.getName().equals("return"))
+                else if (r.getName().equals("return"))
                     r.setKoName("귀환");
-                else if(r.getName().equals("waypoint"))
+                else if (r.getName().equals("waypoint"))
                     r.setKoName("경유지");
-                else if(r.getName().equals("roi"))
+                else if (r.getName().equals("roi"))
                     r.setKoName("관심영역");
                 missionDetailsRepository.save(r);
             });
@@ -121,7 +139,7 @@ public class MissionDetailsService {
         List<MissionDetails> missionDetailsList = mapper.convertValue(missionDetails, new TypeReference<List<MissionDetails>>() {
         });
 
-        log.info("missionDetails={}", missionDetails);
+        //log.info("missionDetails={}", missionDetails);
 
 
         if (!mission.isPresent()) {
@@ -204,6 +222,11 @@ public class MissionDetailsService {
 
     public MissionDetails findByNameAndMission(String name, Mission mission) {
         return missionDetailsRepository.findByNameAndMission(name, mission);
+    }
+
+    private void increaseTotalDistance(double increaseDistance) {
+
+        this.totalDistance += increaseDistance;
     }
 
 }

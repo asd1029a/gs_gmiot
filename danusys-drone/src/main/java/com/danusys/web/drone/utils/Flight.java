@@ -110,7 +110,7 @@ public class Flight {
         }
 
 
-        log.info("alreadyDo={}", alreadyDo);
+      //  log.info("alreadyDo={}", alreadyDo);
         if (!alreadyDo) {
             Gson gson = new Gson();
 
@@ -197,7 +197,7 @@ public class Flight {
 
                     if (message.getPayload() instanceof HomePosition) {
                         MavlinkMessage<HomePosition> homePositionMavlinkMessage = (MavlinkMessage<HomePosition>) message;
-                        log.info("home Position = {}", homePositionMavlinkMessage.getPayload());
+             //           log.info("home Position = {}", homePositionMavlinkMessage.getPayload());
                         int latitude = homePositionMavlinkMessage.getPayload().latitude();//x
                         int longitude = homePositionMavlinkMessage.getPayload().longitude();//y
                         int altitude = homePositionMavlinkMessage.getPayload().altitude();//z

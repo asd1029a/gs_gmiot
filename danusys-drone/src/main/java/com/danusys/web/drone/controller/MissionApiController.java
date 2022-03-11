@@ -353,7 +353,7 @@ public class MissionApiController {
         String missionResult = null;
         do {
             missionResult = flight.returnDrone();
-            log.info(missionResult);
+       //     log.info(missionResult);
         }
         while (missionResult.equals("onemore"));
 //        flight.takeoff(100);

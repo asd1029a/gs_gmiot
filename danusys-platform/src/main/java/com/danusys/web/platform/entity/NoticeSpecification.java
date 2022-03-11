@@ -6,11 +6,11 @@ import java.sql.Timestamp;
 
 /**
  *
- * @클래스이름 : NoticeSpecification
+ * 클래스이름 : NoticeSpecification
  *
- * @작성자 : 강명훈 주임연구원
- * @작성일 : 2022-03-07
- * @설명 : 공지사항 Specification 클래스, 쿼리 조건문 기술
+ * 작성자 : 강명훈 주임연구원
+ * 작성일 : 2022-03-07
+ * 설명 : 공지사항 Specification 클래스, 쿼리 조건문 기술
  *
 **/
 
@@ -29,6 +29,14 @@ public class NoticeSpecification {
     }
 
     public static Specification<Notice> betweenDateTime(Timestamp startDatetime, Timestamp endDatetime) {
-        return (root, query, cb) -> cb.between(root.get("insertDt"), startDatetime, endDatetime);
+        return (root, query, cb) -> {
+            if(startDatetime == null) {
+                return cb.lessThanOrEqualTo(root.get("insertDt"), endDatetime);
+            } else if(endDatetime == null) {
+                return cb.greaterThanOrEqualTo(root.get("insertDt"), startDatetime);
+            } else {
+                return cb.between(root.get("insertDt"), startDatetime, endDatetime);
+            }
+        };
     }
 }

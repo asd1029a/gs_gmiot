@@ -131,13 +131,7 @@ $(".update_drone_detail_button").on("click", function () {
     let droneId = 0;
     if ($(".drone_id").val() != "")
         droneId = $(".drone_id").val();
-    console.log("droneId=", droneId);
     formData.append("droneId", droneId);
-    console.log(formData);
-    // let param={"uploadFile":formData,
-    //             "sPath":"d:\\te3/123/q",
-    //             "folderPath":"123123123"}
-
     $.ajax({
         url: "/file/upload/drone",
         type: "POST",
@@ -148,6 +142,7 @@ $(".update_drone_detail_button").on("click", function () {
         success: function (resultData) {
             //   console.log("resultData", resultData);
             $(".uploadName").val(resultData);
+            alert("저장되었습니다.");
 
         }
     })
@@ -191,8 +186,8 @@ function getDroneDetails(id) {
                     $(".drone_manufacturer").val(droneDetails.manufacturer);
                     $(".drone_insert_dt").val(droneDetails.insertDt);
                     $(".drone_type").val(droneDetails.type);
-                    $(".drone_weight").val(droneDetails.weight );
-                    $(".drone_maximum_operating_distance").val(droneDetails.maximumOperatingDistance );
+                    $(".drone_weight").val(droneDetails.weight);
+                    $(".drone_maximum_operating_distance").val(droneDetails.maximumOperatingDistance);
                     $(".drone_maximum_management_altitude").val(droneDetails.maximumManagementAltitude);
                     //$(".drone_operating_temperature_range").val("");
                     $(".drone_maximum_operating_speed").val(droneDetails.maximumOperatingSpeed);
@@ -217,45 +212,49 @@ function getDroneDetails(id) {
 
 }
 
-$(".delete_drone_detail_button").on("click", function () {
-    //   console.log($(".drone_id").val());
-    let param = {"id": $(".drone_id").val()};
+function delete_button_event() {
+    if (confirm("정말 삭제하시겠습니까??") == true) {    //확인
+        //   console.log($(".drone_id").val());
+        let param = {"id": $(".drone_id").val()};
 
-    $.ajax({
-        contentType: "application/json; charset=utf-8",
-        url: '/drone/api/drone/',
-        type: "DELETE",
-        async: false,
-        data: JSON.stringify(param),
-        success: function (resultData) {
-            //    console.log(resultData);
-            if (resultData === "success") {
-                $(".drone_location").val("");
-                $(".drone_status").val("");
-                $(".drone_master_manager").val("");
-                $(".drone_id").val("");
-                $(".drone_sub_manager").val("");
-                $(".drone_name").val("");
-                $(".drone_manufacturer").val("");
-                $(".drone_insert_dt").val("");
-                $(".drone_type").val("");
-                $(".drone_weight").val("");
-                $(".drone_maximum_operating_distance").val("");
-                $(".drone_maximum_management_altitude").val("");
-                //$(".drone_operating_temperature_range").val("");
-                $(".drone_maximum_operating_speed").val("");
-                $(".drone_sim_number").val("");
-                $(".drone_maximum_speed").val("");
-                $(".uploadName").val("");
-                param = {"droneDeviceName": ""};
-                loadDroneList(param);
+        $.ajax({
+            contentType: "application/json; charset=utf-8",
+            url: '/drone/api/drone/',
+            type: "DELETE",
+            async: false,
+            data: JSON.stringify(param),
+            success: function (resultData) {
+                //    console.log(resultData);
+                if (resultData === "success") {
+                    $(".drone_location").val("");
+                    $(".drone_status").val("");
+                    $(".drone_master_manager").val("");
+                    $(".drone_id").val("");
+                    $(".drone_sub_manager").val("");
+                    $(".drone_name").val("");
+                    $(".drone_manufacturer").val("");
+                    $(".drone_insert_dt").val("");
+                    $(".drone_type").val("");
+                    $(".drone_weight").val("");
+                    $(".drone_maximum_operating_distance").val("");
+                    $(".drone_maximum_management_altitude").val("");
+                    //$(".drone_operating_temperature_range").val("");
+                    $(".drone_maximum_operating_speed").val("");
+                    $(".drone_sim_number").val("");
+                    $(".drone_maximum_speed").val("");
+                    $(".uploadName").val("");
+                    param = {"droneDeviceName": ""};
+                    loadDroneList(param);
+                }
+
             }
+        });
+    } else {   //취소
+        return;
+    }
+}
 
-        }
-    });
-
-
-});
+$(".delete_drone_detail_button").on("click", delete_button_event);
 
 function getListMission() {
     let param = {"name": "", "droneId": ""};
@@ -297,7 +296,6 @@ function readImage(input) {
 $("#file").on("change", function (e) {
 
     readImage(e.target);
-
 
 
 });
@@ -406,6 +404,4 @@ $(".add_drone_device_name").on("input", function () {
 
 
 })
-
-
 
