@@ -99,10 +99,10 @@ public class  DroneCurdController {
 
             long droneId = droneDetailRequest.getDroneId();
             DroneDetails droneDetails=droneDetailRequest.getDroneDetails();
-            log.info("droneId={}",droneId);
+          //  log.info("droneId={}",droneId);
 
             long droneBaseId = droneDetailRequest.getDroneBase();
-            log.info("droneBaseId={}",droneBaseId);
+         //   log.info("droneBaseId={}",droneBaseId);
 
 
 

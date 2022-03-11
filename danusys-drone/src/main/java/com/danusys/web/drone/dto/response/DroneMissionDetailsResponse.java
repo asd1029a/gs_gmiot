@@ -30,6 +30,15 @@ public class DroneMissionDetailsResponse {
         this.droneDeviceName = drone.getDroneDeviceName();
         if (drone.getDroneInmission() != null) {
             this.mission = new MissionDto(drone.getDroneInmission().getMission());
+        }else{
+            Mission nullMission=new Mission();
+            nullMission.setId(null);
+            nullMission.setName(null);
+            nullMission.setUpdateDt(null);
+            nullMission.setTotalDistance(0);
+            nullMission.setEstimatedTime(0);
+
+            this.mission =new MissionDto(nullMission);
         }
 
         this.droneBase = drone.getDroneBase().getBaseName();

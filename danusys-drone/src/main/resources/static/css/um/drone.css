@@ -70,7 +70,7 @@ header .logo{display: flex; align-items: center; width: 320px; height: 100%; pad
 header .logo i{cursor: pointer;}
 header .gnm{flex: 1; display: flex; align-items: center; justify-content: center; grid-gap: 60px;}
 header .gnm li{height: 60px; line-height: 58px; box-sizing: border-box;}
-header .gnm li a{display: block; padding: 0px 14px; font-size: 18px; cursor: pointer;}
+/*header .gnm li a{display: block; padding: 0px 14px; font-size: 18px; cursor: pointer;}*/
 header .gnm li:hover{box-sizing: border-box; border-bottom: 4px solid #3a66e5;}
 header .gnm li.on{box-sizing: border-box; border-bottom: 4px solid #3a66e5;}
 header .gnm li:active{}
