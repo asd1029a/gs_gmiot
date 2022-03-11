@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <th:block th:insert="fragments/default/includes :: includes_head(~{::pagesLink})"></th:block>
+    <th:block th:insert="/fragments/default/default" />
+    <link rel="stylesheet" type="text/css" href="/css/board.css">
 </head>
+
 <body>
 <div class="wrap">
-    <th:block th:replace="fragments/default/header :: headerFragment">
-    </th:block>
+    <th:block th:replace="fragments/default/header :: headerFragment" />
 
-    <th:block layout:fragment="content">
-    </th:block>
+    <div class="statistics">
+        <th:block th:replace="fragments/stats/nav :: navFragment" />
+        <div class="statistics_container">
+            <th:block layout:fragment="content" />
+        </div>
+    </div>
 
-    <th:block th:insert="fragments/default/includes :: includes_footer(~{::pagesScript})">
-    </th:block>
+    <th:block th:replace="fragments/default/footer :: footerFragment"/>
 
-    <th:block th:replace="fragments/default/footer :: footerFragment">
-    </th:block>
 </div>
 </body>
 
