@@ -33,7 +33,7 @@ public class Mission {
     @Column(name = "user_id")
     private String userId;
 
-    @Column(name="drone_id")
+    @Column(name = "drone_id")
     private int droneId;
     //    @Column(name="insert_dt")
 //    private Timestamp insertDt;
@@ -42,15 +42,15 @@ public class Mission {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp updateDt;
 
-//    @Column(name="insert_user_seq")
+    //    @Column(name="insert_user_seq")
 //    private int insertUserSeq;
 //
 //    @Column(name="update_user_seq")
 //    private int updateUserSeq;
-    @Column(name ="total_distance")
+    @Column(name = "total_distance")
     private int totalDistance;
 
-    @Column(name="estimated_time")
+    @Column(name = "estimated_time")
     private int estimatedTime;
 
     // @JsonIgnore
@@ -67,7 +67,7 @@ public class Mission {
 
     @OneToMany(mappedBy = "mission")
     @JsonIgnore
-    private final List<DroneInMission> droneInMission =new ArrayList<>();
+    private final List<DroneInMission> droneInMission = new ArrayList<>();
 
 
 }

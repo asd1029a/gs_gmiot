@@ -1,5 +1,8 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base_layout}">
 <head>
     <meta charset="utf-8">
     <title>레이아웃</title>
@@ -14,7 +17,8 @@
 </head>
 
 <body>
-<div class="wrap">
+<th:block layout:fragment="content">
+<!--<div class="wrap">-->
     <!--    헤더 영역 -->
 
     <div class="popup" style="display: none;">
@@ -37,22 +41,22 @@
         </div>
 
     </div>
-    <header>
-        <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>
-        <ul class="gnm">
-            <!--            <li><a>Home</a></li>-->
-            <!--            <li><a th:href="/drone">대시보드</a></li>-->
-            <li class="on"><a href="/drone">드론</a></li>
-            <li><a href="/mission">미션</a></li>
-            <li><a href="/flying">비행</a></li>
-            <li><a href="/log">로그</a></li>
-            <!--            <li><a>설정</a></li>-->
-        </ul>
-        <ul class="utmenu">
-<!--            <li><i><img src="images/um/utmenuUser.svg"></i></li>-->
+<!--    <header>-->
+<!--        <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>-->
+<!--        <ul class="gnm">-->
+<!--            &lt;!&ndash;            <li><a>Home</a></li>&ndash;&gt;-->
+<!--            &lt;!&ndash;            <li><a th:href="/drone">대시보드</a></li>&ndash;&gt;-->
+<!--            <li class="on"><a href="/drone">드론</a></li>-->
+<!--            <li><a href="/mission">미션</a></li>-->
+<!--            <li><a href="/flying">비행</a></li>-->
+<!--            <li><a href="/log">로그</a></li>-->
+<!--            &lt;!&ndash;            <li><a>설정</a></li>&ndash;&gt;-->
+<!--        </ul>-->
+<!--        <ul class="utmenu">-->
+<!--            <li class="test_button"><i><img src="images/um/utmenuUser.svg"></i></li>-->
 <!--            <li><i><img src="images/um/utmenuBell.svg"></i></li>-->
-        </ul>
-    </header>
+<!--        </ul>-->
+<!--    </header>-->
     <!-- droneFrame -->
     <div class="droneFrameWrap">
         <div class="lnb" id="">
@@ -316,7 +320,7 @@
             </section>
         </div>
     </div>
-</div>
+<!--</div>-->
 
 <script type="text/javascript">
 
@@ -407,7 +411,8 @@
 
 
 </script>
-
-
+</th:block>
+<footer layout:fragment="footer">
+</footer>
 </body>
 </html>

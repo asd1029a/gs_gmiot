@@ -58,20 +58,13 @@ $(".excel_download").on("click", function () {
                 resultData = result.data;
             }
         });
+        paramMap = {
+            dataMap: resultData,
+            fileName: "Log.xlsx",
+            headerList: ["아이디", "드론이름", "미션이름", "입력날짜"]
+        };
 
-
-        console.log(resultData);
-        $.ajax({
-            contentType: "application/json; charset=utf-8",
-            url: "/file/excel/download",
-            data: JSON.stringify(resultData),
-            type: "POST",
-            success: function () {
-                window.location.href = "/file/excel.xlsx";
-            }
-
-        })
-
+        excelDownload(paramMap);
     }
 )
 
@@ -146,18 +139,16 @@ function ajaxLog(paramMap) {
             });
             $(".download_button").on("click", function (e) {
                 let id = $(e.currentTarget).data("id");
-                console.log(id);
-                console.log("data",resultData.data[id].droneLogDetails);
-                $.ajax({
-                    contentType: "application/json; charset=utf-8",
-                    url: "/file/excel/download",
-                    data: JSON.stringify(resultData.data[id].droneLogDetails),
-                    type: "POST",
-                    success: function () {
-                        window.location.href = "/file/excel.xlsx";
-                    }
+                //console.log(id);
+                // console.log("data", resultData.data[id].droneLogDetails);
 
-                });
+                let paramMap = {
+                    dataMap: resultData.data[id].droneLogDetails,
+                    fileName: "detailLog.xlsx"
+                };
+                excelDownload(paramMap);
+
+
             });
             if (resultData.startPage != 1)
                 $(".pageNav").append(`<li class="prev" data-id=${resultData.startPage - 1} ><i><img src="images/um/navPrev.svg"></i></li>`);
@@ -170,7 +161,7 @@ function ajaxLog(paramMap) {
                 }
 
             }
-            console.log(resultData.endPage, resultData.pages);
+            //console.log(resultData.endPage, resultData.pages);
             if (resultData.endPage < resultData.pages)
                 $(".pageNav").append(`<li class="next" data-id=${resultData.endPage + 1}><i><img src="images/um/navNext.svg"></i></li>`);
 
@@ -180,7 +171,7 @@ function ajaxLog(paramMap) {
                 let selectType = $("#selectType option:selected").val();
                 let searchWord = $(".search_word").val();
                 let id = $(e.currentTarget).data("id");
-                console.log(id);
+                //  console.log(id);
                 if (selectType === "all") {
                     let paramMap = {
                         "start": id - 1,
@@ -230,5 +221,29 @@ $(".search_reset").on("click", function () {
     $(".after_date").val("");
     $("#selectType option:eq(0)").prop("selected", true);
     ajaxLog(paramMap);
-})
+});
+
+
+
+function excelDownload(resultData) {
+    axios({
+        method: 'POST',
+        url: '/file/excel/download',
+        responseType: 'blob',
+        data: resultData
+    })
+        .then(response => {
+            // console.log(response);
+            const url
+                = window.URL.createObjectURL(new Blob([response.data],
+                {type: "application/vnd.ms-excel"}));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', resultData.fileName);
+
+            document.body.appendChild(link);
+            link.click();
+        });
+
+}
 

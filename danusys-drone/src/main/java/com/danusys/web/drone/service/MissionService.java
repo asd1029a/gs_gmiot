@@ -79,49 +79,64 @@ public class MissionService {
 
         List<Mission> missionList = null;
         Sort sort = sortByupdateDt();
-        log.info("paramMap={}", paramMap);
         Long id = null;
-        if (paramMap.get("name") != null && paramMap.get("droneId") != null) {
-            String name = paramMap.get("name").toString();
-            if (paramMap.get("droneId").equals("")) {
+
+
+
+        String name = null;
+        if (paramMap.get("missionName") != null) {
+            name = paramMap.get("missionName").toString();
+        }
+        if (paramMap.get("name") != null) {
+            name = paramMap.get("name").toString();
+        }
+        if (paramMap.get("droneId") != null && !paramMap.get("droneId").equals("")) {
+
+            id = Long.parseLong(paramMap.get("droneId").toString());
+        }
+
+
+
+        if (name != null) {
+            if (id == null) {
+
                 missionList = missionRepository.findAllByNameLike("%" + name + "%", sort);
             } else {
-                id = Long.parseLong(paramMap.get("droneId").toString());
                 if (id == 0l) {
                     Drone drone = new Drone();
-                    drone.setId(id);
-                    DroneInMission droneInMission=new DroneInMission();
-                    droneInMission.setDrone(drone);
-                  //  missionList = missionRepository.findAllByNameLikeAndDrone("%" + name + "%", drone, sort);
-                    missionList = missionRepository.findAllByNameLikeAndDroneInMission("%" + name + "%", droneInMission, sort);
+//                    drone.setId(id);
+//                    DroneInMission droneInMission=new DroneInMission();
+//                    droneInMission.setDrone(drone);
+                    //  missionList = missionRepository.findAllByNameLikeAndDrone("%" + name + "%", drone, sort);
+                    missionList = missionRepository.findAllByNameLikeAndDroneId("%" + name + "%", id.intValue(), sort);
                 } else {
                     Drone drone = new Drone();
-                    drone.setId(0l);
-                    DroneInMission droneInMission=new DroneInMission();
-                    droneInMission.setDrone(drone);
+//                    drone.setId(0l);
+//                    DroneInMission droneInMission=new DroneInMission();
+//                    droneInMission.setDrone(drone);
                     //missionList = missionRepository.findAllByNameLikeAndDroneNot("%" + name + "%", drone, sort);
-                    missionList = missionRepository.findAllByNameLikeAndDroneInMissionNot("%" + name + "%", droneInMission, sort);
+                    missionList = missionRepository.findAllByNameLikeAndDroneIdNot("%" + name + "%", 0, sort);
                 }
             }
         }
-        if (paramMap.get("adminUserId") != null && paramMap.get("droneId") != null) {
+        if (paramMap.get("adminUserId") != null) {
             String adminUserId = paramMap.get("adminUserId").toString();
-            if (paramMap.get("droneId").equals("")) {
+            if (id == null) {
                 missionList = missionRepository.findAllByUserIdLike("%" + adminUserId + "%", sort);
             } else {
-                id = Long.parseLong(paramMap.get("droneId").toString());
+
                 if (id == 0l) {
                     Drone drone = new Drone();
                     drone.setId(id);
-                    DroneInMission droneInMission=new DroneInMission();
+                    DroneInMission droneInMission = new DroneInMission();
                     droneInMission.setDrone(drone);
-              //      missionList = missionRepository.findAllByUserIdLikeAndDrone("%" + adminUserId + "%", drone, sort);
+                    //      missionList = missionRepository.findAllByUserIdLikeAndDrone("%" + adminUserId + "%", drone, sort);
                     missionList = missionRepository.findAllByUserIdLikeAndDroneInMission("%" + adminUserId + "%", droneInMission, sort);
 
                 } else {
                     Drone drone = new Drone();
                     drone.setId(0l);
-                    DroneInMission droneInMission=new DroneInMission();
+                    DroneInMission droneInMission = new DroneInMission();
                     droneInMission.setDrone(drone);
 //                    missionList = missionRepository.findAllByUserIdLikeAndDroneNot("%" + adminUserId + "%", drone, sort);
                     missionList = missionRepository.findAllByUserIdLikeAndDroneInMissionNot("%" + adminUserId + "%", droneInMission, sort);
@@ -192,7 +207,7 @@ public class MissionService {
 
     @Transactional
     public String deleteMission(Mission mission) {
-        log.info("{}", mission.getId());
+      //  log.info("{}", mission.getId());
         Optional<Mission> optionalMission = missionRepository.findById(mission.getId());
 
         if (!optionalMission.isPresent()) {
@@ -200,7 +215,7 @@ public class MissionService {
         }
 
         Long result = missionDetailsRepository.deleteByMission(mission);
-        log.info("result={}", result);
+       // log.info("result={}", result);
         droneInMissionRepository.deleteDroneInMission(mission.getId());
         missionRepository.deleteById(mission.getId());
 

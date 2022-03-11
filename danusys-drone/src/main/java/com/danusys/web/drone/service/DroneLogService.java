@@ -37,7 +37,7 @@ public class DroneLogService {
     }
 
     public Map<String, Object> findAllDroneLog(Map<String, Object> paramMap) {
-        log.info("paramMap={}", paramMap);
+        //log.info("paramMap={}", paramMap);
         int start = 0;
         int length = 1;
         int count = 1;

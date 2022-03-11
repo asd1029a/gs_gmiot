@@ -17,9 +17,9 @@ public interface MissionRepository extends CrudRepository<Mission, Long> {
     //List<Mission> findAllByNameLikeAndDroneNot(String name, Drone drone, Sort sort);
 
 
-    List<Mission> findAllByNameLikeAndDroneInMission(String name, DroneInMission drone, Sort sort);
+    List<Mission> findAllByNameLikeAndDroneId(String name, int droneId, Sort sort);
 
-    List<Mission> findAllByNameLikeAndDroneInMissionNot(String name, DroneInMission drone, Sort sort);
+    List<Mission> findAllByNameLikeAndDroneIdNot(String name, int droneId, Sort sort);
 
     List<Mission> findAllByNameLike(String name, Sort sort);
 
