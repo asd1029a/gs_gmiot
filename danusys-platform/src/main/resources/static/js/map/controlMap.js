@@ -118,7 +118,7 @@ const mapPopupContent = {
  * 레이어별 클릭 이벤트
  * */
 function clickIcon(layerType, layerObj) {
-    $('.area_info').show();
+    $('.area_right').show(); //임시
     window.map.updateSize();
     switch (layerType)  {
         case "station":

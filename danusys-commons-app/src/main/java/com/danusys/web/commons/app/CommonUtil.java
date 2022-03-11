@@ -11,11 +11,15 @@ import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+//import org.json.simple.JSONArray;
+//import org.json.simple.JSONObject;
 
 public class CommonUtil {
 	private static int SEQ = 0;
@@ -806,4 +810,53 @@ public class CommonUtil {
 	public static Boolean notEmpty(Object obj) {
 		return !empty(obj);
 	}
+
+	public static String getYesterday(String pattern) {
+		DateFormat df = new SimpleDateFormat(pattern);
+		final Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		return df.format(cal.getTime());
+	}
+
+	public static String getToday(String pattern) {
+		DateFormat df = new SimpleDateFormat(pattern);
+		final Calendar cal = Calendar.getInstance();
+		return df.format(cal.getTime());
+	}
+
+	public static String getTomorrow(String pattern) {
+		DateFormat df = new SimpleDateFormat(pattern);
+		final Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 1);
+		return df.format(cal.getTime());
+	}
+
+	public static String getAfterTomorrow(String pattern) {
+		DateFormat df = new SimpleDateFormat(pattern);
+		final Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, +2);
+		return df.format(cal.getTime());
+	}
+
+	public static String getNowHour(String pattern) {
+		DateFormat df = new SimpleDateFormat(pattern);
+		final Calendar cal = Calendar.getInstance();
+		return df.format(cal.getTime());
+	}
+
+//	public static JSONArray getWeek(String pattern) {
+//		JSONArray result = new JSONArray();
+//		// String [] days = new String[7];
+//		DateFormat df = new SimpleDateFormat(pattern);
+//		for (int i = 0; i < 7; i++) {
+//			JSONObject days = new JSONObject();
+//			final Calendar cal = Calendar.getInstance();
+//			cal.add(Calendar.DATE, i);
+//			int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+//			days.put("dayOfWeek", dayOfWeek);
+//			days.put("days", df.format(cal.getTime()));
+//			result.add(days);
+//		}
+//		return result;
+//	}
 }

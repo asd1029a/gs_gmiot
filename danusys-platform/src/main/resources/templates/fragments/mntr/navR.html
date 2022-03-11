@@ -2,7 +2,7 @@
 <th:block th:fragment="navRFragment">
 
     <!-- RNM -->
-    <section class="area_info smart_power">
+    <!--<section class="area_info smart_power">
         <h6>[Tab 1 관리번호] [Tab 1 형태] Tab 1 이름
             <i class="rnm_closer">
                 <img src="/images/default/close.svg">
@@ -27,7 +27,7 @@
                 </dd>
             </dl>
             <div class="area_video">
-                <div><!-- 영상 --></div>
+                <div>&lt;!&ndash; 영상 &ndash;&gt;</div>
             </div>
             <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon04.svg"></i>개소 정보</dt>
@@ -88,7 +88,172 @@
                 </dl>
             </div>
         </div>
+    </section>-->
+
+    <!-- 시설물 정보 -->
+    <section class="area_right">
+        <h6>{장소유형} {개소명} {이벤트 등급} {이벤트 종류} 발생정보<i class="rnm_closer"><img src="/images/default/close.svg"></i></h6>
+        <ul class="tab">
+            <li class="active"><a>기본 정보</a></li>
+            <li><a>추가 메뉴</a></li>
+        </ul>
+        <div class="area_right_contents">
+            <dl class="area_title">
+                <dt><i><img src="/images/default/titleIcon06.svg"></i>{장소유형} {개소명} 이벤트 발생 정보</dt>
+            </dl>
+            <div class="occur_process">
+                <div class="process_contents step1">
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
+                        <dd>이벤트 발생</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
+                        <dd>조치 중</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
+                        <dd>조치 완료</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
+                        <dd>이벤트 완료</dd>
+                    </dl>
+                </div>
+                <div class="process_contents step2" style="display: none;">
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
+                        <dd>이벤트 발생</dd>
+                    </dl>
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
+                        <dd>조치 중</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
+                        <dd>조치 완료</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
+                        <dd>이벤트 완료</dd>
+                    </dl>
+                </div>
+                <div class="process_contents step3" style="display: none;">
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
+                        <dd>이벤트 발생</dd>
+                    </dl>
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
+                        <dd>조치 중</dd>
+                    </dl>
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
+                        <dd>조치 완료</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
+                        <dd>이벤트 완료</dd>
+                    </dl>
+                </div>
+                <div class="process_contents step4" style="display: none;">
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
+                        <dd>이벤트 발생</dd>
+                    </dl>
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
+                        <dd>조치 중</dd>
+                    </dl>
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
+                        <dd>조치 완료</dd>
+                    </dl>
+                    <dl class="on">
+                        <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
+                        <dd>이벤트 완료</dd>
+                    </dl>
+                </div>
+                <ul class="button">
+                    <li class="active">투망감시</li>
+                    <li>조치완료</li>
+                    <li>이벤트 종료</li>
+                </ul>
+            </div>
+            <div class="area_right_text">
+                <ul>
+                    <li>
+                        <span>이벤트 등급</span>
+                        <span>{이벤트 등급}</span>
+                    </li>
+                    <li>
+                        <span>이벤트 종류</span>
+                        <span>{이벤트 종류}</span>
+                    </li>
+                    <li>
+                        <span>장소 유형</span>
+                        <span>{장소 유형}</span>
+                    </li>
+                    <li>
+                        <span>구역명</span>
+                        <span>{구역명}</span>
+                    </li>
+                    <li>
+                        <span>개소 ID / 개소명</span>
+                        <span>{개소 ID}&nbsp;{개소명}</span>
+                    </li>
+                    <li>
+                        <span>개소 주소</span>
+                        <span>{개소 주소}</span>
+                    </li>
+                    <li>
+                        <span>이벤트 발생시각</span>
+                        <span>{이벤트 발생시각}</span>
+                    </li>
+                </ul>
+            </div>
+            <dl class="area_title">
+                <dt><i><img src="/images/default/titleIcon04.svg"></i>{장소유형} {개소명} 스마트분전함 정보</dt>
+            </dl>
+            <div class="area_right_text">
+                <ul>
+                    <li>
+                        <span>현재 온도</span>
+                        <span>{현재 온도}</span>
+                    </li>
+                    <li>
+                        <span>현재 전압</span>
+                        <span>{현재 전압}</span>
+                    </li>
+                    <li>
+                        <span>현재 전류</span>
+                        <span>{현재 전류}</span>
+                    </li>
+                    <li>
+                        <span>허용전류 대비<br>현재 사용량</span>
+                        <span>{허용전류 대비 현재 사용량}</span>
+                    </li>
+                    <li>
+                        <span>전기 안전 상태</span>
+                        <span>{전기 안전 상태}</span>
+                    </li>
+                    <li>
+                        <span>연기 감지 여부</span>
+                        <span>{연기 감지 여부}</span>
+                    </li>
+                    <li>
+                        <span>지진 감지 여부</span>
+                        <span>{지진 감지 여부}</span>
+                    </li>
+                    <li>
+                        <span>심야시간 설정치<br>이상 전기 사용 여부</span>
+                        <span>{심야시간 설정치 이상 전기 사용 여부}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </section>
+
 
 </th:block>
 </html>

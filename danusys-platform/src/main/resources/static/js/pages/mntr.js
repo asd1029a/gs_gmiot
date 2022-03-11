@@ -52,7 +52,49 @@ const mntr = {
         //측정 도구
         let measure = new measureTool('map');
         window.measure = measure;
+        //동네 날씨 기능를 위해
+        map.setMapEventListener('moveend',(e) => {
+            let mapProj = e.map.getView().getProjection().getCode();
+            let mapCenter = e.map.getView().getCenter();
+            let mapLonLat = ol.proj.transform(mapCenter,mapProj,'EPSG:4326');
+            console.log(mapLonLat);
+            const param = {
+                callUrl : '/getWeatherData',
+                reqParams : {
+                    numOfRows: '10',
+                    pageNo: '1',
+                    dataType: "JSON",
+                    lon : mapLonLat[0],
+                    lat : mapLonLat[1]
+                }
+            }
+            $.ajax({
+                contentType : "application/json; charset=utf-8",
+                type : "POST",
+                url : '/api/getWeatherData',
+                dataType : "json",
+                data : JSON.stringify(param),
+                async : false
+            }).done( result => {
+                console.log(result);
+            });
 
+            const param2 = {
+                lon : mapLonLat[0],
+                lat : mapLonLat[1]
+            }
+            $.ajax({
+                type : "POST",
+                url : '/adm/lonLatToAdm',
+                contentType : "application/json",
+                async : false,
+                data : JSON.stringify(param2)
+            }).done( result => {
+                console.log(result);
+            });
+
+
+        });
         /**
          * 레이어 선택 조작
          */
@@ -199,7 +241,7 @@ const mntr = {
         });
         //RNM CLOSER
         $('.rnm_closer').on("click", e => {
-            $('.area_info').hide();
+            $('.area_right').hide();
             window.map.updateSize();
         });
         //LAYER ORDER LIST
@@ -291,45 +333,32 @@ const mntr = {
         // $.each($(".dropdown_checkbox"), (idx, item) => {
         //     comm.createMultiSelectBox(item);
         // });
-        const pObj = {
-            draw : null
-            , type: "stationKind"
-        }
-        commonCode.getList( pObj , (result) => {
-            console.log(result);
-        });
-
-        const pObj2 = {
-            draw : null
-            , type : "facilityKind"
-        }
-        commonCode.getList( pObj , (result) => {
-            console.log(result);
-        });
-
-        const param = {
-            callUrl : '/getWeatherData',
-            serviceKey: 'nbQo9xd6dnjWGJvaD7D3I+kcOYj902IwTIhRuiApnbAfVxPvEK1vkHetxewOD9WXKwmQNSnSjJWGw1asioZtQA==',
-            numOfRows: 1,
-            pageNo: '1000',
-            base_date: '20220308',
-            base_time: '0630',
-            nx: 55,
-            ny: 127
-        }
-        $.ajax({
-            contentType : "application/json; charset=utf-8",
-            type : "POST",
-            url : '/api/getWeatherData',
-            dataType : "json",
-            data : JSON.stringify(param),
-            async : false
-        }).done( result => {
-            console.log(result);
-        })
+        // const pObj = {
+        //     draw : null
+        //     , type: "stationKind"
+        // }
+        // commonCode.getList( pObj , (result) => {
+        //     console.log(result);
+        // });
+        //
+        // const pObj2 = {
+        //     draw : null
+        //     , type : "facilityKind"
+        // }
+        // commonCode.getList( pObj , (result) => {
+        //     console.log(result);
+        // });
 
 
     }
 
 }
 
+// select t3.area_name, t3.area_code from (
+//     select
+// t1.emd_cd
+// from t_area_emd t1
+// where st_contains(t1.geom, ST_GEOMFROMTEXT('POINT(126.88119336994183 37.44335040773767)',4326)) = true
+// ) t2
+// inner join t_area_code_name t3
+// on t2.emd_cd||'00' = t3.area_code::varchar
