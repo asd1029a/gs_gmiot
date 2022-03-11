@@ -1,30 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" debug="true">
     <springProperty name="SPRING_APPLICATION_NAME" source="spring.application.name"/>
+    <property name="LOGS_PATH" value="C:/test/logs" />
 
-    <!--<springProfile name="!ddlauto">
-        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class{36}.%M %L - %msg%n</pattern>
-                <charset>utf8</charset>
-            </encoder>
-        </appender>
-    </springProfile>
-    <springProfile name="ddlauto">
-        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <pattern>%msg%n;</pattern>
-                <charset>utf8</charset>
-            </encoder>
-        </appender>
-    </springProfile>-->
-
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class{36}.%M %L - %msg%n</pattern>
-            <charset>utf8</charset>
-        </encoder>
-    </appender>
+    <include resource="logback-spring-file.xml" />
+    <include resource="logback-spring-console.xml" />
 
     <springProfile name="trace">
         <logger name="com.danusys.web" level="TRACE"/>
@@ -40,6 +20,10 @@
         <logger name="jdbc.sqltiming" level="DEBUG"/>
         <logger name="jdbc.audit" level="debug"/>
         <logger name="jdbc.resultset" level="debug"/>
+        <logger name="FILE_LOGGER" level="INFO">
+            <appender-ref ref="infoFILE"/>
+            <appender-ref ref="errorFILE"/>
+        </logger>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
@@ -50,24 +34,4 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
-    <springProfile name="file">
-        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>/var/log/danusys/${SPRING_APPLICATION_NAME}.log</file>
-            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>/var/log/danusys/${SPRING_APPLICATION_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
-                <maxHistory>10</maxHistory>
-                <totalSizeCap>1GB</totalSizeCap>
-            </rollingPolicy>
-            <encoder>
-                <pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</pattern>
-            </encoder>
-        </appender>
-
-        <logger name="com.danusys.web" level="INFO"/>
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE"/>
-        </root>
-    </springProfile>
-
 </configuration>

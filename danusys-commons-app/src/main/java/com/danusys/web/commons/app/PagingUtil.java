@@ -1,5 +1,9 @@
 package com.danusys.web.commons.app;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,5 +31,10 @@ public class PagingUtil {
         resultMap.put("recordsTotal", dataListMap.get("count"));
         resultMap.put("recordsFiltered", dataListMap.get("count"));
         return resultMap;
+    }
+
+    public static Pageable getPageableWithSort(int start, int length, List<Sort.Order> orders ) throws Exception {
+        int page = start / length;
+        return PageRequest.of(page, length, Sort.by(orders));
     }
 }

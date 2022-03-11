@@ -83,7 +83,7 @@ const mntr = {
         // });
         //개소 레이어
         station.getListGeoJson({} ,(result) => {
-            console.log(result);
+            //console.log(result);
             let stationLayer = new dataLayer('map')
                 .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
             map.addLayer(stationLayer);
@@ -150,45 +150,62 @@ const mntr = {
     }
     , eventHandler : () => {
         //LNM FOLD
-        $('.mntr_container .lnb_fold').on("click", function(e){
-            $('.mntr_container .menu_fold').hide();
+        $('.mntr_container .lnb_fold').on("click", e => {
+            $('.mntr_container .menu_fold').removeClass("select");
+            $('.mntr_container .lnb ul li').removeClass("active");
             window.map.updateSize();
         });
         //LNM SWITCH
-        $('.mntr_container .lnb ul li').on("click", function(e){
+        $('.mntr_container .lnb ul li').on("click", e => {
             const theme = $(e.currentTarget).attr('data-value');
-            $('.mntr_container .menu_fold').hide();
-            $('.mntr_container .menu_fold#'+theme).show();
+            $('.mntr_container .menu_fold').removeClass("select");
+            $('.mntr_container .menu_fold#'+theme).addClass("select");
+            //ACTIVE STYLE
+            $(e.currentTarget).parent().children("li").removeClass("active");
+            $(e.currentTarget).addClass("active");
             window.map.updateSize();
         });
         //LNM TAB SWITCH
-        $('.mntr_container .menu_fold .tab li').on("click", function(e){
+        $('.mntr_container .menu_fold .tab li').on("click", e => {
             const tab = $(e.currentTarget).attr('data-value');
-            $('.menu_fold .lnb_tab_section').hide();
-            $('div#'+tab).show();
+            $(e.currentTarget).parents('section').find('.lnb_tab_section').removeClass("select");
+            $('div#'+tab).addClass("select");
             //ACTIVE STYLE
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
 
         });
-        //LNM TAB SEARCH DETAIL
-        $('.detail_btn').on("click", function(e){
+        //LNM TAB SEARCH DETAIL (검색 조건 더보기)
+        $('.detail_btn').on("click", e => {
             const form = $(e.currentTarget).parents('.lnb_tab_section').find('.search_fold');
-            if(form.is(':visible')) {
-                form.hide();
+            if(form.hasClass("select")) {
+                form.removeClass("select");
+                //하위 체크 리스트
+                form.find('.checkbox_list').removeClass("select");
             } else {
-                form.show();
+                form.addClass("select");
+            }
+        });
+        //LNM TAB SEARCH DROPDOWN
+        $('.search_fold .dropdown_checkbox').on("click", e => {
+            const list = $(e.currentTarget).find('.checkbox_list');
+            if(list.hasClass("select")){
+                list.removeClass("select");
+            } else {
+                // $(e.currentTarget).parents('.search_fold').find('.dropdown_checkbox').removeClass("select");
+                list.addClass("select");
+                // debugger;
             }
         });
         //RNM CLOSER
-        $('.rnm_closer').on("click", function(e){
+        $('.rnm_closer').on("click", e => {
             $('.area_info').hide();
             window.map.updateSize();
         });
         //LAYER ORDER LIST
         $("#layerViewer").hide();
         //MAP TOOL
-        $('.map_options li').on("click", function(e){
+        $('.map_options li').on("click", e => {
             const type = $(e.currentTarget).attr('data-value');
             switch(type) {
                 case "roadView" :
@@ -256,7 +273,7 @@ const mntr = {
             }
         });
         //MAP BASE SWITCH
-        $('.map_type li').on("click", function(e){
+        $('.map_type li').on("click", e => {
             const type = $(e.currentTarget).attr('data-value');
             window.map.switchTileMap(type);
             //ACTIVE STYLE
@@ -264,16 +281,54 @@ const mntr = {
             $(e.currentTarget).addClass("active");
         });
         //TOP BUTTON
-        $(".search_list .button_top").on("click", function(e){
+        $(".search_list .button_top").on("click", e => {
             $(e.currentTarget).parent('div').scrollTop(0);
         });
 
     }
     , create : () => {
         /* 다중 셀렉트 박스 */
-        $.each($(".dropdown_checkbox"), (idx, item) => {
-            comm.createMultiSelectBox(item);
+        // $.each($(".dropdown_checkbox"), (idx, item) => {
+        //     comm.createMultiSelectBox(item);
+        // });
+        const pObj = {
+            draw : null
+            , type: "stationKind"
+        }
+        commonCode.getList( pObj , (result) => {
+            console.log(result);
         });
+
+        const pObj2 = {
+            draw : null
+            , type : "facilityKind"
+        }
+        commonCode.getList( pObj , (result) => {
+            console.log(result);
+        });
+
+        const param = {
+            callUrl : '/getWeatherData',
+            serviceKey: 'nbQo9xd6dnjWGJvaD7D3I+kcOYj902IwTIhRuiApnbAfVxPvEK1vkHetxewOD9WXKwmQNSnSjJWGw1asioZtQA==',
+            numOfRows: 1,
+            pageNo: '1000',
+            base_date: '20220308',
+            base_time: '0630',
+            nx: 55,
+            ny: 127
+        }
+        $.ajax({
+            contentType : "application/json; charset=utf-8",
+            type : "POST",
+            url : '/api/getWeatherData',
+            dataType : "json",
+            data : JSON.stringify(param),
+            async : false
+        }).done( result => {
+            console.log(result);
+        })
+
+
     }
 
 }

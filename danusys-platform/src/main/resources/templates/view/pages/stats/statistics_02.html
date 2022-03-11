@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout_stats">
+<th:block layout:fragment="content">
+    <h4>
+        <i><img src="images/default/statisticsTitle.svg"></i>
+        <span>통계</span>
+        <i><img src="images/default/arrowNext.svg"></i>
+        <span>이벤트 발생 통계</span>
+        <i><img src="images/default/arrowNext.svg"></i>
+        <span>드론 관제 이벤트</span>
+    </h4>
+    <section class="statistics_content">
+        <article class="search_form">
+            <h6>드론 관제 이벤트 발생 통계 검색</h6>
+            <form>
+                <div>
+                    <dl class="selectbox_set">
+                        <dt>이벤트 종류</dt>
+                        <dd>
+                            <div class="dropdown_checkbox">
+                                <p class="checkbox_title checkbox_title_event">이벤트 종류 선택</p>
+                                <ul class="checkbox_list checkbox_list_event">
+                                    <li>
+											<span>
+											<input type="checkbox" id="eventALL" name="">
+											<label for="eventALL"><span></span>전체</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="eventFind01" name="">
+											<label for="eventFind01"><span></span>지능형 CCTV 감지</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="eventFind02" name="">
+											<label for="eventFind02"><span></span>이상음원 감지</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="eventFind03" name="">
+											<label for="eventFind03"><span></span>AED 사용</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="eventFind04" name="">
+											<label for="eventFind04"><span></span>비상벨</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="eventFind05" name="">
+											<label for="eventFind05"><span></span>금연벨</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="eventFind06" name="">
+											<label for="eventFind06"><span></span>장기체류자</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="eventFind07" name="">
+											<label for="eventFind07"><span></span>실내공기질 나쁨</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="eventFind08" name="">
+											<label for="eventFind08"><span></span>기타</label>
+											</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl class="checkbox_set">
+                        <dt>이벤트 등급</dt>
+                        <dd>
+								<span>
+								<input type="checkbox" id="urgent" name="">
+								<label for="urgent"><span></span>긴급</label>
+								</span>
+                            <span>
+								<input type="checkbox" id="caution" name="">
+								<label for="caution"><span></span>주의</label>
+								</span>
+                        </dd>
+                    </dl>
+                </div>
+                <div>
+                    <dl class="selectbox_set">
+                        <dt>행정구역</dt>
+                        <dd>
+                            <div class="dropdown_checkbox">
+                                <p class="checkbox_title checkbox_title_district">행정구역 선택</p>
+                                <ul class="checkbox_list checkbox_list_district">
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtALL" name="">
+											<label for="districtALL"><span></span>전체</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind01" name="">
+											<label for="districtFind01"><span></span>광명1동</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind02" name="">
+											<label for="districtFind02"><span></span>광명2동</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind03" name="">
+											<label for="districtFind03"><span></span>광명3동</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind04" name="">
+											<label for="districtFind04"><span></span>광명4동</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind05" name="">
+											<label for="districtFind05"><span></span>광명5동</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind06" name="">
+											<label for="districtFind06"><span></span>광명6동</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind07" name="">
+											<label for="districtFind07"><span></span>광명7동</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind08" name="">
+											<label for="districtFind08"><span></span>소하1동</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind09" name="">
+											<label for="districtFind09"><span></span>소하2동</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind10" name="">
+											<label for="districtFind10"><span></span>철산1동</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind11" name="">
+											<label for="districtFind11"><span></span>철산2동</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind12" name="">
+											<label for="districtFind12"><span></span>철산3동</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind13" name="">
+											<label for="districtFind13"><span></span>철산4동</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind14" name="">
+											<label for="districtFind14"><span></span>하안1동</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind15" name="">
+											<label for="districtFind15"><span></span>하안2동</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind16" name="">
+											<label for="districtFind16"><span></span>하안3동</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind17" name="">
+											<label for="districtFind17"><span></span>하안4동</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind18" name="">
+											<label for="districtFind18"><span></span>학온동</label>
+											</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl class="selectbox_set">
+                        <dt>장소유형</dt>
+                        <dd>
+                            <div class="dropdown_checkbox">
+                                <p class="checkbox_title checkbox_title_district">장소유형 선택</p>
+                                <ul class="checkbox_list checkbox_list_district">
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtALL" name="">
+											<label for="districtALL"><span></span>전체</label>
+											</span>
+                                    </li>
+                                    <li>
+											<span>
+											<input type="checkbox" id="districtFind01" name="">
+											<label for="districtFind01"><span></span>산업단지</label>
+											</span>
+                                        <span>
+											<input type="checkbox" id="districtFind02" name="">
+											<label for="districtFind02"><span></span>장소유형</label>
+											</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl class="date_set">
+                        <dt>발생 기간</dt>
+                        <dd><input type="date" class="input_date"></dd>
+                        <span>부터</span>
+                        <dd><input type="date" class="input_date"></dd>
+                        <span>까지</span>
+                    </dl>
+                    <dl class="search_text_set">
+                        <dd class="button"><i><img src="images/default/refresh.svg"></i>검색조건 초기화</dd>
+                        <dd class="button"><i><img src="images/default/search.svg"></i>검색</dd>
+                    </dl>
+                </div>
+            </form>
+        </article>
+        <article class="search_list">
+            <div class="graph_contents">
+                <dl class="graph_title">
+                    <dt>이벤트 발생 수</dt>
+                    <dd>
+                        <span>시</span>
+                        <span>일</span>
+                        <span>주</span>
+                        <span>월</span>
+                    </dd>
+                </dl>
+                <div class="graph_area"></div>
+            </div>
+            <div class="graph_contents">
+                <dl class="graph_title">
+                    <dt>평균 이벤트 발생 수</dt>
+                    <dd>
+                        <span>시</span>
+                        <span>일</span>
+                        <span>주</span>
+                        <span>월</span>
+                    </dd>
+                </dl>
+                <div class="graph_area"></div>
+            </div>
+        </article>
+        <article class="search_list">
+            <div class="graph_contents">
+                <dl class="graph_title">
+                    <dt>행정구역 별 이벤트 발생 수</dt>
+                    <dd>
+                        <span>시</span>
+                        <span>일</span>
+                        <span>주</span>
+                        <span>월</span>
+                    </dd>
+                </dl>
+                <div class="graph_area"></div>
+            </div>
+            <div class="graph_contents">
+                <dl class="graph_title">
+                    <dt>드론 별 이벤트 발생 수</dt>
+                    <dd>
+                        <span>시</span>
+                        <span>일</span>
+                        <span>주</span>
+                        <span>월</span>
+                    </dd>
+                </dl>
+                <div class="graph_area"></div>
+            </div>
+        </article>
+    </section>
+</th:block>
+</html>

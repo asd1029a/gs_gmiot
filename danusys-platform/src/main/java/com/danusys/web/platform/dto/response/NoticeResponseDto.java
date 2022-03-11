@@ -8,11 +8,11 @@ import java.sql.Timestamp;
 
 /**
  *
- * @클래스이름 : NoticeResponseDto
+ * 클래스이름 : NoticeResponseDto
  *
- * @작성자 : 강명훈 주임연구원
- * @작성일 : 2022-03-07
- * @설명 : 공지사항 반환 Data Transfer Object, 데이터 반환시 해당 클래스로 반환할 것
+ * 작성자 : 강명훈 주임연구원
+ * 작성일 : 2022-03-07
+ * 설명 : 공지사항 반환 Data Transfer Object, 데이터 반환시 해당 클래스로 반환할 것
  *
 **/
 

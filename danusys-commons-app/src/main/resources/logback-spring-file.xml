@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <appender name="infoFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <!--<pattern>%-5level - %msg%n</pattern>-->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class{36}.%M %L - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--<fileNamePattern>C:/test/logs/${HOSTNAME}.filebeat-%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+            <fileNamePattern>${LOGS_PATH}/info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>500MB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="errorFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <!--<pattern>%-5level - %msg%n</pattern>-->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class{36}.%M %L - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--<fileNamePattern>C:/test/logs/${HOSTNAME}.filebeat-%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+            <fileNamePattern>${LOGS_PATH}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>500MB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+</included>
