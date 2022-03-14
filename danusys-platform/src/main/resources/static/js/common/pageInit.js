@@ -20,7 +20,7 @@ $(document).ready(() => {
         if(path.indexOf(el.id) > -1) $(el).addClass("on");
     });
 
-    if(path !== "/pages/mntr"){
+    if(path !== "/pages/mntr") {
         /* 다중 셀렉트 박스 */
         $.each($(".dropdown_checkbox"), (idx, item) => {
             comm.createMultiSelectBox(item)

@@ -44,8 +44,11 @@ public class LogAspect {
     @Around("execution(* com.danusys.web.*.*.*Controller.*(..))")
     public Object controllerAroundLogging(ProceedingJoinPoint pjp) throws Throwable {
         String timeStamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Timestamp(System.currentTimeMillis()));
+
         //실행전
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+
+        HttpServletRequest request = attributes.getRequest();
         this.clientIp = request.getRemoteAddr();
         this.clientUrl = request.getRequestURL().toString();
         String callFunction = pjp.getSignature().getDeclaringTypeName() + "." + pjp.getSignature().getName();
@@ -91,7 +94,7 @@ public class LogAspect {
     }
 
 
-    @AfterThrowing(pointcut="execution(* com.danusys.web.*.*.*.*(..))" ,throwing="ex")
+    @AfterThrowing(pointcut="execution(* com.danusys.web.*.*.*.*(..)) && !execution(* com.danusys.web.*.*.*WebSocket.*(..))" ,throwing="ex")
     public void allThrowingLogging(Throwable ex) {
         String timeStamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Timestamp(System.currentTimeMillis()));
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();

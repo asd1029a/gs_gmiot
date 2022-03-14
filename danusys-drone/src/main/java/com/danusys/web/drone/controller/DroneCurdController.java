@@ -87,11 +87,12 @@ public class  DroneCurdController {
     @PostMapping("/drone")
     public ResponseEntity<?> findAllDrone(@RequestBody DroneRequest droneRequest) {
 
-
-
+        log.info("here");
+        List<?> droneList=droneService.findDroneList(droneRequest);
+                log.info("여기도오나요??");
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(droneService.findDroneList(droneRequest));
+                .body(droneList);
     }
 
     @PatchMapping("/dronedetails")

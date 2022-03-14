@@ -1,7 +1,6 @@
 package com.danusys.web.platform.service.notice;
 
 import com.danusys.web.commons.app.PagingUtil;
-import com.danusys.web.commons.app.SqlUtil;
 import com.danusys.web.commons.app.StringUtil;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
@@ -12,6 +11,7 @@ import com.danusys.web.platform.entity.Notice;
 import com.danusys.web.platform.entity.NoticeSpecification;
 import com.danusys.web.platform.entity.NoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,14 +88,17 @@ public class NoticeServiceImpl implements NoticeService {
 
         /* 일반 리스트 조회 */
         } else {
-            List<NoticeResponseDto> data = noticeRepository.findAll(spec).stream()
+            List<Map<String, Object>> data = noticeRepository.findAll(spec).stream()
                     .map(notice -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
                         String insertUserId = userRepository.findByUserSeq(notice.getInsertUserSeq()).getUserId();
                         String updateUserId = "";
                         if(notice.getUpdateUserSeq() != null) {
                             updateUserId = userRepository.findByUserSeq(notice.getUpdateUserSeq()).getUserId();
                         }
-                        return new NoticeResponseDto(notice, insertUserId, updateUserId);
+                        NoticeResponseDto noticeResponseDto = new NoticeResponseDto(notice, insertUserId, updateUserId);
+                        Map<String, Object> dataList = objectMapper.convertValue(noticeResponseDto, Map.class);
+                        return dataList;
                     })
                     .collect(Collectors.toList());
             responseData.put("data", data);

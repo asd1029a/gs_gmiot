@@ -128,14 +128,14 @@ $.fn.extend({
 
             if(!$(element).is(":disabled")) {
                 if($(element).data("required")
-                    && ((element.tagName=="INPUT" && $.trim($(element).val())=="")
-                        || (element.tagName=="SELECT" && ($(element).val()==null || $.trim($(element).val())=="")))) {
+                    && ((element.tagName === "INPUT" && $.trim($(element).val()) === "")
+                        || (element.tagName === "SELECT" && ($(element).val()==null || $.trim($(element).val()) === "")))) {
                     $(element).focus();
                     validType = 1;
                     returnVal = false;
                     return false;
 
-                } else if($(element).val()!="" && typeof($(element).data("regex"))!="undefined") {
+                } else if($(element).val() !== "" && typeof($(element).data("regex")) !== "undefined") {
                     if(!stringFunc.validRegex($(element).val(), $(element).data("regex"))) {
                         $(element).focus();
                         validType = 2;
@@ -147,11 +147,11 @@ $.fn.extend({
         });
 
         if(!returnVal) {
-            var resultStr = "";
+            let resultStr = "";
             resultStr = "[" + txtLabel + "]";
             resultStr += "<br />";
 
-            if(validType==1) {
+            if(validType === 1) {
                 resultStr += "* 필수항목 미입력 *";
             } else {
                 resultStr += "* 형식에 맞지 않는 문자 *";
@@ -164,10 +164,10 @@ $.fn.extend({
     initForm : function() {
         let isCheckboxInit = false;
         $.each($(this)[0], function(idx, element){
-            var objEle = $(element);
-            var eleAttr = objEle[0];
+            let objEle = $(element);
+            let eleAttr = objEle[0];
 
-            if(eleAttr != "undefined"  && typeof(eleAttr) != 'undefined') {
+            if(eleAttr !== "undefined"  && typeof(eleAttr) != 'undefined') {
                 if(typeof(objEle.attr("data-init-value"))!="undefined") {
                     if(eleAttr.type === "checkbox"){
                         isCheckboxInit = true;
@@ -177,7 +177,7 @@ $.fn.extend({
                     }else{
                         objEle.val(objEle.attr("data-init-value"));
                     }
-                } else if(eleAttr.tagName == "INPUT" || eleAttr.tagName == "TEXTAREA") {
+                } else if(eleAttr.tagName === "INPUT" || eleAttr.tagName === "TEXTAREA") {
                     if(eleAttr.type === "checkbox" && !isCheckboxInit){
                         objEle.prop("checked", false);
                         if($(".dropdown_checkbox").length > 0)
@@ -186,12 +186,12 @@ $.fn.extend({
                         objEle.val("");
                     }
 
-                    if(typeof(objEle.attr("data-diff-month"))!="undefined" &&
+                    if(typeof(objEle.attr("data-diff-month")) !== "undefined" &&
                         objEle.attr("data-diff-month").length > 0) {
                         const diff = objEle.data("diff-month");
                         objEle.datepicker('setDate', dayjs().add(diff, 'month').$d);
                     }
-                } else if(eleAttr.tagName == "SELECT") {
+                } else if(eleAttr.tagName === "SELECT") {
                     var firstVal = objEle.find("option:eq(0)").val();
                     objEle.val(firstVal);
                 }
@@ -199,9 +199,9 @@ $.fn.extend({
         });
     },
     setItemValue : function(objValue) {
-        var $curThis = $(this);
-        var strValue = "";
-        var arrInput = [];
+        const $curThis = $(this);
+        let strValue = "";
+        let arrInput = [];
 
         arrInput.push($curThis.find("input"));
         arrInput.push($curThis.find("textarea"));
@@ -214,14 +214,14 @@ $.fn.extend({
                     strValue = objValue[element.id];
                 }
                 strValue = stringFunc.changeXSSOutputValue(strValue);
-                if(strValue == undefined) { return; }
+                if(strValue === undefined) { return; }
 
-                if(element.type == "checkbox") {
-                    element.checked = (strValue == 'Y')? true : false;
-                } else if(element.type == "radio") {
-                    if($(element).data('value') == strValue) element.checked = "checked";
+                if(element.type === "checkbox") {
+                    element.checked = (strValue === 'Y')? true : false;
+                } else if(element.type === "radio") {
+                    if($(element).data('value') === strValue) element.checked = "checked";
                 } else {
-                    if($(element).attr("data-set")!="false") {
+                    if($(element).attr("data-set") !== "false") {
                         element.value = strValue;
                     }
                 }
@@ -264,7 +264,7 @@ $.fn.extend({
     }
 });
 
-var comm = {
+const comm = {
     ajaxPost: function(obj, fnDoneCallback, fnFailCallback, fnFail) {
         var defaults = {
             async 		: true
@@ -345,11 +345,11 @@ var comm = {
             const regex = new RegExp(keyword, 'gi');
             $(td).html(cellData.replace(regex, "<b class='highlight'>" + keyword + "</b>"));
         }
-    },
+    }
     /**
      * Datatable extend row 생성
      */
-    format : function(data, row) {
+    /*, format : function(data, row) {
         var result = '<table class="child_table" cellpadding="5" cellspacing="0" border="0">';
         if(data.eventKind=="비상벨"){
             delete row.userName;
@@ -373,7 +373,7 @@ var comm = {
         })
         result += '</table>';
         return result;
-    }
+    }*/
     , createTable : ($target, optionObj, evt) => {
         //comm.showLoading();
 
@@ -402,7 +402,11 @@ var comm = {
                         last: '<span><img src="/images/default/last.svg"></span>'
                     }
                 },
-            excelDownload: false
+            excelDownload: {
+                url : ""
+                , fileName : ""
+                , search : {}
+            }
         }
         const newOptionObj = $.extend({}, defaultObj, optionObj);
 
@@ -422,15 +426,12 @@ var comm = {
         $.fn.DataTable.ext.pager.numbers_length = 10;
         $target.DataTable(newOptionObj);
 
-        if(newOptionObj.excelDownload) {
-            const html = ' <p class="button"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>';
+        if(typeof newOptionObj.excelDownload !== "undefined"
+            && newOptionObj.excelDownload.url !== "") {
+            const html = ' <p class="button excelDownloadBtn"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>';
             $target.parents('.table_body').siblings('.table_bottom').append(html);
-            const path = $target.attr('id').split('Table')[0];
             $('.excelDownloadBtn').on('click', (e) => {
-                let paramObj = {
-                    url : "/"+path+"/exportExcel"
-                }
-                comm.downloadExcelFile(paramObj);
+                comm.downloadExcelFile(newOptionObj.excelDownload);
             });
         }
 
@@ -524,11 +525,6 @@ var comm = {
     , hideLoading : function() {
         $("body").loadingModal("hide");
     }
-    , console : function(obj) {
-        if(isDebug) {
-            //console.log(obj);
-        }
-    }
     , showTooltip : function(target, option) {
         var defaultOption = {
             show : {effect : "fade", duration: 100}
@@ -552,11 +548,9 @@ var comm = {
             $("#"+audioId).remove();
         }, 3000);
     }
-    , downloadExcelFile : function(paramObj) {
+    /*, downloadExcelFile : function(paramObj) {
         let html = "";
         html += "<form id='downloadForm' method='post' action='"+paramObj.url+"'>";
-        //html += "<input type='hidden' name='columnArr' value='" +paramObj.columnArr+ "' />";
-        //html += "<input type='hidden' name='columnNmArr' value='"+paramObj.columnNmArr+"'/>";
         html += "</form>";
         $("body").append(html);
 
@@ -565,6 +559,37 @@ var comm = {
         setTimeout(function() {
             $("#downloadForm").remove();
         }, 2000);
+    }*/
+   , downloadExcelFile : function(paramObj) {
+       const body = {};
+       if(typeof paramObj.search !== "undefined") {
+        body.search = paramObj.search;
+       }
+       if(typeof paramObj.headerList !== "undefined") {
+        body.headerList = paramObj.headerList;
+       }
+
+        fetch(paramObj.url, {
+            method: 'POST'
+            , body : JSON.stringify(body)
+            , headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+            .then((res) => {
+                if(res.status !== 200) {
+                    comm.showAlert("엑셀다운로드에 실패했습니다.");
+                }
+                return res.blob(); })
+            .then((data) => {
+                const a = document.createElement("a");
+                a.href = window.URL.createObjectURL(data);
+                a.download = paramObj.fileName;
+                a.click();
+                a.remove();
+            })
+            .catch(error => console.error('Error : ', error));
     }
     , createSelectBox : function(selector) {
         this.createSelectBox.$selectBox = null,
@@ -868,51 +893,51 @@ var stringFunc = {
         var regex = "";
 
         // 로그인 ID : 3~25 자리 영숫자.
-        if(type=="loginId") {
+        if(type === "loginId") {
             regex =  /^[A-Za-z0-9]{3,25}$/g;
             // 로그인 이름
-        } else if(type=="loginName") {
+        } else if(type === "loginName") {
             regex =  /^[A-Za-z0-9가-힣]+$/g;
             // 7~20 자리 영숫자.
-        } else if(type=="password") {
+        } else if(type === "password") {
             regex = /^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).{7,20}$/g;
-        } else if(type=="name") {
+        } else if(type === "name") {
             regex = /^[가-힣]+$/g;
-        } else if(type=="age") {
+        } else if(type === "age") {
             regex = /^1?[0-9]?[0-9]$/g;
         }
         // 8~15 숫자 문자 특수문자
-        else if(type=="sPassword") {
+        else if(type === "sPassword") {
             regex = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/g;
             // 시간
-        } else if(type=="time") {
+        } else if(type === "time") {
             regex = /^[0-9]{2}:[0-9]{2}:[0-9]{2}$/g;
             // 24 시간
-        } else if(type=="hms24") {
+        } else if(type === "hms24") {
             regex = /^([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/g;
             // 날짜
-        } else if(type=="date") {
+        } else if(type === "date") {
             regex = /^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[0-1])$/g;
             // 숫자만
-        } else if(type=="number") {
+        } else if(type === "number") {
             regex = /^[0-9]+$/g;
             // 4자리 패스워드
-        } else if(type=="numberPassword4") {
+        } else if(type === "numberPassword4") {
             regex = /^[0-9]{4}$/g;
-        } else if(type=="unsignFloat") {
+        } else if(type === "unsignFloat") {
             regex = /^(\d+)\.(\d+)$/g;
             // 이메일
-        } else if(type=="email") {
+        } else if(type === "email") {
             regex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
             // URL
-        } else if(type=="url") {
+        } else if(type === "url") {
             regex = /^[a-zA-Z0-9/]+(.sn|.asn)*$/g;
             // 날짜 + 시간
-        } else if(type=="dateTime") {
+        } else if(type === "dateTime") {
             regex = /^(19|20)\d{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[0-1])([1-9]|[01][0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$/g;
-        } else if(type=="year") {
+        } else if(type === "year") {
             regex = /^(19|20)\d{2}$/;
-        } else if (type=="day") {
+        } else if (type === "day") {
             regex = /^(0[1-9]|[12][0-9]|3[0-1])$/;
         }
 
@@ -923,10 +948,7 @@ var stringFunc = {
     },
     /* str 빈값 체크 */
     isValidStr : function(str) {
-        if (str == null || str == undefined || str == "")
-            return true;
-        else
-            return false;
+        return str === null || str === undefined || str === "";
     },
     changeXSSInputValue : (str, level) => {
         let returnStr = "";
@@ -956,7 +978,7 @@ var stringFunc = {
 /**
  * 날짜관련
  */
-var dateFunc = {
+const dateFunc = {
     getZeroString: function (tVal) {
         return (tVal > 9 ? '' : '0') + tVal;
     },
@@ -966,7 +988,7 @@ var dateFunc = {
      * @returns date 타입 Object
      */
     getCurrentDate: function (d) {
-        var date = new Date();
+        const date = new Date();
         date.setDate(date.getDate() + d);
         return date;
     },

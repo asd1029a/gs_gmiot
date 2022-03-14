@@ -4,7 +4,9 @@ package com.danusys.web.drone.service;
 import com.danusys.web.drone.repository.DroneRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextListener;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,8 @@ public class TestService {
         return droneRepository.test2();
 
     }
+
+
 
 
 }

@@ -95,7 +95,12 @@ const notice = {
                     "defaultContent": '<span class="button mod">수정</span>'
                 }
             ]
-            , excelDownload : true
+            , excelDownload : {
+                url : "/notice/excel/download"
+                , fileName : "공지사항 목록_"+ dateFunc.getCurrentDateYyyyMmDd(0, '') +".xlsx"
+                , search : $("#searchForm form").serializeJSON()
+                , headerList : ["고유번호", "제목", "내용", "파일이름", "작성자", "작성일", "수정자", "수정일"]
+            }
         }
 
         const evt = {
