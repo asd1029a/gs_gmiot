@@ -1,9 +1,11 @@
 package com.danusys.web.commons.auth.service.user;
 
 
+import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.PagingUtil;
+import com.danusys.web.commons.auth.dto.response.UserResponse;
+import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.repository.UserStatusRepository;
@@ -11,13 +13,15 @@ import com.danusys.web.commons.auth.util.SHA256;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,18 +44,13 @@ public class UserService {
         User user = userRepository.findByUserId(userName);
         //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
         return user;
-
     }
 
 
-    public UserDto findUser(int userSeq) {
+    public UserResponse findUser(int userSeq) {
         User user = userRepository.findByUserSeq(userSeq);
-        UserDto userDto = new UserDto(user.getUserSeq(), user.getUserId(), user.getUserName(), user.getEmail(), user.getTel(), user.getAddress(),
-                user.getStatus(), user.getDetailAddress(),
-                user.getLastLoginDt(), user.getInsertUserSeq(), user.getUpdateUserSeq(), user.getInsertDt(), user.getUpdateDt());
-//        user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
 
-        return userDto;
+        return new UserResponse(user);
     }
 
     @Transactional
@@ -141,77 +140,57 @@ public class UserService {
     }
 
     public Map<String, Object> findListUser(Map<String, Object> paramMap) {
-
-        int start = 0;
-        int length = 1;
-        int count = 0;
-        int draw = 0;
-
-        if (paramMap.get("start") != null)
-            start = Integer.parseInt(paramMap.get("start").toString());
-        if (paramMap.get("length") != null)
-            length = Integer.parseInt(paramMap.get("length").toString());
-
-        if (paramMap.get("draw") != null) {
-            draw = Integer.parseInt(paramMap.get("draw").toString());
-        }
-        PageRequest pageRequest = PageRequest.of(start / length, length);
-
-        Page<User> userPageList = null;
-        //   log.info("totalPage={}",userList2.getTotalPages());
-
-        List<User> userList = null;
-        if (paramMap.get("userName") != null && length != 1) {
-//            String userName = paramMap.get("userName").toString();
-//            userPageList = userRepository.findAllByUserNameLike("%" + userName + "%", pageRequest);
-//            userList = userPageList.toList();
-//            count = (int) userPageList.getTotalElements();
-            Map<String, Object> filter = new HashMap<>();
-            filter.put("userName", paramMap.get("userName"));
-            if (paramMap.get("tel") != null)
-                filter.put("tel", paramMap.get("tel"));
-//            userPageList = userRepository.findAll(UserSpecs.withTitle(filter), pageRequest);
-            userList = userPageList.toList();
-            count = (int) userPageList.getTotalElements();
-            log.info("count={}", count);
-        } else if (paramMap.get("userName") == null) {
-            userPageList = userRepository.findAll(pageRequest);
-            userList = userPageList.toList();
-            count = (int) userPageList.getTotalElements();
-        }
-        userList.forEach(r -> {
-            //log.info(r.getStatus());
-            r.setStatus(userStatusRepository.findByCodeValue(r.getStatus()).getCodeName());
-        });
-        List<UserDto> userDtoList = userList.stream().map(UserDto::new).collect(Collectors.toList());
-
-
-        //List<MissionResponse> changeMissionList = missionList.stream().map(MissionResponse::new).collect(Collectors.toList());
         Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
+
+        /* 키워드 검색조건 */
+        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
+                .or(UserSpecification.likeTel(keyword));
+
+        /* 데이터 테이블 리스트 조회*/
         try {
             if (paramMap.get("draw") != null) {
+                /* 페이지 및 멀티소팅 */
+                Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
+
+                Page<User> userPageList = userRepository.findAll(spec, pageable);
+                List<UserResponse> groupResponseList = userPageList.getContent().stream()
+                        .map(user -> {
+                            String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
+
+                            return new UserResponse(user, status);
+                        })
+                        .collect(Collectors.toList());
                 Map<String, Object> pagingMap = new HashMap<>();
-                pagingMap.put("data", userDtoList); // 페이징 + 검색조건 결과
-                pagingMap.put("count", count); // 검색조건이 반영된 총 카운트
+                pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과
+                pagingMap.put("count", userPageList.getTotalElements()); // 검색조건이 반영된 총 카운트
                 resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
+
+                /* 일반 리스트 조회 */
             } else {
-                resultMap.put("data", userDtoList);
-                resultMap.put("count", count);
+                List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
+                        .map(user -> {
+                            String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
+
+                            return new UserResponse(user, status);
+                        })
+                        .collect(Collectors.toList());
+                Map<String, Object> pagingMap = new HashMap<>();
+                resultMap.put("data", userResponseList);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return resultMap;
     }
-    //userList.stream().map(UserDto::new).collect(Collectors.toList());
-    // return userList.stream().collect(Collectors.toMap(User::getUserId, UserDto::new));
 
     public int getUserSize() {
         return userRepository.findAll().size();
     }
 
     public int idCheck(String userId) {
-
         User user = userRepository.findByUserId(userId);
         return (user == null) ? 1 : 0;
     }

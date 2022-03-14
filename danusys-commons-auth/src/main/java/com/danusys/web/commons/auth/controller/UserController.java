@@ -150,7 +150,7 @@ public class UserController {
     }
     /*
        name: getListGroupProc
-       url: /group/
+       url: /group
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -158,7 +158,7 @@ public class UserController {
             "start":0,
             "length":15,
             "draw":"1"
-}
+        }
        do: paramMap 조건에 맞는 list 출력
        return : paramMap 조건에 맞는 list
      */
@@ -172,7 +172,7 @@ public class UserController {
     }
     /*
        name: addGroupProc
-       url: /group/
+       url: /group
        type: put
        param : UserGroup userGroup
        do: usergroup 저장 , groupName,groupDesc 없이 전송할경우 0 리턴
@@ -180,15 +180,13 @@ public class UserController {
      */
     @PutMapping("/group")
     public ResponseEntity<?> addGroupProc(@RequestBody UserGroup userGroup) {
-
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userGroupService.saveUserGroup(userGroup));
     }
     /*
        name: modGroupProc
-       url: /group/
+       url: /group
        type: patch
        param : UserGroup userGroup
        do: usergroup 업데이트
@@ -204,27 +202,29 @@ public class UserController {
     }
     /*
        name: deleteGroupProc
-       url: /group/
+       url: /group
        type: delete
        param : userSeq
        do: usergroup 삭제
      */
     @DeleteMapping("/group")
     public ResponseEntity<?> deleteGroupProc(@RequestBody UserGroup userGroup) {
+        userGroupInUserService.deleteUserGroupInUserSeq(userGroup.getUserGroupSeq());
         userGroupService.deleteUserGroup(userGroup);
+
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }
     /*
        name: getListGroupInUserProc
-       url: /groupinuser/
+       url: /groupInUser
        type: post
        param : userSeq
-       do: paramMap조건에 맞는 groupinuser List 조회
+       do: paramMap조건에 맞는 groupInUser List 조회
        return : paramMap 조건에 맞는 userSeq, userGroupSeq, insertUserSeq, insertDt
      */
-    @PostMapping("/groupinuser")
-    public ResponseEntity<?> getListGroupInUserProc(@RequestBody Map<String,Object> paramMap) {
+    @PostMapping("/groupInUser")
+    public ResponseEntity<?> getListGroupInUserProc(@RequestBody Map<String,Object> paramMap) throws Exception {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -232,7 +232,7 @@ public class UserController {
     }
   /*
        name: addGroupInUserProc
-       url: /groupinuser/
+       url: /groupInUser
        type: put
        param :Map<String,Object> paramMap
               (List<Integer> userSeqList , List<Integer> userGroupSeqList)
@@ -240,36 +240,29 @@ public class UserController {
                 "userSeqList":[49],
              "userGroupSeqList":[7,9,10]
             }
-
-
        do: paramMap조건에 맞는 groupinuser List 조회
        return : seq List 리턴 ,이미 있을 경우 null 리턴
      */
 
-    @PutMapping("/groupinuser")
+    @PutMapping("/groupInUser")
     // public ResponseEntity<?> addGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
     public ResponseEntity<?> addGroupInUserProc(@RequestBody Map<String,Object> paramMap) {
-
 //        log.info("usergroupInUser={}", userGroupInUserRequest);
-
-
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userGroupInUserService.saveUserGroupInUser(paramMap));
     }
 
-    @DeleteMapping("/groupinuser")
+    @DeleteMapping("/groupInUser")
     public ResponseEntity<?> delGroupInUserProc(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
-        userGroupInUserService.deleteUserGroupInUser(userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq());
+        userGroupInUserService.deleteUserGroupInUserOne(userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq());
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }
 
-    @PutMapping("/grouppermit")
+    @PutMapping("/groupPermit")
     public ResponseEntity<?> addPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
-
-        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
+//        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
         UserGroupPermit userGroupPermit = new UserGroupPermit();
         userGroupPermit.setInsertUserSeq(userGroupPermitRequest.getInsertUserSeq());
         userGroupPermitService.saveUserGroupPermit(userGroupPermit
@@ -279,77 +272,17 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/grouppermit")
+    @DeleteMapping("/groupPermit")
     public ResponseEntity<?> delPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
-
-        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
+//        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
         userGroupPermitService.deleteUserGroupPermit(
                 userGroupPermitRequest.getUserGroupSeq(), userGroupPermitRequest.getPermitSeq());
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }
 
-    @GetMapping("/usercount")
+    @GetMapping("/userCount")
     public ResponseEntity<?> getUserCountProc(){
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserSize());
-
     }
-
-
-
-//
-//    @PatchMapping("/groupinuser")
-//    public ResponseEntity<?> modGroupProc(@RequestBody UserGroup userGroup) {
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(userGroupService.updateUserGroup(userGroup));
-//
-//    }
-//    @DeleteMapping("/groupinuser")
-//    public ResponseEntity<?> deleteGroupProc(@RequestBody UserGroup userGroup){
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK).build();
-//    }
-
-
-//    @PostMapping("/usergroup")
-//    public ResponseEntity<?> saveUserGroup(UserGroup usergroup) {
-//        userGroupService.saveUserGroup(usergroup);
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body("created userGroup");
-//    }
-//
-//
-
-//
-//    @PostMapping("/permit")
-//    public ResponseEntity<?> savePermit(Permit permit) {
-//        permitService.savePermit(permit);
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body("created permit");
-//    }
-//
-//    @PostMapping("/usergroupinuser")
-//    public ResponseEntity<?> saveUserGroupInUser(UserGroupInUser userGroupInUser, int userSeq) {
-//        userGroupInUserService.saveUserGroupInUser(userGroupInUser, userSeq);
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body("created usergroupinuser");
-//    }
-
-//    @PatchMapping("/")
-//    public ResponseEntity<?> modUserProc(User user){
-//
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body(userService.updateUser(user));
-//
-//    }
-//
-
-
 }

@@ -63,7 +63,7 @@ public class AuthController {
                 .body("created id");
     }
 
-    @PostMapping("/usergroup")
+    @PostMapping("/userGroup")
     public ResponseEntity<?> saveUserGroup(UserGroup usergroup) {
         userGroupService.saveUserGroup(usergroup);
         return ResponseEntity

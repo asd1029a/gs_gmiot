@@ -2,6 +2,7 @@ package com.danusys.web.commons.auth.dto.response;
 
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserGroupInUser;
+import com.danusys.web.commons.auth.model.UserGroupPermit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,11 +23,10 @@ public class GroupResponse {
     private Timestamp updateDt;
     private int updateUserSeq;
     private String inUserId="";
-
-
+    private List<UserGroupPermit> userGroupPermit;
+//    private List<UserGroupInUser> userGroupInUser;
 
     public GroupResponse(UserGroup userGroup) {
-
         this.userGroupSeq = userGroup.getUserGroupSeq();
         this.groupName = userGroup.getGroupName();
         this.groupDesc = userGroup.getGroupDesc();
@@ -35,14 +35,10 @@ public class GroupResponse {
         this.updateDt = userGroup.getUpdateDt();
         this.updateUserSeq = userGroup.getUpdateUserSeq();
         userGroup.getUserGroupInUser().forEach(r->{
-
             this.inUserId+=r.getUser().getUserName()+", ";
-
         });
+        this.userGroupPermit = userGroup.getUserGroupPermit();
+//        this.userGroupInUser = userGroup.getUserGroupInUser();
         this.inUserId= StringUtils.substring(inUserId,0,-2);
-
-
     }
-
-
 }

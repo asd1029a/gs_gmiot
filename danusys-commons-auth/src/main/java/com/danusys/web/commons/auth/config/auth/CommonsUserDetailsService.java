@@ -2,9 +2,7 @@ package com.danusys.web.commons.auth.config.auth;
 
 
 
-import com.danusys.web.commons.auth.model.Permit;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserDto;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
