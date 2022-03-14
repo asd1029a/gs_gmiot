@@ -39,13 +39,13 @@
         <div id="map" class="map_wrap">
         <!--           mapComponent -->
         <div class="mapComponent">
-            <div class="mapComponentMission">
+            <div class="mapComponentMission" style="display: none;">
                 <article class="missionRoute">
                     <dl class="title">
                         <dt><i><img src="images/default/location.svg"></i>상세내용</dt>
-                        <dd>Total<span>306</span></dd>
+                        <!--<dd>Total<span>0</span></dd>-->
                     </dl>
-                    <p class="missionStart">미션 시작<i><img src="images/default/arrowBottom.svg"></i></p>
+                    <p class="missionStart">미션 목록<i><img src="images/default/arrowBottom.svg"></i></p>
                     <div class="routeContents">
                     </div>
                     <div class="routeContentsButton" style="margin-top: 15px;">
@@ -103,6 +103,7 @@
             </section>
             <div class="missionSummary" style="display: none;">
                 <ul>
+
                     <li><span>미션명</span><p id="summaryName"></p></li>
                     <li><span>총 거리</span><p id="summaryDistance"></p><small>m</small></li>
                     <li><span>예상 시간</span><p id="summaryTime"></p><small>분</small></li>

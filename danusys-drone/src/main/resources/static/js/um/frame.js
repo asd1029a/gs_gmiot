@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    console.log(window.location.pathname);
     let param = {"droneDeviceName": ""}
     loadDroneList(param);
     getListMission();
@@ -403,5 +403,7 @@ $(".add_drone_device_name").on("input", function () {
     }
 
 
-})
+});
+
+
 

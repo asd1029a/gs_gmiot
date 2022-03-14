@@ -29,9 +29,9 @@ public class DroneBase {
     @Column(name="base_name")
     private String baseName;
 
-    @OneToMany(mappedBy = "droneBase")
-    @JsonIgnore
-    private final List<Drone> drone =new ArrayList<>();
+//    @OneToMany(mappedBy = "droneBase")
+//    @JsonIgnore
+//    private final List<Drone> drone =new ArrayList<>();
 
 
 }
