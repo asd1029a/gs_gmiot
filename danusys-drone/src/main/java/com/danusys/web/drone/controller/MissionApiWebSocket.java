@@ -3,32 +3,21 @@ package com.danusys.web.drone.controller;
 
 import com.danusys.web.drone.dto.response.DroneResponse;
 import com.danusys.web.drone.dto.response.MissionResponse;
-import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.model.Mission;
 import com.danusys.web.drone.model.MissionDetails;
 import com.danusys.web.drone.service.*;
-import com.danusys.web.drone.utils.Substring;
-import com.google.gson.Gson;
-import io.dronefleet.mavlink.Mavlink2Message;
-import io.dronefleet.mavlink.MavlinkConnection;
-import io.dronefleet.mavlink.MavlinkMessage;
 import io.dronefleet.mavlink.common.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 //import org.omg.CORBA.Object;
-import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -38,7 +27,7 @@ import com.danusys.web.drone.utils.Flight;
 @RequestMapping("/drone/api")
 @Slf4j
 @RequiredArgsConstructor
-public class MissionApiController {
+public class MissionApiWebSocket {
 
     private final MissionService missionService;
     private final MissionDetailsService missionDetailsService;

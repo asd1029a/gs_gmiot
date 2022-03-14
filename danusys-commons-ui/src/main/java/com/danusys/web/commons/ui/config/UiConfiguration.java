@@ -35,22 +35,22 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
         this.applicationContext = applicationContext;
     }
 
-//    @Override
-//    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        converters.add(jsonMessageConverter());
-//    }
-//
-//    @Override
-//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        converters.add(jsonMessageConverter());
-//    }
-//
-//    private MappingJackson2HttpMessageConverter jsonMessageConverter() {
-//        final ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.getFactory().setCharacterEscapes(new HTMLCharacterEscapes());
-//
-//        return new MappingJackson2HttpMessageConverter(objectMapper);
-//    }
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(jsonMessageConverter());
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(jsonMessageConverter());
+    }
+
+    private MappingJackson2HttpMessageConverter jsonMessageConverter() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.getFactory().setCharacterEscapes(new HTMLCharacterEscapes());
+
+        return new MappingJackson2HttpMessageConverter(objectMapper);
+    }
 
     @Bean
     @Description("Thymeleaf view resolver")
