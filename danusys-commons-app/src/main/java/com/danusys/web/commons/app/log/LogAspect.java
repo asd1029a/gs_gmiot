@@ -41,67 +41,60 @@ public class LogAspect {
         this.ip = addr.getHostAddress();
     }
 
-    @Around( "execution(* com.danusys.web.*.*.*Controller.*(..))")
-    public Object controllerAroundLogging(ProceedingJoinPoint pjp) {
+    @Around("execution(* com.danusys.web.*.*.*Controller.*(..))")
+    public Object controllerAroundLogging(ProceedingJoinPoint pjp) throws Throwable {
         String timeStamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Timestamp(System.currentTimeMillis()));
-        Object result = null;
+
         //실행전
-        try {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-            this.clientIp = request.getRemoteAddr();
-            this.clientUrl = request.getRequestURL().toString();
-            String callFunction = pjp.getSignature().getDeclaringTypeName() + "." + pjp.getSignature().getName();
+        HttpServletRequest request = attributes.getRequest();
+        this.clientIp = request.getRemoteAddr();
+        this.clientUrl = request.getRequestURL().toString();
+        String callFunction = pjp.getSignature().getDeclaringTypeName() + "." + pjp.getSignature().getName();
 
-            LogInfo loginfo = new LogInfo();
-            loginfo.setTimestamp(timeStamp);
-            loginfo.setHostname(host);
-            loginfo.setHostIp(ip);
-            loginfo.setClientIp(clientIp);
-            loginfo.setClientUrl(clientUrl);
-            loginfo.setCallFunction(callFunction);
-            loginfo.setType("CONTROLLER_REQ");
-            loginfo.setParameter(mapper.writeValueAsString(request.getParameterMap()));
+        LogInfo loginfo = new LogInfo();
+        loginfo.setTimestamp(timeStamp);
+        loginfo.setHostname(host);
+        loginfo.setHostIp(ip);
+        loginfo.setClientIp(clientIp);
+        loginfo.setClientUrl(clientUrl);
+        loginfo.setCallFunction(callFunction);
+        loginfo.setType("CONTROLLER_REQ");
+        loginfo.setParameter(mapper.writeValueAsString(request.getParameterMap()));
 
-            long beforeTimeMillis = System.currentTimeMillis();
+        long beforeTimeMillis = System.currentTimeMillis();
 
-            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 //        log.info(mapper.writeValueAsString(loginfo));
 //        System.out.println(">>> 실행시작 : "
 //            + pjp.getSignature().getDeclaringTypeName() + "."
 //            + pjp.getSignature().getName());
-            //System.out.println(mapper.writeValueAsString(loginfo));
+        //System.out.println(mapper.writeValueAsString(loginfo));
 
-            result = pjp.proceed();
+        Object result = pjp.proceed();
 
-            //실행후
-            timeStamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Timestamp(System.currentTimeMillis()));
+        //실행후
+        timeStamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Timestamp(System.currentTimeMillis()));
 
-            loginfo.setTimestamp(timeStamp);
-            loginfo.setType("CONTROLLER_RES");
-            loginfo.setParameter(mapper.writeValueAsString(result));
+        loginfo.setTimestamp(timeStamp);
+        loginfo.setType("CONTROLLER_RES");
+        loginfo.setParameter(mapper.writeValueAsString(result));
 
-            long afterTimeMillis = System.currentTimeMillis() - beforeTimeMillis;
+        long afterTimeMillis = System.currentTimeMillis() - beforeTimeMillis;
 
-            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 //        log.info(mapper.writeValueAsString(loginfo));
 //        System.out.println(">>> 실행끝 : " + afterTimeMillis + " 밀리초 소요 "
 //            + pjp.getSignature().getDeclaringTypeName() + "."
 //            + pjp.getSignature().getName());
-            //System.out.println(mapper.writeValueAsString(loginfo));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        } finally {
-        }
+        //System.out.println(mapper.writeValueAsString(loginfo));
 
         return result;
     }
 
 
-    @AfterThrowing(pointcut="execution(* com.danusys.web.*.*.*.*(..))" ,throwing="ex")
+    @AfterThrowing(pointcut="execution(* com.danusys.web.*.*.*.*(..)) && !execution(* com.danusys.web.*.*.*WebSocket.*(..))" ,throwing="ex")
     public void allThrowingLogging(Throwable ex) {
         String timeStamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Timestamp(System.currentTimeMillis()));
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
