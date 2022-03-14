@@ -51,7 +51,7 @@ public class AuthController {
     @RequestMapping("/hi4")
     public ModelAndView hi4() {
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("/view/login/login.html");
+        mv.setViewName("view/login/login.html");
         return mv;
     }
 

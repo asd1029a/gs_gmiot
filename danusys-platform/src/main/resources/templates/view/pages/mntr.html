@@ -17,7 +17,7 @@
 </th:block>
 
 <th:block layout:fragment="content">
-    <!--<th:block th:insert="/view/commons/map"></th:block>-->
+    <!--<th:block th:insert="view/commons/map"></th:block>-->
     <div id="map" class="map_wrap">
         <div class="map_button">
             <ul class="map_type">
@@ -37,11 +37,12 @@
         </div>
         <div class="map_location">
             <ul>
-                <li data-value="sd">경기도<i><img src="/images/default/arrowNext.svg"></i></li>
-                <li data-value="sgg">광명시<i><img src="/images/default/arrowNext.svg"></i></li>
-                <li data-value="emd">하안동</li>
+                <li id="admAreaName"></li>
+                <!--<li data-value="sgg">광명시<i><img src="/images/default/arrowNext.svg"></i></li>
+                <li data-value="emd">하안동</li>-->
             </ul>
-            <p><i><img src="/images/default/icon_weather01.png"></i>맑음 12°</p>
+            <i><img src="/images/default/arrowNext.svg"></i>
+            <p id="admWeather"><i><img src="/images/default/icon_weather_sunny.png"></i>맑음 12°</p>
         </div>
         <div id="mousePosition"></div>
         <div id="layerViewer">

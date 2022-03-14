@@ -5,6 +5,7 @@ import com.danusys.web.commons.api.service.AdmService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +23,11 @@ public class AdmController {
         this.admService = admService;
     }
 
+    /**
+     * 위도 경도 -> 행정구역 이름 반환 (시도 시군구 읍면동)
+     */
     @PostMapping(value = "/lonLatToAdm")
-    public AdmInfo lonLatToAdm(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return admService.findArea(paramMap);
+    public ResponseEntity<?> lonLatToAdm(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(admService.findArea(paramMap));
     }
 }

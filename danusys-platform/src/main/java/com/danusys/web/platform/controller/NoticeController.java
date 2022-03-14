@@ -4,17 +4,16 @@ import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.platform.dto.request.NoticeRequestDto;
 import com.danusys.web.platform.dto.response.NoticeResponseDto;
-import com.danusys.web.commons.app.model.paging.Page;
-import com.danusys.web.commons.app.model.paging.PagingRequest;
 import com.danusys.web.platform.service.notice.NoticeService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,18 +95,15 @@ public class NoticeController {
     /**
      * 공지사항 : 공지사항 엑셀
      */
-//    @RequestMapping(value = "/exportExcel.do")
-//    public ModelAndView exportNotice(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> paramMap) throws Exception {
-//        String fileName = "공지사항목록_"+DateUtil.getCurrentDate("yyyyMmddHHmmss");
-//        String columnArr = "title|content|insertDt|insertAdminId|updateDt|updateAdminId";
-//        String columnNmArr = "제목|내용|입력일|입력 ID|수정일|수정 ID";
-//        String qId = "notice.SELECT_LIST_BOARD_EXCEL";
-//
-//        paramMap.put("columnArr", columnArr);
-//        paramMap.put("columnNmArr", columnNmArr);
-//        paramMap.put("qId", qId);
-//        paramMap.put("fileName", fileName+".xlsx");
-//
-//        return excelUtil.exportExcel(paramMap);
-//    }
+    @ResponseBody
+    @PostMapping(value = "excel/download")
+    public void exportNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        Workbook wb = null;
+        EgovMap dataMap = noticeService.getList((Map<String, Object>) paramMap.get("search"));
+
+        paramMap.put("dataMap", dataMap.get("data"));
+        wb = FileUtil.excelDownload(paramMap);
+        wb.write(response.getOutputStream());
+        wb.close();
+    }
 }

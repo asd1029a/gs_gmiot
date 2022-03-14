@@ -10,8 +10,8 @@ import javax.persistence.*;
 public class AdmInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String area_code;
+    private String areaCode;
 
     @Column(nullable = false)
-    private String area_name;
+    private String areaName;
 }

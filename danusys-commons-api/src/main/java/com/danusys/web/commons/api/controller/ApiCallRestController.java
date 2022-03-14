@@ -1,12 +1,10 @@
 package com.danusys.web.commons.api.controller;
 
 import com.danusys.web.commons.api.model.*;
-import com.danusys.web.commons.api.service.ApiExecutorFactoryService;
-import com.danusys.web.commons.api.service.ApiExecutorService;
-import com.danusys.web.commons.api.service.FacilityService;
-import com.danusys.web.commons.api.service.StationService;
+import com.danusys.web.commons.api.service.*;
 import com.danusys.web.commons.api.types.ParamType;
 import com.danusys.web.commons.app.CamelUtil;
+import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,14 +18,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -47,15 +45,18 @@ public class ApiCallRestController {
     private ApiExecutorService apiExecutorService;
     private FacilityService facilityService;
     private StationService stationService;
+    private ForecastService forecastService;
 
     public ApiCallRestController(ApiExecutorFactoryService apiExecutorFactoryService
             , ApiExecutorService apiExecutorService
             , FacilityService facilityService
-            , StationService stationService) {
+            , StationService stationService
+            , ForecastService forecastService) {
         this.apiExecutorFactoryService = apiExecutorFactoryService;
         this.apiExecutorService = apiExecutorService;
         this.facilityService = facilityService;
         this.stationService = stationService;
+        this.forecastService = forecastService;
     }
 
     @PostMapping(value = "/facility")
@@ -111,45 +112,19 @@ public class ApiCallRestController {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
-    @PostMapping(value="/getWeatherData")
-    public ResponseEntity getWeatherData(@RequestBody Map<String, Object> param) throws Exception {
-        //ForecastGridTransfer fcgt = new ForecastGridTransfer( 35.14420140402784, 129.11313119919697, 0);
-        //ForecastGridTransfer fcgt = new ForecastGridTransfer(99, 75, 1);
-        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
-        Double lon = (Double) reqParams.get("lon");
-        Double lat = (Double) reqParams.get("lat");
-        ForecastGridTransfer fcgt = new ForecastGridTransfer(lat, lon,0);
-
-        Map<String, Object> resultMap = fcgt.transfer();
-
-        reqParams.put("nx",resultMap.get("nx"));
-        reqParams.put("ny",resultMap.get("ny"));
-//        base_date: '20220311',
-//        base_time: '0630',
-
-        param.put("reqPrams", reqParams);
-
+    @PostMapping(value="/getCurSkyTmp")
+    public ResponseEntity getCurSkyTmp(@RequestBody Map<String, Object> param) throws Exception {
+        param.put("reqPrams", forecastService.setReqParam(param));
         Api api = getRequestApi(param);
-        System.out.println("#######################################");
-        System.out.println(api);
+
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-
         String body = (String) responseEntity.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+        Map<String, Object> resultMap = forecastService.getCurSkyTmp(resultBody);
 
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println(body);
-        //Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-//        List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("");
-//
-//        this.facilityService.saveAll(list);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body("");
-        return null;
-
-
-        //return this.call(param);
+        return ResponseEntity.status(HttpStatus.OK).body(resultMap);
     }
 
     @PostMapping(value = "/call")
