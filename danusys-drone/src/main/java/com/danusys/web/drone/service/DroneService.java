@@ -3,6 +3,8 @@ package com.danusys.web.drone.service;
 
 import com.danusys.web.drone.dto.request.DroneRequest;
 import com.danusys.web.drone.dto.response.DroneMissionDetailsResponse;
+import com.danusys.web.drone.dto.response.DroneResponse;
+import com.danusys.web.drone.dto.response.MissionDetailResponse;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.repository.DroneDetailsRepository;
@@ -19,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -73,12 +76,12 @@ public class DroneService {
 
         return "success";
     }
-
-    public List<Drone> findDroneList(DroneRequest droneRequest) {
-
+    @Transactional
+    public List<?> findDroneList(DroneRequest droneRequest) {
+        log.info("droneRequest={}",droneRequest);
         List<Drone> droneList = null;
         Sort sort = sortByupdateDt();
-        DroneDetails droneDetails = new DroneDetails();
+
         String droneStatus = null;
         if (droneRequest.getDroneStatus() != null) {
             if (droneRequest.getDroneStatus().equals("all")) {
@@ -89,9 +92,15 @@ public class DroneService {
                 droneStatus = "운영중";
             }
             if (droneRequest.getUserId() != null) {
-              //  log.info("id로검색");
+                log.info("id로검색");
+
                 droneList = droneRepository.findAllByUserIdLikeAndStatus("%" + droneRequest.getUserId() + "%", droneStatus, sort);
 
+              droneList.forEach(r->{
+                    log.info("droneId={},{},{},{}",r.getUserId(),r.getDroneDeviceName(),
+                        r.getId(),   r.getStatus());
+
+                });
             } else if (droneRequest.getDroneDeviceName() != null) {
                 log.info("devicename으로검색");
                 droneList = droneRepository.findAllByDroneDeviceNameLikeAndStatus("%" + droneRequest.getDroneDeviceName() + "%",
@@ -112,8 +121,9 @@ public class DroneService {
 
        // log.info("droneStatus={}", droneStatus);
 
-
-        return droneList;
+        log.info("여긴오나?");
+        return droneList.stream().map(DroneResponse::new).collect(Collectors.toList());
+        //return droneList;
     }
 
     private Sort sortByupdateDt() {
@@ -130,11 +140,13 @@ public class DroneService {
         }
     }
 
-    public Drone findOneDrone(long droneId) {
+    public DroneResponse findOneDrone(long droneId) {
         Optional<Drone> optionalDrone = droneRepository.findById(droneId);
         if (!optionalDrone.isPresent())
             return null;
-        return optionalDrone.get();
+        Drone drone =optionalDrone.get();
+        DroneResponse droneResponse=new DroneResponse(drone);
+        return droneResponse;
     }
 
     public List<Drone> findAllDrone() {

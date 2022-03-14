@@ -1,6 +1,8 @@
 package com.danusys.web.drone.controller;
 
 
+import com.danusys.web.drone.dto.response.DroneResponse;
+import com.danusys.web.drone.dto.response.MissionResponse;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.model.Mission;
@@ -151,10 +153,11 @@ public class MissionApiController {
 
         //로그 저장
         //  Mission missionResponse = missionService.missionResponseList2(mission.getId());
-        Drone drone = droneService.findOneDrone(droneId);
+        DroneResponse drone = droneService.findOneDrone(droneId);
         //수정
       //  Mission missionResponse = missionService.missionResponseList2(id);
-        Mission missionResponse = drone.getDroneInmission().getMission();
+
+        MissionResponse missionResponse = drone.getDroneInmission().getMission();
         DroneLog inputDroneLog = new DroneLog();
 
         inputDroneLog.setMissionName(missionResponse.getName());

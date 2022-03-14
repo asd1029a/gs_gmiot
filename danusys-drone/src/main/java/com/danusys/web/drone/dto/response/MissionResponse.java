@@ -28,7 +28,7 @@ public class MissionResponse {
     private int estimatedTime;
     
 
-    //private List<MissionDetailResponse> missionDetailResponseList;
+    private List<MissionDetailResponse> missionDetails;
 
 
 
@@ -40,8 +40,7 @@ public class MissionResponse {
         this.updateDt=mission.getUpdateDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
         this.totalDistance=mission.getTotalDistance();
         this.estimatedTime=mission.getEstimatedTime();
-
-        //this.missionDetailResponseList= mission.getMissonDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
+        this.missionDetails= mission.getMissionDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList());
 
 
 

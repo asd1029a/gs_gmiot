@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.springframework.web.servlet.ModelAndView;
+
 
 @Slf4j
 @Component
@@ -54,19 +54,6 @@ public class FileUtil {
         STATIC_EXTERNAL_FILE_PATH = EXTERNAL_FILE_PATH;
     }
 
-
-    /**
-     * 파일 업로드
-     * @param uploadFile
-     * @param request
-     * @return 저장된 파일 이름
-     *
-     * ajax를 요청한 펭지ㅣ url 기준으로 폴더를 만들어 파일 업로드
-     * 서버에 home 폴더를 가져와 그안에 파일을 저장
-     * ex) /drone에서 요청시
-     * c:/user/owner/drone 안에 파일이 저장됨
-     *
-     */
 
 
     public static String uploadAjaxPost(MultipartFile[] uploadFile, HttpServletRequest request) {
@@ -127,10 +114,7 @@ public class FileUtil {
         return savedFileName;
     }
 
-    /**
-     * 파일이름에 uuid 붙이기
-     * @return
-     */
+
     private static String setFileUUID() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         Date date = new Date();
@@ -139,12 +123,7 @@ public class FileUtil {
         return str + "_";
     }
 
-    /**
-     * byte로 이미지 리턴
-     * @param imageName
-     * @param request
-     * @return 이미지 byte[]
-     */
+
     public static byte[] getImage2(String imageName, HttpServletRequest request) {
         String folderPath = "/";
         String folder[] = request.getHeader("REFERER").split("/");
@@ -169,13 +148,7 @@ public class FileUtil {
         return imageByteArray;
     }
 
-    /**
-     * 이미지 바로 출력
-     * @param imageName 출력할 이미지이름
-     * @param request
-     * @param response
-     *
-     */
+
     public static void getImage(String imageName, HttpServletRequest request, HttpServletResponse response) {
         String folderPath = "/";
         String folder[] = request.getHeader("REFERER").split("/");
@@ -247,14 +220,7 @@ public class FileUtil {
     }
 
 
-    /**
-     *  ajax를 요청한 url 기준으로 fileName 다운로드
-     *  /drone에서 ajax 요청시
-     *  /c:user/owner/drone 에 있는 파일을 가져온다.
-     * @param request
-     * @param response
-     * @param fileName
-     */
+
     public static void fileDownload(HttpServletRequest request, HttpServletResponse response,
                                     String fileName) {
         String folderPath = "/";
@@ -298,30 +264,11 @@ public class FileUtil {
 
     }
 
-    /**
-     * @param paramMap
-     *
-     *    ex)
-     *    paramMap = {
-     *    dataMap: resultData,  <- 조회한 결과
-     *    fileName: "Log.xlsx",
-     *    headerList: ["아이디", "드론이름", "미션이름", "입력날짜"]
-     * };
-     *
-     *             dataMap-> List<Map<String,Object>> dataMap
-     *             headerList -> List<String> heartList
-     *             dataMap -> 엑셀에 담을 data map 리스트
-     *             headerList -> 엑셀 첫줄에 해더 부분을 임의로 지정할 경우
-     *
-     *             필수 : dataMap ,
-     *             선택 : headerList
-     *
-     * @return Workbook 리턴
-     */
+
 
 
     public static Workbook excelDownload(
-                                         Map<String, Object> paramMap) {
+            Map<String, Object> paramMap) {
 
         List<Map<String, Object>> dataMap = null;
         List<String> headerList = null;
@@ -370,7 +317,6 @@ public class FileUtil {
 
             cellNum.set(0);
             data.forEach((k, v) -> {
-
 
                 Cell cell = row.createCell(cellNum.get());
                 if (v != null)

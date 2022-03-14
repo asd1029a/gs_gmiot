@@ -64,7 +64,7 @@ public class MissionService {
         MissionResponse missionResponse = new MissionResponse(mission.getId(), mission.getName(), mission.getUserId(),
                 mission.getUpdateDt().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")),
                 mission.getDroneId(),
-                mission.getTotalDistance(), mission.getEstimatedTime());
+                mission.getTotalDistance(), mission.getEstimatedTime(),mission.getMissionDetails().stream().map(MissionDetailResponse::new).collect(Collectors.toList()));
 
         return missionResponse;
     }
