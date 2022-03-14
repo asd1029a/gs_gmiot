@@ -71,10 +71,10 @@ const mntr = {
             $.ajax({
                 contentType : "application/json; charset=utf-8",
                 type : "POST",
-                url : '/api/getCurrentSkyData',
+                url : '/api/getCurSkyTmp',
                 dataType : "json",
                 data : JSON.stringify(param),
-                async : false
+                async : true
             }).done( result => {
                 if (!result) return;
                 const html = "<i><img src='/images/default/icon_weather_"+ result["sky"] +".png'></i>"
@@ -83,12 +83,13 @@ const mntr = {
                 $(".map_location #admWeather").append(html);
             });
             // 현재 위치 시-군-동 반환
+            $(".map_location #admAreaName").text("알수 없음");
             $.ajax({
                 type : "POST",
                 url : '/adm/lonLatToAdm',
                 contentType : "application/json; charset=utf-8",
                 dataType : "JSON",
-                async : false,
+                async : true,
                 data : JSON.stringify({
                     lon : mapLonLat[0],
                     lat : mapLonLat[1]
@@ -97,7 +98,6 @@ const mntr = {
                 if (!result) return;
                 $(".map_location #admAreaName").text( result["areaName"]);
             });
-
         }); // 지도 move end 이벤트
 
         /**

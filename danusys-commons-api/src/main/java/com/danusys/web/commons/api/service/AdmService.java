@@ -5,6 +5,7 @@ import com.danusys.web.commons.api.repository.AdmInfoRepository;
 
 import com.danusys.web.commons.app.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -13,6 +14,9 @@ import java.util.Map;
 @Service
 public class AdmService {
     private AdmInfoRepository admInfoRepository;
+
+    @Value("${danusys.area.code.sig}")
+    private String codeSig;
 
     public AdmService(AdmInfoRepository admInfoRepository) {
         this.admInfoRepository = admInfoRepository;

@@ -28,6 +28,6 @@ public class AdmController {
      */
     @PostMapping(value = "/lonLatToAdm")
     public ResponseEntity<?> lonLatToAdm(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return  ResponseEntity.ok().body(admService.findArea(paramMap));
+        return ResponseEntity.ok().body(admService.findArea(paramMap));
     }
 }
