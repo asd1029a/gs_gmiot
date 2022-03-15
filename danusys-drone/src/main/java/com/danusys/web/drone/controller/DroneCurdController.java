@@ -97,7 +97,7 @@ public class  DroneCurdController {
 
     @PatchMapping("/dronedetails")
     public ResponseEntity<?> updateDroneDetails(@RequestBody DroneDetailRequest droneDetailRequest){
-
+        log.info("paramMap={},{}",droneDetailRequest,droneDetailRequest.getDroneDetails());
             long droneId = droneDetailRequest.getDroneId();
             DroneDetails droneDetails=droneDetailRequest.getDroneDetails();
           //  log.info("droneId={}",droneId);

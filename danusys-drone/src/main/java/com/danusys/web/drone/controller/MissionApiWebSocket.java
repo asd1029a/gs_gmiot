@@ -2,6 +2,7 @@ package com.danusys.web.drone.controller;
 
 
 import com.danusys.web.drone.dto.response.DroneResponse;
+import com.danusys.web.drone.dto.response.MissionDetailResponse;
 import com.danusys.web.drone.dto.response.MissionResponse;
 import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.model.Mission;
@@ -73,7 +74,7 @@ public class MissionApiWebSocket {
 //    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
     // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
     public void wayPointDrone(Map<String, Object> paramMap) {
-
+        log.info("paramMap={}",paramMap);
         double gpsX = 0;
         double gpsY = 0;
         double gpsZ = 0;
@@ -90,13 +91,16 @@ public class MissionApiWebSocket {
             gpsX = Double.parseDouble(paramMap.get("gpsX").toString()) * 10000000;
         if (paramMap.get("gpsY") != null)
             gpsY = Double.parseDouble(paramMap.get("gpsY").toString()) * 10000000;
-        if (paramMap.get("alt") != null)
+        if (paramMap.get("alt") != null &&  !paramMap.get("alt").equals("")){
             gpsZ = Double.parseDouble(paramMap.get("alt").toString());
+            intGpsZ = (int) gpsZ;
+        }
+
         if (paramMap.get("yaw") != null)
             yaw = Integer.parseInt(paramMap.get("yaw").toString());
         intGpsX = (int) gpsX;
         intGpsY = (int) gpsY;
-        intGpsZ = (int) gpsZ;
+
         flight.wayPoint(intGpsX, intGpsY, intGpsZ, yaw);
 
 
@@ -176,10 +180,10 @@ public class MissionApiWebSocket {
         HashMap<String, Integer> radiusMap = new HashMap<>();
         Iterator iterator = missionResponse.getMissionDetails().iterator();
         while (iterator.hasNext()) {
-            MissionDetails missionDetails = (MissionDetails) iterator.next();
+            MissionDetailResponse missionDetails = (MissionDetailResponse) iterator.next();
             if (missionDetails.getName().equals("takeOff")) {
 
-                gpsZs.put("takeOff", missionDetails.getAlt());
+                gpsZs.put("takeOff", missionDetails.getMapZ());
                 //  log.info("Index={}", missionDetails.getIndex());
                 missionIndex.put(missionDetails.getIndex(), "takeOff");
 
@@ -187,26 +191,26 @@ public class MissionApiWebSocket {
             } else if (missionDetails.getName().equals("waypoint")) {
                 //각 waypoint에 값 받아와서 넣기
                 missionIndex.put(missionDetails.getIndex(), "waypoint" + missionDetails.getIndex());
-                gpsXs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getGpsX() * 10000000));
+                gpsXs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getMapX() * 10000000));
                 speeds.put("waypoint" + missionDetails.getIndex(), missionDetails.getSpeed());
-                gpsYs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getGpsY() * 10000000));
-                gpsZs.put("waypoint" + missionDetails.getIndex(), missionDetails.getAlt());
+                gpsYs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
+                gpsZs.put("waypoint" + missionDetails.getIndex(), missionDetails.getMapZ());
                 yaws.put("waypoint" + missionDetails.getIndex(), (float) (missionDetails.getYaw()));
             } else if (missionDetails.getName().equals("loi")) {
                 missionIndex.put(missionDetails.getIndex(), "loi" + missionDetails.getIndex());
                 times.put("loi" + missionDetails.getIndex(), missionDetails.getTime());
-                gpsXs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getGpsX() * 10000000));
-                gpsYs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getGpsY() * 10000000));
-                gpsZs.put("loi" + missionDetails.getIndex(), missionDetails.getAlt());
+                gpsXs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getMapX() * 10000000));
+                gpsYs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
+                gpsZs.put("loi" + missionDetails.getIndex(), missionDetails.getMapZ());
                 radiusMap.put("loi" + missionDetails.getIndex(), missionDetails.getRadius());
             } else if (missionDetails.getName().equals("return")) {
 
                 missionIndex.put(missionDetails.getIndex(), "return");
 
-                gpsXs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getGpsX() * 10000000));
+                gpsXs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getMapX() * 10000000));
                 speeds.put("return" + missionDetails.getIndex(), missionDetails.getSpeed());
-                gpsYs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getGpsY() * 10000000));
-                gpsZs.put("return" + missionDetails.getIndex(), missionDetails.getAlt());
+                gpsYs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
+                gpsZs.put("return" + missionDetails.getIndex(), missionDetails.getMapZ());
 
             }
         }

@@ -56,16 +56,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-/*    @Value("#{'${permit.all.page.basic}'.split(',')}")
+
+    @Value("#{'${permit.all.page.basic}'.split(',')}")
     private String[] permitAllBasic;
 
     @Value("#{'${permit.all.page.add}'.split(',')}")
     private String[] permitAllAdd;
+
+    private String[] permitAll = null;
+/*
+
+
     @Value("#{'${role.manager.page}'.split(',')}")
     private String[] roleManagerPage;
 
 
-    private String[] permitAll = null;
+
     @Value("#{'${role.admin.page}'.split(',')}")
     private String[] roleAdminPage*/;
 
@@ -97,18 +103,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-//        List<String> list = new ArrayList<String>();
-//        Collections.addAll(list, PERMIT_PATH);
-//        Collections.addAll(list, permitAllAdd);
-//
-//        permitAll = list.toArray(new String[list.size()]);
+        List<String> list = new ArrayList<String>();
+        Collections.addAll(list, permitAllBasic);
+        Collections.addAll(list, permitAllAdd);
+
+        permitAll = list.toArray(new String[list.size()]);
 //        log.info("permitAll={}", permitAll);
+
         httpSecurity
                 .addFilter(corsConfig.corsFilter()) //corsconfig
                 .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable()       //서버에 인증정보를 보관하지 않기때문에 불필요
                 .authorizeRequests() //시큐리티 처리에 HttpServletRequest를 이용한다
-                         .antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
+//                .antMatchers(permitAll).permitAll()
 //                .antMatchers(String.valueOf(PERMIT_PATH)).permitAll()
                 .antMatchers(String.valueOf(PERMIT_MANAGER)).access("hasRole('ROLE_MANAGER')")
                 .antMatchers(String.valueOf(PERMIT_ADMIN)).access("hasRole('ROLE_ADMIN')")

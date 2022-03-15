@@ -55,6 +55,7 @@ $(".excel_download").on("click", function () {
             async: false,
             data: JSON.stringify(paramMap),
             success: function (result) {
+
                 resultData = result.data;
             }
         });
@@ -72,7 +73,7 @@ $(".excel_download").on("click", function () {
 $(".search_button").on("click", function () {
     let beforeDate = $(".before_date").val();
     let afterDate = $(".after_date").val();
-    console.log(beforeDate, afterDate);
+  //  console.log(beforeDate, afterDate);
     let selectType = $("#selectType option:selected").val();
     let searchWord = $(".search_word").val();
     if (selectType === "all") {
@@ -141,7 +142,7 @@ function ajaxLog(paramMap) {
                 let id = $(e.currentTarget).data("id");
                 //console.log(id);
                 // console.log("data", resultData.data[id].droneLogDetails);
-
+          //          console.log(resultData.data);
                 let paramMap = {
                     dataMap: resultData.data[id].droneLogDetails,
                     fileName: "detailLog.xlsx"
@@ -161,7 +162,7 @@ function ajaxLog(paramMap) {
                 }
 
             }
-            //console.log(resultData.endPage, resultData.pages);
+
             if (resultData.endPage < resultData.pages)
                 $(".pageNav").append(`<li class="next" data-id=${resultData.endPage + 1}><i><img src="images/um/navNext.svg"></i></li>`);
 

@@ -1,6 +1,7 @@
 package com.danusys.web.drone.service;
 
 import com.danusys.web.drone.dto.response.DroneLogResponse;
+import com.danusys.web.drone.dto.response.DroneLogWithOutDetailsResponse;
 import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.repository.DroneLogRepository;
 import com.danusys.web.drone.utils.PagingUtil;
@@ -37,7 +38,7 @@ public class DroneLogService {
     }
 
     public Map<String, Object> findAllDroneLog(Map<String, Object> paramMap) {
-        //log.info("paramMap={}", paramMap);
+        log.info("paramMap={}", paramMap);
         int start = 0;
         int length = 1;
         int count = 1;
@@ -81,10 +82,13 @@ public class DroneLogService {
                 afterDate = Date.valueOf(paramMap.get("afterDate").toString());
 
 
-        log.info("" + beforeDate + " " + afterDate);
+        log.info("beforeDate=" + beforeDate + "afterDate= " + afterDate);
+        log.info("searchType={}",searchType);
         Page<DroneLog> droneLogPage = null;
         List<DroneLog> droneLogList = null;
         List<DroneLogResponse> droneLogResponseList = null;
+        List<DroneLogWithOutDetailsResponse> droneLogWithOutDetailsResponseList = null;
+
         if (length == 1) {
             if (searchType == 0) {
                 droneLogList = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeAndMissionNameIgnoreCaseLike(
@@ -93,9 +97,9 @@ public class DroneLogService {
             } else if (searchType == 1) {
                 droneLogList = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrInsertDtBetweenAndMissionNameIgnoreCaseLike(
                         beforeDate, afterDate, "%" + deviceName + "%", beforeDate, afterDate, "%" + deviceName + "%"
-                , Sort.by(Sort.Direction.DESC, "insertDt"));
+                        , Sort.by(Sort.Direction.DESC, "insertDt"));
             }
-            droneLogResponseList = droneLogList.stream().map(DroneLogResponse::new).collect(Collectors.toList());
+            droneLogWithOutDetailsResponseList =droneLogList.stream().map(DroneLogWithOutDetailsResponse::new).collect(Collectors.toList());
         } else {
             if (searchType == 0) {
                 PageRequest pageRequest = PageRequest.of(start, length, Sort.by(Sort.Direction.DESC, "insertDt"));
@@ -104,14 +108,17 @@ public class DroneLogService {
                 count = (int) droneLogPage.getTotalElements();
                 droneLogList = droneLogPage.toList();
             } else if (searchType == 1) {
+
+                log.info("여기??1");
                 PageRequest pageRequest = PageRequest.of(start, length, Sort.by(Sort.Direction.DESC, "insertDt"));
                 droneLogPage = droneLogRepository.findByInsertDtBetweenAndDroneDeviceNameIgnoreCaseLikeOrInsertDtBetweenAndMissionNameIgnoreCaseLike(
                         beforeDate, afterDate, "%" + deviceName + "%", beforeDate, afterDate, "%" + deviceName + "%", pageRequest); //droneDevice로 or 검색함
+                log.info("여기??2");
                 count = (int) droneLogPage.getTotalElements();
                 droneLogList = droneLogPage.toList();
             }
-
-
+            // droneLogResponseList2=droneLogList.stream().map(DroneLogResponse::new).collect(Collectors.toList());
+            droneLogResponseList = droneLogList.stream().map(DroneLogResponse::new).collect(Collectors.toList());
         }
 
 
@@ -121,10 +128,10 @@ public class DroneLogService {
 
             //  int lastPage = count / length + 1;
             int lastPage = (int) Math.ceil(count * 1.0 / length);
-            if (length == 1) {
-                pagingMap.put("data", droneLogResponseList); // 페이징 + 검색조건 결과
+            if (length == 1) {          //전체 데이터 엑셀 다운로드 용
+                pagingMap.put("data", droneLogWithOutDetailsResponseList); // 페이징 + 검색조건 결과
             } else {
-                pagingMap.put("data", droneLogList); // 페이징 + 검색조건 결과
+                pagingMap.put("data", droneLogResponseList); // 페이징 + 검색조건 결과
             }
 
             pagingMap.put("count", count); // 검색조건이 반영된 총 카운트
@@ -147,7 +154,7 @@ public class DroneLogService {
         return pagingMap;
     }
 
-    ;
+
 
 
 }

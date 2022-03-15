@@ -52,7 +52,7 @@ public class Flight {
     private MavlinkConnection connection = null;
     private Socket socket = null;
     private Gps gps = new Gps();
-    private Gps wayPointGps =new Gps();
+    private Gps wayPointGps = new Gps();
     private Gson gson = new Gson();
     private Timer t = null;
     private DroneLog droneLog = null;
@@ -69,14 +69,14 @@ public class Flight {
     private boolean alreadyWayPoint = false;
     private Timer waypointTimer = null;
     private TimerTask waypointTimerTask = null;
-    private boolean isMissionAndDrone=false;
+    private boolean isMissionAndDrone = false;
 
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
 
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         //시간 초기화
-        isMissionAndDrone=true;
+        isMissionAndDrone = true;
         int systemId = 1;
         int componentId = 1;
         int linkId = 1;
@@ -110,7 +110,7 @@ public class Flight {
         }
 
 
-      //  log.info("alreadyDo={}", alreadyDo);
+        //  log.info("alreadyDo={}", alreadyDo);
         if (!alreadyDo) {
             Gson gson = new Gson();
 
@@ -197,7 +197,7 @@ public class Flight {
 
                     if (message.getPayload() instanceof HomePosition) {
                         MavlinkMessage<HomePosition> homePositionMavlinkMessage = (MavlinkMessage<HomePosition>) message;
-             //           log.info("home Position = {}", homePositionMavlinkMessage.getPayload());
+                        //           log.info("home Position = {}", homePositionMavlinkMessage.getPayload());
                         int latitude = homePositionMavlinkMessage.getPayload().latitude();//x
                         int longitude = homePositionMavlinkMessage.getPayload().longitude();//y
                         int altitude = homePositionMavlinkMessage.getPayload().altitude();//z
@@ -547,9 +547,10 @@ public class Flight {
     //x,y 반대로 넣어야되기떄문에
     public String wayPoint(int gpsY, int gpsX, int gpsZ, int yaw) {
 
-        isMissionAndDrone=false;
+        isMissionAndDrone = false;
         log.info("yaw={}", yaw);
-
+        if (gpsZ == 0)
+            gpsZ = 100;
 
         Gson gson = new Gson();
 
@@ -583,7 +584,6 @@ public class Flight {
 
         try {
 
-
             int systemId = 1;
             int componentId = 1;
             int linkId = 1;
@@ -608,7 +608,6 @@ public class Flight {
             droneLogDetailsDoSetMode2.setParam6("0");
             droneLogDetailsDoSetMode2.setParam7("0");
             droneLogDetailsService.saveDroneLogDetails(droneLogDetailsDoSetMode2);
-
 
             connection.send2(systemId, componentId, new MissionItemInt.Builder().command(MavCmd.MAV_CMD_NAV_WAYPOINT).param1(0)
                     .targetSystem(0).targetComponent(0).seq(0).current(2).autocontinue(1).frame(MavFrame.MAV_FRAME_GLOBAL_INT)
@@ -690,7 +689,7 @@ public class Flight {
 
                     int wpDist = navControllerOutputMavlinkMessage.getPayload().wpDist();
 
-                    if(isMissionAndDrone)
+                    if (isMissionAndDrone)
                         break;
                     gps.setWpDist(wpDist);
                     if (wpDist == 0) {
@@ -734,7 +733,7 @@ public class Flight {
 
         } finally {
 //
-            alreadyWayPoint=false;
+            alreadyWayPoint = false;
             waypointTimer.cancel();
             waypointTimerTask.cancel();
 
@@ -754,7 +753,7 @@ public class Flight {
 
         try {
 
-            isMissionAndDrone=true;
+            isMissionAndDrone = true;
             int systemId = 1;
             int componentId = 1;
             int linkId = 1;

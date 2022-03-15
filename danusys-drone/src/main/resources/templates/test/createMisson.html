@@ -86,7 +86,7 @@
             data: sendData,
             success: function (resultData) {
 
-                console.log(resultData);
+             //   console.log(resultData);
                 //document.location="/drone/test/index";
             }
         });
@@ -116,35 +116,35 @@
         stompClient.connect({}, function (frame) {
 
 
-            console.log('Connected: ' + frame);
+          //  console.log('Connected: ' + frame);
             // droneLog();
 
             stompClient.subscribe('/topic/startmission', function (drone) {
-                console.log(drone);
+             //   console.log(drone);
                 //let droneData = setDroneData(drone);
                 // setDroneDraw(droneData);
             });
             stompClient.subscribe('/topic/log', function (drone) {
-                console.log(drone);
+              //  console.log(drone);
                 //let droneData = setDroneData(drone);
                 // setDroneDraw(droneData);
             });
             stompClient.subscribe('/topic/pause',function (drone){
-                console.log(drone);
+           //     console.log(drone);
             });
             stompClient.subscribe('/topic/play',function (drone){
-                console.log(drone);
+            //    console.log(drone);
             })
 
             stompClient.subscribe('/topic/return',function (drone){
-                console.log(drone);
+            //    console.log(drone);
             })
 
             stompClient.subscribe('/topic/setmissioncurrent',function (drone){
-                console.log(drone);
+           //     console.log(drone);
             })
             stompClient.subscribe('/topic/waypoint',function (drone){
-                console.log(drone);
+             //   console.log(drone);
             })
 
 
