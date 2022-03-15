@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" debug="true">
     <springProperty name="SPRING_APPLICATION_NAME" source="spring.application.name"/>
-    <property name="LOGS_PATH" value="C:/test/logs" />
+    <property name="LOGS_PATH" value="./log" />
+    <if condition='System.getProperty("os.name").toLowerCase().contains("win")'>
+        <then>
+            <property name="LOGS_PATH" value="C:/danusys/log" />
+        </then>
+        <else>
+            <property name="LOGS_PATH" value="/var/log/danusys" />
+        </else>
+    </if>
 
     <include resource="logback-spring-file.xml" />
     <include resource="logback-spring-console.xml" />
