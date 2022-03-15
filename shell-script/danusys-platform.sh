@@ -55,12 +55,11 @@ start() {
     echo -n '['
 
     tail -n 1 -f ${LOG} | while read line; do
-	if [[ $line =~ "Started ${APP_CLASS_NAME}" ]]; then
+        if [[ $line =~ "Started ${APP_CLASS_NAME}" ]]; then
             pkill -9 -P $$ tail
-	else
+        else
             echo -n "."
-	fi
-        #sleep 1;
+        fi
     done
 
     echo ']'
