@@ -127,6 +127,26 @@ public class ApiCallRestController {
         return ResponseEntity.status(HttpStatus.OK).body(resultMap);
     }
 
+    @PostMapping(value = "/getAddress")
+    public ResponseEntity getAddress(@RequestBody Map<String, Object> param) throws Exception {
+        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
+        param.put("reqParams", reqParams);
+
+        Api api = getRequestApi(param);
+
+        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+        String body = (String) responseEntity.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        System.out.println(resultBody);
+
+        //return ResponseEntity.status(HttpStatus.OK).body(resultMap);
+        return null;
+    }
+
+
     @PostMapping(value = "/call")
     public ResponseEntity call(@RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());

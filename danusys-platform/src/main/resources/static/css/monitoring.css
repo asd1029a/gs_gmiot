@@ -91,37 +91,19 @@
 
 /* search_list */
 .search_list{position: relative; flex: 1; overflow: overlay; border-bottom: 2px solid #292c34;}
-.button_top{float: right; position: sticky; right: 10px; bottom: 10px; z-index: 10; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 40px; background: #2a2d35; box-shadow: 0px 0px 14px rgba(0,0,0,0.6); cursor: pointer;}
+.button_top{float: right; position: fixed; visibility: hidden; right: 10px; bottom: 10px; z-index: 10; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 40px; background: #2a2d35; box-shadow: 0px 0px 14px rgba(0,0,0,0.6); cursor: pointer;}
 .button_top img{width: 16px; height: 16px; transform: rotate(-90deg); filter: brightness(0) invert(1); opacity: 0.5;}
 .search_list:nth-last-child(1){border: none;}
-.search_list dl{padding: 14px; box-sizing: border-box; border-bottom: 1px solid #292c34; line-height: 20px; cursor: pointer;}
-.search_list dl:hover{background: #212327;}
-.search_list dl dt{display: flex; align-items: center; justify-content: space-between; margin: 0px 0px 4px 0px; font-weight: bold;}
-.search_list dl dt p{display: flex; align-items: center; justify-content: flex-start; grid-gap: 4px;}
-.search_list dl dt p span{}
-
-.search_list dl dt p span.level{width:40px; height:24px; margin:0px 4px 0px 0px; line-height:22px; font-size:13px; font-weight:bold; text-align:center; background:#797d87; border-radius:4px;}
-.search_list dl dt p span.level.lv1{background:#f04242;}
-.search_list dl dt p span.level.lv2{color: #000; background:#f99b22;}
-.search_list dl dt p span.level.lv3{background:#53596c;}
-
-.search_list dl dt p span.number{color: #7f8491; font-weight: normal;}
-.search_list dl dt i{width: 20px; height: 20px; cursor: pointer;}
-.search_list dl dt i img{width: 20px; height: 20px;}
-.search_list dl dd{display: flex; align-items: center; justify-content: space-between; color: #797d87;}
-
-.search_list dl dd span{height: 28px; line-height: 26px; padding: 0px 8px; border-radius: 28px;}
-.search_list dl dd span.state{width:82px; height:26px; line-height:22px; color:#797d87; font-size:13px; font-weight:normal; text-align:center; border:2px solid #797d87; border-radius:26px;}
-.search_list dl dd span.state.state1{color:#ff4f4f; border:2px solid #f04242;}
-.search_list dl dd span.state.state2{color:#f99b22; border:2px solid #f99b22;}
-.search_list dl dd span.state.state3{color:#7a8094; border:2px solid #4e5466;}
-
-/* dropdown_checkbox */
-/*.dropdown_checkbox{min-width: 220px; margin: 0px;}*/
-/*.checkbox_title{width: 15.7rem; height: 34px; line-height: 32px; margin: 0px; padding: 0px 14px; color: #dee0e4; font-size: 14px; box-sizing: border-box; border: 1px solid #292c34; border-radius: 3px; background: url("../images/default/arrowSelectBox.svg") 194px center no-repeat #1a1b1d; background-size: 14px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 2rem;}*/
-/*.checkbox_list{position: absolute; top: 53px; display: none; overflow: auto; width: max-content; min-width: 220px; min-height: 86px; max-height: 140px; z-index: 1; margin: -1px 0px 0px 0px; padding:10px 14px; box-sizing: border-box; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border: 1px solid #292c34; background: #1a1b1d;}*/
-/*.checkbox_list li{display: flex; align-items: center; justify-content: flex-start; grid-gap: 12px; line-height: 28px; padding: 4px 0px; color: #dee0e4;}*/
-/*.checkbox_list li > span{flex: 1;}*/
+.search_list dl{overflow: hidden; display: flex; flex-direction: column; grid-gap: 8px; margin: 0px; padding: 12px 14px; border-bottom: 1px solid #292c34; cursor: pointer;}
+.search_list dl:hover{background: #25282d;}
+.search_list dl dt{display: flex; align-items: center; justify-content: space-between; color: #dee0e4; font-size: 15px; font-weight: bold;}
+.search_list dl dt span.state{width: 74px; height: 24px; line-height: 20px; text-align: center; color: #888e9b; font-size: 13px; font-weight: normal; border:2px solid #434751; border-radius:24px;}
+.search_list dl dd{display: flex; align-items: center; justify-content: space-between; color: #797d87; font-size: 14px;}
+.search_list dl dd.event_level{justify-content: flex-start; color: #dee0e4;}
+.search_list dl dd span.level{height: 22px; line-height: 20px; margin: 0px 6px 0px 0px; padding: 0px 4px; color: #dee0e4; border-radius: 4px;}
+.search_list dl dd span.lv1{background: #f04242;}
+.search_list dl dd span.lv2{background: #dd9200;}
+.search_list dl dd span.ago{color: #dee0e4; font-size: 14px;}
 
 /* area_right */
 .area_right h6{display: flex; align-items: center; justify-content: space-between; grid-gap: 8px; height: 40px; max-height: 40px; min-height: 40px; margin: 0px; padding: 0px 14px; font-size: 16px; background: #23252b;}
