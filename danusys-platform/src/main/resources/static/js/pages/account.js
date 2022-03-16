@@ -330,15 +330,19 @@ const account = {
                     {
                         'url' : "/user/group",
                         'contentType' : "application/json; charset=utf-8",
-                        'type' : "POST"
+                        'type' : "POST",
+                        'data' : function ( d ) {
+                            const param = $.extend({}, d, {});
+                            return JSON.stringify( param );
+                        },
                     },
                 select: {
                     toggleable: false
                 },
                 columns : [
                     {data: "userGroupSeq", className: "alignLeft"},
-                    {data: "userGroupName"},
-                    {data: "userGroupName"},
+                    {data: "groupName"},
+                    {data: "groupDesc"},
                     {data: null}
                 ]
                 , columnDefs: [{

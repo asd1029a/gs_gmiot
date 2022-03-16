@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/css/login.css">
+    <script src="/js/loginWhy.js" defer></script>
+</head>
+
+<body>
+
+<div class="login_wrap">
+    <th:block></th:block>
+    <div class="login_visual">
+        <h2 class="login_title"><span>Ground Control System</span><br>드론 관제 시스템</h2>
+    </div>
+    <div class="login_form">
+        <form>
+<!--            <h6><img src="/images/default/login_ci_gimje.svg" alt="김제시 로고"></h6>-->
+            <h6>드론 관제 시스템 </h6>
+            <p>로그인을 해주세요.</p>
+            <ul>
+                <li><input type="text" class="input_id" id="id" name="username" placeholder="아이디를 입력하세요." tabindex="1">
+                </li>
+                <li><input type="password" class="input_pw" id="pwd" name="password" placeholder="비밀번호를 입력하세요."
+                           tabindex="2"></li>
+                <li class="login_button">
+                        <span>
+                            <span>
+                               <input type="checkbox" id="remember-me" name="remember-me">
+                                <label for="remember-me" tabindex="3"><span></span>Save ID</label>
+                            </span>
+                        </span>
+                    <button class="login-btn">LOGIN</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+</body>
+
+</html>

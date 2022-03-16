@@ -14,6 +14,7 @@
             <!--<fileNamePattern>C:/test/logs/${HOSTNAME}.filebeat-%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
             <fileNamePattern>${LOGS_PATH}/info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>500MB</maxFileSize>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
@@ -31,6 +32,7 @@
             <!--<fileNamePattern>C:/test/logs/${HOSTNAME}.filebeat-%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
             <fileNamePattern>${LOGS_PATH}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>500MB</maxFileSize>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 </included>

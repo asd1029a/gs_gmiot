@@ -2,7 +2,6 @@ package com.danusys.web.commons.auth.model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -66,12 +65,12 @@ public class User {
 
 
     /*
-            public List<String> getRoleList(){
-                    if(this.roles.length() >0){
-                            return Arrays.asList(this.roles.split(","));
-                    }
-                    return new ArrayList<>();
+    public List<String> getRoleList(){
+            if(this.roles.length() >0){
+                    return Arrays.asList(this.roles.split(","));
             }
+            return new ArrayList<>();
+    }
     */
     //@JsonIgnore
     // @OneToOne(mappedBy ="user",cascade =CascadeType.ALL,fetch = FetchType.EAGER)

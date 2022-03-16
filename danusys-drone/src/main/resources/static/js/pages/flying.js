@@ -426,7 +426,7 @@ const droneSocket = {
     socket: null,
     connect: function() {
         let self = this;
-        this.socket = new SockJS("/ws");
+        this.socket = new SockJS("ws");
         this.stompClient = Stomp.over(this.socket);
         this.stompClient.debug = null;
         this.stompClient.connect({}, function(frame) {

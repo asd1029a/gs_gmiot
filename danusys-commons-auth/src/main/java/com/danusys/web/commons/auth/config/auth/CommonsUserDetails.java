@@ -1,11 +1,7 @@
 package com.danusys.web.commons.auth.config.auth;
 
 
-import com.danusys.web.commons.auth.model.Permit;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserDto;
-import com.danusys.web.commons.auth.model.UserGroupPermit;
-import com.danusys.web.commons.auth.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,18 +56,15 @@ public class CommonsUserDetails implements UserDetails {
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         //  log.info("here={}",user.getUserGroupInUser());
 
-
         if (user == null) {
 
 
         } else {
-
             //permitList.add(user.getUserGroupInUser().getUserGroup().getUserGroupPermit().getPermit().getPermitName());
             user.getUserGroupInUser().forEach(r -> {
                 r.getUserGroup().getUserGroupPermit().forEach(rr -> {
                     permitList.add(rr.getPermit().getPermitName());
                 });
-
             });
             permitList.forEach(r -> {
                 authorities.add(() -> {
@@ -79,14 +72,6 @@ public class CommonsUserDetails implements UserDetails {
                 });
             });
         }
-
-        /*
-        user.getRoleList().forEach(r -> {
-            authorities.add(() -> {
-                return r;
-            });
-        });
-        */
 
         return authorities;
     }

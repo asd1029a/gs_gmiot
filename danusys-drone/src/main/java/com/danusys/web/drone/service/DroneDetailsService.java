@@ -128,25 +128,7 @@ public class DroneDetailsService {
 
         //mission
 
-        Optional<Mission> optionalMission = missionRepository.findById(droneMissionId);
-        Mission mission = null;
-        if (!optionalMission.isPresent())
-            return null;
-        else {
-            mission = optionalMission.get();
-            mission.setDroneId(1);
-            DroneInMission droneInMission = new DroneInMission();
-            droneInMission.setDrone(updateDrone);
-            droneInMission.setMission(mission);
-            //   log.info("drone={}",droneInMissionRepository.findByDroneAndMission(updateDrone,mission));
-            if (droneInMissionRepository.findByDrone(updateDrone) != null) {
-                droneInMissionRepository.deleteByDrone(updateDrone);
-            }
-
-            droneInMissionRepository.save(droneInMission);
-            //mission.setDrone(updateDrone);
-        }
-        log.info("messsage={}", droneDetails.getOperationTemperatureRangeMin());
+        //log.info("messsage={}", droneDetails.getOperationTemperatureRangeMin());
 
         //missionDetails
         DroneDetails updateDroneDetails = this.findDroneDetails(droneId);
@@ -219,6 +201,25 @@ public class DroneDetailsService {
             updateDroneDetails.setInsertDt(timestamp);
         }
 
+        Optional<Mission> optionalMission = missionRepository.findById(droneMissionId);
+
+        Mission mission = null;
+        if (!optionalMission.isPresent())
+            return null;
+        else {
+            mission = optionalMission.get();
+            mission.setDroneId(1);
+            DroneInMission droneInMission = new DroneInMission();
+            droneInMission.setDrone(updateDrone);
+            droneInMission.setMission(mission);
+            //   log.info("drone={}",droneInMissionRepository.findByDroneAndMission(updateDrone,mission));
+            if (droneInMissionRepository.findByDrone(updateDrone) != null) {
+                droneInMissionRepository.deleteByDrone(updateDrone);
+            }
+
+            droneInMissionRepository.save(droneInMission);
+            //mission.setDrone(updateDrone);
+        }
 
         return "success";
     }

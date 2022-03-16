@@ -17,12 +17,15 @@ import java.sql.Timestamp;
 public class DroneInMissionResponse {
 
 
-   private Long index;
-   private MissionResponse mission;
+    private Long index;
+    private MissionResponse mission;
 
     public DroneInMissionResponse(DroneInMission droneInMission) {
-       this.index=droneInMission.getIndex();
-       this.mission=new MissionResponse(droneInMission.getMission());
+        if (droneInMission != null) {
+            this.index = droneInMission.getIndex();
+            this.mission = new MissionResponse(droneInMission.getMission());
+        }
+
     }
 
 
