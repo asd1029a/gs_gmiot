@@ -98,6 +98,10 @@ const mntr = {
                 if (!result) return;
                 $(".map_location #admAreaName").text( result["areaName"]);
             });
+
+            /////////////////////////////////////////
+            kakaoApi.getAddress();
+
         }); // 지도 move end 이벤트
 
         /**
@@ -196,13 +200,13 @@ const mntr = {
 
     }
     , eventHandler : () => {
-        //LNM FOLD
+        //LNM FOLD (왼쪽창 끄고켜기)
         $('.mntr_container .lnb_fold').on("click", e => {
             $('.mntr_container .menu_fold').removeClass("select");
             $('.mntr_container .lnb ul li').removeClass("active");
             window.map.updateSize();
         });
-        //LNM SWITCH
+        //LNM SWITCH (왼쪽창 변경)
         $('.mntr_container .lnb ul li').on("click", e => {
             const theme = $(e.currentTarget).attr('data-value');
             $('.mntr_container .menu_fold').removeClass("select");
@@ -212,7 +216,7 @@ const mntr = {
             $(e.currentTarget).addClass("active");
             window.map.updateSize();
         });
-        //LNM TAB SWITCH
+        //LNM TAB SWITCH (왼쪽창 탭별 변경)
         $('.mntr_container .menu_fold .tab li').on("click", e => {
             const tab = $(e.currentTarget).attr('data-value');
             $(e.currentTarget).parents('section').find('.lnb_tab_section').removeClass("select");
@@ -222,7 +226,7 @@ const mntr = {
             $(e.currentTarget).addClass("active");
 
         });
-        //LNM TAB SEARCH DETAIL (검색 조건 더보기)
+        //LNM TAB SEARCH DETAIL (왼쪽창 검색 조건 더보기)
         $('.detail_btn').on("click", e => {
             const form = $(e.currentTarget).parents('.lnb_tab_section').find('.search_fold');
             if(form.hasClass("select")) {
@@ -233,9 +237,9 @@ const mntr = {
                 form.addClass("select");
             }
         });
-        //LNM TAB SEARCH DROPDOWN
-        $('.search_fold .dropdown_checkbox').on("click", e => {
-            const list = $(e.currentTarget).find('.checkbox_list');
+        //LNM TAB SEARCH DROPDOWN (왼쪽창 검색 조건 리스트 보기)
+        $('.search_fold .checkbox_title').on("click", e => {
+            const list = $(e.currentTarget).parent().find('.checkbox_list');
             if(list.hasClass("select")){
                 list.removeClass("select");
             } else {
@@ -244,14 +248,14 @@ const mntr = {
                 // debugger;
             }
         });
-        //RNM CLOSER
+        //RNM CLOSER (오른쪽창 닫기)
         $('.rnm_closer').on("click", e => {
             $('.area_right').hide();
             window.map.updateSize();
         });
-        //LAYER ORDER LIST
+        //LAYER ORDER LIST (레이어 순서 제어창)
         $("#layerViewer").hide();
-        //MAP TOOL
+        //MAP TOOL (맵 도구)
         $('.map_options li').on("click", e => {
             const type = $(e.currentTarget).attr('data-value');
             switch(type) {
@@ -262,13 +266,13 @@ const mntr = {
                         window.lyControl.on(type);
                     }
                     break;
-                case "plus" : window.map.zoomInOut('plus'); break;
-                case "minus" : window.map.zoomInOut('minus'); break;
-                case "distance" : window.measure.initDraw('LineString'); break;
-                case "measure" : window.measure.initDraw('Polygon'); break;
-                case "radius" : window.measure.initDraw('Circle'); break;
-                case "eraser" : window.measure.removeMeasureTool(); break;
-                case "layer" :
+                case "plus" : window.map.zoomInOut('plus'); break; //확대
+                case "minus" : window.map.zoomInOut('minus'); break; //축소
+                case "distance" : window.measure.initDraw('LineString'); break; //거리재기
+                case "measure" : window.measure.initDraw('Polygon'); break; //면적재기
+                case "radius" : window.measure.initDraw('Circle'); break; //반경재기
+                case "eraser" : window.measure.removeMeasureTool(); break; //지우기
+                case "layer" : //레이어 제어
                     const target = $("#layerViewer");
                     target.toggle('show');
                     $("#layerViewer ul").empty();
@@ -319,7 +323,7 @@ const mntr = {
                 default:
             }
         });
-        //MAP BASE SWITCH
+        //MAP BASE SWITCH (지도 타입 변경)
         $('.map_type li').on("click", e => {
             const type = $(e.currentTarget).attr('data-value');
             window.map.switchTileMap(type);
@@ -327,7 +331,7 @@ const mntr = {
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
         });
-        //TOP BUTTON
+        //TOP BUTTON (오른쪽창 리스트 맨위로)
         $(".search_list .button_top").on("click", e => {
             $(e.currentTarget).parent('div').scrollTop(0);
         });
