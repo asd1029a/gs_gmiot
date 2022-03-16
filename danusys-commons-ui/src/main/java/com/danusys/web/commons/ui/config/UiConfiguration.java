@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
@@ -112,7 +113,15 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
 
 
-        registry.addResourceHandler("/resources/**", "/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/").resourceChain(false);
+        registry.addResourceHandler("/front/**").addResourceLocations("classpath:/front/css/").resourceChain(false);
+        registry.addResourceHandler("/drone/**").addResourceLocations("classpath:/static/drone/").resourceChain(false);
+        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/static/images/").resourceChain(false);
+        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/").resourceChain(false);
+        registry.addResourceHandler("/sound/**").addResourceLocations("classpath:/sound/js/").resourceChain(false);
+        registry.addResourceHandler("/svg/**").addResourceLocations("classpath:/svg/js/").resourceChain(false);
+
+
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/")
                 .resourceChain(false);
         registry.addResourceHandler("/result/**").addResourceLocations("file:///C:\\Users\\owner//dev/upload/135/");
@@ -121,4 +130,8 @@ public abstract class UiConfiguration extends WebMvcConfigurationSupport {
         super.addResourceHandlers(registry);
     }
 
+    @Override
+    protected void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/gs-guide-websocket").setViewName("/gs-guide-websocket");
+    }
 }
