@@ -62,7 +62,8 @@ $(".excel_download").on("click", function () {
         paramMap = {
             dataMap: resultData,
             fileName: "Log.xlsx",
-            headerList: ["아이디", "드론이름", "미션이름"]
+            headerList: ["아이디", "드론이름", "미션이름"],
+            excludeList:["insertDt"]
         };
 
         excelDownload(paramMap);
