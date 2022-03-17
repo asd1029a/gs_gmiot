@@ -229,23 +229,26 @@ const mntr = {
         //LNM TAB SEARCH DETAIL (왼쪽창 검색 조건 더보기)
         $('.detail_btn').on("click", e => {
             const form = $(e.currentTarget).parents('.lnb_tab_section').find('.search_fold');
+            const btnArrow = $(e.currentTarget).find('img');
             if(form.hasClass("select")) {
                 form.removeClass("select");
                 //하위 체크 리스트
                 form.find('.checkbox_list').removeClass("select");
+                btnArrow.css("transform", "rotate(0deg)");
             } else {
+                btnArrow.css("transform", "rotate(180deg)");
                 form.addClass("select");
             }
         });
         //LNM TAB SEARCH DROPDOWN (왼쪽창 검색 조건 리스트 보기)
         $('.search_fold .checkbox_title').on("click", e => {
             const list = $(e.currentTarget).parent().find('.checkbox_list');
+
             if(list.hasClass("select")){
                 list.removeClass("select");
             } else {
                 // $(e.currentTarget).parents('.search_fold').find('.dropdown_checkbox').removeClass("select");
                 list.addClass("select");
-                // debugger;
             }
         });
         //RNM CLOSER (오른쪽창 닫기)

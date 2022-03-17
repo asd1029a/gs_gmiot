@@ -2,6 +2,7 @@ package com.danusys.web.platform.service.notice;
 
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.app.StringUtil;
+import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.app.EgovMap;
@@ -69,13 +70,21 @@ public class NoticeServiceImpl implements NoticeService {
             Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), orders);
 
             Page<Notice> noticeList = noticeRepository.findAll(spec, pageable);
+            List<User> userList = userRepository.findAll();
             List<NoticeResponseDto> data = noticeList.getContent().stream()
                     .map(notice -> {
-                        String insertUserId = userRepository.findByUserSeq(notice.getInsertUserSeq()).getUserId();
-                        String updateUserId = "";
-                        if(notice.getUpdateUserSeq() != null) {
-                            updateUserId = userRepository.findByUserSeq(notice.getUpdateUserSeq()).getUserId();
-                        }
+                        String insertUserId = userList
+                                .stream()
+                                .filter(user -> notice.getInsertUserSeq() == user.getUserSeq())
+                                .findFirst()
+                                .orElse(null)
+                                .getUserId();
+                        String updateUserId = userList
+                                .stream()
+                                .filter(user -> notice.getUpdateUserSeq() == user.getUserSeq())
+                                .findFirst()
+                                .orElse(null)
+                                .getUserId();
                         return new NoticeResponseDto(notice, insertUserId, updateUserId);
                     })
                     .collect(Collectors.toList());
