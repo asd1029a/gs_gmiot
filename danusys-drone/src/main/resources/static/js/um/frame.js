@@ -140,9 +140,10 @@ $(".update_drone_detail_button").on("click", function () {
         contentType: false,
         enctype: "multipart/form-data",
         success: function (resultData) {
-            //   console.log("resultData", resultData);
+              //console.log("resultData", resultData);
             $(".uploadName").val(resultData);
             alert("저장되었습니다.");
+
 
         }
     })
@@ -171,7 +172,7 @@ function getDroneDetails(id) {
                 type: "GET",
                 async: false,
                 success: function (result) {
-                    console.log(result);
+                 //   console.log(result);
 
 
 
