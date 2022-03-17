@@ -47,6 +47,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         EgovMap responseData = new EgovMap();
+        List<User> userList = userRepository.findAll();
 
         /* 키워드 검색조건 */
         String keyword = paramMap.get("keyword").toString();
@@ -70,7 +71,6 @@ public class NoticeServiceImpl implements NoticeService {
             Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), orders);
 
             Page<Notice> noticeList = noticeRepository.findAll(spec, pageable);
-            List<User> userList = userRepository.findAll();
             List<NoticeResponseDto> data = noticeList.getContent().stream()
                     .map(notice -> {
                         String insertUserId = userList
@@ -100,13 +100,21 @@ public class NoticeServiceImpl implements NoticeService {
             List<Map<String, Object>> data = noticeRepository.findAll(spec).stream()
                     .map(notice -> {
                         ObjectMapper objectMapper = new ObjectMapper();
-                        String insertUserId = userRepository.findByUserSeq(notice.getInsertUserSeq()).getUserId();
-                        String updateUserId = "";
-                        if(notice.getUpdateUserSeq() != null) {
-                            updateUserId = userRepository.findByUserSeq(notice.getUpdateUserSeq()).getUserId();
-                        }
+                        String insertUserId = userList
+                                .stream()
+                                .filter(user -> notice.getInsertUserSeq() == user.getUserSeq())
+                                .findFirst()
+                                .orElse(null)
+                                .getUserId();
+                        String updateUserId = userList
+                                .stream()
+                                .filter(user -> notice.getUpdateUserSeq() == user.getUserSeq())
+                                .findFirst()
+                                .orElse(null)
+                                .getUserId();
                         NoticeResponseDto noticeResponseDto = new NoticeResponseDto(notice, insertUserId, updateUserId);
                         Map<String, Object> dataList = objectMapper.convertValue(noticeResponseDto, Map.class);
+
                         return dataList;
                     })
                     .collect(Collectors.toList());
