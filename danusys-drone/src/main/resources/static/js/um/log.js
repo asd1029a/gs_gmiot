@@ -62,7 +62,7 @@ $(".excel_download").on("click", function () {
         paramMap = {
             dataMap: resultData,
             fileName: "Log.xlsx",
-            headerList: ["아이디", "드론이름", "미션이름", "입력날짜"]
+            headerList: ["아이디", "드론이름", "미션이름"]
         };
 
         excelDownload(paramMap);
@@ -119,7 +119,7 @@ function ajaxLog(paramMap) {
         data: JSON.stringify(paramMap),
         success: function (resultData) {
             returnValue = resultData.data;
-            console.log(resultData);
+            // console.log(resultData);
             $(".search_body").html("");
             $(".pageNav").html("");
             $(".count").html(resultData.count);

@@ -1,6 +1,7 @@
 package com.danusys.web.drone.controller;
 
 import com.danusys.web.commons.app.FileUtil;
+import com.danusys.web.drone.dto.response.FileName;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.service.DroneDetailsService;
 import com.danusys.web.drone.service.DroneService;
@@ -40,16 +41,18 @@ public class DroneFileController {
      do : db에 파일 이름 저장 , 파일 home 폴더에 ajax 요청 경로로 폴더 생성해서 저장
 
      */
-    @PostMapping(value = "/upload/drone", produces = "multipart/form-data;charset=UTF-8")
+    @PostMapping(value = "/upload/drone")
     public ResponseEntity<?> fileUpload(MultipartFile[] uploadFile, HttpServletRequest request, long droneId) {
 
 
         if (droneId == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            //return null;
         } else {
 //            String folderPath = request.getRequestURI();
 //            log.info(FileUtil.uploadAjaxPost(uploadFile, folderPath));
             String fileName = FileUtil.uploadAjaxPost(uploadFile, request);
+
             log.info("fileName={}", fileName);
             DroneDetails setDroneDetails = new DroneDetails();
             setDroneDetails.setThumbnailImg(fileName);
@@ -58,6 +61,8 @@ public class DroneFileController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(fileName);
+
+
         }
 
 
@@ -110,27 +115,26 @@ public class DroneFileController {
 
     /**
      * excel donwload
-     *  엑셀 다운로드
+     * 엑셀 다운로드
+     *
      * @param response
-     * @param paramMap
-     *
-     *    ex)
-     *    paramMap = {
-     *    dataMap: resultData,  <- 조회한 결과
-     *    fileName: "Log.xlsx",
-     *    headerList: ["아이디", "드론이름", "미션이름", "입력날짜"]
-     * };
-     *
-     *             dataMap-> List<Map<String,Object>> dataMap
-     *             headerList -> List<String> heartList
-     *             dataMap -> 엑셀에 담을 data map 리스트
-     *             headerList -> 엑셀 첫줄에 해더 부분을 임의로 지정할 경우
-     *
-     *             필수 : dataMap ,
-     *             선택 : headerList
-     *      *
+     * @param paramMap ex)
+     *                 paramMap = {
+     *                 dataMap: resultData,  <- 조회한 결과
+     *                 fileName: "Log.xlsx",
+     *                 headerList: ["아이디", "드론이름", "미션이름", "입력날짜"]
+     *                 };
+     *                 <p>
+     *                 dataMap-> List<Map<String,Object>> dataMap
+     *                 headerList -> List<String> heartList
+     *                 dataMap -> 엑셀에 담을 data map 리스트
+     *                 headerList -> 엑셀 첫줄에 해더 부분을 임의로 지정할 경우
+     *                 <p>
+     *                 필수 : dataMap ,
+     *                 선택 : headerList
+     *                 *
+     *                 return response에 blob 데이터를 보낸다.
      * @throws IOException
-     * response에 blob 데이터를 보낸다.
      */
     @ResponseBody
     @PostMapping("/excel/download")

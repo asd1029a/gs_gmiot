@@ -174,7 +174,9 @@ public class MissionService {
 
 
     public Long saveMission(Mission mission) {
+
         Mission findMission = missionRepository.findByName(mission.getName());
+
         Drone drone = new Drone();
         //drone.setId(0l);
         //mission.setDrone(drone);
@@ -200,7 +202,10 @@ public class MissionService {
             updateMission.setUserId(mission.getUserId());
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             updateMission.setUpdateDt(timestamp);
+
         }
+
+
 
         return updateMission.getId().intValue();
     }

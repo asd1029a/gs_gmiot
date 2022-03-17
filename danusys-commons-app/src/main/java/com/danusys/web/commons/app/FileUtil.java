@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -31,7 +32,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
 
 
 @Slf4j
@@ -53,7 +53,6 @@ public class FileUtil {
     public void setExternalFilePath(String EXTERNAL_FILE_PATH) {
         STATIC_EXTERNAL_FILE_PATH = EXTERNAL_FILE_PATH;
     }
-
 
 
     public static String uploadAjaxPost(MultipartFile[] uploadFile, HttpServletRequest request) {
@@ -220,7 +219,6 @@ public class FileUtil {
     }
 
 
-
     public static void fileDownload(HttpServletRequest request, HttpServletResponse response,
                                     String fileName) {
         String folderPath = "/";
@@ -265,20 +263,28 @@ public class FileUtil {
     }
 
 
-
-
     public static Workbook excelDownload(
             Map<String, Object> paramMap) {
 
         List<Map<String, Object>> dataMap = null;
         List<String> headerList = null;
+        Integer excludeLine = 1;
         if (paramMap.get("dataMap") != null) {
             dataMap = (List<Map<String, Object>>) paramMap.get("dataMap");
         }
         if (paramMap.get("headerList") != null) {
             headerList = (List<String>) paramMap.get("headerList");
         }
+//        if (paramMap.get("excludeLine") != null) {
+//            excludeLine = Integer.parseInt(paramMap.get("excludeList").toString());
+//        }
 
+        Iterator<Map<String, Object>> iter = dataMap.iterator();
+        while(iter.hasNext()){
+            Map<String, Object> map2 =iter.next();
+            map2.remove("insertDt");
+
+        }
 
         int rowNum = 0;
         AtomicInteger cellNum = new AtomicInteger();
@@ -297,19 +303,25 @@ public class FileUtil {
 
             cellNum.set(0);
             if (headerList == null) {
+
                 data.forEach((k, v) -> {
 
-                    Cell cell = headRow.createCell(cellNum.get());
-                    if (k != null)
-                        cell.setCellValue(k);
+                        Cell cell = headRow.createCell(cellNum.get());
+                        if (k != null)
+                            cell.setCellValue(k);
+
+
 
                     cellNum.incrementAndGet();
                 });
             } else {
                 headerList.forEach((s) -> {
-                    Cell cell = headRow.createCell(cellNum.get());
-                    if (s != null)
-                        cell.setCellValue(s);
+
+                        Cell cell = headRow.createCell(cellNum.get());
+                        if (s != null)
+                            cell.setCellValue(s);
+
+
 
                     cellNum.incrementAndGet();
                 });
@@ -318,11 +330,12 @@ public class FileUtil {
             cellNum.set(0);
             data.forEach((k, v) -> {
 
-                Cell cell = row.createCell(cellNum.get());
-                if (v != null)
-                    cell.setCellValue(v.toString());
+                    Cell cell = row.createCell(cellNum.get());
+                    if (v != null)
+                        cell.setCellValue(v.toString());
 
-                //cell에 데이터 삽입
+                    //cell에 데이터 삽입
+
                 cellNum.incrementAndGet();
             });
 

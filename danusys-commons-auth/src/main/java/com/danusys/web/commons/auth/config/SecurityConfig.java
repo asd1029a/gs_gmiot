@@ -108,7 +108,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         Collections.addAll(list, permitAllAdd);
 
         permitAll = list.toArray(new String[list.size()]);
-//        log.info("permitAll={}", permitAll);
+        log.info("permitAll={}", permitAll);
 
         httpSecurity
                 .addFilter(corsConfig.corsFilter()) //corsconfig
@@ -127,7 +127,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
 
     }
 

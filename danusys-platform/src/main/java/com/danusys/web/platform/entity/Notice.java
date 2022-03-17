@@ -1,6 +1,6 @@
 package com.danusys.web.platform.entity;
 
-import com.danusys.web.commons.auth.util.LoginInfoUtil;
+//import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
@@ -71,7 +71,7 @@ public class Notice {
         this.noticeTitle = noticeTitle;
         this.noticeContent = noticeContent;
         this.noticeFile = noticeFile;
-        this.updateUserSeq = LoginInfoUtil.getUserDetails().getUserSeq();
+//        this.updateUserSeq = LoginInfoUtil.getUserDetails().getUserSeq();
         this.updateDt = Timestamp.valueOf(LocalDateTime.now());
     }
 }
