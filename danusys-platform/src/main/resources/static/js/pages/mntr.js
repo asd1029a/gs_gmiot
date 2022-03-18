@@ -81,21 +81,21 @@ const mntr = {
                 $(".map_location #admWeather").append(html);
             });
             // // 현재 위치 시-군-동 반환
-            // $(".map_location #admAreaName").text("알수 없음");
-            // $.ajax({
-            //     type : "POST",
-            //     url : '/adm/lonLatToAdm',
-            //     contentType : "application/json; charset=utf-8",
-            //     dataType : "JSON",
-            //     async : true,
-            //     data : JSON.stringify({
-            //         lon : mapLonLat[0],
-            //         lat : mapLonLat[1]
-            //     })
-            // }).done( result => {
-            //     if (!result) return;
-            //     $(".map_location #admAreaName").text( result["areaName"]);
-            // });
+            $(".map_location #admAreaName").text("알수 없음");
+            $.ajax({
+                type : "POST",
+                url : '/adm/lonLatToAdm',
+                contentType : "application/json; charset=utf-8",
+                dataType : "JSON",
+                async : true,
+                data : JSON.stringify({
+                    lon : mapLonLat[0],
+                    lat : mapLonLat[1]
+                })
+            }).done( result => {
+                if (!result) return;
+                $(".map_location #admAreaName").text( result["areaName"]);
+            });
 
             /////////////////////////////////////////
             kakaoApi.getAddress();

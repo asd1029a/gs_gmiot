@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -138,7 +139,7 @@ public class ApiCallRestController {
 //        param.put("reqParams", reqParams);
         param.entrySet().stream().peek(f -> {
             f.setValue(UriEncoder.encode(StrUtils.getStr(f.getValue())));
-        });
+        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Api api = getRequestApi(param);
 
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
