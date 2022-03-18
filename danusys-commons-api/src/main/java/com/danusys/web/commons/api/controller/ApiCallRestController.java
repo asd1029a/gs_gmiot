@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.util.UriEncoder;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
@@ -114,12 +115,13 @@ public class ApiCallRestController {
 
     @PostMapping(value="/getCurSkyTmp")
     public ResponseEntity getCurSkyTmp(@RequestBody Map<String, Object> param) throws Exception {
-        param.put("reqPrams", forecastService.setReqParam(param));
-        Api api = getRequestApi(param);
+        Api api = getRequestApi(forecastService.setReqParam(param));
 
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        System.out.println(body);
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
         Map<String, Object> resultMap = forecastService.getCurSkyTmp(resultBody);
@@ -129,18 +131,20 @@ public class ApiCallRestController {
 
     @PostMapping(value = "/getAddress")
     public ResponseEntity getAddress(@RequestBody Map<String, Object> param) throws Exception {
-        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
-        param.put("reqParams", reqParams);
-
+//        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
+//        param.put("reqParams", reqParams);
+        param.entrySet().stream().peek(f -> {
+            f.setValue(UriEncoder.encode(StrUtils.getStr(f.getValue())));
+        });
         Api api = getRequestApi(param);
 
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        String body = (String) responseEntity.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+//        String body = (String) responseEntity.getBody();
+//        ObjectMapper objectMapper = new ObjectMapper();
+       // Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
 
         System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        System.out.println(resultBody);
+        System.out.println(responseEntity.getBody());
 
         //return ResponseEntity.status(HttpStatus.OK).body(resultMap);
         return null;
