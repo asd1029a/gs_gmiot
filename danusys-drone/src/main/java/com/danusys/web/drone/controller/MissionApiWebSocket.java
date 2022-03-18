@@ -196,6 +196,7 @@ public class MissionApiWebSocket {
                 gpsYs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
                 gpsZs.put("waypoint" + missionDetails.getIndex(), missionDetails.getMapZ());
                 yaws.put("waypoint" + missionDetails.getIndex(), (float) (missionDetails.getYaw()));
+                times.put("waypoint" + missionDetails.getIndex(), missionDetails.getTime());
             } else if (missionDetails.getName().equals("loi")) {
                 missionIndex.put(missionDetails.getIndex(), "loi" + missionDetails.getIndex());
                 times.put("loi" + missionDetails.getIndex(), missionDetails.getTime());
@@ -249,6 +250,7 @@ public class MissionApiWebSocket {
 
 //                log.info("x={},y={},z{}", x, y, z);
                 //    log.info("yaw={}", yaw);
+                log.info("time={}",time);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
                         .param1(time)

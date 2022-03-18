@@ -61,7 +61,7 @@ public class CommonsUserDetails implements UserDetails {
 
         } else {
             //permitList.add(user.getUserGroupInUser().getUserGroup().getUserGroupPermit().getPermit().getPermitName());
-            user.getUserGroupInUser().forEach(r -> {
+            user.getUserInGroup().forEach(r -> {
                 r.getUserGroup().getUserGroupPermit().forEach(rr -> {
                     permitList.add(rr.getPermit().getPermitName());
                 });

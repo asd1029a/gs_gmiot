@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @Table(name = "t_user_group_in_user")
-public class UserGroupInUser {
+public class UserInGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx")

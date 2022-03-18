@@ -5,12 +5,15 @@ import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.commons.auth.dto.response.GroupResponse;
 import com.danusys.web.commons.auth.entity.UserGroupSpecification;
+import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
+import com.danusys.web.commons.auth.model.UserInGroup;
+import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
+import com.danusys.web.commons.auth.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,45 +28,151 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class UserGroupService {
 
+    private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
-    String inUserId = null;
+    private final UserInGroupRepository userInGroupRepository;
+//    String inUserId = null;
 
-    public UserGroupService(UserGroupRepository userGroupRepository) {
-        this.userGroupRepository = userGroupRepository;
-    }
-
-
-    public UserGroup findUserGroup(String groupName, String errorMessage) {
-        return userGroupRepository.findByGroupName(groupName);
-    }
-
-    //    @Transactional(readOnly = true)
-    public GroupResponse findUserGroupResponseByGroupSeq(int groupSeq) {
-        UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(groupSeq);
-
-        findUserGroup.getUserGroupInUser().forEach(r -> {
-            inUserId += r.getUser().getUserName() + ", ";
-        });
-        inUserId= StringUtils.substring(inUserId,0,-2);
-
-        GroupResponse groupResponse = new GroupResponse(findUserGroup);
-
-        return groupResponse;
-    }
+//    @Transactional(readOnly = true)
+//    public GroupResponse getOneByGroupSeq(int groupSeq) {
+//        UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(groupSeq);
+//
+//        findUserGroup.getUserGroupInUser().forEach(r -> {
+//            inUserId += r.getUser().getUserName() + ", ";
+//        });
+//        inUserId= StringUtils.substring(inUserId,0,-2);
+//
+//        GroupResponse groupResponse = new GroupResponse(findUserGroup);
+//
+//        return groupResponse;
+//    }
 
     //    @Transactional(readOnly = true)
-    public GroupResponse findUserGroupByGroupSeq(int groupSeq) {
+    public GroupResponse getOneByGroupSeq(int groupSeq) {
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(groupSeq);
         return new GroupResponse(findUserGroup);
     }
 
-    @Transactional
-    public int updateUserGroup(UserGroup userGroup) {
+    /* 일반 리스트 조회 */
+    public Map<String, Object> getList(Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        GroupResponse findUserGroup = this.findUserGroupByGroupSeq(userGroup.getUserGroupSeq());
+        /* 키워드 검색조건 */
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+
+        Specification<UserGroup> spec = Specification.where(UserGroupSpecification.likeGroupName(keyword))
+                .or(UserGroupSpecification.likeGroupDesc(keyword));
+
+        List<GroupResponse> groupResponseList = userGroupRepository.findAll(spec).stream()
+                .map(GroupResponse::new)
+                .collect(Collectors.toList());
+        Map<String, Object> pagingMap = new HashMap<>();
+        resultMap.put("data", groupResponseList);
+
+        return resultMap;
+    }
+
+    /* 데이터 테이블 리스트 조회*/
+    @Transactional
+    public Map<String, Object> getListPaging(Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        try {
+            /* 키워드 검색조건 */
+            String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+
+            Specification<UserGroup> spec = Specification.where(UserGroupSpecification.likeGroupName(keyword))
+                    .or(UserGroupSpecification.likeGroupDesc(keyword));
+            /* 페이지 및 멀티소팅 */
+            Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
+
+            Page<UserGroup> userGroupPageList = userGroupRepository.findAll(spec, pageable);
+
+            List<GroupResponse> groupResponseList = userGroupPageList.getContent().stream()
+                    .map(GroupResponse::new)
+                    .collect(Collectors.toList());
+            Map<String, Object> pagingMap = new HashMap<>();
+            pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과
+            pagingMap.put("count", userGroupPageList.getTotalElements()); // 검색조건이 반영된 총 카운트
+            resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return resultMap;
+    }
+
+    /* 일반 리스트 조회 */
+    public Map<String, Object> getListUserInGroup(Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        /* 키워드 검색조건 */
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+
+        Specification<UserGroup> spec = Specification.where(UserGroupSpecification.likeGroupName(keyword))
+                .or(UserGroupSpecification.likeGroupDesc(keyword));
+        User user = userRepository.findByUserSeq((int) paramMap.get("userSeq"));
+        List<UserInGroup> userInGroup = userInGroupRepository.findAllByUser(user);
+
+        List<GroupResponse> groupResponseList = userGroupRepository.findAll(spec).stream()
+                .map(r -> {
+                    List<UserInGroup> ugiuList = userInGroup.stream()
+                            .filter(ugiu -> r.getUserGroupSeq() == ugiu.getUserGroup().getUserGroupSeq())
+                            .collect(Collectors.toList());
+                    return new GroupResponse(r, !ugiuList.isEmpty());
+                })
+                .collect(Collectors.toList());
+        resultMap.put("data", groupResponseList);
+
+        return resultMap;
+    }
+
+    /* 데이터 테이블 리스트 조회*/
+    public Map<String, Object> getListUserInGroupPaging(Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        try {
+            /* 키워드 검색조건 */
+            String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+
+            Specification<UserGroup> spec = Specification.where(UserGroupSpecification.likeGroupName(keyword))
+                    .or(UserGroupSpecification.likeGroupDesc(keyword));
+            User user = userRepository.findByUserSeq((int) paramMap.get("userSeq"));
+            List<UserInGroup> userInGroup = userInGroupRepository.findAllByUser(user);
+
+            /* 페이지 및 멀티소팅 */
+            Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
+
+            Page<UserGroup> userGroupPageList = userGroupRepository.findAll(spec, pageable);
+
+            List<GroupResponse> groupResponseList = userGroupPageList.getContent().stream()
+                    .map(r -> {
+                        List<UserInGroup> ugiuList = userInGroup.stream()
+                                .filter(ugiu -> r.getUserGroupSeq() == ugiu.getUserGroup().getUserGroupSeq())
+                                .collect(Collectors.toList());
+                        return new GroupResponse(r, !ugiuList.isEmpty());
+                    })
+                    .collect(Collectors.toList());
+            Map<String, Object> pagingMap = new HashMap<>();
+            pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과
+            pagingMap.put("count", userGroupPageList.getTotalElements()); // 검색조건이 반영된 총 카운트
+            resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return resultMap;
+    }
+
+    @Transactional
+    public int mod(UserGroup userGroup) {
+
+        GroupResponse findUserGroup = this.getOneByGroupSeq(userGroup.getUserGroupSeq());
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CommonsUserDetails userDetails = (CommonsUserDetails) principal;
         // log.info("{}",userDetails.getUserSeq());
@@ -101,48 +210,7 @@ public class UserGroupService {
         return userGroup.getUserGroupSeq();
     }
 
-    public void deleteUserGroup(UserGroup userGroup) {
+    public void del(UserGroup userGroup) {
         userGroupRepository.deleteById(userGroup.getUserGroupSeq());
-    }
-
-    @Transactional
-    public Map<String, Object> findListGroup(Map<String, Object> paramMap) {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
-
-        /* 키워드 검색조건 */
-        Specification<UserGroup> spec = Specification.where(UserGroupSpecification.likeGroupName(keyword))
-                .or(UserGroupSpecification.likeGroupDesc(keyword));
-
-        /* 데이터 테이블 리스트 조회*/
-        try {
-            if (paramMap.get("draw") != null) {
-                /* 페이지 및 멀티소팅 */
-                Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
-
-                Page<UserGroup> userGroupPageList = userGroupRepository.findAll(spec, pageable);
-
-                List<GroupResponse> groupResponseList = userGroupPageList.getContent().stream()
-                        .map(GroupResponse::new)
-                        .collect(Collectors.toList());
-                Map<String, Object> pagingMap = new HashMap<>();
-                pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과
-                pagingMap.put("count", userGroupPageList.getTotalElements()); // 검색조건이 반영된 총 카운트
-                resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
-
-            /* 일반 리스트 조회 */
-            } else {
-                List<GroupResponse> groupResponseList = userGroupRepository.findAll(spec).stream()
-                        .map(GroupResponse::new)
-                        .collect(Collectors.toList());
-                Map<String, Object> pagingMap = new HashMap<>();
-                resultMap.put("data", groupResponseList);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return resultMap;
     }
 }

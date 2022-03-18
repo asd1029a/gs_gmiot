@@ -5,7 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
 import com.danusys.web.commons.auth.model.*;
 import com.danusys.web.commons.auth.service.PermitService;
-import com.danusys.web.commons.auth.service.UserGroupInUserService;
+import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserGroupService;
 import com.danusys.web.commons.auth.service.user.UserService;
 import com.danusys.web.commons.auth.util.JwtUtil;
@@ -40,7 +40,7 @@ public class AuthController {
 
     private final PermitService permitService;
 
-    private final UserGroupInUserService userGroupInUserService;
+    private final UserInGroupService userInGroupService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -77,7 +77,7 @@ public class AuthController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userService.findUser(username));
+                .body(userService.get(username));
     }
 
     @PostMapping("/permit")
@@ -147,7 +147,7 @@ public class AuthController {
         String username = null;
         username = jwtUtil.extractUsername(accessToken); //토큰에서 이름추출
       //  log.info("username={}", username);
-        User     user = userService.findUser(username, "error");
+        User     user = userService.get(username, "error");
 
 
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);

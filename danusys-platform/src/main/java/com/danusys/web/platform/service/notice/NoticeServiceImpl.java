@@ -2,6 +2,7 @@ package com.danusys.web.platform.service.notice;
 
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.app.StringUtil;
+import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.app.EgovMap;
@@ -46,6 +47,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         EgovMap responseData = new EgovMap();
+        List<User> userList = userRepository.findAll();
 
         /* 키워드 검색조건 */
         String keyword = paramMap.get("keyword").toString();
@@ -71,11 +73,18 @@ public class NoticeServiceImpl implements NoticeService {
             Page<Notice> noticeList = noticeRepository.findAll(spec, pageable);
             List<NoticeResponseDto> data = noticeList.getContent().stream()
                     .map(notice -> {
-                        String insertUserId = userRepository.findByUserSeq(notice.getInsertUserSeq()).getUserId();
-                        String updateUserId = "";
-                        if(notice.getUpdateUserSeq() != null) {
-                            updateUserId = userRepository.findByUserSeq(notice.getUpdateUserSeq()).getUserId();
-                        }
+                        String insertUserId = userList
+                                .stream()
+                                .filter(user -> notice.getInsertUserSeq() == user.getUserSeq())
+                                .findFirst()
+                                .orElse(null)
+                                .getUserId();
+                        String updateUserId = userList
+                                .stream()
+                                .filter(user -> notice.getUpdateUserSeq() == user.getUserSeq())
+                                .findFirst()
+                                .orElse(null)
+                                .getUserId();
                         return new NoticeResponseDto(notice, insertUserId, updateUserId);
                     })
                     .collect(Collectors.toList());
@@ -91,13 +100,21 @@ public class NoticeServiceImpl implements NoticeService {
             List<Map<String, Object>> data = noticeRepository.findAll(spec).stream()
                     .map(notice -> {
                         ObjectMapper objectMapper = new ObjectMapper();
-                        String insertUserId = userRepository.findByUserSeq(notice.getInsertUserSeq()).getUserId();
-                        String updateUserId = "";
-                        if(notice.getUpdateUserSeq() != null) {
-                            updateUserId = userRepository.findByUserSeq(notice.getUpdateUserSeq()).getUserId();
-                        }
+                        String insertUserId = userList
+                                .stream()
+                                .filter(user -> notice.getInsertUserSeq() == user.getUserSeq())
+                                .findFirst()
+                                .orElse(null)
+                                .getUserId();
+                        String updateUserId = userList
+                                .stream()
+                                .filter(user -> notice.getUpdateUserSeq() == user.getUserSeq())
+                                .findFirst()
+                                .orElse(null)
+                                .getUserId();
                         NoticeResponseDto noticeResponseDto = new NoticeResponseDto(notice, insertUserId, updateUserId);
                         Map<String, Object> dataList = objectMapper.convertValue(noticeResponseDto, Map.class);
+
                         return dataList;
                     })
                     .collect(Collectors.toList());

@@ -4,6 +4,7 @@ import com.danusys.web.platform.entity.Notice;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
+import javax.annotation.Nullable;
 import java.sql.Timestamp;
 
 /**
@@ -30,7 +31,7 @@ public class NoticeResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp updateDt;
 
-    public NoticeResponseDto(Notice notice, String insertUserId, String updateUserId) {
+    public NoticeResponseDto(Notice notice, @Nullable String insertUserId, @Nullable String updateUserId) {
         this.noticeSeq = notice.getNoticeSeq();
         this.noticeTitle = notice.getNoticeTitle();
         this.noticeContent = notice.getNoticeContent();

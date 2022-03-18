@@ -5,7 +5,6 @@ import com.danusys.web.commons.auth.model.Permit;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserGroupPermit;
 import com.danusys.web.commons.auth.repository.PermitRepository;
-import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
 import com.danusys.web.commons.auth.repository.UserGroupPermitRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import lombok.RequiredArgsConstructor;
