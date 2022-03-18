@@ -77,7 +77,7 @@ public class AuthController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userService.findUser(username));
+                .body(userService.get(username));
     }
 
     @PostMapping("/permit")
@@ -147,7 +147,7 @@ public class AuthController {
         String username = null;
         username = jwtUtil.extractUsername(accessToken); //토큰에서 이름추출
       //  log.info("username={}", username);
-        User     user = userService.findUser(username, "error");
+        User     user = userService.get(username, "error");
 
 
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);

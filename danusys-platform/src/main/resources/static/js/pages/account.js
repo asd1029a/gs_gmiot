@@ -15,10 +15,10 @@ const account = {
                 account.user.addProc();
             });
             $("#modUserAccountProcBtn").on('click', () => {
-                account.user.modProc($("userAccountForm").data("userSeq"));
+                account.user.modProc($("#userAccountForm").data("userSeq"));
             });
             $("#delUserAccountProcBtn").on('click', () => {
-                account.user.delProc($("userAccountForm").data("userSeq"));
+                account.user.delProc($("#userAccountForm").data("userSeq"));
             });
             $("#userAccountPopup .title dd").on('click', () => {
                 account.user.hidePopup();
@@ -34,7 +34,7 @@ const account = {
                 scrollY: "calc(100% - 40px)",
                 ajax :
                     {
-                        'url' : "/user",
+                        'url' : "/user/user/paging",
                         'contentType' : "application/json; charset=utf-8",
                         'type' : "POST",
                         'data' : function ( d ) {
@@ -83,9 +83,66 @@ const account = {
             }
             comm.createTable($target ,optionObj, evt);
         },
+        createUserInGroup : () => {
+            const $target = $('#userInGroupTable');
+
+            const optionObj = {
+                dom: '<"table_body"rt>',
+                destroy: true,
+                bPaginate: false,
+                bServerSide: false,
+                scrollY: "calc(100% - 30px)",
+                ajax :
+                    {
+                        'url' : "/user/user/groupInUserSeq",
+                        'contentType' : "application/json; charset=utf-8",
+                        'type' : "POST",
+                        'data' : {
+                            function(d) {
+                                // TODO : d 값이 안들어옴
+                                const param = $.extend({}, d, {
+                                    userGroupSeq: $("#userGroupForm").data("userGroupSeq")
+                                });
+                                return JSON.stringify(param);
+                            } },
+                    },
+                select: {
+                    toggleable: false
+                },
+                columns : [
+                    {data: "userGroupSeq", className: "alignLeft"},
+                    {data: "groupName"},
+                    {data: "groupDesc"},
+                    {data: null}
+                ]
+                , columnDefs: [{
+                    "targets": -1,
+                    "data": null,
+                    "defaultContent": '<span><input type="checkbox"/><label><span></span></label></span>'
+                }]
+                ,
+                fnCreatedRow: (nRow, aaData, iDataIndex) => {
+                    const userGroupSeq = aaData.userGroupSeq;
+                    $(nRow).find('input').prop('id', "check"+userGroupSeq);
+                    $(nRow).find('input').prop('value', userGroupSeq);
+                    $(nRow).find('label').prop('for', "check"+userGroupSeq);
+                    // if(aaData.checked === 'checked' || $('#adminInGroupPopup').data('adminSeqList').indexOf(aaData.userGroupSeq) > -1) {
+                    //     $(nRow).find('input').prop('checked', true);
+                    // }
+                }
+                , excelDownload : false
+            }
+
+            const evt = {
+                click : function(e) {
+                    const rowData = $target.DataTable().row($(e.currentTarget)).data();
+                }
+            }
+            comm.createTable($target ,optionObj, evt);
+        },
         getList : (pCallback) => {
             comm.ajaxPost({
-                url : "/user"
+                url : "/user/user"
                 , data : {}
             }, (result) => {
                 pCallback(result);
@@ -93,7 +150,7 @@ const account = {
         },
         get : (pSeq, pCallback) => {
             $.ajax({
-                url : "/user/" + pSeq
+                url : "/user/user/" + pSeq
                 , type : "GET"
             }).done((result) => {
                 pCallback(result);
@@ -101,7 +158,7 @@ const account = {
         },
         checkId : (pId, pCallback) => {
             $.ajax({
-                url : "/user/checkid/" + pId
+                url : "/user/user/checkid/" + pId
                 , type : "GET"
             }).done((result) => {
                 pCallback(result);
@@ -173,7 +230,7 @@ const account = {
             if(formObj.password === $checkPassword.val() && $("#checkIdBtn").data("duplCheck") === true) {
                 if($('#userAccountForm').doValidation()) {
                     $.ajax({
-                        url: "/user"
+                        url: "/user/user"
                         , type: "PUT"
                         , contentType : "application/json; charset=utf-8"
                         , data : JSON.stringify(formObj)
@@ -196,10 +253,11 @@ const account = {
             const formObj = $('#userAccountForm').serializeJSON();
             const $checkPassword = $("#checkPassword");
             formObj.userSeq = pSeq;
-            formObj.userGroupSeq = [];
+            formObj.userSeqList = [pSeq];
+            formObj.userGroupSeqList = [];
             $('#userInGroupTable tbody tr').each((i, e) => {
                 if($(e).find("input").prop('checked')) {
-                    formObj.userGroupSeq.push($(e).find("input").val());
+                    formObj.userGroupSeqList.push($(e).find("input").val());
                 }
             })
             if(formObj.password === $checkPassword.val()) {
@@ -216,7 +274,7 @@ const account = {
 
             if($('#userAccountForm').doValidation()) {
                 $.ajax({
-                    url : "/user"
+                    url : "/user/user"
                     , type : "PATCH"
                     , contentType : "application/json; charset=utf-8"
                     , data : JSON.stringify(formObj)
@@ -231,7 +289,7 @@ const account = {
         },
         delProc : (pSeq) => {
             $.ajax({
-                url : "/user/"+pSeq
+                url : "/user/user/"+pSeq
                 , type : "DELETE"
             }).done((result) => {
                 comm.showAlert("사용자 계정이 삭제되었습니다");
@@ -271,7 +329,7 @@ const account = {
                 scrollY: "calc(100% - 40px)",
                 ajax :
                     {
-                        'url' : "/user/group",
+                        'url' : "/user/group/paging",
                         'contentType' : "application/json; charset=utf-8",
                         'type' : "POST",
                         'data' : function ( d ) {
@@ -328,13 +386,17 @@ const account = {
                 scrollY: "calc(100% - 30px)",
                 ajax :
                     {
-                        'url' : "/user/group",
+                        'url' : "/user/group/groupInUser/paging",
                         'contentType' : "application/json; charset=utf-8",
                         'type' : "POST",
-                        'data' : function ( d ) {
-                            const param = $.extend({}, d, {});
-                            return JSON.stringify( param );
-                        },
+                        'data' : {
+                            function(d) {
+                                // TODO : d 값이 안들어옴
+                                const param = $.extend({}, d, {
+                                    userSeq: $("#userAccountForm").data("userSeq")
+                                });
+                                return JSON.stringify(param);
+                            } },
                     },
                 select: {
                     toggleable: false
@@ -389,6 +451,7 @@ const account = {
         showPopup : (type) => {
             $('#userGroupPopup .popupContents').scrollTop(0);
             comm.showModal($('#userGroupPopup'));
+            account.user.createUserInGroup();
             $('#userGroupPopup').css("display", "flex");
             $('#userGroupForm').initForm();
             $('#userGroupPopup [data-mode]').hide();
