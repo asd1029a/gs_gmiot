@@ -7,8 +7,8 @@ import com.danusys.web.commons.auth.dto.response.GroupResponse;
 import com.danusys.web.commons.auth.entity.UserGroupSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
-import com.danusys.web.commons.auth.model.UserGroupInUser;
-import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
+import com.danusys.web.commons.auth.model.UserInGroup;
+import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class UserGroupService {
 
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
-    private final UserGroupInUserRepository userGroupInUserRepository;
+    private final UserInGroupRepository userInGroupRepository;
 //    String inUserId = null;
 
 //    @Transactional(readOnly = true)
@@ -107,7 +107,7 @@ public class UserGroupService {
     }
 
     /* 일반 리스트 조회 */
-    public Map<String, Object> getListGroupInUser(Map<String, Object> paramMap) {
+    public Map<String, Object> getListUserInGroup(Map<String, Object> paramMap) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         /* 키워드 검색조건 */
@@ -116,11 +116,11 @@ public class UserGroupService {
         Specification<UserGroup> spec = Specification.where(UserGroupSpecification.likeGroupName(keyword))
                 .or(UserGroupSpecification.likeGroupDesc(keyword));
         User user = userRepository.findByUserSeq((int) paramMap.get("userSeq"));
-        List<UserGroupInUser> userGroupInUser = userGroupInUserRepository.findAllByUser(user);
+        List<UserInGroup> userInGroup = userInGroupRepository.findAllByUser(user);
 
         List<GroupResponse> groupResponseList = userGroupRepository.findAll(spec).stream()
                 .map(r -> {
-                    List<UserGroupInUser> ugiuList = userGroupInUser.stream()
+                    List<UserInGroup> ugiuList = userInGroup.stream()
                             .filter(ugiu -> r.getUserGroupSeq() == ugiu.getUserGroup().getUserGroupSeq())
                             .collect(Collectors.toList());
                     return new GroupResponse(r, !ugiuList.isEmpty());
@@ -132,7 +132,7 @@ public class UserGroupService {
     }
 
     /* 데이터 테이블 리스트 조회*/
-    public Map<String, Object> getListGroupInUserPaging(Map<String, Object> paramMap) {
+    public Map<String, Object> getListUserInGroupPaging(Map<String, Object> paramMap) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
@@ -142,7 +142,7 @@ public class UserGroupService {
             Specification<UserGroup> spec = Specification.where(UserGroupSpecification.likeGroupName(keyword))
                     .or(UserGroupSpecification.likeGroupDesc(keyword));
             User user = userRepository.findByUserSeq((int) paramMap.get("userSeq"));
-            List<UserGroupInUser> userGroupInUser = userGroupInUserRepository.findAllByUser(user);
+            List<UserInGroup> userInGroup = userInGroupRepository.findAllByUser(user);
 
             /* 페이지 및 멀티소팅 */
             Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
@@ -151,7 +151,7 @@ public class UserGroupService {
 
             List<GroupResponse> groupResponseList = userGroupPageList.getContent().stream()
                     .map(r -> {
-                        List<UserGroupInUser> ugiuList = userGroupInUser.stream()
+                        List<UserInGroup> ugiuList = userInGroup.stream()
                                 .filter(ugiu -> r.getUserGroupSeq() == ugiu.getUserGroup().getUserGroupSeq())
                                 .collect(Collectors.toList());
                         return new GroupResponse(r, !ugiuList.isEmpty());

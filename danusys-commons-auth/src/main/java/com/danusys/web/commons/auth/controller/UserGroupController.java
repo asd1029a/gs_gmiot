@@ -3,7 +3,7 @@ package com.danusys.web.commons.auth.controller;
 import com.danusys.web.commons.auth.dto.request.UserGroupPermitRequest;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserGroupPermit;
-import com.danusys.web.commons.auth.service.UserGroupInUserService;
+import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserGroupPermitService;
 import com.danusys.web.commons.auth.service.UserGroupService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class UserGroupController {
 
     private final UserGroupService userGroupService;
     private final UserGroupPermitService userGroupPermitService;
-    private final UserGroupInUserService userGroupInUserService;
+    private final UserInGroupService userInGroupService;
 
     /*
        name: get
@@ -82,7 +82,7 @@ public class UserGroupController {
 
     /*
        name: getListGroupInUser
-       url: /groupInUser/paging
+       url: /userInGroup/paging
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -92,16 +92,16 @@ public class UserGroupController {
        do: paramMap 조건에 맞는 list 출력
        return : paramMap 조건에 맞는 list
      */
-    @PostMapping("/groupInUser")
-    public ResponseEntity<?> getListGroupInUser(@RequestBody Map<String, Object> paramMap) {
+    @PostMapping("/userInGroup")
+    public ResponseEntity<?> getListUserInGroup(@RequestBody Map<String, Object> paramMap) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userGroupService.getListGroupInUser(paramMap));
+                .body(userGroupService.getListUserInGroup(paramMap));
     }
 
     /*
        name: getListGroupInUserPaging
-       url: /groupInUser/paging
+       url: /userInGroup/paging
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -113,11 +113,11 @@ public class UserGroupController {
        do: paramMap 조건에 맞는 list 출력
        return : paramMap 조건에 맞는 list
      */
-    @PostMapping("/groupInUser/paging")
-    public ResponseEntity<?> getListGroupInUserPaging(@RequestBody Map<String, Object> paramMap) {
+    @PostMapping("/userInGroup/paging")
+    public ResponseEntity<?> getListUserInGroupPaging(@RequestBody Map<String, Object> paramMap) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userGroupService.getListGroupInUserPaging(paramMap));
+                .body(userGroupService.getListUserInGroupPaging(paramMap));
     }
 
     /*
@@ -159,7 +159,7 @@ public class UserGroupController {
      */
     @DeleteMapping()
     public ResponseEntity<?> del(@RequestBody UserGroup userGroup) {
-        userGroupInUserService.delUserGroupSeq(userGroup.getUserGroupSeq());
+        userInGroupService.delUserGroupSeq(userGroup.getUserGroupSeq());
         userGroupService.del(userGroup);
 
         return ResponseEntity

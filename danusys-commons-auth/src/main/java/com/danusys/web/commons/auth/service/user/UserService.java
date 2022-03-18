@@ -4,14 +4,12 @@ package com.danusys.web.commons.auth.service.user;
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.auth.dto.request.UserRequest;
-import com.danusys.web.commons.auth.dto.response.GroupResponse;
 import com.danusys.web.commons.auth.dto.response.UserResponse;
-import com.danusys.web.commons.auth.entity.UserGroupSpecification;
 import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
-import com.danusys.web.commons.auth.model.UserGroupInUser;
-import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
+import com.danusys.web.commons.auth.model.UserInGroup;
+import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.repository.UserStatusRepository;
@@ -36,7 +34,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
-    private final UserGroupInUserRepository userGroupInUserRepository;
+    private final UserInGroupRepository userInGroupRepository;
     private final UserStatusRepository userStatusRepository;
 
     public User get(String userName, String errorMessage) {
@@ -118,11 +116,11 @@ public class UserService {
         Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
                 .or(UserSpecification.likeTel(keyword));
         UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
-        List<UserGroupInUser> userGroupInUser = userGroupInUserRepository.findAllByUserGroup(userGroup);
+        List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
 
         List<UserResponse> UserResponseList = userRepository.findAll(spec).stream()
                 .map(r -> {
-                    List<UserGroupInUser> ugiuList = userGroupInUser.stream()
+                    List<UserInGroup> ugiuList = userInGroup.stream()
                             .filter(user -> r.getUserSeq() == user.getUser().getUserSeq())
                             .collect(Collectors.toList());
                     return new UserResponse(r, !ugiuList.isEmpty());
@@ -144,7 +142,7 @@ public class UserService {
             Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
                     .or(UserSpecification.likeTel(keyword));
             UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
-            List<UserGroupInUser> userGroupInUser = userGroupInUserRepository.findAllByUserGroup(userGroup);
+            List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
 
             /* 페이지 및 멀티소팅 */
             Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
@@ -153,7 +151,7 @@ public class UserService {
 
             List<UserResponse> UserResponseList = userRepository.findAll(spec).stream()
                     .map(r -> {
-                        List<UserGroupInUser> ugiuList = userGroupInUser.stream()
+                        List<UserInGroup> ugiuList = userInGroup.stream()
                                 .filter(user -> r.getUserSeq() == user.getUser().getUserSeq())
                                 .collect(Collectors.toList());
                         return new UserResponse(r, !ugiuList.isEmpty());

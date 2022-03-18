@@ -39,7 +39,7 @@ public class UserGroup implements Serializable {
 
     @OneToMany(mappedBy = "userGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonBackReference
-    private final List<UserGroupInUser> userGroupInUser = new ArrayList<>();
+    private final List<UserInGroup> userInGroup = new ArrayList<>();
 
     @OneToMany(mappedBy = "userGroup2", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference

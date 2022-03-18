@@ -1,6 +1,6 @@
 package com.danusys.web.commons.auth.dto.request;
 
-import com.danusys.web.commons.auth.model.UserGroupInUser;
+import com.danusys.web.commons.auth.model.UserInGroup;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -24,7 +24,7 @@ public class UserRequest {
     private Timestamp updateDt;
     private String refreshToken;
     private String status;
-    private List<UserGroupInUser> userGroupInUser = new ArrayList<>();
+    private List<UserInGroup> userInGroup = new ArrayList<>();
     private List<Integer> userGroupSeqList = new ArrayList<>();
     private List<Integer> userSeqList = new ArrayList<>();
 }

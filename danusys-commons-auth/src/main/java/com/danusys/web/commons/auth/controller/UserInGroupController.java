@@ -1,7 +1,7 @@
 package com.danusys.web.commons.auth.controller;
 
-import com.danusys.web.commons.auth.dto.request.UserGroupInUserRequest;
-import com.danusys.web.commons.auth.service.UserGroupInUserService;
+import com.danusys.web.commons.auth.dto.request.UserInGroupRequest;
+import com.danusys.web.commons.auth.service.UserInGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/user/groupInUser")
+@RequestMapping(value = "/user/userInGroup")
 @RequiredArgsConstructor
 @Slf4j
-public class GroupInUserController {
+public class UserInGroupController {
 
-    private final UserGroupInUserService userGroupInUserService;
+    private final UserInGroupService userInGroupService;
 
     /*
        name: getListGroupInUserProc
-       url: /groupInUser
+       url: /userInGroup
        type: post
        param : userSeq
-       do: paramMap조건에 맞는 groupInUser List 조회
+       do: paramMap조건에 맞는 userInGroup List 조회
        return : paramMap 조건에 맞는 userSeq, userGroupSeq, insertUserSeq, insertDt
      */
     @SneakyThrows
@@ -32,14 +32,14 @@ public class GroupInUserController {
     public ResponseEntity<?> getList(@RequestBody Map<String,Object> paramMap) throws Exception {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userGroupInUserService.getListGroup(paramMap));
+                .body(userInGroupService.getListGroup(paramMap));
     }
     /*
        name: getListGroupInUserProc
-       url: /groupInUser
+       url: /userInGroup
        type: post
        param : userSeq
-       do: paramMap조건에 맞는 groupInUser List 조회
+       do: paramMap조건에 맞는 userInGroup List 조회
        return : paramMap 조건에 맞는 userSeq, userGroupSeq, insertUserSeq, insertDt
      */
     @SneakyThrows
@@ -47,11 +47,11 @@ public class GroupInUserController {
     public ResponseEntity<?> getListPaging(@RequestBody Map<String,Object> paramMap) throws Exception {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userGroupInUserService.getListGroup(paramMap));
+                .body(userInGroupService.getListGroup(paramMap));
     }
     /*
        name: addGroupInUserProc
-       url: /groupInUser
+       url: /userInGroup
        type: put
        param :Map<String,Object> paramMap
               (List<Integer> userSeqList , List<Integer> userGroupSeqList)
@@ -67,12 +67,12 @@ public class GroupInUserController {
     public ResponseEntity<?> add(@RequestBody Map<String,Object> paramMap) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userGroupInUserService.saveUserGroupInUser(paramMap));
+                .body(userInGroupService.save(paramMap));
     }
 
     @DeleteMapping()
-    public ResponseEntity<?> del(@RequestBody UserGroupInUserRequest userGroupInUserRequest) {
-        userGroupInUserService.delOne(userGroupInUserRequest.getUserSeq(), userGroupInUserRequest.getUserGroupSeq());
+    public ResponseEntity<?> del(@RequestBody UserInGroupRequest userInGroupRequest) {
+        userInGroupService.delOne(userInGroupRequest.getUserSeq(), userInGroupRequest.getUserGroupSeq());
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }

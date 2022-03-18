@@ -5,7 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
 import com.danusys.web.commons.auth.model.*;
 import com.danusys.web.commons.auth.service.PermitService;
-import com.danusys.web.commons.auth.service.UserGroupInUserService;
+import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserGroupService;
 import com.danusys.web.commons.auth.service.user.UserService;
 import com.danusys.web.commons.auth.util.JwtUtil;
@@ -40,7 +40,7 @@ public class AuthController {
 
     private final PermitService permitService;
 
-    private final UserGroupInUserService userGroupInUserService;
+    private final UserInGroupService userInGroupService;
 
     @Autowired
     private JwtUtil jwtUtil;

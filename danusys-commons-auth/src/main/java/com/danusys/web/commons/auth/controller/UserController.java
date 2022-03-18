@@ -2,7 +2,7 @@ package com.danusys.web.commons.auth.controller;
 
 import com.danusys.web.commons.auth.dto.request.UserRequest;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.service.UserGroupInUserService;
+import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final UserGroupInUserService userGroupInUserService;
+    private final UserInGroupService userInGroupService;
 
     /*
       name: add
@@ -99,7 +99,7 @@ public class UserController {
     }
     /*
        name: getListGroupInUser
-       url: /groupInUser/paging
+       url: /userInGroup/paging
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -109,8 +109,8 @@ public class UserController {
        do: paramMap 조건에 맞는 list 출력
        return : paramMap 조건에 맞는 list
      */
-    @PostMapping("/groupInUser")
-    public ResponseEntity<?> getListGroupInUser(@RequestBody Map<String, Object> paramMap) {
+    @PostMapping("/userInGroup")
+    public ResponseEntity<?> getListUserInGroup(@RequestBody Map<String, Object> paramMap) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.getListGroupInUser(paramMap));
@@ -118,7 +118,7 @@ public class UserController {
 
     /*
        name: getListGroupInUserPaging
-       url: /groupInUser/paging
+       url: /userInGroup/paging
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -130,8 +130,8 @@ public class UserController {
        do: paramMap 조건에 맞는 list 출력
        return : paramMap 조건에 맞는 list
      */
-    @PostMapping("/groupInUser/paging")
-    public ResponseEntity<?> getListGroupInUserPaging(@RequestBody Map<String, Object> paramMap) {
+    @PostMapping("/userInGroup/paging")
+    public ResponseEntity<?> getListUserInGroupPaging(@RequestBody Map<String, Object> paramMap) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.getListGroupInUserPaging(paramMap));
@@ -158,8 +158,8 @@ public class UserController {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> paramMap = objectMapper.convertValue(userRequest, Map.class);
         int result = userService.updateUser(userRequest);
-        userGroupInUserService.delUserSeq(userRequest.getUserSeq());
-        userGroupInUserService.saveUserGroupInUser(paramMap);
+        userInGroupService.delUserSeq(userRequest.getUserSeq());
+        userInGroupService.save(paramMap);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(result);

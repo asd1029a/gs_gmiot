@@ -1,11 +1,11 @@
 package com.danusys.web.commons.auth.service;
 
 import com.danusys.web.commons.app.PagingUtil;
-import com.danusys.web.commons.auth.dto.response.GroupInUserResponse;
+import com.danusys.web.commons.auth.dto.response.UserInGroupResponse;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
-import com.danusys.web.commons.auth.model.UserGroupInUser;
-import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
+import com.danusys.web.commons.auth.model.UserInGroup;
+import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,32 +23,32 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserGroupInUserService {
+public class UserInGroupService {
 
-    private final UserGroupInUserRepository userGroupInUserRepository;
+    private final UserInGroupRepository userInGroupRepository;
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
 
-    public UserGroupInUser getOneUserGroupSeq(int UserGroupSeq, String errorMessage) {
-        return userGroupInUserRepository.findByUserGroup(UserGroupSeq);
+    public UserInGroup getOneUserGroupSeq(int UserGroupSeq, String errorMessage) {
+        return userInGroupRepository.findByUserGroup(UserGroupSeq);
     }
 
-    public UserGroupInUser getOneUserSeq(int UserSeq) {
+    public UserInGroup getOneUserSeq(int UserSeq) {
         User findUser = new User();
         findUser.setUserSeq(UserSeq);
-        return userGroupInUserRepository.findByUser(findUser);
+        return userInGroupRepository.findByUser(findUser);
     }
 
     public Map<String, Object> getListGroup(Map<String, Object> paramMap) throws Exception {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        List<UserGroupInUser> userGroupList;
+        List<UserInGroup> userGroupList;
 
         User user = userRepository.findByUserSeq((int) paramMap.get("userSeq"));
-        userGroupList = userGroupInUserRepository.findAllByUser(user);
-        List<GroupInUserResponse> groupInUserResponse = userGroupList.stream()
-                .map(GroupInUserResponse::new)
+        userGroupList = userInGroupRepository.findAllByUser(user);
+        List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
+                .map(UserInGroupResponse::new)
                 .collect(Collectors.toList());
-        resultMap.put("data", groupInUserResponse);
+        resultMap.put("data", userInGroupResponse);
 
         return resultMap;
     }
@@ -57,13 +57,13 @@ public class UserGroupInUserService {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
-            List<UserGroupInUser> userGroupList;
+            List<UserInGroup> userGroupList;
             UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
-            userGroupList = userGroupInUserRepository.findAllByUserGroup(userGroup);
-            List<GroupInUserResponse> groupInUserResponse = userGroupList.stream()
-                    .map(GroupInUserResponse::new)
+            userGroupList = userInGroupRepository.findAllByUserGroup(userGroup);
+            List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
+                    .map(UserInGroupResponse::new)
                     .collect(Collectors.toList());
-            resultMap = PagingUtil.createPagingMap(paramMap, groupInUserResponse);
+            resultMap = PagingUtil.createPagingMap(paramMap, userInGroupResponse);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,13 +74,13 @@ public class UserGroupInUserService {
     public Map<String, Object> getListUser(Map<String, Object> paramMap) throws Exception {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        List<UserGroupInUser> userGroupList;
+        List<UserInGroup> userGroupList;
         UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
-        userGroupList = userGroupInUserRepository.findAllByUserGroup(userGroup);
-        List<GroupInUserResponse> groupInUserResponse = userGroupList.stream()
-                .map(GroupInUserResponse::new)
+        userGroupList = userInGroupRepository.findAllByUserGroup(userGroup);
+        List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
+                .map(UserInGroupResponse::new)
                 .collect(Collectors.toList());
-        resultMap.put("data", groupInUserResponse);
+        resultMap.put("data", userInGroupResponse);
 
         return resultMap;
     }
@@ -89,13 +89,13 @@ public class UserGroupInUserService {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
-            List<UserGroupInUser> userGroupList;
+            List<UserInGroup> userGroupList;
             UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
-            userGroupList = userGroupInUserRepository.findAllByUserGroup(userGroup);
-            List<GroupInUserResponse> groupInUserResponse = userGroupList.stream()
-                    .map(GroupInUserResponse::new)
+            userGroupList = userInGroupRepository.findAllByUserGroup(userGroup);
+            List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
+                    .map(UserInGroupResponse::new)
                     .collect(Collectors.toList());
-            resultMap = PagingUtil.createPagingMap(paramMap, groupInUserResponse);
+            resultMap = PagingUtil.createPagingMap(paramMap, userInGroupResponse);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,38 +104,38 @@ public class UserGroupInUserService {
     }
 
     @Transactional
-    public UserGroupInUser updatePermit(int UserGroupSeq, String refreshToken) {
-        UserGroupInUser findUserGroupInUser = this.getOneUserGroupSeq(UserGroupSeq, "Error update user id");
-        return findUserGroupInUser;
+    public UserInGroup updatePermit(int UserGroupSeq, String refreshToken) {
+        UserInGroup findUserInGroup = this.getOneUserGroupSeq(UserGroupSeq, "Error update user id");
+        return findUserInGroup;
     }
 
 
-    public List<Integer> saveUserGroupInUser(Map<String, Object> paramMap) {
+    public List<Integer> save(Map<String, Object> paramMap) {
         List<Integer> userSeqList = (List<Integer>) paramMap.get("userSeqList");
         List<Integer> userGroupSeqList = (List<Integer>) paramMap.get("userGroupSeqList");
-        List<UserGroupInUser> userGroupInUserList = new ArrayList<>();
+        List<UserInGroup> userInGroupList = new ArrayList<>();
         int insertUserSeq = (int) paramMap.get("insertUserSeq");
 //        String lastInsertId = ;
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userSeqList.forEach(userSeq -> {
             userGroupSeqList.forEach(userGroupSeq -> {
-                UserGroupInUser userGroupInUser = new UserGroupInUser();
+                UserInGroup userInGroup = new UserInGroup();
                 UserGroup userGroup = new UserGroup();
                 userGroup.setUserGroupSeq(userGroupSeq);
                 User user = new User();
                 user.setUserSeq(userSeq);
 
 //                if (userGroupInUserRepository.findByUserAndUserGroup(user, userGroup).isEmpty()) {
-                    userGroupInUser.setUser(user);
-                    userGroupInUser.setUserGroup(userGroup);
-                    userGroupInUser.setInsertDt(timestamp);
-                    userGroupInUser.setInsertUserSeq(insertUserSeq);
-                    userGroupInUserList.add(userGroupInUser);
+                    userInGroup.setUser(user);
+                    userInGroup.setUserGroup(userGroup);
+                    userInGroup.setInsertDt(timestamp);
+                    userInGroup.setInsertUserSeq(insertUserSeq);
+                    userInGroupList.add(userInGroup);
 //                }
             });
         });
-        userGroupInUserRepository.saveAll(userGroupInUserList);
+        userInGroupRepository.saveAll(userInGroupList);
 
         return userSeqList;
     }
@@ -145,24 +145,17 @@ public class UserGroupInUserService {
     public void delOne(int userSeq, int userGroupSeq) {
         User findUser = userRepository.findByUserSeq(userSeq);
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
-        userGroupInUserRepository.deleteByUserAndUserGroup(findUser, findUserGroup);
+        userInGroupRepository.deleteByUserAndUserGroup(findUser, findUserGroup);
     }
 
     @Transactional
     public void delUserSeq(int userSeq) {
-        userGroupInUserRepository.deleteAllByUserSeq(userSeq);
-//        User user = userRepository.findByUserSeq(userSeq);
-//        List<UserGroupInUser> userGroupList = userGroupInUserRepository.findAllByUser(user);
-//        userGroupInUserRepository.deleteAll(userGroupList);
-
-//        userGroupInUserRepository.findAllByUser(user).stream()
-//                .map(r -> userGroupInUserRepository.delete(r));
-//                .orElseThrow(() -> new UserNotFoundException(User.class, userId));
+        userInGroupRepository.deleteAllByUserSeq(userSeq);
     }
 
     @Transactional
     public void delUserGroupSeq(int userGroupSeq) {
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
-        userGroupInUserRepository.deleteByUserGroup(findUserGroup);
+        userInGroupRepository.deleteByUserGroup(findUserGroup);
     }
 }

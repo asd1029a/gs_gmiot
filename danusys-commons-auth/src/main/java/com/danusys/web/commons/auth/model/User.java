@@ -73,5 +73,5 @@ public class User {
     */
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<UserGroupInUser> userGroupInUser=new ArrayList<>();
+    private List<UserInGroup> userInGroup =new ArrayList<>();
 }

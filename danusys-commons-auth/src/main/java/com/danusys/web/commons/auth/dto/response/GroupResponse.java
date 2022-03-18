@@ -1,7 +1,6 @@
 package com.danusys.web.commons.auth.dto.response;
 
 import com.danusys.web.commons.auth.model.UserGroup;
-import com.danusys.web.commons.auth.model.UserGroupInUser;
 import com.danusys.web.commons.auth.model.UserGroupPermit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,7 +34,7 @@ public class GroupResponse {
         this.insertUserSeq = userGroup.getInsertUserSeq();
         this.updateDt = userGroup.getUpdateDt();
         this.updateUserSeq = userGroup.getUpdateUserSeq();
-        userGroup.getUserGroupInUser().forEach(r->{
+        userGroup.getUserInGroup().forEach(r->{
             this.inUserId+=r.getUser().getUserName()+", ";
         });
         this.userGroupPermit = userGroup.getUserGroupPermit();
