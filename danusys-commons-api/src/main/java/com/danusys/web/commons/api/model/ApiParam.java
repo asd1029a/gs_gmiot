@@ -65,4 +65,7 @@ public class ApiParam implements Serializable {
 
     @Column
     private String cryptoKey;
+
+    @Column
+    private int parentSeq;
 }

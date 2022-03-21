@@ -5,7 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
 import com.danusys.web.commons.auth.model.*;
 import com.danusys.web.commons.auth.service.PermitService;
-import com.danusys.web.commons.auth.service.UserGroupInUserService;
+import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserGroupService;
 import com.danusys.web.commons.auth.service.user.UserService;
 import com.danusys.web.commons.auth.util.JwtUtil;
@@ -40,7 +40,7 @@ public class AuthController {
 
     private final PermitService permitService;
 
-    private final UserGroupInUserService userGroupInUserService;
+    private final UserInGroupService userInGroupService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -57,7 +57,7 @@ public class AuthController {
 
     @PostMapping("/user")
     public ResponseEntity<?> saveUser(User user) {
-        userService.saveUser(user);
+        userService.add(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body("created id");
@@ -65,7 +65,7 @@ public class AuthController {
 
     @PostMapping("/userGroup")
     public ResponseEntity<?> saveUserGroup(UserGroup usergroup) {
-        userGroupService.saveUserGroup(usergroup);
+        userGroupService.add(usergroup);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body("created userGroup");
@@ -77,12 +77,12 @@ public class AuthController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userService.findUser(username));
+                .body(userService.get(username));
     }
 
     @PostMapping("/permit")
     public ResponseEntity<?> savePermit(Permit permit) {
-        permitService.savePermit(permit);
+        permitService.add(permit);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body("created permit");
@@ -120,7 +120,7 @@ public class AuthController {
 
 
         final TokenDto jwt = jwtUtil.generateToken(userDetails);
-        userService.updateUser(user.getUserId(), jwt.getRefreshToken());
+        userService.mod(user.getUserId(), jwt.getRefreshToken());
 
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
@@ -147,7 +147,7 @@ public class AuthController {
         String username = null;
         username = jwtUtil.extractUsername(accessToken); //토큰에서 이름추출
       //  log.info("username={}", username);
-        User     user = userService.findUser(username, "error");
+        User     user = userService.get(username, "error");
 
 
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
@@ -162,7 +162,7 @@ public class AuthController {
             }
         }
 
-        userService.updateUser(username, jwt.getRefreshToken());
+        userService.mod(username, jwt.getRefreshToken());
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
 
     }

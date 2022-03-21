@@ -15,18 +15,18 @@ const kakaoApi = {
         //     callback(result, pageObj);
         // })
 
-
         const param = {
             callUrl : '/kakao/address',
-            reqParams : {
-                query : "광명시"
-            }
+            query : "광명",
+            size : 10,
+            analyze_type : "similar",
+            page : 1
         }
         $.ajax({
             contentType : "application/json; charset=utf-8",
             type : "POST",
             url : '/api/getAddress',
-            dataType : "json",
+            dataType : "JSON",
             data : JSON.stringify(param),
             async : true
         }).done( result => {

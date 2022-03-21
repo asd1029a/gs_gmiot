@@ -29,6 +29,7 @@ public class UserResponse {
     private int updateUserSeq;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp lastLoginDt;
+    private String checked;
 
     public UserResponse(User user) {
         this.userSeq = user.getUserSeq();
@@ -60,5 +61,22 @@ public class UserResponse {
         this.updateUserSeq = user.getUpdateUserSeq();
         this.insertDt = user.getInsertDt();
         this.updateDt = user.getUpdateDt();
+    }
+    public UserResponse(User user, boolean inGroup) {
+        this.userSeq = user.getUserSeq();
+        this.userId = user.getUserId();
+        this.userName = user.getUserName();
+        this.email = user.getEmail();
+        this.tel = user.getTel();
+        this.address = user.getAddress();
+        this.status = user.getStatus();
+        this.statusName = statusName;
+        this.detailAddress = user.getDetailAddress();
+        this.lastLoginDt = user.getLastLoginDt();
+        this.insertUserSeq = user.getInsertUserSeq();
+        this.updateUserSeq = user.getUpdateUserSeq();
+        this.insertDt = user.getInsertDt();
+        this.updateDt = user.getUpdateDt();
+        this.checked = inGroup ? "checked" : "unchecked";
     }
 }

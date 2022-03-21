@@ -3,10 +3,14 @@ package com.danusys.web.commons.auth.service.user;
 
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.PagingUtil;
+import com.danusys.web.commons.auth.dto.request.UserRequest;
 import com.danusys.web.commons.auth.dto.response.UserResponse;
 import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.repository.UserGroupInUserRepository;
+import com.danusys.web.commons.auth.model.UserGroup;
+import com.danusys.web.commons.auth.model.UserInGroup;
+import com.danusys.web.commons.auth.repository.UserGroupRepository;
+import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.repository.UserStatusRepository;
 import com.danusys.web.commons.auth.util.SHA256;
@@ -15,16 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,88 +33,162 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserGroupInUserRepository userGroupInUserRepository;
+    private final UserGroupRepository userGroupRepository;
+    private final UserInGroupRepository userInGroupRepository;
     private final UserStatusRepository userStatusRepository;
 
-    public User findUser(String userName, String errorMessage) {
+    public User get(String userName, String errorMessage) {
         return userRepository.findByUserId(userName);
     }
 
-    public User findUser(String userName) {
+    public UserResponse get(String userName) {
         User user = userRepository.findByUserId(userName);
-        //user.setUserGroupInUser(userGroupInUserRepository.findByUser(user));
-        return user;
-    }
-
-
-    public UserResponse findUser(int userSeq) {
-        User user = userRepository.findByUserSeq(userSeq);
-
         return new UserResponse(user);
     }
 
-    @Transactional
-    public int updateUser(User user) {
-        User findUser = userRepository.findByUserSeq(user.getUserSeq());
+    public UserResponse get(int userSeq) {
+        User user = userRepository.findByUserSeq(userSeq);
+        return new UserResponse(user);
+    }
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
-        // log.info("{}",userDetails.getUserSeq());
+    /* 일반 리스트 조회 */
+    public Map<String, Object> getList(Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        if (findUser != null) {
-            if (user.getPassword() != null) {
-                SHA256 sha256 = new SHA256();
-                try {
-                    String cryptoPassword = sha256.encrypt(user.getPassword());
-                    findUser.setPassword("{SHA-256}" + cryptoPassword);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
+        /* 키워드 검색조건 */
+        String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
 
-            }
-            if (user.getUserName() != null)
-                findUser.setUserName(user.getUserName());
-            if (user.getEmail() != null)
-                findUser.setEmail(user.getEmail());
-            if (user.getTel() != null)
-                findUser.setTel(user.getTel());
-            if (user.getAddress() != null)
-                findUser.setAddress(user.getAddress());
-            if (user.getStatus() != null)
-                findUser.setStatus(user.getStatus());
-            if (user.getDetailAddress() != null)
-                findUser.setDetailAddress(user.getDetailAddress());
+        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
+                .or(UserSpecification.likeTel(keyword));
 
-//            findUser.setUpdateUserSeq(userDetails.getUserSeq());
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            findUser.setUpdateDt(timestamp);
+        List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
+                .map(user -> {
+                    String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
 
+                    return new UserResponse(user, status);
+                })
+                .collect(Collectors.toList());
+        resultMap.put("data", userResponseList);
 
-        } else {
-            return 0;
+        return resultMap;
+    }
+
+    /* 데이터 테이블 리스트 조회*/
+    public Map<String, Object> getListPaging(Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        /* 키워드 검색조건 */
+        String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
+
+        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
+                .or(UserSpecification.likeTel(keyword));
+
+        try {
+            /* 페이지 및 멀티소팅 */
+            Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
+
+            Page<User> userPageList = userRepository.findAll(spec, pageable);
+            List<UserResponse> groupResponseList = userPageList.getContent().stream()
+                    .map(user -> {
+                        String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
+
+                        return new UserResponse(user, status);
+                    })
+                    .collect(Collectors.toList());
+            Map<String, Object> pagingMap = new HashMap<>();
+            pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과
+            pagingMap.put("count", userPageList.getTotalElements()); // 검색조건이 반영된 총 카운트
+            resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        //    return userRepository.save(findUser);
-        return findUser.getUserSeq();
+        return resultMap;
+    }
+
+    /* 일반 리스트 조회 */
+    public Map<String, Object> getListGroupInUser(Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        /* 키워드 검색조건 */
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+
+        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
+                .or(UserSpecification.likeTel(keyword));
+        UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
+        List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
+
+        /* response에 추가된 데이터로 정렬할 때 */
+        Comparator<UserResponse> compare = Comparator
+                .comparing(UserResponse::getChecked)
+                .thenComparing(UserResponse::getUserSeq);
+
+        List<UserResponse> UserResponseList = userRepository.findAll(spec).stream()
+                .map(r -> {
+                    boolean inGroup = userInGroup.stream()
+                            .filter(user -> r.getUserSeq() == user.getUser().getUserSeq())
+                            .collect(Collectors.toList())
+                            .isEmpty();
+                    return new UserResponse(r, !inGroup);
+                })
+                .sorted(compare)
+                .collect(Collectors.toList());
+        resultMap.put("data", UserResponseList);
+
+        return resultMap;
+    }
+
+    /* 데이터 테이블 리스트 조회*/
+    public Map<String, Object> getListGroupInUserPaging(Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        try {
+            /* 키워드 검색조건 */
+            String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+
+            Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
+                    .or(UserSpecification.likeTel(keyword));
+            UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
+            List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
+
+            /* 페이지 및 멀티소팅 */
+            Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
+
+            Page<User> userPageList = userRepository.findAll(spec, pageable);
+
+            /* response에 추가된 데이터로 정렬할 때 */
+            Comparator<UserResponse> compare = Comparator
+                    .comparing(UserResponse::getChecked)
+                    .thenComparing(UserResponse::getUserSeq);
+
+            List<UserResponse> UserResponseList = userRepository.findAll(spec).stream()
+                    .map(r -> {
+                        boolean inGroup = userInGroup.stream()
+                                .filter(user -> r.getUserSeq() == user.getUser().getUserSeq())
+                                .collect(Collectors.toList())
+                                .isEmpty();
+                        return new UserResponse(r, !inGroup);
+                    })
+                    .sorted(compare)
+                    .collect(Collectors.toList());
+            Map<String, Object> pagingMap = new HashMap<>();
+            pagingMap.put("data", UserResponseList); // 페이징 + 검색조건 결과
+            pagingMap.put("count", userPageList.getTotalElements()); // 검색조건이 반영된 총 카운트
+            resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return resultMap;
+    }
+
+    public int getUserSize() {
+        return userRepository.findAll().size();
     }
 
     @Transactional
-    public User updateUser(String userName, String refreshToken) {
-        User findUser = this.findUser(userName, "Error update user id");
-        if(findUser!=null)
-            findUser.setRefreshToken(refreshToken);
-        return findUser;
-    }
-
-    @Transactional
-    public void deleteUser(User user) {
-        User findUser = userRepository.findByUserSeq(user.getUserSeq());
-        findUser.setStatus("2");
-    }
-
-
-    @Transactional
-    public int saveUser(User user) {
+    public int add(User user) {
 
         if (user.getUserId() == null || user.getPassword() == null)
             return -1;
@@ -139,58 +213,59 @@ public class UserService {
         return user.getUserSeq();
     }
 
-    public Map<String, Object> findListUser(Map<String, Object> paramMap) {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
+    @Transactional
+    public int mod(UserRequest userRequest) {
+        User findUser = userRepository.findByUserSeq(userRequest.getUserSeq());
 
-        String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
+        if (findUser != null) {
+            if (userRequest.getPassword() != null) {
+                SHA256 sha256 = new SHA256();
+                try {
+                    String cryptoPassword = sha256.encrypt(userRequest.getPassword());
+                    findUser.setPassword("{SHA-256}" + cryptoPassword);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
 
-        /* 키워드 검색조건 */
-        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword));
-
-        /* 데이터 테이블 리스트 조회*/
-        try {
-            if (paramMap.get("draw") != null) {
-                /* 페이지 및 멀티소팅 */
-                Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
-
-                Page<User> userPageList = userRepository.findAll(spec, pageable);
-                List<UserResponse> groupResponseList = userPageList.getContent().stream()
-                        .map(user -> {
-                            String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
-
-                            return new UserResponse(user, status);
-                        })
-                        .collect(Collectors.toList());
-                Map<String, Object> pagingMap = new HashMap<>();
-                pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과
-                pagingMap.put("count", userPageList.getTotalElements()); // 검색조건이 반영된 총 카운트
-                resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
-
-                /* 일반 리스트 조회 */
-            } else {
-                List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
-                        .map(user -> {
-                            String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
-
-                            return new UserResponse(user, status);
-                        })
-                        .collect(Collectors.toList());
-                Map<String, Object> pagingMap = new HashMap<>();
-                resultMap.put("data", userResponseList);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (userRequest.getUserName() != null)
+                findUser.setUserName(userRequest.getUserName());
+            if (userRequest.getEmail() != null)
+                findUser.setEmail(userRequest.getEmail());
+            if (userRequest.getTel() != null)
+                findUser.setTel(userRequest.getTel());
+            if (userRequest.getAddress() != null)
+                findUser.setAddress(userRequest.getAddress());
+            if (userRequest.getStatus() != null)
+                findUser.setStatus(userRequest.getStatus());
+            if (userRequest.getDetailAddress() != null)
+                findUser.setDetailAddress(userRequest.getDetailAddress());
+
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            findUser.setUpdateDt(timestamp);
+            userRepository.save(findUser);
+        } else {
+            return 0;
         }
 
-        return resultMap;
+        return findUser.getUserSeq();
     }
 
-    public int getUserSize() {
-        return userRepository.findAll().size();
+    @Transactional
+    public User mod(String userName, String refreshToken) {
+        User findUser = this.get(userName, "Error update user id");
+        if(findUser!=null)
+            findUser.setRefreshToken(refreshToken);
+        return findUser;
     }
 
-    public int idCheck(String userId) {
+    @Transactional
+    public void del(User user) {
+        User findUser = userRepository.findByUserSeq(user.getUserSeq());
+        findUser.setStatus("2");
+    }
+
+    public int checkId(String userId) {
         User user = userRepository.findByUserId(userId);
         return (user == null) ? 1 : 0;
     }
