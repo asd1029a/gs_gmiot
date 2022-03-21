@@ -580,6 +580,7 @@ const comm = {
             .then((res) => {
                 if(res.status !== 200) {
                     comm.showAlert("엑셀다운로드에 실패했습니다.");
+                    return false;
                 }
                 return res.blob(); })
             .then((data) => {

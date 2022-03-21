@@ -81,12 +81,12 @@ public class NoticeServiceImpl implements NoticeService {
                                 .orElse(null)
                                 .getUserId();
                         AtomicReference<String> updateUserId = new AtomicReference<>(null);
-                                userList.forEach(user -> {
-                                    if(notice.getUpdateUserSeq() != null && notice.getUpdateUserSeq() == user.getUserSeq()) {
-                                        updateUserId.set(user.getUserId());
-                                    }
-                                    }
-                                );
+                        userList.forEach(user -> {
+                            if(notice.getUpdateUserSeq() != null && notice.getUpdateUserSeq() == user.getUserSeq()) {
+                                updateUserId.set(user.getUserId());
+                            }
+                            }
+                        );
 
                         return new NoticeResponseDto(notice, insertUserId, updateUserId.get());
                     })
@@ -109,13 +109,14 @@ public class NoticeServiceImpl implements NoticeService {
                                 .findFirst()
                                 .orElse(null)
                                 .getUserId();
-                        String updateUserId = userList
-                                .stream()
-                                .filter(user -> notice.getUpdateUserSeq() == user.getUserSeq())
-                                .findFirst()
-                                .orElse(null)
-                                .getUserId();
-                        NoticeResponseDto noticeResponseDto = new NoticeResponseDto(notice, insertUserId, updateUserId);
+                        AtomicReference<String> updateUserId = new AtomicReference<>(null);
+                        userList.forEach(user -> {
+                                    if(notice.getUpdateUserSeq() != null && notice.getUpdateUserSeq() == user.getUserSeq()) {
+                                        updateUserId.set(user.getUserId());
+                                    }
+                                }
+                        );
+                        NoticeResponseDto noticeResponseDto = new NoticeResponseDto(notice, insertUserId, updateUserId.get());
                         Map<String, Object> dataList = objectMapper.convertValue(noticeResponseDto, Map.class);
 
                         return dataList;
