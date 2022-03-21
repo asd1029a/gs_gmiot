@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -79,13 +80,15 @@ public class NoticeServiceImpl implements NoticeService {
                                 .findFirst()
                                 .orElse(null)
                                 .getUserId();
-                        String updateUserId = userList
-                                .stream()
-                                .filter(user -> notice.getUpdateUserSeq() == user.getUserSeq())
-                                .findFirst()
-                                .orElse(null)
-                                .getUserId();
-                        return new NoticeResponseDto(notice, insertUserId, updateUserId);
+                        AtomicReference<String> updateUserId = new AtomicReference<>(null);
+                                userList.forEach(user -> {
+                                    if(notice.getUpdateUserSeq() != null && notice.getUpdateUserSeq() == user.getUserSeq()) {
+                                        updateUserId.set(user.getUserId());
+                                    }
+                                    }
+                                );
+
+                        return new NoticeResponseDto(notice, insertUserId, updateUserId.get());
                     })
                     .collect(Collectors.toList());
 
