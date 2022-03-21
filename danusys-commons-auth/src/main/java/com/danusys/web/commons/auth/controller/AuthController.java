@@ -57,7 +57,7 @@ public class AuthController {
 
     @PostMapping("/user")
     public ResponseEntity<?> saveUser(User user) {
-        userService.saveUser(user);
+        userService.add(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body("created id");
@@ -65,7 +65,7 @@ public class AuthController {
 
     @PostMapping("/userGroup")
     public ResponseEntity<?> saveUserGroup(UserGroup usergroup) {
-        userGroupService.saveUserGroup(usergroup);
+        userGroupService.add(usergroup);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body("created userGroup");
@@ -82,7 +82,7 @@ public class AuthController {
 
     @PostMapping("/permit")
     public ResponseEntity<?> savePermit(Permit permit) {
-        permitService.savePermit(permit);
+        permitService.add(permit);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body("created permit");
@@ -120,7 +120,7 @@ public class AuthController {
 
 
         final TokenDto jwt = jwtUtil.generateToken(userDetails);
-        userService.updateUser(user.getUserId(), jwt.getRefreshToken());
+        userService.mod(user.getUserId(), jwt.getRefreshToken());
 
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
@@ -162,7 +162,7 @@ public class AuthController {
             }
         }
 
-        userService.updateUser(username, jwt.getRefreshToken());
+        userService.mod(username, jwt.getRefreshToken());
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
 
     }

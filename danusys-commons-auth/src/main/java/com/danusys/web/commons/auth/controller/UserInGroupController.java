@@ -67,7 +67,7 @@ public class UserInGroupController {
     public ResponseEntity<?> add(@RequestBody Map<String,Object> paramMap) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userInGroupService.save(paramMap));
+                .body(userInGroupService.add(paramMap));
     }
 
     @DeleteMapping()

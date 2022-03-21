@@ -132,7 +132,7 @@ public class UserGroupController {
     public ResponseEntity<?> add(@RequestBody UserGroup userGroup) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userGroupService.saveUserGroup(userGroup));
+                .body(userGroupService.add(userGroup));
     }
 
     /*
@@ -171,7 +171,7 @@ public class UserGroupController {
 //        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
         UserGroupPermit userGroupPermit = new UserGroupPermit();
         userGroupPermit.setInsertUserSeq(userGroupPermitRequest.getInsertUserSeq());
-        userGroupPermitService.saveUserGroupPermit(userGroupPermit
+        userGroupPermitService.add(userGroupPermit
                 , userGroupPermitRequest.getUserGroupSeq(), userGroupPermitRequest.getPermitSeq());
         return ResponseEntity
                 .status(HttpStatus.OK).build();
@@ -181,7 +181,7 @@ public class UserGroupController {
     @DeleteMapping("/groupPermit")
     public ResponseEntity<?> delPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
 //        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
-        userGroupPermitService.deleteUserGroupPermit(
+        userGroupPermitService.del(
                 userGroupPermitRequest.getUserGroupSeq(), userGroupPermitRequest.getPermitSeq());
         return ResponseEntity
                 .status(HttpStatus.OK).build();
