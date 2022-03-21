@@ -34,7 +34,7 @@ public class DroneUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("log").setViewName("view/pages/log");
         registry.addViewController("config").setViewName("view/pages/config");
 
-
+//        registry.addViewController("/login/error").setViewName("view/pages/loginError");
         registry.addViewController("drone/info").setViewName("view/pages/droneInfo");
         registry.addViewController("/").setViewName("layout/layout_login");
 

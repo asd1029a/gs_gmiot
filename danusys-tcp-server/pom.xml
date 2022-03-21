@@ -9,9 +9,9 @@
     <version>0.0.1-RELEASE</version>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.1.RELEASE</version>
+        <artifactId>danusys-webservice-parent</artifactId>
+        <groupId>com.danusys.web</groupId>
+        <version>${revision}</version>
     </parent>
 
     <properties>

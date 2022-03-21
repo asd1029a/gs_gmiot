@@ -1,7 +1,18 @@
 $(document).ready(function () {
-   // console.log(window.location.pathname);
+    // console.log(window.location.pathname);
     let param = {"droneDeviceName": ""}
     loadDroneList(param);
+
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        url: "/drone/api/drone",
+        type: "POST",
+        data: JSON.stringify(param),
+        async: false,
+        success: function (resultData) {
+
+        }
+    })
     getListMission();
 
 });
@@ -140,7 +151,7 @@ $(".update_drone_detail_button").on("click", function () {
         contentType: false,
         enctype: "multipart/form-data",
         success: function (resultData) {
-              //console.log("resultData", resultData);
+            //console.log("resultData", resultData);
             $(".uploadName").val(resultData);
             alert("저장되었습니다.");
 
@@ -172,8 +183,7 @@ function getDroneDetails(id) {
                 type: "GET",
                 async: false,
                 success: function (result) {
-                 //   console.log(result);
-
+                    //   console.log(result);
 
 
                     //   console.log("result",$(`.mission_list option[data-id='${result.mission.id}']`)[0]);
