@@ -137,7 +137,6 @@ public class UserController {
                 .body(userService.getListGroupInUserPaging(paramMap));
     }
 
-
     /*
       name: mod
       url: /user
@@ -150,7 +149,6 @@ public class UserController {
         }
       do: 유저 수정
       return : update된 userSeq , 잘못된 userSeq를 입력했을 경우 0 return
-
     */
     @PatchMapping()
     public ResponseEntity<?> mod(@RequestBody UserRequest userRequest) {

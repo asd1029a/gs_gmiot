@@ -24,7 +24,7 @@ public class GroupResponse {
     private String inUserId="";
     private List<UserGroupPermit> userGroupPermit;
 //    private List<UserGroupInUser> userGroupInUser;
-    private boolean inUser;
+    private String checked;
 
     public GroupResponse(UserGroup userGroup) {
         this.userGroupSeq = userGroup.getUserGroupSeq();
@@ -50,6 +50,6 @@ public class GroupResponse {
         this.updateDt = userGroup.getUpdateDt();
         this.updateUserSeq = userGroup.getUpdateUserSeq();
         this.userGroupPermit = userGroup.getUserGroupPermit();
-        this.inUser = inUser;
+        this.checked = inUser ? "checked" : "unchecked";
     }
 }

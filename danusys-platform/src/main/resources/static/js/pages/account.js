@@ -83,10 +83,10 @@ const account = {
             }
             comm.createTable($target, optionObj, evt);
         },
-        createUserInGroup: () => {
+        createUserInGroup: (type) => {
             // TODO : 상단 form height가 가변적이라 리스트 표출시 레이아웃 깨짐
             const $target = $('#userInGroupTable');
-
+            const url = type === "mod" ? "/user/user/userInGroup" : "/user/user"
             const optionObj = {
                 dom: '<"table_body"rt>',
                 destroy: true,
@@ -95,7 +95,7 @@ const account = {
                 scrollY: "calc(100% - 30px)",
                 ajax:
                     {
-                        'url': "/user/user/userInGroup",
+                        'url': url,
                         'contentType': "application/json; charset=utf-8",
                         'type': "POST",
                         'data': function () {
@@ -119,17 +119,19 @@ const account = {
                     "data": null,
                     "defaultContent": '<span><input type="checkbox"/><label><span></span></label></span>'
                 }]
-                ,
-                fnCreatedRow: (nRow, aaData, iDataIndex) => {
-                    const userGroupSeq = aaData.userGroupSeq;
-                    $(nRow).find('input').prop('id', "check" + userGroupSeq);
-                    $(nRow).find('input').prop('value', userGroupSeq);
-                    $(nRow).find('label').prop('for', "check" + userGroupSeq);
-                    // if(aaData.checked === 'checked' || $('#adminInGroupPopup').data('adminSeqList').indexOf(aaData.userGroupSeq) > -1) {
-                    //     $(nRow).find('input').prop('checked', true);
-                    // }
+                ,fnCreatedRow: (nRow, aaData, iDataIndex) => {
+                    const userSeq = aaData.userSeq;
+                    $(nRow).find('input').prop('id', "check" + userSeq);
+                    $(nRow).find('input').prop('value', userSeq);
+                    $(nRow).find('label').prop('for', "check" + userSeq);
+                    if(aaData.inGroup === 1) {
+                        $(nRow).find('input').prop('checked', 1);
+                    }
                 }
                 , excelDownload: false
+                , search: {
+                    "search": "Fred"
+                }
             }
 
             const evt = {
@@ -168,7 +170,7 @@ const account = {
 
             $('#userAccountPopup .popupContents').scrollTop(0);
             comm.showModal($('#userAccountPopup'));
-            account.group.createUserInGroup();
+            account.group.createUserInGroup(type);
             $('#userAccountForm').initForm();
             $('#userAccountPopup [data-mode]').hide();
 
@@ -303,6 +305,7 @@ const account = {
                 account.group.create();
             });
             $("#addUserGroupBtn").on('click', () => {
+                $('#userGroupForm').data("userGroupSeq", "");
                 account.group.showPopup("add");
             });
             $("#userGroupPopup .title dd").on('click', () => {
@@ -374,9 +377,11 @@ const account = {
             }
             comm.createTable($target, optionObj, evt);
         },
-        createUserInGroup: () => {
+        createUserInGroup: (type) => {
             // TODO : 데이터 테이블 머릿말 레이아웃이 줄어듦
             const $target = $('#userInGroupTable');
+
+            const url = type === "mod" ? "/user/group/userInGroup" : "/user/group"
 
             const optionObj = {
                 dom: '<"table_body"rt>',
@@ -386,7 +391,7 @@ const account = {
                 scrollY: "calc(100% - 30px)",
                 ajax:
                     {
-                        'url': "/user/group/userInGroup",
+                        'url': url,
                         'contentType': "application/json; charset=utf-8",
                         'type': "POST",
                         'data': function () {
@@ -415,9 +420,9 @@ const account = {
                     $(nRow).find('input').prop('id', "check" + userGroupSeq);
                     $(nRow).find('input').prop('value', userGroupSeq);
                     $(nRow).find('label').prop('for', "check" + userGroupSeq);
-                    // if(aaData.checked === 'checked' || $('#adminInGroupPopup').data('adminSeqList').indexOf(aaData.userGroupSeq) > -1) {
-                    //     $(nRow).find('input').prop('checked', true);
-                    // }
+                    if(aaData.checked === "checked") {
+                        $(nRow).find('input').prop('checked', true);
+                    }
                 }
                 , excelDownload: false
             }
@@ -448,7 +453,7 @@ const account = {
         showPopup: (type) => {
             $('#userGroupPopup .popupContents').scrollTop(0);
             comm.showModal($('#userGroupPopup'));
-            account.user.createUserInGroup();
+            account.user.createUserInGroup(type);
             $('#userGroupPopup').css("display", "flex");
             $('#userGroupForm').initForm();
             $('#userGroupPopup [data-mode]').hide();

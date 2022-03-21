@@ -8,23 +8,21 @@ import com.danusys.web.commons.auth.entity.UserGroupSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserInGroup;
-import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
+import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +56,7 @@ public class UserGroupService {
     }
 
     /* 일반 리스트 조회 */
+    @Transactional
     public Map<String, Object> getList(Map<String, Object> paramMap) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
@@ -70,7 +69,6 @@ public class UserGroupService {
         List<GroupResponse> groupResponseList = userGroupRepository.findAll(spec).stream()
                 .map(GroupResponse::new)
                 .collect(Collectors.toList());
-        Map<String, Object> pagingMap = new HashMap<>();
         resultMap.put("data", groupResponseList);
 
         return resultMap;
@@ -88,7 +86,10 @@ public class UserGroupService {
             Specification<UserGroup> spec = Specification.where(UserGroupSpecification.likeGroupName(keyword))
                     .or(UserGroupSpecification.likeGroupDesc(keyword));
             /* 페이지 및 멀티소팅 */
-            Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
+            List<Sort.Order> orders = new ArrayList<>();
+            Sort.Order order1 = new Sort.Order(Sort.Direction.DESC, "insertDt");
+            orders.add(order1);
+            Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), orders);
 
             Page<UserGroup> userGroupPageList = userGroupRepository.findAll(spec, pageable);
 
@@ -118,13 +119,20 @@ public class UserGroupService {
         User user = userRepository.findByUserSeq((int) paramMap.get("userSeq"));
         List<UserInGroup> userInGroup = userInGroupRepository.findAllByUser(user);
 
+        /* response에 추가된 데이터로 정렬할 때 */
+        Comparator<GroupResponse> compare = Comparator
+                .comparing(GroupResponse::getChecked)
+                .thenComparing(GroupResponse::getUserGroupSeq);
+
         List<GroupResponse> groupResponseList = userGroupRepository.findAll(spec).stream()
                 .map(r -> {
-                    List<UserInGroup> ugiuList = userInGroup.stream()
+                    boolean inUser = userInGroup.stream()
                             .filter(ugiu -> r.getUserGroupSeq() == ugiu.getUserGroup().getUserGroupSeq())
-                            .collect(Collectors.toList());
-                    return new GroupResponse(r, !ugiuList.isEmpty());
+                            .collect(Collectors.toList())
+                            .isEmpty();
+                    return new GroupResponse(r, !inUser);
                 })
+                .sorted(compare)
                 .collect(Collectors.toList());
         resultMap.put("data", groupResponseList);
 
@@ -149,13 +157,20 @@ public class UserGroupService {
 
             Page<UserGroup> userGroupPageList = userGroupRepository.findAll(spec, pageable);
 
+            /* response에 추가된 데이터로 정렬할 때 */
+            Comparator<GroupResponse> compare = Comparator
+                    .comparing(GroupResponse::getChecked)
+                    .thenComparing(GroupResponse::getUserGroupSeq);
+
             List<GroupResponse> groupResponseList = userGroupPageList.getContent().stream()
                     .map(r -> {
-                        List<UserInGroup> ugiuList = userInGroup.stream()
+                        boolean inUser = userInGroup.stream()
                                 .filter(ugiu -> r.getUserGroupSeq() == ugiu.getUserGroup().getUserGroupSeq())
-                                .collect(Collectors.toList());
-                        return new GroupResponse(r, !ugiuList.isEmpty());
+                                .collect(Collectors.toList())
+                                .isEmpty();
+                        return new GroupResponse(r, !inUser);
                     })
+                    .sorted(compare)
                     .collect(Collectors.toList());
             Map<String, Object> pagingMap = new HashMap<>();
             pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과

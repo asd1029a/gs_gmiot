@@ -9,8 +9,8 @@ import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserInGroup;
-import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
+import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.repository.UserStatusRepository;
 import com.danusys.web.commons.auth.util.SHA256;
@@ -118,13 +118,20 @@ public class UserService {
         UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
         List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
 
+        /* response에 추가된 데이터로 정렬할 때 */
+        Comparator<UserResponse> compare = Comparator
+                .comparing(UserResponse::getChecked)
+                .thenComparing(UserResponse::getUserSeq);
+
         List<UserResponse> UserResponseList = userRepository.findAll(spec).stream()
                 .map(r -> {
-                    List<UserInGroup> ugiuList = userInGroup.stream()
+                    boolean inGroup = userInGroup.stream()
                             .filter(user -> r.getUserSeq() == user.getUser().getUserSeq())
-                            .collect(Collectors.toList());
-                    return new UserResponse(r, !ugiuList.isEmpty());
+                            .collect(Collectors.toList())
+                            .isEmpty();
+                    return new UserResponse(r, !inGroup);
                 })
+                .sorted(compare)
                 .collect(Collectors.toList());
         resultMap.put("data", UserResponseList);
 
@@ -149,13 +156,20 @@ public class UserService {
 
             Page<User> userPageList = userRepository.findAll(spec, pageable);
 
+            /* response에 추가된 데이터로 정렬할 때 */
+            Comparator<UserResponse> compare = Comparator
+                    .comparing(UserResponse::getChecked)
+                    .thenComparing(UserResponse::getUserSeq);
+
             List<UserResponse> UserResponseList = userRepository.findAll(spec).stream()
                     .map(r -> {
-                        List<UserInGroup> ugiuList = userInGroup.stream()
+                        boolean inGroup = userInGroup.stream()
                                 .filter(user -> r.getUserSeq() == user.getUser().getUserSeq())
-                                .collect(Collectors.toList());
-                        return new UserResponse(r, !ugiuList.isEmpty());
+                                .collect(Collectors.toList())
+                                .isEmpty();
+                        return new UserResponse(r, !inGroup);
                     })
+                    .sorted(compare)
                     .collect(Collectors.toList());
             Map<String, Object> pagingMap = new HashMap<>();
             pagingMap.put("data", UserResponseList); // 페이징 + 검색조건 결과
