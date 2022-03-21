@@ -33,7 +33,6 @@ public class UserGroupService {
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
     private final UserInGroupRepository userInGroupRepository;
-//    String inUserId = null;
 
 //    @Transactional(readOnly = true)
 //    public GroupResponse getOneByGroupSeq(int groupSeq) {
@@ -185,6 +184,19 @@ public class UserGroupService {
     }
 
     @Transactional
+    public int add(UserGroup userGroup) {
+        if (userGroup.getGroupName() == null || userGroup.getGroupDesc() == null) {
+            return 0;
+        }
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        userGroup.setInsertDt(timestamp);
+
+        userGroupRepository.save(userGroup);
+        return userGroup.getUserGroupSeq();
+    }
+
+    @Transactional
     public int mod(UserGroup userGroup) {
 
         GroupResponse findUserGroup = this.getOneByGroupSeq(userGroup.getUserGroupSeq());
@@ -203,26 +215,7 @@ public class UserGroupService {
         findUserGroup.setUpdateUserSeq(userDetails.getUserSeq());
         findUserGroup.setUpdateDt(timestamp);
 
-
-        //    return userRepository.save(findUser);
         return findUserGroup.getUserGroupSeq();
-    }
-
-    @Transactional
-    public int saveUserGroup(UserGroup userGroup) {
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
-
-        // log.info("{}",userDetails.getUserSeq());
-        if (userGroup.getGroupName() == null || userGroup.getGroupDesc() == null) {
-            return 0;
-        }
-//        userGroup.setInsertUserSeq(userDetails.getUserSeq());
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        userGroup.setInsertDt(timestamp);
-
-        userGroupRepository.save(userGroup);
-        return userGroup.getUserGroupSeq();
     }
 
     public void del(UserGroup userGroup) {

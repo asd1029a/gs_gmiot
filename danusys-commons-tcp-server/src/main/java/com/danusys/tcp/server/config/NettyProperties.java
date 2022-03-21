@@ -12,8 +12,8 @@ import javax.validation.constraints.Size;
 @Setter
 @ConfigurationProperties(prefix = "netty")
 public class NettyProperties {
+
     @NotNull
-    @Size(min=1000, max=65535)
     private int tcpPort;
 
     @NotNull

@@ -188,7 +188,7 @@ public class UserService {
     }
 
     @Transactional
-    public int saveUser(User user) {
+    public int add(User user) {
 
         if (user.getUserId() == null || user.getPassword() == null)
             return -1;
@@ -214,7 +214,7 @@ public class UserService {
     }
 
     @Transactional
-    public int updateUser(UserRequest userRequest) {
+    public int mod(UserRequest userRequest) {
         User findUser = userRepository.findByUserSeq(userRequest.getUserSeq());
 
         if (findUser != null) {
@@ -252,7 +252,7 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(String userName, String refreshToken) {
+    public User mod(String userName, String refreshToken) {
         User findUser = this.get(userName, "Error update user id");
         if(findUser!=null)
             findUser.setRefreshToken(refreshToken);
@@ -260,12 +260,12 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(User user) {
+    public void del(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
         findUser.setStatus("2");
     }
 
-    public int idCheck(String userId) {
+    public int checkId(String userId) {
         User user = userRepository.findByUserId(userId);
         return (user == null) ? 1 : 0;
     }

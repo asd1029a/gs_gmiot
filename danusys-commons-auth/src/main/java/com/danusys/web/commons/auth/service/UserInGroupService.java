@@ -103,19 +103,11 @@ public class UserInGroupService {
         return resultMap;
     }
 
-    @Transactional
-    public UserInGroup updatePermit(int UserGroupSeq, String refreshToken) {
-        UserInGroup findUserInGroup = this.getOneUserGroupSeq(UserGroupSeq, "Error update user id");
-        return findUserInGroup;
-    }
-
-
-    public List<Integer> save(Map<String, Object> paramMap) {
+    public List<Integer> add(Map<String, Object> paramMap) {
         List<Integer> userSeqList = (List<Integer>) paramMap.get("userSeqList");
         List<Integer> userGroupSeqList = (List<Integer>) paramMap.get("userGroupSeqList");
         List<UserInGroup> userInGroupList = new ArrayList<>();
         int insertUserSeq = (int) paramMap.get("insertUserSeq");
-//        String lastInsertId = ;
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userSeqList.forEach(userSeq -> {
@@ -127,11 +119,11 @@ public class UserInGroupService {
                 user.setUserSeq(userSeq);
 
 //                if (userGroupInUserRepository.findByUserAndUserGroup(user, userGroup).isEmpty()) {
-                    userInGroup.setUser(user);
-                    userInGroup.setUserGroup(userGroup);
-                    userInGroup.setInsertDt(timestamp);
-                    userInGroup.setInsertUserSeq(insertUserSeq);
-                    userInGroupList.add(userInGroup);
+                userInGroup.setUser(user);
+                userInGroup.setUserGroup(userGroup);
+                userInGroup.setInsertDt(timestamp);
+                userInGroup.setInsertUserSeq(insertUserSeq);
+                userInGroupList.add(userInGroup);
 //                }
             });
         });
@@ -139,7 +131,6 @@ public class UserInGroupService {
 
         return userSeqList;
     }
-
 
     @Transactional
     public void delOne(int userSeq, int userGroupSeq) {
