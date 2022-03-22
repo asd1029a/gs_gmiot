@@ -1,4 +1,4 @@
-package com.danusys.tcp.server.domain;
+package com.danusys.web.tcp.server.domain;
 
 import io.netty.channel.ChannelHandlerContext;
 

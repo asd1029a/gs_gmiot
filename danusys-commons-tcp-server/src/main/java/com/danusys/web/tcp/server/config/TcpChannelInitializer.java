@@ -1,6 +1,6 @@
-package com.danusys.tcp.server.config;
+package com.danusys.web.tcp.server.config;
 
-import com.danusys.tcp.server.handler.ServerHandler;
+import com.danusys.web.tcp.server.handler.ServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;

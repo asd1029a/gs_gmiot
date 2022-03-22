@@ -1,6 +1,6 @@
-package com.danusys.tcp.server.handler;
+package com.danusys.web.tcp.server.handler;
 
-import com.danusys.tcp.server.domain.MessageCallback;
+import com.danusys.web.tcp.server.domain.MessageCallback;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
