@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <packaging>war</packaging>
+<!--    <packaging>war</packaging>-->
     <parent>
         <artifactId>danusys-webservice-parent</artifactId>
         <groupId>com.danusys.web</groupId>
@@ -103,6 +103,12 @@
         <dependency>
             <groupId>com.danusys.web</groupId>
             <artifactId>danusys-commons-ui</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.danusys.web</groupId>
+            <artifactId>danusys-commons-tcp-server</artifactId>
             <version>${revision}</version>
         </dependency>
 

@@ -87,17 +87,28 @@ public class  DroneCurdController {
     @PostMapping("/drone")
     public ResponseEntity<?> findAllDrone(@RequestBody DroneRequest droneRequest) {
 
-        log.info("here");
         List<?> droneList=droneService.findDroneList(droneRequest);
-                log.info("여기도오나요??");
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(droneList);
     }
 
+
+
+
+
+    @GetMapping("/droneList")
+    public ResponseEntity<?> findAllDroneList() {
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(droneService.getSocketDrone());
+    }
+
     @PatchMapping("/dronedetails")
     public ResponseEntity<?> updateDroneDetails(@RequestBody DroneDetailRequest droneDetailRequest){
-        log.info("paramMap={},{}",droneDetailRequest,droneDetailRequest.getDroneDetails());
+     //   log.info("paramMap={},{}",droneDetailRequest,droneDetailRequest.getDroneDetails());
             long droneId = droneDetailRequest.getDroneId();
             DroneDetails droneDetails=droneDetailRequest.getDroneDetails();
           //  log.info("droneId={}",droneId);

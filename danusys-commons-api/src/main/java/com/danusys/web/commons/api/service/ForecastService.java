@@ -42,7 +42,7 @@ public class ForecastService {
     * 현재 하늘, 온도 상태반환
     * */
     public Map<String, Object> getCurSkyTmp(Map<String, Object> resultBody) throws Exception {
-        //추후 JSON 처리 예정
+        /*TODO: JSONObject 처리 요망*/
         Map<String, Object> response = (Map<String, Object>) resultBody.get("response");
         Map<String, Object> body = (Map<String, Object>) response.get("body");
         Map<String, Object> items = (Map<String, Object>) body.get("items");

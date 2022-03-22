@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sys">
+	
+	<!-- 시스템 에러 등록 -->
+	<insert id="INSERT_EXCEPTION" parameterType="hashMap">
+		-- 시스템 에러 등록 : INSERT_EXCEPTION
+		
+		INSERT INTO T_EXCEPTION (
+			STATUS_CODE, REQUEST_URI
+			, EXCEPTION_DT, EXCEPTION_ADMIN_SEQ, EXCEPTION_CONTENT
+			, SYSTEM_TYPE, REQUEST_IP
+		) VALUES (
+			#{statusCode}, #{requestUri}
+			, NOW(), 0, #{exceptionContent}
+			, #{systemType}, #{requestIp}
+		)
+	</insert>
+</mapper>

@@ -141,8 +141,8 @@ public class DroneFileController {
     public void excelDownload(HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws IOException {
 
         Workbook wb = null;
-        log.info("param={}",paramMap);
-        wb = FileUtil.excelDownload(paramMap);
+//        log.info("param={}",paramMap);
+        wb = FileUtil.excelDownload2(paramMap);
 
 
         wb.write(response.getOutputStream());

@@ -1,0 +1,84 @@
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="leftMenu">
+
+<aside class="settingAside">
+    <h1>
+ <!--       환경설정<a href="javascript:void(0);" onclick="location.href='../../../webapp';"><img src="/images/settings/iconHome.svg"></a>   -->
+        환경설정<a href="javascript:void(0);" th:href="@{/dashboard/index.do}" ><img src="/images/settings/iconHome.svg"></a>
+
+    </h1>
+    <div id="settingLnb">
+        <ul>
+            <li class="subMenu">
+                <a href="javascript:void(0);">사용자 및 권한</a>
+                <ul style="display: none;">
+                    <li><a href="/setting/admin/adminList.do">사용자 계정</a></li>
+                    <li><a href="/setting/admin/adminGroupList.do">사용자 그룹</a></li>
+                </ul>
+            </li>
+            <!--
+            <li class="subMenu">
+                <a href="javascript:void(0);">일반</a>
+                <ul style="display: none;">
+                    <li><a>행정구역</a></li>
+                    <li><a>조직 관리</a></li>
+                    <li><a>직급 관리</a></li>
+                </ul>
+            </li>
+            <li class="subMenu">
+                <a href="javascript:void(0);">대시보드</a>
+            </li>
+            -->
+            <li class="subMenu">
+                <a href="javascript:void(0);">수용가</a>
+                <ul style="display: none;">
+                    <!-- <li><a href="/setting/account/settingAccountList.do">수용가 조회</a></li> -->
+                    <li><a href="/setting/account/accountGroupList.do">수용가 그룹</a></li>
+                </ul>
+            </li>
+            <!-- <li class="subMenu">
+                <a href="javascript:void(0);">이벤트</a>
+                <ul style="display: none;">
+                    <li><a>이벤트 조회</a></li>
+                </ul>
+            </li> -->
+            <li class="subMenu">
+                <a href="javascript:void(0);">공지사항</a>
+                <ul style="display: none;">
+                    <li><a href="/setting/board/boardList.do">공지사항 관리</a></li>
+                </ul>
+            </li>
+            <!--
+            <li class="subMenu">
+                <a href="javascript:void(0);">장비</a>
+                <ul style="display: none;">
+                    <li><a>기능 분류 관리</a></li>
+                    <li><a>표출 항목 관리</a></li>
+                </ul>
+            </li>
+            -->
+            <!--
+            <li class="subMenu">
+                <a href="javascript:void(0);">시스템</a>
+                <ul style="display: none;">
+                    <li><a>검침 설정</a></li>
+                    <li><a>서버 정보</a></li>
+                    <li><a>직급 관리</a></li>
+                </ul>
+            </li>
+            -->
+            <!--
+             <li class="subMenu active">
+                <a href="javascript:void(0);" onclick="location.href='/gis/main.do';"><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;관제</a>
+            </li>
+            -->
+        </ul>
+        <p class="logoutButton" onclick="admin.logoutProc();">로그아웃</p>
+    </div>
+</aside>
+
+</th:block>
+</html>
