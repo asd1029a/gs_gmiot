@@ -426,13 +426,14 @@ const comm = {
         $.fn.DataTable.ext.pager.numbers_length = 10;
         $target.DataTable(newOptionObj);
 
-        if(typeof newOptionObj.excelDownload !== "undefined"
-            && newOptionObj.excelDownload.url !== "") {
-            const html = ' <p class="button excelDownloadBtn"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>';
-            $target.parents('.table_body').siblings('.table_bottom').append(html);
-            $('.excelDownloadBtn').on('click', (e) => {
-                comm.downloadExcelFile(newOptionObj.excelDownload);
-            });
+        if(typeof newOptionObj.excelDownload !== "undefined" ) {
+            if(newOptionObj.excelDownload && newOptionObj.excelDownload.url !== "") {
+                const html = ' <p class="button excelDownloadBtn"><i><img src="/images/default/excel.svg"></i>엑셀로 내보내기</p>';
+                $target.parents('.table_body').siblings('.table_bottom').append(html);
+                $('.excelDownloadBtn').on('click', (e) => {
+                    comm.downloadExcelFile(newOptionObj.excelDownload);
+                });
+            }
         }
 
         //comm.hideLoading();
