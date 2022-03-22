@@ -1,5 +1,8 @@
 package com.danusys.web.tcp.server.socket;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -11,6 +14,7 @@ import java.net.Socket;
  * Date : 2022/03/21
  * Time : 6:55 PM
  */
+@RequiredArgsConstructor
 public class ClientThread extends Thread {
     public Socket socket;
     public int id;
@@ -18,6 +22,9 @@ public class ClientThread extends Thread {
     protected ClientThread(Socket socket, int id) {
         this.socket = socket;
         this.id = id;
+    }
+    public Socket getSocket(){
+        return this.socket;
     }
 
     @Override
@@ -29,7 +36,9 @@ public class ClientThread extends Thread {
                 int size = IS.read(bt);
 
                 String output = new String(bt, 0, size, "UTF-8");
+
                 System.out.println("Thread " + id + " >  " + output);
+
             }
         } catch (IOException e) {
         } finally {
