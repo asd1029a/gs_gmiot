@@ -1,5 +1,13 @@
 package com.danusys.web.tcp.server.controller;
+/**
+ * TCP 서버 테스트용
+ * startServer() 메소드 안의 포트를 변경하여 사용
+ * /start 를 입력하면 서버가 시작.
+ * 그 후 클라이언트로 정보를 보낸 후
+ * /receive 를 입력하면 log와 화면에 보낸 정보를 확인가능
+ */
 
+/*
 import com.danusys.web.tcp.server.socket.CustomServerSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,4 +40,4 @@ public class SocketRestController {
         log.info("total socket={}",soketList);
         return "소켓 정보: "+soketList;
     }
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package com.danusys.web.tcp.server.config;
 
 import com.danusys.web.tcp.server.domain.MessageCallback;
@@ -59,3 +60,4 @@ public class TcpConfiguration {
         return new MessageCallback();
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.danusys.web.tcp.server.handler;
 
 import com.danusys.web.tcp.server.domain.MessageCallback;
@@ -54,3 +55,4 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         super.channelUnregistered(ctx);
     }
 }
+*/

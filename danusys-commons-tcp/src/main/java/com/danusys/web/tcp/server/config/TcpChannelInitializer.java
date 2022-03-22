@@ -1,3 +1,4 @@
+/*
 package com.danusys.web.tcp.server.config;
 
 import com.danusys.web.tcp.server.handler.ServerHandler;
@@ -23,3 +24,4 @@ public class TcpChannelInitializer extends ChannelInitializer<SocketChannel> {
         socketChannel.pipeline().addLast(serverHandler);
     }
 }
+*/
