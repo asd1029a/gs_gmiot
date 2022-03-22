@@ -69,6 +69,7 @@ public class ApiCallRestController {
         List<Facility> list = facilityService.findAll();
 
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.convertValue(list, String.class);
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
