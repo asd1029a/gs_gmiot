@@ -108,7 +108,7 @@
 
         <dependency>
             <groupId>com.danusys.web</groupId>
-            <artifactId>danusys-tcp-server</artifactId>
+            <artifactId>danusys-commons-tcp-server</artifactId>
             <version>${revision}</version>
         </dependency>
 
