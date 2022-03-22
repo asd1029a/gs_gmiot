@@ -1,4 +1,4 @@
-package com.danusys.tcp.server.config;
+package com.danusys.web.tcp.server.config;
 
 import lombok.Getter;
 import lombok.Setter;

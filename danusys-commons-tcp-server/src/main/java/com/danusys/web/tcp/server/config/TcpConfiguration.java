@@ -1,6 +1,6 @@
-package com.danusys.tcp.server.config;
+package com.danusys.web.tcp.server.config;
 
-import com.danusys.tcp.server.domain.MessageCallback;
+import com.danusys.web.tcp.server.domain.MessageCallback;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
