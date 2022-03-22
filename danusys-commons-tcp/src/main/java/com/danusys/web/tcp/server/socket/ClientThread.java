@@ -1,6 +1,5 @@
 package com.danusys.web.tcp.server.socket;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -37,7 +36,7 @@ public class ClientThread extends Thread {
 
                 String output = new String(bt, 0, size, "UTF-8");
 
-                System.out.println("Thread " + id + " >  " + output);
+                //System.out.println("Thread " + id + " >  " + output);
 
             }
         } catch (IOException e) {

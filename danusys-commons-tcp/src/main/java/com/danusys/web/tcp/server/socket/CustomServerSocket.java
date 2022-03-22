@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Scanner;
 
 @Component
 public class CustomServerSocket {

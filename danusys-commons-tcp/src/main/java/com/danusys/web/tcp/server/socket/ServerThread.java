@@ -1,14 +1,10 @@
 package com.danusys.web.tcp.server.socket;
 
-import lombok.RequiredArgsConstructor;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Project : danusys-webservice-parent
@@ -20,13 +16,13 @@ import java.util.Map;
 
 public class ServerThread extends Thread {
     ServerSocket serverSocket;
-    HashMap<Integer,String> socketList = new HashMap<>();
+    HashMap<Integer,Socket> socketList = new HashMap<>();
     int count = 1;
 
     public ServerThread(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
-    public HashMap<Integer,String> getSocketList(){
+    public HashMap<Integer,Socket> getSocketList(){
         return socketList;
     }
 
@@ -39,9 +35,7 @@ public class ServerThread extends Thread {
                 outputStream.write("hello client \n".getBytes());
                 System.out.println("Thread " + count + "connected");
                 ClientThread testThread = new ClientThread(socket, count);
-                transObj trans = new transObj();
-                trans.setStringText(testThread.getSocket().toString());
-                socketList.put(count,trans.getStringText());
+                socketList.put(count,testThread.getSocket());
                 testThread.start();
                 count++;
             }

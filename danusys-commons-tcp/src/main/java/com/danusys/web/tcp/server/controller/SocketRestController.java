@@ -1,4 +1,4 @@
-package com.danusys.web.tcp.server.controller;
+//package com.danusys.web.tcp.server.controller;
 /**
  * TCP 서버 테스트용
  * startServer() 메소드 안의 포트를 변경하여 사용
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.HashMap;
 
 @RestController
@@ -33,11 +34,12 @@ public class SocketRestController {
 
     @RequestMapping("/receive")
     public String receiveText(){
-        HashMap<Integer, String> soketList = ServerSocket.serverThread.getSocketList();
+        HashMap<Integer, Socket> soketList = ServerSocket.serverThread.getSocketList();
         for (Integer integer : soketList.keySet()) {
             log.info("socket={}",soketList.get(integer));
         }
         log.info("total socket={}",soketList);
         return "소켓 정보: "+soketList;
     }
-}*/
+}
+*/
