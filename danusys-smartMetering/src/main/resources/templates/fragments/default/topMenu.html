@@ -1,0 +1,95 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<th:block th:fragment="topMenu">
+<header>
+    <h1 class="logo">
+        <a href="/">원격검침 통합관리 시스템</a>
+    </h1>
+    <th:block th:if="${#httpServletRequest.requestURI} != '/dashboard/index.do' ">
+        <ul class="gnb">
+            <li>
+                <a href="/">메인</a>
+            </li>
+            <li>
+                <a href="/gis/main.do" target="_blank">관제<span class="icon"><img src="/images/common/iconNewTab.svg"></span></a>
+            </li>
+            <li class="active">
+                <a href="/dashboard/main.do">대시보드</a>
+            </li>
+            <li><a href="/search/account/accountList.do">조회</a> <!-- 헤더 메뉴 표출 -->
+                <div class="gnbSubWrap">
+                    <div class="gnbSub">
+                        <ul>
+                            <p>검침</p>
+                            <li><a href="/search/account/accountDataList.do">검침 조회</a></li>
+                        </ul>
+                        <ul>
+                            <p>이벤트</p>
+                            <li><a href="/search/event/eventList.do">이벤트 조회</a></li>
+                        </ul>
+                        <ul>
+                            <p>수용가</p>
+                            <li><a href="/search/account/accountList.do">수용가 조회</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="/stats/accountStats.do">통계</a>
+                <div class="gnbSubWrap">
+                    <div class="gnbSub">
+                        <ul>
+                            <li class="cursor" onclick="location.href='/stats/accountStats.do';">검침 통계</li>
+                            <li class="cursor" onclick="location.href='/stats/eventStats.do';">이벤트 통계</li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="utmenu">
+            <div class="select">
+                <p id="optionDefault"><i><img src="/images/common/iconUser.svg"></i>다누시스 님</p>
+                <div id="optionData" class="sub">
+                    <ul class="optionList">
+                        <li onclick="admin.logoutProc()">로그아웃</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="button" onclick="location.href='/setting/admin/adminList.do'">
+                <span class="icon"><img src="/images/common/iconSetting.svg"></span>환경설정
+            </p>
+        </div>
+    </th:block>
+
+</header>
+
+<script>
+    const path = window.location.pathname;
+    $('header .gnb li').removeClass('active');
+    $('header .gnb').find('a[href="' + path + '"]').parents().addClass('active');
+
+    $('header .gnb li').on('mouseover', (e) => {
+        const $childNode = $(e.currentTarget).children('.gnbSubWrap');
+        $('.gnbSubWrap').hide();
+        if ($childNode.length > 0) {
+            $childNode.show();
+        }
+    });
+
+    $('.gnbSubWrap').on('mouseleave', (e) => {
+        $('.gnbSubWrap').hide();
+    });
+
+    $(".select p").click(function() {
+        $(".select p").addClass("on");
+        $(".select .sub").slideToggle("fast");
+    });
+
+    $(".select .sub").mouseleave(function() {
+        $(".select p").removeClass("on");
+        $(this).hide();
+    });
+</script>
+</th:block>
+
+</html>

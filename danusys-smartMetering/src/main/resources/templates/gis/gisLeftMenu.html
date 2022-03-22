@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="gisLeftMenu">
+
+<div class="asideNav"></div>
+<aside class="controlAside">
+    <div class="inquireForm">
+        <ul class="tabButton">
+            <li data-type="event" class="active">이벤트</li>
+            <li data-type="account">수용가/장비</li>
+            <li data-type="address">주소/장소</li>
+        </ul>
+        <form id="eventForm" action="">
+            <dl class="inquireOptions" data-type="event" style="display:block;">
+                <dt>
+	                <span>
+	                    <select name="searchType">
+	                        <option value="event_no">이벤트 번호</option>
+	                        <option value="account_no">수용가 번호</option>
+	                        <option value="account_nm">수용가 명</option>
+                            <!-- <option value="deviceNo">장비 번호</option> -->
+	                    </select>
+	                </span>
+                    <span>
+	                    <input name="searchText" type="text" placeholder="AA0000">
+	                </span>
+                </dt>
+                <dt>
+	                <span>
+	                    <select name="step">
+	                        <option value="">전체</option>
+	                        <option value="1">처리 완료</option>
+	                        <option value="0">미처리</option>
+	                    </select>
+	                </span>
+                </dt>
+                <dt>
+                    <div class="selectCheck">
+                        <p class="selectCheckTit">이벤트 종류</p>
+                        <ul class="selectCheckUL" style="display:none;">
+                            <li>
+                            <span>
+                                <input type="checkbox" id="event01-01" name="eventCode1" value="1" checked>
+                                <label for="event01-01"><span></span>과다 사용</label>
+                            </span>
+                                <span>
+                                <input type="checkbox" id="event01-02" name="eventCode2" value="2" checked>
+                                <label for="event01-02"><span></span>사용량 급증</label>
+                            </span>
+                            </li>
+                            <li>
+                            <span>
+                                <input type="checkbox" id="event01-04" name="eventCode3" value="3" checked>
+                                <label for="event01-04"><span></span>고독사 의심</label>
+                            </span>
+                                <span>
+                                <input type="checkbox" id="event01-03" name="eventCode51" value="51" checked>
+                                <label for="event01-03"><span></span>누수 예상</label>
+                            </span>
+                            </li>
+
+                            <li>
+                            <span>
+                                <input type="checkbox" id="event04-04" name="eventCode52" value="52" checked>
+                                <label for="event04-04"><span></span>계량기 저전압</label>
+                            </span>
+                                <span>
+                                <input type="checkbox" id="event04-05" name="eventCode53" value="53" checked>
+                                <label for="event04-05"><span></span>계량기 누수</label>
+                            </span>
+                            </li>
+                            <li>
+                            <span>
+                                <input type="checkbox" id="event04-06" name="eventCode54" value="54" checked>
+                                <label for="event04-06"><span></span>계량기 과부하</label>
+                            </span>
+                                <span>
+                                <input type="checkbox" id="event04-07" name="eventCode55" value="55" checked>
+                                <label for="event04-07"><span></span>계량기 역류</label>
+                            </span>
+                            </li>
+                            <li>
+                            <span>
+                                <input type="checkbox" id="event04-08" name="eventCode56" value="56" checked>
+                                <label for="event04-08"><span></span>계량기 장기미사용</label>
+                            </span>
+                            </li>
+
+                            <!--
+                                <span>
+                                    <input type="checkbox" id="event04-03" name="" value="">
+                                    <label for="event04-03"><span></span>계량기동작 상태이상</label>
+                                </span>
+                            <li>
+                                <span>
+                                    <input type="checkbox" id="event02-01" name="" value="">
+                                    <label for="event02-01"><span></span>유수율 이상</label>
+                                </span>
+                                <span>
+                                    <input type="checkbox" id="event03-01" name="" value="">
+                                <label for="event03-01"><span></span>미수신</label>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <input type="checkbox" id="event04-01" name="" value="">
+                                    <label for="event04-01"><span></span>할당 오류장비</label>
+                                </span>
+                                <span>
+                                    <input type="checkbox" id="event04-02" name="" value="">
+                                    <label for="event04-02"><span></span>단말기 상태이상</label>
+                                </span>
+                            </li>
+                             <li>
+                                <span>
+                                    <input type="checkbox" id="event04-08" name="" value="">
+                                    <label for="event04-08"><span></span>배터리 이상</label>
+                                </span>
+                                <span>
+                                    <input type="checkbox" id="event04-09" name="" value="">
+                                    <label for="event04-09"><span></span>내구년한 초과</label>
+                                </span>
+                            </li>
+                             -->
+                        </ul>
+                    </div>
+                </dt>
+                <!--   <dt>
+                      <span>
+                          <select>
+                              <option>발생지역</option>
+                              <option>시</option>
+                              <option>군</option>
+                              <option>구</option>
+                          </select>
+                      </span>
+                      <span>
+                          <select>
+                              <option>발생지역</option>
+                              <option>읍</option>
+                              <option>면</option>
+                              <option>동</option>
+                          </select>
+                      </span>
+                  </dt> -->
+                <dt>
+                    <span class="date"><input name="eventStartDt" id="eventStartDt" type="text" placeholder="날짜 입력"><span class="icon iconCalendar"></span></span>
+                    <span class="date"><input name="eventEndDt" id="eventEndDt" type="text" placeholder="날짜 입력"><span class="icon iconCalendar"></span></span>
+                </dt>
+                <dd class="searchBtn">조회</dd>
+            </dl>
+        </form>
+        <form id="accountForm" action="">
+            <dl class="inquireOptions" data-type="account" style="display:none;">
+                <dt>
+	                <span>
+	                    <select name="searchType">
+	                        <option value="account_no">수용가 번호</option>
+	                        <option value="account_nm">수용가 명</option>
+	                        <option value="device_sn">단말기 번호</option>
+	                        <option value="meter_sn">계량기 번호</option>
+	                    </select>
+	                </span>
+                    <span class="checkbox">
+	                    <input name="searchText" type="text" placeholder="AA0000">
+	                </span>
+                </dt>
+                <!--
+                <dt>
+                    <span>
+                        <select>
+                            <option>전체</option>
+                            <option>처리 완료</option>
+                            <option>미처리</option>
+                        </select>
+                    </span>
+                </dt>
+                <dt>
+                    <span>
+                        <select>
+                            <option>발생지역</option>
+                            <option>시</option>
+                            <option>군</option>
+                            <option>구</option>
+                        </select>
+                    </span>
+                    <span>
+                        <select>
+                            <option>발생지역</option>
+                            <option>읍</option>
+                            <option>면</option>
+                            <option>동</option>
+                        </select>
+                    </span>
+                </dt>
+                -->
+                <dd class="searchBtn">조회</dd>
+            </dl>
+        </form>
+        <dl id="addressPlaceSearchArea" class="inquireOptions" data-type="address" style="display:none;">
+            <dt>
+                <span class="search"><input type="text" placeholder="주소/장소명을 입력하세요">
+                    <!-- <span class="icon iconSearch"></span> -->
+                </span>
+            </dt>
+            <dd>조회</dd>
+        </dl>
+    </div>
+
+    <div class="controlListWrap" data-type="event" style="display:flex;">
+        <dl>
+            <dt>목록<span>0</span></dt>
+            <dd>
+                <select class="orderType">
+                    <option value="day_gap" selected>시작일자</option>
+                    <option value="event_log_seq">로그번호</option>
+                    <option value="event_no">이벤트번호</option>
+                    <option value="account_no">수용가 번호</option>
+                </select>
+            </dd>
+        </dl>
+        <div class="controlList">
+            <ul>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="controlListWrap" data-type="account" style="display:none;">
+        <dl>
+            <dt>목록<span>0</span></dt>
+            <dd>
+                <select class="orderType">
+                    <option value="account_no">수용가번호</option>
+                    <option value="insert_dt">등록순</option>
+                    <!-- <option value="meterSn">계량기 번호</option> -->
+                    <!-- <option value="">발생순</option> -->
+                </select>
+            </dd>
+        </dl>
+        <div class="controlList">
+            <ul>
+
+            </ul>
+        </div>
+    </div>
+
+    <div id="addressListWrap" class="addressPlaceListWrap" data-type="address" style="flex:0.4; display:none;">
+        <dl>
+            <dt>주소<span>0</span></dt>
+            <dd>
+                <!-- <select>
+                    <option>거리순</option>
+                </select> -->
+            </dd>
+        </dl>
+        <div id="addressList" class="addressPlaceList">
+            <ul>
+                <!-- <li>
+                    <p>주소명</p>
+                    <p>도로명</p>
+                </li> -->
+            </ul>
+        </div>
+    </div>
+    <div id="placeListWrap" class="addressPlaceListWrap" data-type="address" style="display:none;">
+        <dl>
+            <dt>장소<span>0</span></dt>
+            <dd>
+                <!-- <select>
+                    <option>거리순</option>
+                </select> -->
+            </dd>
+        </dl>
+        <div id="placeList" class="addressPlaceList">
+            <ul>
+                <!-- <li>
+                   <dl>
+                       <dd>0</dd>
+                       <dt>장소명</dt>
+                   </dl>
+                   <p>주소명</p>
+                   <p>도로명</p>
+                   <p class="tel">전화</p>
+               </li> -->
+            </ul>
+        </div>
+    </div>
+</aside>
+
+</th:block>
+</html>

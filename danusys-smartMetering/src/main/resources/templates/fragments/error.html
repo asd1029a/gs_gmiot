@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/singleLayout">
+
+<th:block layout:fragment="content">
+
+<div class="wrap loginWrap">
+    <div class="loginBody">
+        <section class="loginImg">
+            <p>원격검침 통합관리 시스템</p>
+        </section>
+        <section class="loginForm" style="color:#FFFFFF; line-height:30px;">
+	        <dl>
+	        	> 요청호스트 : ${resultMap.requestHost}<br />
+		        > Exception : ${resultMap.exception}<br />
+		        > 시스템 : ${resultMap.systemType}<br />
+		        > 요청 IP : ${resultMap.requestIp}<br /><br />
+		        <dd onclick="location.href='../../../webapp'">메인으로 가기</dd>
+	        </dl>
+        </section>
+        <!-- 
+        <section class="loginForm">
+            <form id="loginForm" action="/login" method="POST" onsubmit="return false;">
+                <dl>
+                    <dt><input id="username" name="username" type="text" placeholder="아이디" required="required" /></dt>
+                    <dt><input id="password" name="password" type="password" placeholder="비밀번호" required="required" /></dt>
+                    <dd id="loginBtn" onclick="admin.loginProc();">로그인</dd>
+                </dl>
+            </form>
+        	<p></p>    
+        </section>
+         -->
+    </div>
+    <!-- 
+    <div class="loginPopup" style="display:none;">
+        <p>아이디 혹은 비밀번호가 틀렸습니다.</p>
+        <ul>
+            <li>취소</li>
+            <li>확인</li>
+        </ul>
+    </div>
+    -->
+</div>
+
+</th:block>
+</html>

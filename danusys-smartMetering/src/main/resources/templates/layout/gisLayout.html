@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="gisLayout">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="description" content="smartmetering">
+        <meta name="author" content="DANUSYS">
+        <title>스마트 미터링</title>
+        <script src="/js/plugins/jquery/jquery-3.3.1.js"></script>
+        <link rel="shortcut icon" href="/images/common/favicon.png">
+
+        <th:block th:insert="fragments/default/header :: headerFragment"></th:block>
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+
+    </head>
+    <body>
+    <div class="wrap">
+        <th:block th:replace="gis/gisLeftMenu :: gisLeftMenu"></th:block>
+        <th:block th:replace="gis/main :: gisMain"></th:block>
+        <th:block th:replace="gis/gisRightMenu :: gisRightMenu"></th:block>
+        <th:block th:replace="gis/gisPopup :: gisPopup"></th:block>
+    </div>
+    <script>
+
+    </script>
+    </body>
+
+</th:block>
+</html>
