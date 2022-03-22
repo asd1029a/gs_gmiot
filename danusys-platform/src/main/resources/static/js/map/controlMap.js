@@ -1,4 +1,4 @@
-//플랫폼 마다 만들고 자주쓴다면 공통으로.
+//플랫폼 마다 만들고 자주쓴다면 공통으로
 
 /**
  * 플랫폼 당 스타일 지정
@@ -76,31 +76,19 @@ const layerStyle = {
 const mapPopupContent = {
     //주소장소 팝업
     address : (data) => {
+        const resultObj = kakaoApi.getCoord2Address({ x:data[0], y:data[1] });
 
-        //api coord to address
-        /////////////////////////
-
-        // let content = r.documents[0].address.address_name;
-        // if((r.documents[0].road_address)!=null){
-        //     content += "<div class='address-tooltip-header'>[도로명]</div>"
-        //         + "<p>" + r.documents[0].road_address.address_name + "<p>"  ;
-        // }
-        //////////////////////////////////////////////////////////////////////
-        let info = "infotest";
+        let addressName = resultObj.documents[0].address.address_name;
         let content =
-            "<dl>" +
-                "<dt>전북 김제시 죽산면 석산길</dt>" +
-                "<dd>(지번)&nbsp;" + info + "</dd>" +
-                "<dd>(위도)&nbsp;" + data[1] + "</dd>" +
-                "<dd>(경도)&nbsp;" + data[0] + "</dd>" +
-            "</dl>"
+            "<dt>" + addressName + "</dt>" +
+            "<dd>(지번)&nbsp;" + addressName + "</dd>";
+        if((resultObj.documents[0].road_address)!=null){
+            content += "<dd>(도로명)&nbsp" + resultObj.documents[0].road_address.address_name + "<dd>"  ;
+        }
+        content += "<dd>(위도)&nbsp;" + data[1] + "</dd>" +
+                   "<dd>(경도)&nbsp;" + data[0] + "</dd>"
         ;
-            // "<a class='address-tooltip-closer icon_closed'><img src='/images/common/iconClosed.svg' /></a></div>"
-            // + "<div class='address-tooltip-header'> [좌표] </div>"
-            // //+ "<p>" + clickLonLat[1] +", "+ clickLonLat[0] +"</p>"
-            // + "<p>" + data.coordinate[1] +", "+ data.coordinate[0] +"</p>"
-            // + "<div class='address-tooltip-header'> [지번] </div>"
-            // + "<p>" + info + "</p>"
+        content = "<dl>"+ content +"</dl>"
 
         return content;
     }

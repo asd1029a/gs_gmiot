@@ -11,8 +11,9 @@ import com.danusys.web.platform.dto.response.NoticeResponseDto;
 import com.danusys.web.platform.entity.Notice;
 import com.danusys.web.platform.entity.NoticeSpecification;
 import com.danusys.web.platform.entity.NoticeRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -117,6 +119,9 @@ public class NoticeServiceImpl implements NoticeService {
                                 }
                         );
                         NoticeResponseDto noticeResponseDto = new NoticeResponseDto(notice, insertUserId, updateUserId.get());
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+                        objectMapper.setDateFormat(sdf);
                         Map<String, Object> dataList = objectMapper.convertValue(noticeResponseDto, Map.class);
 
                         return dataList;

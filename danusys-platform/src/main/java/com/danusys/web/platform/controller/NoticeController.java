@@ -102,6 +102,7 @@ public class NoticeController {
         EgovMap dataMap = noticeService.getList((Map<String, Object>) paramMap.get("search"));
 
         paramMap.put("dataMap", dataMap.get("data"));
+        log.info("dataList = {}", dataMap.get("data"));
         wb = FileUtil.excelDownload2(paramMap);
         wb.write(response.getOutputStream());
         wb.close();

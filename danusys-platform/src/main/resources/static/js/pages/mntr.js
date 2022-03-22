@@ -26,11 +26,8 @@ const mntr = {
                 classname: 'context-style',
                 callback: e => {
                     const coordinate = new ol.proj.transform(e.coordinate, window.map.realProjection[window.map.type] ,'EPSG:4326');
-                    console.log(coordinate);
-
                     //팝업 붙이기
                     let popup = new mapPopup('map');
-
                     popup.create('testpopup');
                     popup.move('testpopup',e.coordinate);
                     popup.content('testpopup',mapPopupContent.address(coordinate));
@@ -52,55 +49,12 @@ const mntr = {
         //측정 도구
         let measure = new measureTool('map');
         window.measure = measure;
-        //동네 날씨 기능를 위해
+
+        //맵 이동 (move end) 이벤트
         map.setMapEventListener('moveend',(e) => {
-            let mapProj = e.map.getView().getProjection().getCode();
-            let mapCenter = e.map.getView().getCenter();
-            let mapLonLat = ol.proj.transform(mapCenter,mapProj,'EPSG:4326');
-            // 날씨 데이터 반환
-            const param = {
-                callUrl : '/getWeatherData',
-                numOfRows: '1000',
-                pageNo: '1',
-                dataType: "JSON",
-                lon : mapLonLat[0],
-                lat : mapLonLat[1]
-            }
-            $.ajax({
-                contentType : "application/json; charset=utf-8",
-                type : "POST",
-                url : '/api/getCurSkyTmp',
-                dataType : "json",
-                data : JSON.stringify(param),
-                async : true
-            }).done( result => {
-                if (!result) return;
-                const html = "<i><img src='/images/default/icon_weather_"+ result["sky"] +".png'></i>"
-                    + result["skyNm"] + " " + result["tmp"] + "℃" ;
-                $(".map_location #admWeather").empty();
-                $(".map_location #admWeather").append(html);
-            });
-            // // 현재 위치 시-군-동 반환
-            $(".map_location #admAreaName").text("알수 없음");
-            $.ajax({
-                type : "POST",
-                url : '/adm/lonLatToAdm',
-                contentType : "application/json; charset=utf-8",
-                dataType : "JSON",
-                async : true,
-                data : JSON.stringify({
-                    lon : mapLonLat[0],
-                    lat : mapLonLat[1]
-                })
-            }).done( result => {
-                if (!result) return;
-                $(".map_location #admAreaName").text( result["areaName"]);
-            });
-
-            /////////////////////////////////////////
-            kakaoApi.getAddress();
-
-        }); // 지도 move end 이벤트
+            //동네 날씨 기능
+            centerVilageInfo(e);
+        });
 
         /**
          * 레이어 선택 조작
@@ -160,29 +114,29 @@ const mntr = {
             // window.map.addLayer(heat);
         });
 
-        facility.getListGeoJson({}, (result) => {
-           // console.log(result);
-            let result1 =
-            {
-                type: 'FeatureCollection',
-                name: 'sample',
-                crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
-                features: [
-                    { type: 'Feature', id: 'facility123', properties: { id: 123 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
-                    { type: 'Feature', id: 'facility234', properties: { id: 234 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
-                    { type: 'Feature', id: 'facility345', properties: { id: 345 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
-                    { type: 'Feature', id: 'facility456', properties: { id: 456 }, geometry: { type: 'Point', coordinates: [ 126.73797079693405, 37.3197810464005 ] } },
-                    { type: 'Feature', id: 'facility567', properties: { id: 567 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
-                    { type: 'Feature', id: 'facility678', properties: { id: 678 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
-                    { type: 'Feature', id: 'facility789', properties: { id: 789 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
-                ]
-            };
-
-            let facilityLayer = new dataLayer('map')
-                .fromGeoJSon(result1,'facilityLayer', true, layerStyle.facility(false));
-            map.addLayer(facilityLayer);
-            window.lyControl.find('facilityLayer').set('selectable',true);
-        });
+        // facility.getListGeoJson({}, (result) => {
+        //    // console.log(result);
+        //     let result1 =
+        //     {
+        //         type: 'FeatureCollection',
+        //         name: 'sample',
+        //         crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+        //         features: [
+        //             { type: 'Feature', id: 'facility123', properties: { id: 123 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
+        //             { type: 'Feature', id: 'facility234', properties: { id: 234 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
+        //             { type: 'Feature', id: 'facility345', properties: { id: 345 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+        //             { type: 'Feature', id: 'facility456', properties: { id: 456 }, geometry: { type: 'Point', coordinates: [ 126.73797079693405, 37.3197810464005 ] } },
+        //             { type: 'Feature', id: 'facility567', properties: { id: 567 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
+        //             { type: 'Feature', id: 'facility678', properties: { id: 678 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
+        //             { type: 'Feature', id: 'facility789', properties: { id: 789 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
+        //         ]
+        //     };
+        //
+        //     let facilityLayer = new dataLayer('map')
+        //         .fromGeoJSon(result1,'facilityLayer', true, layerStyle.facility(false));
+        //     map.addLayer(facilityLayer);
+        //     window.lyControl.find('facilityLayer').set('selectable',true);
+        // });
 
         // event.getListGeoJson({}, (result) => {
         //    // console.log(result);
@@ -336,6 +290,54 @@ const mntr = {
         $(".search_list .button_top").on("click", e => {
             $(e.currentTarget).parent('div').scrollTop(0);
         });
+        //검색 키워드 입력 이벤트 (임시공통)
+        $(".search_form input[type=text]").on('keydown', key => {
+            if(key.keyCode==13){
+                const keyword = $(key.target).val();
+                const section = $(key.currentTarget).parents('section').attr('id');
+
+                switch(section) {
+                    case "addressPlace" : //주소장소검색
+                        const addressObj = kakaoApi.getAddress({query: keyword});
+                        const placeObj = kakaoApi.getPlace({query: keyword});
+                        lnbList.createAddressPlace('address', addressObj, keyword, true);
+                        lnbList.createAddressPlace('place', placeObj, keyword, true);
+                        break;
+                    //case "" :
+                    default :
+                        break;
+                }
+            }
+        });
+        //리스트 무한스크롤 이벤트
+        $('.search_list').on("scroll", evt => {
+            const elem = $(evt.currentTarget);
+            const keyword = elem.data().keyword;
+            if ( elem.scrollTop() + elem.innerHeight()  >= elem[0].scrollHeight ) {
+                const id = elem.parents('.lnb_tab_section').attr('id');
+
+                switch(id) {
+                    case "addressPlaceTab" : //주소장소 탭
+                        const target = elem.attr('data-value');
+                        if(!(elem.data().meta.is_end)){
+                            const page = (Number(elem.data().listCnt) / 15) + 1;
+                            const obj = { query : keyword, page : page };
+                            if(target=="address") {
+                                lnbList.createAddressPlace('address',kakaoApi.getAddress(obj), keyword,false);
+                            } else {
+                                lnbList.createAddressPlace('place',kakaoApi.getPlace(obj), keyword,false);
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+
+            } // srcoll 끝
+
+        });
+
 
     }
     , create : () => {
@@ -358,17 +360,99 @@ const mntr = {
         // commonCode.getList( pObj , (result) => {
         //     console.log(result);
         // });
-
-
     }
+
 
 }
 
-// select t3.area_name, t3.area_code from (
-//     select
-// t1.emd_cd
-// from t_area_emd t1
-// where st_contains(t1.geom, ST_GEOMFROMTEXT('POINT(126.88119336994183 37.44335040773767)',4326)) = true
-// ) t2
-// inner join t_area_code_name t3
-// on t2.emd_cd||'00' = t3.area_code::varchar
+function centerVilageInfo(evt) {
+    let mapProj = evt.map.getView().getProjection().getCode();
+    let mapCenter = evt.map.getView().getCenter();
+    let mapLonLat = ol.proj.transform(mapCenter,mapProj,'EPSG:4326');
+    // 날씨 데이터 반환
+    const param = {
+        callUrl : '/getWeatherData',
+        numOfRows: '1000',
+        pageNo: '1',
+        dataType: "JSON",
+        lon : mapLonLat[0],
+        lat : mapLonLat[1]
+    }
+    $.ajax({
+        contentType : "application/json; charset=utf-8",
+        type : "POST",
+        url : '/api/getCurSkyTmp',
+        dataType : "json",
+        data : JSON.stringify(param),
+        async : true
+    }).done( result => {
+        if (!result) return;
+        const html = "<i><img src='/images/default/icon_weather_"+ result["sky"] +".png'></i>"
+            + result["skyNm"] + " " + result["tmp"] + "℃" ;
+        $(".map_location #admWeather").empty();
+        $(".map_location #admWeather").append(html);
+    });
+    // // 현재 위치 시-군-동 반환
+    $(".map_location #admAreaName").text("알수 없음");
+    $.ajax({
+        type : "POST",
+        url : '/adm/lonLatToAdm',
+        contentType : "application/json; charset=utf-8",
+        dataType : "JSON",
+        async : true,
+        data : JSON.stringify({
+            lon : mapLonLat[0],
+            lat : mapLonLat[1]
+        })
+    }).done( result => {
+        if (!result) return;
+        $(".map_location #admAreaName").text( result["areaName"]);
+    });
+}
+
+/**
+ * 관제 왼쪽창 리스트 생성
+ * */
+const lnbList = {
+    /**
+     * 주소장소 리스트 생성
+     * type : address, place
+     * obj : 카카오 api 반환결과
+     * flag : 검색 초기인가 아닌가
+     * */
+    createAddressPlace : (type, obj, keyword, flag) => {
+        console.log(obj);
+        let objCnt = obj.documents.length;
+        let content = "";
+        obj.documents.forEach(row => {
+            let roadName = row.road_address_name == undefined ? "-" : row.road_address_name;
+            if(type == "address"){
+                content += "<dl>" +
+                    "<dt>" + row["address_name"] + "</dt>" +
+                    "<dd>도로명 : " + roadName + "</dd>" +
+                    "</dl>"
+                ;
+            } else if(type == "place") {
+                content += "<dl>" +
+                    "<dt>" + row["place_name"] + "</dt>" +
+                    "<dd>도로명칭</dd>" +
+                    "<dd>"+ roadName +"</dd>" +
+                    "</dl>"
+                ;
+            }
+        });
+        const target = $('.search_list[data-value='+type+']');
+        if(flag){
+            target.empty();
+            target.scrollTop(0);
+        } else {
+            const prevCnt = Number($('.area_title .count[data-value='+type+']').text());
+            objCnt += prevCnt;
+        }
+        target.append(content);
+        obj.listCnt = objCnt;
+        obj.keyword = keyword;
+        target.data(obj);
+        $('.area_title .count[data-value='+type+']').text(objCnt);
+    }
+}

@@ -792,20 +792,20 @@
         </section>
         <!-- 주소 장소 -->
         <section id="addressPlace" class="menu_fold">
-            <div class="search_form">
-                <dl>
-                    <dt><input type="text" placeholder="검색어를 입력하세요."><i><img src="/images/default/search.svg"></i></dt>
-                </dl>
-            </div>
-            <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
             <!-- lnb_tab_section * 주소/장소 -->
-            <div class="lnb_tab_section select">
+            <div id="addressPlaceTab" class="lnb_tab_section select">
+                <div class="search_form">
+                    <dl>
+                        <dt><input type="text" placeholder="검색어를 입력하세요."><i><img src="/images/default/search.svg"></i></dt>
+                    </dl>
+                </div>
+                <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>주소</dt>
-                    <dd><span class="count">11</span></dd>
+                    <dd><span class="count" data-value="address">0</span></dd>
                 </dl>
-                <div class="search_list">
-                    <dl>
+                <div class="search_list" data-value="address">
+                   <!-- <dl>
                         <dt>전북 김제시 죽산면 석산길</dt>
                         <dd>도로명 : 석산길</dd>
                     </dl>
@@ -816,15 +816,15 @@
                     <dl>
                         <dt>전북 김제시 죽산면 석산길</dt>
                         <dd>도로명 : 석산길</dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>장소</dt>
-                    <dd><span class="count">11</span></dd>
+                    <dd><span class="count" data-value="place">0</span></dd>
                 </dl>
-                <div class="search_list">
-                    <dl>
+                <div class="search_list" data-value="place">
+                    <!--<dl>
                         <dt>경남 창원시 의창구 동읍 석산리 421-3</dt>
                         <dd>도로명칭</dd>
                         <dd>경남 창원시 의창구 동읍 석산길51번길 16</dd>
@@ -838,7 +838,7 @@
                         <dt>경남 창원시 의창구 동읍 석산리 421-3</dt>
                         <dd>도로명칭</dd>
                         <dd>경남 창원시 의창구 동읍 석산길51번길 16</dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>

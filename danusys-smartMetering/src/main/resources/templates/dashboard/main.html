@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="layout/baseLayout">
+
+<th:block layout:fragment="content">
+
+<nav class="pageLocation">
+	<ul>
+		<li>
+			<a href="#">
+				<span class="icon">
+					<img src="/images/common/iconHome.svg"></span>홈
+			</a>
+		</li>
+		<li>
+			<a href="#">
+				<span class="icon">
+					<img src="/images/common/iconNext.svg"></span>대시보드
+			</a>
+		</li>
+	</ul>
+</nav>
+<div class="dashboardContainer">
+	<div class="leftDashCont">
+		<!-- 
+		<div class="half">
+			<article>
+				<h2 class="title">오늘 수도량<span>(단위:kWh)</span></h2>
+				<div class="graphArea"></div>
+			</article>
+			<article>
+				<h2 class="title">오늘 유수율<span>(단위:kWh)</span></h2>
+				<div class="graphArea"></div>
+			</article>
+		</div>
+		 -->
+		<article>
+			<h2 class="title">
+				최근 하루 시간대별 검침 증가량<span>(단위:kWh)</span>
+			</h2>
+			<div id="accountDataTimediffChart" class="graphArea"></div>
+		</article>
+		<article>
+			<h2 class="title">
+				최근 일년 월별 검침 증가량<span>(단위:kWh)</span>
+			</h2>
+			<div id="accountDataMonthdiffChart" class="graphArea"></div>
+		</article>
+		<article>
+			<h2 class="title">
+				최근 1개월 일별 검침 증가량<span>(단위:kWh)</span>
+			</h2>
+			<div id="accountDataDaydiffChart" class="graphArea"></div>
+		</article>
+	</div>
+	<div class="centerDashCont">
+		<article>
+			<h2 class="title">전체 이벤트 발생</h2>
+			<div class="graphArea">
+				<div id="totalEventChart" class="circleGraph"></div>
+				<div class="legend">
+					<ul>
+						<!-- 
+						<li>
+							<span class="color purple"></span> <span class="name">이벤트 5</span>
+							<span class="count">00건</span> <span class="per">10%</span>
+						</li>
+						-->
+					</ul>
+				</div>
+			</div>
+		</article>
+		<article>
+			<h2 class="title">최근 12시간 장비 이상 이벤트</h2>
+			<div class="graphArea">
+				<div id="todayDeviceChart" class="circleGraph"></div>
+				<!-- 
+				<div class="legend">
+					<ul>
+						<li>
+							<span class="color blue"></span> <span class="name">이벤트 1</span>
+							<span class="count">00건</span> <span class="per">25%</span>
+						</li>
+						<li>
+							<span class="color green"></span> <span class="name">이벤트 2</span>
+							<span class="count">00건</span> <span class="per">25%</span>
+						</li>
+						<li>
+							<span class="color yellow"></span> <span class="name">이벤트 3</span>
+							<span class="count">00건</span> <span class="per">25%</span>
+						</li>
+						<li>
+							<span class="color red"></span> <span class="name">이벤트 4</span>
+							<span class="count">00건</span> <span class="per">15%</span>
+						</li>
+						<li>
+							<span class="color purple"></span> <span class="name">이벤트 5</span>
+							<span class="count">00건</span> <span class="per">10%</span>
+						</li>
+					</ul>
+				</div>
+				-->
+			</div>
+		</article>
+		<article>
+        <h2 class="title">날씨</h2>
+        <div class="weatherArea">
+            <div class="weatherTop">
+                <div class="weatherTopLeft">
+                    <dl>
+                        <dt class="iconWeather weather01"><img></dt>
+                        <dd>
+                        	<p class="todayTitle">현재 기온</p>
+                            <p class="todayTemperature" data-category="T3H"></p>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="weatherTopRight">
+                    <ul class="indicator" >
+                        <li data-category="PTY"><span>강수형태</span><span>-</span></li>
+                        <li data-category="POP"><span>강수확률</span><span>-</span></li>
+                        <li data-category="R06"><span>강수량</span><span>-</span></li>
+                    </ul>
+                    <ul class="indicator">
+                        <li data-category="REH"><span>습도</span><span>-</span></li>
+                        <li data-category="S06"><span>적설량</span><span>-</span></li>
+                        <li data-category="WSD"><span>풍속</span><span>-</span></li>                            
+                    </ul>
+                </div>                     
+            </div>
+            <div class="weatherBottom">
+                <dl>
+                    <dt></dt>
+                    <dd><span class="iconWeather"><img></span><span data-category="T3H">-</span></dd>
+                </dl>
+                <dl>
+                    <dt></dt>
+                    <dd><span class="iconWeather"><img></span><span data-category="T3H">-</span></dd>
+                </dl>
+                <dl>
+                    <dt></dt>
+                    <dd><span class="iconWeather"><img></span><span data-category="T3H">-</span></dd>
+                </dl>
+                <dl>
+                    <dt></dt>
+                    <dd><span class="iconWeather"><img></span><span data-category="T3H">-</span></dd>
+                </dl>
+            </div>
+        </div>
+    </article>
+	</div>
+	<div class="rightDashCont">
+		<!-- 
+		<h2 class="title">
+			<ul class="tabButton">
+				<li class="active">실내</li>
+				<li>실외</li>
+			</ul> 
+		</h2>
+		-->
+		<div id="mapArea" class="mapArea">
+			<h2 class="title">기초구역별 수용가정보</h2>
+			
+			<!-- 
+			<div class="legend">
+				<ul>                                                                                                       
+					<li><span class="color gray"></span><span>미수신</span></li>
+					<li><span class="color red"></span><span>매우나쁨</span></li>
+					<li><span class="color yellow"></span><span>나쁨</span></li>
+					<li><span class="color green"></span><span>보통</span></li>
+					<li><span class="color blue"></span><span>좋음</span></li>
+				</ul>
+			</div> 
+			-->
+		</div>
+	</div>
+</div>
+
+</th:block>
+</html>

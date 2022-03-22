@@ -4,26 +4,25 @@ import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.crypto.service.CryptoExecutorFactoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.deploy.net.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.BodyInserter;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -66,7 +65,6 @@ public class RestApiExecutor implements ApiExecutor {
 
         // 암호화 모듈 테스트
         apiRequestParams.stream().filter(f -> f.getCryptoKey() != null).forEach(d -> d.setValue(cryptoExecutorFactoryService.encrypt(d.getCryptoType(), d.getValue(), d.getCryptoKey())));
-
         //요청 파라미터 값 추출
         final Map<String, Object> reqMap = apiRequestParams
                 .stream()
@@ -135,74 +133,88 @@ public class RestApiExecutor implements ApiExecutor {
             Consumer<HttpHeaders> headersConsumer = httpHeaders -> {
                 httpHeaders.setContentType(mediaType);
                 httpHeaders.setAccept(Collections.singletonList(mediaType));
-                if((authInfo != "") && (authInfo != null)){
+                if((!authInfo.isEmpty()) && (authInfo != null)){
                     httpHeaders.set("Authorization", authInfo);
                 }
             };
+
+            DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(targetUrl);
+            factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+
+            ExchangeStrategies exchangeStrategies = ExchangeStrategies
+                    .builder()
+                    .codecs(configure -> configure.defaultCodecs().maxInMemorySize(1024*1024*50)).build();
+
 
             if (method == HttpMethod.GET || method == HttpMethod.DELETE) {
                 reqMap.entrySet().stream().forEach(f -> {
                     params.add(f.getKey(), (String) f.getValue());
                 });
-
-                DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(targetUrl);
-                factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
                 URI tUri = factory.builder().queryParams(params).path(targetPath).build();
 
                 mono = WebClient.builder()
-//                            .filter(ExchangeFilterFunction.ofRequestProcessor(
-//                                    clientRequest -> {
-//                                        log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
-//                                        clientRequest.headers()
-//                                                .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
-//                                        return Mono.just(clientRequest);
-//                                    }
-//                            ))
-//                            .filter(ExchangeFilterFunction.ofResponseProcessor(
-//                                    clientResponse -> {
-//                                        clientResponse.headers()
-//                                                .asHttpHeaders()
-//                                                .forEach((name, values) ->
-//                                                        values.forEach(value -> log.debug("{} : {}", name, value)));
-//                                        return Mono.just(clientResponse);
-//                                    }
-//                            ))
-                            .uriBuilderFactory(factory)
-                            .build().method(method)
-                            .uri(tUri)
-                            .headers(headersConsumer)
-                            .exchange()
-                            .flatMap(response -> response.toEntity(String.class));
+//                        .filter(ExchangeFilterFunction.ofRequestProcessor(
+//                                clientRequest -> {
+//                                    log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
+//                                    clientRequest.headers()
+//                                            .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
+//                                    return Mono.just(clientRequest);
+//                                }
+//                        ))
+//                        .filter(ExchangeFilterFunction.ofResponseProcessor(
+//                                clientResponse -> {
+//                                    clientResponse.headers()
+//                                            .asHttpHeaders()
+//                                            .forEach((name, values) ->
+//                                                    values.forEach(value -> log.debug("{} : {}", name, value)));
+//                                    return Mono.just(clientResponse);
+//                                }
+//                        ))
+                        .uriBuilderFactory(factory)
+                        .build().method(method)
+                        .uri(tUri)
+                        .headers(headersConsumer)
+                        .exchange()
+                        .flatMap(response -> {
+                            log.trace("aaa >>>> {}", response.toEntity(String.class));
+                            return response.toEntity(String.class);
+                        });
 
             } else if (method == HttpMethod.POST || method == HttpMethod.PUT) {
                 json = new ObjectMapper().writeValueAsString(reqMap);
-                mono =
-                        WebClient.builder()
-                            .filter(ExchangeFilterFunction.ofRequestProcessor(
-                                    clientRequest -> {
-                                        log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
-                                        clientRequest.headers()
-                                                .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
-                                        return Mono.just(clientRequest);
-                                    }
-                            ))
-                            .filter(ExchangeFilterFunction.ofResponseProcessor(
-                                    clientResponse -> {
-                                        clientResponse.headers()
-                                                .asHttpHeaders()
-                                                .forEach((name, values) ->
-                                                        values.forEach(value -> log.debug("{} : {}", name, value)));
-                                        return Mono.just(clientResponse);
-                                    }
-                            ))
-                                .baseUrl(targetUrl)
-                                .build().method(method)
-                                    .uri(uriBuilder -> uriBuilder.path(targetPath)
-                                    .build())
-                                .body(BodyInserters.fromValue(json))
-                                .headers(headersConsumer)
-                                .exchange()
-                                .flatMap(response -> response.toEntity(String.class));
+
+                mono = WebClient.builder()
+                        .filter(ExchangeFilterFunction.ofRequestProcessor(
+                                clientRequest -> {
+                                    log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
+                                    clientRequest.headers()
+                                            .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
+                                    return Mono.just(clientRequest);
+                                }
+                        ))
+                        .filter(ExchangeFilterFunction.ofResponseProcessor(
+                                clientResponse -> {
+                                    log.trace("response status code : {}", clientResponse.statusCode());
+                                    clientResponse.headers()
+                                            .asHttpHeaders()
+                                            .forEach((name, values) ->
+                                                    values.forEach(value -> log.debug("{} : {}", name, value)));
+                                    return Mono.just(clientResponse);
+                                }
+                        ))
+                        .exchangeStrategies(exchangeStrategies)
+                        .uriBuilderFactory(factory)
+                        .build().method(method)
+                        .uri(uriBuilder -> uriBuilder.path(targetPath)
+                                .build())
+                        .bodyValue(json)
+                        .headers(headersConsumer)
+                        .exchange()
+                        .flatMap(response -> {
+                            log.trace("response status code : {}", response.statusCode());
+
+                            return response.toEntity(String.class);
+                        });
             }
             responseEntity = mono.block();
 
