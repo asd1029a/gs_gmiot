@@ -29,7 +29,7 @@ public class UserGroupPermitService {
 
         if (userGroup == null)
             return;
-        Permit permit = permitRepository.findByPermitSeq(permitSeq);
+        Permit permit = permitRepository.findByCodeSeq(permitSeq);
         if (permit == null)
             return;
 
@@ -46,7 +46,7 @@ public class UserGroupPermitService {
     @Transactional
     public void del(int userGroupSeq, int permitSeq) {
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
-        Permit findPermit = permitRepository.findByPermitSeq(permitSeq);
+        Permit findPermit = permitRepository.findByCodeSeq(permitSeq);
         userGroupPermitRepository.deleteByUserGroup2AndPermit(findUserGroup, findPermit);
     }
 }
