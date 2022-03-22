@@ -99,7 +99,14 @@ const notice = {
                 url : "/notice/excel/download"
                 , fileName : "공지사항 목록_"+ dateFunc.getCurrentDateYyyyMmDd(0, '') +".xlsx"
                 , search : $("#searchForm form").serializeJSON()
-                , headerList : ["고유번호", "제목", "내용", "파일이름", "작성자", "작성일", "수정자", "수정일"]
+                , headerList : ["고유번호|noticeSeq"
+                    , "제목|noticeTitle"
+                    , "내용|noticeContent"
+                    , "파일이름|noticeFile"
+                    , "작성자|insertUserId"
+                    , "작성일|insertDt"
+                    , "수정자|updateUserId"
+                    , "수정일|updateDt"]
             }
         }
 

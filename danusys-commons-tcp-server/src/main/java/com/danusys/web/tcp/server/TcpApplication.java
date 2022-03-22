@@ -1,8 +1,8 @@
-package com.danusys.tcp.server;
+package com.danusys.web.tcp.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+/*
 @SpringBootApplication
 public class TcpApplication {
 
@@ -10,4 +10,4 @@ public class TcpApplication {
         SpringApplication.run(TcpApplication.class, args);
     }
 
-}
+}*/

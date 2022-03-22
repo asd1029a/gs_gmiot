@@ -35,7 +35,7 @@ public class UserController {
     public ResponseEntity<?> add(@RequestBody User user) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.saveUser(user));
+                .body(userService.add(user));
     }
 
     /*
@@ -47,10 +47,10 @@ public class UserController {
 
      */
     @GetMapping("/checkid/{userId}")
-    public ResponseEntity<?> idCheck(@PathVariable String userId) {
+    public ResponseEntity<?> checkId(@PathVariable String userId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userService.idCheck(userId));
+                .body(userService.checkId(userId));
     }
 
     /*
@@ -155,9 +155,9 @@ public class UserController {
         /* TODO : 트랜젝션 처리 요망 */
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> paramMap = objectMapper.convertValue(userRequest, Map.class);
-        int result = userService.updateUser(userRequest);
+        int result = userService.mod(userRequest);
         userInGroupService.delUserSeq(userRequest.getUserSeq());
-        userInGroupService.save(paramMap);
+        userInGroupService.add(paramMap);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(result);
@@ -172,7 +172,7 @@ public class UserController {
      */
     @DeleteMapping()
     public ResponseEntity<?> del(@RequestBody User user) {
-        userService.deleteUser(user);
+        userService.del(user);
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }

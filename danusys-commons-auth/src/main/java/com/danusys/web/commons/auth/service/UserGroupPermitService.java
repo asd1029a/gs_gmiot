@@ -24,30 +24,27 @@ public class UserGroupPermitService {
     private final UserGroupRepository userGroupRepository;
     private final PermitRepository permitRepository;
 
-    public void saveUserGroupPermit(UserGroupPermit userGroupPermit, int userGroupSeq, int permitSeq) {
-
+    public void add(UserGroupPermit userGroupPermit, int userGroupSeq, int permitSeq) {
         UserGroup userGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
-        if(userGroup==null)
-            return ;
+
+        if (userGroup == null)
+            return;
         Permit permit = permitRepository.findByPermitSeq(permitSeq);
-        if(permit==null)
-            return ;
+        if (permit == null)
+            return;
+
         userGroupPermit.setUserGroup2(userGroup);
         userGroupPermit.setPermit(permit);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CommonsUserDetails userDetails = (CommonsUserDetails) principal;
-        // log.info("{}",userDetails.getUserSeq());
 
-            userGroupPermit.setInsertUserSeq(userDetails.getUserSeq());
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            userGroupPermit.setInsertDt(timestamp);
-        }
-
-      //  return userGroupPermitRepository.save(userGroupPermit);
-
+        userGroupPermit.setInsertUserSeq(userDetails.getUserSeq());
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        userGroupPermit.setInsertDt(timestamp);
+    }
 
     @Transactional
-    public void deleteUserGroupPermit(int userGroupSeq, int permitSeq) {
+    public void del(int userGroupSeq, int permitSeq) {
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
         Permit findPermit = permitRepository.findByPermitSeq(permitSeq);
         userGroupPermitRepository.deleteByUserGroup2AndPermit(findUserGroup, findPermit);

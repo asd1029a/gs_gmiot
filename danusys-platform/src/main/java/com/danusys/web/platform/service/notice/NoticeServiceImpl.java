@@ -11,8 +11,9 @@ import com.danusys.web.platform.dto.response.NoticeResponseDto;
 import com.danusys.web.platform.entity.Notice;
 import com.danusys.web.platform.entity.NoticeSpecification;
 import com.danusys.web.platform.entity.NoticeRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,9 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -79,13 +82,15 @@ public class NoticeServiceImpl implements NoticeService {
                                 .findFirst()
                                 .orElse(null)
                                 .getUserId();
-                        String updateUserId = userList
-                                .stream()
-                                .filter(user -> notice.getUpdateUserSeq() == user.getUserSeq())
-                                .findFirst()
-                                .orElse(null)
-                                .getUserId();
-                        return new NoticeResponseDto(notice, insertUserId, updateUserId);
+                        AtomicReference<String> updateUserId = new AtomicReference<>(null);
+                        userList.forEach(user -> {
+                            if(notice.getUpdateUserSeq() != null && notice.getUpdateUserSeq() == user.getUserSeq()) {
+                                updateUserId.set(user.getUserId());
+                            }
+                            }
+                        );
+
+                        return new NoticeResponseDto(notice, insertUserId, updateUserId.get());
                     })
                     .collect(Collectors.toList());
 
@@ -106,13 +111,17 @@ public class NoticeServiceImpl implements NoticeService {
                                 .findFirst()
                                 .orElse(null)
                                 .getUserId();
-                        String updateUserId = userList
-                                .stream()
-                                .filter(user -> notice.getUpdateUserSeq() == user.getUserSeq())
-                                .findFirst()
-                                .orElse(null)
-                                .getUserId();
-                        NoticeResponseDto noticeResponseDto = new NoticeResponseDto(notice, insertUserId, updateUserId);
+                        AtomicReference<String> updateUserId = new AtomicReference<>(null);
+                        userList.forEach(user -> {
+                                    if(notice.getUpdateUserSeq() != null && notice.getUpdateUserSeq() == user.getUserSeq()) {
+                                        updateUserId.set(user.getUserId());
+                                    }
+                                }
+                        );
+                        NoticeResponseDto noticeResponseDto = new NoticeResponseDto(notice, insertUserId, updateUserId.get());
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+                        objectMapper.setDateFormat(sdf);
                         Map<String, Object> dataList = objectMapper.convertValue(noticeResponseDto, Map.class);
 
                         return dataList;

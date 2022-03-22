@@ -1,26 +1,38 @@
 package com.danusys.web.drone.service;
 
 
+import com.danusys.web.drone.api.MAVLinkConnection;
 import com.danusys.web.drone.dto.request.DroneRequest;
 import com.danusys.web.drone.dto.response.DroneMissionDetailsResponse;
 import com.danusys.web.drone.dto.response.DroneResponse;
 import com.danusys.web.drone.dto.response.MissionDetailResponse;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneDetails;
+import com.danusys.web.drone.model.DroneLogDetails;
 import com.danusys.web.drone.repository.DroneDetailsRepository;
 import com.danusys.web.drone.repository.DroneInMissionRepository;
 import com.danusys.web.drone.repository.DroneRepository;
+import io.dronefleet.mavlink.MavlinkConnection;
+import io.dronefleet.mavlink.MavlinkMessage;
+import io.dronefleet.mavlink.common.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
 import java.util.stream.Collectors;
 
 
@@ -76,9 +88,10 @@ public class DroneService {
 
         return "success";
     }
+
     @Transactional
     public List<?> findDroneList(DroneRequest droneRequest) {
-        log.info("droneRequest={}",droneRequest);
+        log.info("droneRequest={}", droneRequest);
         List<Drone> droneList = null;
         Sort sort = sortByupdateDt();
 
@@ -96,9 +109,9 @@ public class DroneService {
 
                 droneList = droneRepository.findAllByUserIdLikeAndStatus("%" + droneRequest.getUserId() + "%", droneStatus, sort);
 
-              droneList.forEach(r->{
-                    log.info("droneId={},{},{},{}",r.getUserId(),r.getDroneDeviceName(),
-                        r.getId(),   r.getStatus());
+                droneList.forEach(r -> {
+                    log.info("droneId={},{},{},{}", r.getUserId(), r.getDroneDeviceName(),
+                            r.getId(), r.getStatus());
 
                 });
             } else if (droneRequest.getDroneDeviceName() != null) {
@@ -119,7 +132,7 @@ public class DroneService {
         }
 
 
-       // log.info("droneStatus={}", droneStatus);
+        // log.info("droneStatus={}", droneStatus);
 
         log.info("여긴오나?");
         return droneList.stream().map(DroneResponse::new).collect(Collectors.toList());
@@ -144,8 +157,8 @@ public class DroneService {
         Optional<Drone> optionalDrone = droneRepository.findById(droneId);
         if (!optionalDrone.isPresent())
             return null;
-        Drone drone =optionalDrone.get();
-        DroneResponse droneResponse=new DroneResponse(drone);
+        Drone drone = optionalDrone.get();
+        DroneResponse droneResponse = new DroneResponse(drone);
         return droneResponse;
     }
 
@@ -155,4 +168,84 @@ public class DroneService {
     }
 
 
+    public Object getSocketDrone() {
+
+        ServerSocket server_socket = null;  //서버 생성을 위한 ServerSocket
+        try {
+            server_socket = new ServerSocket(8600);
+
+        } catch (IOException e) {
+            log.info("해당 포트가 열려있습니다.");
+        }
+        try {
+
+            int systemId = 1;
+            int componentId = 1;
+            int linkId = 1;
+            long timestamp = System.currentTimeMillis();/* provide microsecond time */
+            ;
+            byte[] secretKey = new byte[0];
+            secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+            Socket socket = server_socket.accept();    //서버 생성 , Client 접속 대기
+            MavlinkConnection connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+            Heartbeat heartbeat = null;
+
+            MavlinkMessage message;
+            //   connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_GET_HOME_POSITION).build(), linkId, timestamp, secretKey);
+
+            while ((message = connection.next()) != null) {
+                if (message.getPayload() instanceof TerrainReport) {
+                    MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
+                    float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
+
+
+                } else if (message.getPayload() instanceof Heartbeat) {
+                    MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
+                    heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
+                            .type(heartbeatMavlinkMessage.getPayload().type())
+                            .systemStatus(heartbeatMavlinkMessage.getPayload().systemStatus())
+                            .baseMode()
+                            .mavlinkVersion(heartbeatMavlinkMessage.getPayload().mavlinkVersion())
+                            .build();
+                    connection.send2(systemId, componentId, heartbeat, linkId, timestamp, secretKey);
+                    log.info("heartbeat={}", message);
+
+
+                } else if (message.getPayload() instanceof Statustext) {        //statusMessage
+
+                    //  log.info(message.toString());
+                    MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
+                    String missionText = statustextMavlinkMessage.getPayload().text();
+                    log.info(missionText);
+                    //   gps.setMissionType(missionText);
+                    if (missionText.equals("ArduPilot Ready"))
+                        break;
+
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+
+        //new connection
+        //  connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+
+
+        //4 guided mode
+
+
+        //end while
+
+
+        finally {
+
+        }
+
+
+        return null;
+    }
 }

@@ -1,4 +1,4 @@
-package com.danusys.tcp.server.config;
+package com.danusys.web.tcp.server.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +12,8 @@ import javax.validation.constraints.Size;
 @Setter
 @ConfigurationProperties(prefix = "netty")
 public class NettyProperties {
+
     @NotNull
-    @Size(min=1000, max=65535)
     private int tcpPort;
 
     @NotNull
