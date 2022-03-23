@@ -16,7 +16,7 @@
         <section class="setting_content">
             <article class="search_form" id="searchForm">
                 <h6>사용자 계정 검색</h6>
-                <form>
+                <form action="javascript:void(0);">
                     <div>
                         <dl class="checkbox_set">
                             <dt>계정 상태</dt>
@@ -27,12 +27,12 @@
                                 </span>
                                 <span>
                                     <input type="checkbox" id="none" name="status" data-value="1">
-                                    <label for="none"><span></span>휴면</label>
+                                    <label for="none"><span></span>미사용</label>
                                 </span>
                             </dd>
                         </dl>
                         <ul class="button">
-                            <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요."></li>
+                            <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요." onkeydown="if(event.keyCode==13){account.user.create();}"></li>
                             <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
                             <li id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</li>
                         </ul>
