@@ -15,6 +15,7 @@
         <module>danusys-commons-crypto</module>
         <module>danusys-smartMetering</module>
         <module>demo</module>
+        <module>danusys-commons-mqtt</module>
 
     </modules>
 
@@ -86,6 +87,11 @@
         <repository>
             <id>keesun.mvn.repo</id>
             <url>https://github.com/keesun/mvn-repo/raw/master</url>
+        </repository>
+
+        <repository>
+            <id>Eclipse Paho Repo</id>
+            <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
         </repository>
 
 <!--        <repository>-->
