@@ -54,7 +54,7 @@ const account = {
                     {data: "userName"},
                     {data: "tel"},
                     {data: "email", className: "alignLeft"},
-                    {data: "status"},
+                    {data: "statusName"},
                     {data: "insertDt"},
                     {data: "lastLoginDt"},
                     {data: null}
@@ -349,7 +349,7 @@ const account = {
                 columns: [
                     {data: "userGroupSeq", className: "alignLeft"},
                     {data: "groupName"},
-                    {data: "groupName"},
+                    {data: "inUserId"},
                     {data: "groupDesc"},
                     {data: null}
                 ]

@@ -24,7 +24,7 @@ public class UserGroupPermit {
     @Column(name = "insert_user_seq")
     private int insertUserSeq;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_group_seq")
     @JsonBackReference
     private UserGroup userGroup2;

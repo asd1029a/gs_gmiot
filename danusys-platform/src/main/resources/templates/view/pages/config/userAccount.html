@@ -16,10 +16,10 @@
         <section class="setting_content">
             <article class="search_form" id="searchForm">
                 <h6>사용자 계정 검색</h6>
-                <form>
+                <form action="javascript:void(0);">
                     <div>
                         <dl class="search_text_set">
-                            <dd><input type="text" placeholder="검색어를 입력하세요." name="keyword"></dd>
+                            <dd><input type="text" placeholder="검색어를 입력하세요." name="keyword" onkeydown="if(event.keyCode==13){account.user.create();}"></dd>
                         </Dl>
                         <dl class="checkbox_set">
                             <dt>계정 상태</dt>
