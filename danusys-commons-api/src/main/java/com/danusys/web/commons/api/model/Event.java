@@ -1,5 +1,6 @@
 package com.danusys.web.commons.api.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,9 @@ public class Event {
     private Long facilitySeq;
 
     @Column
+    private Long stationSeq;
+
+    @Column
     private int eventKind;
 
     @Column
@@ -54,13 +58,19 @@ public class Event {
 //    @Column
 //    private String eventMngContent;
 
+    @Column
+    private String eventMessage;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp insertDt;
 
     @Builder
-    public Event(Long facilitySeq, int eventKind, String eventGrade) {
+    public Event(Long facilitySeq, Long stationSeq, int eventKind, String eventGrade, String eventMessage) {
         this.facilitySeq = facilitySeq;
+        this.stationSeq = stationSeq;
         this.eventKind = eventKind;
         this.eventGrade = eventGrade;
+        this.eventMessage = eventMessage;
     }
 }

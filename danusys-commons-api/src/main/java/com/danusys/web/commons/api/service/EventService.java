@@ -35,18 +35,16 @@ public class EventService {
         return this.eventRepository.save(event);
     }
 
-    public List<Event> saveAllByEeventRequestDTO(List<EventReqeustDTO> list) {
+    public List<Event> saveAllByEeventRequestDTO(List<EventReqeustDTO> list) throws Exception {
         List<Event> eventList = new ArrayList<>();
 
         list.forEach(f -> {
             Facility facility = facilityRepository.findByFacilityId(f.getFacilityId());
-            Event event = Event
-                    .builder()
-                    .facilitySeq(facility.getFacilitySeq())
-                    .eventKind(eventRepository.findEventKind(f.getEventKindNm()))
-                    .eventGrade(f.getEventGrade()).build();
+            f.setFacilitySeq(facility.getFacilitySeq());
+            f.setStationSeq(facility.getStationSeq());
+            f.setEventKind(eventRepository.findEventKind(f.getEventKindNm()));
 
-            eventList.add(event);
+            eventList.add(f.toEntity());
         });
 
         eventRepository.saveAll(eventList);
