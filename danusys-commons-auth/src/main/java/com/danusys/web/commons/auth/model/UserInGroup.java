@@ -31,13 +31,13 @@ public class UserInGroup {
     private int insertUserSeq;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_seq")
     @JsonIgnore
     private User user;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_group_seq")
     private UserGroup userGroup;
 }
