@@ -447,7 +447,6 @@ const comm = {
     audioPlay: function(src) {
         var audioId = "audio" + Math.floor(Math.random() * 1000);
         var audioHtml = "<audio id='" + audioId + "' src='" + src + "' autoplay></audio>";
-        //console.log(audioId);
 
         $("body").append(audioHtml);
 
@@ -501,8 +500,8 @@ const comm = {
             })
             .catch(error => console.error('Error : ', error));
     }
-    /* 커스텀 다중 선택 셀렉트 박스 / 이유나 2022.01.14 */
     ,
+    /* 커스텀 단일 선택 셀렉트 박스 / 이유나 2022.01.14 */
     createSelectBox: function(selector) {
         this.createSelectBox.$selectBox = null,
             this.createSelectBox.$select = null,
@@ -511,7 +510,7 @@ const comm = {
 
         comm.createSelectBox.prototype.init = function(selector) {
             this.$selectBox = $(selector);
-            this.$select = this.$selectBox.find('.box .select');
+            this.$select = this.$selectBox.find('.box .select_title');
             this.$list = this.$selectBox.find('.box .list');
             this.$listLi = this.$list.children('li');
         }
@@ -550,8 +549,8 @@ const comm = {
         this.createSelectBox.prototype.init(selector);
         this.createSelectBox.prototype.initEvent();
     }
-    /* 커스텀 다중 선택 셀렉트 박스 / 이유나 2022.01.14 */
     ,
+    /* 커스텀 다중 선택 셀렉트 박스 / 이유나 2022.01.14 */
     createMultiSelectBox: function(selector) {
         this.createMultiSelectBox.$selectBox = null,
             this.createMultiSelectBox.$select = null,
@@ -560,7 +559,7 @@ const comm = {
 
         comm.createMultiSelectBox.prototype.init = function(selector) {
             this.$selectBox = $(selector);
-            this.$select = this.$selectBox.find('.select');
+            this.$select = this.$selectBox.find('.select_title');
             this.$list = this.$selectBox.find('.list');
             this.$listLi = this.$list.find('span');
 
@@ -636,7 +635,7 @@ const comm = {
             let $targetInput = $target.children("input");
 
             let $targetSelectBox = $("[data-selectbox-type=" + $targetType + "]");
-            let $targetSelect = $targetSelectBox.find(".select");
+            let $targetSelect = $targetSelectBox.find(".select_title");
             let $targetListLi = $targetSelectBox.find(".list > span");
 
             if ($targetInput.hasClass("checkAll")) {
@@ -645,7 +644,7 @@ const comm = {
             } else {
                 let totalLen = $targetListLi.length - 1;
                 let checkedLen = $targetListLi.find("input[type=checkbox]:checked").not(".checkAll").length;
-                console.log(totalLen +', '+ checkedLen);
+
                 if (totalLen !== checkedLen) {
                     $targetListLi.find(".checkAll").prop("checked", false);
                     if ($($targetListLi).children("input[type=checkbox]:checked").length > 0) {
@@ -661,6 +660,7 @@ const comm = {
                     selectStr = $targetListLi.find(".checkAll + label").text();
                 }
             }
+
             $targetSelect.text(selectStr);
         }
         comm.createMultiSelectBox.prototype.listOff = function($target) {
