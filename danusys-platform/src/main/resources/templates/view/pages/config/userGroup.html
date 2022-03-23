@@ -18,11 +18,11 @@
             <h6>사용자 그룹 검색</h6>
             <form>
                 <div>
-                    <dl class="search_text_set">
-                        <dd><input type="text" placeholder="검색어를 입력하세요." name="keyword"></dd>
-                        <dd class="button" id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
-                        <dd class="button" id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</dd>
-                    </dl>
+                    <ul class="button">
+                        <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요."></li>
+                        <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
+                        <li id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</li>
+                    </ul>
                 </div>
             </form>
         </article>
@@ -224,46 +224,11 @@
                             <thead>
                             <tr>
                                 <th>Index</th>
-                                <th>그룹 이름</th>
+                                <th>사용자 이름</th>
                                 <th>설명</th>
                                 <th>선택</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>그룹 이름</td>
-                                <td>설명</td>
-                                <td>
-                                    <span>
-                                        <input type="checkbox" id="" name="groupName">
-                                        <label for=""><span></span></label>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>그룹 이름</td>
-                                <td>설명</td>
-                                <td>
-                                    <span>
-                                        <input type="checkbox" id="group02" name="">
-                                        <label for="group02"><span></span></label>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>관리자</td>
-                                <td>관리자 그룹</td>
-                                <td>
-                                    <span>
-                                        <input type="checkbox" id="group03" name="">
-                                        <label for="group03"><span></span></label>
-                                    </span>
-                                </td>
-                            </tr>
-                            </tbody>
                         </table>
                     </div>
                 </div>
