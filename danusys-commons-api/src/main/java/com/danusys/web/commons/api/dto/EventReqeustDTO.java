@@ -1,7 +1,9 @@
 package com.danusys.web.commons.api.dto;
 
+import com.danusys.web.commons.api.model.Event;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * Project : danusys-webservice-parent
@@ -13,8 +15,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EventReqeustDTO {
+    private Long facilitySeq;
     private String facilityId;
-    private String eventKind;
-    private int eventGrade;
+    private int eventKind;
+    private String eventKindNm;
+    private String eventGrade;
     private String eventMessage;
 }
