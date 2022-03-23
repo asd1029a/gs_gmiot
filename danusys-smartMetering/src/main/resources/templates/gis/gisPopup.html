@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="gisPopup">
+
+    <!-- 수용가 팝업 -->
+    <div id="accountPopup" class="controlPopupWrap">
+        <div id="accountContainList" class="controlPopup">
+            <dl class="popupTitle">
+                <dt><span class="state stateYellow"></span>을지마을 삼익한일 아파트 613동</dt>
+                <dd id="accountPopupCloser" class="button"><img src="/images/common/iconClosed.svg"></dd>
+            </dl>
+            <div class="popupContents">
+                <div class="household">
+                    <ul>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="accountDetailInfo" class="controlPopup" style="display:none;">
+            <dl class="popupTitle">
+                <dd id="accountPopupPrev" class="button"><img src="/images/common/iconPrev.svg"></dd>
+                <dt><!-- <span class="icon"><img src="/images/common/iconNext.svg"></span> --></dt>
+                <dd id="accountDetailPopupCloser" class="button"><img src="/images/common/iconClosed.svg"></dd>
+            </dl>
+            <div class="popupContents">
+
+            </div>
+            <p id="accountDetail" class="button"><img src="/images/common/iconDetailView.svg">상세보기</p>
+        </div>
+    </div>
+    <!-- //수용가 팝업 -->
+
+    <!-- 이벤트 팝업 -->
+    <div id="eventPopup" class="controlPopupWrap">
+        <div id="eventContainList" class="controlPopup">
+            <dl class="popupTitle">
+                <dt></dt>
+                <dd id="eventPopupCloser" class="button"><img src="/images/common/iconClosed.svg"></dd>
+            </dl>
+            <div class="popupContents">
+                <div class="household">
+                    <ul>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="eventDetailInfo" class="controlPopup" style="display:none;">
+            <dl class="popupTitle">
+                <dd id="eventDetailPopupPrev" class="button"><img src="/images/common/iconPrev.svg"></dd>
+                <dt style=""></dt>
+                <dd id="eventDetailPopupCloser" class="button"><img src="/images/common/iconClosed.svg"></dd>
+            </dl>
+            <div class="popupContents">
+
+            </div>
+        </div>
+    </div>
+    <!-- //이벤트 팝업 -->
+</th:block>
+</html>

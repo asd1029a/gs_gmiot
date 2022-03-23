@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/baseLayout">
+
+<th:block layout:fragment="content">
+<nav class="pageLocation">
+    <ul>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconHome.svg"></span>홈</a></li>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconNext.svg"></span>통계</a></li>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconNext.svg"></span>이벤트 통계</a></li>
+    </ul>
+</nav>
+<div class="statisticsContainer">
+    <form id="searchForm">
+        <div class="statisticsSearch">
+            <dl>
+                <dt>기간</dt>
+                <dd>
+                    <span><input id="eventStartDt" name="eventStartDt" class="text-center" type="text" style="width:130px;" /></span>
+                    <!-- <span><select><option>10:00 AM</option></select></span> -->
+                    <span>-</span>
+                    <span><input id="eventEndDt" name="eventEndDt" class="text-center" type="text" style="width:130px;" /></span>
+                    <!-- <span><select><option>10:00 AM</option></select></span> -->
+                </dd>
+            </dl>
+            <!--
+            <dl>
+                <dt>지역</dt>
+                <dd>
+                    <span><select><option>행정구역</option></select></span>
+                    <span><select><option>하안동</option></select></span>
+                </dd>
+            </dl>
+            -->
+            <p id="searchBtn"><span class="buttonIcon"><img src="/images/common/iconSearch.svg"></span>조회</p>
+            <!-- <p><span class="buttonIcon"><img src="/images/common/iconRefresh.svg"></span>검색조건 초기화</p> -->
+        </div>
+    </form>
+    <div class="statisticsBox">
+        <div class="box">
+            <h2 class="title">
+                <dl>
+                    <dt>이벤트 발생건수 차트</dt>
+                    <!--
+                    <dd>
+                        <ul class="tabButton">
+                            <li class="active">전체</li>
+                            <li>수도</li>
+                            <li>장비</li>
+                        </ul>
+                    </dd>
+                     -->
+                </dl>
+                <!--
+                <ul class="tabButton">
+                    <li class="active">시</li>
+                    <li>일</li>
+                    <li>주</li>
+                    <li>월</li>
+                </ul>
+                -->
+            </h2>
+            <div id="eventStatsChart" class="graphArea"></div>
+        </div>
+        <div class="box">
+            <h2 class="title">
+                <p>이벤트 발생건수</p>
+            </h2>
+            <div class="circleGraphArea">
+                <div id="totalEventChart"></div>
+                <ul></ul>
+            </div>
+        </div>
+        <div class="box boxGrid">
+            <div>
+                <h2 class="title">
+                    <p>누수 예상 발생건수</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="leakStateCnt" class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>계량기 저전압 발생건수</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="mLowBattCnt" class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>계량기 누수 발생건수</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="mLeakCnt" class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>계량기 과부하 발생건수</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="mOverloadCnt" class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>계량기 역류 발생건수</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="mReverseCnt" class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>계량기 장기미사용 발생건수</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="mNotUseCnt" class="value blanchedalmond">-</p>
+            </div>
+        </div>
+        <div class="box">
+            <h2 class="title">
+                <p>이벤트 처리 현황</p>
+            </h2>
+            <div class="circleGraphArea">
+                <div id="processEventChart"></div>
+                <ul></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</th:block>
+</html>>

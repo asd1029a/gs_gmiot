@@ -1,7 +1,10 @@
 package com.danusys.web.commons.api.controller;
 
 import com.danusys.web.commons.api.dto.EventReqeustDTO;
-import com.danusys.web.commons.api.model.*;
+import com.danusys.web.commons.api.model.Api;
+import com.danusys.web.commons.api.model.ApiParam;
+import com.danusys.web.commons.api.model.Facility;
+import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.service.*;
 import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.api.types.ParamType;
@@ -26,11 +29,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Project : danusys-webservice-parent
@@ -69,7 +75,6 @@ public class ApiCallRestController {
         List<Facility> list = facilityService.findAll();
 
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.convertValue(list, String.class);
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
@@ -167,39 +172,60 @@ public class ApiCallRestController {
     }
 
     @PostMapping("event")
-    public void apiEvent(@RequestBody Map<String, Object> param) {
+    public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
         Api api = getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
+        List<ApiParam> apiResponseParams = api.getApiResponseParams();
         ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> resultBody = new HashMap<>();
 
-        Map<String, Object> map = apiRequestParams.stream()
-                .filter(f -> f.getDataType().equals(DataType.ARRAY))
-                .peek(f -> {
-                    AtomicReference<String> result = new AtomicReference<>();
-                    try {
-                        result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
+        try {
+            // Reqpuest check and set
+            Map<String, Object> map = apiRequestParams.stream()
+                    .filter(f -> f.getDataType().equals(DataType.ARRAY))
+                    .peek(f -> {
+                        AtomicReference<String> result = new AtomicReference<>();
+                        try {
+                            result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
 
-                    apiRequestParams.stream().forEach(a -> {
-                        result.set(StringUtils.replace(result.get(), a.getFieldMapNm(), a.getFieldNm()));
-                    });
+                        apiRequestParams.stream().forEach(a -> {
+                            result.set(StringUtils.replace(result.get(), a.getFieldMapNm(), a.getFieldNm()));
+                        });
 
-                    f.setValue(result.get());
-                })
-                .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+                        f.setValue(result.get());
+                    })
+                    .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
 
-        map.entrySet().stream().forEach(f -> {
-            try {
-                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(f.getValue()), new TypeReference<List<EventReqeustDTO>>() {});
+            // Response check and set
+            resultBody = apiResponseParams
+                    .stream()
+                    .peek(f -> {
+                        ApiParam apiParam = apiRequestParams.stream()
+                                .filter(ff -> ff.getFieldMapNm().equals(f.getFieldMapNm())).findFirst().get();
+                        f.setValue(apiParam.getValue());
+                    })
+                    .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
+            // event save
+            for(Map.Entry<String, Object> el: map.entrySet()) {
+                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
+                });
+                eventService.saveAllByEeventRequestDTO(list);
                 log.trace(list.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            resultBody.put("code", "9999");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(resultBody);
+        }
 
-        });
+        resultBody.put("code", "1111");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(resultBody);
     }
 
     private Api getRequestApi(Map<String, Object> param) {

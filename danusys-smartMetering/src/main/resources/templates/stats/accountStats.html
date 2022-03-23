@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/baseLayout">
+
+<th:block layout:fragment="content">
+
+<nav class="pageLocation">
+    <ul>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconHome.svg"></span>홈</a></li>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconNext.svg"></span>통계</a></li>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconNext.svg"></span>검침 통계</a></li>
+    </ul>
+</nav>
+<div class="statisticsContainer">
+    <form id="searchForm">
+        <div class="statisticsSearch">
+            <dl>
+                <dt>기간</dt>
+                <dd>
+                    <span><input id="accountStartDt" name="accountStartDt" class="text-center" type="text" style="width:130px;" /></span>
+                    <!-- <span><select><option>10:00 AM</option></select></span> -->
+                    <span>-</span>
+                    <span><input id="accountEndDt" name="accountEndDt" class="text-center" type="text" style="width:130px;" /></span>
+                    <!-- <span><select><option>10:00 AM</option></select></span> -->
+                </dd>
+            </dl>
+            <!--
+            <dl>
+                <dt>지역</dt>
+                <dd>
+                    <span><select><option>행정구역</option></select></span>
+                    <span><select><option>하안동</option></select></span>
+                </dd>
+            </dl>
+            -->
+            <p id="searchBtn"><span class="buttonIcon"><img src="/images/common/iconSearch.svg"></span>조회</p>
+            <!-- <p id="searchResetBtn"><span class="buttonIcon"><img src="/images/common/iconRefresh.svg"></span>검색조건 초기화</p> -->
+        </div>
+    </form>
+    <div class="statisticsBox">
+        <div class="box">
+            <h2 class="title">
+                <p>검침 데이터 날짜별 평균 증가</p>
+                <!--
+                <ul class="tabButton">
+                    <li class="active">일</li>
+                    <li>주</li>
+                    <li>월</li>
+                </ul>
+                -->
+            </h2>
+            <div id="accountDataChart" class="graphArea"></div>
+        </div>
+        <div class="box">
+            <h2 class="title">
+                <p>수도 총 사용량 Top10 (최고)</p>
+                <!--
+                <ul class="tabButton">
+                    <li class="active">최고</li>
+                    <li>최저</li>
+                </ul>
+                -->
+            </h2>
+            <div class="tableArea">
+                <table id="accountDataTopDescTbl">
+                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>수용가 번호</th>
+                        <th>수용가 명</th>
+                        <th>수도 사용량</th>
+                        <th>단말기 회사 이름</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="box boxGrid">
+            <div>
+                <h2 class="title">
+                    <p>수도 총 사용량</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="accountAccountNmSum" class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>수도 총 평균 사용량</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="accountAccountNmAvg" class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>추후 추가 예정</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>최대 사용량 수용가</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="accountAccountNmMax" class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>최소 사용량 수용가</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p id="accountAccountNmMin" class="value blanchedalmond">-</p>
+            </div>
+            <div>
+                <h2 class="title">
+                    <p>추후 추가 예정</p>
+                    <span>(단위 : #)</span>
+                </h2>
+                <p class="value blanchedalmond">-</p>
+            </div>
+        </div>
+        <div class="box">
+            <h2 class="title">
+                <p>수도 총 사용량 Top10 (최저)</p>
+                <!--
+                <ul class="tabButton">
+                    <li class="active">최고</li>
+                    <li>최저</li>
+                </ul>
+                 -->
+            </h2>
+            <div class="tableArea">
+                <table id="accountDataTopAscTbl">
+                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>수용가 번호</th>
+                        <th>수용가 명</th>
+                        <th>수도 사용량</th>
+                        <th>단말기 회사 이름</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</th:block>
+</html>

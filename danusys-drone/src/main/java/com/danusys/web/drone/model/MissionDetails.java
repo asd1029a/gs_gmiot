@@ -38,14 +38,14 @@ public class MissionDetails {
     private int time;
 
     private double yaw;
-   //@ManyToOne(fetch = FetchType.EAGER)
+   //@ManyToOne
    //@JoinColumn(name ="mission_id")
 
     private int radius;
     @Column(name="ko_name")
     private String koName;
 
-    @ManyToOne(fetch = FetchType.EAGER)     //마지막에수정됨
+    @ManyToOne     //마지막에수정됨
     @JoinColumn(name ="mission_id")
     @JsonBackReference
     private Mission mission;

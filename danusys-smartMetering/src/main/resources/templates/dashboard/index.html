@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/baseLayout">
+
+
+<body>
+
+<th:block layout:fragment="content">
+    <div class="settingMainBody">
+        <div class="areaLeft">
+            <dl class="leftTop">
+                <dt class="cursor" onclick="location.href='/gis/main.do';">관제<span><img src="/images/common/iconNewTab.svg"></span></dt>
+                <dd class="cursor" onclick="location.href='/dashboard/main.do';">대시보드</dd>
+                <dd class="cursor" onclick="location.href='/search/account/accountList.do';">조회</dd>
+            </dl>
+            <section class="leftBottom">
+                <h4>공지사항</h4>
+                <ul id="boardListUl"></ul>
+            </section>
+        </div>
+        <div class="areaCenter">
+            <ul class="centerTop">
+                <li class="cursor" onclick="location.href='/setting/admin/adminList.do';">사용자 및 그룹 설정</li>
+                <li class="cursor" onclick="location.href='/stats/accountStats.do';">검침 & 이벤트 통계</li>
+            </ul>
+            <ul class="centerBottom">
+                <li class="cursor" onclick="location.href='/search/account/accountDataList.do';">검침 조회</li>
+                <li class="cursor" onclick="location.href='/search/event/eventList.do';">이벤트 조회</li>
+                <li class="cursor" onclick="location.href='/search/account/accountList.do';">수용가 조회</li>
+                <li class="cursor" onclick="location.href='/setting/account/accountGroupList.do';">수용가 그룹 설정</li>
+            </ul>
+        </div>
+        <div class="right">
+            <h2>미처리 이벤트</h2>
+            <ul class="eventList">
+                <li>
+                    <dl>
+                        <dt><span class="tit title00">이벤트 없음</span></dt>
+                        <dd>N일 전</dd>
+                    </dl>
+                    <p>주소</p>
+                    <p>일시</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        init.dashboardIndex();
+    </script>
+
+
+</th:block>
+
+</body>
+
+
+</html>

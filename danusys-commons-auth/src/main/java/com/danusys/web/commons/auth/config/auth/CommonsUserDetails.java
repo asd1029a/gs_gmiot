@@ -21,8 +21,6 @@ public class CommonsUserDetails implements UserDetails {
 
     public CommonsUserDetails(User user) {
         this.user = user;
-
-        //   this.permit = permit;
         permitList = new ArrayList<>();
     }
 
@@ -31,20 +29,16 @@ public class CommonsUserDetails implements UserDetails {
     }
 
     @Override
-
     public String getPassword() {
-
         return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-
         return user.getUserId();
     }
 
     public int getUserSeq() {
-
         return user.getUserSeq();
     }
 
@@ -52,18 +46,13 @@ public class CommonsUserDetails implements UserDetails {
     @Override
     @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        //  log.info("here={}",user.getUserGroupInUser());
 
-        if (user == null) {
-
-
-        } else {
-            //permitList.add(user.getUserGroupInUser().getUserGroup().getUserGroupPermit().getPermit().getPermitName());
+        if (user != null) {
+            // TODO - 게시판 별 권한 처리 협의 필요 @엄태혁
             user.getUserInGroup().forEach(r -> {
                 r.getUserGroup().getUserGroupPermit().forEach(rr -> {
-                    permitList.add(rr.getPermit().getPermitName());
+                    permitList.add(rr.getPermit().getCodeValue());
                 });
             });
             permitList.forEach(r -> {

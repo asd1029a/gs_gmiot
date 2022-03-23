@@ -50,7 +50,7 @@ public class DroneLogDetails {
     private Timestamp insertTime;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name ="drone_log_id")
     @JsonBackReference
     private DroneLog droneLog;

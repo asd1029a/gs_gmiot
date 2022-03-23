@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+			http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+	
+	<!-- <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" /> -->
+	
+	<security:http pattern="/images/**" security="none" />
+	<security:http pattern="/**/*.css" security="none" />
+	<security:http pattern="/**/*.js" security="none" />
+	
+	<security:http auto-config="false" use-expressions="true" entry-point-ref="authenticationEntryPoint">
+	<security:form-login login-processing-url="/login" login-page="/admin/loginForm.do" 
+		username-parameter="username"
+		password-parameter="password"
+	/>
+	<!-- 기존 파일 
+		<security:form-login login-processing-url="/login" login-page="/admin/loginForm.do" 
+		username-parameter="username" 
+		password-parameter="password"
+		authentication-success-handler-ref="customAuthenticationSuccessHandler"
+		authentication-details-source-ref="customAuthenticationFailureHandler"
+	/> -->
+<!--
+		<security:intercept-url pattern="/common/*Error.sn" access="permitAll" />
+		<security:intercept-url pattern="/web/api/**" access="permitAll" />
+		<security:intercept-url pattern="/web/**" access="permitAll" />
+-->
+<!--  추가해봄 _ 실패
+		<security:intercept-url pattern="/js/**" access="permitAll" />
+		<security:intercept-url pattern="/css/**" access="permitAll" />
+		<security:intercept-url pattern="/admin/loginForm.do" access="permitAll" />
+		<security:intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')" />
+ -->
+
+		<!-- <security:intercept-url pattern="/main*" access="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')" /> -->
+    	<!-- <security:intercept-url pattern="/web/unit/**" access="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')" /> -->
+    	<!-- <security:intercept-url pattern="/mobile/unit/**" access="permitAll" /> -->
+    	<!-- <security:logout delete-cookies="true" invalidate-session="true" logout-url="/j_spring_security_logout" success-handler-ref="logoutSuccessHandler" /> -->
+    	<!-- <security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter"/> -->
+    	<security:custom-filter before="FORM_LOGIN_FILTER" ref="authenticationFilter" />
+    	<security:logout logout-url="/admin/logoutProc.do" invalidate-session="true" delete-cookies="true" success-handler-ref="customAuthenticationLogoutSuccessHandler" />
+    	<!-- <security:access-denied-handler ref="userDeniedHandler" /> -->
+    	<security:csrf disabled="true" />
+    	<security:headers>
+    		<security:frame-options disabled="true" />
+    	</security:headers>
+	</security:http>
+	
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider ref="daoAuthenticationProvider" />
+	</security:authentication-manager>
+	
+	<!-- 
+	<bean id="customDaoAuthenticationProvider" class="com.saenu.n3.common.handler.CustomDaoAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsServiceImpl"/>
+	   	<property name="passwordEncoder" ref="passwordEncoder"/>
+	   	<property name="hideUserNotFoundExceptions" value="true"/>
+	</bean>
+	-->
+	
+	<bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsServiceImpl"/>
+	   	<property name="passwordEncoder" ref="passwordEncoder"/>
+	   	<!-- <property name="hideUserNotFoundExceptions" value="true"/> -->
+	</bean>
+	
+	<!-- <bean id="customAuthenticationProvider" class="com.saenu.common.handler.CustomAuthenticationProvider" /> -->
+	<bean id="userDeniedHandler" class="com.danusys.smartmetering.common.handler.UserDeniedHandler" />
+	<bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	<bean id="authenticationEntryPoint" class="com.danusys.smartmetering.common.handler.CustomAuthenticationEntryPoint" />
+	
+	<bean id="authenticationFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+		<property name="sessionAuthenticationStrategy" ref="sas"/>
+		<property name="authenticationManager" ref="authenticationManager"/>
+		<property name="authenticationSuccessHandler" ref="customAuthenticationSuccessHandler"/>
+		<property name="authenticationFailureHandler" ref="customAuthenticationFailureHandler"/>
+	</bean>
+	
+	<bean id="requestContextFilter" class="org.springframework.web.filter.RequestContextFilter" />
+	
+	<bean id="customAuthenticationFailureHandler" class="com.danusys.smartmetering.common.handler.LoginFailureHandler" />
+ 	<bean id="customAuthenticationSuccessHandler" class="com.danusys.smartmetering.common.handler.LoginSuccessHandler" />
+ 	<bean id="customAuthenticationLogoutSuccessHandler" class="com.danusys.smartmetering.common.handler.LogoutSuccessHandler" />
+ 	
+ 	<bean id="sas" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+		<constructor-arg>
+		<list>
+			<bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
+				<constructor-arg ref="sessionRegistry" />
+				<property name="maximumSessions" value="99" />
+			</bean>
+			<bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy"/>
+			<bean class="org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy">
+				<constructor-arg ref="sessionRegistry"/>
+			</bean>
+		</list>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+</beans>

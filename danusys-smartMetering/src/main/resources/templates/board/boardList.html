@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/settingLayout">
+
+
+<body>
+
+<th:block layout:fragment="content">
+
+<div class="settingContainer">
+    <header class="setContTitle">
+        <p>공지사항</p>
+        <span>원격검침 통합관리 솔루션 공지사항 관리 입니다.</span>
+    </header>
+    <div class="searchForm">
+        <div class="searchFormContents">
+            <dl>
+                <dt>공지사항 검색</dt>
+                <dd><input id="boardKeyword" type="text" placeholder="검색어를 입력하세요"></dd>
+            </dl>
+            <p id="getListBoardBtn"><span class="buttonIcon"><img src="/images/settings/iconSearch.svg"></span>조회</p>
+            <p id="initSearchForm"><span class="buttonIcon"><img src="/images/settings/iconRefresh.svg"></span>검색조건 초기화</p>
+        </div>
+    </div>
+    <div class="listWrap">
+        <div class="tableTitle">
+            <h4>검색결과 <span id="boardListCnt"></span>건</h4>
+            <ul class="options">
+                <li>
+                    <span>목록개수</span>
+                    <select id="boardListCntSel">
+                        <option value="10">10개</option>
+                        <option value="20" selected>20개</option>
+                        <option value="30">30개</option>
+                        <option value="50">50개</option>
+                    </select>
+                </li>
+                <li class="optionsButton" id="addBoardBtn">
+                    <span class="buttonIcon"><img src="/images/settings/iconWrite.svg"></span>
+                    글쓰기
+                </li>
+            </ul>
+        </div>
+        <div class="tableWrap">
+            <table id="boardTable">
+                <colgroup>
+                    <col width="30%">
+                    <col width="45%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="5%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>제목</th>
+                    <th>내용</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div id="boardPopup" class="popup inputPopup" style="height: 480px;">
+        <div class="popupTitle">
+            <h4></h4>
+        </div>
+        <div class="popupContents">
+            <form id="boardForm">
+                <dl data-mode="mod">
+                    <dt>작성일</dt>
+                    <dd>
+                        <input type="text" id="insertDt" name="insertDt" disabled/>
+                    </dd>
+                </dl>
+                <dl data-mode="mod">
+                    <dt>작성자</dt>
+                    <dd>
+                        <input type="text" id="insertAdminId" name="insertAdminId" disabled/>
+                    </dd>
+                </dl>
+                <dl data-mode="mod">
+                    <dt>수정일</dt>
+                    <dd>
+                        <input type="text" id="updateDt" name="updateDt" disabled/>
+                    </dd>
+                </dl>
+                <dl data-mode="mod">
+                    <dt>수정자</dt>
+                    <dd>
+                        <input type="text" id="updateAdminId" name="updateAdminId" disabled/>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><label for="title">제목</label><span>필수</span></dt>
+                    <dd>
+                        <input type="hidden" id="boardSeq" name="boardSeq"/>
+                        <input type="text" id="title" name="title" data-required="true" placeholder="공지사항 제목을 입력해주세요" maxlength="50"/>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><label for="content">내용</label><span>필수</span></dt>
+                    <dd>
+                        <textarea id="content" name="content" data-required="true" style="resize:none;" placeholder="공지사항 내용을 입력해주세요"></textarea>
+                    </dd>
+                </dl>
+            </form>
+        </div>
+        <div class="popupButton">
+            <ul>
+                <li>취소</li>
+                <li id="delBoardProcBtn" data-mode="mod" class="red">삭제</li>
+                <li id="modBoardProcBtn" data-mode="mod" class="blue">수정</li>
+                <li id="addBoardProcBtn" data-mode="add" class="blue">등록</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</th:block>
+</body>
+</html>

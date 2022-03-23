@@ -37,8 +37,8 @@ public class GroupResponse {
         userGroup.getUserInGroup().forEach(r->{
             this.inUserId+=r.getUser().getUserName()+", ";
         });
-        this.userGroupPermit = userGroup.getUserGroupPermit();
         this.inUserId= StringUtils.substring(inUserId,0,-2);
+        this.userGroupPermit = userGroup.getUserGroupPermit();
     }
 
     public GroupResponse(UserGroup userGroup, boolean inUser){
