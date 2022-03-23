@@ -82,7 +82,16 @@
 <!--        </dependency>-->
 
         <!-- 시큐리티 ouath jwt end-->
+
+        <!-- thyemeleaf security-->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+            <version>3.0.4.RELEASE</version>
+        </dependency>
         <!-- postgresql-->
+
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

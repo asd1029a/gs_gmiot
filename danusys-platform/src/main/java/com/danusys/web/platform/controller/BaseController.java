@@ -1,7 +1,10 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.platform.model.LoginVO;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,15 +26,18 @@ import java.util.Map;
 @Controller
 public class BaseController {
 
-	/*
+    @Value("${homepage.url}")
+    private String HomePageUrl;
 
-	  date: 2022-01-18
-	  수정내용 : return 값을 "view/index에서 view/login/test1로 수정함
-	 */
-	@RequestMapping(value = "/")
-	public String index() {
-		return "layout/layout_login";
-	}
+    @RequestMapping(value = "/")
+    public String index() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!principal.toString().equals("anonymousUser"))
+            return "redirect:"+HomePageUrl;
+
+        return "layout/layout_login";
+    }
 
 //	/**
 //	 * FuncName : mainPage() FuncDesc : 페이지 Move Param : Return : String
@@ -42,42 +48,42 @@ public class BaseController {
 //		return "main/main";
 //	}
 
-	/**
-	 * FuncName : baseAction() FuncDesc : 페이지 Action Param : path : 지정경로 Return :
-	 * String
-	 */
-	@PostMapping("/action/page")
-	public ModelAndView baseAction(HttpServletRequest request, HttpServletResponse response, Locale locale, Model model) {
+    /**
+     * FuncName : baseAction() FuncDesc : 페이지 Action Param : path : 지정경로 Return :
+     * String
+     */
+    @PostMapping("/action/page")
+    public ModelAndView baseAction(HttpServletRequest request, HttpServletResponse response, Locale locale, Model model) {
 
-		log.trace("# path : {}", request.getParameter("path"));
+        log.trace("# path : {}", request.getParameter("path"));
 
-		HttpSession session = request.getSession();
-		LoginVO lgnVO = (LoginVO) session.getAttribute("admin");
+        HttpSession session = request.getSession();
+        LoginVO lgnVO = (LoginVO) session.getAttribute("admin");
 
-		ModelAndView mav = new ModelAndView();
+        ModelAndView mav = new ModelAndView();
 
-		if (lgnVO != null) {
-			log.trace("# lgnVO {}", lgnVO.toString());
+        if (lgnVO != null) {
+            log.trace("# lgnVO {}", lgnVO.toString());
 
-			String adminId = lgnVO.getId();
-			String adminNm = lgnVO.getName();
+            String adminId = lgnVO.getId();
+            String adminNm = lgnVO.getName();
 
-			InetAddress local = null;
-			try {
-				local = InetAddress.getLocalHost();
-			} catch (UnknownHostException e1) {
-				e1.printStackTrace();
-			}
+            InetAddress local = null;
+            try {
+                local = InetAddress.getLocalHost();
+            } catch (UnknownHostException e1) {
+                e1.printStackTrace();
+            }
 
-			Map<String, Object> param = new HashMap<String, Object>();
-			String ip = local.getHostAddress();
+            Map<String, Object> param = new HashMap<String, Object>();
+            String ip = local.getHostAddress();
 
-			param.put("sessionId", request.getSession().getId());
-			param.put("adminId", adminId);
-			param.put("adminNm", adminNm);
-			param.put("ip", ip);
-			param.put("logType", "ACCESSPAGE");
-			param.put("content", request.getParameter("path"));
+            param.put("sessionId", request.getSession().getId());
+            param.put("adminId", adminId);
+            param.put("adminNm", adminNm);
+            param.put("ip", ip);
+            param.put("logType", "ACCESSPAGE");
+            param.put("content", request.getParameter("path"));
 
 //			try {
 //				baseService.baseInsert("log.insertLog", param);
@@ -85,34 +91,34 @@ public class BaseController {
 //				log.error(ex.toString());
 //			}
 
-			Enumeration params = request.getParameterNames();
-			while (params.hasMoreElements()) {
-				String name = (String) params.nextElement();
-				mav.addObject(name, request.getParameter(name));
-			}
-			mav.setViewName("view/" + request.getParameter("path"));
-		} else {
-			log.trace("# lgnVO 세션 없음");
-			mav.addObject("message", "세션이 종료되어 로그아웃 되었습니다.");
-			mav.addObject("sessionId", "sessionOut");
-			mav.setViewName("view/login/login");
-		}
-		return mav;
-	}
+            Enumeration params = request.getParameterNames();
+            while (params.hasMoreElements()) {
+                String name = (String) params.nextElement();
+                mav.addObject(name, request.getParameter(name));
+            }
+            mav.setViewName("view/" + request.getParameter("path"));
+        } else {
+            log.trace("# lgnVO 세션 없음");
+            mav.addObject("message", "세션이 종료되어 로그아웃 되었습니다.");
+            mav.addObject("sessionId", "sessionOut");
+            mav.setViewName("view/login/login");
+        }
+        return mav;
+    }
 
-	/**
-	 * FuncName : baseActionGet() FuncDesc : 페이지 Action Param : path : 지정경로 Return :
-	 * String
-	 */
-	@GetMapping("/action/page")
-	public ModelAndView baseActionGet(HttpServletRequest request, Locale locale, Model model) {
-		log.trace("----------GET----------");
-		log.trace("# path : {}", request.getParameter("path"));
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("view/" + request.getParameter("path"));
-		mav.addObject("serverName",request.getServerName());
-		return mav;
-	}
+    /**
+     * FuncName : baseActionGet() FuncDesc : 페이지 Action Param : path : 지정경로 Return :
+     * String
+     */
+    @GetMapping("/action/page")
+    public ModelAndView baseActionGet(HttpServletRequest request, Locale locale, Model model) {
+        log.trace("----------GET----------");
+        log.trace("# path : {}", request.getParameter("path"));
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("view/" + request.getParameter("path"));
+        mav.addObject("serverName", request.getServerName());
+        return mav;
+    }
 
 //	/**
 //	 * FuncName : baseInsert() FuncDesc : 등록 Param : sqlid : SQL ID Return : String
@@ -138,8 +144,8 @@ public class BaseController {
 //		}
 //		return "/views/result/result";
 //	}
-	
-	  
+
+
 //    @RequestMapping("/input/form.do")
 //	public String inputForm(@RequestParam Map<String,Object> param) throws Exception {
 //

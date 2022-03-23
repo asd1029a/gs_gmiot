@@ -1,6 +1,5 @@
 package com.danusys.web.platform.entity;
 
-import com.danusys.web.platform.dto.request.NoticeRequestDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
