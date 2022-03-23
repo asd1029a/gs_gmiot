@@ -99,7 +99,11 @@ const pageFlying = {
                 obj.style = mission.setIconStyle("R");
             }
             setDrawDrone.drawMissionFeature(obj);
-        })
+        });
+        if(data.missionDetails) {
+            mapManager.map.getView().setCenter(ol.proj.transform([data.missionDetails[0].gpsX, data.missionDetails[0].gpsY],mapManager.baseProjection, mapManager.projection));
+        }
+
         pageFlying.setMissionSummary(data);
     },
     setMissionSummary: function(data) {
