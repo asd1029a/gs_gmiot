@@ -23,24 +23,25 @@ $.fn.extend({
             if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
                 const arr = this.serializeArray();
                 if (arr) {
-                    $.each(arr, function() {
-                        if (this.value !== "all") {
-                            if (obj[this.name]) {
-                                let val = stringFunc.changeXSSInputValue(this.value, 0);
-                                Array.isArray(obj[this.name]) ?
-                                    obj[this.name].push(val) :
-                                    obj[this.name] = Array.of(obj[this.name], val);
-                            } else {
-                                obj[this.name] = this.value;
-                            }
-                        }
+                    jQuery.each(arr, function() {
+                        obj[this.name] = this.value;
                     });
                 }
                 $.each(this[0], function(idx, element) {
                     if (element.tagName == "SELECT" && $(element).attr("multiple") == "multiple") {
                         obj[$(element).attr("id")] = $(element).selectpicker("val");
-                    } else if ($(element).prop('checked') === true) {
+                    } else if (element.type == "radio" && $(element).prop('checked') === true) {
                         obj[$(element).attr("name")] = $(element).data('value');
+                    } else if(element.type == "checkbox" && $(element).prop('checked') === true){
+                        let name = $(element).attr("name");
+                        let val = $(element).data('value');
+
+                        if(val !== "all"){
+                            // 기본으로 위의 포문으로 값이 들어있어서 검증해야 함
+                            Array.isArray(obj[name])
+                                ? obj[name].push(val)
+                                : obj[name] = Array.of(val);
+                        }
                     }
                 });
             }
@@ -583,14 +584,14 @@ const comm = {
                 let codeValue = stringFunc.camelize(tData.codeValue);
                 let listEle =
                     `<span class="checked_all">
-                        <input type="checkbox" class="checkAll" id="${tData.codeSeq}All" name="${codeValue}" value="all">
+                        <input type="checkbox" class="checkAll" id="${tData.codeSeq}All" name="${codeValue}" data-value="all">
                         <label for="${tData.codeSeq}All"><span></span>전체</label>
                     </span>`;
 
                 data.forEach((item, idx) => {
                     let spanEle =
                         `<span>
-                            <input type="checkbox" id="${item.codeSeq}" name="${codeValue}" value="${item.codeSeq}">
+                            <input type="checkbox" id="${item.codeSeq}" name="${codeValue}" data-value="${item.codeSeq}">
                             <label for="${item.codeSeq}"><span></span>${item.codeName}</label>
                         </span>`;
 
