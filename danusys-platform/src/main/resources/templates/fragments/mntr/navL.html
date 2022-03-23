@@ -91,59 +91,21 @@
                     <div class="search_fold"><!-- active 시, display: flex; -->
                         <!-- form 통째로 -->
                         <form>
-                            <dl class="dropdown_checkbox">
-                                <dt class="checkbox_title">구역명</dt>
-                                <dd class="checkbox_list"> <!-- display :none ->  active -->
-                                    <span class="checked_all">
-                                            <input type="checkbox" id="complexALL" name="">
-                                            <label for="complexALL"><span></span>전체</label>
-                                        </span>
-                                    <span>
-                                            <input type="checkbox" id="complex01" name="">
-                                            <label for="complex01"><span></span>김제시장</label>
-                                        </span>
-                                    <span>
-                                            <input type="checkbox" id="complex02" name="">
-                                            <label for="complex02"><span></span>지평선 산업단지</label>
-                                        </span>
-                                    <span>
-                                            <input type="checkbox" id="complex03" name="">
-                                            <label for="complex03"><span></span>구역없음</label>
-                                        </span>
+                            <!-- TODO : 필요한 검색조건 data-selectbox-type (commonCode type에 따름)에 기입-->
+                            <dl class="dropdown_checkbox" data-selectbox-type="facilityKind">
+                                <dt class="checkbox_title select">구역명</dt>
+                                <dd class="checkbox_list list" style="display: none;">
                                 </dd>
                             </dl>
-                            <dl class="dropdown_checkbox">
-                                <dt class="checkbox_title">장소유형</dt>
-                                <dd class="checkbox_list">
-                                    <span class="checked_all">
-                                            <input type="checkbox" id="placeALL" name="">
-                                            <label for="placeALL"><span></span>전체</label>
-                                        </span>
-                                    <span>
-                                            <input type="checkbox" id="place01" name="">
-                                            <label for="place01"><span></span>문화재</label>
-                                        </span>
-                                    <span>
-                                            <input type="checkbox" id="place02" name="">
-                                            <label for="place02"><span></span>산업단지</label>
-                                        </span>
-                                    <span>
-                                            <input type="checkbox" id="place03" name="">
-                                            <label for="place03"><span></span>전통시장</label>
-                                        </span>
-                                    <span>
-                                            <input type="checkbox" id="place04" name="">
-                                            <label for="place04"><span></span>주택</label>
-                                        </span>
-                                    <span>
-                                            <input type="checkbox" id="place05" name="">
-                                            <label for="place05"><span></span>축사</label>
-                                        </span>
+                            <dl class="dropdown_checkbox" data-selectbox-type="facilityKind">
+                                <dt class="checkbox_title select">장소유형</dt>
+                                <dd class="checkbox_list list" style="display: none;">
                                 </dd>
                             </dl>
-                            <dl class="dropdown_checkbox" data-selectbox-type="district">
-                                <dt class="checkbox_title select" data-placeholder="행정구역 선택">행정구역</dt>
-                                <dd class="checkbox_list list"></dd>
+                            <dl class="dropdown_checkbox" data-selectbox-type="facilityKind">
+                                <dt class="checkbox_title select">행정구역</dt>
+                                <dd class="checkbox_list list" style="display: none;">
+                                </dd>
                             </dl>
                         </form>
                         <ul class="button">

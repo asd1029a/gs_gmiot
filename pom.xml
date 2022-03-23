@@ -9,10 +9,10 @@
         <module>danusys-commons-auth</module>
         <module>danusys-commons-api</module>
         <module>danusys-commons-ui</module>
-        <module>danusys-commons-tcp</module>
+        <module>danusys-commons-socket</module>
+        <module>danusys-commons-crypto</module>
         <module>danusys-platform</module>
         <module>danusys-drone</module>
-        <module>danusys-commons-crypto</module>
         <module>danusys-smartMetering</module>
         <module>demo</module>
         <module>danusys-commons-mqtt</module>

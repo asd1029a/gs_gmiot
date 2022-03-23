@@ -4,6 +4,10 @@
 
 const account = {
     user: {
+        logout: () => {
+            document.location.href="/";
+            document.cookie = 'accessToken' + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+        },
         eventHandler: () => {
             $("#searchBtn").on('click', (e) => {
                 account.user.create();
@@ -84,7 +88,6 @@ const account = {
             comm.createTable($target, optionObj, evt);
         },
         createUserInGroup: (type) => {
-            // TODO : 상단 form height가 가변적이라 리스트 표출시 레이아웃 깨짐
             const $target = $('#userInGroupTable');
             const url = type === "mod" ? "/user/user/userInGroup" : "/user/user"
             const optionObj = {
@@ -92,7 +95,7 @@ const account = {
                 destroy: true,
                 bPaginate: false,
                 bServerSide: false,
-                scrollY: "calc(100% - 30px)",
+                scrollY: "calc(100% - 50px)",
                 ajax:
                     {
                         'url': url,
@@ -378,7 +381,6 @@ const account = {
             comm.createTable($target, optionObj, evt);
         },
         createUserInGroup: (type) => {
-            // TODO : 데이터 테이블 머릿말 레이아웃이 줄어듦
             const $target = $('#userInGroupTable');
 
             const url = type === "mod" ? "/user/group/userInGroup" : "/user/group"
@@ -388,7 +390,7 @@ const account = {
                 destroy: true,
                 bPaginate: false,
                 bServerSide: false,
-                scrollY: "calc(100% - 30px)",
+                scrollY: "calc(100% - 40px)",
                 ajax:
                     {
                         'url': url,

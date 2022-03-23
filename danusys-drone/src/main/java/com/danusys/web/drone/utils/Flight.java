@@ -1,5 +1,6 @@
 package com.danusys.web.drone.utils;
 
+import com.danusys.web.commons.tcp.socket.CustomServerSocket;
 import com.danusys.web.drone.dto.response.Gps;
 import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.model.DroneLogDetails;
@@ -44,7 +45,7 @@ public class Flight {
 //    @Value("${tcp.server.port}")
 //    private int tcpServerPort;
 
-
+    private final CustomServerSocket ServerSocket;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final Substring substring;
     private final DroneLogDetailsService droneLogDetailsService;
@@ -166,15 +167,22 @@ public class Flight {
 
         //        socket = new Socket(tcpServerHost, tcpServerPort);
 
-                ServerSocket server_socket = null;  //서버 생성을 위한 ServerSocket
-                try{
-                    server_socket = new ServerSocket(8600);
+//
+//
+//                ServerSocket server_socket = null;  //서버 생성을 위한 ServerSocket
+//                try{
+//                    server_socket = new ServerSocket(8600);
+//
+//                }catch(IOException e)
+//                {
+//                 log.info("해당 포트가 열려있습니다.");
+//                }
+//                socket = server_socket.accept();    //서버 생성 , Client 접속 대기
+////
 
-                }catch(IOException e)
-                {
-                 log.info("해당 포트가 열려있습니다.");
-                }
-                socket = server_socket.accept();    //서버 생성 , Client 접속 대기
+//
+                HashMap<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
+                socket=socketList.get(1);
                 connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
 
 
@@ -205,7 +213,7 @@ public class Flight {
 
                 droneLogDetailsService.saveDroneLogDetails(droneLogDetailsHomePosition);
                 while ((message = connection.next()) != null) {
-
+                    log.info("message={}",message.getPayload());
                     if (message.getPayload() instanceof HomePosition) {
                         MavlinkMessage<HomePosition> homePositionMavlinkMessage = (MavlinkMessage<HomePosition>) message;
                         //           log.info("home Position = {}", homePositionMavlinkMessage.getPayload());
@@ -221,14 +229,24 @@ public class Flight {
 
                         missionItemMap.put("missionItemInt0", missionItemInt0);
                         break;
+                    }else if (message.getPayload() instanceof Heartbeat) {
+                        MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
+                        heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
+                                .type(heartbeatMavlinkMessage.getPayload().type())
+                                .systemStatus(heartbeatMavlinkMessage.getPayload().systemStatus())
+                                .baseMode()
+                                .mavlinkVersion(heartbeatMavlinkMessage.getPayload().mavlinkVersion())
+                                .build();
+                        connection.send2(systemId, componentId, heartbeat, linkId, timestamp, secretKey);
+
                     }
                 }
                 //new connection
                 //  connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-
+                log.info("break");
 
                 //4 guided mode
-
+                //new command
 
                 connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
                 DroneLogDetails droneLogDetailsDoSetMode = new DroneLogDetails();
@@ -277,7 +295,7 @@ public class Flight {
                 droneLogDetailsService.saveDroneLogDetails(droneLogDetailsTakeOff);
                 int flag = 0;
                 while ((message = connection.next()) != null) {
-
+                    log.info("message={}",message.getPayload());
                     if (message.getPayload() instanceof TerrainReport) {
                         MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
                         float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();

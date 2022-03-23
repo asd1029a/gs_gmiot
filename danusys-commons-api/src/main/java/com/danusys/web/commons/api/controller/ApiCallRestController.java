@@ -1,7 +1,10 @@
 package com.danusys.web.commons.api.controller;
 
 import com.danusys.web.commons.api.dto.EventReqeustDTO;
-import com.danusys.web.commons.api.model.*;
+import com.danusys.web.commons.api.model.Api;
+import com.danusys.web.commons.api.model.ApiParam;
+import com.danusys.web.commons.api.model.Facility;
+import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.service.*;
 import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.api.types.ParamType;
@@ -26,11 +29,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Project : danusys-webservice-parent
@@ -205,16 +211,12 @@ public class ApiCallRestController {
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
 
             // event save
-            map.entrySet().stream().forEach(f -> {
-                try {
-                    List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(f.getValue()), new TypeReference<List<EventReqeustDTO>>() {});
-                    eventService.saveAllByEeventRequestDTO(list);
-                    log.trace(list.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            });
+            for(Map.Entry<String, Object> el: map.entrySet()) {
+                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
+                });
+                eventService.saveAllByEeventRequestDTO(list);
+                log.trace(list.toString());
+            }
         } catch (Exception e) {
             resultBody.put("code", "9999");
             return ResponseEntity.status(HttpStatus.OK)

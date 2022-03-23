@@ -20,17 +20,20 @@ $(document).ready(() => {
         if(path.indexOf(el.id) > -1) $(el).addClass("on");
     });
 
-    if(path !== "/pages/mntr") {
-        /* 다중 셀렉트 박스 */
-        $.each($(".dropdown_checkbox"), (idx, item) => {
-            comm.createMultiSelectBox(item)
-        });
-    }
+    /* 다중 셀렉트 박스 */
+    $.each($(".dropdown_checkbox"), (idx, item) => {
+        comm.createMultiSelectBox(item)
+    });
 
     /* 검색조건 초기화 버튼 */
     $("#resetFormBtn").on("click", (e) => {
         $("#searchForm form").initForm();
     });
+
+    /* 로그아웃 */
+    $("#logoutBtn").on('click', () => {
+        account.user.logout();
+    })
 
     /* date picker */
     if($("#startDt").length > 0 && $("#endDt").length > 0) {
