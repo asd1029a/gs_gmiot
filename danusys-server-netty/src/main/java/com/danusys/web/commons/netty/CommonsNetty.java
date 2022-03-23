@@ -7,5 +7,5 @@ package com.danusys.web.commons.netty;
  * Date : 2022/03/22
  * Time : 5:41 PM
  */
-public class CommonsTcp {
+public class CommonsNetty {
 }

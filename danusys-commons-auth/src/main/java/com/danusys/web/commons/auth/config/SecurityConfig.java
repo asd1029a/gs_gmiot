@@ -109,13 +109,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         permitAll = list.toArray(new String[list.size()]);
         log.info("permitAll={}", permitAll);
-
+//TODO permit group 바뀐 부분 적용
+        //TODO db 하나 새로파서 개발용으로 한벌 더 작성
         httpSecurity
                 .addFilter(corsConfig.corsFilter()) //corsconfig
                 .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable()       //서버에 인증정보를 보관하지 않기때문에 불필요
                 .authorizeRequests() //시큐리티 처리에 HttpServletRequest를 이용한다
-//                .antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .antMatchers(permitAll).permitAll()
 //                .antMatchers(String.valueOf(PERMIT_PATH)).permitAll()
                 .antMatchers(String.valueOf(PERMIT_MANAGER)).access("hasRole('ROLE_MANAGER')")

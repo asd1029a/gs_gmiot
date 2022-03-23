@@ -1,4 +1,3 @@
-/*
 package com.danusys.web.commons.netty.config;
 
 import lombok.RequiredArgsConstructor;
@@ -17,4 +16,4 @@ public class ApplicationStartupTask implements ApplicationListener<ApplicationRe
     public void onApplicationEvent(ApplicationReadyEvent event) {
         serverSocket.start();
     }
-}*/
+}

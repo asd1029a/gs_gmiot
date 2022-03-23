@@ -1,4 +1,3 @@
-/*
 package com.danusys.web.commons.netty.config;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -6,9 +5,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
@@ -47,4 +43,3 @@ public class ServerSocket {
         }
     }
 }
-*/

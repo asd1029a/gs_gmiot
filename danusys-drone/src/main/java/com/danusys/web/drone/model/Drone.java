@@ -34,6 +34,9 @@ public class Drone {
     @Column(name = "user_id")
     private String userId;
 
+    @Column(name ="socket_index")
+    private int socketIndex;
+
     @Column(name = "update_dt")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     //@Temporal(TemporalType.TIMESTAMP)

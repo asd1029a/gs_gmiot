@@ -11,11 +11,13 @@
         <module>danusys-commons-ui</module>
         <module>danusys-commons-socket</module>
         <module>danusys-commons-crypto</module>
+        <module>danusys-commons-mqtt</module>
         <module>danusys-platform</module>
         <module>danusys-drone</module>
         <module>danusys-smartMetering</module>
+        <module>danusys-server-netty</module>
+        <module>danusys-server-socket</module>
         <module>demo</module>
-        <module>danusys-commons-mqtt</module>
 
     </modules>
 

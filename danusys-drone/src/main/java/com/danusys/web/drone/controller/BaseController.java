@@ -1,6 +1,6 @@
 package com.danusys.web.drone.controller;
 
-import com.danusys.web.commons.tcp.socket.CustomServerSocket;
+import com.danusys.web.commons.socket.config.CustomServerSocket;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

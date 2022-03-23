@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>com.danusys.web</groupId>
-            <artifactId>danusys-commons-tcp</artifactId>
+            <artifactId>danusys-commons-socket</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>

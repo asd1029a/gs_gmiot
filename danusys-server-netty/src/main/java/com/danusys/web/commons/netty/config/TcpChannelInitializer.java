@@ -1,7 +1,6 @@
-/*
 package com.danusys.web.commons.netty.config;
 
-import com.danusys.web.tcp.server.handler.ServerHandler;
+import com.danusys.web.commons.netty.handler.ServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
@@ -24,4 +23,3 @@ public class TcpChannelInitializer extends ChannelInitializer<SocketChannel> {
         socketChannel.pipeline().addLast(serverHandler);
     }
 }
-*/
