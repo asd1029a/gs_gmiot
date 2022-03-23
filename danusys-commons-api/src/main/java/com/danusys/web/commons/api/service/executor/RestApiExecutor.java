@@ -177,7 +177,8 @@ public class RestApiExecutor implements ApiExecutor {
                         .headers(headersConsumer)
                         .exchange()
                         .flatMap(response -> {
-                            log.trace("aaa >>>> {}", response.toEntity(String.class));
+                            log.trace("response status code : {}", response.statusCode());
+
                             return response.toEntity(String.class);
                         });
 
@@ -217,15 +218,51 @@ public class RestApiExecutor implements ApiExecutor {
                             return response.toEntity(String.class);
                         });
             }
-            responseEntity = mono.block();
 
-            //log.trace("restUrl:{}, method:{}, request:{}", targetUrl, method, requestEntity);
+            responseEntity = mono.block();
 
         } catch (RestClientResponseException rcrex) {
             return ResponseEntity.status(rcrex.getRawStatusCode()).body("");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
         }
+        return responseEntity;
+    }
+
+    private ResponseEntity getResponseEntity(String targetUrl, HttpMethod method, MediaType mediaType, Map<String, Object> reqMap) {
+        URI uri = null;
+
+        HttpEntity requestEntity = null;
+        ResponseEntity<String> responseEntity = null;
+
+        try {
+            final HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(mediaType);
+            headers.setAccept(Collections.singletonList(mediaType));
+
+            if (method == HttpMethod.GET || method == HttpMethod.DELETE) {
+                String queryString = reqMap.entrySet()
+                        .stream().map(f -> {
+                            return f.getKey() + "=" + f.getValue() + "";
+                        })
+                        .collect(Collectors.joining("&"));
+
+                uri = new URI(targetUrl + "?" + queryString);
+            } else if (method == HttpMethod.POST || method == HttpMethod.PUT) {
+                final String json = new ObjectMapper().writeValueAsString(reqMap);
+                uri = new URI(targetUrl);
+                requestEntity = new HttpEntity(json, headers);
+            }
+
+            log.trace("restUrl:{}, method:{}, request:{}", targetUrl, method, requestEntity);
+
+            responseEntity = restTemplate.exchange(uri, method, requestEntity, String.class);
+        } catch (RestClientResponseException rcrex) {
+            return ResponseEntity.status(rcrex.getRawStatusCode()).body("");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
+        }
+
         return responseEntity;
     }
 }
