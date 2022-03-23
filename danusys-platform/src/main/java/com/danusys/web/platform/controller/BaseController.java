@@ -26,17 +26,20 @@ import java.util.Map;
 @Controller
 public class BaseController {
 
-    @Value("${homepage.url}")
-    private String HomePageUrl;
+    @Value("${homePage.url}")
+    private String homePageUrl;
+
+    @Value("${loginPage.path}")
+    private String loginPagePath;
 
     @RequestMapping(value = "/")
     public String index() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (!principal.toString().equals("anonymousUser"))
-            return "redirect:"+HomePageUrl;
+            return "redirect:"+homePageUrl;
 
-        return "layout/layout_login";
+        return loginPagePath;
     }
 
 //	/**
