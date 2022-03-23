@@ -88,7 +88,7 @@
 
 /* button */
 .search_form form div dl.search_text_set{grid-gap: 10px;}
-.search_form form div dl.search_text_set dd input{background: url(../images/default/search.svg) 94% center no-repeat; background-size:20px 20px;}
+.search_form form div dl.search_text_set dd input{background: url(../images/default/search.svg) 94% center no-repeat; background-size:20px 20px; padding: 0 36px 0 14px;}
 .search_form form div dl.search_text_set dd.button{display: flex; align-items: center; grid-gap: 6px; height: 34px; padding: 0px 14px; color: #7f8491;}
 .search_form form div dl.search_text_set dd.button:hover,
 .search_form form div dl.search_text_set dd.button:active{color: #dee0e4;}
