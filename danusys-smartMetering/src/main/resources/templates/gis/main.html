@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/gisLayout">
+
+<th:block th:fragment="gisMain">
+
+    <div id="map" style="height:100%;">
+        <div class="scaleBar">
+            <p></p>
+            <div class="bar"></div>
+            <p class="meter">1 km</p>
+        </div>
+        <div id="mousePosition"></div>
+    </div>
+    <div class="wrap control">
+        <div class="controlMapArea">
+            <div class="controlsButton">
+                <div class="mapButton">
+                    <ul class="mapLayerButton">
+                        <li class="active" data-type="eventLayer">이벤트</li>
+                        <li class="active" data-type="accountLayer">수용가</li>
+                    </ul>
+                    <ul class="mapTypeButton">
+                        <li data-type="imageTile" class="active">일반 지도</li>
+                        <li data-type="satelliteTile" class="">위성 지도</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="controlsButton" style="top: 62px;">
+                <ul class="mapIconButton">
+                    <li title="확대"><span class="mapIconPlus"></span></li>
+                    <li title="축소"><span class="mapIconMinus"></span></li>
+                    <li id="measureLength" title="거리재기" class="btnMeasure"><span class="mapIconMeasureDistance"></span></li>
+                    <li id="measureArea"  title="면적재기" class="btnMeasure"><span class="mapIconMeasureArea"></span></li>
+                    <li id="measureRadius"  title="반경재기" class="btnMeasure"><span class="mapIconMeasureRadius"></span></li>
+                    <li id="measureErase"  title="지우기" class="btnMeasure"><span class="mapIconEraser"></span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/js/gis/gisMenu.js"></script>
+    <script type="text/javascript" src="/js/gis/addressPlace.js"></script>
+
+
+</th:block>
+</html>

@@ -1,0 +1,252 @@
+@charset "EUC-KR";
+
+
+.tooltip {
+  position: relative;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  color: white;
+  padding: 4px 8px;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+.tooltip-measure {
+  opacity: 1;
+  font-weight: bold;
+}
+.tooltip-static {
+  background-color: #ffcc33;
+  color: black;
+  border: 1px solid white;
+}
+.tooltip-measure:before,
+.tooltip-static:before {
+  border-top: 6px solid rgba(0, 0, 0, 0.5);
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  margin-left: -7px;
+  left: 50%;
+}
+.tooltip-static:before {
+  border-top-color: #ffcc33;
+}
+
+
+.address-tooltip {
+	background: #383e48;
+	font-size: 14px;
+    padding: 15px;
+    border-radius: 5px;
+    bottom: 12px;
+    left: -50px;
+    width: 300px;
+    line-height: 20px;
+    color: #FFF;
+}
+
+.address-tooltip-header {
+	font-weight: bold;
+	margin-top:  5px;
+	margin-bottom:  5px;
+	color: #999ca2;
+}
+
+.address-tooltip-closer {
+	cursor: pointer;
+	float: right;
+	vertical-align: top;
+	width: 15px;
+	height: 15px;
+}
+
+.address-tooltip:after, .address-tooltip:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.address-tooltip:after {
+    border-top-color: #383e48;
+    border-width: 10px;
+    left: 157px;
+    
+}
+
+.address-tooltip:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 156px;
+}
+
+.my-ol-popup {
+    position: absolute;            
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;
+    width: 300px;
+}
+
+.my-ol-popup:after, .my-ol-popup:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.my-ol-popup:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+}
+
+.my-ol-popup:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 48px;
+    margin-left: -11px;
+}
+
+.my-ol-popup-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    right: 8px;
+}
+
+.my-ol-popup-closer:after {
+    content: "X";
+}
+
+#layersContext {
+	background-color: rgba(255, 255, 255, 1);
+    border: px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 1px 1px 5px #4c4c4c;
+}
+
+#layersContext ul li {
+	cursor:pointer;
+	padding:5px;
+	border-radius: 2px;
+}
+
+#layersContext ul li:hover {
+	background-color: rgba(51, 51, 51, 1);
+	color: white;	
+}
+
+#layersContext ul li:not(:last-child) {
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.map_button_sub #allOff{
+	cursor: pointer;
+	padding: 5px;
+	width: 90%;
+	background: #fff;
+	margin: 5px auto;
+	text-align: center;
+	border-radius: 5px;
+    border: 1px solid #e0e0e0;
+    height: 20px;
+    line-height: 20px;
+}
+
+.map_button_sub #allOff:hover {
+	background: aliceblue;
+	color:#3795ff;
+}
+
+#presetSavePopup {
+	left: -20px;
+	padding : 5px 5px;
+	bottom: -27px;
+	width: 29px;
+}
+
+#presetSavePopup:before,
+#presetSavePopup:after {
+	/* left : 29px; */
+	display:none;
+}
+
+#presetSavePopup a{
+	cursor: pointer;
+}
+
+#headerSetPopup{
+	left: -95px;
+	bottom: 5px;
+	width: 168px;
+}
+
+#headerSetPopup:before,
+#headerSetPopup:after {
+	left : 95px; 
+
+}
+#headerSetPopup a.btnSave{
+	cursor: pointer;
+	display: inline-block;
+	text-align: center;
+	width: 100%;
+	margin-top: 2px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    background: #d4dce2;
+}
+
+#headerSetPopupCloser{
+	margin-top: 5px;
+	cursor: pointer;
+}
+
+/* 축척과 위경도 */
+#map .scaleBar{
+	width: fit-content;
+	height: 18px; 
+	position: absolute; 
+	right: 18px; 
+	bottom: 45px; 
+	z-index: 2;
+}
+#map .scaleBar div, .scaleBar p{
+	display:inline-block; 
+	font-weight: bolder;
+}
+#map .scaleBar div{
+	border: 2px solid #333; 
+	border-top: none; 
+	width: 58px; 
+	height:10px;
+}
+
+#mousePosition {
+    display: inline-block;
+    position: absolute;
+    float: right;
+    top: 96%;
+    right: 1%;
+    color: white;
+    font-size: 17px;
+    z-index: 1;
+    background: #00000052;
+    border-radius: 5px;
+    padding: 5px;
+}
+

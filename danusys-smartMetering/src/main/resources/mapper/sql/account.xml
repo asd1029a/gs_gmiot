@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="account">
+	
+	<!-- 
+		##################
+		수용가
+		##################
+	-->
+	
+	<!-- 수용가 : 조건절 -->
+	<sql id="WHERE_ACCOUNT_LIST">
+		<if test='keyword != null and keyword != ""'>
+			AND ACCOUNT_NO LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		AND CONNECT_DTM > DATE_FORMAT(#{startDt}, '%Y-%m-%d %H:%i:%S')
+		AND CONNECT_DTM <![CDATA[<]]> DATE_FORMAT(#{endDt}, '%Y-%m-%d %H:%i:%S')
+	</sql>
+	
+	<!-- 수용가 : 목록 조회 카운트-->
+	<select id="SELECT_LIST_ACCOUNT_CNT" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM T_ACCOUNT
+		WHERE 1=1
+		<include refid="WHERE_ACCOUNT_LIST"/>
+	</select>
+	
+	<!-- 수용가 : 목록 조회 -->
+	<select id="SELECT_LIST_ACCOUNT" parameterType="hashMap" resultType="uisRsMap">
+		-- 수용가 목록 조회 : SELECT_LIST_ACCOUNT
+		
+		SELECT ACCOUNT_NO
+			, ACCOUNT_NM
+			, COMPANY_CD
+			, COMPANY_NM
+			, DATE_FORMAT(CONNECT_DTM, '%Y-%m-%d %H:%i:%S') AS CONNECT_DTM
+			, FN_STATE_CODE_TO_STR('STATUS_DEVICE',STATUS_DEVICE) AS STATUS_DEVICE
+			, FN_STATE_CODE_TO_STR('STATE_DISPLAY',STATE_DISPLAY) AS STATE_DISPLAY
+			, DEVICE_SN
+			, METER_SN
+			, CALIBER_CD
+			, FN_STATE_CODE_TO_STR( 'MT_DOWN', MT_DOWN ) AS MT_DOWN
+			, DATE_FORMAT(MT_DOWN_DTM, '%Y-%m-%d %H:%i:%S') AS MT_DOWN_DTM
+			, DATE_FORMAT(MT_LAST_DTM, '%Y-%m-%d %H:%i:%S') AS MT_LAST_DTM
+			, FULL_ADDR
+		FROM T_ACCOUNT
+		WHERE 1=1
+		<include refid="WHERE_ACCOUNT_LIST"/>
+		ORDER BY INSERT_DT
+		<if test="start != null and length != null">
+ 			LIMIT ${start} , ${length}
+ 		</if>
+	</select>
+	
+	<!-- 수용가 : 엑셀다운로드 -->
+	<select id="SELECT_LIST_ACCOUNT_EXCEL" parameterType="hashMap" resultType="uisRsMap">
+		-- 수용가 엑셀 다운로드 : SELECT_LIST_ACCOUNT_EXCEL
+		
+		SELECT ACCOUNT_NO
+			, ACCOUNT_NM
+			, COMPANY_CD
+			, COMPANY_NM
+			, DATE_FORMAT(CONNECT_DTM, '%Y-%m-%d %H:%i:%S') AS CONNECT_DTM
+			, FN_STATE_CODE_TO_STR('STATUS_DEVICE',STATUS_DEVICE) AS STATUS_DEVICE
+			, FN_STATE_CODE_TO_STR('STATE_DISPLAY',STATE_DISPLAY) AS STATE_DISPLAY
+			, DEVICE_SN
+			, METER_SN
+			, CALIBER_CD
+			, FN_STATE_CODE_TO_STR( 'MT_DOWN', MT_DOWN ) AS MT_DOWN
+			, DATE_FORMAT(MT_DOWN_DTM, '%Y-%m-%d %H:%i:%S') AS MT_DOWN_DTM
+			, DATE_FORMAT(MT_LAST_DTM, '%Y-%m-%d %H:%i:%S') AS MT_LAST_DTM
+			, FULL_ADDR
+		FROM T_ACCOUNT
+	</select>
+	
+	<!-- 수용가 : 기초구역별 수용가 cnt 조회 -->
+	<select id="SELECT_LIST_ACCOUNT_CNT_IN_BASE_AREA" parameterType="hashMap" resultType="uisRsMap">
+		WITH MAIN AS(
+			-- 기초구역볋 수용가 CNT
+			SELECT 
+				O.BAS_MGT_SN,
+				O.SIG_KOR_NM,
+			-- 	O.DEVICE_SN,
+				COUNT(O.ACCOUNT_NO) AS ACCOUNT_CNT,
+				GROUP_CONCAT(O.ACCOUNT_NO ORDER BY O.ACCOUNT_NO SEPARATOR ',') AS NODE_GROUP,
+				GROUP_CONCAT(O.ACCOUNT_NM ORDER BY O.ACCOUNT_NO SEPARATOR ',') AS NAME_GROUP
+			FROM (
+				SELECT
+					BAS_MGT_SN
+					,DEVICE_SN
+					,ACCOUNT_NO
+					,ACCOUNT_NM
+					,SIG_KOR_NM 
+					,ST_CONTAINS(GEOM,POINTFROMTEXT(CONCAT('POINT(', GPS_LONGITUDE ,' ', GPS_LATITUDE ,')'))) AS FLAG
+				FROM T_BASE_AREA , T_ACCOUNT 
+			) O
+			WHERE FLAG = 1
+			GROUP BY BAS_MGT_SN 
+		)
+		
+		SELECT 
+			A.BAS_MGT_SN,
+			A.SIG_KOR_NM,
+			ST_ASTEXT(A.CENTROID) AS CENTROID,
+			ST_X(A.CENTROID) AS LONGITUDE,
+			ST_Y(A.CENTROID) AS LATITUDE,
+			CASE WHEN M.ACCOUNT_CNT IS NULL 
+				THEN 0
+				ELSE M.ACCOUNT_CNT
+			END AS ACCOUNT_CNT,
+			M.NODE_GROUP,
+			M.NAME_GROUP
+		-- 	IFNULL(M.ACCOUNT_CNT,0) IF M.ACCOUNT_CNT
+		FROM T_BASE_AREA A
+		-- LEFT OUTER JOIN MAIN M
+		INNER JOIN MAIN M
+		ON A.BAS_MGT_SN = M.BAS_MGT_SN
+	</select>
+	
+	<!-- 수용가 및 단말기 정보 등록 (API) -->
+	<insert id="INSERT_ACCOUNT" parameterType="hashMap"> 
+		-- 수용가 및 단말기 정보 등록 (API) : INSERT_ACCOUNT 
+		
+		INSERT INTO T_ACCOUNT (
+			ACCOUNT_NO
+			, ACCOUNT_NM
+			, COMPANY_CD
+			, COMPANY_NM
+			, CONNECT_DTM
+			, STATUS_DEVICE
+			, STATE_DISPLAY
+			, DEVICE_SN
+			, GPS_LATITUDE
+			, GPS_LONGITUDE
+			, METER_SN
+			, CALIBER_CD
+			, MT_DOWN
+			, MT_DOWN_DTM
+			, MT_LAST_DTM
+			, FULL_ADDR
+			, INSERT_DT
+		) VALUES (
+			#{accountNo}
+			, #{accountNm}
+			, #{companyCd}
+			, #{companyNm}
+			, STR_TO_DATE(DATE_FORMAT(#{connectDtm}, '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s')
+			, #{statusDevice}
+			, #{stateDisplay}
+			, #{deviceSn}
+			, #{gpsLatitude}
+			, #{gpsLongitude}
+			, #{meterSn}
+			, #{caliberCd}
+			, #{mtDown}
+			, STR_TO_DATE(DATE_FORMAT(IF(#{mtDownDtm}='', NULL, #{mtDownDtm}), '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s')
+			, STR_TO_DATE(DATE_FORMAT(#{mtLastDtm}, '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s')
+			, #{fullAddr}
+			, NOW()
+		) ON DUPLICATE KEY
+		UPDATE 
+			ACCOUNT_NM = #{accountNm}
+			, COMPANY_CD = #{companyCd}
+			, COMPANY_NM = #{companyNm}
+			, CONNECT_DTM = STR_TO_DATE(DATE_FORMAT(#{connectDtm}, '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s')
+			, STATUS_DEVICE = #{statusDevice}
+			, STATE_DISPLAY = #{stateDisplay}
+			, DEVICE_SN = #{deviceSn}
+			, GPS_LATITUDE = #{gpsLatitude}
+			, GPS_LONGITUDE = #{gpsLongitude}
+			, METER_SN = #{meterSn}
+			, CALIBER_CD = #{caliberCd}
+			, MT_DOWN = #{mtDown}
+			, MT_DOWN_DTM = STR_TO_DATE(DATE_FORMAT(IF(#{mtDownDtm}='', NULL, #{mtDownDtm}), '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s')
+			, MT_LAST_DTM = STR_TO_DATE(DATE_FORMAT(#{mtLastDtm}, '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s')
+			, FULL_ADDR = #{fullAddr}
+			, UPDATE_DT = NOW()
+	</insert>
+	
+	<!-- 
+		##################
+		수용가 그룹
+		##################
+	-->
+	<!-- 수용가 그룹 : 조건절 -->
+	<sql id="WHERE_ACCOUNT_GROUP_LIST">
+		<if test='keyword != null and keyword != ""'>
+			AND ACCOUNT_GROUP_NAME LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+	</sql>
+	
+	<!-- 수용가 그룹 : 목록 조회 카운트-->
+	<select id="SELECT_LIST_ACCOUNT_GROUP_CNT" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM T_ACCOUNT_GROUP
+		WHERE 1=1
+		<include refid="WHERE_ACCOUNT_GROUP_LIST"/>
+	</select>
+	
+	<!-- 수용가 그룹 : 목록 조회 -->
+	<select id="SELECT_LIST_ACCOUNT_GROUP" parameterType="hashMap" resultType="uisRsMap">
+		-- 수용가 그룹 목록 조회 : SELECT_LIST_ACCOUNT_GROUP
+		
+		SELECT ACCOUNT_GROUP_SEQ
+			, ACCOUNT_GROUP_NAME
+			, ACCOUNT_GROUP_CONTENT
+			, DATE_FORMAT(INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
+			, DATE_FORMAT(UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
+		FROM T_ACCOUNT_GROUP
+		WHERE 1=1
+		<include refid="WHERE_ACCOUNT_GROUP_LIST"/>
+		ORDER BY INSERT_DT
+		<if test="start != null and length != null">
+ 			LIMIT ${start} , ${length}
+ 		</if>
+	</select>
+	
+	<!-- 수용가 그룹 : 등록 -->
+	<insert id="INSERT_ACCOUNT_GROUP" parameterType="hashMap">
+		-- 수용가 그룹 등록 : INSERT_ACCOUNT_GROUP
+		
+		INSERT INTO T_ACCOUNT_GROUP (
+			ACCOUNT_GROUP_NAME, ACCOUNT_GROUP_CONTENT, INSERT_DT, INSERT_ADMIN_SEQ
+		) VALUES (
+			#{accountGroupName}, #{accountGroupContent}, NOW(), #{sessionAdminSeq}
+		)
+	</insert>
+	
+	<!-- 수용가 그룹 : 수정 -->
+	<update id="UPDATE_ACCOUNT_GROUP" parameterType="hashMap">
+		-- 수용가 그룹 수정 : UPDATE_ACCOUNT_GROUP
+		
+		UPDATE T_ACCOUNT_GROUP
+		SET ACCOUNT_GROUP_NAME=#{accountGroupName}
+			, ACCOUNT_GROUP_CONTENT=#{accountGroupContent}
+			, UPDATE_DT=NOW()
+			, UPDATE_ADMIN_SEQ= #{sessionAdminSeq}
+		WHERE ACCOUNT_GROUP_SEQ = #{accountGroupSeq}
+	</update>
+	
+	<!-- 수용가 그룹 : 삭제 -->
+	<delete id="DELETE_ACCOUNT_GROUP" parameterType="hashMap">
+		-- 수용가 그룹 삭제 : DELETE_ACCOUNT_GROUP
+		
+		DELETE FROM T_ACCOUNT_GROUP	
+		WHERE ACCOUNT_GROUP_SEQ=#{accountGroupSeq}
+	</delete>
+	
+	<!-- 수용가 그룹 : 소속 수용가 목록 조회 카운트-->
+	<select id="SELECT_LIST_ACCOUNT_IN_GROUP_CNT" parameterType="hashMap" resultType="int">
+	-- 소속 수용가 목록 조회 카운트 : SELECT_LIST_ACCOUNT_IN_GROUP_CNT
+	
+		SELECT COUNT(*)
+		FROM T_ACCOUNT_IN_ACCOUNT_GROUP T1
+		INNER JOIN T_ACCOUNT T2 ON T1.ACCOUNT_NO = T2.ACCOUNT_NO
+		INNER JOIN T_ACCOUNT_GROUP T3 ON T1.ACCOUNT_GROUP_SEQ = T3.ACCOUNT_GROUP_SEQ 
+		WHERE T1.ACCOUNT_GROUP_SEQ = #{accountGroupSeq}
+	</select>
+	
+	<!-- 수용가 그룹: 소속 수용가 목록 조회 -->
+	<select id="SELECT_LIST_ACCOUNT_IN_GROUP" parameterType="hashMap" resultType="uisRsMap">
+		-- 소속 수용가 목록 조회 : SELECT_LIST_ACCOUNT_IN_GROUP
+		
+		SELECT T1.ACCOUNT_GROUP_SEQ, T2.ACCOUNT_NO, T2.ACCOUNT_NM
+			, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
+		FROM T_ACCOUNT_IN_ACCOUNT_GROUP T1
+		INNER JOIN T_ACCOUNT T2 ON T1.ACCOUNT_NO = T2.ACCOUNT_NO
+		INNER JOIN T_ACCOUNT_GROUP T3 ON T1.ACCOUNT_GROUP_SEQ = T3.ACCOUNT_GROUP_SEQ 
+		WHERE T1.ACCOUNT_GROUP_SEQ = #{accountGroupSeq}
+		<if test="start != null and length != null">
+ 			LIMIT ${start} , ${length}
+ 		</if>
+	</select>
+	
+	<!-- 수용가 그룹: 소속 수용가 체크 목록 조회 -->
+	<select id="SELECT_LIST_ACCOUNT_IN_GROUP_CHECK" parameterType="hashMap" resultType="uisRsMap">
+		-- 소속 수용가 체크 목록 조회 : SELECT_LIST_ACCOUNT_IN_GROUP_CHECK
+		
+		SELECT T1.ACCOUNT_NO, T1.ACCOUNT_NM,
+			IF(T2.ACCOUNT_NO IS NULL, NULL, 'checked') AS CHECKED 
+		FROM T_ACCOUNT T1
+		LEFT JOIN T_ACCOUNT_IN_ACCOUNT_GROUP T2
+		ON T1.ACCOUNT_NO = T2.ACCOUNT_NO
+		AND T2.ACCOUNT_GROUP_SEQ = #{accountGroupSeq}
+		WHERE T1.ACCOUNT_NM LIKE CONCAT('%', #{keyword}, '%')
+	</select>
+	
+	<!-- 수용가 그룹 : 소속 수용가 등록 -->
+	<insert id="INSERT_ACCOUNT_IN_ACCOUNT_GROUP" parameterType="hashMap">
+		-- 수용가 그룹 소속 수용가 등록 : INSERT_ACCOUNT_IN_ACCOUNT_GROUP
+		
+		INSERT INTO T_ACCOUNT_IN_ACCOUNT_GROUP (
+			ACCOUNT_GROUP_SEQ, ACCOUNT_NO, INSERT_DT, INSERT_ADMIN_SEQ
+		) VALUES
+			<foreach collection="accountNoList" item="item" index="index" separator=",">
+				(#{accountGroupSeq}, #{item}, NOW(), #{sessionAdminSeq})
+			</foreach>
+	</insert>
+	
+	<!-- 수용가 그룹 : 소속 수용가 목록 삭제 (ACCOUNT_NO)-->
+	<insert id="DELETE_ACCOUNT_IN_ACCOUNT_GROUP_ACCOUNT_NO" parameterType="hashMap">
+		-- 수용가 그룹 소속 수용가 삭제 (ACCOUNT_NO) : DELETE_ACCOUNT_IN_ACCOUNT_GROUP_ACCOUNT_NO
+		
+		DELETE
+		FROM T_ACCOUNT_IN_ACCOUNT_GROUP
+		WHERE ACCOUNT_NO=#{accountNo}
+		<if test="accountGroupSeq != null and accountGroupSeq != ''">
+			AND ACCOUNT_GROUP_SEQ=#{accountGroupSeq}
+		</if>
+	</insert>
+	
+	<!-- 수용가 그룹 : 소속 수용가 목록 삭제 (ACCOUNT_GROUP_SEQ)-->
+	<insert id="DELETE_ACCOUNT_IN_ACCOUNT_GROUP_GROUP_SEQ" parameterType="hashMap">
+		-- 수용가 그룹 소속 수용가 삭제 (ACCOUNT_GROUP_SEQ) : DELETE_ACCOUNT_IN_ACCOUNT_GROUP_GROUP_SEQ
+		
+		DELETE
+		FROM T_ACCOUNT_IN_ACCOUNT_GROUP
+		WHERE ACCOUNT_GROUP_SEQ=#{accountGroupSeq}
+	</insert>
+	
+	<!-- 
+		##################
+		검침 데이터
+		##################
+	-->
+	
+	<!-- 검침 : 조건절 -->
+	<sql id="WHERE_ACCOUNT_DATA_LIST">
+		<if test='keyword != null and keyword != ""'>
+			AND ACCOUNT_NO LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		AND METER_DTM > DATE_FORMAT(#{startDt}, '%Y-%m-%d %H:%i:%S')
+		AND METER_DTM <![CDATA[<]]> DATE_FORMAT(#{endDt}, '%Y-%m-%d %H:%i:%S')
+	</sql>
+	
+	<!-- 검침 : 목록 조회 카운트-->
+	<select id="SELECT_LIST_ACCOUNT_DATA_CNT" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM T_ACCOUNT_DATA
+		WHERE 1=1
+		<include refid="WHERE_ACCOUNT_DATA_LIST"/>
+	</select>
+	
+	<!-- 검침 : 목록 조회 -->
+	<select id="SELECT_LIST_ACCOUNT_DATA" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침 목록 조회 : SELECT_LIST_ACCOUNT_DATA
+		
+		SELECT ACCOUNT_NO
+			, DATE_FORMAT(METER_DTM, '%Y-%m-%d %H:%i:%S') AS METER_DTM
+			, VALUE
+			, DIGITS
+			, CASE WHEN LEAK_STATE = 0 THEN '-' ELSE 'O' END LEAK_STATE
+			, TERM_BATT
+			, CASE WHEN M_LOW_BATT = 0 THEN '-' ELSE 'O' END M_LOW_BATT
+			, CASE WHEN M_LEAK = 0 THEN '-' ELSE 'O' END M_LEAK
+			, CASE WHEN M_OVERLOAD = 0 THEN '-' ELSE 'O' END M_OVERLOAD
+			, CASE WHEN M_REVERSE = 0 THEN '-' ELSE 'O' END M_REVERSE
+			, CASE WHEN M_NOT_USE = 0 THEN '-' ELSE 'O' END M_NOT_USE
+		FROM T_ACCOUNT_DATA
+		WHERE 1=1
+		<include refid="WHERE_ACCOUNT_DATA_LIST"/>
+		ORDER BY METER_DTM DESC
+		<if test="start != null and length != null">
+ 			LIMIT ${start} , ${length}
+ 		</if>
+	</select>
+	
+	<!-- 검침 : 엑셀다운로드 -->
+	<select id="SELECT_LIST_ACCOUNT_DATA_EXCEL" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침 엑셀다운로드 : SELECT_LIST_ACCOUNT_DATA_EXCEL
+		SELECT ACCOUNT_NO
+			, DATE_FORMAT(METER_DTM, '%Y-%m-%d %H:%i:%S') AS METER_DTM
+			, VALUE
+			, DIGITS
+			, CASE WHEN LEAK_STATE = 0 THEN '-' ELSE 'O' END LEAK_STATE
+			, TERM_BATT
+			, CASE WHEN M_LOW_BATT = 0 THEN '-' ELSE 'O' END M_LOW_BATT
+			, CASE WHEN M_LEAK = 0 THEN '-' ELSE 'O' END M_LEAK
+			, CASE WHEN M_OVERLOAD = 0 THEN '-' ELSE 'O' END M_OVERLOAD
+			, CASE WHEN M_REVERSE = 0 THEN '-' ELSE 'O' END M_REVERSE
+			, CASE WHEN M_NOT_USE = 0 THEN '-' ELSE 'O' END M_NOT_USE
+		FROM T_ACCOUNT_DATA
+	</select>
+	
+	<!-- 검침 데이터 조회 (API) -->
+	<insert id="INSERT_ACCOUNT_DATA" parameterType="hashMap"> 
+		-- 검침 데이터 조회 (API) : INSERT_ACCOUNT_DATA
+		
+		INSERT INTO T_ACCOUNT_DATA (
+			ACCOUNT_NO
+			, METER_DTM
+			, VALUE
+			, DIGITS
+			, LEAK_STATE
+			, TERM_BATT
+			, M_LOW_BATT
+			, M_LEAK
+			, M_OVERLOAD
+			, M_REVERSE
+			, M_NOT_USE
+			, DBIN_DTM
+			, INSERT_DT
+		) VALUES (
+			#{accountNo}
+			, STR_TO_DATE(DATE_FORMAT(#{meterDtm}, '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s')
+			, (SELECT CASE WHEN COUNT(*)=0 THEN #{value} ELSE VALUE END FROM (SELECT VALUE+FLOOR((RAND() * 7)) AS VALUE FROM T_ACCOUNT_DATA WHERE ACCOUNT_NO=#{accountNo} AND METER_DTM=DATE_SUB(STR_TO_DATE(DATE_FORMAT(#{meterDtm}, '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s'), INTERVAL 1 HOUR)) R)
+			, #{digits}
+			, (SELECT CAST(RAND() * 1 AS SIGNED))
+			, #{termBatt}
+			, (SELECT CAST(RAND() * 1 AS SIGNED))
+			, (SELECT CAST(RAND() * 1 AS SIGNED))
+			, (SELECT CAST(RAND() * 1 AS SIGNED))
+			, (SELECT CAST(RAND() * 1 AS SIGNED))
+			, (SELECT CAST(RAND() * 1 AS SIGNED))
+			, #{dbinDtm}
+			, NOW()
+		) ON DUPLICATE KEY
+		UPDATE
+			 VALUE = (SELECT CASE WHEN COUNT(*)=0 THEN #{value} ELSE VALUE END FROM (SELECT VALUE+FLOOR((RAND() * 7)) AS VALUE FROM T_ACCOUNT_DATA WHERE ACCOUNT_NO=#{accountNo} AND METER_DTM=DATE_SUB(STR_TO_DATE(DATE_FORMAT(#{meterDtm}, '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s'), INTERVAL 1 HOUR)) R)
+			, DIGITS = #{digits}
+			, LEAK_STATE = (SELECT CAST(RAND() * 1 AS SIGNED))
+			, TERM_BATT = #{termBatt}
+			, M_LOW_BATT = (SELECT CAST(RAND() * 1 AS SIGNED))
+			, M_LEAK = (SELECT CAST(RAND() * 1 AS SIGNED))
+			, M_OVERLOAD = (SELECT CAST(RAND() * 1 AS SIGNED))
+			, M_REVERSE = (SELECT CAST(RAND() * 1 AS SIGNED))
+			, M_NOT_USE = (SELECT CAST(RAND() * 1 AS SIGNED))
+			, DBIN_DTM = STR_TO_DATE(DATE_FORMAT(#{dbinDtm}, '%Y-%m-%d %H:%i:%s'), '%Y-%m-%d %H:%i:%s')
+			, UPDATE_DT = NOW()
+	</insert>
+
+	<!-- 수용가통계 수용가 사용량조회 -->
+	<select id="SELECT_LIST_ACCOUNT_DATA_STATS" parameterType="hashMap" resultType="uisRsMap">
+		-- 수용가통계 수용가 사용량조회
+		WITH MAIN AS(
+			SELECT 
+				DATE_FORMAT(AD.METER_DTM,'%Y-%m-%d') AS METER_DTM,
+				MAX(AD.VALUE)-MIN(AD.VALUE) AS DAILY_VALUE,
+				MIN(AD.TERM_BATT) AS TERM_BATT 
+			FROM 
+			T_ACCOUNT_DATA AD
+			WHERE AD.ACCOUNT_NO = #{accountNo}
+			GROUP BY DATE_FORMAT(AD.METER_DTM,'%Y-%m-%d')
+			ORDER BY METER_DTM DESC
+		)
+		SELECT * FROM MAIN
+		UNION
+		SELECT  
+			MAX(DAILY_VALUE) AS MAX_VALUE, 
+			MIN(DAILY_VALUE) AS MIN_VALUE,	
+			AVG(DAILY_VALUE) AS AVG_VALUE
+		FROM MAIN
+	</select>
+
+	<!-- 검침 데이터 장비 이벤트 (차트) -->
+	<select id="SELECT_LIST_ACCOUNT_DATA_FOR_DEVICE_EVENT_CHART" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침 데이터 장비 이벤트 (차트) : SELECT_SELECT_LIST_ACCOUNT_DATA_FOR_DIVICE_EVENT_CHART
+		
+		SELECT TIME
+			, MAX(LEAK_STATE) AS LEAK_STATE
+			, MAX(M_LOW_BATT) AS M_LOW_BATT
+			, MAX(M_LEAK) AS M_LEAK
+			, MAX(M_OVERLOAD) AS M_OVERLOAD
+			, MAX(M_REVERSE) AS M_REVERSE
+			, MAX(M_NOT_USE) AS M_NOT_USE
+		FROM (
+			SELECT METER_DTM, DATE_FORMAT(METER_DTM, '%H:%i') AS TIME
+				, LEAK_STATE
+				, M_LOW_BATT
+				, M_LEAK
+				, M_OVERLOAD
+				, M_REVERSE
+				, M_NOT_USE
+			FROM T_ACCOUNT_DATA
+			-- WHERE METER_DTM > DATE_SUB(NOW(), INTERVAL 210 HOUR)
+			ORDER BY METER_DTM DESC
+			LIMIT 12
+		) R
+		GROUP BY TIME
+		ORDER BY TIME
+	</select>
+	
+	<!-- 검침 데이터 시간별 증분 (차트) -->
+	<select id="SELECT_LIST_ACCOUNT_DATA_FOR_TIMEDIFF_CHART" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침 데이터 시간별 증분 (차트) : SELECT_LIST_ACCOUNT_DATA_FOR_TIMEDIFF_CHART	
+			
+		SELECT TIME, ROUND(AVG(DIFF_VALUE)) AS AVG_DIFF_VALUE
+		FROM (
+			SELECT DATE_FORMAT(METER_DTM, '%H') AS TIME, VALUE, VALUE-PREV_VALUE AS DIFF_VALUE
+			FROM (
+				SELECT METER_DTM, ACCOUNT_NO, DATE_FORMAT(METER_DTM, '%H%i'), VALUE
+					, LAG(VALUE) OVER(ORDER BY ACCOUNT_NO, METER_DTM) AS PREV_VALUE
+				FROM T_ACCOUNT_DATA
+				WHERE METER_DTM > DATE_SUB(NOW(), INTERVAL 1 MONTH)
+				ORDER BY ACCOUNT_NO, METER_DTM
+			) T1
+			WHERE METER_DTM > DATE_SUB(NOW(), INTERVAL 200 HOUR)
+				AND PREV_VALUE IS NOT NULL
+			ORDER BY ACCOUNT_NO, METER_DTM
+		) T2
+		WHERE DIFF_VALUE >= 0
+		GROUP BY TIME
+	</select>
+	
+	<!-- 검침 데이터 월별 증가량 (차트) -->
+	<select id="SELECT_LIST_ACCOUNT_DATA_FOR_MONTHDIFF_CHART" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침 데이터 월별 증가량 (차트) : SELECT_LIST_ACCOUNT_DATA_FOR_MONTHDIFF_CHART	
+		
+		WITH RECURSIVE T_LVL AS (
+			SELECT 1 AS LEVEL 
+			UNION ALL 
+			SELECT 1+T_LVL.LEVEL 
+			FROM T_LVL 
+			WHERE T_LVL.LEVEL <![CDATA[<]]> 12
+		)
+		, T_DATA AS (
+			SELECT DATE_FORMAT(METER_DTM, '%Y-%m-%d') AS METER_DT, ROUND(AVG(VALUE)) AS VALUE
+			FROM T_ACCOUNT_DATA
+			GROUP BY DATE_FORMAT(METER_DTM, '%Y-%m-%d')
+		)
+		SELECT P1.FIRST_DT, IFNULL(P3.VALUE-P2.VALUE, 0) AS DIFF_VALUE
+			, P3.METER_DT, P3.VALUE
+			, P2.METER_DT, P2.VALUE
+			, DATE_FORMAT(P1.FIRST_DT, '%y/%m') AS MONTH
+		FROM (
+			SELECT DATE_FORMAT(LAST_DAY(DT - INTERVAL 2 MONTH) + INTERVAL 1 DAY, '%Y-%m-%d') AS FIRST_DT
+				, DATE_FORMAT(LAST_DAY(DT - INTERVAL 1 MONTH), '%Y-%m-%d') AS LAST_DT
+				, LVL
+			FROM (
+				SELECT DATE_SUB(NOW(), INTERVAL LEVEL-1 MONTH) AS DT, LEVEL AS LVL
+				FROM T_LVL
+			) T1
+		) P1 
+			LEFT JOIN T_DATA P2 ON P1.FIRST_DT=P2.METER_DT
+			LEFT JOIN T_DATA P3 ON P1.LAST_DT=P3.METER_DT
+		ORDER BY P1.LVL DESC
+	</select>
+	
+	<!-- 검침 데이터 일별 증가량 (차트) -->
+	<select id="SELECT_LIST_ACCOUNT_DATA_FOR_DAYDIFF_CHART" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침 데이터 월별 증가량 (차트) : SELECT_LIST_ACCOUNT_DATA_FOR_DAYDIFF_CHART
+		
+		WITH T_MAIN AS (
+			SELECT *
+			FROM (
+				SELECT ACCOUNT_NO, METER_DTM, VALUE, DATE_FORMAT(METER_DTM, '%Y%m%d') AS DAY
+					, DATE_FORMAT(METER_DTM, '%H') AS HOUR
+				FROM T_ACCOUNT_DATA
+				WHERE METER_DTM > DATE_SUB(NOW(), INTERVAL 1 MONTH)
+			) T1
+			WHERE HOUR='00' OR HOUR='23'
+			ORDER BY ACCOUNT_NO, DAY, HOUR
+		)
+		SELECT DATE_FORMAT(STR_TO_DATE(DAY, '%Y%m%d'), '%d') AS DAY
+			, ROUND(IFNULL(AVG(DIFF_VALUE), 0)) AS DIFF_VALUE
+		FROM (
+			SELECT S1.*, S2.VALUE-S1.VALUE AS DIFF_VALUE
+			FROM (
+				SELECT *
+				FROM T_MAIN
+				WHERE HOUR='00'
+			) S1 LEFT JOIN (
+				SELECT *
+				FROM T_MAIN
+				WHERE HOUR='23'
+			) S2 ON S1.ACCOUNT_NO=S2.ACCOUNT_NO AND S1.DAY=S2.DAY
+		) T1
+		GROUP BY DAY
+	</select>
+	
+	<!-- 검침 데이터 (최대, 최소 수용가) -->
+	<select id="SELECT_LIST_ACCOUNT_DATA_MIN_MAX" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침 데이터 (최대, 최소 수용가) : SELECT_LIST_ACCOUNT_DATA_MIN_MAX 
+	
+		WITH RECURSIVE T_LVL AS (
+			SELECT 1 AS LEVEL 
+			UNION ALL 
+			SELECT 1+T_LVL.LEVEL 
+			FROM T_LVL 
+			WHERE T_LVL.LEVEL <![CDATA[<]]> 2
+		)
+		, T_MAIN AS (
+			SELECT ACCOUNT_NO, ACCOUNT_NM
+				, RANK() OVER(ORDER BY DIFF_VALUE DESC) MAX_RNK
+				, RANK() OVER(ORDER BY DIFF_VALUE) MIN_RNK
+			FROM (
+				SELECT S1.ACCOUNT_NO, S2.ACCOUNT_NM, S1.MAX_VALUE-S1.MIN_VALUE AS DIFF_VALUE
+				FROM (
+					SELECT ACCOUNT_NO, MIN(VALUE) AS MIN_VALUE, MAX(VALUE) AS MAX_VALUE
+					FROM T_ACCOUNT_DATA
+					WHERE METER_DTM BETWEEN STR_TO_DATE(CONCAT(#{accountStartDt}, ' 00:00:00'), '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(CONCAT(#{accountEndDt}, ' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+					GROUP BY ACCOUNT_NO
+				) S1 INNER JOIN T_ACCOUNT S2 ON S1.ACCOUNT_NO=S2.ACCOUNT_NO
+			) R1
+		)
+		SELECT S1.LEVEL, IFNULL(ACCOUNT_NO, '결과없음') AS ACCOUNT_NM
+		FROM T_LVL S1
+			LEFT JOIN (
+				SELECT ACCOUNT_NO, ACCOUNT_NM, 1 AS LVL
+				FROM T_MAIN
+				WHERE MIN_RNK = 1
+				UNION ALL 
+				SELECT ACCOUNT_NO, ACCOUNT_NM, 2 AS LVL
+				FROM T_MAIN
+				WHERE MAX_RNK = 1
+			) S2 ON S1.LEVEL=S2.LVL
+	</select>
+
+	<!-- 검침 데이터 (총 사용량, 평균 사용량) -->
+	<select id="SELECT_DETAIL_ACCOUNT_DATA_SUM_AVG" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침 데이터 (총 사용량, 평균 사용량) : SELECT_DETAIL_ACCOUNT_DATA_MIN_MAX
+	
+		SELECT IFNULL(SUM(DIFF_VALUE), '결과없음') AS SUM_DIFF_VALUE
+			, IFNULL(ROUND(AVG(DIFF_VALUE), 1), '결과없음') AS AVG_DIFF_VALUE
+		FROM (
+			SELECT ACCOUNT_NO, MAX_VALUE - MIN_VALUE AS DIFF_VALUE
+			FROM (
+				SELECT ACCOUNT_NO, MIN(VALUE) AS MIN_VALUE, MAX(VALUE) AS MAX_VALUE
+				FROM T_ACCOUNT_DATA
+				WHERE METER_DTM BETWEEN STR_TO_DATE(CONCAT(#{accountStartDt}, ' 00:00:00'), '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(CONCAT(#{accountEndDt}, ' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+				GROUP BY ACCOUNT_NO
+			) R
+		) T
+	</select>
+	
+	<!-- 검침데이터 (수도 총사용량 TOP) -->
+	<select id="SELECT_LIST_ACCOUNT_DATA_TOP" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침데이터 (수도 총사용량 TOP) : SELECT_LIST_ACCOUNT_DATA_TOP 
+		
+		SELECT S1.ACCOUNT_NO, FORMAT(S1.DIFF_VALUE, 0) AS DIFF_VALUE, S2.ACCOUNT_NM, S2.COMPANY_NM
+		FROM (
+			SELECT ACCOUNT_NO, MAX(VALUE) - MIN(VALUE) AS DIFF_VALUE
+			FROM T_ACCOUNT_DATA
+			WHERE METER_DTM BETWEEN STR_TO_DATE(CONCAT(#{accountStartDt}, ' 00:00:00'), '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(CONCAT(#{accountEndDt}, ' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+			GROUP BY ACCOUNT_NO
+		) S1 INNER JOIN T_ACCOUNT S2 ON S1.ACCOUNT_NO=S2.ACCOUNT_NO
+		ORDER BY S1.DIFF_VALUE ${orderType}
+		LIMIT 10
+	</select>
+	
+	<!-- 검침데이터 (날짜별 평균 증가 - 라인차트) -->
+	<select id="SELECT_LIST_ACCOUNT_DATA_STATS_CHART" parameterType="hashMap" resultType="uisRsMap">
+		-- 검침데이터 (날짜별 평균 증가 - 라인차트) : SELECT_LIST_ACCOUNT_DATA_STATS_CHART 
+		
+		SELECT DAY, ROUND(AVG(DIFF_VALUE), 0) AS AVG_DIFF_VALUE
+		FROM (
+			SELECT ACCOUNT_NO, DAY, MIN(VALUE) AS MIN_VALUE, MAX(VALUE) AS MAX_VALUE
+				, MAX(VALUE) - MIN(VALUE) AS DIFF_VALUE
+			FROM (
+				SELECT ACCOUNT_NO, METER_DTM, DATE_FORMAT(METER_DTM, '%m/%d') AS DAY, VALUE
+				FROM T_ACCOUNT_DATA
+				WHERE METER_DTM BETWEEN STR_TO_DATE(CONCAT(#{accountStartDt}, ' 00:00:00'), '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(CONCAT(#{accountEndDt}, ' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+			) R1
+			GROUP BY ACCOUNT_NO, DAY
+		) R2
+		GROUP BY DAY
+	</select>
+	
+	<select id="SELECT_LIST_ACCOUNT_FOR_LAYER" parameterType="hashMap" resultType="uisRsMap">
+		-- 수용가 리스트 조회  (레이어용): 
+
+		SELECT 
+			ACCOUNT_NO, ACCOUNT_NM, COMPANY_CD, COMPANY_NM , CONNECT_DTM , STATUS_DEVICE , STATE_DISPLAY 
+			, DEVICE_SN , GPS_LATITUDE , GPS_LONGITUDE , METER_SN , CALIBER_CD , MT_DOWN , MT_DOWN_DTM 
+			, MT_LAST_DTM , FULL_ADDR , INSERT_DT ,UPDATE_DT, GPS_LATITUDE as LATITUDE,GPS_LONGITUDE as LONGITUDE
+		FROM T_ACCOUNT
+	</select>
+	
+	<select id="SELECT_LIST_ACCOUNT_GIS" parameterType="hashMap" resultType="uisRsMap">
+		-- 수용가 리스트 조회 : 
+	
+		SELECT 
+			ACCOUNT_NO, ACCOUNT_NM, COMPANY_CD, COMPANY_NM , CONNECT_DTM , STATUS_DEVICE , STATE_DISPLAY 
+			, DEVICE_SN , GPS_LATITUDE , GPS_LONGITUDE , METER_SN , CALIBER_CD , MT_DOWN , MT_DOWN_DTM 
+			, MT_LAST_DTM , FULL_ADDR , INSERT_DT ,UPDATE_DT, GPS_LATITUDE as LATITUDE,GPS_LONGITUDE as LONGITUDE
+		FROM T_ACCOUNT
+		<if test="searchText != null and searchText != ''">	
+			WHERE ${searchType} LIKE CONCAT('%', #{searchText}, '%')
+		</if>
+		ORDER BY ${orderType} DESC
+	</select>
+</mapper>

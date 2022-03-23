@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d [ID:%X{sessionId}] [%t] [%level] [%c] - %m%n" />
+        </Console>
+        
+        <RollingFile name="infoFile">
+			<FileName>/logs/web/info.log</FileName>
+		  	<FilePattern>/logs/web/info.%d{yyyy-MM-dd}.log</FilePattern>
+		  	<PatternLayout>
+		    	<Pattern>%d [ID:%X{sessionId}] [%t] [%level] [%c] - %m%n</Pattern>
+		  	</PatternLayout>
+		  	<Policies>
+		    	<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+		  	</Policies>
+		  	<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+        
+		<RollingFile name="errorFile">
+			<FileName>/logs/web/error.log</FileName>
+		  	<FilePattern>/logs/web/error.%d{yyyy-MM-dd}.log</FilePattern>
+		  	<PatternLayout>
+		    	<Pattern>%d [ID:%X{sessionId}] [%t] [%level]] [%c] - %m%n</Pattern>
+		  	</PatternLayout>
+		  	<Policies>
+		    	<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+		  	</Policies>
+		  	<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+        
+        <RollingFile name="sqlFile">
+			<FileName>/logs/web/sql.log</FileName>
+		  	<FilePattern>/logs/web/sql.%d{yyyy-MM-dd}.log</FilePattern>
+		  	<PatternLayout>
+		    	<Pattern>%d [ID:%X{sessionId}] [%t] [%level] [%c] - %m%n</Pattern>
+		  	</PatternLayout>
+		  	<Policies>
+		    	<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+		  	</Policies>
+		  	<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+    </Appenders>
+    
+    <Loggers>
+        <Logger name="jdbc.resultset" level="OFF" additivity="false">
+            <AppenderRef ref="sqlFile" />
+        </Logger>
+        <Logger name="jdbc.sqlonly" level="INFO" additivity="false">
+            <AppenderRef ref="sqlFile" />
+        </Logger>
+        <Logger name="jdbc.sqltiming" level="OFF" additivity="false">
+            <AppenderRef ref="sqlFile" />
+        </Logger>
+        <Logger name="jdbc.audit" level="OFF" additivity="false">
+            <AppenderRef ref="sqlFile" />
+        </Logger>
+        <Logger name="jdbc.resultsettable" level="OFF" additivity="false">
+            <AppenderRef ref="sqlFile" />
+        </Logger>
+  		<Logger name="com.danusys" level="INFO" additivity="false">
+       		<AppenderRef ref="infoFile"  />
+  		</Logger>
+		<Logger name="org" level="ERROR" additivity="false">
+       		<AppenderRef ref="errorFile"  />
+  		</Logger>
+		<Logger name="com" level="ERROR" additivity="false">
+       		<AppenderRef ref="errorFile"  />
+  		</Logger>
+		<Logger name="XERR" level="INFO" additivity="false">
+       		<AppenderRef ref="errorFile" />
+  		</Logger>
+         
+        <Root level="INFO">
+        	<AppenderRef ref="infoFile" />
+        </Root>
+    </Loggers>
+</Configuration>

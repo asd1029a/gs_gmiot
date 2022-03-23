@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/settingLayout">
+
+<th:block layout:fragment="content">
+
+<div class="settingContainer modal">
+    <header class="setContTitle">
+        <p>수용가 그룹</p>
+        <span>원격검침 통합관리 솔루션에서 수용가들의 그룹을 관리하는 페이지입니다.</span>
+    </header>
+    <div class="userGroupTable">
+        <div class="tableWrap">
+            <div class="tableTitle">
+                <h4>그룹<span id="accountGroupListCnt">0</span>건</h4>
+                <ul class="options">
+                    <li>
+                        <span>목록개수</span>
+                        <select id="accountGroupListCntSel">
+                            <option value="10">10개</option>
+                            <option value="20" selected>20개</option>
+                            <option value="30">30개</option>
+                            <option value="50">50개</option>
+                        </select>
+                    </li>
+                    <li class="optionsButton" id="addAccountGroupBtn">
+                        <span class="buttonIcon"><img src="/images/settings/iconAdd.svg"></span>추가
+                    </li>
+                </ul>
+            </div>
+            <div class="table">
+                <table id="accountGroupTable">
+                    <colgroup>
+                        <col width="40%">
+                        <col width="40%">
+                        <col width="20%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>수용가 그룹 이름</th>
+                        <th>수용가 그룹 설명</th>
+                        <th>관리</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="tableWrap">
+            <div class="tableTitle">
+                <h4>수용가 그룹 소속 수용가<span id="accountInGroupCnt">0</span>명</h4>
+                <ul class="options">
+                    <li id="addAccountInGroupBtn" class="optionsButton"><span class="buttonIcon"><img src="/images/settings/iconAdd.svg"></span>소속 수용가 관리</li>
+                </ul>
+            </div>
+            <div class="table">
+                <table id="accountInGroupTable">
+                    <colgroup>
+                        <col width="40%">
+                        <col width="40%">
+                        <col width="20%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>수용가 번호</th>
+                        <th>수용가 이름</th>
+                        <th>제거</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div id="accountGroupPopup" class="popup" style="height: 480px;">
+            <div class="popupTitle">
+                <h4></h4>
+            </div>
+            <div class="popupContents">
+                <form id="accountGroupForm" data-groupcontent="info">
+                    <dl>
+                        <dt>수용가 그룹 이름<span>필수</span></dt>
+                        <dd>
+                            <input type="hidden" id="accountGroupSeq" name="accountGroupSeq"/>
+                            <input type="text" id="accountGroupName" name="accountGroupName" data-required="true" placeholder="이름을 입력해주세요"/>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>설명<span></span></dt>
+                        <dd>
+                            <textarea id="accountGroupContent" name="accountGroupContent" style="resize:none;" placeholder="텍스트를 입력하세요"></textarea>
+                        </dd>
+                    </dl>
+                </form>
+                <ul class="checkboxList" data-groupcontent="permit">
+                    <li>
+                        <span>이름</span>
+                        <span>허용</span>
+                        <span>거부</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="popupButton">
+                <ul>
+                    <li>취소</li>
+                    <li id="delAccountGroupProcBtn" data-mode="mod" class="red">삭제</li>
+                    <li id="modAccountGroupProcBtn" data-mode="mod" class="blue">수정</li>
+                    <li id="addAccountGroupProcBtn" data-mode="add" class="blue">등록</li>
+                </ul>
+            </div>
+        </div>
+        <div id="accountInGroupPopup" class="popup" style="height: 750px;">
+            <div class="popupTitle">
+                <h4>소속 수용가 관리</h4>
+            </div>
+            <div class="popupOption">
+                <dl>
+                    <dt>수용가 검색</dt>
+                    <dd><input  type="text" id="accountInGroupKeyword" placeholder="검색어를 입력하세요"></dd>
+                </dl>
+                <p id="getListAccountInGroupBtn"><span class="buttonIcon"><img src="/images/settings/iconSearch.svg"></span>조회</p>
+            </div>
+            <div class="popupContents">
+                <table id="accountInGroupCheckTable">
+                    <colgroup>
+                        <col width="10%">
+                        <col width="40%">
+                        <col width="50%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>선택</th>
+                        <th>수용가 번호</th>
+                        <th>수용가 이름</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="popupButton">
+                <ul>
+                    <li>취소</li>
+                    <li id="addAccountInGroupProcBtn" class="blue">저장</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</th:block>
+</html>

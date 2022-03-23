@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="settingLayout">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="description" content="smartmetering">
+<meta name="author" content="DANUSYS">
+<title>스마트 미터링</title>
+<script src="/js/plugins/jquery/jquery-3.3.1.js"></script>
+<link rel="shortcut icon" href="/images/common/favicon.png">
+
+
+
+<th:block th:insert="fragments/default/header :: headerFragment"></th:block>
+
+<link rel="stylesheet" type="text/css" href="/css/settings.css" />
+</head>
+
+<body>
+<div class="settingWrap">
+    <th:block th:insert="setting/settingLeftMenu"></th:block>
+    <th:block layout:fragment="content" />
+</div>
+
+<script id="rendered-js">
+    const path = window.location.pathname;
+
+    $('#settingLnb').find('a[href="'+path+'"]').parents('li').addClass('active');
+    $('#settingLnb').find('a[href="'+path+'"]').parents('ul').show();
+
+    $("#settingLnb .subMenu > a").click(function (e) {
+        $("#settingLnb ul ul").slideUp(), $(this).next().is(":visible") || $(this).next().slideDown(),
+            e.stopPropagation();
+    });
+</script>
+
+</body>
+
+</th:block>
+</html>

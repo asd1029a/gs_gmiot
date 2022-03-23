@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d [ID:%X{sessionId}] [%t] [%level] [%c] - %m%n" />
+        </Console>
+    </Appenders>
+    
+    <Loggers>
+        <Logger name="jdbc.resultset" level="OFF" additivity="false">
+        	<AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.sqlonly" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.sqltiming" level="OFF" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.audit" level="OFF" additivity="false">
+        
+        </Logger>
+        <Logger name="jdbc.resultsettable" level="OFF" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+  		<Logger name="com.danusys" level="INFO" additivity="false">
+       		<AppenderRef ref="console" />
+  		</Logger>
+  		
+        <Logger name="XERR" level="INFO" additivity="false">
+       		<AppenderRef ref="console" />
+  		</Logger>
+         
+        <Root level="INFO"  additivity="false">
+        	<AppenderRef ref="console" />
+        </Root>
+    </Loggers>
+</Configuration>

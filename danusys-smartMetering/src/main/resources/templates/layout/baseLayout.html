@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="baseLayout">
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="smartmetering">
+    <meta name="author" content="DANUSYS">
+    <title>스마트 미터링</title>
+    <link rel="shortcut icon" href="/images/common/favicon.png">
+
+    <th:block th:insert="fragments/default/header :: headerFragment"></th:block>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+
+
+</head>
+<body>
+
+    <div class="wrap">
+        <th:block th:replace="fragments/default/topMenu :: topMenu" ></th:block>
+        <th:block layout:fragment="content" />
+    </div>
+
+    <footer th:replace="fragments/default/footer :: footerFragment"></footer>
+
+
+</body>
+</th:block>
+</html>
