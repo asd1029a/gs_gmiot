@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/baseLayout">
+
+<th:block layout:fragment="content">
+<nav class="pageLocation">
+    <ul>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconHome.svg"></span>홈</a></li>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconNext.svg"></span>조회</a></li>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconNext.svg"></span>수용가</a></li>
+        <li><a href="#"><span class="icon"><img src="/images/common/iconNext.svg"></span>수용가 조회</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <div class="searchForm">
+        <dl>
+            <dt>기간</dt>
+            <dd>
+                <span><input id="accountStartDt" type="text" readonly/><span class="icon"><img src="/images/common/iconCalendar.svg"></span></span>
+                <span class="line">-</span>
+                <span><input id="accountEndDt" type="text" readonly/><span class="icon"><img src="/images/common/iconCalendar.svg"></span></span>
+            </dd>
+        </dl>
+        <dl>
+            <dt>수용가 검색</dt>
+            <dd><span><input id="accountKeyword" type="text" placeholder="수용가 번호를 입력하세요"></span></dd>
+        </dl>
+        <p id="getListAccountBtn"><span class="buttonIcon"><img src="/images/common/iconSearch.svg"></span>조회</p>
+        <p id="initSearchForm"><span class="buttonIcon"><img src="/images/common/iconRefresh.svg"></span>검색조건 초기화</p>
+    </div>
+    <div class="tableWrap">
+        <div class="tableTitle">
+            <h4>검색결과 <span></span>건</h4>
+            <ul class="options">
+                <li>
+                    <span>목록개수</span>
+                    <select id="accountListCntSel">
+                        <option value="10">10개</option>
+                        <option value="20" selected>20개</option>
+                        <option value="30">30개</option>
+                        <option value="50">50개</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+        <div class="tableHead">
+            <table id="accountTable" class="display nowrap">
+                <colgroup>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>수용가 번호</th>
+                    <th>수용가 명</th>
+                    <th>업체 명</th>
+                    <th>장비 최종 접속 시간</th>
+                    <th>장비 운영코드</th>
+                    <th>단말기 상태정보</th>
+                    <th>단말기 시리얼 번호</th>
+                    <th>계량기 시리얼 번호</th>
+                    <th>계량기 구경</th>
+                    <th>계량기 동작상태</th>
+                    <th>계량기 동작시간</th>
+                    <th>마지막 검침 시간</th>
+                    <th>전체주소</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+</th:block>
+</html>

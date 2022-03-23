@@ -1,14 +1,17 @@
 package com.danusys.web.commons.api.controller;
 
+import com.danusys.web.commons.api.dto.EventReqeustDTO;
 import com.danusys.web.commons.api.model.*;
 import com.danusys.web.commons.api.service.*;
+import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.api.types.ParamType;
 import com.danusys.web.commons.app.CamelUtil;
-import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.StrUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ClassPathResource;
@@ -17,15 +20,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.util.UriEncoder;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -46,17 +48,20 @@ public class ApiCallRestController {
     private FacilityService facilityService;
     private StationService stationService;
     private ForecastService forecastService;
+    private EventService eventService;
 
     public ApiCallRestController(ApiExecutorFactoryService apiExecutorFactoryService
             , ApiExecutorService apiExecutorService
             , FacilityService facilityService
             , StationService stationService
-            , ForecastService forecastService) {
+            , ForecastService forecastService
+            , EventService eventService) {
         this.apiExecutorFactoryService = apiExecutorFactoryService;
         this.apiExecutorService = apiExecutorService;
         this.facilityService = facilityService;
         this.stationService = stationService;
         this.forecastService = forecastService;
+        this.eventService = eventService;
     }
 
     @PostMapping(value = "/facility")
@@ -114,12 +119,11 @@ public class ApiCallRestController {
 
     @PostMapping(value="/getCurSkyTmp")
     public ResponseEntity getCurSkyTmp(@RequestBody Map<String, Object> param) throws Exception {
-        param.put("reqPrams", forecastService.setReqParam(param));
-        Api api = getRequestApi(param);
-
+        Api api = getRequestApi(forecastService.setReqParam(param));
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
+
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
         Map<String, Object> resultMap = forecastService.getCurSkyTmp(resultBody);
@@ -127,11 +131,13 @@ public class ApiCallRestController {
         return ResponseEntity.status(HttpStatus.OK).body(resultMap);
     }
 
-    @PostMapping(value = "/getAddress")
-    public ResponseEntity getAddress(@RequestBody Map<String, Object> param) throws Exception {
-        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
-        param.put("reqParams", reqParams);
+    @PostMapping(value = "/getKaKao")
+    public ResponseEntity getKaKao(@RequestBody Map<String, Object> param) throws Exception {
 
+        //한글 인코딩 처리
+        param.entrySet().stream().peek(f -> {
+            f.setValue(UriEncoder.encode(StrUtils.getStr(f.getValue())));
+        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Api api = getRequestApi(param);
 
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
@@ -139,18 +145,13 @@ public class ApiCallRestController {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
 
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        System.out.println(resultBody);
-
-        //return ResponseEntity.status(HttpStatus.OK).body(resultMap);
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(resultBody);
     }
 
 
     @PostMapping(value = "/call")
     public ResponseEntity call(@RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
-        String callUrl = param.get("callUrl").toString();
 
         Api api = getRequestApi(param);
 
@@ -164,16 +165,108 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
+    @PostMapping("event")
+    public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
+        Api api = getRequestApi(param);
+
+        List<ApiParam> apiRequestParams = api.getApiRequestParams();
+        List<ApiParam> apiResponseParams = api.getApiResponseParams();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> resultBody = new HashMap<>();
+
+        try {
+            // Reqpuest check and set
+            Map<String, Object> map = apiRequestParams.stream()
+                    .filter(f -> f.getDataType().equals(DataType.ARRAY))
+                    .peek(f -> {
+                        AtomicReference<String> result = new AtomicReference<>();
+                        try {
+                            result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                        apiRequestParams.stream().forEach(a -> {
+                            result.set(StringUtils.replace(result.get(), a.getFieldMapNm(), a.getFieldNm()));
+                        });
+
+                        f.setValue(result.get());
+                    })
+                    .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
+            // Response check and set
+            resultBody = apiResponseParams
+                    .stream()
+                    .peek(f -> {
+                        ApiParam apiParam = apiRequestParams.stream()
+                                .filter(ff -> ff.getFieldMapNm().equals(f.getFieldMapNm())).findFirst().get();
+                        f.setValue(apiParam.getValue());
+                    })
+                    .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
+            // event save
+            map.entrySet().stream().forEach(f -> {
+                try {
+                    List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(f.getValue()), new TypeReference<List<EventReqeustDTO>>() {});
+                    eventService.saveAllByEeventRequestDTO(list);
+                    log.trace(list.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            });
+        } catch (Exception e) {
+            resultBody.put("code", "9999");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(resultBody);
+        }
+
+        resultBody.put("code", "1111");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(resultBody);
+    }
+
     private Api getRequestApi(Map<String, Object> param) {
+        String callUrl = StrUtils.getStr(param.get("callUrl"));
+//        String bizCd = StrUtils.getStr(param.get("bizCd"));
         Api api = null;
-        ApiParam apiParam = null;
-        String callUrl = param.get("callUrl").toString();
-        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
 
-        //API 마스터 정보 가져오기
-        api = reqParams == null ? getRequestApi(callUrl) : getRequestApi(callUrl, reqParams);
+        try {
+            log.trace("callUrl : {}", callUrl);
 
+            //API 마스터 정보 가져오기
+            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
+
+            //요청 컬럼 정보 가져오기
+            api.setApiRequestParams(apiExecutorService
+                    .findApiParam(api.getId(), ParamType.REQUEST)
+                    .stream()
+                    .filter(f -> f.getParamType() == ParamType.REQUEST)
+                    .map((f) -> {
+                        final Object p = param.get(f.getFieldNm());
+                        if (p != null) f.setValue(p.toString());
+                        return f;
+                    })
+                    .collect(toList())
+            );
+
+            //응답 컬럼 정보 가져오기
+            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
+
+        } catch (Exception ex) {
+            log.error(ex.toString());
+            throw ex;
+        }
         return api;
+
+//        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
+//
+//        //API 마스터 정보 가져오기
+//        return reqParams == null ? getRequestApi(callUrl) : getRequestApi(callUrl, reqParams);
+    }
+
+    private void addEvent() {
+
     }
 
     private Api getRequestApi(String callUrl) {

@@ -1,4 +1,4 @@
-//플랫폼 마다 만들고 자주쓴다면 공통으로.
+//플랫폼 마다 만들고 자주쓴다면 공통으로
 
 /**
  * 플랫폼 당 스타일 지정
@@ -74,33 +74,42 @@ const layerStyle = {
  * 플랫폼 당 팝업 내용 생성
  * */
 const mapPopupContent = {
-    //주소장소 팝업
-    address : (data) => {
+    //좌표 주소보기 팝업
+    coord2address : data => {
+        const resultObj = kakaoApi.getCoord2Address({ x:data[0], y:data[1] });
 
-        //api coord to address
-        /////////////////////////
-
-        // let content = r.documents[0].address.address_name;
-        // if((r.documents[0].road_address)!=null){
-        //     content += "<div class='address-tooltip-header'>[도로명]</div>"
-        //         + "<p>" + r.documents[0].road_address.address_name + "<p>"  ;
-        // }
-        //////////////////////////////////////////////////////////////////////
-        let info = "infotest";
+        let addressName = resultObj.documents[0].address.address_name;
         let content =
-            "<dl>" +
-                "<dt>전북 김제시 죽산면 석산길</dt>" +
-                "<dd>(지번)&nbsp;" + info + "</dd>" +
-                "<dd>(위도)&nbsp;" + data[1] + "</dd>" +
-                "<dd>(경도)&nbsp;" + data[0] + "</dd>" +
-            "</dl>"
+            "<dt>" + addressName + "</dt>" +
+            "<dd>(지번)&nbsp;" + addressName + "</dd>";
+        if((resultObj.documents[0].road_address)!=null){
+            content += "<dd>(도로명)&nbsp" + resultObj.documents[0].road_address.address_name + "<dd>"  ;
+        }
+        content += "<dd>(위도)&nbsp;" + data[1] + "</dd>" +
+                   "<dd>(경도)&nbsp;" + data[0] + "</dd>"
         ;
-            // "<a class='address-tooltip-closer icon_closed'><img src='/images/common/iconClosed.svg' /></a></div>"
-            // + "<div class='address-tooltip-header'> [좌표] </div>"
-            // //+ "<p>" + clickLonLat[1] +", "+ clickLonLat[0] +"</p>"
-            // + "<p>" + data.coordinate[1] +", "+ data.coordinate[0] +"</p>"
-            // + "<div class='address-tooltip-header'> [지번] </div>"
-            // + "<p>" + info + "</p>"
+        content = "<dl>"+ content +"</dl>"
+
+        return content;
+    }
+    //주소 장소 팝업
+    , addressPlace : data => {
+        let title = "";
+        if(data.type=="address") {
+            title = data.address_name;
+        } else {
+            title = data.place_name;
+        }
+        let content =
+            "<dt>" + title + "</dt>" +
+            "<dd>(지번)&nbsp;" + data.address_name + "</dd>";
+        if((data.road_address_name!="")&&(data.road_address_name!=undefined)){
+            content += "<dd>(도로명)&nbsp" + data.road_address_name + "<dd>"  ;
+        }
+        content += "<dd>(위도)&nbsp;" + data.y + "</dd>" +
+            "<dd>(경도)&nbsp;" + data.x + "</dd>"
+        ;
+        content = "<dl>"+ content +"</dl>"
 
         return content;
     }

@@ -63,7 +63,6 @@ public class User {
 
     private String status;
 
-
     /*
     public List<String> getRoleList(){
             if(this.roles.length() >0){
@@ -72,19 +71,7 @@ public class User {
             return new ArrayList<>();
     }
     */
-    //@JsonIgnore
-    // @OneToOne(mappedBy ="user",cascade =CascadeType.ALL,fetch = FetchType.EAGER)
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-//    @JsonManagedReference
-    private List<UserGroupInUser> userGroupInUser=new ArrayList<>();
 
-//    @OneToOne(mappedBy = "userCommonCode",fetch =FetchType.EAGER)
-//
-//    private CommonCode status;
-
-//    @OneToOne
-//    @JoinColumn(name = "code_seq")
-//    private CommonCode status;
-
-
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<UserInGroup> userInGroup =new ArrayList<>();
 }

@@ -15,15 +15,13 @@ public class ForecastService {
     * 초단기 예보에 필요한 param setting
     * */
     public Map<String, Object> setReqParam(Map<String, Object> param) throws Exception {
-        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
-
         //nx, ny 기상청 격자 param 처리
-        Double lon = (Double) reqParams.get("lon");
-        Double lat = (Double) reqParams.get("lat");
+        Double lon = (Double) param.get("lon");
+        Double lat = (Double) param.get("lat");
         ForecastGridTransfer fcgt = new ForecastGridTransfer(lat, lon,0);
         Map<String, Object> resultMap = fcgt.transfer();
-        reqParams.put("nx",resultMap.get("nx"));
-        reqParams.put("ny",resultMap.get("ny"));
+        param.put("nx",resultMap.get("nx"));
+        param.put("ny",resultMap.get("ny"));
 
         //base_time, base_date param 처리
         Date d = new Date();
@@ -34,17 +32,17 @@ public class ForecastService {
         String baseTime = Integer.parseInt(f2.format(d))-1+"30";
         if(Integer.parseInt(baseTime) < 1000) baseTime="0"+baseTime;
 
-        reqParams.put("base_date", baseDate);
-        reqParams.put("base_time", baseTime);
+        param.put("base_date", baseDate);
+        param.put("base_time", baseTime);
 
-        return reqParams;
+        return param;
     }
 
     /*
     * 현재 하늘, 온도 상태반환
     * */
     public Map<String, Object> getCurSkyTmp(Map<String, Object> resultBody) throws Exception {
-        //추후 JSON 처리 예정
+        /*TODO: JSONObject 처리 요망*/
         Map<String, Object> response = (Map<String, Object>) resultBody.get("response");
         Map<String, Object> body = (Map<String, Object>) response.get("body");
         Map<String, Object> items = (Map<String, Object>) body.get("items");

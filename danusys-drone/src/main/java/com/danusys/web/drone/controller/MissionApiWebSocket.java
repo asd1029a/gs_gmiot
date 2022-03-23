@@ -56,17 +56,17 @@ public class MissionApiWebSocket {
     }
 
 
-    @GetMapping("/takeoff")
-    public ResponseEntity<?> takeOffDrone(@RequestBody Map<String, Object> paramMap) {
-        int takeOffAlt = 0;
-        if (paramMap.get("alt") != null) {
-            takeOffAlt = Integer.parseInt(paramMap.get("alt").toString());
-        }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(flight.flightTakeoff(takeOffAlt));
-
-
-    }
+//    @GetMapping("/takeoff")
+//    public ResponseEntity<?> takeOffDrone(@RequestBody Map<String, Object> paramMap) {
+//        int takeOffAlt = 0;
+//        if (paramMap.get("alt") != null) {
+//            takeOffAlt = Integer.parseInt(paramMap.get("alt").toString());
+//        }
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(flight.flightTakeoff(takeOffAlt));
+//
+//
+//    }
 
     //   @GetMapping("/waypoint")
     @MessageMapping("/waypoint")
@@ -196,6 +196,7 @@ public class MissionApiWebSocket {
                 gpsYs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
                 gpsZs.put("waypoint" + missionDetails.getIndex(), missionDetails.getMapZ());
                 yaws.put("waypoint" + missionDetails.getIndex(), (float) (missionDetails.getYaw()));
+                times.put("waypoint" + missionDetails.getIndex(), missionDetails.getTime());
             } else if (missionDetails.getName().equals("loi")) {
                 missionIndex.put(missionDetails.getIndex(), "loi" + missionDetails.getIndex());
                 times.put("loi" + missionDetails.getIndex(), missionDetails.getTime());
@@ -249,6 +250,7 @@ public class MissionApiWebSocket {
 
 //                log.info("x={},y={},z{}", x, y, z);
                 //    log.info("yaw={}", yaw);
+                log.info("time={}",time);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
                         .param1(time)
@@ -343,58 +345,7 @@ public class MissionApiWebSocket {
     }
 
 
-    @GetMapping("/loiter")
-    public void loiter() {
-        //      flight.setHome();
-        String missionResult = null;
-        do {
-            missionResult = flight.returnDrone();
-       //     log.info(missionResult);
-        }
-        while (missionResult.equals("onemore"));
-//        flight.takeoff(100);
-//        flight.wayPoint(37.4476f,126.89591f,100f,5);
-//        flight.loiter(30);
-//        flight.wayPoint(37.4567f,126.89597f,100f,5);
 
-
-    }
-
-
-    @GetMapping("/test")
-    public void test() {
-        // flight.loiter(30);
-        //flight.camera();
-        flight.flightTakeoff(100);
-        //flight.returnDrone();
-        // flight.setHome();
-    }
-
-    @GetMapping("/test2")
-    public void test2() {
-        // flight.loiter(30);
-        //flight.camera();
-        //flight.flightTakeoff(100);
-        flight.returnDrone();
-        // flight.setHome();
-    }
-
-
-    @GetMapping("/test3")
-    public void test3() {
-        // flight.loiter(30);
-        flight.heartBeat();
-
-        // flight.returnDrone();
-    }
-
-    @GetMapping("/logtest")
-    public void logTest() {
-        // flight.loiter(30);
-        flight.logTest();
-
-        // flight.returnDrone();
-    }
 
 }
 

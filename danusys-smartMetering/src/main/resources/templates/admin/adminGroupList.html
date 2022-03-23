@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/settingLayout">
+
+<th:block layout:fragment="content">
+
+<div class="settingContainer modal">
+    <header class="setContTitle">
+        <p>사용자 그룹</p>
+        <span>원격검침 통합관리 솔루션에서 사용하는 장비가 제공하는 기능을 그룹별로 설정하고 관리하는 페이지입니다.</span>
+    </header>
+    <div class="userGroupTable">
+        <div class="tableWrap">
+            <div class="tableTitle">
+                <h4>그룹<span id="adminGroupListCnt">0</span>건</h4>
+                <ul class="options">
+                    <li>
+                        <span>목록개수</span>
+                        <select id="adminGroupListCntSel">
+                            <option value="10">10개</option>
+                            <option value="20" selected>20개</option>
+                            <option value="30">30개</option>
+                            <option value="50">50개</option>
+                        </select>
+                    </li>
+                    <li class="optionsButton" id="addAdminGroupBtn">
+                        <span class="buttonIcon"><img src="/images/settings/iconAdd.svg"></span>추가
+                    </li>
+                </ul>
+            </div>
+            <div class="table">
+                <table id="adminGroupTable">
+                    <colgroup>
+                        <col width="40%">
+                        <col width="40%">
+                        <col width="20%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>사용자 그룹 이름</th>
+                        <th>사용자 그룹 설명</th>
+                        <th>관리</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="tableWrap">
+            <div class="tableTitle">
+                <h4>시스템관리자 소속 사용자<span id="adminInGroupCnt">0</span>명</h4>
+                <ul class="options">
+                    <li id="addAdminInGroupBtn" class="optionsButton"><span class="buttonIcon"><img src="/images/settings/iconAdd.svg"></span>소속 구성원 관리</li>
+                </ul>
+            </div>
+            <div class="table">
+                <table id="adminInGroupTable">
+                    <colgroup>
+                        <col width="40%">
+                        <col width="40%">
+                        <col width="20%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>사용자 아이디</th>
+                        <th>사용자 이름</th>
+                        <th>제거</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div id="adminGroupPopup" class="popup checkboxPopup" style="height: 560px;">
+            <div class="popupTitle">
+                <h4></h4>
+            </div>
+            <div class="popupContents">
+                <ul class="popupTabButton">
+                    <li data-groupmenu="info" class="active">그룹 정보</li>
+                    <li data-groupmenu="permit">권한</li>
+                </ul>
+                <form id="adminGroupForm" data-groupcontent="info">
+                    <dl>
+                        <dt><label for="adminGroupName">사용자 그룹 이름</label><span>필수</span></dt>
+                        <dd>
+                            <input type="hidden" id="adminGroupSeq" name="adminGroupSeq"/>
+                            <input type="text" id="adminGroupName" name="adminGroupName" data-required="true" placeholder="이름을 입력해주세요"/>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>설명<span></span></dt>
+                        <dd>
+                            <textarea id="adminGroupContent" name="adminGroupContent" style="resize:none;" placeholder="텍스트를 입력하세요"></textarea>
+                        </dd>
+                    </dl>
+                </form>
+                <ul class="checkboxList" data-groupcontent="permit">
+                    <li>
+                        <span>이름</span>
+                        <span>허용</span>
+                        <span>거부</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="popupButton">
+                <ul>
+                    <li>취소</li>
+                    <li id="delAdminGroupProcBtn" data-mode="mod" class="red">삭제</li>
+                    <li id="modAdminGroupProcBtn" data-mode="mod" class="blue">수정</li>
+                    <li id="addAdminGroupProcBtn" data-mode="add" class="blue">등록</li>
+                </ul>
+            </div>
+        </div>
+        <div id="adminInGroupPopup" class="popup" style="height: 750px;">
+            <div class="popupTitle">
+                <h4>소속 구성원 관리</h4>
+            </div>
+            <div class="popupOption">
+                <dl>
+                    <dt>사용자 검색</dt>
+                    <dd><input  type="text" id="adminInGroupKeyword" placeholder="검색어를 입력하세요"></dd>
+                </dl>
+                <p id="getListAdminInGroupBtn"><span class="buttonIcon"><img src="/images/settings/iconSearch.svg"></span>조회</p>
+            </div>
+            <div class="popupContents">
+                <table id="adminInGroupCheckTable">
+                    <thead>
+                    <tr>
+                        <th>선택</th>
+                        <th>사용자 아이디</th>
+                        <th>사용자 이름</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="popupButton">
+                <ul>
+                    <li>취소</li>
+                    <li id="addAdminInGroupProcBtn" class="blue">저장</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</th:block>
+</html>

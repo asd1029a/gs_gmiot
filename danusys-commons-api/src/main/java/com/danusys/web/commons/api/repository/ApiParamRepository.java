@@ -15,4 +15,6 @@ import java.util.List;
  */
 public interface ApiParamRepository extends PagingAndSortingRepository<ApiParam, Long> {
     List<ApiParam> findAllByApiIdAndParamType(Long apiId, ParamType paramType);
+
+    List<ApiParam> findAllByParentSeq(int seq);
 }
