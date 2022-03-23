@@ -15,13 +15,10 @@
             <h6>드론 관제 이벤트 검색</h6>
             <form>
                 <div>
-                    <dl class="selectbox_set">
-                        <dt>이벤트 종류</dt>
-                        <dd>
-                            <div class="dropdown_checkbox" data-selectbox-type="eventKind">
-                                <p class="checkbox_title select_title" data-placeholder="이벤트 종류 선택">이벤트 종류 선택</p>
-                                <ul class="checkbox_list list"></ul>
-                            </div>
+                    <p>이벤트 종류</p>
+                    <dl class="dropdown_checkbox">
+                        <dt class="checkbox_title select_title">이벤트 종류</dt>
+                        <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
                     <dl class="checkbox_set">
@@ -57,14 +54,10 @@
                     </dl>
                 </div>
                 <div>
-
-                    <dl class="selectbox_set">
-                        <dt>행정구역</dt>
-                        <dd>
-                            <div class="dropdown_checkbox" data-selectbox-type="district">
-                                <p class="checkbox_title select_title" data-placeholder="행정구역 선택">행정구역 선택</p>
-                                <ul class="checkbox_list list"></ul>
-                            </div>
+                    <p>행정구역</p>
+                    <dl class="dropdown_checkbox">
+                        <dt class="checkbox_title select_title">행정구역</dt>
+                        <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
                     <dl class="date_set">
@@ -74,12 +67,11 @@
                         <dd><input type="text" id="endDt" placeholder="날짜를 입력하세요" class="input_date"></dd>
                         <span>까지</span>
                     </dl>
-
-                    <dl class="search_text_set">
-                        <dd><input type="text" name="keyword" placeholder="검색어를 입력하세요."></dd>
-                        <dd class="button" id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</dd>
-                        <dd class="button" id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</dd>
-                    </dl>
+                    <ul class="button">
+                        <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요."></li>
+                        <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
+                        <li id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</li>
+                    </ul>
                 </div>
             </form>
         </article>
