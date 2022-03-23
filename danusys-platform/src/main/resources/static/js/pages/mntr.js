@@ -28,9 +28,9 @@ const mntr = {
                     const coordinate = new ol.proj.transform(e.coordinate, window.map.realProjection[window.map.type] ,'EPSG:4326');
                     //팝업 붙이기
                     let popup = new mapPopup('map');
-                    popup.create('testpopup');
-                    popup.move('testpopup',e.coordinate);
-                    popup.content('testpopup',mapPopupContent.address(coordinate));
+                    popup.create('addressPopup');
+                    popup.move('addressPopup',e.coordinate);
+                    popup.content('addressPopup',mapPopupContent.coord2address(coordinate));
 
                     window.popup = popup;
                 }
@@ -295,19 +295,14 @@ const mntr = {
             if(key.keyCode==13){
                 const keyword = $(key.target).val();
                 const section = $(key.currentTarget).parents('section').attr('id');
-
-                switch(section) {
-                    case "addressPlace" : //주소장소검색
-                        const addressObj = kakaoApi.getAddress({query: keyword});
-                        const placeObj = kakaoApi.getPlace({query: keyword});
-                        lnbList.createAddressPlace('address', addressObj, keyword, true);
-                        lnbList.createAddressPlace('place', placeObj, keyword, true);
-                        break;
-                    //case "" :
-                    default :
-                        break;
-                }
+                searchList(section, keyword);
             }
+        });
+        //검색 키워드 아이콘 클릭 이벤트 (임시공통)
+        $(".search_form input[type=text]").next('i').on('click', e => {
+            const keyword = $(e.currentTarget).parent().find('input').val();
+            const section = $(e.currentTarget).parents('section').attr('id');
+            searchList(section, keyword);
         });
         //리스트 무한스크롤 이벤트
         $('.search_list').on("scroll", evt => {
@@ -365,6 +360,9 @@ const mntr = {
 
 }
 
+/**
+ * 지도중심 읍면동 > 날씨 반환
+ * */
 function centerVilageInfo(evt) {
     let mapProj = evt.map.getView().getProjection().getCode();
     let mapCenter = evt.map.getView().getCenter();
@@ -418,30 +416,13 @@ const lnbList = {
      * 주소장소 리스트 생성
      * type : address, place
      * obj : 카카오 api 반환결과
+     * keyword : 검색 키워드 (저장)
      * flag : 검색 초기인가 아닌가
      * */
     createAddressPlace : (type, obj, keyword, flag) => {
-        console.log(obj);
         let objCnt = obj.documents.length;
-        let content = "";
-        obj.documents.forEach(row => {
-            let roadName = row.road_address_name == undefined ? "-" : row.road_address_name;
-            if(type == "address"){
-                content += "<dl>" +
-                    "<dt>" + row["address_name"] + "</dt>" +
-                    "<dd>도로명 : " + roadName + "</dd>" +
-                    "</dl>"
-                ;
-            } else if(type == "place") {
-                content += "<dl>" +
-                    "<dt>" + row["place_name"] + "</dt>" +
-                    "<dd>도로명칭</dd>" +
-                    "<dd>"+ roadName +"</dd>" +
-                    "</dl>"
-                ;
-            }
-        });
         const target = $('.search_list[data-value='+type+']');
+
         if(flag){
             target.empty();
             target.scrollTop(0);
@@ -449,10 +430,68 @@ const lnbList = {
             const prevCnt = Number($('.area_title .count[data-value='+type+']').text());
             objCnt += prevCnt;
         }
-        target.append(content);
         obj.listCnt = objCnt;
         obj.keyword = keyword;
         target.data(obj);
         $('.area_title .count[data-value='+type+']').text(objCnt);
+
+        obj.documents.forEach(row => {
+            let content = "";
+            let roadName = row.road_address_name == undefined ? "-" : row.road_address_name;
+            if(type == "address"){
+                content = "<dl>" +
+                    "<dt>" + row["address_name"] + "</dt>" +
+                    "<dd>도로명 : " + roadName + "</dd>" +
+                    "</dl>"
+                ;
+            } else if(type == "place") {
+                content = "<dl>" +
+                    "<dt>" + row["place_name"] + "</dt>" +
+                    "<dd>도로명칭</dd>" +
+                    "<dd>"+ roadName +"</dd>" +
+                    "</dl>"
+                ;
+            }
+            target.append(content);
+            target.find('dl').last().data(row);
+        });
+        //주소장소 리스트 행 클릭 이벤트
+        target.find('dl').on("click", e => {
+            const data = $(e.currentTarget).data();
+            const type = $(e.currentTarget).parents('.search_list').attr('data-value');
+            data.type = type;
+            // 팝업
+            const coordinate = ol.proj.transform([Number(data.x), Number(data.y) ],'EPSG:4326', 'EPSG:5181');
+
+            window.map.setCenter(coordinate);
+
+            let popup = new mapPopup('map');
+            popup.create('addressPopup');
+            popup.move('addressPopup', coordinate);
+            popup.content('addressPopup',mapPopupContent.addressPlace(data));
+
+        });
+    } //createAddressPlace end
+}
+
+
+/**
+ * 리스트 검색
+ * */
+function searchList(section, keyword) {
+    if(keyword!="" && keyword!=null){
+        switch(section) {
+            case "addressPlace" : //주소장소검색
+                    const addressObj = kakaoApi.getAddress({query: keyword});
+                    const placeObj = kakaoApi.getPlace({query: keyword});
+                    lnbList.createAddressPlace('address', addressObj, keyword, true);
+                    lnbList.createAddressPlace('place', placeObj, keyword, true);
+                break;
+            //case "" :
+            default :
+                break;
+        }
+    } else {
+        alert("키워드를 입력하여 주십시오.");
     }
 }
