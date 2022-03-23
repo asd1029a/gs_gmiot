@@ -1,7 +1,6 @@
-/*
 package com.danusys.web.commons.netty.config;
 
-import com.danusys.web.tcp.server.domain.MessageCallback;
+import com.danusys.web.commons.netty.domain.MessageCallback;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -60,4 +59,3 @@ public class TcpConfiguration {
         return new MessageCallback();
     }
 }
-*/

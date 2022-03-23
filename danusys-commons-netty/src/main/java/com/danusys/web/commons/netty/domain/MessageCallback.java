@@ -1,5 +1,4 @@
-/*
-package com.danusys.web.tcp.server.domain;
+package com.danusys.web.commons.netty.domain;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -18,4 +17,3 @@ public class MessageCallback {
         System.out.println("커넥션이 끊기면 동작하는 메소드 입니다.");
     }
 }
-*/

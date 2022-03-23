@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <artifactId>danusys-webservice-parent</artifactId>
+        <groupId>com.danusys.web</groupId>
+        <version>${revision}</version>
     </parent>
-    <groupId>com.danusys.server.netty</groupId>
+    <modelVersion>4.0.0</modelVersion>
+
     <artifactId>danusys-server-netty</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>danusys-server-netty</name>
-    <description>danusys-server-netty</description>
+
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -21,7 +18,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.danusys.web</groupId>
+            <artifactId>danusys-commons-netty</artifactId>
+            <version>${revision}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

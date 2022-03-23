@@ -1,3 +1,4 @@
+/*
 package com.danusys.web.commons.netty;
 
 import org.springframework.boot.SpringApplication;
@@ -12,3 +13,4 @@ public class NettyApplication {
     }
 
 }
+*/

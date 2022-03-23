@@ -1,13 +1,10 @@
-/*
 package com.danusys.web.commons.netty.config;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -29,4 +26,3 @@ public class NettyProperties {
     @NotNull
     private int backlog;
 }
-*/
