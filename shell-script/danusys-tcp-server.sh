@@ -14,7 +14,7 @@ PORT=8500
 #프로젝트 이름
 PROJECT_NAME=danusys
 #어플리케이션 이름
-APP_NAME=danusys-tcp-server
+#APP_NAME=danusys-tcp-server
 # 서비스 실행 사용자
 SERVICE_USER=danusys
 # jar 파일이 설치된 디렉토리
