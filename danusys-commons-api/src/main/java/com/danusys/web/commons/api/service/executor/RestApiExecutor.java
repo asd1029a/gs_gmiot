@@ -65,7 +65,6 @@ public class RestApiExecutor implements ApiExecutor {
 
         // 암호화 모듈 테스트
         apiRequestParams.stream().filter(f -> f.getCryptoKey() != null).forEach(d -> d.setValue(cryptoExecutorFactoryService.encrypt(d.getCryptoType(), d.getValue(), d.getCryptoKey())));
-
         //요청 파라미터 값 추출
         final Map<String, Object> reqMap = apiRequestParams
                 .stream()

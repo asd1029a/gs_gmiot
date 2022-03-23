@@ -40,8 +40,6 @@ public class AuthController {
 
     private final PermitService permitService;
 
-    private final UserInGroupService userInGroupService;
-
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -80,13 +78,13 @@ public class AuthController {
                 .body(userService.get(username));
     }
 
-    @PostMapping("/permit")
-    public ResponseEntity<?> savePermit(Permit permit) {
-        permitService.add(permit);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body("created permit");
-    }
+//    @PostMapping("/permit")
+//    public ResponseEntity<?> savePermit(Permit permit) {
+//        permitService.add(permit);
+//        return ResponseEntity
+//                .status(HttpStatus.CREATED)
+//                .body("created permit");
+//    }
 
 //    @PostMapping("/usergroupinuser")
 //    public ResponseEntity<?> saveUserGroupInUser(UserGroupInUser userGroupInUser, int userSeq) {

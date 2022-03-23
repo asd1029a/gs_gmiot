@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/singleLayout">
+
+<th:block layout:fragment="content">
+
+
+<div class="login_wrap">
+    <div class="login_bg">
+        <div class="login_contents">
+            <h1 class="login_logo" style="color:#ffffff; font-size:30px;">스마트 미터링</h1>
+            <form id="loginForm" action="/login" method="POST" class="text-left" onsubmit="return false;">
+                <dl class="login_form">
+                    <dt>
+                        <label for="username" data-hidden-value="아이디">
+                            <input id="username" name="username" type="text" autocomplete="off" size="18" placeholder="아이디" required="required" value="다누시스" />
+                        </label>
+                    </dt>
+                    <dt>
+                        <label for="password" data-hidden-value="비밀번호">
+                            <input id="password" name="password" type="password" autocomplete="off" size="18" placeholder="비밀번호" required="required" value="1234" />
+                        </label>
+                    </dt>
+                    <dd><button onclick="admin.loginProc();">로그인</button></dd>
+                </dl>
+                <c:if test="${param.error=='1Z'}">
+                    <p style='display:block; color:red; margin:25px 0 0 0; font-size:14px;'>
+                        * 아이디, 비밀번호가 일치하는 정보가 없습니다. *
+                    </p>
+                </c:if>
+            </form>
+        </div>
+    </div>
+</div>
+</th:block>
+</html>

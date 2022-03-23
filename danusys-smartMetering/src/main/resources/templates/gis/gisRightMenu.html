@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="gisRightMenu">
+    <!-- //관제 팝업 -->
+    <div class="controlRNM" style="display:none;">
+        <h2 class="rnmTitle">수용가 상세정보<span><img id="rnmCloser" src="/images/common/iconClosed.svg"></span></h2>
+        <ul class="rnmTabButton">
+            <li id="basicInfo" class="active">기본사항</li>
+            <li id="deviceDetail">장비세부사항</li>
+            <li id="accountStats">수용가통계</li>
+            <li id="eventLog">이벤트발생로그</li>
+        </ul>
+
+        <!-- 기본사항 -->
+        <div id="basicInfoRNM" class="rnmContents">
+            <div class="rnmLocation">
+                <dl>
+                    <dt></dt>
+                    <dd><img src="/images/common/iconTarget.svg"></dd>
+                </dl>
+                <p id="accountAddress"></p>
+            </div>
+
+            <div id="accountInfo" class="rnmBox">
+                <h4>수용가 정보</h4>
+                <ul>
+                    <li>
+                        <span class="subtitle">수용가 명</span>
+                        <span id="accountNm"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">수용가 번호</span>
+                        <span id="accountNo"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">업체 명</span>
+                        <span id="companyNm"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">업체 코드</span>
+                        <span id="companyCd"></span>
+                    </li>
+                </ul>
+            </div>
+            <div id="manageState" class="rnmBox">
+                <h4>운영 상태 정보</h4>
+                <ul>
+                    <li>
+                        <span class="subtitle">수용가 상태</span>
+                        <span id="stateDisplay"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">계량기 상태</span>
+                        <span id="mtDown"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">장비 상태</span>
+                        <span id="statusDevice"></span>
+                    </li>
+                </ul>
+            </div>
+            <div id="eventInfo" class="rnmBox" style="display: none;">
+                <h4>최근 이벤트 정보</h4>
+                <ul>
+                    <li>
+                        <span class="subtitle">이벤트 분류</span>
+                        <span><span id="eventGroupName"></span><img src="/images/common/iconNext.svg"><span id="eventName"></span></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">발생 일시</span>
+                        <span id="eventStartDt"></span>
+                    </li>
+                </ul>
+            </div>
+            <!-- <div class="rnmBox">
+                <h4>검침원 정보</h4>
+                <ul>
+                    <li>
+                        <span class="subtitle">검침원 명</span>
+                        <span>정세연</span>
+                    </li>
+                    <li>
+                        <span class="subtitle">검침원 ID</span>
+                        <span>princessYeon</span>
+                    </li>
+                    <li>
+                        <span class="subtitle">연락처</span>
+                        <span>010-1234-5678</span>
+                    </li>
+                </ul>
+            </div> -->
+            <div class="rnmBox">
+                <h4>확인 사항</h4>
+                <textarea style="resize:none;"></textarea>
+            </div>
+        </div>
+
+
+        <!-- 장비세부사함 -->
+        <div id="deviceDetailRNM" class="rnmContents" style="display: none;">
+            <div class="rnmBox">
+                <h4>수용가 내 장비 현황</h4>
+                <ul>
+                    <li>
+                        <span class="subtitle">업체코드</span>
+                        <span id="companyCd"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">업체명</span>
+                        <span id="companyNm"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">장비운영코드</span>
+                        <span id="statusDevice"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">최종 접속시간</span>
+                        <span id="connectDtm"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="rnmBox">
+                <h4>장비 관리 - 단말기</h4>
+                <ul>
+                    <li>
+                        <span class="subtitle">단말기 번호</span>
+                        <span id="deviceSn"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">단말기 상태정보</span>
+                        <span id="stateDisplay"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="rnmBox">
+                <h4>장비 관리 - 계량기</h4>
+                <ul>
+                    <li>
+                        <span class="subtitle">계량기 번호</span>
+                        <span id="meterSn"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">계량기 구경</span>
+                        <span id="caliberCd"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">계량기 동작 상태</span>
+                        <span id="mtDown"></span>
+                    </li>
+                    <li>
+                        <span class="subtitle">계량기 동작 시간</span>
+                        <span id="mtDownDtm"></span>
+                    </li>
+                </ul>
+            </div>
+            <!--  <div class="rnmBox">
+                <h4>수용가 장소/주소</h4>
+                <ul>
+                    <li>
+                        <span class="subtitle">이벤트 상태</span>
+                        <span>수도 이상<img src="/images/common/iconNext.svg">수도 사용량 이상<img src="/images/common/iconNext.svg">누수의심<img src="/images/common/iconNext.svg">새벽 사용</span>
+                    </li>
+                    <li>
+                        <span class="subtitle">발생 일시</span>
+                        <span>2021년 05월 11일 오전 04:01</span>
+                    </li>
+                </ul>
+            </div> -->
+        </div>
+
+        <!-- 수용가통계 -->
+        <div id="accountStatsRNM" class="rnmContents" style="display:none;">
+            <div class="rnmLocation">
+                <dl>
+                    <dt><span class="state stateYellow"></span></dt>
+                    <dd><img src="/images/common/iconTarget.svg"></dd>
+                </dl>
+                <p id="accountAddress"></p>
+            </div>
+            <div class="rnmBox">
+                <h4>이벤트 통계</h4>
+                <div id="eventCntStats" class="count">
+                    <dl>
+                        <dt>전체 이벤트</dt>
+                        <dd id="group0"></dd>
+                    </dl>
+                    <dl>
+                        <dt>수도 이상 이벤트</dt>
+                        <dd id="group2"></dd>
+                    </dl>
+                    <dl>
+                        <dt>장비 이상 이벤트</dt>
+                        <dd id="group1"></dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="rnmBox rnmBoxTable">
+                <h4>수용가 정보</h4>
+                <div id="accountMinMax" class="count">
+                    <dl>
+                        <dt>최고 사용량</dt>
+                        <dd id="maxUseVal"></dd>
+                    </dl>
+                    <dl>
+                        <dt>최저 사용량</dt>
+                        <dd id="minUseVal"></dd>
+                    </dl>
+                </div>
+                <div class="table">
+                    <table id="datatablesUser">
+                        <colgroup>
+                            <col width="30%">
+                            <col width="35%">
+                            <col width="35%">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>일자</th>
+                            <th>총 사용량</th>
+                            <th>배터리 레벨</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- <tr>
+                            <td>2021-06-21</td>
+                            <td>35</td>
+                            <td>85%</td>
+                        </tr> -->
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 이벤트발생로그  -->
+        <div id="eventLogRNM" class="rnmContents" style="display:none;">
+            <div class="rnmBoxLog">
+                <div class="logListWrap">
+                    <!-- <div class="logList">
+                        <p><span class="circle circleBlue"></span></p>
+                        <dl>
+                            <dt><span class="subtitle subtitleBlue">수도 이상</span><img src="/images/common/iconNext.svg">수도 사용량 이상<img src="/images/common/iconNext.svg">고독사 의심</dt>
+                            <dd>발생 일시 : 2021년 05월 11일 오전 04:01</dd>
+                            <dd>종료 일시 : 2021년 05월 11일 오전 04:01</dd>
+                        </dl>
+                    </div>
+                    <div class="logList">
+                        <p><span class="circle circleGreen"></span></p>
+                        <dl>
+                            <dt><span class="subtitle subtitleGreen">장비 이상</span><img src="/images/common/iconNext.svg">통신불량<img src="/images/common/iconNext.svg">미수신</dt>
+                            <dd>발생 일시 : 2021년 05월 11일 오전 04:01</dd>
+                            <dd>종료 일시 : 2021년 05월 11일 오전 04:01</dd>
+                        </dl>
+                    </div>
+                    <div class="logList">
+                        <p><span class="circle circleBlue"></span></p>
+                        <dl>
+                            <dt><span class="subtitle subtitleBlue">수도 이상</span><img src="/images/common/iconNext.svg">유수율 이상<img src="/images/common/iconNext.svg">유수율 이상</dt>
+                            <dd>발생 일시 : 2021년 05월 11일 오전 04:01</dd>
+                            <dd>종료 일시 : 2021년 05월 11일 오전 04:01</dd>
+                        </dl>
+                    </div>
+                    <div class="logList">
+                        <p><span class="circle circleBlue"></span></p>
+                        <dl>
+                            <dt><span class="subtitle subtitleBlue">수도 이상</span><img src="/images/common/iconNext.svg">수도 사용량 이상<img src="/images/common/iconNext.svg">사용량 급증</dt>
+                            <dd>발생 일시 : 2021년 05월 11일 오전 04:01</dd>
+                            <dd>종료 일시 : 2021년 05월 11일 오전 04:01</dd>
+                        </dl>
+                    </div>
+
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <!--     <script>
+
+            $(".selectCheckTit").click(function(){
+                $(".selectCheckUL").show();
+            })
+        </script>
+        <script id="rendered-js">
+            $("#settingLnb .subMenu > a").click(function (e) {
+                $("#settingLnb ul ul").slideUp(), $(this).next().is(":visible") || $(this).next().slideDown(),
+                e.stopPropagation();
+            });
+        </script>
+        <script>
+            test.createTable($('#datatablesGroup'));
+            test.createTable($('#datatablesUser'));
+        </script> -->
+
+</th:block>
+</html>
