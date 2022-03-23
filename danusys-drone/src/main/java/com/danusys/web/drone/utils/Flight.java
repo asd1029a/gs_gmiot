@@ -1,12 +1,15 @@
 package com.danusys.web.drone.utils;
 
-import com.danusys.web.commons.tcp.socket.CustomServerSocket;
+
+import com.danusys.web.commons.socket.config.CustomServerSocket;
 import com.danusys.web.drone.dto.response.Gps;
+import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.model.DroneLogDetails;
 import com.danusys.web.drone.service.DroneDetailsService;
 import com.danusys.web.drone.service.DroneLogDetailsService;
 import com.danusys.web.drone.service.DroneLogService;
+import com.danusys.web.drone.service.DroneService;
 import com.google.gson.Gson;
 import io.dronefleet.mavlink.Mavlink2Message;
 import io.dronefleet.mavlink.MavlinkConnection;
@@ -50,6 +53,7 @@ public class Flight {
     private final Substring substring;
     private final DroneLogDetailsService droneLogDetailsService;
     private final DroneLogService droneLogService;
+    private final DroneService droneService;
 
     private MavlinkConnection connection = null;
     private Socket socket = null;
@@ -78,6 +82,8 @@ public class Flight {
 
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         //시간 초기화
+        //마지막에 추가됨
+        droneLog = inputDroneLog;
         isMissionAndDrone = true;
         int systemId = 1;
         int componentId = 1;
@@ -104,6 +110,8 @@ public class Flight {
                 droneLogDetailsSetMode.setParam6("0");
                 droneLogDetailsSetMode.setParam7("0");
                 droneLogDetailsService.saveDroneLogDetails(droneLogDetailsSetMode);
+
+
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -165,24 +173,14 @@ public class Flight {
 
             try {
 
-        //        socket = new Socket(tcpServerHost, tcpServerPort);
 
-//
-//
-//                ServerSocket server_socket = null;  //서버 생성을 위한 ServerSocket
-//                try{
-//                    server_socket = new ServerSocket(8600);
-//
-//                }catch(IOException e)
-//                {
-//                 log.info("해당 포트가 열려있습니다.");
-//                }
-//                socket = server_socket.accept();    //서버 생성 , Client 접속 대기
-////
-
-//
+                Drone searchDrone=new Drone();
+                searchDrone.setDroneDeviceName(droneLog.getDroneDeviceName());
+                Drone findDrone=droneService.findDrone(searchDrone);
+                int index=findDrone.getSocketIndex();
                 HashMap<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
-                socket=socketList.get(1);
+                log.info("socketIndex={}",index);
+                socket=socketList.get(2);
                 connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
 
 
@@ -229,16 +227,6 @@ public class Flight {
 
                         missionItemMap.put("missionItemInt0", missionItemInt0);
                         break;
-                    }else if (message.getPayload() instanceof Heartbeat) {
-                        MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
-                        heartbeat = Heartbeat.builder().autopilot(heartbeatMavlinkMessage.getPayload().autopilot())
-                                .type(heartbeatMavlinkMessage.getPayload().type())
-                                .systemStatus(heartbeatMavlinkMessage.getPayload().systemStatus())
-                                .baseMode()
-                                .mavlinkVersion(heartbeatMavlinkMessage.getPayload().mavlinkVersion())
-                                .build();
-                        connection.send2(systemId, componentId, heartbeat, linkId, timestamp, secretKey);
-
                     }
                 }
                 //new connection

@@ -5,8 +5,9 @@
 const account = {
     user: {
         logout: () => {
+            const domain = document.domain;
+            document.cookie = 'accessToken' + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;domain='+domain+';path=/';
             document.location.href="/";
-            document.cookie = 'accessToken' + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
         },
         eventHandler: () => {
             $("#searchBtn").on('click', (e) => {
