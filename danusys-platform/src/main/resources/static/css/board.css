@@ -294,7 +294,7 @@
 .popup div.popup_writing fieldset form dl.checkbox dd > span{flex: 0.3;}
 .popup div.popup_writing fieldset form dl.checkbox dd > span input[type="checkbox"] + label{line-height: 34px;}
 .popup div.popup_writing fieldset form dl.checkbox dd > span input[type="radio"] + label{line-height: 34px;}
-.popup div > .half_layout{display: flex; flex-direction: row; margin: 10px 20px 0px; padding: 0px 0px 20px; border-bottom: 1px solid #292c34;}
+.popup div > .half_layout{display: flex; flex-direction: row; margin: 10px 20px 0px; padding: 0px 0px 20px; border-bottom: 1px solid #292c34; min-height: 292px;}
 .popup div > .half_layout fieldset{border: none;}
 .popup div > .half_layout .list_search{border: none;}
 .popup div > .half_layout fieldset form{flex: 1;}
@@ -316,7 +316,7 @@
 .popup div.list_search .list_table{overflow: auto; flex: 1; border: 1px solid #292c34;}
 .popup div.list_search .list_table table{width: 100%;}
 .popup div.list_search .list_table table thead tr{height: 40px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
-.popup div.list_search .list_table table thead tr th{vertical-align: middle; font-size: 14px; color: #797d87; font-weight: bold;}
+.popup div.list_search .list_table table thead tr th{vertical-align: middle; font-size: 14px; color: #797d87; font-weight: bold; border-bottom: 1px solid #292c34;}
 .popup div.list_search .list_table table tbody tr{height: 50px; border-bottom: 1px solid #292c34; box-sizing: border-box; background-color: transparent;}
 .popup div.list_search .list_table table tbody tr:hover{background: #23252b;}
 .popup div.list_search .list_table table tbody td{vertical-align: middle; text-align: center; font-size: 14px; color: #dee0e4;}
@@ -326,6 +326,8 @@
 .popup div.list_search .list_table.table_authorize tbody tr td:nth-child(1){border-right: 2px solid #292c34;}
 .popup div.list_search .list_table table tbody td span input[type="radio"] + label,
 .popup div.list_search .list_table table tbody td span input[type="radio"] + label span{margin: 0px; padding: 0px;}
+.popup div.list_search .list_table .dataTables_scrollHead{display: table;}
+.popup div.list_search .list_table .dataTables_scrollBody{border-bottom: none;}
 
 /* statistics */
 .statistics{display: flex; height: calc(100% - 60px);}
