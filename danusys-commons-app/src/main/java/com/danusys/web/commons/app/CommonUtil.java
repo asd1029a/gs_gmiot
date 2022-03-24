@@ -54,7 +54,7 @@ public class CommonUtil {
 	}
 
 	public static List<String> inQryString(List<?> list, String joinStr){
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		list.stream().forEach(val -> {
 			result.add(joinStr + val.toString() + joinStr);
 		});

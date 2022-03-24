@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Map;
 
 @RestController
@@ -131,10 +132,18 @@ public class UserController {
       ,id와 패스워드를 빼고 넣었을경우 return -1 ,
      */
     @PutMapping()
-    public ResponseEntity<?> add(@RequestBody User user) {
+    public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) {
+        /* TODO : 트랜젝션 처리 요망 */
+        ObjectMapper objectMapper = new ObjectMapper();
+        User user = objectMapper.convertValue(paramMap, User.class);
+
+        int result = userService.add(user);
+        paramMap.put("userSeqList", Arrays.asList(result));
+        userInGroupService.add(paramMap);
+
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(userService.add(user));
+                .status(HttpStatus.OK)
+                .body(result);
     }
 
     /*
@@ -174,7 +183,7 @@ public class UserController {
     public ResponseEntity<?> del(@RequestBody User user) {
         userService.del(user);
         return ResponseEntity
-                .status(HttpStatus.OK).build();
+                .status(HttpStatus.OK).body("");
     }
 
     @GetMapping("/userCount")

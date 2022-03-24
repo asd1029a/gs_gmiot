@@ -225,10 +225,10 @@ const account = {
         addProc: () => {
             const formObj = $('#userAccountForm').serializeJSON();
             const $checkPassword = $("#checkPassword");
-            formObj.userGroupSeq = [];
+            formObj.userGroupSeqList = [];
             $('#userInGroupTable tbody tr').each((i, e) => {
                 if ($(e).find("input").prop('checked')) {
-                    formObj.userGroupSeq.push($(e).find("input").val());
+                    formObj.userGroupSeqList.push(Number($(e).find("input").val()));
                 }
             })
 
