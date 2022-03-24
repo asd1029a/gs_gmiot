@@ -3,7 +3,7 @@ package com.danusys.web.commons.auth.controller;
 import com.danusys.web.commons.auth.dto.request.UserRequest;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.service.UserInGroupService;
-import com.danusys.web.commons.auth.service.user.UserService;
+import com.danusys.web.commons.auth.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,22 +21,6 @@ public class UserController {
 
     private final UserService userService;
     private final UserInGroupService userInGroupService;
-
-    /*
-      name: add
-      url: /user
-      type: put
-      param: User user
-      do: 유저 저장
-      return: 저장된 userSeq,   userId로 이미 가입한 회원이 있을 경우(아이디중복)  return 0
-      ,id와 패스워드를 빼고 넣었을경우 return -1 ,
-     */
-    @PutMapping()
-    public ResponseEntity<?> add(@RequestBody User user) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(userService.add(user));
-    }
 
     /*
       name: idCheck
@@ -135,6 +119,22 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.getListGroupInUserPaging(paramMap));
+    }
+
+    /*
+      name: add
+      url: /user
+      type: put
+      param: User user
+      do: 유저 저장
+      return: 저장된 userSeq, userId로 이미 가입한 회원이 있을 경우(아이디중복)  return 0
+      ,id와 패스워드를 빼고 넣었을경우 return -1 ,
+     */
+    @PutMapping()
+    public ResponseEntity<?> add(@RequestBody User user) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userService.add(user));
     }
 
     /*
