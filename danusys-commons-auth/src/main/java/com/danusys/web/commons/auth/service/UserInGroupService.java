@@ -147,7 +147,6 @@ public class UserInGroupService {
 
     @Transactional
     public void delUserGroupSeq(int userGroupSeq) {
-        UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
-        userInGroupRepository.deleteByUserGroup(findUserGroup);
+        userInGroupRepository.deleteAllByUserGroupSeq(userGroupSeq);
     }
 }

@@ -24,16 +24,24 @@ public class UserGroupPermit {
     @Column(name = "insert_user_seq")
     private int insertUserSeq;
 
+    @Column(name = "user_group_seq")
+    private int userGroupSeq;
+    @Column(name = "permit_seq")
+    private int permitSeq;
+    @Column(name = "permit_menu_seq")
+    private int permitMenuSeq;
+
+    /* TODO : 다른 방법이 있을 듯한데... 더 알아보기 */
     @ManyToOne
-    @JoinColumn(name = "user_group_seq")
+    @JoinColumn(name = "user_group_seq", updatable = false, insertable = false)
     @JsonBackReference
     private UserGroup userGroup2;
 
     @OneToOne
-    @JoinColumn(name="permit_seq", referencedColumnName="code_seq")
+    @JoinColumn(name="permit_seq", referencedColumnName="code_seq", updatable = false, insertable = false)
     private Permit permit;
 
     @OneToOne
-    @JoinColumn(name="permit_menu_seq", referencedColumnName="code_seq")
+    @JoinColumn(name="permit_menu_seq", referencedColumnName="code_seq", updatable = false, insertable = false)
     private PermitMenu permitManu;
 }

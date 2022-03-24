@@ -214,32 +214,32 @@ public class UserService {
     }
 
     @Transactional
-    public int mod(UserRequest userRequest) {
-        User findUser = userRepository.findByUserSeq(userRequest.getUserSeq());
+    public int mod(User User) {
+        User findUser = userRepository.findByUserSeq(User.getUserSeq());
 
         if (findUser != null) {
-            if (userRequest.getPassword() != null) {
+            if (User.getPassword() != null) {
                 SHA256 sha256 = new SHA256();
                 try {
-                    String cryptoPassword = sha256.encrypt(userRequest.getPassword());
+                    String cryptoPassword = sha256.encrypt(User.getPassword());
                     findUser.setPassword("{SHA-256}" + cryptoPassword);
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
 
             }
-            if (userRequest.getUserName() != null)
-                findUser.setUserName(userRequest.getUserName());
-            if (userRequest.getEmail() != null)
-                findUser.setEmail(userRequest.getEmail());
-            if (userRequest.getTel() != null)
-                findUser.setTel(userRequest.getTel());
-            if (userRequest.getAddress() != null)
-                findUser.setAddress(userRequest.getAddress());
-            if (userRequest.getStatus() != null)
-                findUser.setStatus(userRequest.getStatus());
-            if (userRequest.getDetailAddress() != null)
-                findUser.setDetailAddress(userRequest.getDetailAddress());
+            if (User.getUserName() != null)
+                findUser.setUserName(User.getUserName());
+            if (User.getEmail() != null)
+                findUser.setEmail(User.getEmail());
+            if (User.getTel() != null)
+                findUser.setTel(User.getTel());
+            if (User.getAddress() != null)
+                findUser.setAddress(User.getAddress());
+            if (User.getStatus() != null)
+                findUser.setStatus(User.getStatus());
+            if (User.getDetailAddress() != null)
+                findUser.setDetailAddress(User.getDetailAddress());
 
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             findUser.setUpdateDt(timestamp);
@@ -263,6 +263,7 @@ public class UserService {
     public void del(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
         findUser.setStatus("2");
+//        userRepository.save(findUser);
     }
 
     public int checkId(String userId) {

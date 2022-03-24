@@ -2,6 +2,7 @@ package com.danusys.web.commons.auth.controller;
 
 import com.danusys.web.commons.auth.dto.request.UserRequest;
 import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -160,12 +161,13 @@ public class UserController {
       return : update된 userSeq , 잘못된 userSeq를 입력했을 경우 0 return
     */
     @PatchMapping()
-    public ResponseEntity<?> mod(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) {
         /* TODO : 트랜젝션 처리 요망 */
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> paramMap = objectMapper.convertValue(userRequest, Map.class);
-        int result = userService.mod(userRequest);
-        userInGroupService.delUserSeq(userRequest.getUserSeq());
+        User user = objectMapper.convertValue(paramMap, User.class);
+
+        int result = userService.mod(user);
+        userInGroupService.delUserSeq(user.getUserSeq());
         userInGroupService.add(paramMap);
         return ResponseEntity
                 .status(HttpStatus.OK)
