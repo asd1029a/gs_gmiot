@@ -59,7 +59,7 @@ const account = {
                     {data: "userName"},
                     {data: "tel"},
                     {data: "email", className: "alignLeft"},
-                    {data: "statusName"},
+                    {data: "userStatus.codeName"},
                     {data: "insertDt"},
                     {data: "lastLoginDt"},
                     {data: null}

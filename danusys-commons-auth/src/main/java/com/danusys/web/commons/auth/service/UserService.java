@@ -1,4 +1,4 @@
-package com.danusys.web.commons.auth.service.user;
+package com.danusys.web.commons.auth.service;
 
 
 import com.danusys.web.commons.app.CommonUtil;
@@ -9,6 +9,7 @@ import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserInGroup;
+import com.danusys.web.commons.auth.model.UserStatus;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
@@ -57,17 +58,16 @@ public class UserService {
 
         /* 키워드 검색조건 */
         String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
+        List<String> statusParam = CommonUtil.inQryString(CommonUtil.valiArrNull(paramMap, "status"), "'");
 
         Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword));
+                .or(UserSpecification.likeTel(keyword))
+                .or(UserSpecification.inStatus(statusParam));
 
         List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
-                .map(user -> {
-                    String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
-
-                    return new UserResponse(user, status);
-                })
+                .map(UserResponse::new)
                 .collect(Collectors.toList());
+
         resultMap.put("data", userResponseList);
 
         return resultMap;
@@ -79,24 +79,24 @@ public class UserService {
 
         /* 키워드 검색조건 */
         String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
+        List<String> statusParam = CommonUtil.inQryString(CommonUtil.valiArrNull(paramMap, "status"), "'");
 
         Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword));
+                .or(UserSpecification.likeTel(keyword))
+                .or(UserSpecification.likeId(keyword))
+                .or(UserSpecification.inStatus(statusParam));
 
         try {
             /* 페이지 및 멀티소팅 */
             Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
 
             Page<User> userPageList = userRepository.findAll(spec, pageable);
-            List<UserResponse> groupResponseList = userPageList.getContent().stream()
-                    .map(user -> {
-                        String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
-
-                        return new UserResponse(user, status);
-                    })
+            List<UserResponse> userResponseList = userPageList.getContent().stream()
+                    .map(UserResponse::new)
                     .collect(Collectors.toList());
+
             Map<String, Object> pagingMap = new HashMap<>();
-            pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과
+            pagingMap.put("data", userResponseList); // 페이징 + 검색조건 결과
             pagingMap.put("count", userPageList.getTotalElements()); // 검색조건이 반영된 총 카운트
             resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
         } catch (Exception e) {

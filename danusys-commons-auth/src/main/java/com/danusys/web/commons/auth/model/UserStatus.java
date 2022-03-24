@@ -7,12 +7,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Data
 @EqualsAndHashCode
 @Table(name = "v_user_status")
-public class UserStatus {
+public class UserStatus implements Serializable {
 
     @Id
     @Column(name="code_id")
