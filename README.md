@@ -15,6 +15,9 @@
 ### danusys-commons-crypto
 * 모듈명 : 암호화 라이브러리
 
+### danusys-commons-mqtt
+* 모듈명 : MQTT Client
+
 ### danusys-platform
 * 모듈명 : 광명 스마트시티 확산 사업(IoT 연계)
 * 서버포트 : 8082
