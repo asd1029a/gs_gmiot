@@ -20,9 +20,8 @@ import javax.annotation.Nullable;
 public class EventReqeustDTO {
     private Long facilitySeq;
     private Long stationSeq;
-    private int eventKind;
     private String facilityId;
-    private String eventKindNm;
+    private String eventKind;
     private String eventGrade;
     private String eventMessage;
 
