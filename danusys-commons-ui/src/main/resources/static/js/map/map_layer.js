@@ -1,4 +1,3 @@
-
 /**
  * @summary  점 데이터 obj로 layer 반환
  * */
@@ -107,21 +106,17 @@ class dataLayer {
 
         wfsSource.addFeatures(wfsFeatures);
 
-        //const styleCacheOne = style;
-        //const styleMulty = style;
         const clusterSource = new ol.source.Cluster({
-            distance : 50,
-            source: wfsSource
+            distance : 30,
+            source: wfsSource,
+            // createCluster: (p,l) => {
+            //     console.log(p,l);
+            //     return new ol.Feature({
+            //         geometry: p,
+            //         features: l
+            //     });
+            // }
         });
-
-        // clusters = new ol.layer.AnimatedCluster({
-        //     // title: 'Cctv Clusters',
-        //     animationDuration:0,
-        //     name: layerName,
-        //     source: clusterSource,
-        //     //visible: true,
-        //     style: style
-        // });
 
         clusters = new ol.layer.Vector({
             // title: 'Cctv Clusters',
@@ -133,42 +128,4 @@ class dataLayer {
 
         return clusters;
     }
-    
 }
-
-   // function (feature, resolution) => {
-   //      const size = feature.get('features').length;
-   //
-   //      mulStyle = styleCacheMul[size];
-   //      if(!mulStyle){
-   //      mulStyle = [new ol.style.Style({
-   //          image: new ol.style.Circle({
-   //              radius:13,
-   //              stroke: new ol.style.Stroke({
-   //                  color:'rgba(255,255,255,1)',
-   //                  width: 2,
-   //              }),
-   //              fill: new ol.style.Fill({
-   //                  color: 'cornflowerblue',
-   //              })
-   //          }),
-   //          text: new ol.style.Text({
-   //              text: size.toString(),
-   //              fill: new ol.style.Fill({
-   //                  color:'white',
-   //                  font: '13px'
-   //              })
-   //          })
-   //      })];
-   //      styleCacheMul[size] = mulStyle;
-   //  }
-   //      return mulStyle;
-   //  }
-
-
-
-//스타일
-//function style
-//text style
-//Icon style
-//Circle style

@@ -41,7 +41,7 @@ public class EventSqlProvider {
                 WHERE("code_seq in ('" +  StringUtils.join(facilityProblem, "', '") + "')");
             }else{
                 FROM("t_event t1 " +
-                        "LEFT JOIN t_common_code t2 on t1.event_kind = t2.code_seq "
+                        "LEFT JOIN t_common_code t2 on t1.event_kind = t2.code_value "
                         + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
             }
 

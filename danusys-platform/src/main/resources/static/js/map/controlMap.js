@@ -38,7 +38,7 @@ const layerStyle = {
 
             return new ol.style.Style({
                 image: new ol.style.Circle({
-                    radius:16.5,
+                    radius:10,
                     stroke: new ol.style.Stroke({
                         color: strokeColor,
                         width: 2,
@@ -54,19 +54,32 @@ const layerStyle = {
     //이벤트
     , event : (selectFlag) => {
         return (feature, resolution) => {
-            //console.log(feature);
-            let fillColor = selectFlag ? "white" : "red";
-            let strokeColor =  selectFlag ? "red" : "white";
+            let flag = selectFlag ? "_select" : "";
 
             const features = feature.get("features");
-            const key = ""; //이벤트 등급
+            //grade 중복제거
+            let list = features.filter((item1, idx1) => {
+                return features.findIndex((item2, idx2)=> {
+                    return item1.getProperties().eventGrade == item2.getProperties().eventGrade
+                }) == idx1;
+            });
+            //grade 오름차순 정렬
+            list.sort((a,b) => {
+                return a.getProperties().eventGrade - b.getProperties().eventGrade;
+            });
+
+            const grade = list[0].getProperties().eventGrade;
+            //이벤트 등급 (긴급 10 주의 20 과거 ?)
+            const gradeName  = {"10": "danger" ,"20": "caution"};
+
+            const key = "event_" + gradeName[grade] + flag;
             const size = features.length;
             let textStyle = null;
 
             if(size > 1) {
                 textStyle =  new ol.style.Text({
                     scale: 2,
-                    offsetY: -8,
+                    offsetY: -50,
                     offsetX: 10,
                     text: "+" + (size-1) ,
                     fill: new ol.style.Fill({
@@ -76,19 +89,19 @@ const layerStyle = {
                     font: 'Bold 10px Arial',
                     stroke: new ol.style.Stroke({
                         color: 'white',
-                        width: 2
+                        width: 3
                     })
                 });
             }
 
             return new ol.style.Style({
                 image: new ol.style.Icon({
-                    anchor : [15,43],
+                    anchor : [20,60],
                     anchorXUnits : 'pixel',
                     anchorYUnits : 'pixel',
-                    img : imgObj['event_caution'],//imgSrcObj[key],
+                    img : imgObj[key],
                     imgSize: [50,50],
-                    scale : 1.4
+                    scale : 1
                 }),
                 text: textStyle
             });

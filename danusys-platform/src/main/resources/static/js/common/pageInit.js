@@ -79,6 +79,7 @@ $(document).ready(() => {
     }
     // 관제
     else if(path === "/pages/mntr") {
+        svgToImage.init();
         mntr.init();
         mntr.eventHandler();
     }
