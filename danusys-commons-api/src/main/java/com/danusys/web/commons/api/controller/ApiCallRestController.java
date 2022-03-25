@@ -218,12 +218,13 @@ public class ApiCallRestController {
                 log.trace(list.toString());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             resultBody.put("code", "9999");
             return ResponseEntity.status(HttpStatus.OK)
                     .body(resultBody);
         }
 
-        resultBody.put("code", "1111");
+        resultBody.put("code", "0000");
         return ResponseEntity.status(HttpStatus.OK)
                 .body(resultBody);
     }

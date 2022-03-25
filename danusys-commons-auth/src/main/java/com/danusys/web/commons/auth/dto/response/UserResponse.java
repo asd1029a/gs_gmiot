@@ -1,6 +1,7 @@
 package com.danusys.web.commons.auth.dto.response;
 
 import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.model.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class UserResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp lastLoginDt;
     private String checked;
+    private UserStatus userStatus;
 
     public UserResponse(User user) {
         this.userSeq = user.getUserSeq();
@@ -45,22 +47,7 @@ public class UserResponse {
         this.updateUserSeq = user.getUpdateUserSeq();
         this.insertDt = user.getInsertDt();
         this.updateDt = user.getUpdateDt();
-    }
-    public UserResponse(User user, String statusName) {
-        this.userSeq = user.getUserSeq();
-        this.userId = user.getUserId();
-        this.userName = user.getUserName();
-        this.email = user.getEmail();
-        this.tel = user.getTel();
-        this.address = user.getAddress();
-        this.status = user.getStatus();
-        this.statusName = statusName;
-        this.detailAddress = user.getDetailAddress();
-        this.lastLoginDt = user.getLastLoginDt();
-        this.insertUserSeq = user.getInsertUserSeq();
-        this.updateUserSeq = user.getUpdateUserSeq();
-        this.insertDt = user.getInsertDt();
-        this.updateDt = user.getUpdateDt();
+        this.userStatus = user.getUserStatus();
     }
     public UserResponse(User user, boolean inGroup) {
         this.userSeq = user.getUserSeq();
@@ -70,7 +57,6 @@ public class UserResponse {
         this.tel = user.getTel();
         this.address = user.getAddress();
         this.status = user.getStatus();
-        this.statusName = statusName;
         this.detailAddress = user.getDetailAddress();
         this.lastLoginDt = user.getLastLoginDt();
         this.insertUserSeq = user.getInsertUserSeq();
@@ -78,5 +64,6 @@ public class UserResponse {
         this.insertDt = user.getInsertDt();
         this.updateDt = user.getUpdateDt();
         this.checked = inGroup ? "checked" : "unchecked";
+        this.userStatus = user.getUserStatus();
     }
 }

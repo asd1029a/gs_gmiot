@@ -8,6 +8,7 @@ import com.danusys.web.commons.auth.model.UserInGroup;
 import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -107,7 +108,7 @@ public class UserInGroupService {
         List<Integer> userSeqList = (List<Integer>) paramMap.get("userSeqList");
         List<Integer> userGroupSeqList = (List<Integer>) paramMap.get("userGroupSeqList");
         List<UserInGroup> userInGroupList = new ArrayList<>();
-        int insertUserSeq = (int) paramMap.get("insertUserSeq");
+        int insertUserSeq = LoginInfoUtil.getUserDetails().getUserSeq();
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userSeqList.forEach(userSeq -> {
@@ -146,7 +147,6 @@ public class UserInGroupService {
 
     @Transactional
     public void delUserGroupSeq(int userGroupSeq) {
-        UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
-        userInGroupRepository.deleteByUserGroup(findUserGroup);
+        userInGroupRepository.deleteAllByUserGroupSeq(userGroupSeq);
     }
 }

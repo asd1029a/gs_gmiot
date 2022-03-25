@@ -75,11 +75,11 @@
                                 <dt>사용 여부</dt>
                                 <dd>
                                     <span>
-                                        <input type="radio" id="group_status_use" name="groupStatus">
+                                        <input type="radio" id="group_status_use" name="userGroupStatus" data-value="0" checked>
                                         <label for="group_status_use"><span class="round"></span>사용</label>
                                     </span>
                                     <span>
-                                        <input type="radio" id="group_status_none" name="groupStatus">
+                                        <input type="radio" id="group_status_none" name="userGroupStatus" data-value="1">
                                         <label for="group_status_none"><span class="round"></span>사용 안함</label>
                                     </span>
                                 </dd>
@@ -89,7 +89,7 @@
                     <!-- 권한 설정 -->
                     <div class="list_search">
                         <p class="legend">권한 설정</p>
-                        <div class="list_table tableAuthorize">
+                        <div id="permitTable" class="list_table table_authorize">
                             <table>
                                 <thead>
                                 <tr>
@@ -107,19 +107,19 @@
                                     <td>대시보드</td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="dashboardAccess" name="dashboardAuthorize">
-                                            <label for="dashboardAccess"><span class="round"></span></label>
+                                            <input type="radio" id="dashboardNot" name="dashboard" data-value="--">
+                                            <label for="dashboardNot"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="dashboardOnlyRead" name="dashboardAuthorize">
-                                            <label for="dashboardOnlyRead"><span class="round"></span></label>
+                                            <input type="radio" id="dashboardRead" name="dashboard" data-value="r-">
+                                            <label for="dashboardRead"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="dashboardReadAndWrite" name="dashboardAuthorize">
+                                            <input type="radio" id="dashboardReadAndWrite" name="dashboard" data-value="rw" checked>
                                             <label for="dashboardReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>
@@ -128,19 +128,19 @@
                                     <td>관제</td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="monitoringAccess" name="monitoringAuthorize">
-                                            <label for="monitoringAccess"><span class="round"></span></label>
+                                            <input type="radio" id="monitoringNot" name="mntr" data-value="--">
+                                            <label for="monitoringNot"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="monitoringOnlyRead" name="monitoringAuthorize">
-                                            <label for="monitoringOnlyRead"><span class="round"></span></label>
+                                            <input type="radio" id="monitoringRead" name="mntr" data-value="r-">
+                                            <label for="monitoringRead"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="monitoringReadAndWrite" name="monitoringAuthorize">
+                                            <input type="radio" id="monitoringReadAndWrite" name="mntr" data-value="rw" checked>
                                             <label for="monitoringReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>
@@ -149,19 +149,19 @@
                                     <td>조회 및 관리</td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="inquiryAccess" name="inquiryAuthorize">
-                                            <label for="inquiryAccess"><span class="round"></span></label>
+                                            <input type="radio" id="inquiryNot" name="inqry" data-value="--">
+                                            <label for="inquiryNot"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="inquiryOnlyRead" name="inquiryAuthorize">
-                                            <label for="inquiryOnlyRead"><span class="round"></span></label>
+                                            <input type="radio" id="inquiryRead" name="inqry" data-value="r-">
+                                            <label for="inquiryRead"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="inquiryReadAndWrite" name="inquiryAuthorize">
+                                            <input type="radio" id="inquiryReadAndWrite" name="inqry" data-value="rw" checked>
                                             <label for="inquiryReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>
@@ -170,19 +170,19 @@
                                     <td>통계</td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="statisticsAccess" name="statisticsAuthorize">
-                                            <label for="statisticsAccess"><span class="round"></span></label>
+                                            <input type="radio" id="statisticsNot" name="stats" data-value="--">
+                                            <label for="statisticsNot"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="statisticsOnlyRead" name="statisticsAuthorize">
-                                            <label for="statisticsOnlyRead"><span class="round"></span></label>
+                                            <input type="radio" id="statisticsRead" name="stats" data-value="r-">
+                                            <label for="statisticsRead"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="statisticsReadAndWrite" name="statisticsAuthorize">
+                                            <input type="radio" id="statisticsReadAndWrite" name="stats" data-value="rw" checked>
                                             <label for="statisticsReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>
@@ -191,19 +191,19 @@
                                     <td>환경설정</td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="settingAccess" name="settingAuthorize">
-                                            <label for="settingAccess"><span class="round"></span></label>
+                                            <input type="radio" id="settingNot" name="config" data-value="--">
+                                            <label for="settingNot"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="settingOnlyRead" name="settingAuthorize">
-                                            <label for="settingOnlyRead"><span class="round"></span></label>
+                                            <input type="radio" id="settingRead" name="config" data-value="r-">
+                                            <label for="settingRead"><span class="round"></span></label>
                                         </span>
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="settingReadAndWrite" name="settingAuthorize">
+                                            <input type="radio" id="settingReadAndWrite" name="config" data-value="rw" checked>
                                             <label for="settingReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>

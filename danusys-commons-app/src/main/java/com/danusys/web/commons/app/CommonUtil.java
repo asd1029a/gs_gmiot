@@ -53,6 +53,14 @@ public class CommonUtil {
 		}
 	}
 
+	public static List<String> inQryString(List<?> list, String joinStr){
+		List<String> result = new ArrayList<>();
+		list.stream().forEach(val -> {
+			result.add(joinStr + val.toString() + joinStr);
+		});
+		return result;
+	}
+
 
 	public static boolean checkDataFilter(Map<String, String> map) {
 		for (String key : map.keySet()) {

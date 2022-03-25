@@ -3,6 +3,8 @@ package com.danusys.web.commons.auth.entity;
 import com.danusys.web.commons.auth.model.User;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
+
 /**
  *
  * 클래스이름 : UserSpecification
@@ -19,5 +21,11 @@ public class UserSpecification {
     }
     public static Specification<User> likeTel(String keyword) {
         return (root, query, cb) -> cb.like(root.get("tel"), "%" + keyword + "%");
+    }
+    public static Specification<User> likeId(String keyword) {
+        return (root, query, cb) -> cb.like(root.get("userId"), "%" + keyword + "%");
+    }
+    public static Specification<User> inStatus(List<String> status) {
+        return (root, query, cb) -> root.get("status").in(status);
     }
 }

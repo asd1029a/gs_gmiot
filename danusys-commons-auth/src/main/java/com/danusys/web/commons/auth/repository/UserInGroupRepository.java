@@ -27,6 +27,11 @@ public interface UserInGroupRepository extends JpaRepository<UserInGroup,Integer
     @Query("delete from UserInGroup where user.userSeq = :userSeq")
     void deleteAllByUserSeq(int userSeq);
 
+    @Transactional
+    @Modifying
+    @Query("delete from UserInGroup where userGroup.userGroupSeq = :groupSeq")
+    void deleteAllByUserGroupSeq(int groupSeq);
+
     Long deleteAllByUser(User user);
 
     Long deleteByUserAndUserGroup(User user, UserGroup userGroup);

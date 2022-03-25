@@ -42,7 +42,6 @@ public class EventService {
             Facility facility = facilityRepository.findByFacilityId(f.getFacilityId());
             f.setFacilitySeq(facility.getFacilitySeq());
             f.setStationSeq(facility.getStationSeq());
-            f.setEventKind(eventRepository.findEventKind(f.getEventKindNm()));
 
             eventList.add(f.toEntity());
         });

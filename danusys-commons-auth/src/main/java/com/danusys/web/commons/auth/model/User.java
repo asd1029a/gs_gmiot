@@ -2,6 +2,7 @@ package com.danusys.web.commons.auth.model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "t_user")
 public class User {
     @Id
@@ -74,4 +76,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserInGroup> userInGroup =new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "status", referencedColumnName = "code_value", updatable = false, insertable = false)
+    private UserStatus userStatus;
 }
