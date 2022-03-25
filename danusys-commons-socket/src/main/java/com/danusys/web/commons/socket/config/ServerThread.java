@@ -14,36 +14,34 @@ import java.util.HashMap;
  */
 
 public class ServerThread extends Thread {
-    ServerSocket serverSocket;
-    HashMap<Integer,Socket> socketList = new HashMap<>();
+    Socket socket;
     int count = 1;
+    HashMap<Integer,Socket> socketList = new HashMap<>();
 
-    public ServerThread(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
+    public ServerThread(Socket socket) {
+        this.socket = socket;
     }
     public HashMap<Integer,Socket> getSocketList(){
         return socketList;
     }
 
+
     @Override
     public void run () {
         try {
-            while (true) {
-                Socket socket = serverSocket.accept();
-                //OutputStream outputStream = socket.getOutputStream();
-                //outputStream.write("hello client \n".getBytes());
-                System.out.println("Thread " + count + "connected");
-                //ClientThread testThread = new ClientThread(socket, count);
-                //socketList.put(count,testThread.getSocket());
-                socketList.put(count,socket);
-                count++;
-            }
+            System.out.println("Thread " + count + "connected");
+            //OutputStream outputStream = socket.getOutputStream();
+            //outputStream.write("hello client \n".getBytes());
+            //ClientThread testThread = new ClientThread(socket, count);
+            //socketList.put(count,testThread.getSocket());
+            socketList.put(count,socket);
+            count++;
         } catch (Exception e) {
             System.out.println("    SERVER CLOSE    ");
             try {
-                serverSocket.close();
+                this.socket.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                socketList.remove(this);
             }
             count--;
         }
