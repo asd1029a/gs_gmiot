@@ -12,6 +12,7 @@ import java.util.Iterator;
 public class CustomServerSocket {
         public ServerSocket serverSocket =null;
         public Socket socket = null;
+        public ServerThread serverThread;
         ArrayList<ServerThread> threadList = new ArrayList<ServerThread>();
 
 
@@ -20,7 +21,7 @@ public class CustomServerSocket {
                 serverSocket = new ServerSocket(port); // 생성자 내부에 bind()가 있고, bind() 내부에 listen() 있음
                 while (true) {
                     socket = serverSocket.accept();
-                    ServerThread serverThread = new ServerThread(socket);
+                    serverThread = new ServerThread(socket);
                     threadList.add(serverThread);
                     serverThread.start();
                 }
