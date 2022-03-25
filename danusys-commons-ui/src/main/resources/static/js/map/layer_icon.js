@@ -10,9 +10,14 @@ const svgToImage = {
      * 이미지 경로 설정
      * */
     init() {
-        const rootPath = '/images/'; //icon svg 경로
+        const rootPath = '/images/default/'; //icon svg 경로
         //i(type) : 1~10
-        //imgSrcObj[''] = rootPath + '' + '.svg';
+        imgSrcObj['event_caution'] = rootPath + 'event_caution' + '.svg';
+
+        for (const [k, v] of Object.entries(imgSrcObj)) {
+            imgObj[k] = svgToImage.create(k);
+        }
+
     },
 
     /**

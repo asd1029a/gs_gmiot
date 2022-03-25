@@ -94,7 +94,7 @@ class dataLayer {
      * @param data: 데이터 Obj, layerName : 레이어명, projFlag : 좌표변환여부, style : 레이어스타일
      * @return clusterLayer
      * */
-    toCluster(data, layerName, projFlag) {
+    toCluster(data, layerName, projFlag, style) {
         let clusters;
         const wfsSource = new ol.source.Vector();
         let wfsFeatures = new ol.format.GeoJSON().readFeatures(data);
@@ -110,25 +110,25 @@ class dataLayer {
         //const styleCacheOne = style;
         //const styleMulty = style;
         const clusterSource = new ol.source.Cluster({
-            distance : 0,
+            distance : 50,
             source: wfsSource
         });
 
-        clusters = new ol.layer.AnimatedCluster({
-            // title: 'Cctv Clusters',
-            animationDuration:0,
-            name: layerName,
-            source: clusterSource,
-            //visible: true,
-            style: style
-        });
+        // clusters = new ol.layer.AnimatedCluster({
+        //     // title: 'Cctv Clusters',
+        //     animationDuration:0,
+        //     name: layerName,
+        //     source: clusterSource,
+        //     //visible: true,
+        //     style: style
+        // });
 
         clusters = new ol.layer.Vector({
             // title: 'Cctv Clusters',
-            name: layerName,
+            title: layerName,
             source: clusterSource,
             visible: true,
-            style: styleClusterStyle
+            style: style
         });
 
         return clusters;

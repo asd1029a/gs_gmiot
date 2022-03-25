@@ -13,14 +13,14 @@ public class StationSqlProvider {
         String start =  CommonUtil.validOneNull(paramMap,"start");
         String length =  CommonUtil.validOneNull(paramMap,"length");
 
-        SQL innerSql = new SQL() {{
-            SELECT("tf.station_seq, count(*) as facility_cnt");
-            FROM("t_facility tf");
-            GROUP_BY("tf.station_seq");
-        }};
+//        SQL innerSql = new SQL() {{
+//            SELECT("tf.station_seq, count(*) as facility_cnt");
+//            FROM("t_facility tf");
+//            GROUP_BY("tf.station_seq");
+//        }};
 
         SQL sql = new SQL() {{
-            SELECT("ts.*, t1.facility_cnt");
+            SELECT("ts.*, count(*) over(partition by latitude, longitude) as node_cnt");
             FROM("t_station ts");
             if(!keyword.equals("")) {
                 WHERE("ts.station_name LIKE '%" + keyword +"%'");
@@ -29,7 +29,7 @@ public class StationSqlProvider {
                 LIMIT(start);
                 OFFSET(length);
             }
-            INNER_JOIN("(" + innerSql.toString() + ") t1 on ts.station_seq = t1.station_seq");
+            //INNER_JOIN("(" + innerSql.toString() + ") t1 on ts.station_seq = t1.station_seq");
         }};
         System.out.println(sql.toString());
         return sql.toString();

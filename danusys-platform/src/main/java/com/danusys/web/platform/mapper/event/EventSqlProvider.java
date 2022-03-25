@@ -27,18 +27,22 @@ public class EventSqlProvider {
                     ",t2.code_name," +
                     "'' as station_seq, '' as station_name, '' as station_kind, " +
                     "'' as dong_short_nm, '' as address, " +
-                    "'' as facility_seq, '' as facility_kind");
+                    "'' as facility_seq, '' as facility_kind"
+                    + ",t3.longitude, t3.latitude" );
             if(facilityDirection != null && !facilityDirection.isEmpty()) {
                 FROM("t_event t1 " +
-                        "LEFT JOIN v_facility_direction t2 on t1.event_kind = t2.code_seq");
+                        "LEFT JOIN v_facility_direction t2 on t1.event_kind = t2.code_seq "
+                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
                 WHERE("code_seq in ('" + StringUtils.join(facilityDirection, "', '") + "')");
             }else if(facilityProblem != null && !facilityProblem.isEmpty()) {
                 FROM("t_event t1 " +
-                        "LEFT JOIN v_facility_problem t2 on t1.event_kind = t2.code_seq");
+                        "LEFT JOIN v_facility_problem t2 on t1.event_kind = t2.code_seq "
+                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
                 WHERE("code_seq in ('" +  StringUtils.join(facilityProblem, "', '") + "')");
             }else{
                 FROM("t_event t1 " +
-                        "LEFT JOIN t_common_code t2 on t1.event_kind = t2.code_seq");
+                        "LEFT JOIN t_common_code t2 on t1.event_kind = t2.code_seq "
+                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
             }
 
             if(!keyword.equals("")) {

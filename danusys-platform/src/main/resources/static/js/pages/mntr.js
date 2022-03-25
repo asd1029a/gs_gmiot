@@ -37,6 +37,8 @@ const mntr = {
             }
         ];
 
+        svgToImage.init();
+
         //지도 생성
         let map = new mapCreater('map',0);
         map.createMousePosition('mousePosition');
@@ -51,7 +53,7 @@ const mntr = {
         window.measure = measure;
 
         //맵 이동 (move end) 이벤트
-        map.setMapEventListener('moveend',(e) => {
+        map.setMapEventListener('moveend',e => {
             //동네 날씨 기능
             centerVilageInfo(e);
         });
@@ -66,7 +68,13 @@ const mntr = {
                 }
             , style :
                 feature => {
-                    const id = feature.getId().replace(/[0-9]/gi, '');
+                    let id = "";
+                    //클러스터 일때
+                    if(feature.getProperties().features != undefined) {
+                        id = feature.getProperties().features[0].getId().replace(/[0-9]/gi,'');
+                    } else { //클러스터 아닐때
+                        id = feature.getId().replace(/[0-9]/gi,'');
+                    }
                     const styleFunc = layerStyle[id](true);
                     return styleFunc(feature);
                 }
@@ -76,8 +84,17 @@ const mntr = {
         layerSelect.on('select', function(evt){
             const target = evt.selected[0];
             if(target) {
-                const targetType = target.getId().replace(/[0-9]/gi,'');
-                clickIcon(targetType,target.getProperties());
+                let targetType = "";
+                let targetFeature = "";
+                //클러스터 일때
+                if(target.getProperties().features != undefined) {
+                    targetType = target.getProperties().features[0].getId().replace(/[0-9]/gi,'');
+                    targetFeature = target.getProperties().features;
+                } else { //클러스터 아닐때
+                    targetType = target.getId().replace(/[0-9]/gi,'');
+                    targetFeature = target;
+                }
+                clickIcon(targetType, targetFeature);
             }
         });
 
@@ -85,12 +102,13 @@ const mntr = {
         //     console.log(result);
         // });
         //개소 레이어
-        station.getListGeoJson({} ,(result) => {
+        station.getListGeoJson({} ,result => {
             //console.log(result);
-            let stationLayer = new dataLayer('map')
-                .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
-            map.addLayer(stationLayer);
-            window.lyControl.find('stationLayer').set('selectable',true);
+           let stationLayer = new dataLayer('map')
+                // .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
+               .toCluster(result, 'stationLayer', true, layerStyle.station(false));
+           map.addLayer(stationLayer);
+           window.lyControl.find('stationLayer').set('selectable',true);
             //select
            //window.lyControl.find('stationLayer').set('selectable', true);
 
@@ -114,29 +132,57 @@ const mntr = {
             // window.map.addLayer(heat);
         });
 
-        // facility.getListGeoJson({}, (result) => {
-        //    // console.log(result);
-        //     let result1 =
-        //     {
-        //         type: 'FeatureCollection',
-        //         name: 'sample',
-        //         crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
-        //         features: [
-        //             { type: 'Feature', id: 'facility123', properties: { id: 123 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
-        //             { type: 'Feature', id: 'facility234', properties: { id: 234 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
-        //             { type: 'Feature', id: 'facility345', properties: { id: 345 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
-        //             { type: 'Feature', id: 'facility456', properties: { id: 456 }, geometry: { type: 'Point', coordinates: [ 126.73797079693405, 37.3197810464005 ] } },
-        //             { type: 'Feature', id: 'facility567', properties: { id: 567 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
-        //             { type: 'Feature', id: 'facility678', properties: { id: 678 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
-        //             { type: 'Feature', id: 'facility789', properties: { id: 789 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
-        //         ]
-        //     };
-        //
-        //     let facilityLayer = new dataLayer('map')
-        //         .fromGeoJSon(result1,'facilityLayer', true, layerStyle.facility(false));
-        //     map.addLayer(facilityLayer);
-        //     window.lyControl.find('facilityLayer').set('selectable',true);
-        // });
+        //이벤트 레이어
+        event.getListGeoJson({}, result => {
+            let eventLayer = new dataLayer('map')
+                // .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
+                .toCluster(result, 'eventLayer', true, layerStyle.event(false));
+            map.addLayer(eventLayer);
+            window.lyControl.find('eventLayer').set('selectable',true);
+        });
+
+        //축척별 레이어 반응
+        map.setMapViewEventListener('propertychange' ,e => {
+            if(String(e.key)=="resolution"){
+                const zoom = map.map.getView().getZoom();
+                if(zoom > 10){ //13 ~ 9.xxx
+                    window.lyControl.find("stationLayer").getSource().setDistance(0);
+                    window.lyControl.on('stationLayer');
+                } else if((10 >= zoom) && (zoom >=5)) { //10 ~ 5
+                    window.lyControl.find("stationLayer").getSource().setDistance(50);
+                    window.lyControl.on('stationLayer');
+                } else { //4.xxx ~ 0
+                    window.lyControl.off('stationLayer');
+                }
+            }
+
+
+        });
+
+        facility.getListGeoJson({}, (result) => {
+           // console.log(result);
+            let result1 =
+            {
+                type: 'FeatureCollection',
+                name: 'sample',
+                crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+                features: [
+                    { type: 'Feature', id: 'facility123', properties: { id: 123, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
+                    { type: 'Feature', id: 'facility234', properties: { id: 234, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
+                    { type: 'Feature', id: 'facility345', properties: { id: 345, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+                    { type: 'Feature', id: 'facility456', properties: { id: 456, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+                    { type: 'Feature', id: 'facility567', properties: { id: 567, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
+                    { type: 'Feature', id: 'facility678', properties: { id: 678, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
+                    { type: 'Feature', id: 'facility789', properties: { id: 789, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
+                ]
+            };
+
+            let facilityLayer = new dataLayer('map')
+                .fromGeoJSon(result1,'facilityLayer', true, layerStyle.facility(false));
+                //.toCluster(result1,'facilityLayer', true, layerStyle.station(false));
+            map.addLayer(facilityLayer);
+            window.lyControl.find('facilityLayer').set('selectable',true);
+        });
 
         // event.getListGeoJson({}, (result) => {
         //    // console.log(result);
@@ -335,29 +381,6 @@ const mntr = {
 
 
     }
-    , create : () => {
-        /* 다중 셀렉트 박스 */
-        // $.each($(".dropdown_checkbox"), (idx, item) => {
-        //     comm.createMultiSelectBox(item);
-        // });
-        // const pObj = {
-        //     draw : null
-        //     , type: "stationKind"
-        // }
-        // commonCode.getList( pObj , (result) => {
-        //     console.log(result);
-        // });
-        //
-        // const pObj2 = {
-        //     draw : null
-        //     , type : "facilityKind"
-        // }
-        // commonCode.getList( pObj , (result) => {
-        //     console.log(result);
-        // });
-    }
-
-
 }
 
 /**

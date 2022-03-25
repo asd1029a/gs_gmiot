@@ -9,43 +9,90 @@ const layerStyle = {
      * @selectFlag 선택시 스타일
      * */
     station : (selectFlag) => {
-        return feature => {
-            let fillColor = selectFlag ? "white" : "red";
-            let strokeColor =  selectFlag ? "red" : "white";
+        return (feature, resolution) => {
+            //console.log(feature);
+            let fillColor = selectFlag ? "white" : "#6c8ce6";
+            let strokeColor =  selectFlag ? "#6c8ce6" : "white";
 
-            const cnt = feature.getProperties().facilityCnt;
-            const sty = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius:13,
-                        stroke: new ol.style.Stroke({
-                            color: strokeColor,
-                            width: 2,
-                        }),
-                        fill: new ol.style.Fill({
-                            color: fillColor,
-                        })
+            const features = feature.get("features");
+            const size = features.length;
+            let textStyle = null;
+
+             if(size > 1) {
+                 textStyle =  new ol.style.Text({
+                     scale: 2,
+                     offsetY: -8,
+                     offsetX: 10,
+                     text: "+" + (size-1) ,
+                     fill: new ol.style.Fill({
+                         color:'black',
+                         width: 3
+                     }),
+                     font: 'Bold 10px Arial',
+                     stroke: new ol.style.Stroke({
+                         color: 'white',
+                         width: 2
+                     })
+                 });
+             }
+
+            return new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius:16.5,
+                    stroke: new ol.style.Stroke({
+                        color: strokeColor,
+                        width: 2,
                     }),
-                    text: new ol.style.Text({
-                        scale: 2,
-                        offsetY: -12,
-                        offsetX: 14,
-                        text: "+" + String(cnt),
-                        fill: new ol.style.Fill({
-                            color:'black',
-                            font: '13px'
-                        }),
-                        stroke: new ol.style.Stroke({
-                            color: 'white',
-                            width: 1
-                        })
+                    fill: new ol.style.Fill({
+                        color: fillColor
                     })
-                });
-            return sty;
+                }),
+                text: textStyle
+            });
         }
     }
     //이벤트
-    , event : () => {
-        return null;
+    , event : (selectFlag) => {
+        return (feature, resolution) => {
+            //console.log(feature);
+            let fillColor = selectFlag ? "white" : "red";
+            let strokeColor =  selectFlag ? "red" : "white";
+
+            const features = feature.get("features");
+            const key = ""; //이벤트 등급
+            const size = features.length;
+            let textStyle = null;
+
+            if(size > 1) {
+                textStyle =  new ol.style.Text({
+                    scale: 2,
+                    offsetY: -8,
+                    offsetX: 10,
+                    text: "+" + (size-1) ,
+                    fill: new ol.style.Fill({
+                        color:'black',
+                        width: 3
+                    }),
+                    font: 'Bold 10px Arial',
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 2
+                    })
+                });
+            }
+
+            return new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor : [15,43],
+                    anchorXUnits : 'pixel',
+                    anchorYUnits : 'pixel',
+                    img : imgObj['event_caution'],//imgSrcObj[key],
+                    imgSize: [50,50],
+                    scale : 1.4
+                }),
+                text: textStyle
+            });
+        }
     }
     //시설물
     , facility : (selectFlag) => {
@@ -129,14 +176,23 @@ const mapPopupContent = {
 function clickIcon(layerType, layerObj) {
     $('.area_right').show(); //임시
     window.map.updateSize();
+
     switch (layerType)  {
         case "station":
             ///개소 클릭 이벤트
-            console.log(layerObj);
+            layerObj.forEach(obj => {
+               console.log(obj.getProperties());
+            });
             return false;
         case "facility" :
             //시설물 클릭 이벤트
             console.log(layerObj);
+            return false;
+        case "event" :
+            //이벤트 클릭 이벤트
+            layerObj.forEach(obj => {
+                console.log(obj.getProperties());
+            });
             return false;
         default :
             ////////////////////
