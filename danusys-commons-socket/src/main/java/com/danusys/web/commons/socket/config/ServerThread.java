@@ -14,36 +14,43 @@ import java.util.HashMap;
  */
 
 public class ServerThread extends Thread {
-    Socket socket;
-    int count = 1;
+    ServerSocket serverSocket;
     HashMap<Integer,Socket> socketList = new HashMap<>();
+    public Socket socket = null;
+    int count = 1;
 
-    public ServerThread(Socket socket) {
-        this.socket = socket;
+    public ServerThread(ServerSocket serverSocket) {
+        this.serverSocket = serverSocket;
     }
     public HashMap<Integer,Socket> getSocketList(){
         return socketList;
     }
 
-
     @Override
     public void run () {
         try {
-            System.out.println("Thread " + count + "connected");
-            //OutputStream outputStream = socket.getOutputStream();
-            //outputStream.write("hello client \n".getBytes());
-            //ClientThread testThread = new ClientThread(socket, count);
-            //socketList.put(count,testThread.getSocket());
-            socketList.put(count,socket);
-            count++;
-        } catch (Exception e) {
-            System.out.println("    SERVER CLOSE    ");
-            try {
-                this.socket.close();
-            } catch (IOException ex) {
-                socketList.remove(this);
+            while (true) {
+                socket = serverSocket.accept();
+                //OutputStream outputStream = socket.getOutputStream();
+                //outputStream.write("hello client \n".getBytes());
+                System.out.println("Thread " + count + "connected");
+                //ClientThread testThread = new ClientThread(socket, count);
+                //socketList.put(count,testThread.getSocket());
+                socketList.put(count,socket);
+                count++;
             }
-            count--;
+        } catch(IOException e) {
+
+            System.out.println("통신소켓 생성불가");
+            if(!socket.isClosed()) {
+                try {
+                    System.out.println("소켓 삭제");
+                    socketList.remove(this);
+                    socket.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }
 }
