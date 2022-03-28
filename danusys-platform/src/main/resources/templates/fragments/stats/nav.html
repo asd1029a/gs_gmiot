@@ -5,8 +5,12 @@
             <li id="one" class="on">
                 <a href="#one">이벤트 발생 통계</a>
                 <ul class="accordion_sub_menu">
-                    <li><a href="/pages/stats/statistics_01">스마트분전함 이벤트</a></li>
-                    <li><a href="/pages/stats/statistics_02">드론 관제 이벤트</a></li>
+                    <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
+                    <li th:if="${municipality == '41210000'}"><a href="/pages/stats/statistics_03">스마트폴 이벤트</a></li>
+                    <li th:if="${municipality == '41210000'}"><a href="/pages/stats/statistics_04">스마트 정류장 이벤트</a></li>
+                    <li th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics_01">스마트분전함 이벤트</a></li>
+                    <li th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics_02">드론 관제 이벤트</a></li>
+                    </th:block>
                 </ul>
             </li>
         </ul>

@@ -22,7 +22,7 @@ $(document).ready(() => {
 
     /* 다중 셀렉트 박스 */
     $.each($(".dropdown_checkbox"), (idx, item) => {
-        comm.createMultiSelectBox(item)
+        comm.createMultiSelectBox(item);
     });
 
     /* 검색조건 초기화 버튼 */
@@ -46,15 +46,15 @@ $(document).ready(() => {
     /* 페이지별 공통 기능 */
     // 조회/관리
     if(path === "/pages/inqry/event1") {
-        event.eventHandler($('#cityEventTable'),"city");
-        event.create($('#cityEventTable'),"city");
+        // event.eventHandler($('#cityEventTable'),"city");
+        // event.create($('#cityEventTable'),"city");
     } else if(path === "/pages/inqry/event2") {
-        event.eventHandler($('#troubleEventTable'),"trouble");
-        event.create($('#troubleEventTable'),"trouble");
+        // event.eventHandler($('#troubleEventTable'),"trouble");
+        // event.create($('#troubleEventTable'),"trouble");
     } else if(path === "/pages/inqry/station") {
-        station.create();
+        // station.create();
     } else if(path === "/pages/inqry/facilities") {
-        facility.create();
+        // facility.create();
     } else if(path === "/pages/inqry/eventCabinet") {
         event.eventHandler($('#cabinetEventTable'), 'cabinet');
         event.create($('#cabinetEventTable'), 'cabinet');

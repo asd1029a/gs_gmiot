@@ -17,51 +17,24 @@
             <h6>스마트분전함 이벤트 발생 통계 검색</h6>
             <form>
                 <div>
-                    <dl class="selectbox_set">
-                        <dt>이벤트 종류</dt>
-                        <dd>
-                            <div class="dropdown_checkbox">
-                                <p class="checkbox_title select">이벤트 종류 선택</p>
-                                <ul class="checkbox_list list"></ul>
-                            </div>
+                    <p>이벤트 종류</p>
+                    <dl class="dropdown_checkbox">
+                        <dt class="checkbox_title select_title">이벤트 종류</dt>
+                        <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
-                    <dl class="selectbox_set">
-                        <dt>행정구역</dt>
-                        <dd>
-                            <div class="dropdown_checkbox">
-                                <p class="checkbox_title select">행정구역 선택</p>
-                                <ul class="checkbox_list list"></ul>
-                            </div>
+                    <p>행정구역</p>
+                    <dl class="dropdown_checkbox">
+                        <dt class="checkbox_title select_title">행정구역</dt>
+                        <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
-                    <dl class="selectbox_set">
-                        <dt>장소유형</dt>
-                        <dd>
-                            <div class="dropdown_checkbox">
-                                <p class="checkbox_title ">장소유형 선택</p>
-                                <ul class="checkbox_list ">
-                                    <li>
-                                        <span>
-											<input type="checkbox" id="districtALL" name="">
-											<label for="districtALL"><span></span>전체</label>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span>
-											<input type="checkbox" id="districtFind01" name="">
-											<label for="districtFind01"><span></span>산업단지</label>
-                                        </span>
-                                        <span>
-											<input type="checkbox" id="districtFind02" name="">
-											<label for="districtFind02"><span></span>장소유형</label>
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
+                    <p>장소유형</p>
+                    <dl class="dropdown_checkbox">
+                        <dt class="checkbox_title select_title">장소유형</dt>
+                        <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
-                </div>
                 <div>
                     <dl class="checkbox_set">
                         <dt>이벤트 등급</dt>
@@ -83,10 +56,10 @@
                         <dd><input type="date" class="input_date"></dd>
                         <span>까지</span>
                     </dl>
-                    <dl class="search_text_set">
-                        <dd class="button"><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</dd>
-                        <dd class="button"><i><img src="/images/default/search.svg"></i>검색</dd>
-                    </dl>
+                    <ul class="button">
+                        <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
+                        <li id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</li>
+                    </ul>
                 </div>
             </form>
         </article>

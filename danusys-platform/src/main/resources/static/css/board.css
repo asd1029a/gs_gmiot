@@ -355,9 +355,20 @@
 .statistics_content .graph_contents .graph_title dd span:active{color: #dee0e4; background: #3a66e5;}
 .statistics_content .graph_contents .graph_area{flex: 1; background: #26282f;}
 
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
 
-
-
-
-
-
+@keyframes fadeout {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

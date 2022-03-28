@@ -7,11 +7,14 @@
 <th:block layout:fragment="menu">
     <aside class="lnb">
         <ul>
-            <li class="active" data-value="smartPower">스마트분전함</li>
-            <li data-value="drone">드론<br>관제</li>
+            <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
+            <li th:if="${municipality == '41210000'}" data-value="smartPole" class="active">스마트 폴</li>
+            <li th:if="${municipality == '41210000'}" data-value="smartBusStop">스마트 정류장</li>
+            <li th:if="${municipality == '45210000'}" data-value="smartPower" class="active">스마트 분전함</li>
+            <li th:if="${municipality == '45210000'}" data-value="drone">드론<br>관제</li>
+            <li th:if="${municipality == '45210000'}" data-value="smart">스마트김제</li>
+            </th:block>
             <li data-value="addressPlace">주소<br>장소</li>
-            <li data-value="smart">스마트김제</li>
-            <li data-value="etc">추가<br>메뉴</li>
         </ul>
     </aside>
 </th:block>

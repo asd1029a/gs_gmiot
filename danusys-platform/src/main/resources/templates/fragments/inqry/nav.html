@@ -1,14 +1,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="navFragment">
     <aside class="accordion_menu accordion">
+        <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
         <ul class="accordion">
             <li id="one" class="multi">
                 <a href="#one">이벤트 조회<span>20</span></a>
-                <ul class="accordion_sub_menu" style="height: 240px;"> <!--임시 css-->
+                <ul class="accordion_sub_menu"> <!--임시 css-->
                     <li id="event1"><a href="/pages/inqry/event1">스마트 도시 이벤트<span>12</span></a></li>
                     <li id="event2"><a href="/pages/inqry/event2">시설물 장애 이벤트<span>8</span></a></li>
-                    <li id="eventCabinet"><a href="/pages/inqry/eventCabinet">스마트분전함 이벤트<span>8</span></a></li>
-                    <li id="eventDron"><a href="/pages/inqry/eventDron">드론 관제 이벤트<span>8</span></a></li>
+                    <li th:if="${municipality == '45210000'}" id="eventCabinet"><a href="/pages/inqry/eventCabinet">스마트분전함 이벤트<span>8</span></a></li>
+                    <li th:if="${municipality == '45210000'}" id="eventDron"><a href="/pages/inqry/eventDron">드론 관제 이벤트<span>8</span></a></li>
                 </ul>
             </li>
             <li id="station">
@@ -17,13 +18,14 @@
             <li id="facilities">
                 <a href="/pages/inqry/facilities">시설물 관리<span>58</span></a>
             </li>
-            <li id="five">
+            <li th:if="${municipality == '45210000'}" id="five">
                 <a href="#five">통신 로그 조회</a>
             </li>
-            <li id="six">
+            <li th:if="${municipality == '45210000'}" id="six">
                 <a href="#six">전력량 조회</a>
             </li>
         </ul>
+        </th:block>
     </aside>
 </th:block>
 </html>
