@@ -1,11 +1,13 @@
 package com.danusys.web.commons.auth.controller;
 
 import com.danusys.web.commons.auth.dto.request.UserGroupPermitRequest;
+import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserGroupPermit;
 import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserGroupPermitService;
 import com.danusys.web.commons.auth.service.UserGroupService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Map;
 
 @RestController
@@ -129,10 +132,21 @@ public class UserGroupController {
        return : 저장된 groupSeq
      */
     @PutMapping()
-    public ResponseEntity<?> add(@RequestBody UserGroup userGroup) {
+    public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) {
+        /* TODO : 트랜젝션 처리 요망 */
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroup userGroup = objectMapper.convertValue(paramMap, UserGroup.class);
+
+        int result = userGroupService.add(userGroup);
+        paramMap.put("userGroupSeqList", Arrays.asList(result));
+        paramMap.put("userGroupSeq", result);
+        userInGroupService.add(paramMap);
+
+        userGroupPermitService.add(paramMap);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userGroupService.add(userGroup));
+                .body(result);
     }
 
     /*
@@ -144,10 +158,22 @@ public class UserGroupController {
        return : 저장된 groupSeq groupSeq로 조회한 group이 없을경우 0 리턴
      */
     @PatchMapping()
-    public ResponseEntity<?> mod(@RequestBody UserGroup userGroup) {
+    public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) {
+        /* TODO : 트랜젝션 처리 요망 */
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroup userGroup = objectMapper.convertValue(paramMap, UserGroup.class);
+
+        int result = userGroupService.mod(userGroup);
+        userInGroupService.delUserGroupSeq(userGroup.getUserGroupSeq());
+        userInGroupService.add(paramMap);
+
+        /* TODO : 삭제 구현 덜됨 */
+//        userGroupPermitService.del(paramMap);
+        userGroupPermitService.add(paramMap);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userGroupService.mod(userGroup));
+                .body(result);
     }
 
     /*
@@ -166,16 +192,16 @@ public class UserGroupController {
                 .status(HttpStatus.OK).build();
     }
 
-    @PutMapping("/groupPermit")
-    public ResponseEntity<?> addPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
-//        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
-        UserGroupPermit userGroupPermit = new UserGroupPermit();
-        userGroupPermit.setInsertUserSeq(userGroupPermitRequest.getInsertUserSeq());
-        userGroupPermitService.add(userGroupPermit
-                , userGroupPermitRequest.getUserGroupSeq(), userGroupPermitRequest.getPermitSeq());
-        return ResponseEntity
-                .status(HttpStatus.OK).build();
-    }
+//    @PutMapping("/groupPermit")
+//    public ResponseEntity<?> addPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
+////        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
+//        UserGroupPermit userGroupPermit = new UserGroupPermit();
+//        userGroupPermit.setInsertUserSeq(userGroupPermitRequest.getInsertUserSeq());
+//        userGroupPermitService.add(userGroupPermit
+//                , userGroupPermitRequest.getUserGroupSeq(), userGroupPermitRequest.getPermitSeq());
+//        return ResponseEntity
+//                .status(HttpStatus.OK).build();
+//    }
 
 
     @DeleteMapping("/groupPermit")

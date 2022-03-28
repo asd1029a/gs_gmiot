@@ -1,4 +1,4 @@
-package com.danusys.web.commons.auth.service.user;
+package com.danusys.web.commons.auth.service;
 
 
 import com.danusys.web.commons.app.CommonUtil;
@@ -9,6 +9,7 @@ import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserInGroup;
+import com.danusys.web.commons.auth.model.UserStatus;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
@@ -57,17 +58,16 @@ public class UserService {
 
         /* 키워드 검색조건 */
         String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
+        List<String> statusParam = CommonUtil.inQryString(CommonUtil.valiArrNull(paramMap, "status"), "'");
 
         Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword));
+                .or(UserSpecification.likeTel(keyword))
+                .or(UserSpecification.inStatus(statusParam));
 
         List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
-                .map(user -> {
-                    String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
-
-                    return new UserResponse(user, status);
-                })
+                .map(UserResponse::new)
                 .collect(Collectors.toList());
+
         resultMap.put("data", userResponseList);
 
         return resultMap;
@@ -79,24 +79,24 @@ public class UserService {
 
         /* 키워드 검색조건 */
         String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
+        List<String> statusParam = CommonUtil.inQryString(CommonUtil.valiArrNull(paramMap, "status"), "'");
 
         Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword));
+                .or(UserSpecification.likeTel(keyword))
+                .or(UserSpecification.likeId(keyword))
+                .or(UserSpecification.inStatus(statusParam));
 
         try {
             /* 페이지 및 멀티소팅 */
             Pageable pageable = PagingUtil.getPageableWithSort((int) paramMap.get("start"), (int) paramMap.get("length"), new ArrayList<>());
 
             Page<User> userPageList = userRepository.findAll(spec, pageable);
-            List<UserResponse> groupResponseList = userPageList.getContent().stream()
-                    .map(user -> {
-                        String status = userStatusRepository.findByCodeValue(user.getStatus()).getCodeName();
-
-                        return new UserResponse(user, status);
-                    })
+            List<UserResponse> userResponseList = userPageList.getContent().stream()
+                    .map(UserResponse::new)
                     .collect(Collectors.toList());
+
             Map<String, Object> pagingMap = new HashMap<>();
-            pagingMap.put("data", groupResponseList); // 페이징 + 검색조건 결과
+            pagingMap.put("data", userResponseList); // 페이징 + 검색조건 결과
             pagingMap.put("count", userPageList.getTotalElements()); // 검색조건이 반영된 총 카운트
             resultMap = PagingUtil.createPagingMap(paramMap, pagingMap);
         } catch (Exception e) {
@@ -214,32 +214,32 @@ public class UserService {
     }
 
     @Transactional
-    public int mod(UserRequest userRequest) {
-        User findUser = userRepository.findByUserSeq(userRequest.getUserSeq());
+    public int mod(User User) {
+        User findUser = userRepository.findByUserSeq(User.getUserSeq());
 
         if (findUser != null) {
-            if (userRequest.getPassword() != null) {
+            if (User.getPassword() != null) {
                 SHA256 sha256 = new SHA256();
                 try {
-                    String cryptoPassword = sha256.encrypt(userRequest.getPassword());
+                    String cryptoPassword = sha256.encrypt(User.getPassword());
                     findUser.setPassword("{SHA-256}" + cryptoPassword);
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
 
             }
-            if (userRequest.getUserName() != null)
-                findUser.setUserName(userRequest.getUserName());
-            if (userRequest.getEmail() != null)
-                findUser.setEmail(userRequest.getEmail());
-            if (userRequest.getTel() != null)
-                findUser.setTel(userRequest.getTel());
-            if (userRequest.getAddress() != null)
-                findUser.setAddress(userRequest.getAddress());
-            if (userRequest.getStatus() != null)
-                findUser.setStatus(userRequest.getStatus());
-            if (userRequest.getDetailAddress() != null)
-                findUser.setDetailAddress(userRequest.getDetailAddress());
+            if (User.getUserName() != null)
+                findUser.setUserName(User.getUserName());
+            if (User.getEmail() != null)
+                findUser.setEmail(User.getEmail());
+            if (User.getTel() != null)
+                findUser.setTel(User.getTel());
+            if (User.getAddress() != null)
+                findUser.setAddress(User.getAddress());
+            if (User.getStatus() != null)
+                findUser.setStatus(User.getStatus());
+            if (User.getDetailAddress() != null)
+                findUser.setDetailAddress(User.getDetailAddress());
 
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             findUser.setUpdateDt(timestamp);
@@ -263,6 +263,7 @@ public class UserService {
     public void del(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
         findUser.setStatus("2");
+//        userRepository.save(findUser);
     }
 
     public int checkId(String userId) {

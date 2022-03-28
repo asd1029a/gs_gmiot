@@ -27,22 +27,26 @@ public class EventSqlProvider {
                     ",t2.code_name," +
                     "'' as station_seq, '' as station_name, '' as station_kind, " +
                     "'' as dong_short_nm, '' as address, " +
-                    "'' as facility_seq, '' as facility_kind");
+                    "'' as facility_seq, '' as facility_kind"
+                    + ",t3.longitude, t3.latitude" );
             if(facilityDirection != null && !facilityDirection.isEmpty()) {
                 FROM("t_event t1 " +
-                        "LEFT JOIN v_facility_direction t2 on t1.event_kind = t2.code_seq");
+                        "LEFT JOIN v_facility_direction t2 on t1.event_kind = t2.code_value "
+                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
                 WHERE("code_seq in ('" + StringUtils.join(facilityDirection, "', '") + "')");
             }else if(facilityProblem != null && !facilityProblem.isEmpty()) {
                 FROM("t_event t1 " +
-                        "LEFT JOIN v_facility_problem t2 on t1.event_kind = t2.code_seq");
+                        "LEFT JOIN v_facility_problem t2 on t1.event_kind = t2.code_value "
+                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
                 WHERE("code_seq in ('" +  StringUtils.join(facilityProblem, "', '") + "')");
             }else{
                 FROM("t_event t1 " +
-                        "LEFT JOIN t_common_code t2 on t1.event_kind = t2.code_seq");
+                        "LEFT JOIN t_common_code t2 on t1.event_kind = t2.code_value "
+                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
             }
 
             if(!keyword.equals("")) {
-                WHERE("event_kind::TEXT LIKE '%" + keyword + "%'");
+                WHERE("event_kind LIKE '%" + keyword + "%'");
             }
             if(!startDt.equals("")) {
                 WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
@@ -72,7 +76,7 @@ public class EventSqlProvider {
             SELECT("COUNT(*) as count");
             FROM("t_event");
             if(keyword != null && !keyword.equals("")) {
-                WHERE("event_kind::TEXT LIKE '%" + keyword + "%'");
+                WHERE("event_kind LIKE '%" + keyword + "%'");
             }
         }};
         return sql.toString();

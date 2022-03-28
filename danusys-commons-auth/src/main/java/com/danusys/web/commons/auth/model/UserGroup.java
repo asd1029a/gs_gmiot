@@ -2,6 +2,7 @@ package com.danusys.web.commons.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Entity
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "t_user_group")
 public class UserGroup implements Serializable {
     @Id
@@ -35,6 +37,8 @@ public class UserGroup implements Serializable {
     private Timestamp updateDt;
     @Column(name = "update_user_seq")
     private int updateUserSeq;
+    @Column(name = "user_group_status")
+    private String userGroupStatus;
 
 
     @OneToMany(mappedBy = "userGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

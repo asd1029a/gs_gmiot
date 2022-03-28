@@ -198,26 +198,30 @@ public class UserGroupService {
 
     @Transactional
     public int mod(UserGroup userGroup) {
+        UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(userGroup.getUserGroupSeq());
 
-        GroupResponse findUserGroup = this.getOneByGroupSeq(userGroup.getUserGroupSeq());
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CommonsUserDetails userDetails = (CommonsUserDetails) principal;
         // log.info("{}",userDetails.getUserSeq());
         if (findUserGroup == null) {
             return 0;
+        }else{
+            if (userGroup.getGroupDesc() != null)
+                findUserGroup.setGroupDesc(userGroup.getGroupDesc());
+            if (userGroup.getGroupName() != null)
+                findUserGroup.setGroupName(userGroup.getGroupName());
+            if (userGroup.getUserGroupStatus() != null)
+                findUserGroup.setUserGroupStatus(userGroup.getUserGroupStatus());
+
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            findUserGroup.setUpdateUserSeq(userDetails.getUserSeq());
+            findUserGroup.setUpdateDt(timestamp);
+
+            return findUserGroup.getUserGroupSeq();
         }
-        if (userGroup.getGroupDesc() != null)
-            findUserGroup.setGroupDesc(userGroup.getGroupDesc());
-        if (userGroup.getGroupName() != null)
-            findUserGroup.setGroupName(userGroup.getGroupName());
-
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        findUserGroup.setUpdateUserSeq(userDetails.getUserSeq());
-        findUserGroup.setUpdateDt(timestamp);
-
-        return findUserGroup.getUserGroupSeq();
     }
 
+    @Transactional
     public void del(UserGroup userGroup) {
         userGroupRepository.deleteById(userGroup.getUserGroupSeq());
     }

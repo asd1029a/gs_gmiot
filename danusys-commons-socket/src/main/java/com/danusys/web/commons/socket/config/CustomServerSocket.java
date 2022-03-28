@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 
 @Component
 public class CustomServerSocket {
-        public ServerSocket serverSocket;
+        public ServerSocket serverSocket =null;
         public ServerThread serverThread;
 
         public void connectServer(int port) throws IOException {
@@ -16,15 +16,8 @@ public class CustomServerSocket {
                 serverThread = new ServerThread(serverSocket);
                 serverThread.start();
             } catch (IOException e) {
-
-            } finally {
-              //  serverSocket.close();
+                System.out.println("서버 종료..");
+                serverSocket.close();
             }
         }
-
-//    static String getTime ()
-//    {
-//        SimpleDateFormat f = new SimpleDateFormat("[hh : mm : ss ]");
-//        return f.format(new Date());
-//    }
 }

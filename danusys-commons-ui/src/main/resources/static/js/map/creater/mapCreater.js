@@ -438,6 +438,10 @@ class mapCreater {
         this.map.on(name, listener);
     }
 
+    setMapViewEventListener(name, listener) {
+        this.map.getView().on(name, listener);
+    }
+
     removeMapEventListener(name, listener) {
         this.map.un(name, listener);
     }

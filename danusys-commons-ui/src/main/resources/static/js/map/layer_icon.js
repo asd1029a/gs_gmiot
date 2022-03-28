@@ -1,5 +1,3 @@
-//png예외......
-
 const imgSrcObj = {};
 const imgObj = {};
 /**
@@ -10,11 +8,18 @@ const svgToImage = {
      * 이미지 경로 설정
      * */
     init() {
-        const rootPath = '/images/'; //icon svg 경로
-        //i(type) : 1~10
-        //imgSrcObj[''] = rootPath + '' + '.svg';
-    },
+        const rootPath = '/images/default/'; //icon svg 경로
 
+        //관제 이벤트 icon
+        imgSrcObj['event_caution'] = rootPath + 'event_caution' + '.svg';
+        imgSrcObj['event_caution_select'] = rootPath + 'event_caution_select' + '.svg';
+        imgSrcObj['event_danger'] = rootPath + 'event_danger' + '.svg';
+        imgSrcObj['event_danger_select'] = rootPath + 'event_danger_select' + '.svg';
+
+        for (const [k, v] of Object.entries(imgSrcObj)) {
+            imgObj[k] = svgToImage.create(k);
+        }
+    },
     /**
      * @summary img 객체 반환
      * @param img객체화 시키고자하는 imgSrcObj index
@@ -56,11 +61,3 @@ const svgToImage = {
     }
 
 }
-
-
-//svgToImage.init();
-//레이어 아이콘 생성
-//for (const [k, v] of Object.entries(imgSrcObj)) {
-//    imgObj[k] = svgToImage.create(k);
-//}
-

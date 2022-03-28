@@ -32,7 +32,7 @@ public class Event {
     private Long stationSeq;
 
     @Column
-    private int eventKind;
+    private String eventKind;
 
     @Column
     private String eventGrade;
@@ -66,7 +66,7 @@ public class Event {
     private Timestamp insertDt;
 
     @Builder
-    public Event(Long facilitySeq, Long stationSeq, int eventKind, String eventGrade, String eventMessage) {
+    public Event(Long facilitySeq, Long stationSeq, String eventKind, String eventGrade, String eventMessage) {
         this.facilitySeq = facilitySeq;
         this.stationSeq = stationSeq;
         this.eventKind = eventKind;

@@ -6,8 +6,8 @@ const account = {
     user: {
         logout: () => {
             const domain = document.domain;
-            document.cookie = 'accessToken' + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;domain='+domain+';path=/';
-            document.location.href="/";
+            document.cookie = 'accessToken' + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;domain=' + domain + ';path=/';
+            document.location.href = "/";
         },
         eventHandler: () => {
             $("#searchBtn").on('click', (e) => {
@@ -59,7 +59,7 @@ const account = {
                     {data: "userName"},
                     {data: "tel"},
                     {data: "email", className: "alignLeft"},
-                    {data: "statusName"},
+                    {data: "userStatus.codeName"},
                     {data: "insertDt"},
                     {data: "lastLoginDt"},
                     {data: null}
@@ -123,13 +123,13 @@ const account = {
                     "data": null,
                     "defaultContent": '<span><input type="checkbox"/><label><span></span></label></span>'
                 }]
-                ,fnCreatedRow: (nRow, aaData, iDataIndex) => {
+                , fnCreatedRow: (nRow, aaData, iDataIndex) => {
                     const userSeq = aaData.userSeq;
                     $(nRow).find('input').prop('id', "check" + userSeq);
                     $(nRow).find('input').prop('value', userSeq);
                     $(nRow).find('label').prop('for', "check" + userSeq);
-                    if(aaData.inGroup === 1) {
-                        $(nRow).find('input').prop('checked', 1);
+                    if (aaData.checked === "checked") {
+                        $(nRow).find('input').prop('checked', true);
                     }
                 }
                 , excelDownload: false
@@ -225,10 +225,10 @@ const account = {
         addProc: () => {
             const formObj = $('#userAccountForm').serializeJSON();
             const $checkPassword = $("#checkPassword");
-            formObj.userGroupSeq = [];
+            formObj.userGroupSeqList = [];
             $('#userInGroupTable tbody tr').each((i, e) => {
                 if ($(e).find("input").prop('checked')) {
-                    formObj.userGroupSeq.push($(e).find("input").val());
+                    formObj.userGroupSeqList.push(Number($(e).find("input").val()));
                 }
             })
 
@@ -262,7 +262,7 @@ const account = {
             formObj.userGroupSeqList = [];
             $('#userInGroupTable tbody tr').each((i, e) => {
                 if ($(e).find("input").prop('checked')) {
-                    formObj.userGroupSeqList.push($(e).find("input").val());
+                    formObj.userGroupSeqList.push(Number($(e).find("input").val()));
                 }
             })
             if (formObj.password === $checkPassword.val()) {
@@ -423,7 +423,7 @@ const account = {
                     $(nRow).find('input').prop('id', "check" + userGroupSeq);
                     $(nRow).find('input').prop('value', userGroupSeq);
                     $(nRow).find('label').prop('for', "check" + userGroupSeq);
-                    if(aaData.checked === "checked") {
+                    if (aaData.checked === "checked") {
                         $(nRow).find('input').prop('checked', true);
                     }
                 }
@@ -479,6 +479,20 @@ const account = {
         addProc: () => {
             const formObj = $('#userGroupForm').serializeJSON();
 
+            formObj.userSeqList = [];
+            $('#userInGroupTable tbody tr').each((i, e) => {
+                if ($(e).find("input").prop('checked')) {
+                    formObj.userSeqList.push(Number($(e).find("input").val()));
+                }
+            });
+
+            let permit = {};
+            $('#permitTable tbody tr').each((i, element) => {
+                let name = $(element).find("input").eq(0).attr("name");
+                permit[name] = $("[name=" + name + "]:checked").data("value");
+            });
+            formObj.permitList = permit;
+
             $.ajax({
                 url: "/user/group"
                 , type: "PUT"
@@ -491,8 +505,24 @@ const account = {
                 account.group.hidePopup();
             });
         },
-        modProc: () => {
+        modProc: (pSeq) => {
             const formObj = $('#userGroupForm').serializeJSON();
+
+            formObj.userGroupSeq = pSeq;
+            formObj.userGroupSeqList = [pSeq];
+            formObj.userSeqList = [];
+            $('#userInGroupTable tbody tr').each((i, e) => {
+                if ($(e).find("input").prop('checked')) {
+                    formObj.userSeqList.push(Number($(e).find("input").val()));
+                }
+            });
+
+            let permit = {};
+            $('#permitTable tbody tr').each((i, element) => {
+                let name = $(element).find("input").eq(0).attr("name");
+                permit[name] = $("[name=" + name + "]:checked").data("value");
+            });
+            formObj.permitList = permit;
 
             $.ajax({
                 url: "/user/group"
