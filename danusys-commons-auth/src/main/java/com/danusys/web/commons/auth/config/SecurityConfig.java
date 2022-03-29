@@ -109,7 +109,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         permitAll = list.toArray(new String[list.size()]);
         log.info("permitAll={}", permitAll);
-//TODO permit group 바뀐 부분 적용
+        //TODO permit group 바뀐 부분 적용f
         //TODO db 하나 새로파서 개발용으로 한벌 더 작성
         httpSecurity
                 .addFilter(corsConfig.corsFilter()) //corsconfig
