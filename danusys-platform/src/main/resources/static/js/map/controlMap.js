@@ -107,6 +107,66 @@ const layerStyle = {
             });
         }
     }
+    //이벤트
+    , event : (selectFlag) => {
+        return (feature, resolution) => {
+            let flag = selectFlag ? "_select" : "";
+
+            const features = feature.get("features");
+            //grade 중복제거
+            let list = features.filter((item1, idx1) => {
+                return features.findIndex((item2, idx2)=> {
+                    return item1.getProperties().eventGrade == item2.getProperties().eventGrade
+                }) == idx1;
+            });
+            //grade 오름차순 정렬
+            list.sort((a,b) => {
+                return a.getProperties().eventGrade - b.getProperties().eventGrade;
+            });
+
+            const firstInfo =  list[0].getProperties();
+            let grade = firstInfo.eventGrade;
+            if( firstInfo.eventProcStat == "9"){ //과거이력
+                grade = "9";
+            }
+            //이벤트 등급 (긴급 10 주의 20 과거 9)
+            const gradeName  = {"10": "danger" ,"20": "caution", "9" : "past"};
+
+            const key = "event_" + gradeName[grade] + flag;
+            const size = features.length;
+            let textStyle = null;
+
+            if(size > 1) {
+                textStyle =  new ol.style.Text({
+                    scale: 2,
+                    offsetY: -50,
+                    offsetX: 10,
+                    text: "+" + (size-1) ,
+                    fill: new ol.style.Fill({
+                        color:'black',
+                        width: 3
+                    }),
+                    font: 'Bold 10px Arial',
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 3
+                    })
+                });
+            }
+
+            return new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor : [20,60],
+                    anchorXUnits : 'pixel',
+                    anchorYUnits : 'pixel',
+                    img : imgObj[key],
+                    imgSize: [50,50],
+                    scale : 1
+                }),
+                text: textStyle
+            });
+        }
+    }
     //시설물
     , facility : (selectFlag) => {
         return feature => {

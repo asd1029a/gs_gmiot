@@ -15,6 +15,8 @@ const svgToImage = {
         imgSrcObj['event_caution_select'] = rootPath + 'event_caution_select' + '.svg';
         imgSrcObj['event_danger'] = rootPath + 'event_danger' + '.svg';
         imgSrcObj['event_danger_select'] = rootPath + 'event_danger_select' + '.svg';
+        imgSrcObj['event_past'] = rootPath + 'event_past' + '.svg';
+        imgSrcObj['event_past_select'] = rootPath + 'event_past_select' + '.svg';
 
         for (const [k, v] of Object.entries(imgSrcObj)) {
             imgObj[k] = svgToImage.create(k);

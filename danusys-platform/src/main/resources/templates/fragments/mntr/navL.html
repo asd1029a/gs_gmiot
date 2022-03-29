@@ -5,14 +5,14 @@
         <!-- 스마트 폴 -->
         <section th:if="${municipality == '41210000'}" id="smartPole" class="menu_fold select">
             <ul class="tab">
-                <li data-value="realTime0" class="active"><a>실시간</a></li>
-                <li data-value="station0"><a>개소</a></li>
-                <li data-value="history0"><a>과거이력</a></li>
+                <li data-value="event" class="active"><a>실시간</a></li>
+                <li data-value="station"><a>개소</a></li>
+                <li data-value="eventPast"><a>과거이력</a></li>
             </ul>
             <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
 
             <!-- 실시간 -->
-            <div id="realTime0" class="lnb_tab_section select">
+            <div data-value="event" class="lnb_tab_section select">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
                     <dd><span class="count">11</span></dd>
@@ -78,7 +78,7 @@
             </div>
 
             <!-- 개소 -->
-            <div id="station0" class="lnb_tab_section">
+            <div data-value="station" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>
                     <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
@@ -155,7 +155,7 @@
             </div>
 
             <!-- 과거이력 -->
-            <div id="history0" class="lnb_tab_section">
+            <div data-value="eventPast" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
                     <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
@@ -429,14 +429,14 @@
         <!-- 스마트 정류장 -->
         <section th:if="${municipality == '41210000'}" id="smartBusStop" class="menu_fold">
             <ul class="tab">
-                <li data-value="realTime0" class="active"><a>실시간</a></li>
-                <li data-value="station0"><a>개소</a></li>
-                <li data-value="history0"><a>과거이력</a></li>
+                <li data-value="event" class="active"><a>실시간</a></li>
+                <li data-value="station"><a>개소</a></li>
+                <li data-value="eventPast"><a>과거이력</a></li>
             </ul>
             <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
 
             <!-- 실시간 -->
-            <div id="realTime0" class="lnb_tab_section select">
+            <div data-value="event" class="lnb_tab_section select">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
                     <dd><span class="count">11</span></dd>
@@ -502,7 +502,7 @@
             </div>
 
             <!-- 개소 -->
-            <div id="station0" class="lnb_tab_section">
+            <div data-value="station" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>
                     <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
@@ -579,7 +579,7 @@
             </div>
 
             <!-- 과거이력 -->
-            <div id="history0" class="lnb_tab_section">
+            <div data-value="eventPast" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
                     <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
@@ -853,14 +853,14 @@
         <!-- 스마트 분전함 -->
         <section th:if="${municipality == '45210000'}" id="smartPower" class="menu_fold select">
             <ul class="tab">
-                <li data-value="realTime0" class="active"><a>실시간</a></li>
-                <li data-value="station0"><a>개소</a></li>
-                <li data-value="history0"><a>과거이력</a></li>
+                <li data-value="event" class="active"><a>실시간</a></li>
+                <li data-value="station"><a>개소</a></li>
+                <li data-value="eventPast"><a>과거이력</a></li>
             </ul>
             <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
 
             <!-- 실시간 -->
-            <div id="realTime0" class="lnb_tab_section select">
+            <div data-value="event" class="lnb_tab_section select">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
                     <dd><span class="count">11</span></dd>
@@ -926,7 +926,7 @@
             </div>
 
             <!-- 개소 -->
-            <div id="station0" class="lnb_tab_section">
+            <div data-value="station" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>
                     <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
@@ -1003,7 +1003,7 @@
             </div>
 
             <!-- 과거이력 -->
-            <div id="history0" class="lnb_tab_section">
+            <div data-value="eventPast" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
                     <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
@@ -1277,13 +1277,13 @@
         <!-- 드론 관제 -->
         <section th:if="${municipality == '45210000'}" id="drone" class="menu_fold">
             <ul class="tab">
-                <li data-value="realTime1" class="active"><a>실시간</a></li>
-                <li data-value="station1"><a>기체/개소</a></li>
-                <li data-value="history1"><a>과거이력</a></li>
+                <li data-value="event" class="active"><a>실시간</a></li>
+                <li data-value="station"><a>기체/개소</a></li>
+                <li data-value="eventPast"><a>과거이력</a></li>
             </ul>
             <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
             <!-- lnb_tab_section * 실시간 -->
-            <div id="realTime1" class="lnb_tab_section select"> <!-- active 시, display: flex; -->
+            <div data-value="event" class="lnb_tab_section select"> <!-- active 시, display: flex; -->
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
                     <dd><span class="count">11</span></dd>
@@ -1342,7 +1342,7 @@
                 </div>
             </div>
             <!-- lnb_tab_section * 기체/개소 -->
-            <div id="station1" class="lnb_tab_section"> <!-- active 시, display: flex; -->
+            <div data-value="station" class="lnb_tab_section"> <!-- active 시, display: flex; -->
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>기체</dt>
                     <dd><span class="count">11</span></dd>
@@ -1389,7 +1389,7 @@
                 </div>
             </div>
             <!-- lnb_tab_section * 과거이력 -->
-            <div id="history1" class="lnb_tab_section"> <!-- active 시, display: flex; -->
+            <div data-value="eventPast" class="lnb_tab_section"> <!-- active 시, display: flex; -->
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
                     <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
@@ -1604,7 +1604,7 @@
         <!-- 주소 장소 -->
         <section id="addressPlace" class="menu_fold">
             <!-- lnb_tab_section * 주소/장소 -->
-            <div id="addressPlaceTab" class="lnb_tab_section select">
+            <div data-value="addressPlaceTab" class="lnb_tab_section select">
                 <div class="search_form">
                     <dl>
                         <dt><input type="text" placeholder="검색어를 입력하세요."><i><img src="/images/default/search.svg"></i></dt>

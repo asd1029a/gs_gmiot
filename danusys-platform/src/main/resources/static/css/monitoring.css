@@ -226,6 +226,11 @@
 .popup_mini dl dd span.state.state2{color:#f99b22; border:2px solid #f99b22;}
 .popup_mini dl dd span.state.state3{color:#7a8094; border:2px solid #4e5466;}
 
+/* map tooltip */
+#mouseOverPopup #mouseOverPopupContent{padding: 10px; background: #1e1f23c2; transform: translate(-50%, -18%); box-shadow: 0px 0px 20px rgb(0 0 0 / 20%);}
+#mouseOverPopupContent::after{color: #1e1f23c2; transform: translate(-50%, 15px); font-size: 22px;}
+#mouseOverPopup .my-ol-popup-closer{display:none;}
+
 /*layer viewer*/
 #layerViewer{width: max-content; height: max-content; padding: 10px; border-radius: 5px; background: #23252b; z-index: 2; right: 51px; top: 178px; position: absolute;}
 #layerViewer ul li{padding: 5px; cursor: pointer; border-bottom: 1px solid #a9a9a96b;}

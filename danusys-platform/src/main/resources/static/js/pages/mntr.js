@@ -56,6 +56,48 @@ const mntr = {
             centerVilageInfo(e);
         });
 
+        //레이어 마우스오버 이벤트
+        let target = map.map.getTarget();
+        let jTarget = typeof target === "string" ? $("#" + target) : $(target);
+        $(map.map.getViewport()).on('mousemove', e => {
+
+            const pixel = map.map.getEventPixel(e.originalEvent);
+            const hit = map.map.forEachFeatureAtPixel(pixel, (feature, layer) => true);
+            const cTarget = $(e.target);
+            let popup = new mapPopup('map');
+
+            if (hit) {
+                if(cTarget[0].tagName=="CANVAS"){
+                    jTarget.css("cursor", "pointer");
+                    //마우스 온 프리셋
+                    map.map.forEachFeatureAtPixel(pixel,(feature,layer) => {
+                        if(layer){
+                            if(layer.get("title")){
+                                const layerName = layer.get("title");
+                                const len = feature.getProperties().features.length;
+                                if(len == 1){
+                                    const info = feature.getProperties().features[0].getProperties();
+                                    //개소
+                                    if(layerName == "stationLayer"){
+                                        const name = info.stationName;
+                                        popup.create('mouseOverPopup');
+                                        let content = "<div>" + name + "</div>";
+                                        popup.content('mouseOverPopup', content);
+                                        popup.move('mouseOverPopup', feature.getGeometry().getCoordinates());
+                                    } else {}/////
+                                }
+                            }
+
+                        }
+                    });
+                }
+                map.map.renderSync();
+            } else {
+                jTarget.css("cursor", "all-scroll");
+                popup.remove('mouseOverPopup');
+            }
+        });
+
         /**
          * 레이어 선택 조작
          */
@@ -96,9 +138,6 @@ const mntr = {
             }
         });
 
-        // station.getList({}, (result) => {
-        //     console.log(result);
-        // });
         //개소 레이어
         station.getListGeoJson({} ,result => {
             //console.log(result);
@@ -107,8 +146,6 @@ const mntr = {
                .toCluster(result, 'stationLayer', true, layerStyle.station(false));
            map.addLayer(stationLayer);
            window.lyControl.find('stationLayer').set('selectable',true);
-            //select
-           //window.lyControl.find('stationLayer').set('selectable', true);
 
             // //열지도 test
             // const heat = new ol.layer.Heatmap({
@@ -131,7 +168,7 @@ const mntr = {
         });
 
         //이벤트 레이어
-        event.getListGeoJson({}, result => {
+        event.getListGeoJson({"eventState": ["1", "2", "3"]}, result => {
             let eventLayer = new dataLayer('map')
                 // .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
                 .toCluster(result, 'eventLayer', true, layerStyle.event(false));
@@ -139,23 +176,39 @@ const mntr = {
             window.lyControl.find('eventLayer').set('selectable',true);
         });
 
+        //과거 이벤트 레이어
+        event.getListGeoJson({"eventState": ["9"]}, result => {
+            let eventPastLayer = new dataLayer('map')
+                .toCluster(result, 'eventPastLayer', true, layerStyle.event(false));
+            map.addLayer(eventPastLayer);
+            window.lyControl.find('eventPastLayer').set('selectable',true);
+            window.lyControl.off('eventPastLayer');
+        });
+
         //축척별 레이어 반응
         map.setMapViewEventListener('propertychange' ,e => {
             if(String(e.key)=="resolution"){
                 const zoom = map.map.getView().getZoom();
+                let target = $('.mntr_container section.select .tab li.active').attr('data-value');
+                if(target=="station"){target = "event"}
                 if(zoom > 10){ //13 ~ 9.xxx
                     window.lyControl.find("stationLayer").getSource().setDistance(0);
                     window.lyControl.find("eventLayer").getSource().setDistance(0);
+                    window.lyControl.find("eventPastLayer").getSource().setDistance(0);
+
                     window.lyControl.on('stationLayer');
-                    window.lyControl.on('eventLayer');
+                    window.lyControl.on(target + "Layer");
                 } else if((10 >= zoom) && (zoom >=5)) { //10 ~ 5
                     window.lyControl.find("stationLayer").getSource().setDistance(30);
                     window.lyControl.find("eventLayer").getSource().setDistance(30);
+                    window.lyControl.find("eventPastLayer").getSource().setDistance(30);
+
                     window.lyControl.on('stationLayer');
-                    window.lyControl.on('eventLayer');
+                    window.lyControl.on(target + "Layer");
                 } else { //4.xxx ~ 0
                     window.lyControl.off('stationLayer');
                     window.lyControl.off('eventLayer');
+                    window.lyControl.off('eventPastLayer');
                 }
             }
 
@@ -187,18 +240,6 @@ const mntr = {
         //     window.lyControl.find('facilityLayer').set('selectable',true);
         // });
 
-        // event.getListGeoJson({}, (result) => {
-        //    // console.log(result);
-        // });
-        //
-        // const clickObjs = {
-        //     'stationLayer':[]
-        //     , 'facilityLayer':[]
-        // };
-        // window.map.clickLayer(clickObjs);
-        //
-
-
     }
     , eventHandler : () => {
         //LNM FOLD (왼쪽창 끄고켜기)
@@ -220,12 +261,26 @@ const mntr = {
         //LNM TAB SWITCH (왼쪽창 탭별 변경)
         $('.mntr_container .menu_fold .tab li').on("click", e => {
             const tab = $(e.currentTarget).attr('data-value');
+
+            switch(tab) {
+                case "event" :
+                    window.lyControl.off('eventPastLayer');
+                    // debugger;
+                    break;
+                case "eventPast" :
+                    window.lyControl.off("eventLayer");
+                    // debugger;
+                    break;
+                default :
+                    break;
+            }
+            window.lyControl.on(tab + "Layer");
+
             $(e.currentTarget).parents('section').find('.lnb_tab_section').removeClass("select");
-            $('div#'+tab).addClass("select");
+            $(e.currentTarget).parents('section').find('div[data-value='+tab+']').addClass("select");
             //ACTIVE STYLE
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
-
         });
         //LNM TAB SEARCH DETAIL (왼쪽창 검색 조건 더보기)
         $('.detail_btn').on("click", e => {
@@ -244,7 +299,6 @@ const mntr = {
         //LNM TAB SEARCH DROPDOWN (왼쪽창 검색 조건 리스트 보기)
         $('.search_fold .checkbox_title').on("click", e => {
             const list = $(e.currentTarget).parent().find('.checkbox_list');
-
             if(list.hasClass("select")){
                 list.removeClass("select");
             } else {
@@ -358,8 +412,7 @@ const mntr = {
             const elem = $(evt.currentTarget);
             const keyword = elem.data().keyword;
             if ( elem.scrollTop() + elem.innerHeight()  >= elem[0].scrollHeight ) {
-                const id = elem.parents('.lnb_tab_section').attr('id');
-
+                const id = elem.parents('.lnb_tab_section').attr('data-value');
                 switch(id) {
                     case "addressPlaceTab" : //주소장소 탭
                         const target = elem.attr('data-value');
@@ -375,12 +428,10 @@ const mntr = {
                         break;
                     default:
                         break;
-                }
-
-
+                } // switch
             } // srcoll 끝
-
         });
+
 
 
     }
