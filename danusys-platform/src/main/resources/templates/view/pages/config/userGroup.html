@@ -40,10 +40,10 @@
                 <table id="userAccountTable">
                     <thead>
                     <tr>
-                        <th>그룹 아이디</th>
                         <th>그룹 이름</th>
+                        <th>그룹 설명</th>
                         <th>소속 계정</th>
-                        <th>설명</th>
+                        <!--<th>사용여부</th>-->
                         <th>상세보기</th>
                     </tr>
                     </thead>
@@ -65,7 +65,7 @@
                         <form id="userGroupForm">
                             <dl>
                                 <dt>그룹 이름</dt>
-                                <dd><input id="groupName" type="text" placeholder="*필수 입력" name="groupName"><span class="button">중복 확인</span></dd>
+                                <dd><input id="groupName" type="text" placeholder="*필수 입력" name="groupName"></dd>
                             </dl>
                             <dl>
                                 <dt>설명</dt>
@@ -217,7 +217,7 @@
                 <!-- 소속 사용자 설정 -->
                 <div class="list_search">
                     <p class="legend">소속 사용자 설정
-                        <span><input type="text" placeholder="사용자 계정 검색"></span>
+                        <!--<span><input id="userKeyword" type="text" placeholder="사용자 계정 검색"></span>-->
                     </p>
                     <div class="list_table">
                         <table id="userInGroupTable">

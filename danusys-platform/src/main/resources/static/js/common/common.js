@@ -320,7 +320,11 @@ const comm = {
                 $target.on('click', 'tr', evt.click);
             }
             if (typeof evt.dblclick !== "undefined") {
+                $target.off('dblclick');
                 $target.on('dblclick', 'tr', evt.dblclick);
+            }
+            if (typeof evt.keyup !== "undefined") {
+                evt.keyup();
             }
         }
         $.fn.DataTable.ext.pager.numbers_length = 10;

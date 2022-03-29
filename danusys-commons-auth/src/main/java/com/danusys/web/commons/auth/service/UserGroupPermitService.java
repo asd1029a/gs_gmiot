@@ -58,9 +58,15 @@ public class UserGroupPermitService {
     }
 
     @Transactional
+    public void delByUserGroupSeq(int userGroupSeq) {
+        userGroupPermitRepository.deleteAllByUserGroupSeq(userGroupSeq);
+    }
+
+    @Transactional
     public void del(int userGroupSeq, int permitSeq) {
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(userGroupSeq);
         Permit findPermit = permitRepository.findByCodeSeq(permitSeq);
         userGroupPermitRepository.deleteByUserGroup2AndPermit(findUserGroup, findPermit);
     }
+
 }

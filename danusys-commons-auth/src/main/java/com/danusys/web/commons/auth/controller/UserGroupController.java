@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -45,6 +47,13 @@ public class UserGroupController {
 //                .body(userGroupService.findUserGroupResponseByGroupSeq(groupSeq));
     }
 
+    @GetMapping("/checkGroupName/{groupName}")
+    public ResponseEntity<?> checkGroupName(@PathVariable String groupName) throws UnsupportedEncodingException {
+        String decodeGroupName = URLDecoder.decode(groupName, "UTF-8");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userGroupService.checkGroupName(decodeGroupName));
+    }
     /*
        name: getList
        url: /group
@@ -159,16 +168,15 @@ public class UserGroupController {
      */
     @PatchMapping()
     public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) {
-        /* TODO : 트랜젝션 처리 요망 */
         ObjectMapper objectMapper = new ObjectMapper();
         UserGroup userGroup = objectMapper.convertValue(paramMap, UserGroup.class);
+        int userGroupSeq = userGroup.getUserGroupSeq();
 
         int result = userGroupService.mod(userGroup);
-        userInGroupService.delUserGroupSeq(userGroup.getUserGroupSeq());
+        userInGroupService.delUserGroupSeq(userGroupSeq);
         userInGroupService.add(paramMap);
 
-        /* TODO : 삭제 구현 덜됨 */
-//        userGroupPermitService.del(paramMap);
+        userGroupPermitService.delByUserGroupSeq(userGroupSeq);
         userGroupPermitService.add(paramMap);
 
         return ResponseEntity
@@ -183,9 +191,11 @@ public class UserGroupController {
        param : userSeq
        do: usergroup 삭제
      */
-    @DeleteMapping()
-    public ResponseEntity<?> del(@RequestBody UserGroup userGroup) {
-        userInGroupService.delUserGroupSeq(userGroup.getUserGroupSeq());
+    @DeleteMapping("/{userGroupSeq}")
+    public ResponseEntity<?> del(@PathVariable int userGroupSeq) {
+        UserGroup userGroup = new UserGroup();
+
+        userGroup.setUserGroupSeq(userGroupSeq);
         userGroupService.del(userGroup);
 
         return ResponseEntity
