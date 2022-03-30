@@ -43,6 +43,7 @@ public class ConfigSqlProvider {
                 case "district" : FROM("v_facility_district"); break;
                 case "facilityKind" : FROM("v_facility_kind"); break;
                 case "eventKind" : FROM("v_facility_problem"); break;
+                case "administZone" : FROM("v_administ"); break;
                 default : FROM("t_common_code"); break;
             }
         }};

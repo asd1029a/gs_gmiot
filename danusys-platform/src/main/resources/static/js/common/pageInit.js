@@ -21,9 +21,9 @@ $(document).ready(() => {
     });
 
     /* 다중 셀렉트 박스 */
-    // $.each($(".dropdown_checkbox"), (idx, item) => {
-    //     comm.createMultiSelectBox(item);
-    // });
+    $.each($(".dropdown_checkbox"), (idx, item) => {
+        comm.createMultiSelectBox(item);
+    });
 
     /* 검색조건 초기화 버튼 */
     $("#resetFormBtn").on("click", (e) => {

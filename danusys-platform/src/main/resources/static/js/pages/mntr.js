@@ -77,14 +77,21 @@ const mntr = {
                                 const len = feature.getProperties().features.length;
                                 if(len == 1){
                                     const info = feature.getProperties().features[0].getProperties();
+                                    let name = "";
+                                    let position = feature.getGeometry().getCoordinates();
                                     //개소
                                     if(layerName == "stationLayer"){
-                                        const name = info.stationName;
-                                        popup.create('mouseOverPopup');
-                                        let content = "<div>" + name + "</div>";
-                                        popup.content('mouseOverPopup', content);
-                                        popup.move('mouseOverPopup', feature.getGeometry().getCoordinates());
-                                    } else {}/////
+                                        name = info.stationName;
+                                    //이벤트
+                                    } else if((layerName == "eventLayer")||(layerName == "eventPastLayer")){
+                                        name = info.eventMessage;
+                                        let point = window.map.map.getPixelFromCoordinate(position);
+                                        position = window.map.map.getCoordinateFromPixel([point[0], point[1] - 50]); //아이콘 높이만큼
+                                    } else {}
+                                    popup.create('mouseOverPopup');
+                                    let content = "<div>" + name + "</div>";
+                                    popup.content('mouseOverPopup', content);
+                                    popup.move('mouseOverPopup', position);
                                 }
                             }
 
@@ -168,12 +175,16 @@ const mntr = {
         });
 
         //이벤트 레이어
-        event.getListGeoJson({"eventState": ["1", "2", "3"]}, result => {
+        event.getListGeoJson({
+            "eventState": ["1", "2", "3"]
+            }, result => {
             let eventLayer = new dataLayer('map')
                 // .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
                 .toCluster(result, 'eventLayer', true, layerStyle.event(false));
             map.addLayer(eventLayer);
             window.lyControl.find('eventLayer').set('selectable',true);
+
+            lnbList.createEvent(result);
         });
 
         //과거 이벤트 레이어
@@ -183,6 +194,8 @@ const mntr = {
             map.addLayer(eventPastLayer);
             window.lyControl.find('eventPastLayer').set('selectable',true);
             window.lyControl.off('eventPastLayer');
+
+            lnbList.createEvent(result);
         });
 
         //축척별 레이어 반응
@@ -265,11 +278,13 @@ const mntr = {
             switch(tab) {
                 case "event" :
                     window.lyControl.off('eventPastLayer');
-                    // debugger;
                     break;
                 case "eventPast" :
                     window.lyControl.off("eventLayer");
-                    // debugger;
+                    break;
+                case "station" :
+                    window.lyControl.on('eventLayer');
+                    window.lyControl.off('eventPastLayer');
                     break;
                 default :
                     break;
@@ -549,6 +564,12 @@ const lnbList = {
 
         });
     } //createAddressPlace end
+    , createEvent : (obj) => {
+        //console.log(obj);
+        console.log(JSON.parse(obj));
+
+
+    }
 }
 
 
