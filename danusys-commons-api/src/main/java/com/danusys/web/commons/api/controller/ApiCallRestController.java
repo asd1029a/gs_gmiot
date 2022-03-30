@@ -233,6 +233,7 @@ public class ApiCallRestController {
         String callUrl = StrUtils.getStr(param.get("callUrl"));
 //        String bizCd = StrUtils.getStr(param.get("bizCd"));
         Api api = null;
+        ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             log.trace("callUrl : {}", callUrl);
@@ -247,7 +248,17 @@ public class ApiCallRestController {
                     .filter(f -> f.getParamType() == ParamType.REQUEST)
                     .map((f) -> {
                         final Object p = param.get(f.getFieldNm());
-                        if (p != null) f.setValue(p.toString());
+                        if (p != null) {
+                            try {
+                                if (f.getDataType().equals(DataType.ARRAY)) {
+                                    f.setValue(objectMapper.writeValueAsString(p));
+                                } else {
+                                    f.setValue(StrUtils.getStr(p));
+                                }
+                            } catch (JsonProcessingException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         return f;
                     })
                     .collect(toList())
