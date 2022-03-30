@@ -2,6 +2,7 @@ $(document).ready(function () {
     // console.log(window.location.pathname);
     let param = {"droneDeviceName": ""}
     loadDroneList(param);
+    loadAllSocketList();
 
     $.ajax({
         contentType: "application/json; charset=utf-8",
@@ -21,6 +22,7 @@ function loadDroneList(param) {
     let drone_total_count = 0;
     let deviceName = $(".add_drone_device_name").val();
     let countMissionList = 0;
+
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: "/drone/api/drone",
@@ -121,6 +123,7 @@ $(".update_drone_detail_button").on("click", function () {
 
 
         },
+        "droneSocket": $(".socket_list option:selected").data("id"),
         "droneStatus": "대기중",
         "droneBase": $(".location_select option:selected").data("id"),
         "droneMission": $(".mission_list option:selected").data("id")
@@ -163,7 +166,7 @@ $(".update_drone_detail_button").on("click", function () {
 });
 
 function getDroneDetails(id) {
-
+    //loadAllSocketList();
     $.ajax({
         contentType: "application/json; charset=utf-8",
         url: `/drone/api/dronebase`,
@@ -183,7 +186,8 @@ function getDroneDetails(id) {
                 type: "GET",
                 async: false,
                 success: function (result) {
-                    //   console.log(result);
+                    let isIncludeData = false;
+                    console.log(result);
 
 
                     //   console.log("result",$(`.mission_list option[data-id='${result.mission.id}']`)[0]);
@@ -191,6 +195,16 @@ function getDroneDetails(id) {
                     if (result.droneInmission.mission != null)
                         document.querySelectorAll(`.mission_list option[data-id='${result.droneInmission.mission.id}']`)[0].selected = true;
                     document.querySelectorAll(`.location_select option[data-id='${result.droneBase.id}']`)[0].selected = true;
+                    let querySelectorSocketList = document.querySelectorAll(`.socket_list [data-id]`);
+
+                    querySelectorSocketList.forEach(function (value, key, parent) {
+                        let dataId = value.dataset.id;
+                        if (dataId == result.droneSocket) {
+                            isIncludeData = true;
+                        }
+                    })
+                    if (isIncludeData)
+                        document.querySelectorAll(`.socket_list option[data-id='${result.droneSocket}']`)[0].selected = true;
                     let droneDetails = result.droneDetails;
                     $(".drone_status").val(result.status);
                     $(".drone_master_manager").val(droneDetails.masterManager);
@@ -217,10 +231,12 @@ function getDroneDetails(id) {
                     $(".drone_operating_temperature_min").val(droneDetails.operationTemperatureRangeMin);
                     $(".drone_operating_temperature_max").val(droneDetails.operationTemperatureRangeMax);
 
+
                 }
             });
 
         }
+
     });
 
 
@@ -420,4 +436,58 @@ $(".add_drone_device_name").on("input", function () {
 });
 
 
+function loadSocketList() {
+    let param = {};
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        url: "/drone/api/droneSocket",
+        type: "POST",
+        data: JSON.stringify(param),
+        success: function (resultData) {
+            console.log(resultData);
+            $(".socket_list").html(``);
+            $.each(resultData, function (i, item) {
+                //   console.log("item", item.baseName);
+                $(".socket_list").append(`<option data-id="${item.index}">address:${item.address},port:${item.port}</option>`);
+            })
+        }
 
+    });
+}
+
+$(".sync_button").on("click", function () {
+    saveSocketList();
+})
+
+function loadAllSocketList() {
+    let param = {};
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        url: "/drone/api/socket",
+        type: "POST",
+        data: JSON.stringify(param),
+        success: function (resultData) {
+            console.log(resultData);
+            $(".socket_list").html(``);
+            $.each(resultData, function (i, item) {
+                //   console.log("item", item.baseName);
+                $(".socket_list").append(`<option data-id="${item.index}">address:${item.ip},port:${item.port}</option>`);
+            })
+        }
+    });
+
+}
+
+function saveSocketList() {
+    let param = {};
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        url: "/drone/api/socket",
+        type: "PUT",
+        data: JSON.stringify(param),
+        success: function (resultData) {
+            loadAllSocketList();
+        }
+    });
+
+}

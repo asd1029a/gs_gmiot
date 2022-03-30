@@ -38,7 +38,6 @@ public class UserGroupController {
        return : 단건 조회
      */
     @GetMapping("/{groupSeq}")
-    @Transactional(readOnly = true)
     public ResponseEntity<?> get(@PathVariable int groupSeq) {
 
         return ResponseEntity
@@ -142,20 +141,9 @@ public class UserGroupController {
      */
     @PutMapping()
     public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) {
-        /* TODO : 트랜젝션 처리 요망 */
-        ObjectMapper objectMapper = new ObjectMapper();
-        UserGroup userGroup = objectMapper.convertValue(paramMap, UserGroup.class);
-
-        int result = userGroupService.add(userGroup);
-        paramMap.put("userGroupSeqList", Arrays.asList(result));
-        paramMap.put("userGroupSeq", result);
-        userInGroupService.add(paramMap);
-
-        userGroupPermitService.add(paramMap);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(result);
+                .body(userGroupService.add(paramMap));
     }
 
     /*
@@ -168,20 +156,9 @@ public class UserGroupController {
      */
     @PatchMapping()
     public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        UserGroup userGroup = objectMapper.convertValue(paramMap, UserGroup.class);
-        int userGroupSeq = userGroup.getUserGroupSeq();
-
-        int result = userGroupService.mod(userGroup);
-        userInGroupService.delUserGroupSeq(userGroupSeq);
-        userInGroupService.add(paramMap);
-
-        userGroupPermitService.delByUserGroupSeq(userGroupSeq);
-        userGroupPermitService.add(paramMap);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(result);
+                .body(userGroupService.mod(paramMap));
     }
 
     /*
@@ -193,11 +170,7 @@ public class UserGroupController {
      */
     @DeleteMapping("/{userGroupSeq}")
     public ResponseEntity<?> del(@PathVariable int userGroupSeq) {
-        UserGroup userGroup = new UserGroup();
-
-        userGroup.setUserGroupSeq(userGroupSeq);
-        userGroupService.del(userGroup);
-
+        userGroupService.del(userGroupSeq);
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }

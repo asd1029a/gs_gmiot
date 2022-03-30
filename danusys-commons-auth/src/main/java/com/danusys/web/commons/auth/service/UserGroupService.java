@@ -12,6 +12,7 @@ import com.danusys.web.commons.auth.repository.UserGroupPermitRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,8 @@ public class UserGroupService {
     private final UserGroupRepository userGroupRepository;
     private final UserInGroupRepository userInGroupRepository;
     private final UserGroupPermitRepository userGroupPermitRepository;
+    private final UserGroupPermitService userGroupPermitService;
+    private final UserInGroupService userInGroupService;
 
 //    @Transactional(readOnly = true)
 //    public GroupResponse getOneByGroupSeq(int groupSeq) {
@@ -55,7 +58,7 @@ public class UserGroupService {
         return (userGroup == null) ? 1 : 0;
     }
 
-    //    @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public GroupResponse getOneByGroupSeq(int groupSeq) {
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(groupSeq);
         return new GroupResponse(findUserGroup);
@@ -191,7 +194,10 @@ public class UserGroupService {
     }
 
     @Transactional
-    public int add(UserGroup userGroup) {
+    public int add(Map<String, Object> paramMap) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroup userGroup = objectMapper.convertValue(paramMap, UserGroup.class);
+
         if (userGroup.getGroupName() == null || userGroup.getGroupDesc() == null) {
             return 0;
         }
@@ -200,15 +206,26 @@ public class UserGroupService {
         userGroup.setInsertDt(timestamp);
 
         userGroupRepository.save(userGroup);
+
+        paramMap.put("userGroupSeqList", Arrays.asList(userGroup.getUserGroupSeq()));
+        paramMap.put("userGroupSeq", userGroup.getUserGroupSeq());
+        userInGroupService.add(paramMap);
+        userGroupPermitService.add(paramMap);
+
         return userGroup.getUserGroupSeq();
     }
 
     @Transactional
-    public int mod(UserGroup userGroup) {
+    public int mod(Map<String, Object> paramMap) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserGroup userGroup = objectMapper.convertValue(paramMap, UserGroup.class);
         UserGroup findUserGroup = userGroupRepository.findByUserGroupSeq(userGroup.getUserGroupSeq());
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
+        userInGroupService.delUserGroupSeq(userGroup.getUserGroupSeq());
+        userInGroupService.add(paramMap);
+
+        userGroupPermitService.delByUserGroupSeq(userGroup.getUserGroupSeq());
+        userGroupPermitService.add(paramMap);
 
         if (findUserGroup == null) {
             return 0;
@@ -221,6 +238,9 @@ public class UserGroupService {
                 findUserGroup.setUserGroupStatus(userGroup.getUserGroupStatus());
 
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            CommonsUserDetails userDetails = (CommonsUserDetails) principal;
+
             findUserGroup.setUpdateUserSeq(userDetails.getUserSeq());
             findUserGroup.setUpdateDt(timestamp);
 
@@ -229,9 +249,9 @@ public class UserGroupService {
     }
 
     @Transactional
-    public void del(UserGroup userGroup) {
-        userInGroupRepository.deleteAllByUserGroupSeq(userGroup.getUserGroupSeq());
-        userGroupPermitRepository.deleteByUserGroupSeq(userGroup.getUserGroupSeq());
-        userGroupRepository.deleteById(userGroup.getUserGroupSeq());
+    public void del(int userGroupSeq) {
+        userInGroupRepository.deleteAllByUserGroupSeq(userGroupSeq);
+        userGroupPermitRepository.deleteByUserGroupSeq(userGroupSeq);
+        userGroupRepository.deleteById(userGroupSeq);
     }
 }

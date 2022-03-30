@@ -28,6 +28,7 @@ public class UserGroupPermitService {
     private final PermitRepository permitRepository;
     private final PermitMenuRepository permitMenuRepository;
 
+    @Transactional
     public void add(Map<String, Object> paramMap) {
         int userGroupSeq = (Integer) paramMap.get("userGroupSeq");
         Map<String, String> permitMap = (Map<String, String>) paramMap.get("permitList");

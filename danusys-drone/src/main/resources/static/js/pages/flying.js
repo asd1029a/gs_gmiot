@@ -471,7 +471,7 @@ const droneSocket = {
         droneSocket.missionStartState = 1;
         let droneId = common.getQs(".mapComponent").dataset.id;
         //droneId = 40;
-        this.stompClient.send("/app/pause", {}, JSON.stringify({'id': droneId}))
+        this.stompClient.send("/app/pause", {}, JSON.stringify({'droneId': droneId}))
     },
     playMission: function() {
         let startAndStop = common.getQs("#startAndStop span");
@@ -479,26 +479,33 @@ const droneSocket = {
         droneSocket.missionStartState = 0;
         let droneId = common.getQs(".mapComponent").dataset.id;
         //droneId = 40;
-        this.stompClient.send("/app/play", {}, JSON.stringify({'id': droneId}));
+        this.stompClient.send("/app/play", {}, JSON.stringify({'droneId': droneId}));
     },
     returnMission: function() {
         let droneId = common.getQs(".mapComponent").dataset.id;
-        this.stompClient.send("/app/return", {}, JSON.stringify({'id': droneId}));
+        this.stompClient.send("/app/return", {}, JSON.stringify({'droneId': droneId}));
     },
     changeYaw: function(obj= {}) {
         // {yaw: number}
+        let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
         let yaw = prompt("변경할 YAW를 입력해 주세요.")
         obj.yaw = yaw;
+        obj.droneId=droneId;
         droneSocket.stompClient.send("/app/changeyaw", {}, JSON.stringify(obj));
     },
     gotoMission: function(obj) {
+
+        let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
         this.stompClient.unsubscribe("missionLog");
+        obj.droneId=droneId;
         this.stompClient.send("/app/waypoint", {}, JSON.stringify(obj));
     },
     //obj.seq = (number)
     skipMission: function(obj = {}) {
+        let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
         let missionNo = prompt("이동 할 미션 번호를 입력해 주세요.")
         obj.seq = Number.parseInt(missionNo) - 1;
+        obj.droneId=droneId;
         droneSocket.stompClient.send("/app/setmissioncurrent", {}, JSON.stringify(obj));
     },
     init: function() {

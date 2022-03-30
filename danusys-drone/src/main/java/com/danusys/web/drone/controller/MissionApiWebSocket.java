@@ -1,28 +1,31 @@
 package com.danusys.web.drone.controller;
 
 
+import com.danusys.web.commons.socket.config.CustomServerSocket;
 import com.danusys.web.drone.dto.response.DroneResponse;
 import com.danusys.web.drone.dto.response.MissionDetailResponse;
 import com.danusys.web.drone.dto.response.MissionResponse;
 import com.danusys.web.drone.model.DroneLog;
-import com.danusys.web.drone.model.Mission;
-import com.danusys.web.drone.model.MissionDetails;
 import com.danusys.web.drone.service.*;
-import io.dronefleet.mavlink.common.*;
+import com.danusys.web.drone.utils.Flight;
+import io.dronefleet.mavlink.common.MavCmd;
+import io.dronefleet.mavlink.common.MavFrame;
+import io.dronefleet.mavlink.common.MavMissionType;
+import io.dronefleet.mavlink.common.MissionItemInt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-//import org.omg.CORBA.Object;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
-import java.util.*;
-
-import com.danusys.web.drone.utils.Flight;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/drone/api")
@@ -32,11 +35,16 @@ public class MissionApiWebSocket {
 
     private final MissionService missionService;
     private final MissionDetailsService missionDetailsService;
-    private final Flight flight;
+
     private final DroneLogService droneLogService;
     private final DroneService droneService;
 
-
+    private final CustomServerSocket ServerSocket;
+    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final DroneLogDetailsService droneLogDetailsService;
+    private final ConnectionService connectionService;
+    //    private Flight flight;
+    private Map<Integer, Flight> flightMap = new HashMap<>();
 
 /*
 
@@ -52,6 +60,8 @@ public class MissionApiWebSocket {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
+        log.info("droneId={}",droneId);
+        Flight flight = flightMap.get(droneId);
         flight.returnDrone();
     }
 
@@ -74,7 +84,7 @@ public class MissionApiWebSocket {
 //    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
     // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
     public void wayPointDrone(Map<String, Object> paramMap) {
-        log.info("paramMap={}",paramMap);
+        log.info("paramMap={}", paramMap);
         double gpsX = 0;
         double gpsY = 0;
         double gpsZ = 0;
@@ -87,11 +97,12 @@ public class MissionApiWebSocket {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
+        log.info("droneId={}",droneId);
         if (paramMap.get("gpsX") != null)
             gpsX = Double.parseDouble(paramMap.get("gpsX").toString()) * 10000000;
         if (paramMap.get("gpsY") != null)
             gpsY = Double.parseDouble(paramMap.get("gpsY").toString()) * 10000000;
-        if (paramMap.get("alt") != null &&  !paramMap.get("alt").equals("")){
+        if (paramMap.get("alt") != null && !paramMap.get("alt").equals("")) {
             gpsZ = Double.parseDouble(paramMap.get("alt").toString());
             intGpsZ = (int) gpsZ;
         }
@@ -101,21 +112,23 @@ public class MissionApiWebSocket {
         intGpsX = (int) gpsX;
         intGpsY = (int) gpsY;
 
+        Flight flight = flightMap.get(droneId);
         flight.wayPoint(intGpsX, intGpsY, intGpsZ, yaw);
 
 
     }
 
     @MessageMapping("/changeyaw")
-//    @SendTo("/topic/changeyaw")
-//    public ResponseEntity<?> wayPointDrone(int gpsX, int gpsY, int gpsZ) {
-    // public ResponseEntity<?> wayPointDrone(@RequestBody Map<String, Object> paramMap) {
     public void changeYaw(@RequestBody Map<String, Object> paramMap) {
 
         int yaw = 0;
+        int droneId = 0;
         if (paramMap.get("yaw") != null)
             yaw = Integer.parseInt(paramMap.get("yaw").toString());
-
+        if (paramMap.get("droneId") != null)
+            droneId = Integer.parseInt(paramMap.get("droneId").toString());
+        log.info("droneId={}",droneId);
+        Flight flight = flightMap.get(droneId);
         flight.changeYaw(yaw);
     }
 
@@ -124,40 +137,41 @@ public class MissionApiWebSocket {
     public void setMissionCurrent(@RequestBody Map<String, Object> paramMap) {
 
         int seq = 0;
+        int droneId = 0;
         if (paramMap.get("seq") != null)
             seq = Integer.parseInt(paramMap.get("seq").toString());
+        if (paramMap.get("droneId") != null)
+            droneId = Integer.parseInt(paramMap.get("droneId").toString());
+        log.info("droneId={}",droneId);
+        Flight flight = flightMap.get(droneId);
         flight.setMissionCurrent(seq);
     }
 
     @MessageMapping("/startmission")
-    //  @SendTo("/topic/startmission")
-//    public void startMission(Mission mission) {
     public void startMission(@RequestBody Map<String, Object> paramMap) {
 
-        long id = 0l;
-
-        if (paramMap.get("id") != null)
-            id = Long.parseLong(paramMap.get("id").toString());
         int droneId = 0;
+        AtomicBoolean alreadyStartMission= new AtomicBoolean(false);
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
-        Mission mission = new Mission();
-        mission.setId(id);
+        //flight check
+        int finalDroneId = droneId;
+        flightMap.forEach((k, v)->{
+            if(finalDroneId ==k)
+                alreadyStartMission.set(true);
+        });
+        if(alreadyStartMission.get()==false){
+            Flight flight = new Flight(ServerSocket, simpMessagingTemplate, droneLogDetailsService, droneService,connectionService);
+            flightMap.put(droneId, flight);
+        }
+        Flight flight = flightMap.get(droneId);
 
-        //로그 저장
-        //  Mission missionResponse = missionService.missionResponseList2(mission.getId());
         DroneResponse drone = droneService.findOneDrone(droneId);
-        //수정
-      //  Mission missionResponse = missionService.missionResponseList2(id);
-
         MissionResponse missionResponse = drone.getDroneInmission().getMission();
         DroneLog inputDroneLog = new DroneLog();
 
         inputDroneLog.setMissionName(missionResponse.getName());
-
         String droneName = drone.getDroneDeviceName();
-
-//        inputDroneLog.setDroneDeviceName(missionResponse.getDrone().getDroneDeviceName());
         inputDroneLog.setDroneDeviceName(droneName);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         inputDroneLog.setInsertDt(timestamp);
@@ -165,7 +179,7 @@ public class MissionApiWebSocket {
 
 
         //미션 수행
-        int i = 2;
+//        int i = 2;
         int step = 0;
         int flag = 0;
         HashMap<Integer, String> missionIndex = new HashMap<>();
@@ -173,7 +187,6 @@ public class MissionApiWebSocket {
         HashMap<String, Integer> gpsYs = new HashMap<>();
         HashMap<String, Integer> gpsZs = new HashMap<>();
         HashMap<String, Integer> speeds = new HashMap<>();
-        HashMap<String, String> result = new HashMap<>();
         HashMap<String, Integer> times = new HashMap<>();
         HashMap<String, Float> yaws = new HashMap<>();
         HashMap<String, MissionItemInt> missionMap = new HashMap<>();
@@ -215,10 +228,11 @@ public class MissionApiWebSocket {
 
             }
         }
+        //TODO takeoff 높이 지정 해야됨
+
 
         // log.info("{}", missionDetailsService.findByNameAndMission("takeOff", mission).getIndex());
-       // float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex()));
-
+        // float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex()));
         //float takeOffAlt = gpsZs.get(missionIndex.get(1));
 
 
@@ -227,7 +241,7 @@ public class MissionApiWebSocket {
             int y = 0;
             int z = 0;
             int time = 0;
-            int speed = 0;
+
             int radius = 0;
             float yaw = 0;
             //      log.info("step={}", step);
@@ -237,20 +251,13 @@ public class MissionApiWebSocket {
             z = gpsZs.getOrDefault(missionIndex.get(step), 0);
             yaw = yaws.getOrDefault(missionIndex.get(step), 0f);
             time = times.getOrDefault(missionIndex.get(step), 0);
-            speed = speeds.getOrDefault(missionIndex.get(step), 0);
+
             radius = radiusMap.getOrDefault(missionIndex.get(step), 0);
-            //    log.info("x={},y={},z={}", x, y, z);
             if (missionIndex.getOrDefault(step, "finish").equals("takeOff")) {
-                //
-                //missionMap = flight.missionTakeoff(droneLog, missionResponse.getDrone().getId().intValue());
                 missionMap = flight.missionTakeoff(droneLog, droneId);
                 flag++;
 
             } else if (missionIndex.getOrDefault(step, "finish").contains("waypoint")) {
-
-//                log.info("x={},y={},z{}", x, y, z);
-                //    log.info("yaw={}", yaw);
-                log.info("time={}",time);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
                         .param1(time)
@@ -272,7 +279,6 @@ public class MissionApiWebSocket {
                 flag++;
 
             } else if (missionIndex.getOrDefault(step, "finish").contains("loi")) {
-                //      log.info("loitime={}", time);
                 MissionItemInt missionItemInt = new MissionItemInt.Builder()
                         .command(MavCmd.MAV_CMD_NAV_LOITER_TURNS)
                         .param1(time)
@@ -314,37 +320,39 @@ public class MissionApiWebSocket {
             step++;
 
 
+
         }
-
-        flight.doMission(missionMap, flag, speeds, yaws, missionIndex);
-
-
+        alreadyStartMission.set(false);
+        //TODO isEnd 두번실행시 오류
+        String isEnd=flight.doMission(missionMap, flag, speeds, yaws, missionIndex);
+        log.info("isEnd={}",isEnd);
+        if(isEnd.equals("stop")){
+            log.info("here");
+           flightMap.remove(droneId);
+        }
     }
 
 
     @MessageMapping("/pause")
-    //  @SendTo("/topic/pause")
     public void pause(@RequestBody Map<String, Object> paramMap) {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
-        // flight.loiter(30);
+        log.info("droneId={}",droneId);
+        Flight flight = flightMap.get(droneId);
         flight.pauseOrPlay(0);
-        // flight.returnDrone();
+
     }
 
     @MessageMapping("/play")
-    // @SendTo("/topic/play")
     public void play(@RequestBody Map<String, Object> paramMap) {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
-        // flight.loiter(30);
+        log.info("droneId={}",droneId);
+        Flight flight = flightMap.get(droneId);
         flight.pauseOrPlay(1);
-        // flight.returnDrone();
     }
-
-
 
 
 }

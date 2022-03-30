@@ -19,11 +19,11 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>com.danusys.web</groupId>
-            <artifactId>danusys-commons-auth</artifactId>
-            <version>${revision}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.danusys.web</groupId>-->
+<!--            <artifactId>danusys-commons-auth</artifactId>-->
+<!--            <version>${revision}</version>-->
+<!--        </dependency>-->
 
 
         <!-- tomcat 으로 실행시 -->

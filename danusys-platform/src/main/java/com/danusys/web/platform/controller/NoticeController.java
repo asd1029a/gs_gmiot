@@ -2,7 +2,7 @@ package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
-import com.danusys.web.platform.request.NoticeRequestDto;
+import com.danusys.web.platform.dto.request.NoticeRequestDto;
 import com.danusys.web.platform.dto.response.NoticeResponseDto;
 import com.danusys.web.platform.service.notice.NoticeService;
 import lombok.extern.slf4j.Slf4j;

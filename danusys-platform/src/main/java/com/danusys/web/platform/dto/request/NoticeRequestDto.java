@@ -1,4 +1,4 @@
-package com.danusys.web.platform.request;
+package com.danusys.web.platform.dto.request;
 
 import com.danusys.web.platform.entity.Notice;
 import lombok.*;

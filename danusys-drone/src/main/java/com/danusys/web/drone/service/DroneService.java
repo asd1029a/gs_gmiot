@@ -135,6 +135,8 @@ public class DroneService {
         // log.info("droneStatus={}", droneStatus);
 
         log.info("여긴오나?");
+        if(droneList==null)
+            return null;
         return droneList.stream().map(DroneResponse::new).collect(Collectors.toList());
         //return droneList;
     }
