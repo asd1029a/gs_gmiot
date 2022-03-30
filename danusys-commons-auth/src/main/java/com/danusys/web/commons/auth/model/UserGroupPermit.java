@@ -43,5 +43,5 @@ public class UserGroupPermit {
 
     @OneToOne
     @JoinColumn(name="permit_menu_seq", referencedColumnName="code_seq", updatable = false, insertable = false)
-    private PermitMenu permitManu;
+    private PermitMenu permitMenu;
 }

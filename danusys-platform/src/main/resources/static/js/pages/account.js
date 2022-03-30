@@ -90,7 +90,7 @@ const account = {
         },
         createUserInGroup: (type) => {
             const $target = $('#userInGroupTable');
-            const url = type === "mod" ? "/user/user/userInGroup" : "/user/user"
+            const url = type === "mod" ? "/user/user/userInGroup" : "/user/user";
             const optionObj = {
                 dom: '<"table_body"rt>',
                 destroy: true,
@@ -316,7 +316,18 @@ const account = {
                 account.group.hidePopup();
             });
             $("#addUserGroupProcBtn").on('click', () => {
-                account.group.addProc();
+                const groupName = $("#groupName").val();
+                    account.group.checkGroupName(
+                    groupName
+                    , (result) => {
+                        if(result === 1) {
+                            account.group.addProc();
+                        } else {
+                            $("#groupName").focus();
+                            comm.showAlert("중복된 그룹 이름이 존재합니다.");
+                        }
+                    }
+                );
             });
             $("#modUserGroupProcBtn").on('click', () => {
                 account.group.modProc($("#userGroupForm").data("userGroupSeq"));
@@ -343,6 +354,7 @@ const account = {
                             return JSON.stringify(param);
                         },
                         'dataSrc': function (result) {
+                            console.log(result);
                             $('.title dd .count').text(result.recordsTotal);
                             return result.data;
                         }
@@ -351,10 +363,9 @@ const account = {
                     toggleable: false
                 },
                 columns: [
-                    {data: "userGroupSeq", className: "alignLeft"},
                     {data: "groupName"},
-                    {data: "inUserId"},
                     {data: "groupDesc"},
+                    {data: "inUserId"},
                     {data: null}
                 ]
                 , "columnDefs": [{
@@ -370,10 +381,10 @@ const account = {
                     const $form = $('#userGroupForm');
                     const rowData = $target.DataTable().row($(e.currentTarget)).data();
                     if ($(e.target).hasClass('button')) {
-                        $('#userGroupForm').setItemValue(rowData);
                         account.group.get(rowData.userGroupSeq, (result) => {
                             $form.data("userGroupSeq", rowData.userGroupSeq);
                             account.group.showPopup('mod');
+                            account.group.setPermitItemValue(result);
                             $form.setItemValue(result);
                         });
                     }
@@ -437,6 +448,24 @@ const account = {
             }
             comm.createTable($target, optionObj, evt);
         },
+        setPermitItemValue : (pData) => {
+            const $permitTable = $("#permitTable");
+            if(pData.userGroupPermit.length !== 0) {
+                $permitTable.find("tbody tr").each((index, item) => {
+                    const permitName = pData.userGroupPermit[index].permitMenu['codeId'];
+                    const permitValue = pData.userGroupPermit[index].permit['codeValue'];
+                    $permitTable.find('span [name="'+permitName+'"][ data-value="'+permitValue+'"]').prop("checked", true);
+                });
+            }
+        },
+        checkGroupName: (pId, pCallback) => {
+            $.ajax({
+                url: "/user/group/checkGroupName/" + pId
+                , type: "GET"
+            }).done((result) => {
+                pCallback(result);
+            });
+        },
         getList: (pCallback) => {
             comm.ajaxPost({
                 url: "/user/group"
@@ -455,6 +484,7 @@ const account = {
         },
         showPopup: (type) => {
             $('#userGroupPopup .popupContents').scrollTop(0);
+            $("#permitTable").find('input').prop('checked', false);
             comm.showModal($('#userGroupPopup'));
             account.user.createUserInGroup(type);
             $('#userGroupPopup').css("display", "flex");

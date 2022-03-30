@@ -181,8 +181,10 @@ public class UserController {
        param: User user (userSeq)
        do: userSeq로 조회하여 삭제함
      */
-    @DeleteMapping()
-    public ResponseEntity<?> del(@RequestBody User user) {
+    @DeleteMapping("/{userSeq}")
+    public ResponseEntity<?> del(@PathVariable int userSeq) {
+        User user = new User();
+        user.setUserSeq(userSeq);
         userService.del(user);
         return ResponseEntity
                 .status(HttpStatus.OK).body("");

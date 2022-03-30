@@ -2,7 +2,9 @@ package com.danusys.web.commons.api.service.executor;
 
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
+import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.app.StrUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -64,26 +66,52 @@ public class SoapApiExecutor implements ApiExecutor  {
             // 생성한 SOAPBodyElement 에 다시 ChildElement 를 추가하고 각각의 ChildElement 에 TextNode 를 추가
             apiRequestParams.forEach(apiReq -> {
                 try {
+                    if (apiReq.getDataType().equals(DataType.ARRAY)) {
+                        log.trace(apiReq.getValue());
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        List<String> values = objectMapper.readValue(apiReq.getValue(), new TypeReference<List<String>>() {});
+                        values.forEach(f -> {
+                            try {
+                                elRequest.addChildElement(apiReq.getFieldMapNm(), webServicePrefix).addTextNode(f);
+                            } catch (SOAPException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    } else {
+                        elRequest.addChildElement(apiReq.getFieldMapNm(), webServicePrefix).addTextNode(apiReq.getValue());
+                    }
                     elRequest.addChildElement(apiReq.getFieldMapNm(), webServicePrefix).addTextNode(apiReq.getValue());
                 } catch (SOAPException e) {
 //                    e.printStackTrace();
                     log.error("파라미터 세팅 SoapApiExecutor 오류");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             });
 
             // SOAPMessage 를 requestURL 로 전송하고 서버쪽에서 내려보낸 정보가 담긴 SOAPMessage 객체를 얻음
             SOAPMessage responseMessage = soapConnection.call(soapMessage, targetURL);
+            log.trace("soapBody : {}", soapBody.getTextContent());
+//            soapMessage.writeTo(System.out);
             responseMessage.writeTo(System.out);
 
             SOAPBody resBody = responseMessage.getSOAPBody();
             Iterator resBodyChildElements = resBody.getChildElements();
             Node rootNode = (Node) resBodyChildElements.next();
+            NodeList nodeList = rootNode.getChildNodes();
+            int limit = nodeList.getLength();
+            for (int i = 0; i < limit; i++) {
+                Node node = (Node) nodeList.item(i);
+            }
             NodeList nodes = rootNode.getChildNodes().item(0).getChildNodes();
 
             //        final Map<String, Object> reqMap = apiRequestParams.stream().collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
             log.trace("api.getApiResponseParams() :{}", api.getApiResponseParams().toString());
 
             api.getApiResponseParams().forEach(resApi -> {
+                if (resApi.getDataType().equals(DataType.ARRAY)) {
+
+                }
                 log.trace("응답 : {} <- {} = {}", resApi.getFieldNm(), resApi.getFieldMapNm(), this.getNodeValue(nodes, resApi.getFieldMapNm()));
                 result.put(resApi.getFieldNm(), this.getNodeValue(nodes, resApi.getFieldMapNm()));
             });
@@ -99,6 +127,13 @@ public class SoapApiExecutor implements ApiExecutor  {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ObjectMapper().writeValueAsString(result));
+    }
+
+    private void createRequestParamElement(List<ApiParam> apiRequestParams) {
+        apiRequestParams.stream().filter(f -> f.getDataType().equals(DataType.ARRAY)).peek(f -> {
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<String> list = objectMapper.convertValue(f.getValue(), List.class);
+        });
     }
 
     /**

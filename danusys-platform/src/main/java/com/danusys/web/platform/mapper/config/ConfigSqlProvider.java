@@ -15,6 +15,7 @@ public class ConfigSqlProvider {
             SELECT("*");
             FROM("t_common_code");
             WHERE("parent_code_seq = "+pParentCode);
+            WHERE("use_kind != 'D'");
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);

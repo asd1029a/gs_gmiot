@@ -8,6 +8,7 @@ import com.danusys.web.commons.auth.entity.UserGroupSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserInGroup;
+import com.danusys.web.commons.auth.repository.UserGroupPermitRepository;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
@@ -33,6 +34,7 @@ public class UserGroupService {
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
     private final UserInGroupRepository userInGroupRepository;
+    private final UserGroupPermitRepository userGroupPermitRepository;
 
 //    @Transactional(readOnly = true)
 //    public GroupResponse getOneByGroupSeq(int groupSeq) {
@@ -47,6 +49,11 @@ public class UserGroupService {
 //
 //        return groupResponse;
 //    }
+
+    public int checkGroupName(String groupName) {
+        UserGroup userGroup = userGroupRepository.findByGroupName(groupName);
+        return (userGroup == null) ? 1 : 0;
+    }
 
     //    @Transactional(readOnly = true)
     public GroupResponse getOneByGroupSeq(int groupSeq) {
@@ -202,10 +209,10 @@ public class UserGroupService {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CommonsUserDetails userDetails = (CommonsUserDetails) principal;
-        // log.info("{}",userDetails.getUserSeq());
+
         if (findUserGroup == null) {
             return 0;
-        }else{
+        } else {
             if (userGroup.getGroupDesc() != null)
                 findUserGroup.setGroupDesc(userGroup.getGroupDesc());
             if (userGroup.getGroupName() != null)
@@ -223,6 +230,8 @@ public class UserGroupService {
 
     @Transactional
     public void del(UserGroup userGroup) {
+        userInGroupRepository.deleteAllByUserGroupSeq(userGroup.getUserGroupSeq());
+        userGroupPermitRepository.deleteByUserGroupSeq(userGroup.getUserGroupSeq());
         userGroupRepository.deleteById(userGroup.getUserGroupSeq());
     }
 }

@@ -40,7 +40,6 @@ public class UserGroup implements Serializable {
     @Column(name = "user_group_status")
     private String userGroupStatus;
 
-
     @OneToMany(mappedBy = "userGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonBackReference
     private final List<UserInGroup> userInGroup = new ArrayList<>();
@@ -48,4 +47,8 @@ public class UserGroup implements Serializable {
     @OneToMany(mappedBy = "userGroup2", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private final List<UserGroupPermit> userGroupPermit = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "user_group_status", referencedColumnName = "code_value", updatable = false, insertable = false)
+    private UserStatus userStatus;
 }
