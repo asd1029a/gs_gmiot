@@ -128,20 +128,24 @@ const mntr = {
         });
         window.map.map.addInteraction(layerSelect);
 
-        layerSelect.on('select', function(evt){
+        layerSelect.on('select', evt => {
+            if(evt.deselected.length > 0){
+                //선택해체
+                let popup = new mapPopup('map');
+                popup.remove('mouseClickPopup');
+            }
+            //선택
             const target = evt.selected[0];
             if(target) {
                 let targetType = "";
-                let targetFeature = "";
-                //클러스터 일때
                 if(target.getProperties().features != undefined) {
+                    //클러스터 일때
                     targetType = target.getProperties().features[0].getId().replace(/[0-9]/gi,'');
-                    targetFeature = target.getProperties().features;
-                } else { //클러스터 아닐때
+                } else {
+                    //클러스터 아닐때
                     targetType = target.getId().replace(/[0-9]/gi,'');
-                    targetFeature = target;
                 }
-                clickIcon(targetType, targetFeature);
+                clickIcon(targetType, target);
             }
         });
 
@@ -202,6 +206,9 @@ const mntr = {
         map.setMapViewEventListener('propertychange' ,e => {
             if(String(e.key)=="resolution"){
                 const zoom = map.map.getView().getZoom();
+                let popup = new mapPopup('map');
+                popup.remove('mouseClickPopup');
+
                 let target = $('.mntr_container section.select .tab li.active').attr('data-value');
                 if(target=="station"){target = "event"}
                 if(zoom > 10){ //13 ~ 9.xxx
@@ -404,7 +411,7 @@ const mntr = {
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
         });
-        //TOP BUTTON (오른쪽창 리스트 맨위로)
+        //TOP BUTTON (왼쪽창 리스트 맨위로)
         $(".search_list .button_top").on("click", e => {
             $(e.currentTarget).parent('div').scrollTop(0);
         });

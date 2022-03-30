@@ -247,30 +247,55 @@ const mapPopupContent = {
  * 레이어별 클릭 이벤트
  * */
 function clickIcon(layerType, layerObj) {
-    $('.area_right').show(); //임시
-    window.map.updateSize();
+    const len = layerObj.getProperties().features.length;
+
+    let popup = new mapPopup('map');
+    let position = layerObj.getGeometry().getCoordinates();
+    let content = "<div>";
 
     switch (layerType)  {
-        case "station":
-            ///개소 클릭 이벤트
-            layerObj.forEach(obj => {
-               console.log(obj.getProperties());
-            });
-            return false;
-        case "facility" :
-            //시설물 클릭 이벤트
-            console.log(layerObj);
-            return false;
-        case "event" :
-            //이벤트 클릭 이벤트
-            layerObj.forEach(obj => {
-                console.log(obj.getProperties());
-            });
-            return false;
-        default :
-            ////////////////////
-    }
+        case "station": ///개소 클릭 이벤트
+            if(len == 1){
+                //오른쪽 패널 show/////////////
+                $('.area_right[data-value='+layerType+']').show();
+                window.map.updateSize();
+            } else if(len > 1) {
+                //목록 팝업 제작
+                layerObj.getProperties().features.forEach(obj => {
+                   content += "<li>" + obj.getProperties().stationName + "</li>";
+                });
+                popup.create('mouseClickPopup');
+                content += "</div>";
+                popup.content('mouseClickPopup', content);
+                popup.move('mouseClickPopup', position);
+                break;
+            }
 
+
+        case "facility" : //시설물 클릭 이벤트
+            console.log(layerObj);
+            break;
+
+        case "event" : //이벤트 클릭 이벤트
+            if(len == 1){
+                console.log(layerObj.getProperties().features[0].getProperties().eventMessage);
+                //오른쪽 패널 show/////////////
+                $('.area_right[data-value='+layerType+']').show();
+                window.map.updateSize();
+            } else if(len > 1) {
+                //목록 팝업 제작
+                layerObj.getProperties().features.forEach(obj => {
+                    content += "<li>" + obj.getProperties().eventMessage + "</li>";
+                });
+                popup.create('mouseClickPopup');
+                content += "</div>";
+                popup.content('mouseClickPopup', content);
+                popup.move('mouseClickPopup', position);
+            }
+            break;
+        default :
+            break;
+    } //switch end
 
 }
 

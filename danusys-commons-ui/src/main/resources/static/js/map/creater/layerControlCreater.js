@@ -9,6 +9,7 @@ class layerControl {
      * */
     constructor(target, checkProp) {
         this.map = window[target].map;
+        this.mapName = target;
         this.check = checkProp;
     }
 
@@ -32,6 +33,11 @@ class layerControl {
         this.map.getLayers().forEach( layer => {
             if(layer.get(this.check)==layerName){
                 layer.setVisible(false);
+                //레이어의 팝업끄기
+                let popup = new mapPopup(this.mapName);
+                if(popup.exist('mouseClickPopup')){
+                    popup.remove('mouseClickPopup');
+                }
             }
         });
     }
