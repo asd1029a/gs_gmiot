@@ -15,6 +15,10 @@ public class CustomServerSocket {
                 serverSocket = new ServerSocket(port); // 생성자 내부에 bind()가 있고, bind() 내부에 listen() 있음
                 serverThread = new ServerThread(serverSocket);
                 serverThread.start();
+
+
+
+
             } catch (IOException e) {
                 System.out.println("서버 종료..");
                 serverSocket.close();

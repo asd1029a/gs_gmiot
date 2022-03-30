@@ -4,21 +4,20 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base_layout}">
 <head>
-    <meta charset="utf-8">
     <title>레이아웃</title>
-    <link rel="stylesheet" type="text/css" href="/css/um/drone.css" >
+    <link rel="stylesheet" type="text/css" href="/css/um/drone.css">
     <link rel="stylesheet" type="text/css" href="/css/default/layout.css">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="./script.js"></script>
     <script src="/js/common/common.js" defer="" charset="utf-8"></script>
     <script src="/js/default/default.js" defer="" charset="utf-8"></script>
-    <script src="/js/um/frame2.js" defer charset="utf-8"> </script>
+    <script src="/js/um/frame.js" defer charset="utf-8"></script>
 </head>
 
 <body>
 <th:block layout:fragment="content">
-<!--<div class="wrap">-->
+    <!--<div class="wrap">-->
     <!--    헤더 영역 -->
 
     <div class="popup" style="display: none;">
@@ -41,22 +40,22 @@
         </div>
 
     </div>
-<!--    <header>-->
-<!--        <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>-->
-<!--        <ul class="gnm">-->
-<!--            &lt;!&ndash;            <li><a>Home</a></li>&ndash;&gt;-->
-<!--            &lt;!&ndash;            <li><a th:href="/drone">대시보드</a></li>&ndash;&gt;-->
-<!--            <li class="on"><a href="/drone">드론</a></li>-->
-<!--            <li><a href="/mission">미션</a></li>-->
-<!--            <li><a href="/flying">비행</a></li>-->
-<!--            <li><a href="/log">로그</a></li>-->
-<!--            &lt;!&ndash;            <li><a>설정</a></li>&ndash;&gt;-->
-<!--        </ul>-->
-<!--        <ul class="utmenu">-->
-<!--            <li class="test_button"><i><img src="images/um/utmenuUser.svg"></i></li>-->
-<!--            <li><i><img src="images/um/utmenuBell.svg"></i></li>-->
-<!--        </ul>-->
-<!--    </header>-->
+    <!--    <header>-->
+    <!--        <h1 class="logo"><i><img src="images/um/headerMenu.svg"></i>드론관제시스템</h1>-->
+    <!--        <ul class="gnm">-->
+    <!--            &lt;!&ndash;            <li><a>Home</a></li>&ndash;&gt;-->
+    <!--            &lt;!&ndash;            <li><a th:href="/drone">대시보드</a></li>&ndash;&gt;-->
+    <!--            <li class="on"><a href="/drone">드론</a></li>-->
+    <!--            <li><a href="/mission">미션</a></li>-->
+    <!--            <li><a href="/flying">비행</a></li>-->
+    <!--            <li><a href="/log">로그</a></li>-->
+    <!--            &lt;!&ndash;            <li><a>설정</a></li>&ndash;&gt;-->
+    <!--        </ul>-->
+    <!--        <ul class="utmenu">-->
+    <!--            <li class="test_button"><i><img src="images/um/utmenuUser.svg"></i></li>-->
+    <!--            <li><i><img src="images/um/utmenuBell.svg"></i></li>-->
+    <!--        </ul>-->
+    <!--    </header>-->
     <!-- droneFrame -->
     <div class="droneFrameWrap">
         <div class="lnb" id="">
@@ -119,7 +118,7 @@
                     </dd>
                 </dl>
                 <div class="picture">
-                    <img id ="preview-image" src="">
+                    <img id="preview-image" src="">
                 </div>
             </section>
             <section class="droneFrameRight">
@@ -204,7 +203,7 @@
                         </dd>
                         <dt>비행 시간</dt>
                         <dd>
-                            <input type="text" placeholder="00 분" class="flight_time" disabled >
+                            <input type="text" placeholder="00 분" class="flight_time" disabled>
                         </dd>
                     </dl>
                     <dl>
@@ -239,7 +238,23 @@
                             <input type="text" placeholder="00 m/s" class="drone_maximum_speed">
                         </dd>
                     </dl>
+
+                    <div class="articleTitle">
+                        <dl>
+                            <dt>연결할 드론</dt>
+                            <dd>
+                                <select class="socket_list">
+
+                                </select>
+                            </dd>
+                        </dl>
+                        <ul class="button">
+                            <li class="sync_button">동기화</li>
+
+                        </ul>
+                    </div>
                 </div>
+
                 <!--                <p class="subTitle">이벤트 정보</p>-->
                 <!--                <div class="eventInfo">-->
                 <!--                    <ul>-->
@@ -320,97 +335,97 @@
             </section>
         </div>
     </div>
-<!--</div>-->
+    <!--</div>-->
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-    $(function () {
-        $(".lnbToggle").on("click", function () {
-            $(".lnb").toggleClass("toggle");
+        $(function () {
+            $(".lnbToggle").on("click", function () {
+                $(".lnb").toggleClass("toggle");
+            })
+            $(".selectboxCheck_title").click(function () {
+                $(".selectCheckList").show();
+            })
+            $('.lnb .tabButton li').click(function () {
+                $(this).addClass('on');
+            });
+            $(".infoTitle i").click(function () {
+                $(".infoArea").hide("2000");
+            })
+            $(".routeSet .routeTitle").on("click", function () {
+                $('.routeSet .routeToggle').slideToggle('slow');
+            })
+            $(".camera .button").on("click", function () {
+                $('.camera ul').slideToggle('slow');
+            })
         })
-        $(".selectboxCheck_title").click(function () {
-            $(".selectCheckList").show();
-        })
-        $('.lnb .tabButton li').click(function () {
-            $(this).addClass('on');
+
+
+        $(function () {
+            // 각각의 셀렉트 박스 인스턴스 생성
+            var selectType01 = new CustomSelectBox('.selectBox.type01');
+            var selectType01 = new CustomSelectBox('.selectBox.type02');
+            var selectType01 = new CustomSelectBox('.selectBox.type03');
         });
-        $(".infoTitle i").click(function () {
-            $(".infoArea").hide("2000");
-        })
-        $(".routeSet .routeTitle").on("click", function () {
-            $('.routeSet .routeToggle').slideToggle('slow');
-        })
-        $(".camera .button").on("click", function () {
-            $('.camera ul').slideToggle('slow');
-        })
-    })
 
-
-    $(function () {
-        // 각각의 셀렉트 박스 인스턴스 생성
-        var selectType01 = new CustomSelectBox('.selectBox.type01');
-        var selectType01 = new CustomSelectBox('.selectBox.type02');
-        var selectType01 = new CustomSelectBox('.selectBox.type03');
-    });
-
-    //    selectbox custom
-    function CustomSelectBox(selector) {
-        this.$selectBox = null,
-            this.$select = null,
-            this.$list = null,
-            this.$listLi = null;
-        CustomSelectBox.prototype.init = function (selector) {
-            this.$selectBox = $(selector);
-            this.$select = this.$selectBox.find('.box .select');
-            this.$list = this.$selectBox.find('.box .list');
-            this.$listLi = this.$list.children('li');
-        }
-        CustomSelectBox.prototype.initEvent = function (e) {
-            var that = this;
-            this.$select.on('click', function (e) {
-                that.listOn();
-            });
-            this.$listLi.on('click', function (e) {
-                that.listSelect($(this));
-            });
-            $(document).on('click', function (e) {
-                that.listOff($(e.target));
-            });
-        }
-        CustomSelectBox.prototype.listOn = function () {
-            this.$selectBox.toggleClass('on');
-            if (this.$selectBox.hasClass('on')) {
-                this.$list.css('display', 'block');
-            } else {
-                this.$list.css('display', 'none');
+        //    selectbox custom
+        function CustomSelectBox(selector) {
+            this.$selectBox = null,
+                this.$select = null,
+                this.$list = null,
+                this.$listLi = null;
+            CustomSelectBox.prototype.init = function (selector) {
+                this.$selectBox = $(selector);
+                this.$select = this.$selectBox.find('.box .select');
+                this.$list = this.$selectBox.find('.box .list');
+                this.$listLi = this.$list.children('li');
             }
-            ;
-        }
-        CustomSelectBox.prototype.listSelect = function ($target) {
-            $target.addClass('selected').siblings('li').removeClass('selected');
-            this.$selectBox.removeClass('on');
-            this.$select.text($target.text());
-            this.$list.css('display', 'none');
-        }
-        CustomSelectBox.prototype.listOff = function ($target) {
-            if (!$target.is(this.$select) && this.$selectBox.hasClass('on')) {
+            CustomSelectBox.prototype.initEvent = function (e) {
+                var that = this;
+                this.$select.on('click', function (e) {
+                    that.listOn();
+                });
+                this.$listLi.on('click', function (e) {
+                    that.listSelect($(this));
+                });
+                $(document).on('click', function (e) {
+                    that.listOff($(e.target));
+                });
+            }
+            CustomSelectBox.prototype.listOn = function () {
+                this.$selectBox.toggleClass('on');
+                if (this.$selectBox.hasClass('on')) {
+                    this.$list.css('display', 'block');
+                } else {
+                    this.$list.css('display', 'none');
+                }
+                ;
+            }
+            CustomSelectBox.prototype.listSelect = function ($target) {
+                $target.addClass('selected').siblings('li').removeClass('selected');
                 this.$selectBox.removeClass('on');
+                this.$select.text($target.text());
                 this.$list.css('display', 'none');
             }
-            ;
+            CustomSelectBox.prototype.listOff = function ($target) {
+                if (!$target.is(this.$select) && this.$selectBox.hasClass('on')) {
+                    this.$selectBox.removeClass('on');
+                    this.$list.css('display', 'none');
+                }
+                ;
+            }
+            this.init(selector);
+            this.initEvent();
         }
-        this.init(selector);
-        this.initEvent();
-    }
 
 
-    // $("#file").on('change',function(){
-    //     var fileName = $("#file").val();
-    //     $(".uploadName").val(fileName);
-    // });
+        // $("#file").on('change',function(){
+        //     var fileName = $("#file").val();
+        //     $(".uploadName").val(fileName);
+        // });
 
 
-</script>
+    </script>
 </th:block>
 <footer layout:fragment="footer">
 </footer>

@@ -2,61 +2,45 @@ package com.danusys.web.drone.utils;
 
 
 import com.danusys.web.commons.socket.config.CustomServerSocket;
+import com.danusys.web.drone.controller.SocketDroneController;
 import com.danusys.web.drone.dto.response.Gps;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneLog;
 import com.danusys.web.drone.model.DroneLogDetails;
-import com.danusys.web.drone.service.DroneDetailsService;
+import com.danusys.web.drone.service.ConnectionService;
 import com.danusys.web.drone.service.DroneLogDetailsService;
-import com.danusys.web.drone.service.DroneLogService;
 import com.danusys.web.drone.service.DroneService;
 import com.google.gson.Gson;
-import io.dronefleet.mavlink.Mavlink2Message;
 import io.dronefleet.mavlink.MavlinkConnection;
 import io.dronefleet.mavlink.MavlinkMessage;
-
 import io.dronefleet.mavlink.common.*;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.modeler.BaseModelMBean;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.io.EOFException;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class Flight {
-//    @Value("${tcp.server.host}")
-//    private String tcpServerHost;
 
-//    @Value("${tcp.server.port}")
-//    private int tcpServerPort;
 
     private final CustomServerSocket ServerSocket;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final Substring substring;
     private final DroneLogDetailsService droneLogDetailsService;
-    private final DroneLogService droneLogService;
     private final DroneService droneService;
+    private final ConnectionService connectionService;
 
     private MavlinkConnection connection = null;
-    private Socket socket = null;
     private Gps gps = new Gps();
     private Gps wayPointGps = new Gps();
     private Gson gson = new Gson();
@@ -94,23 +78,13 @@ public class Flight {
         if (alreadyDo) {
             try {
                 secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
-                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE)
-                        .param1(1).param2(3).build(), linkId, timestamp, secretKey);
+                CommandLong doSetModeCommandLong = new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE)
+                        .param1(1).param2(3).build();
+                connection.send2(systemId, componentId, doSetModeCommandLong, linkId, timestamp, secretKey);
 
                 DroneLogDetails droneLogDetailsSetMode = new DroneLogDetails();
-                droneLogDetailsSetMode.setDroneLog(droneLog);
-                droneLogDetailsSetMode.setFromTarget("gcs");
-                droneLogDetailsSetMode.setToTarget("drone");
-                droneLogDetailsSetMode.setType("MAV_CMD_DO_SET_MODE");
-                droneLogDetailsSetMode.setParam1("1");
-                droneLogDetailsSetMode.setParam2("3");
-                droneLogDetailsSetMode.setParam3("0");
-                droneLogDetailsSetMode.setParam4("0");
-                droneLogDetailsSetMode.setParam5("0");
-                droneLogDetailsSetMode.setParam6("0");
-                droneLogDetailsSetMode.setParam7("0");
-                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsSetMode);
-
+                writeLog(droneLogDetailsSetMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE",
+                        "1", "3", "0", "0", "0", "0", "0");
 
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
@@ -171,21 +145,19 @@ public class Flight {
                 }
             };
 
+            Socket socket = null;
+            int index = -1;
             try {
-
-
-                Drone searchDrone=new Drone();
+                Drone searchDrone = new Drone();
                 searchDrone.setDroneDeviceName(droneLog.getDroneDeviceName());
-                Drone findDrone=droneService.findDrone(searchDrone);
-                int index=findDrone.getSocketIndex();
+                Drone findDrone = droneService.findDrone(searchDrone);
+                index = findDrone.getSocketIndex();
                 HashMap<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
-                log.info("socketIndex={}",index);
-                socket=socketList.get(2);
+                //log.info("socketIndex={}", index);
+                socket = socketList.get(index);
                 connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-
-
+                //connection = connectionService.getMavlinkConnection(index);
                 Heartbeat heartbeat = null;
-
 
                 t = new Timer();
 
@@ -196,22 +168,10 @@ public class Flight {
 
                 connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_GET_HOME_POSITION).build(), linkId, timestamp, secretKey);
                 DroneLogDetails droneLogDetailsHomePosition = new DroneLogDetails();
-
-                droneLogDetailsHomePosition.setDroneLog(droneLog);
-                droneLogDetailsHomePosition.setFromTarget("gcs");
-                droneLogDetailsHomePosition.setToTarget("drone");
-                droneLogDetailsHomePosition.setType("MAV_CMD_GET_HOME_POSITION");
-                droneLogDetailsHomePosition.setParam1("0");
-                droneLogDetailsHomePosition.setParam2("0");
-                droneLogDetailsHomePosition.setParam3("0");
-                droneLogDetailsHomePosition.setParam4("0");
-                droneLogDetailsHomePosition.setParam5("0");
-                droneLogDetailsHomePosition.setParam6("0");
-                droneLogDetailsHomePosition.setParam7("0");
-
-                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsHomePosition);
+                writeLog(droneLogDetailsHomePosition, droneLog, "gcs", "drone", "MAV_CMD_GET_HOME_POSITION", "0", "0"
+                        , "0", "0", "0", "0", "0");
                 while ((message = connection.next()) != null) {
-                    log.info("message={}",message.getPayload());
+
                     if (message.getPayload() instanceof HomePosition) {
                         MavlinkMessage<HomePosition> homePositionMavlinkMessage = (MavlinkMessage<HomePosition>) message;
                         //           log.info("home Position = {}", homePositionMavlinkMessage.getPayload());
@@ -239,51 +199,26 @@ public class Flight {
                 connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
                 DroneLogDetails droneLogDetailsDoSetMode = new DroneLogDetails();
                 droneLogDetailsDoSetMode.setDroneLog(droneLog);
-                droneLogDetailsDoSetMode.setFromTarget("gcs");
-                droneLogDetailsDoSetMode.setToTarget("drone");
-                droneLogDetailsDoSetMode.setType("MAV_CMD_DO_SET_MODE");
-                droneLogDetailsDoSetMode.setParam1("1");
-                droneLogDetailsDoSetMode.setParam2("4");
-                droneLogDetailsDoSetMode.setParam3("0");
-                droneLogDetailsDoSetMode.setParam4("0");
-                droneLogDetailsDoSetMode.setParam5("0");
-                droneLogDetailsDoSetMode.setParam6("0");
-                droneLogDetailsDoSetMode.setParam7("0");
-                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsDoSetMode);
+
+                writeLog(droneLogDetailsDoSetMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE", "1", "4", "0"
+                        , "0", "0", "0", "0");
                 connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(1).param2(0).build(), linkId, timestamp, secretKey);
 
 
                 DroneLogDetails droneLogDetailsArmDisarm = new DroneLogDetails();
-                droneLogDetailsArmDisarm.setDroneLog(droneLog);
-                droneLogDetailsArmDisarm.setFromTarget("gcs");
-                droneLogDetailsArmDisarm.setToTarget("drone");
-                droneLogDetailsArmDisarm.setType("MAV_CMD_COMPONENT_ARM_DISARM");
-                droneLogDetailsArmDisarm.setParam1("1");
-                droneLogDetailsArmDisarm.setParam2("0");
-                droneLogDetailsArmDisarm.setParam3("0");
-                droneLogDetailsArmDisarm.setParam4("0");
-                droneLogDetailsArmDisarm.setParam5("0");
-                droneLogDetailsArmDisarm.setParam6("0");
-                droneLogDetailsArmDisarm.setParam7("0");
-                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsArmDisarm);
-
-                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100).build(), linkId, timestamp, secretKey);
+                writeLog(droneLogDetailsArmDisarm, droneLog, "gcs", "drone", "MAV_CMD_COMPONENT_ARM_DISARM", "1", "0", "0"
+                        , "0", "0", "0", "0");
+                CommandLong takeoffCommandLong = new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).
+                        param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100).build();
+                //TODO 높이 고정으로 되있어서 높이 입력 되는 대로 take off 할 수 있게 변경해야됨
+                connection.send2(systemId, componentId, takeoffCommandLong, linkId, timestamp, secretKey);
                 DroneLogDetails droneLogDetailsTakeOff = new DroneLogDetails();
-                droneLogDetailsTakeOff.setDroneLog(droneLog);
-                droneLogDetailsTakeOff.setFromTarget("gcs");
-                droneLogDetailsTakeOff.setToTarget("drone");
-                droneLogDetailsTakeOff.setType("MAV_CMD_NAV_TAKEOFF");
-                droneLogDetailsTakeOff.setParam1("15");
-                droneLogDetailsTakeOff.setParam2("0");
-                droneLogDetailsTakeOff.setParam3("0");
-                droneLogDetailsTakeOff.setParam4("0");
-                droneLogDetailsTakeOff.setParam5("0");
-                droneLogDetailsTakeOff.setParam6("0");
-                droneLogDetailsTakeOff.setParam7("40");
-                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsTakeOff);
+
+                writeLog(droneLogDetailsTakeOff, droneLog, "gcs", "drone", "MAV_CMD_NAV_TAKEOFF", "15", "0",
+                        "0", "0", "0", "0", "100");
                 int flag = 0;
                 while ((message = connection.next()) != null) {
-                    log.info("message={}",message.getPayload());
+
                     if (message.getPayload() instanceof TerrainReport) {
                         MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
                         float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
@@ -341,18 +276,11 @@ public class Flight {
                     } else if (message.getPayload() instanceof CommandAck) {
                         MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
                         DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
-                        droneLogDetailsCommandAck.setDroneLog(droneLog);
-                        droneLogDetailsCommandAck.setFromTarget("drone");
-                        droneLogDetailsCommandAck.setToTarget("gcs");
-                        droneLogDetailsCommandAck.setType("CommandAck");
-                        droneLogDetailsCommandAck.setParam1(commandAckMavlinkMessage.getPayload().command().toString());
-                        droneLogDetailsCommandAck.setParam2(commandAckMavlinkMessage.getPayload().result().toString());
-                        droneLogDetailsCommandAck.setParam3("0");
-                        droneLogDetailsCommandAck.setParam4("0");
-                        droneLogDetailsCommandAck.setParam5("0");
-                        droneLogDetailsCommandAck.setParam6("0");
-                        droneLogDetailsCommandAck.setParam7("0");
-                        droneLogDetailsService.saveDroneLogDetails(droneLogDetailsCommandAck);
+
+                        writeLog(droneLogDetailsCommandAck, droneLog, "drone", "gcs", "CommandAck",
+                                commandAckMavlinkMessage.getPayload().command().toString(),
+                                commandAckMavlinkMessage.getPayload().result().toString(),
+                                "0", "0", "0", "0", "0");
                         log.info("commandAck={}", message);
                     }
 
@@ -363,7 +291,7 @@ public class Flight {
 
             } catch (Exception ioe) {
                 ioe.printStackTrace();
-
+                ServerSocket.serverThread.destroySocket(index);
             } finally {
 //            t.purge();
                 log.info("endtakeoff");
@@ -613,38 +541,17 @@ public class Flight {
 
             connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
             DroneLogDetails droneLogDetailsDoSetMode2 = new DroneLogDetails();
-            droneLogDetailsDoSetMode2.setDroneLog(droneLog);
-            droneLogDetailsDoSetMode2.setFromTarget("gcs");
-            droneLogDetailsDoSetMode2.setToTarget("drone");
-            droneLogDetailsDoSetMode2.setType("MAV_CMD_DO_SET_MODE");
-            droneLogDetailsDoSetMode2.setParam1("1");
-            droneLogDetailsDoSetMode2.setParam2("4");
-            droneLogDetailsDoSetMode2.setParam3("0");
-            droneLogDetailsDoSetMode2.setParam4("0");
-            droneLogDetailsDoSetMode2.setParam5("0");
-            droneLogDetailsDoSetMode2.setParam6("0");
-            droneLogDetailsDoSetMode2.setParam7("0");
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsDoSetMode2);
+            writeLog(droneLogDetailsDoSetMode2, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE", "1", "4", "0"
+                    , "0", "0", "0", "0");
 
             connection.send2(systemId, componentId, new MissionItemInt.Builder().command(MavCmd.MAV_CMD_NAV_WAYPOINT).param1(0)
                     .targetSystem(0).targetComponent(0).seq(0).current(2).autocontinue(1).frame(MavFrame.MAV_FRAME_GLOBAL_INT)
                     .x(gpsX)
                     .y(gpsY)
                     .z(gpsZ).build(), linkId, timestamp, secretKey);
-
             DroneLogDetails droneLogDetailsWayPoint = new DroneLogDetails();
-            droneLogDetailsWayPoint.setDroneLog(droneLog);
-            droneLogDetailsWayPoint.setFromTarget("gcs");
-            droneLogDetailsWayPoint.setToTarget("drone");
-            droneLogDetailsWayPoint.setType("MAV_CMD_NAV_WAYPOINT");
-            droneLogDetailsWayPoint.setParam1("0");
-            droneLogDetailsWayPoint.setParam2("0");
-            droneLogDetailsWayPoint.setParam3("0");
-            droneLogDetailsWayPoint.setParam4("0");
-            droneLogDetailsWayPoint.setParam5(Integer.toString(gpsX));
-            droneLogDetailsWayPoint.setParam6(Integer.toString(gpsY));
-            droneLogDetailsWayPoint.setParam7(Integer.toString(gpsZ));
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsWayPoint);
+            writeLog(droneLogDetailsWayPoint, droneLog, "gcs", "drone", "MAV_CMD_NAV_WAYPOINT", "0", "0", "0"
+                    , "0", Integer.toString(gpsX), Integer.toString(gpsY), Integer.toString(gpsZ));
 
             connection.send2(systemId, componentId, new CommandLong.Builder().
                     command(MavCmd.MAV_CMD_CONDITION_YAW)
@@ -653,25 +560,12 @@ public class Flight {
                     .param3(1)
                     .param4(0)
                     .build(), linkId, timestamp, secretKey);
-
             DroneLogDetails droneLogDetailsConditionYaw = new DroneLogDetails();
-            droneLogDetailsWayPoint.setFromTarget("gcs");
-            droneLogDetailsWayPoint.setToTarget("drone");
-            droneLogDetailsWayPoint.setType("MAV_CMD_CONDITION_YAW");
-            droneLogDetailsWayPoint.setParam1(Integer.toString(yaw));
-            droneLogDetailsWayPoint.setParam2("0");
-            droneLogDetailsWayPoint.setParam3("1");
-            droneLogDetailsWayPoint.setParam4("0");
+            writeLog(droneLogDetailsConditionYaw, droneLog, "gcs", "drone", "MAV_CMD_CONDITION_YAW", Integer.toString(yaw),
+                    "0", "1", "0", "0", "0", "0");
 
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsConditionYaw);
             Heartbeat heartbeat = null;
-//            t = new Timer();
-//            t.schedule(new TimerTask() {
-//                @Override
-//                public void run() {
-//                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-//                }
-//            }, 0, 2000);
+
 
             while ((message = connection.next()) != null) {
 
@@ -729,17 +623,8 @@ public class Flight {
                     MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
                     log.info("commandAck={}", message);
                     DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
-                    droneLogDetailsCommandAck.setFromTarget("drone");
-                    droneLogDetailsCommandAck.setToTarget("gcs");
-                    droneLogDetailsCommandAck.setType("CommandAck");
-                    droneLogDetailsCommandAck.setParam1(commandAckMavlinkMessage.getPayload().command().toString());
-                    droneLogDetailsCommandAck.setParam2(commandAckMavlinkMessage.getPayload().result().toString());
-                    droneLogDetailsCommandAck.setParam3("0");
-                    droneLogDetailsCommandAck.setParam4("0");
-                    droneLogDetailsCommandAck.setParam5("0");
-                    droneLogDetailsCommandAck.setParam6("0");
-                    droneLogDetailsCommandAck.setParam7("0");
-                    droneLogDetailsService.saveDroneLogDetails(droneLogDetailsCommandAck);
+                    writeLog(droneLogDetailsCommandAck, droneLog, "drone", "gcs", "CommandAck", commandAckMavlinkMessage.getPayload().command().toString(),
+                            commandAckMavlinkMessage.getPayload().result().toString(), "0", "0", "0", "0", "0");
                 }
 
             }
@@ -783,24 +668,10 @@ public class Flight {
             connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_RETURN_TO_LAUNCH).build(), linkId, timestamp, secretKey);
 
             DroneLogDetails droneLogDetailsReturnToLaunch = new DroneLogDetails();
-            droneLogDetailsReturnToLaunch.setDroneLog(droneLog);
-            droneLogDetailsReturnToLaunch.setFromTarget("gcs");
-            droneLogDetailsReturnToLaunch.setToTarget("drone");
-            droneLogDetailsReturnToLaunch.setType("MAV_CMD_NAV_RETURN_TO_LAUNCH");
-            droneLogDetailsReturnToLaunch.setParam1("0");
-            droneLogDetailsReturnToLaunch.setParam2("0");
-            droneLogDetailsReturnToLaunch.setParam3("0");
-            droneLogDetailsReturnToLaunch.setParam4("0");
-            droneLogDetailsReturnToLaunch.setParam5("0");
-            droneLogDetailsReturnToLaunch.setParam6("0");
-            droneLogDetailsReturnToLaunch.setParam7("0");
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsReturnToLaunch);
+            writeLog(droneLogDetailsReturnToLaunch, droneLog, "gcs", "drone", "MAV_CMD_NAV_RETURN_TO_LAUNCH", "0",
+                    "0", "0", "0", "0", "0", "0");
 
             Heartbeat heartbeat = null;
-//            t = new Timer();
-//
-//
-//            t.schedule(tt, 0, 2000);
 
 
             while ((message = connection.next()) != null) {
@@ -864,17 +735,10 @@ public class Flight {
                     MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
                     log.info("commandAck={}", message);
                     DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
-                    droneLogDetailsCommandAck.setFromTarget("drone");
-                    droneLogDetailsCommandAck.setToTarget("gcs");
-                    droneLogDetailsCommandAck.setType("CommandAck");
-                    droneLogDetailsCommandAck.setParam1(commandAckMavlinkMessage.getPayload().command().toString());
-                    droneLogDetailsCommandAck.setParam2(commandAckMavlinkMessage.getPayload().result().toString());
-                    droneLogDetailsCommandAck.setParam3("0");
-                    droneLogDetailsCommandAck.setParam4("0");
-                    droneLogDetailsCommandAck.setParam5("0");
-                    droneLogDetailsCommandAck.setParam6("0");
-                    droneLogDetailsCommandAck.setParam7("0");
-                    droneLogDetailsService.saveDroneLogDetails(droneLogDetailsCommandAck);
+                    writeLog(droneLogDetailsCommandAck, droneLog, "drone", "gcs", "CommandAck", commandAckMavlinkMessage.getPayload().command().toString(),
+                            commandAckMavlinkMessage.getPayload().result().toString(), "0", "0", "0", "0", "0");
+
+
                 }
 
 
@@ -887,10 +751,9 @@ public class Flight {
 
             alreadyWayPoint = false;
             System.out.println("returnDrone");
-
-
+            return "return";
         }
-        return "return";
+
     }
 
 
@@ -956,24 +819,12 @@ public class Flight {
             //1 play 0 pause
 
             MavlinkMessage message;
+
             connection.send2(systemId, componentId, new CommandInt.Builder().command(MavCmd.MAV_CMD_DO_PAUSE_CONTINUE)
                     .param1(pauseOrPlay).param2(0).param3(0).param4(0).x(0).y(0).z(0).frame(MavFrame.MAV_FRAME_GLOBAL_INT).build());
-
-
             DroneLogDetails droneLogDetailsDoPauseContinue = new DroneLogDetails();
-            droneLogDetailsDoPauseContinue.setDroneLog(droneLog);
-            droneLogDetailsDoPauseContinue.setFromTarget("gcs");
-            droneLogDetailsDoPauseContinue.setToTarget("drone");
-            droneLogDetailsDoPauseContinue.setType("MAV_CMD_DO_PAUSE_CONTINUE");
-            droneLogDetailsDoPauseContinue.setParam1(Integer.toString(pauseOrPlay));
-            droneLogDetailsDoPauseContinue.setParam2("0");
-            droneLogDetailsDoPauseContinue.setParam3("0");
-            droneLogDetailsDoPauseContinue.setParam4("0");
-            droneLogDetailsDoPauseContinue.setParam5("0");
-            droneLogDetailsDoPauseContinue.setParam6("0");
-            droneLogDetailsDoPauseContinue.setParam7("0");
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsDoPauseContinue);
-
+            writeLog(droneLogDetailsDoPauseContinue, droneLog, "gcs", "drone", "MAV_CMD_DO_PAUSE_CONTINUE",
+                    Integer.toString(pauseOrPlay), "0", "0", "0", "0", "0", "0");
 
             while ((message = connection.next()) != null) {
                 if (isPauseOrStopEnd)
@@ -1001,7 +852,7 @@ public class Flight {
 
                     MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
 
-
+                    //TODO statusMessage Logging 따로 level하고 합쳐서
                     String missionText = statustextMavlinkMessage.getPayload().text();
                     log.info(missionText);
                     //  gps.setMissionType(missionText);
@@ -1031,18 +882,9 @@ public class Flight {
                     MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
                     log.info("commandAck={}", message);
                     DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
-                    droneLogDetailsCommandAck.setDroneLog(droneLog);
-                    droneLogDetailsCommandAck.setFromTarget("drone");
-                    droneLogDetailsCommandAck.setToTarget("gcs");
-                    droneLogDetailsCommandAck.setType("CommandAck");
-                    droneLogDetailsCommandAck.setParam1(commandAckMavlinkMessage.getPayload().command().toString());
-                    droneLogDetailsCommandAck.setParam2(commandAckMavlinkMessage.getPayload().result().toString());
-                    droneLogDetailsCommandAck.setParam3("0");
-                    droneLogDetailsCommandAck.setParam4("0");
-                    droneLogDetailsCommandAck.setParam5("0");
-                    droneLogDetailsCommandAck.setParam6("0");
-                    droneLogDetailsCommandAck.setParam7("0");
-                    droneLogDetailsService.saveDroneLogDetails(droneLogDetailsCommandAck);
+                    writeLog(droneLogDetailsCommandAck, droneLog, "drone", "gcs", "CommandAck",
+                            commandAckMavlinkMessage.getPayload().command().toString(), commandAckMavlinkMessage.getPayload().result().toString(),
+                            "0", "0", "0", "0", "0");
                 }
             }
 
@@ -1061,75 +903,51 @@ public class Flight {
     }
 
 
-    public MavlinkConnection changeSpeedDrone(int speed) {
-        MavlinkConnection connection = null;
-        try  {
-
-            ServerSocket server_socket = null;  //서버 생성을 위한 ServerSocket
-            try{
-                server_socket = new ServerSocket(8600);
-
-            }catch(IOException e)
-            {
-                System.out.println("해당 포트가 열려있습니다.");
-            }
-            socket = server_socket.accept();    //서버 생성 , Client 접속 대기
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-
-            int systemId = 1;
-            int componentId = 1;
-            int linkId = 1;
-            long timestamp = System.currentTimeMillis();/* provide microsecond time */
-            ;
-            byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
-
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_CHANGE_SPEED).param1(0).param2(speed).param3(-1).param4(0).build(), linkId, timestamp, secretKey);
-
-            DroneLogDetails droneLogDetailsChangeSpeed = new DroneLogDetails();
-            droneLogDetailsChangeSpeed.setDroneLog(droneLog);
-            droneLogDetailsChangeSpeed.setFromTarget("gcs");
-            droneLogDetailsChangeSpeed.setToTarget("drone");
-            droneLogDetailsChangeSpeed.setType("MAV_CMD_DO_CHANGE_SPEED");
-            droneLogDetailsChangeSpeed.setParam1("0");
-            droneLogDetailsChangeSpeed.setParam2(Integer.toString(speed));
-            droneLogDetailsChangeSpeed.setParam3("-1");
-            droneLogDetailsChangeSpeed.setParam4("0");
-            droneLogDetailsChangeSpeed.setParam5("0");
-            droneLogDetailsChangeSpeed.setParam6("0");
-            droneLogDetailsChangeSpeed.setParam7("0");
-            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsChangeSpeed);
-
-            MavlinkMessage message;
-            while ((message = connection.next()) != null) {
-
-
-            }
-
-
-        } catch (Exception ioe) {
-
-            ioe.printStackTrace();
-        } finally {
-            System.out.println("전송됨");
-        }
-
-        return connection;
-    }
+//    public MavlinkConnection changeSpeedDrone(int speed) {
+//        MavlinkConnection connection = null;
+//        try {
+//
+//            ServerSocket server_socket = null;  //서버 생성을 위한 ServerSocket
+//            try {
+//                server_socket = new ServerSocket(8600);
+//
+//            } catch (IOException e) {
+//                System.out.println("해당 포트가 열려있습니다.");
+//            }
+//            socket = server_socket.accept();    //서버 생성 , Client 접속 대기
+//            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+//
+//            int systemId = 1;
+//            int componentId = 1;
+//            int linkId = 1;
+//            long timestamp = System.currentTimeMillis();/* provide microsecond time */
+//            ;
+//            byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+//
+//            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_CHANGE_SPEED).param1(0).param2(speed).param3(-1).param4(0).build(), linkId, timestamp, secretKey);
+//
+//
+//            DroneLogDetails droneLogDetailsChangeSpeed = new DroneLogDetails();
+//            writeLog(droneLogDetailsChangeSpeed, droneLog, "gcs", "drone", "MAV_CMD_DO_CHANGE_SPEED",
+//                    "0", Integer.toString(speed),
+//                    "-1", "0", "0", "0", "0");
+//
+//        } catch (Exception ioe) {
+//
+//            ioe.printStackTrace();
+//        } finally {
+//            System.out.println("전송됨");
+//        }
+//
+//        return connection;
+//    }
 
 
     public String doMission(HashMap<String, MissionItemInt> missionItemMap, int maxFlag, HashMap<String, Integer> speeds
             , HashMap<String, Float> yaws, HashMap<Integer, String> missionIndex) {
-        //       connection = null;
-        //       socket = null;
-        //log.info("speeds={}", speeds); //speeds={return5=0, waypoint4=4, waypoint3=6, waypoint2=8}
-        //  missionIndex.forEach((r, r2) -> {
-        //  log.info("missionIndex={}:{}", r, r2);
-        //    });
+        //alreadyDo =false
         if (!alreadyDo) {
             try {
-                //     socket = new Socket(tcpServerHost, tcpServerPort);
-                //     connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
-                //      Gps gps = new Gps();
                 alreadyDo = true;
                 int systemId = 1;
                 int componentId = 1;
@@ -1145,39 +963,14 @@ public class Flight {
                 connection.send2(systemId, componentId, count, linkId, timestamp, secretKey);
 
                 DroneLogDetails droneLogDetailsMissionCount = new DroneLogDetails();
-                droneLogDetailsMissionCount.setDroneLog(droneLog);
-                droneLogDetailsMissionCount.setFromTarget("drone");
-                droneLogDetailsMissionCount.setToTarget("gcs");
-                droneLogDetailsMissionCount.setType("MissionCount");
-                droneLogDetailsMissionCount.setParam1(Integer.toString(maxFlag));
-                droneLogDetailsMissionCount.setParam2("0");
-                droneLogDetailsMissionCount.setParam3("0");
-                droneLogDetailsMissionCount.setParam4("0");
-                droneLogDetailsMissionCount.setParam5("0");
-                droneLogDetailsMissionCount.setParam6("0");
-                droneLogDetailsMissionCount.setParam7("0");
-                droneLogDetailsService.saveDroneLogDetails(droneLogDetailsMissionCount);
-                //    connection.send2(systemId, componentId, count);
+                writeLog(droneLogDetailsMissionCount, droneLog, "drone", "gcs", "MissionCount",
+                        Integer.toString(maxFlag), "0",
+                        "0", "0", "0", "0", "0");
 
-                //  Heartbeat heartbeat = Heartbeat.builder().autopilot(MavAutopilot.MAV_AUTOPILOT_GENERIC).type(MavType.MAV_TYPE_GENERIC).systemStatus(MavState.MAV_STATE_UNINIT).baseMode().mavlinkVersion(3).build();
                 Heartbeat heartbeat = null;
 
-
-                //    Gson gson = new Gson();
-//            t = new Timer();
-//
-//            t.schedule(new TimerTask() {
-//                @Override
-//                public void run() {
-//                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-//                }
-//            }, 0, 2000);
                 int flag = 0;
                 while ((message = connection.next()) != null) {
-
-                    //  log.info("messageCount");
-                    //if(message.getPayload().getClass().getName().contains("MavlinkMessage")){
-                    //     if(message.getPayload() instanceof MissionAck){
 
                     if (isEnd)
                         break;
@@ -1262,8 +1055,8 @@ public class Flight {
                         if (missionText.equals("Disarming motors")) {
                             //gps.setMissionType("mission end");
                             isEnd = true;
-
-                            break;
+                            return "stop";
+                            //  break;
                         }
 
                         if (missionText.equals("Paused mission")) {
@@ -1295,18 +1088,11 @@ public class Flight {
                         MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
                         log.info("commandAck={}", message);
                         DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
-                        droneLogDetailsCommandAck.setDroneLog(droneLog);
-                        droneLogDetailsCommandAck.setFromTarget("drone");
-                        droneLogDetailsCommandAck.setToTarget("gcs");
-                        droneLogDetailsCommandAck.setType("CommandAck");
-                        droneLogDetailsCommandAck.setParam1(commandAckMavlinkMessage.getPayload().command().toString());
-                        droneLogDetailsCommandAck.setParam2(commandAckMavlinkMessage.getPayload().result().toString());
-                        droneLogDetailsCommandAck.setParam3("0");
-                        droneLogDetailsCommandAck.setParam4("0");
-                        droneLogDetailsCommandAck.setParam5("0");
-                        droneLogDetailsCommandAck.setParam6("0");
-                        droneLogDetailsCommandAck.setParam7("0");
-                        droneLogDetailsService.saveDroneLogDetails(droneLogDetailsCommandAck);
+
+                        writeLog(droneLogDetailsCommandAck, droneLog, "drone", "gcs", "CommandAck",
+                                commandAckMavlinkMessage.getPayload().command().toString(), commandAckMavlinkMessage.getPayload().result().toString(),
+                                "0", "0", "0", "0", "0");
+
                     }
 
                     while (message.getPayload() instanceof MissionRequest && flag <= maxFlag - 1) {     //missioncount
@@ -1314,43 +1100,26 @@ public class Flight {
                         log.info("loginfo={}", message.getPayload());
                         log.info("maxFlag={}", maxFlag);
                         log.debug("flag={}", flag);
+
                         connection.send2(systemId, componentId, missionItemMap.get("missionItemInt" + flag), linkId, timestamp, secretKey);
                         MissionItemInt missionItemInt = missionItemMap.get("missionItemInt" + flag);
                         DroneLogDetails droneLogDetailsMissionRequest = new DroneLogDetails();
-                        droneLogDetailsMissionRequest.setDroneLog(droneLog);
-                        droneLogDetailsMissionRequest.setFromTarget("gcs");
-                        droneLogDetailsMissionRequest.setToTarget("drone");
-                        droneLogDetailsMissionRequest.setType("missionItemInt" + missionItemInt.command());
-                        droneLogDetailsMissionRequest.setParam1(Float.toString(missionItemInt.param1()));
-                        droneLogDetailsMissionRequest.setParam2(Float.toString(missionItemInt.param2()));
-                        droneLogDetailsMissionRequest.setParam3(Float.toString(missionItemInt.param3()));
-                        droneLogDetailsMissionRequest.setParam4(Float.toString(missionItemInt.param4()));
-                        droneLogDetailsMissionRequest.setParam5(Integer.toString(missionItemInt.x()));
-                        droneLogDetailsMissionRequest.setParam6(Integer.toString(missionItemInt.y()));
-                        droneLogDetailsMissionRequest.setParam7(Float.toString(missionItemInt.z()));
-                        droneLogDetailsService.saveDroneLogDetails(droneLogDetailsMissionRequest);
-
+                        writeLog(droneLogDetailsMissionRequest, droneLog, "gcs", "drone", "missionItemInt",
+                                Float.toString(missionItemInt.param1()), Float.toString(missionItemInt.param2()),
+                                Float.toString(missionItemInt.param3()), Float.toString(missionItemInt.param4()),
+                                Integer.toString(missionItemInt.x()), Integer.toString(missionItemInt.y()), Float.toString(missionItemInt.z()));
 
                         flag++;
                         if (message.getPayload() instanceof MissionRequest && flag == maxFlag) {    //changemode
                             log.info("미션등록");
                             //param2 automode
+
                             connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE)
                                     .param1(1).param2(3).build(), linkId, timestamp, secretKey);
-
                             DroneLogDetails droneLogDetailsSetMode = new DroneLogDetails();
-                            droneLogDetailsSetMode.setDroneLog(droneLog);
-                            droneLogDetailsSetMode.setFromTarget("gcs");
-                            droneLogDetailsSetMode.setToTarget("drone");
-                            droneLogDetailsSetMode.setType("MAV_CMD_DO_SET_MODE");
-                            droneLogDetailsSetMode.setParam1("1");
-                            droneLogDetailsSetMode.setParam2("3");
-                            droneLogDetailsSetMode.setParam3("0");
-                            droneLogDetailsSetMode.setParam4("0");
-                            droneLogDetailsSetMode.setParam5("0");
-                            droneLogDetailsSetMode.setParam6("0");
-                            droneLogDetailsSetMode.setParam7("0");
-                            droneLogDetailsService.saveDroneLogDetails(droneLogDetailsSetMode);
+                            writeLog(droneLogDetailsSetMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE",
+                                    "1", "3", "0", "0", "0", "0", "0");
+
                             flag++;
                         }
 
@@ -1372,17 +1141,15 @@ public class Flight {
                 gps.setMissionType("end");
                 gps.setStatus(0);
                 simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-                try {
-                    socket.close();
-                    connection = null;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
+//                    socket.close();
+                connection = null;
+
 
             }
         }
 
-        return "stop";
+        return "no";
     }
 
 
@@ -1559,7 +1326,6 @@ public class Flight {
 
             MavlinkMessage message;
 
-
             connection.send2(systemId, componentId, new CommandLong.Builder().
                     command(MavCmd.MAV_CMD_CONDITION_YAW)
                     .param1(yaw)
@@ -1567,6 +1333,9 @@ public class Flight {
                     .param3(1)
                     .param4(0)
                     .build(), linkId, timestamp, secretKey);
+            DroneLogDetails droneLogDetailsChangeYaw = new DroneLogDetails();
+            writeLog(droneLogDetailsChangeYaw, droneLog, "gcs", "drone", "MAV_CMD_CONDITION_YAW",
+                    Integer.toString(yaw), "0", "1", "0", "0", "0", "0");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -1590,6 +1359,9 @@ public class Flight {
                     command(MavCmd.MAV_CMD_DO_SET_MISSION_CURRENT)
                     .param1(seq)
                     .build(), linkId, timestamp, secretKey);
+            DroneLogDetails droneLogDetailsDoSetMissionCurrent = new DroneLogDetails();
+            writeLog(droneLogDetailsDoSetMissionCurrent, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MISSION_CURRENT",
+                    Integer.toString(seq), "0", "0", "0", "0", "0", "0");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -1597,6 +1369,29 @@ public class Flight {
         }
 
 
+    }
+
+//    private CommandLong buildAndLog(CommandLong commandLong,) {
+//
+//
+//    }
+
+
+    private void writeLog(DroneLogDetails droneLogDetails, DroneLog inputDroneLog, String fromTarget, String toTarget, String type, String param1,
+                          String param2, String param3, String param4, String param5, String param6, String param7) {
+
+        droneLogDetails.setDroneLog(inputDroneLog);
+        droneLogDetails.setFromTarget(fromTarget);
+        droneLogDetails.setToTarget(toTarget);
+        droneLogDetails.setType(type);
+        droneLogDetails.setParam1(param1);
+        droneLogDetails.setParam2(param2);
+        droneLogDetails.setParam3(param3);
+        droneLogDetails.setParam4(param4);
+        droneLogDetails.setParam5(param5);
+        droneLogDetails.setParam6(param6);
+        droneLogDetails.setParam7(param7);
+        droneLogDetailsService.saveDroneLogDetails(droneLogDetails);
     }
 }
 
