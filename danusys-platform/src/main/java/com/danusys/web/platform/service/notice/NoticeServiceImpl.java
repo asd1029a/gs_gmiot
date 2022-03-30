@@ -6,7 +6,7 @@ import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.platform.request.NoticeRequestDto;
+import com.danusys.web.platform.dto.request.NoticeRequestDto;
 import com.danusys.web.platform.dto.response.NoticeResponseDto;
 import com.danusys.web.platform.entity.Notice;
 import com.danusys.web.platform.entity.NoticeSpecification;

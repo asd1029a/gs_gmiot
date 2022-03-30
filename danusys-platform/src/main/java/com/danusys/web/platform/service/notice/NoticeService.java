@@ -2,7 +2,7 @@ package com.danusys.web.platform.service.notice;
 
 import com.danusys.web.commons.app.EgovMap;
 
-import com.danusys.web.platform.request.NoticeRequestDto;
+import com.danusys.web.platform.dto.request.NoticeRequestDto;
 import com.danusys.web.platform.dto.response.NoticeResponseDto;
 
 import java.util.Map;

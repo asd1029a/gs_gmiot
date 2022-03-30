@@ -104,6 +104,7 @@ public class UserInGroupService {
         return resultMap;
     }
 
+    @Transactional
     public List<Integer> add(Map<String, Object> paramMap) {
         List<Integer> userSeqList = (List<Integer>) paramMap.get("userSeqList");
         List<Integer> userGroupSeqList = (List<Integer>) paramMap.get("userGroupSeqList");
