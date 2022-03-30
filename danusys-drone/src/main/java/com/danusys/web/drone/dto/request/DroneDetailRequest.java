@@ -14,5 +14,6 @@ public class DroneDetailRequest {
     private long droneBase;
     private long droneMission;
     private String droneStatus;
+    private int droneSocket;
 
 }

@@ -3,6 +3,7 @@ package com.danusys.web.drone.controller;
 import com.danusys.web.commons.socket.config.CustomServerSocket;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,12 +19,7 @@ public class BaseController {
 //    public String index() {
 //        return "/layout/layout_login";
 //    }
-    private final CustomServerSocket ServerSocket;
-    @RequestMapping("/startstart")
-    public String startServer() throws IOException {
-    ServerSocket.connectServer(8600);
-    return "서버 시작";
-    }
+
 
     @RequestMapping("/login/errorTest")
     public ModelAndView error() {
@@ -32,4 +28,6 @@ public class BaseController {
 
         return mav;
     }
+
+
 }

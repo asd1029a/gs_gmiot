@@ -1,18 +1,14 @@
 package com.danusys.web.drone.controller;
 
 
-import com.danusys.web.commons.socket.config.CustomServerSocket;
+import com.danusys.web.drone.service.ConnectionService;
+import com.danusys.web.drone.service.DroneSocketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,25 +17,39 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class SocketDroneController {
-    private final CustomServerSocket ServerSocket;
+
+
+    private final ConnectionService connectionService;
+    private final DroneSocketService droneSocketService;
+    int currentIndex = -1;
 
     @RequestMapping("/droneSocket")
     public ResponseEntity<?> getSocketList() {
-
-        Map<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
-        List<Map<String,Object>> listMap =new ArrayList<>();
-
-        for (Integer integer : socketList.keySet()) {
-            Map<String,Object> map =new HashMap<>();
-            map.put("index",integer);
-            map.put("port",socketList.get(integer).getPort());
-            map.put("address",socketList.get(integer).getInetAddress());
-            map.put("localPort",socketList.get(integer).getLocalPort());
-            listMap.add(map);
-        }
-
-
+        List<Map<String, Object>> listMap = new ArrayList<>();
+        listMap = connectionService.getSocketList();
+        log.info("listMap={}",listMap);
+        log.info("connectionMap={}",connectionService.getConnectionMap());
         return ResponseEntity.ok(listMap);
+    }
+
+    @PostMapping("/socket")
+    public ResponseEntity<?> getAllSocketList(){
+
+        return ResponseEntity.ok(droneSocketService.getList());
+    }
+
+    @PutMapping("/socket")
+    public ResponseEntity<?> saveSocketList() {
+        List<Map<String, Object>> listMap = new ArrayList<>();
+        droneSocketService.delete();
+        listMap=connectionService.getSocketList();
+//        listMap.forEach(socketMap -> {
+//            socketMap.get()
+//        });
+        log.info("listMap={}",listMap);
+        return null;
 
     }
+
+
 }

@@ -23,15 +23,12 @@ public class DroneBaseController {
 
     private final DroneBaseService droneBaseService;
 
-
-
     @PostMapping("/dronebase")
-    public ResponseEntity<?> findAllDroneBase(@RequestBody Map<String,Object> paramMap){
+    public ResponseEntity<?> findAllDroneBase(@RequestBody Map<String, Object> paramMap) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(droneBaseService.findAllDroneBase());
     }
-
 
 
 }

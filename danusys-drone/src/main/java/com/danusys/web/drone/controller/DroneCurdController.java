@@ -63,8 +63,6 @@ public class  DroneCurdController {
     public ResponseEntity<?> updateDrone(Drone drone) {
 
 
-
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(droneService.updateDrone(drone));
@@ -100,7 +98,6 @@ public class  DroneCurdController {
     @GetMapping("/droneList")
     public ResponseEntity<?> findAllDroneList() {
 
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(droneService.getSocketDrone());
@@ -116,13 +113,12 @@ public class  DroneCurdController {
             long droneBaseId = droneDetailRequest.getDroneBase();
          //   log.info("droneBaseId={}",droneBaseId);
 
-
-
             long droneMissionId =droneDetailRequest.getDroneMission();
+            int droneSocket =droneDetailRequest.getDroneSocket();
             String droneStatus = droneDetailRequest.getDroneStatus();
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId,droneBaseId,droneMissionId,droneStatus));
+                .body(droneDetailsService.updateDroneDetails(droneDetails,droneId,droneBaseId,droneMissionId,droneStatus,droneSocket));
 
     }
 

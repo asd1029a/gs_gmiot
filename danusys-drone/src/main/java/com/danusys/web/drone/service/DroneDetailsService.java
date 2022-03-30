@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -105,9 +104,10 @@ public class DroneDetailsService {
     }
 
     @Transactional
-    public String updateDroneDetails(DroneDetails droneDetails, Long droneId, Long droneBaseId, Long droneMissionId, String droneStatus) {
+    public String updateDroneDetails(DroneDetails droneDetails, Long droneId, Long droneBaseId, Long droneMissionId, String droneStatus,
+                                     int droneSocket) {
 
-
+        log.info("droneSocket={}",droneSocket);
         //drone
         Optional<Drone> optionalDrone = droneRepository.findById(droneId);
         Drone updateDrone = null;
@@ -116,6 +116,10 @@ public class DroneDetailsService {
         else
             updateDrone = optionalDrone.get();
 
+
+        updateDrone.setStatus(droneStatus);
+        updateDrone.setSocketIndex(droneSocket);
+
         //droneBase
         Optional<DroneBase> optionalDroneBase = droneBaseRepository.findById(droneBaseId);
         DroneBase droneBase = null;
@@ -123,8 +127,9 @@ public class DroneDetailsService {
             return null;
         else
             droneBase = optionalDroneBase.get();
+
+
         updateDrone.setDroneBase(droneBase);
-        updateDrone.setStatus(droneStatus);
 
         //mission
 
