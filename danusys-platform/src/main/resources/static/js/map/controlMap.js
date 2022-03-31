@@ -297,6 +297,12 @@ function clickIcon(layerType, layerObj) {
             break;
     } //switch end
 
+    //클릭 팝업 삭제 -> 레이어 아이콘 선택해제
+    $("#mouseClickPopupCloser").on("click", e => {
+        let features = window.lySelect.getFeatures();
+        features.clear();
+    });
+
 }
 
 

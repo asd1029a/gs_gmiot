@@ -148,6 +148,7 @@ const mntr = {
                 clickIcon(targetType, target);
             }
         });
+        window.lySelect = layerSelect;
 
         //개소 레이어
         station.getListGeoJson({} ,result => {
@@ -158,6 +159,7 @@ const mntr = {
            map.addLayer(stationLayer);
            window.lyControl.find('stationLayer').set('selectable',true);
 
+           lnbList.createStation(result);
             // //열지도 test
             // const heat = new ol.layer.Heatmap({
             //     source: new ol.source.Vector({
@@ -192,14 +194,16 @@ const mntr = {
         });
 
         //과거 이벤트 레이어
-        event.getListGeoJson({"eventState": ["9"]}, result => {
+        event.getListGeoJson({
+            "eventState": ["9"]
+            }, result => {
             let eventPastLayer = new dataLayer('map')
                 .toCluster(result, 'eventPastLayer', true, layerStyle.event(false));
             map.addLayer(eventPastLayer);
             window.lyControl.find('eventPastLayer').set('selectable',true);
             window.lyControl.off('eventPastLayer');
 
-            lnbList.createEvent(result);
+            lnbList.createEventPast(result);
         });
 
         //축척별 레이어 반응
@@ -454,8 +458,6 @@ const mntr = {
             } // srcoll 끝
         });
 
-
-
     }
 }
 
@@ -509,6 +511,7 @@ function centerVilageInfo(evt) {
 
 /**
  * 관제 왼쪽창 리스트 생성
+ * TODO 중복코드 정리
  * */
 const lnbList = {
     /**
@@ -571,11 +574,123 @@ const lnbList = {
 
         });
     } //createAddressPlace end
-    , createEvent : (obj) => {
-        //console.log(obj);
-        console.log(JSON.parse(obj));
+    /**
+     * 실시간 이벤트 리스트 생성
+     * obj : ajax 반환값
+     * */
+    , createEvent : obj => {
+        let objAry = JSON.parse(obj);
+        const $target = $('section.select .lnb_tab_section[data-value=event]');
 
+        objAry.features.forEach(each => {
+            let content = "";
+            const prop = each.properties;
+            let level = prop.eventGrade.replace("0",""); //////?
+            let cnt = Number($target.find('.area_title[data-value=lv' + level + '] .count').text());
 
+            //TODO 리스트 x분전 처리
+            content = "<dl>" +
+                "<dt>" + prop.eventSeq + "<span class='state'>" + prop.eventProcStatName + "</span></dt>" +
+                "<dd class='event_level'><span class='level lv" + level + "'>" + prop.eventGradeName + "</span>" + prop.eventKindName + "</dd>" +
+                "<dd>" + (prop.address ? prop.address : "-") + "</dd>" +
+                "<dd>" + prop.insertDt + "<span class='ago'>" + "x분 전</span></dd>" +
+                "</dl>";
+
+            $target.find('.search_list[data-value=lv' + level + ']').append(content);
+            $target.find('.search_list[data-value=lv' + level + '] dl').last().data(each);
+
+            $target.find('.area_title[data-value=lv' + level + '] .count').text(cnt+1);
+        });
+        //실시간 리스트 행 클릭 이벤트
+        $target.find('.search_list dl').on("click", e => {
+            const data = $(e.currentTarget).data().properties;
+            const coordinate = ol.proj.transform([Number(data.longitude), Number(data.latitude) ],'EPSG:4326', 'EPSG:5181');
+            window.map.setCenter(coordinate);
+            //아이콘 선택
+            const targetFeature = window.lyControl.find('eventLayer').getSource().getClosestFeatureToCoordinate(coordinate);
+            window.lySelect.getFeatures().clear();
+            window.lySelect.getFeatures().push(targetFeature);
+            //TODO 해당 단일 이벤트의 오른쪽 패널 show
+            //clickIcon("event", targetFeature);
+        });
+    }
+    /**
+     * 과거이력 이벤트 리스트 생성
+     * obj : ajax 반환값
+     * */
+    , createEventPast : (obj) => {
+        let objAry = JSON.parse(obj);
+        const $target = $('section.select .lnb_tab_section[data-value=eventPast]');
+
+        objAry.features.forEach(each => {
+            let content = "";
+            const prop = each.properties;
+
+            let level = prop.eventGrade.replace("0",""); //////?
+            let cnt = Number($target.find('.area_title .count').text());
+
+            content = "<dl>" +
+                "<dt>" + prop.eventSeq + "<span class='state'>" + prop.eventProcStatName + "</span></dt>" +
+                "<dd class='event_level'><span class='level lv" + level + "'>" + prop.eventGradeName + "</span>" + prop.eventKindName + "</dd>" +
+                "<dd>" + (prop.address ? prop.address : "-") + "</dd>" +
+                "<dd>" + prop.insertDt + "<span class='ago'>" + "x일 전</span></dd>" +
+                "</dl>";
+
+            $target.find('.search_list').append(content);
+            $target.find('.search_list dl').last().data(each);
+
+            $target.find('.area_title .count').text(cnt+1);
+        });
+        //과거이력 리스트 행 클릭 이벤트
+        $target.find('.search_list dl').on("click", e => {
+            const data = $(e.currentTarget).data().properties;
+            const coordinate = ol.proj.transform([Number(data.longitude), Number(data.latitude) ],'EPSG:4326', 'EPSG:5181');
+            window.map.setCenter(coordinate);
+            // 아이콘 선택
+            const targetFeature = window.lyControl.find('eventPastLayer').getSource().getClosestFeatureToCoordinate(coordinate);
+            window.lySelect.getFeatures().clear();
+            window.lySelect.getFeatures().push(targetFeature);
+            //TODO 해당 단일 과거 이벤트의 오른쪽 패널 show
+            //clickIcon("eventPast", targetFeature);
+        });
+    }
+    /**
+     * 개소 리스트 생성
+     * obj : ajax 반환값
+     * */
+    , createStation : obj => {
+        let objAry = JSON.parse(obj);
+        const $target = $('section.select .lnb_tab_section[data-value=station]');
+
+        objAry.features.forEach(each => {
+            let content = "";
+            const prop = each.properties;
+
+            let cnt = Number($target.find('.area_title .count').text());
+
+            content = "<dl>" +
+                "<dt>" + prop.stationName + "</dt>" +
+                "<dd>구역 : " + prop.administZone + "</dd>" +
+                "<dd>주소 : " + (prop.address ? prop.address : "-") + "</dd>" +
+                "</dl>";
+
+            $target.find('.search_list').append(content);
+            $target.find('.search_list dl').last().data(each);
+
+            $target.find('.area_title .count').text(cnt+1);
+        });
+        //개소 리스트 행 클릭 이벤트
+        $target.find('.search_list dl').on("click", e => {
+            const data = $(e.currentTarget).data().properties;
+            const coordinate = ol.proj.transform([Number(data.longitude), Number(data.latitude) ],'EPSG:4326', 'EPSG:5181');
+            window.map.setCenter(coordinate);
+            // 아이콘 선택
+            const targetFeature = window.lyControl.find('stationLayer').getSource().getClosestFeatureToCoordinate(coordinate);
+            window.lySelect.getFeatures().clear();
+            window.lySelect.getFeatures().push(targetFeature);
+            //TODO 해당 단일 개소의 오른쪽 패널 show
+            //clickIcon("station", targetFeature);
+        });
     }
 }
 

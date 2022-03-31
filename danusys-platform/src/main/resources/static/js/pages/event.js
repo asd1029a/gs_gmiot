@@ -84,6 +84,7 @@ const event = {
         });
     },
     getListGeoJson : (param, pCallback) => {
+        param.geojson = true;
         $.ajax({
             url : "/event/geojson"
             , type : "POST"

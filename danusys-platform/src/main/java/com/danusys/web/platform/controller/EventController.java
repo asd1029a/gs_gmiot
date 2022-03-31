@@ -30,6 +30,8 @@ public class EventController {
     public String getListEventGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = eventService.getList(paramMap);
         List<Map<String,Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
+        System.out.println("***************");
+        System.out.println(list);
         return GisUtil.getGeoJson(list, "event");
     }
 

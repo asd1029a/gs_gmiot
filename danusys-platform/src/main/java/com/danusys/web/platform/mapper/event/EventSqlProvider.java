@@ -17,34 +17,45 @@ public class EventSqlProvider {
             String endDt =  CommonUtil.validOneNull(paramMap,"endDt");
             ArrayList eventGrade = CommonUtil.valiArrNull(paramMap,"eventGrade");
             ArrayList eventState = CommonUtil.valiArrNull(paramMap,"eventState");
-            ArrayList facilityDirection = CommonUtil.valiArrNull(paramMap,"facilityDirection");
-            ArrayList facilityProblem = CommonUtil.valiArrNull(paramMap,"facilityProblem");
+            //ArrayList facilityDirection = CommonUtil.valiArrNull(paramMap,"facilityDirection");
+            //ArrayList facilityProblem = CommonUtil.valiArrNull(paramMap,"facilityProblem");
+            boolean geoFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "geojson"));
 
-            SELECT("t1.*" +
-                    ",t2.code_seq" +
-                    ",t2.code_value" +
-                    ",t2.code_id" +
-                    ",t2.code_name," +
-                    "'' as station_seq, '' as station_name, '' as station_kind, " +
-                    "'' as dong_short_nm, '' as address, " +
-                    "'' as facility_seq, '' as facility_kind"
-                    + ",t3.longitude, t3.latitude" );
-            if(facilityDirection != null && !facilityDirection.isEmpty()) {
-                FROM("t_event t1 " +
-                        "LEFT JOIN v_facility_direction t2 on t1.event_kind = t2.code_value "
-                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
-                WHERE("code_seq in ('" + StringUtils.join(facilityDirection, "', '") + "')");
-            }else if(facilityProblem != null && !facilityProblem.isEmpty()) {
-                FROM("t_event t1 " +
-                        "LEFT JOIN v_facility_problem t2 on t1.event_kind = t2.code_value "
-                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
-                WHERE("code_seq in ('" +  StringUtils.join(facilityProblem, "', '") + "')");
-            }else{
-                FROM("t_event t1 " +
-                        "LEFT JOIN t_common_code t2 on t1.event_kind = t2.code_value "
-                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
+            String colums =
+                    "t1.event_seq, t1.event_kind, t1.event_grade, t1.event_proc_stat, t1.event_address, t1.event_start_dt, t1.event_end_dt" +
+                    ", t1.event_manager, t1.event_mng_dt, t1.event_mng_content, t1.insert_dt, t1.station_seq, t1.facility_seq, t1.event_message" +
+                    ", v1.code_name AS event_kind_name" + //이벤트 종류 한글명
+                    ", v2.code_name AS event_grade_name" + //이벤트 등급 한글명
+                    ", v3.code_name AS event_proc_stat_name"; //이벤트 처리상태 한글명
+
+            String tables = "t_event t1 " +
+                    "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_value " +
+                    "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_value " +
+                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_value ";
+
+            if(geoFlag){ //geojson 호출시
+                colums += ", t2.longitude, t2.latitude ";
+                tables += "INNER JOIN t_station t2 ON t1.station_seq = t2.station_seq ";
             }
 
+            SELECT(colums);
+            FROM(tables);
+
+//            if(facilityDirection != null && !facilityDirection.isEmpty()) {
+//                FROM("t_event t1 " +
+//                        "LEFT JOIN v_facility_direction t2 on t1.event_kind = t2.code_value "
+//                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
+//                WHERE("code_seq in ('" + StringUtils.join(facilityDirection, "', '") + "')");
+//            }else if(facilityProblem != null && !facilityProblem.isEmpty()) {
+//                FROM("t_event t1 " +
+//                        "LEFT JOIN v_facility_problem t2 on t1.event_kind = t2.code_value "
+//                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
+//                WHERE("code_seq in ('" +  StringUtils.join(facilityProblem, "', '") + "')");
+//            }else{
+//                FROM("t_event t1 " +
+//                        "LEFT JOIN t_common_code t2 on t1.event_kind = t2.code_value "
+//                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
+//            }
             if(!keyword.equals("")) {
                 WHERE("event_kind LIKE '%" + keyword + "%'");
             }
