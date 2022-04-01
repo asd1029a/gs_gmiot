@@ -2,7 +2,8 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layout/layout_config">
+      layout:decorate="layout/layout_config"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <th:block layout:fragment="content">
         <h4>
@@ -38,7 +39,7 @@
                         <dd><span class="count">0</span>건</dd>
                     </dl>
                     <ul>
-                        <li id="addNoticeBtn"><i><img src="/images/default/add.svg"></i>작성하기</li>
+                        <li sec:authorize="hasAnyRole('ROLE_config_rw')" id="addNoticeBtn"><i><img src="/images/default/add.svg"></i>작성하기</li>
                     </ul>
                 </div>
                 <div class="search_table">

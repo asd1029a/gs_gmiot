@@ -4,6 +4,7 @@ package com.danusys.web.commons.auth.config.auth;
 import com.danusys.web.commons.auth.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,16 +50,13 @@ public class CommonsUserDetails implements UserDetails {
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
         if (user != null) {
-            // TODO - 게시판 별 권한 처리 협의 필요 @엄태혁
             user.getUserInGroup().forEach(r -> {
                 r.getUserGroup().getUserGroupPermit().forEach(rr -> {
-                    permitList.add(rr.getPermit().getCodeValue());
+                    permitList.add("ROLE_" + rr.getPermitMenu().getCodeValue() + "_" + rr.getPermit().getCodeValue());
                 });
             });
             permitList.forEach(r -> {
-                authorities.add(() -> {
-                    return r;
-                });
+                authorities.add(new SimpleGrantedAuthority(r));
             });
         }
 
