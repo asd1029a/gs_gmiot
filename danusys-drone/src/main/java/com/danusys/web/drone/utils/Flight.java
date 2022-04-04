@@ -2,7 +2,6 @@ package com.danusys.web.drone.utils;
 
 
 import com.danusys.web.commons.socket.config.CustomServerSocket;
-import com.danusys.web.drone.controller.SocketDroneController;
 import com.danusys.web.drone.dto.response.Gps;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneLog;
@@ -971,7 +970,7 @@ public class Flight {
 
                 int flag = 0;
                 while ((message = connection.next()) != null) {
-
+                    log.info("message={},{}",message.getOriginSystemId(),message.getOriginComponentId());
                     if (isEnd)
                         break;
                     if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
@@ -1392,6 +1391,44 @@ public class Flight {
         droneLogDetails.setParam6(param6);
         droneLogDetails.setParam7(param7);
         droneLogDetailsService.saveDroneLogDetails(droneLogDetails);
+    }
+
+    /**
+     * 작성자 :엄태혁 연구원
+     * mode : 3 -> auto 4-> guided
+     *
+     * @param
+     */
+    public void changeMode(int mode) {
+
+
+        try {
+            int systemId = 1;
+            int componentId = 1;
+            int linkId = 1;
+            long timeBootMs = 0;
+            long minTimeBootMs = 0;
+            long timestamp = System.currentTimeMillis();/* provide microsecond time */
+            byte[] secretKey = new byte[0];
+
+            secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+
+
+            MavlinkMessage message;
+
+            CommandLong doSetModeCommandLong = new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE)
+                    .param1(1).param2(mode).build();
+            connection.send2(systemId, componentId, doSetModeCommandLong, linkId, timestamp, secretKey);
+
+            DroneLogDetails droneLogDetailsChangeMode = new DroneLogDetails();
+            writeLog(droneLogDetailsChangeMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE",
+                    "1", Integer.toString(mode), "0", "0", "0", "0", "0");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
     }
 }
 
