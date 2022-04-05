@@ -479,12 +479,12 @@ class mapCreater {
         const view = this.map.getView();
         const resolution = view.getResolution();
 
-        const zoom = ol.animation.zoom({
+        const zoom = new ol.control.Zoom({
             resolution: resolution,
             duration: 500
         });
 
-        this.map.beforeRender(zoom);
+        //this.map.beforeRender(zoom);
         //view.setResolution(resolution * factor);
         this.map.getView().setZoom(level);
     }

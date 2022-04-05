@@ -72,9 +72,11 @@ class mapPopup {
 
     //해당 팝업 제거하기
     remove(id) {
-        this.map.removeOverlay(
-            this.find(id)
-        );
+        if(this.exist(id)){
+            this.map.removeOverlay(
+                this.find(id)
+            );
+        }
     }
 
     /**
