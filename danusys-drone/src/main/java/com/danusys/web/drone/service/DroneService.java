@@ -135,7 +135,7 @@ public class DroneService {
         // log.info("droneStatus={}", droneStatus);
 
         log.info("여긴오나?");
-        if(droneList==null)
+        if (droneList == null)
             return null;
         return droneList.stream().map(DroneResponse::new).collect(Collectors.toList());
         //return droneList;
@@ -150,6 +150,12 @@ public class DroneService {
         //log.info("droneName={}", drone.getDroneDeviceName());
         if (drone.getDroneDeviceName() != null) {
             return droneRepository.findByDroneDeviceName(drone.getDroneDeviceName());
+        } else if (drone.getId() != null) {
+            Optional<Drone> optionalDrone = droneRepository.findById(drone.getId());
+            if (!optionalDrone.isPresent()) {
+                return null;
+            }
+            return optionalDrone.get();
         } else {
             return null;
         }

@@ -151,19 +151,11 @@ public class MissionApiWebSocket {
     public void startMission(@RequestBody Map<String, Object> paramMap) {
 
         int droneId = 0;
-        AtomicBoolean alreadyStartMission = new AtomicBoolean(false);
+
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
         //flight check
-        int finalDroneId = droneId;
-        flightMap.forEach((k, v) -> {
-            if (finalDroneId == k)
-                alreadyStartMission.set(true);
-        });
-        if (alreadyStartMission.get() == false) {
-            Flight flight = new Flight(ServerSocket, simpMessagingTemplate, droneLogDetailsService, droneService, connectionService);
-            flightMap.put(droneId, flight);
-        }
+
         Flight flight = flightMap.get(droneId);
 
         DroneResponse drone = droneService.findOneDrone(droneId);
@@ -321,7 +313,7 @@ public class MissionApiWebSocket {
 
 
         }
-        alreadyStartMission.set(false);
+//        alreadyStartMission.set(false);
         //TODO isEnd 두번실행시 오류
         String isEnd = flight.doMission(missionMap, flag, speeds, yaws, missionIndex);
         log.info("isEnd={}", isEnd);
@@ -353,31 +345,27 @@ public class MissionApiWebSocket {
         flight.pauseOrPlay(1);
     }
 
-    @MessageMapping("/changeMode")
-    public void changeMode(@RequestBody Map<String, Object> paramMap) {
-        int droneId = 0;
-        int mode = -1;
-        if (paramMap.get("droneId") != null)
-            droneId = Integer.parseInt(paramMap.get("droneId").toString());
-        if (paramMap.get("mode") != null) {
-            mode = Integer.parseInt(paramMap.get("droneId").toString());
-        }
-        log.info("droneId={}", droneId);
-        Flight flight = flightMap.get(droneId);
-
-        //3 -> auto 4-> guided
-        if (mode == 3 || mode == 4)
-            flight.changeMode(mode);
-    }
-
     @MessageMapping("/arm")
     public void arm(@RequestBody Map<String, Object> paramMap) {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
         log.info("droneId={}", droneId);
+        AtomicBoolean alreadyStartMission = new AtomicBoolean(false);
+        int finalDroneId = droneId;
+        flightMap.forEach((k, v) -> {
+            if (finalDroneId == k)
+                alreadyStartMission.set(true);
+        });
+        if (alreadyStartMission.get() == false) {
+            Flight flight = new Flight(ServerSocket, simpMessagingTemplate, droneLogDetailsService, droneService, connectionService);
+            flightMap.put(droneId, flight);
+        }
+
+
+        alreadyStartMission.set(false);
         Flight flight = flightMap.get(droneId);
-        flight.pauseOrPlay(1);
+        flight.armDisarm(1,droneId);
     }
 
     @MessageMapping("/disarm")
@@ -387,8 +375,9 @@ public class MissionApiWebSocket {
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
         log.info("droneId={}", droneId);
         Flight flight = flightMap.get(droneId);
-        flight.pauseOrPlay(1);
+        flight.armDisarm(0,droneId);
     }
+
 
 
 }

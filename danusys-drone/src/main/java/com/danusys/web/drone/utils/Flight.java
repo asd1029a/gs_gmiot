@@ -144,17 +144,14 @@ public class Flight {
                 }
             };
 
-            Socket socket = null;
+        //    Socket socket = null;
             int index = -1;
             try {
-                Drone searchDrone = new Drone();
-                searchDrone.setDroneDeviceName(droneLog.getDroneDeviceName());
-                Drone findDrone = droneService.findDrone(searchDrone);
-                index = findDrone.getSocketIndex();
-                HashMap<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
-                //log.info("socketIndex={}", index);
-                socket = socketList.get(index);
-                connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+//                Drone searchDrone = new Drone();
+//                searchDrone.setDroneDeviceName(droneLog.getDroneDeviceName());
+//                Drone findDrone = droneService.findDrone(searchDrone);
+//                index = findDrone.getSocketIndex();
+
                 //connection = connectionService.getMavlinkConnection(index);
                 Heartbeat heartbeat = null;
 
@@ -195,26 +192,7 @@ public class Flight {
                 //4 guided mode
                 //new command
 
-                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
-                DroneLogDetails droneLogDetailsDoSetMode = new DroneLogDetails();
-                droneLogDetailsDoSetMode.setDroneLog(droneLog);
 
-                writeLog(droneLogDetailsDoSetMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE", "1", "4", "0"
-                        , "0", "0", "0", "0");
-                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(1).param2(0).build(), linkId, timestamp, secretKey);
-
-
-                DroneLogDetails droneLogDetailsArmDisarm = new DroneLogDetails();
-                writeLog(droneLogDetailsArmDisarm, droneLog, "gcs", "drone", "MAV_CMD_COMPONENT_ARM_DISARM", "1", "0", "0"
-                        , "0", "0", "0", "0");
-                CommandLong takeoffCommandLong = new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).
-                        param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100).build();
-                //TODO 높이 고정으로 되있어서 높이 입력 되는 대로 take off 할 수 있게 변경해야됨
-                connection.send2(systemId, componentId, takeoffCommandLong, linkId, timestamp, secretKey);
-                DroneLogDetails droneLogDetailsTakeOff = new DroneLogDetails();
-
-                writeLog(droneLogDetailsTakeOff, droneLog, "gcs", "drone", "MAV_CMD_NAV_TAKEOFF", "15", "0",
-                        "0", "0", "0", "0", "100");
                 int flag = 0;
                 while ((message = connection.next()) != null) {
 
@@ -970,7 +948,7 @@ public class Flight {
 
                 int flag = 0;
                 while ((message = connection.next()) != null) {
-                    log.info("message={},{}",message.getOriginSystemId(),message.getOriginComponentId());
+                    log.info("message={},{}", message.getOriginSystemId(), message.getOriginComponentId());
                     if (isEnd)
                         break;
                     if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
@@ -1399,9 +1377,9 @@ public class Flight {
      *
      * @param
      */
-    public void changeMode(int mode) {
 
 
+    public void armDisarm(int armDisarm,int droneId) {
         try {
             int systemId = 1;
             int componentId = 1;
@@ -1413,23 +1391,48 @@ public class Flight {
 
             secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
+            Socket socket=null;
 
+            HashMap<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
+            //log.info("socketIndex={}", index);
+            int index=-1;
+
+
+            Drone searchDrone = new Drone();
+            searchDrone.setId(Long.valueOf(droneId));
+            Drone findDrone = droneService.findDrone(searchDrone);
+            index = findDrone.getSocketIndex();
+
+            socket = socketList.get(index);
+            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
             MavlinkMessage message;
+            //arm 1 disarm 0
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
+            DroneLogDetails droneLogDetailsDoSetMode = new DroneLogDetails();
+            droneLogDetailsDoSetMode.setDroneLog(droneLog);
 
-            CommandLong doSetModeCommandLong = new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE)
-                    .param1(1).param2(mode).build();
-            connection.send2(systemId, componentId, doSetModeCommandLong, linkId, timestamp, secretKey);
+            writeLog(droneLogDetailsDoSetMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE", "1", "4", "0"
+                    , "0", "0", "0", "0");
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(armDisarm).param2(0).build(), linkId, timestamp, secretKey);
 
-            DroneLogDetails droneLogDetailsChangeMode = new DroneLogDetails();
-            writeLog(droneLogDetailsChangeMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE",
-                    "1", Integer.toString(mode), "0", "0", "0", "0", "0");
+
+            DroneLogDetails droneLogDetailsArmDisarm = new DroneLogDetails();
+            writeLog(droneLogDetailsArmDisarm, droneLog, "gcs", "drone", "MAV_CMD_COMPONENT_ARM_DISARM", Integer.toString(armDisarm), "0", "0"
+                    , "0", "0", "0", "0");
+
+
+
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
 
+
     }
+
+
 }
 
 
