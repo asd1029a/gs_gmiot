@@ -39,7 +39,7 @@ const account = {
                 scrollY: "calc(100% - 40px)",
                 ajax:
                     {
-                        'url': "/user/user/paging",
+                        'url': "/user/paging",
                         'contentType': "application/json; charset=utf-8",
                         'type': "POST",
                         'data': function (d) {
@@ -90,7 +90,7 @@ const account = {
         },
         createUserInGroup: (type) => {
             const $target = $('#userInGroupTable');
-            const url = type === "mod" ? "/user/user/userInGroup" : "/user/user";
+            const url = type === "mod" ? "/user/userInGroup" : "/user";
             const optionObj = {
                 dom: '<"table_body"rt>',
                 destroy: true,
@@ -147,7 +147,7 @@ const account = {
         },
         getList: (pCallback) => {
             comm.ajaxPost({
-                url: "/user/user"
+                url: "/user"
                 , data: {}
             }, (result) => {
                 pCallback(result);
@@ -155,7 +155,7 @@ const account = {
         },
         get: (pSeq, pCallback) => {
             $.ajax({
-                url: "/user/user/" + pSeq
+                url: "/user/" + pSeq
                 , type: "GET"
             }).done((result) => {
                 pCallback(result);
@@ -163,7 +163,7 @@ const account = {
         },
         checkId: (pId, pCallback) => {
             $.ajax({
-                url: "/user/user/checkId/" + pId
+                url: "/user/checkId/" + pId
                 , type: "GET"
             }).done((result) => {
                 pCallback(result);
@@ -235,7 +235,7 @@ const account = {
             if (formObj.password === $checkPassword.val() && $("#checkIdBtn").data("duplCheck") === true) {
                 if ($('#userAccountForm').doValidation()) {
                     $.ajax({
-                        url: "/user/user"
+                        url: "/user"
                         , type: "PUT"
                         , contentType: "application/json; charset=utf-8"
                         , data: JSON.stringify(formObj)
@@ -279,7 +279,7 @@ const account = {
 
             if ($('#userAccountForm').doValidation()) {
                 $.ajax({
-                    url: "/user/user"
+                    url: "/user"
                     , type: "PATCH"
                     , contentType: "application/json; charset=utf-8"
                     , data: JSON.stringify(formObj)
@@ -294,7 +294,7 @@ const account = {
         },
         delProc: (pSeq) => {
             $.ajax({
-                url: "/user/user/" + pSeq
+                url: "/user/" + pSeq
                 , type: "DELETE"
             }).done((result) => {
                 comm.showAlert("사용자 계정이 삭제되었습니다");
@@ -346,7 +346,7 @@ const account = {
                 scrollY: "calc(100% - 40px)",
                 ajax:
                     {
-                        'url': "/user/group/paging",
+                        'url': "/userGroup/paging",
                         'contentType': "application/json; charset=utf-8",
                         'type': "POST",
                         'data': function (d) {
@@ -394,7 +394,7 @@ const account = {
         createUserInGroup: (type) => {
             const $target = $('#userInGroupTable');
 
-            const url = type === "mod" ? "/user/group/userInGroup" : "/user/group"
+            const url = type === "mod" ? "/userGroup/userInGroup" : "/userGroup"
 
             const optionObj = {
                 dom: '<"table_body"rt>',
@@ -459,7 +459,7 @@ const account = {
         },
         checkGroupName: (pId, pCallback) => {
             $.ajax({
-                url: "/user/group/checkGroupName/" + pId
+                url: "/userGroup/checkGroupName/" + pId
                 , type: "GET"
             }).done((result) => {
                 pCallback(result);
@@ -467,7 +467,7 @@ const account = {
         },
         getList: (pCallback) => {
             comm.ajaxPost({
-                url: "/user/group"
+                url: "/userGroup"
                 , data: {}
             }, (result) => {
                 pCallback(result);
@@ -475,7 +475,7 @@ const account = {
         },
         get: (pSeq, pCallback) => {
             $.ajax({
-                url: "/user/group/" + pSeq
+                url: "/userGroup/" + pSeq
                 , type: "GET"
             }).done((result) => {
                 pCallback(result);
@@ -523,7 +523,7 @@ const account = {
             formObj.permitList = permit;
 
             $.ajax({
-                url: "/user/group"
+                url: "/userGroup"
                 , type: "PUT"
                 , data: JSON.stringify(formObj)
                 , contentType: "application/json; charset=utf-8"
@@ -554,7 +554,7 @@ const account = {
             formObj.permitList = permit;
 
             $.ajax({
-                url: "/user/group"
+                url: "/userGroup"
                 , type: "PATCH"
                 , data: JSON.stringify(formObj)
                 , contentType: "application/json; charset=utf-8"
@@ -567,7 +567,7 @@ const account = {
         },
         delProc: (pSeq) => {
             $.ajax({
-                url: "/user/group/" + pSeq
+                url: "/userGroup/" + pSeq
                 , type: "DELETE"
             }).done((result) => {
                 comm.showAlert("사용자 그룹이 삭제되었습니다");

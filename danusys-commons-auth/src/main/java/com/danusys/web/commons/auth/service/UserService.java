@@ -58,11 +58,18 @@ public class UserService {
 
         /* 키워드 검색조건 */
         String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
-        List<String> statusParam = CommonUtil.inQryString(CommonUtil.valiArrNull(paramMap, "status"), "'");
+        List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword))
-                .or(UserSpecification.inStatus(statusParam));
+        if (statusParam.isEmpty()){
+            statusParam.add("''");
+        }
+
+        Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
+        if(!keyword.equals("")) {
+            spec.or(UserSpecification.likeTel(keyword))
+                    .or(UserSpecification.likeId(keyword))
+                    .or(UserSpecification.likeName(keyword));
+        }
 
         List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
                 .map(UserResponse::new)
@@ -79,12 +86,18 @@ public class UserService {
 
         /* 키워드 검색조건 */
         String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
-        List<String> statusParam = CommonUtil.inQryString(CommonUtil.valiArrNull(paramMap, "status"), "'");
+        List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword))
+        if (statusParam.isEmpty()){
+            statusParam.add("''");
+        }
+
+        Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
+        if(!keyword.equals("")) {
+            spec.or(UserSpecification.likeTel(keyword))
                 .or(UserSpecification.likeId(keyword))
-                .or(UserSpecification.inStatus(statusParam));
+                .or(UserSpecification.likeName(keyword));
+        }
 
         try {
             /* 페이지 및 멀티소팅 */
@@ -254,8 +267,11 @@ public class UserService {
     @Transactional
     public User mod(String userName, String refreshToken) {
         User findUser = this.get(userName, "Error update user id");
-        if(findUser!=null)
+        if(findUser!=null){
             findUser.setRefreshToken(refreshToken);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            findUser.setLastLoginDt(timestamp);
+        }
         return findUser;
     }
 

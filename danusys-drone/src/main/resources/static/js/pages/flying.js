@@ -447,6 +447,12 @@ const droneSocket = {
             self.stompClient.subscribe('/topic/play',function (drone){
                 console.log(drone);
             });
+            self.stompClient.subscribe('/topic/arm',function (drone){
+                console.log(drone);
+            });
+            self.stompClient.subscribe('/topic/disarm',function (drone){
+                console.log(drone);
+            });
             self.stompClient.subscribe('/topic/waypoint',function (drone){
                 console.log(drone + " : topic/waypoint");
                 setDrawDrone.reloadGotoFeature(drone);
@@ -458,7 +464,8 @@ const droneSocket = {
     },
     startMission: function() {
         let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
-        this.stompClient.send("/app/startmission", {}, JSON.stringify({'droneId': droneId}));
+        // this.stompClient.send("/app/startmission", {}, JSON.stringify({'droneId': droneId}));
+        this.stompClient.send("/app/arm", {}, JSON.stringify({'droneId': droneId}));
     },
     pauseMission: function() {
         let startAndStop = common.getQs("#startAndStop span");
@@ -483,7 +490,8 @@ const droneSocket = {
     },
     returnMission: function() {
         let droneId = common.getQs(".mapComponent").dataset.id;
-        this.stompClient.send("/app/return", {}, JSON.stringify({'droneId': droneId}));
+        //this.stompClient.send("/app/return", {}, JSON.stringify({'droneId': droneId}));
+        this.stompClient.send("/app/startmission", {}, JSON.stringify({'droneId': droneId}));
     },
     changeYaw: function(obj= {}) {
         // {yaw: number}

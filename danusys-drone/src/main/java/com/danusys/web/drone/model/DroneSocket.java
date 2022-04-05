@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "drone_socket")
+@Table(name = "drone_socket2")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
