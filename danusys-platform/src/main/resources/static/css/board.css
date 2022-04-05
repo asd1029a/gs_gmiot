@@ -355,6 +355,45 @@
 .statistics_content .graph_contents .graph_title dd span:active{color: #dee0e4; background: #3a66e5;}
 .statistics_content .graph_contents .graph_area{flex: 1; background: #26282f;}
 
+/* signage */
+.signage_contents{display: flex; grid-gap: 14px; height: 100%;}
+.signage_contents > article{overflow: hidden; padding: 0px;}
+.article_title{overflow: hidden; height: 60px; margin: 0px; padding: 0px 12px 0px 20px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
+.signage_template{display: flex; flex-direction: column; width: 320px;}
+.signage_template .template_list{flex: 1; overflow: auto;}
+.signage_template .template_list dl{padding: 15px; border-bottom: 1px solid #292c34;}
+.signage_template .template_list dl:hover{background: #212327;}
+.signage_template .template_list dl dt{margin: 0px 0px 8px;}
+.signage_template .template_list dl dt input[type="checkbox"] + label{font-size: 15px; font-weight: bold;}
+.signage_template .template_list dl dd{font-size: 14px;}
+.signage_template .template_list dl dd span{margin: 0px 4px; color: #797d87;}
+.signage_layout{flex: 1; display: flex; flex-direction: column;}
+.layout_field{flex: 1; margin: 26px; border: 2px solid #292c34; background: #292c34;}
+.layout_field ul{display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 2px; height: 100%;}
+.layout_field ul li{background: #1a1b1d;}
+.layout_field ul li .input_height{display: flex; align-items: center; justify-content: flex-end; white-space: nowrap; margin: 14px;}
+.layout_field ul li .input_height input{max-width: 80px; margin: 0px 10px;}
+.layout_field ul li:nth-child(even){display: flex; flex-direction: column; justify-content: center; grid-gap: 20px; padding: 0px 40px;}
+.layout_field ul li:nth-child(even) p{padding: 0px 4px; font-size: 15px; font-weight: bold;}
+.layout_field ul li:nth-child(even) p span{margin: 0px 6px; font-size: 14px; font-weight: normal; color: #797d87;}
+.layout_field ul li:nth-child(even) select{padding: 0px 14px; background-position: right 14px center;}
+.layout_field ul li:nth-child(even) select option{background: #1a1b1d; color: #fff; padding: 3px 0;}
+.layout_field ul li:nth-child(even) input{padding: 0px 14px;}
+.layout_field ul li:nth-child(even) .fileBox{display: flex; flex-direction: row; align-items: center; justify-content: space-between; grid-gap: 14px;}
+.layout_field ul li:nth-child(even) .fileBox .uploadName{flex: 1; height: 34px; padding: 0px 14px; color: #797d87; border: 1px solid #292c34; }
+.layout_field ul li:nth-child(even) .fileBox label{width: 84px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
+.layout_field ul li:nth-child(even) .fileBox input[type="file"]{position: absolute; overflow: hidden; width: 0; height: 0; padding: 0; border: 0;}
+
+.popup.signage_popup{ width: 420px; height: 340px;}
+.popup.signage_popup div{display: flex; justify-content: center; padding: 0px 24px; border-bottom: 1px solid #292c34;}
+.popup.signage_popup div fieldset{}
+.popup.signage_popup div fieldset form{display: flex; flex-direction: column; grid-gap: 26px;}
+.popup.signage_popup div fieldset dl{display: flex; flex-direction: column; grid-gap: 14px;}
+.popup.signage_popup div fieldset dl dt{flex: 1; color: #dee0e4; font-size: 15px; font-weight: bold;}
+.popup.signage_popup div fieldset dl dt span{margin: 0px 6px; color: #797d87; font-size: 14px; font-weight: normal;}
+.popup.signage_popup div fieldset dl dd{display: flex; align-items: center; justify-content: flex-start; grid-gap: 14px;}
+.popup.signage_popup div fieldset dl:nth-child(2) >  dd input{width: 80px;}
+
 @keyframes fadein {
     from {
         opacity: 0;

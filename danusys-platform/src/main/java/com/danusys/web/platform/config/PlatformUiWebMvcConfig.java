@@ -56,6 +56,7 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("/pages/config/dimmingSet").setViewName("view/pages/config/dimmingSet");
         registry.addViewController("/pages/config/dimmingGroup").setViewName("view/pages/config/dimmingGroup");
         registry.addViewController("/pages/config/notice").setViewName("view/pages/config/notice");
+        registry.addViewController("/pages/config/signage").setViewName("view/pages/config/signage");
 
         registry.addViewController("/paging").setViewName("view/paging");
 
