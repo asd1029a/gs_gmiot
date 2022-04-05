@@ -2,7 +2,8 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layout/layout_config">
+      layout:decorate="layout/layout_config"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <th:block layout:fragment="content">
     <h4>
@@ -33,7 +34,7 @@
                     <dd><span class="count">123</span>건</dd>
                 </dl>
                 <ul>
-                    <li id="addUserGroupBtn"><i><img src="/images/default/add.svg"></i>사용자 그룹 추가</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" id="addUserGroupBtn"><i><img src="/images/default/add.svg"></i>사용자 그룹 추가</li>
                 </ul>
             </div>
             <div class="search_table" id="userGroupTable">
@@ -75,7 +76,7 @@
                                 <dt>사용 여부</dt>
                                 <dd>
                                     <span>
-                                        <input type="radio" id="group_status_use" name="userGroupStatus" data-value="0" checked>
+                                        <input type="radio" id="group_status_use" name="userGroupStatus" data-value="0">
                                         <label for="group_status_use"><span class="round"></span>사용</label>
                                     </span>
                                     <span>
@@ -119,7 +120,7 @@
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="dashboardReadAndWrite" name="dashboard" data-value="rw" checked>
+                                            <input type="radio" id="dashboardReadAndWrite" name="dashboard" data-value="rw">
                                             <label for="dashboardReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>
@@ -140,7 +141,7 @@
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="monitoringReadAndWrite" name="mntr" data-value="rw" checked>
+                                            <input type="radio" id="monitoringReadAndWrite" name="mntr" data-value="rw">
                                             <label for="monitoringReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>
@@ -161,7 +162,7 @@
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="inquiryReadAndWrite" name="inqry" data-value="rw" checked>
+                                            <input type="radio" id="inquiryReadAndWrite" name="inqry" data-value="rw">
                                             <label for="inquiryReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>
@@ -182,7 +183,7 @@
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="statisticsReadAndWrite" name="stats" data-value="rw" checked>
+                                            <input type="radio" id="statisticsReadAndWrite" name="stats" data-value="rw">
                                             <label for="statisticsReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>
@@ -203,7 +204,7 @@
                                     </td>
                                     <td>
                                         <span>
-                                            <input type="radio" id="settingReadAndWrite" name="config" data-value="rw" checked>
+                                            <input type="radio" id="settingReadAndWrite" name="config" data-value="rw">
                                             <label for="settingReadAndWrite"><span class="round"></span></label>
                                         </span>
                                     </td>
@@ -236,9 +237,9 @@
             <ul class="bottom">
 <!--                <li>취소</li>-->
 <!--                <li class="color">추가</li>-->
-                <li data-mode="mod" id="delUserGroupProcBtn">삭제</li>
-                <li data-mode="mod" id="modUserGroupProcBtn">정보 수정</li>
-                <li class="color" data-mode="add" id="addUserGroupProcBtn">등록</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="delUserGroupProcBtn">삭제</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="modUserGroupProcBtn">정보 수정</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-mode="add" id="addUserGroupProcBtn">등록</li>
             </ul>
         </div>
     </section>

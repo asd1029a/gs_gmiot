@@ -3,23 +3,23 @@ package com.danusys.web.commons.auth.service;
 
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.PagingUtil;
-import com.danusys.web.commons.auth.dto.request.UserRequest;
 import com.danusys.web.commons.auth.dto.response.UserResponse;
 import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserInGroup;
-import com.danusys.web.commons.auth.model.UserStatus;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.repository.UserStatusRepository;
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,11 +58,18 @@ public class UserService {
 
         /* 키워드 검색조건 */
         String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
-        List<String> statusParam = CommonUtil.inQryString(CommonUtil.valiArrNull(paramMap, "status"), "'");
+        List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword))
-                .or(UserSpecification.inStatus(statusParam));
+        if (statusParam.isEmpty()){
+            statusParam.add("''");
+        }
+
+        Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
+        if(!keyword.equals("")) {
+            spec.or(UserSpecification.likeTel(keyword))
+                    .or(UserSpecification.likeId(keyword))
+                    .or(UserSpecification.likeName(keyword));
+        }
 
         List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
                 .map(UserResponse::new)
@@ -79,12 +86,18 @@ public class UserService {
 
         /* 키워드 검색조건 */
         String keyword =  CommonUtil.validOneNull(paramMap, "keyword");
-        List<String> statusParam = CommonUtil.inQryString(CommonUtil.valiArrNull(paramMap, "status"), "'");
+        List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword))
+        if (statusParam.isEmpty()){
+            statusParam.add("''");
+        }
+
+        Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
+        if(!keyword.equals("")) {
+            spec.or(UserSpecification.likeTel(keyword))
                 .or(UserSpecification.likeId(keyword))
-                .or(UserSpecification.inStatus(statusParam));
+                .or(UserSpecification.likeName(keyword));
+        }
 
         try {
             /* 페이지 및 멀티소팅 */
@@ -110,11 +123,14 @@ public class UserService {
     public Map<String, Object> getListGroupInUser(Map<String, Object> paramMap) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        /* 키워드 검색조건 */
-        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+        /* 계정 상태 검색조건 */
+        List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword));
+        if (statusParam.isEmpty()){
+            statusParam.add("''");
+        }
+
+        Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
         UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
         List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
 
@@ -143,11 +159,14 @@ public class UserService {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
-            /* 키워드 검색조건 */
-            String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+            /* 계정 상태 검색조건 */
+            List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-            Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                    .or(UserSpecification.likeTel(keyword));
+            if (statusParam.isEmpty()){
+                statusParam.add("''");
+            }
+
+            Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
             UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
             List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
 
@@ -254,8 +273,11 @@ public class UserService {
     @Transactional
     public User mod(String userName, String refreshToken) {
         User findUser = this.get(userName, "Error update user id");
-        if(findUser!=null)
+        if(findUser!=null){
             findUser.setRefreshToken(refreshToken);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            findUser.setLastLoginDt(timestamp);
+        }
         return findUser;
     }
 
@@ -263,7 +285,7 @@ public class UserService {
     public void del(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
         findUser.setStatus("2");
-//        userRepository.save(findUser);
+        userInGroupRepository.deleteAllByUserSeq(findUser.getUserSeq());
     }
 
     public int checkId(String userId) {
@@ -271,6 +293,15 @@ public class UserService {
         return (user == null) ? 1 : 0;
     }
 
+    public String checkAuthority(String authName, String permit) {
+        GrantedAuthority flag = LoginInfoUtil.getUserDetails().getAuthorities()
+                .stream()
+                .filter(auth -> auth.getAuthority().toString().equals("ROLE_" + authName + "_" + permit))
+                .findFirst()
+                .orElse(null);
+
+        return flag != null ? flag.getAuthority().toString() : "none";
+    }
 
 //
 //    public com.danusys.web.commons.app.model.paging.Page<List<Map<String, Object>>> getLists(PagingRequest pagingRequest) {

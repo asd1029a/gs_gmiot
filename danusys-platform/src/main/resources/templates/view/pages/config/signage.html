@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout_config"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <th:block layout:fragment="content">
+        <h4>
+            <i><img src="/images/default/settingTitle.svg"></i>
+            <span>환경설정</span>
+            <i><img src="/images/default/arrowNext.svg"></i>
+            <span>사이니지 템플릿</span>
+        </h4>
+        <section class="setting_content">
+            <div class="signage_contents">
+                <article class="signage_template">
+                    <div class="article_title">
+                        <dl class="title">
+                            <dt>템플릿 목록</dt>
+                            <dd><span class="count">20</span></dd>
+                        </dl>
+                        <ul>
+                            <li sec:authorize="hasAnyRole('ROLE_config_rw')" id="addSignageTemplateBtn"><i><img src="/images/default/add.svg"></i>추가</li>
+                        </ul>
+                    </div>
+                    <div class="template_list">
+                        <dl>
+                            <dt>
+                                <input type="checkbox" id="" name="">
+                                <label for=""><span></span>템플릿 01</label>
+                            </dt>
+                            <dd>Rtsp 영상<span>(0x0)</span></dd>
+                        </dl>
+                    </div>
+                </article>
+                <article class="signage_layout">
+                    <div class="article_title">
+                        <dl class="title">
+                            <dt>템플릿 레이아웃 설정</dt>
+                        </dl>
+                        <ul>
+                            <li>취소</li>
+                            <li>저장</li>
+                        </ul>
+                    </div>
+                    <div class="layout_field">
+                        <ul>
+                            <li><p class="input_height">높이<input type="text">&#37;</p></li>
+                            <li>
+                                <p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>
+                                <select>
+                                    <option selected>rtsp 영상</option>
+                                    <option>대기환경</option>
+                                    <option>BIS</option>
+                                    <option>이미지 / 영상 선택</option>
+                                    <option>URL 링크</option>
+                                </select>
+                                <input type="text">
+                            </li>
+                            <li><p class="input_height">높이<input type="text">&#37;</p></li>
+                            <li>
+                                <p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>
+                                <select>
+                                    <option>rtsp 영상</option>
+                                    <option>대기환경</option>
+                                    <option>BIS</option>
+                                    <option selected>이미지 / 영상 선택</option>
+                                    <option>URL 링크</option>
+                                </select>
+                                <div class="fileBox">
+                                    <input class="uploadName" value="첨부파일" placeholder="첨부파일">
+                                    <label for="file">파일찾기</label>
+                                    <input type="file" id="file">
+                                </div>
+                            </li>
+                            <li><p class="input_height">높이<input type="text">&#37;</p></li>
+                            <li>
+                                <p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>
+                                <select>
+                                    <option>rtsp 영상</option>
+                                    <option>대기환경</option>
+                                    <option>BIS</option>
+                                    <option>이미지 / 영상 선택</option>
+                                    <option selected>URL 링크</option>
+                                </select>
+                                <input type="text">
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+            <div class="popup signage_popup" id="signagePopup" style="display: none;"><!-- active 시, display: flex; -->
+                <dl class="title">
+                    <dt>사이니지 템플릿 추가</dt>
+                    <dd><i><img src="/images/default/close.svg"></i></dd>
+                </dl>
+                <div>
+                    <fieldset>
+                        <form>
+                            <dl>
+                                <dt>템플릿 명<span>템플릿 제목을 입력해주세요.</span></dt>
+                                <dd><input type="text"></dd>
+                            </dl>
+                            <dl>
+                                <dt>레이아웃<span>레이아웃의 줄 수를 설정해주세요.</span></dt>
+                                <dd><input type="text" placeholder="0" style="">칸</dd>
+                            </dl>
+                        </form>
+                    </fieldset>
+                </div>
+                <ul class="bottom">
+                    <li>취소</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color">추가</li>
+                </ul>
+            </div>
+        </section>
+    </th:block>
+</html>

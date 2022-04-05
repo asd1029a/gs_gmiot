@@ -274,7 +274,16 @@ const comm = {
         result += '</table>';
         return result;
     }*/
-    ,
+    , checkAuthority : (url, authName, permit) => {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+                   url : url + "/" + authName + "/"+ permit
+                   , type : "GET"
+                   , success : (result) => {resolve(result)}
+                   , error : (xhr) => {reject(new Error("권한이 존재하지 않거나, 세션이 만료되었습니다."));}
+            });
+        });
+    },
     createTable: ($target, optionObj, evt) => {
         //comm.showLoading();
 

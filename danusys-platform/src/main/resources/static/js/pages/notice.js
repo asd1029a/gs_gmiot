@@ -4,7 +4,12 @@
 const notice = {
     eventHandler : () => {
         $("#searchBtn").on('click', () => {
-            notice.create();
+            comm.checkAuthority("/user/check/authority", "config", "rw")
+                .then(
+                    (result) => {
+                        notice.create(result);
+                    }
+                );
         });
         $("#addNoticeProcBtn").on('click', () => {
            notice.addProc();
@@ -21,25 +26,16 @@ const notice = {
         $("#addNoticeBtn").on('click', () => {
             notice.showPopup("add");
         });
-        $("#file").on('change', (e) => {
-            const maxSize = 10 * 1024 * 1024 // 10MB
-            const fileSize = e.currentTarget.files[0].size
-            if( fileSize > maxSize){
-                comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
-            } else {
-                const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
-                $("#noticeFile").val(fileName);
-            }
-        });
     }
-    , create : () => {
+    , create : (pPermit) => {
         const $target = $('#noticeTable');
-
         const optionObj = {
             dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
             pageLength: 15,
             scrollY: "calc(100% - 40px)",
+            security : true,
+            autoWidth: true,
             ajax :
                 {
                     'url' : "/notice",
@@ -89,11 +85,6 @@ const notice = {
                     "data": null,
                     "defaultContent": '<span class="button detail">상세보기</span>'
                 }
-                , {
-                    "targets": 6,
-                    "data": null,
-                    "defaultContent": '<span class="button mod">수정</span>'
-                }
             ]
             , excelDownload : {
                 url : "/notice/excel/download"
@@ -109,7 +100,13 @@ const notice = {
                     , "수정일|updateDt"]
             }
         }
-
+        if(pPermit !== "none") {
+            optionObj.columnDefs.push({
+                "targets": 6,
+                "data": null,
+                "defaultContent": '<span class="button mod">수정</span>'
+            });
+        }
         const evt = {
             click : function(e) {
                 const $form = $('#noticeForm');
@@ -172,6 +169,16 @@ const notice = {
                 }
             });
         }
+        $("#file").on('change', (e) => {
+            const maxSize = 10 * 1024 * 1024 // 10MB
+            const fileSize = e.currentTarget.files[0].size
+            if( fileSize > maxSize){
+                comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
+            } else {
+                const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
+                $("#noticeFile").val(fileName);
+            }
+        });
     },
     hidePopup : () => {
         comm.hideModal($('#noticePopup'));

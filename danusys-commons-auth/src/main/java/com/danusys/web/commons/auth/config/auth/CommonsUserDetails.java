@@ -4,12 +4,12 @@ package com.danusys.web.commons.auth.config.auth;
 import com.danusys.web.commons.auth.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 
@@ -17,11 +17,11 @@ public class CommonsUserDetails implements UserDetails {
 
     private User user;
     // private Permit permit;
-    private List<String> permitList;
+    private Set<String> permitList;
 
     public CommonsUserDetails(User user) {
         this.user = user;
-        permitList = new ArrayList<>();
+        permitList = new LinkedHashSet<String>();
     }
 
     public User getUser() {
@@ -48,17 +48,28 @@ public class CommonsUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
+//        if (user != null) {
+//            user.getUserInGroup().forEach(userInGroup -> {
+//                userInGroup.getUserGroup()
+//                        .getUserGroupPermit()
+//                        .forEach(groupPermit -> {
+//                    permitList.add("ROLE_" + groupPermit.getPermitMenu().getCodeValue() + "_" + groupPermit.getPermit().getCodeValue());
+//                });
+//            });
+//            permitList.forEach(r -> {
+//                authorities.add(new SimpleGrantedAuthority(r));
+//            });
+//        }
         if (user != null) {
-            // TODO - 게시판 별 권한 처리 협의 필요 @엄태혁
-            user.getUserInGroup().forEach(r -> {
-                r.getUserGroup().getUserGroupPermit().forEach(rr -> {
-                    permitList.add(rr.getPermit().getCodeValue());
-                });
+            user.getUserInGroup().forEach(userInGroup -> {
+                userInGroup.getUserGroup()
+                        .getUserGroupPermit()
+                        .stream()
+                        .filter(userGroupPermit -> !permitList.add("ROLE_" + userGroupPermit.getPermitMenu().getCodeValue() + "_" + userGroupPermit.getPermit().getCodeValue()))
+                        .collect(Collectors.toList());
             });
-            permitList.forEach(r -> {
-                authorities.add(() -> {
-                    return r;
-                });
+            permitList.forEach(permit -> {
+                authorities.add(new SimpleGrantedAuthority(permit));
             });
         }
 

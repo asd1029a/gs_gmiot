@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/layout_config">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout_config"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <th:block layout:fragment="content">
     <h4>
@@ -32,7 +36,7 @@
                             <dd><span class="count">123</span>건</dd>
                         </dl>
                         <ul>
-                            <li><i><img src="/images/default/add.svg"></i>디밍 추가</li>
+                            <li sec:authorize="hasAnyRole('ROLE_config_rw')"><i><img src="/images/default/add.svg"></i>디밍 추가</li>
                         </ul>
                     </div>
                     <div class="search_table">

@@ -31,7 +31,6 @@ public class UserGroupPermit {
     @Column(name = "permit_menu_seq")
     private int permitMenuSeq;
 
-    /* TODO : 다른 방법이 있을 듯한데... 더 알아보기 */
     @ManyToOne
     @JoinColumn(name = "user_group_seq", updatable = false, insertable = false)
     @JsonBackReference

@@ -1,8 +1,6 @@
 package com.danusys.web.commons.auth.controller;
 
-import com.danusys.web.commons.auth.dto.request.UserRequest;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +14,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/user/user")
+@RequestMapping(value = "/user")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
@@ -26,19 +24,25 @@ public class UserController {
 
     /*
       name: idCheck
-      url: /checkid/{userSeq}
+      url: /user/checkId/{userSeq}
       type: get
       do: 아이디 중복 체크
       return : 아이디 중복일경우 0 , 중복아닐경우 1 리턴
 
      */
-    @GetMapping("/checkid/{userId}")
+    @GetMapping("/checkId/{userId}")
     public ResponseEntity<?> checkId(@PathVariable String userId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.checkId(userId));
     }
 
+    @GetMapping("/check/authority/{authName}/{permit}")
+    public ResponseEntity<?> checkAuthority(@PathVariable String authName, @PathVariable String permit) {
+        return  ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.checkAuthority(authName, permit));
+    }
     /*
        name: get
        url: /user/{userSeq}
@@ -85,7 +89,7 @@ public class UserController {
     }
     /*
        name: getListGroupInUser
-       url: /userInGroup/paging
+       url: /user/userInGroup
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -104,7 +108,7 @@ public class UserController {
 
     /*
        name: getListGroupInUserPaging
-       url: /userInGroup/paging
+       url: /user/userInGroup/paging
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -151,7 +155,7 @@ public class UserController {
       name: mod
       url: /user
       type: patch
-      param: User user
+      param: map
       ex)
       {
         "userSeq":52,
@@ -176,9 +180,8 @@ public class UserController {
 
     /*
        name: del
-       url: /user
+       url: /user/{userSeq}
        type: delete
-       param: User user (userSeq)
        do: userSeq로 조회하여 삭제함
      */
     @DeleteMapping("/{userSeq}")

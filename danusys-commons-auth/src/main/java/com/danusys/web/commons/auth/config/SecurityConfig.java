@@ -119,7 +119,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/**").permitAll()
                 .antMatchers(permitAll).permitAll()
 //                .antMatchers(String.valueOf(PERMIT_PATH)).permitAll()
-                .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
+
+                .antMatchers(roleManagerPage).access("hasRole('rw')")
+               // .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
                 .antMatchers(roleAdminPage).access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
                 .and()

@@ -1,27 +1,21 @@
 package com.danusys.web.commons.auth.controller;
 
 import com.danusys.web.commons.auth.dto.request.UserGroupPermitRequest;
-import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserGroup;
-import com.danusys.web.commons.auth.model.UserGroupPermit;
-import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserGroupPermitService;
 import com.danusys.web.commons.auth.service.UserGroupService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.danusys.web.commons.auth.service.UserInGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Arrays;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/user/group")
+@RequestMapping(value = "/userGroup")
 @RequiredArgsConstructor
 @Slf4j
 public class UserGroupController {
@@ -32,7 +26,7 @@ public class UserGroupController {
 
     /*
        name: get
-       url: /{groupSeq}
+       url: /userGroup/{groupSeq}
        type: get
        do: groupSeq로 group 단건 조회
        return : 단건 조회
@@ -55,7 +49,7 @@ public class UserGroupController {
     }
     /*
        name: getList
-       url: /group
+       url: /userGroup
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -73,7 +67,7 @@ public class UserGroupController {
 
     /*
        name: getListPaging
-       url: /paging
+       url: /userGroup/paging
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -93,7 +87,7 @@ public class UserGroupController {
 
     /*
        name: getListGroupInUser
-       url: /userInGroup/paging
+       url: /userGroup/userInGroup
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -112,7 +106,7 @@ public class UserGroupController {
 
     /*
        name: getListGroupInUserPaging
-       url: /userInGroup/paging
+       url: /userGroup/userInGroup/paging
        type: post
        param : Map<String, Object> paramMap
        ex  :{
@@ -133,7 +127,7 @@ public class UserGroupController {
 
     /*
        name: add
-       url: /group
+       url: /userGroup
        type: put
        param : UserGroup userGroup
        do: usergroup 저장 , groupName,groupDesc 없이 전송할경우 0 리턴
@@ -148,7 +142,7 @@ public class UserGroupController {
 
     /*
        name: mod
-       url: /group
+       url: /userGroup
        type: patch
        param : UserGroup userGroup
        do: usergroup 업데이트
@@ -163,7 +157,7 @@ public class UserGroupController {
 
     /*
        name: delete
-       url: /group
+       url: /userGroup/{userGroupSeq}
        type: delete
        param : userSeq
        do: usergroup 삭제
@@ -175,7 +169,7 @@ public class UserGroupController {
                 .status(HttpStatus.OK).build();
     }
 
-//    @PutMapping("/groupPermit")
+//    @PutMapping("/userGroupPermit")
 //    public ResponseEntity<?> addPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
 ////        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
 //        UserGroupPermit userGroupPermit = new UserGroupPermit();
@@ -187,7 +181,7 @@ public class UserGroupController {
 //    }
 
 
-    @DeleteMapping("/groupPermit")
+    @DeleteMapping("/userGroupPermit")
     public ResponseEntity<?> delPermitProc(@RequestBody UserGroupPermitRequest userGroupPermitRequest) {
 //        log.info("userGroupPermitReqeuest={}", userGroupPermitRequest);
         userGroupPermitService.del(

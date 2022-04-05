@@ -10,8 +10,7 @@ public class LoginInfoUtil {
     public static CommonsUserDetails getUserDetails()
     {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CommonsUserDetails userDetails = (CommonsUserDetails) principal;
-        return userDetails;
+        return (CommonsUserDetails) principal;
     }
 
 }

@@ -39,7 +39,7 @@ const account = {
                 scrollY: "calc(100% - 40px)",
                 ajax:
                     {
-                        'url': "/user/user/paging",
+                        'url': "/user/paging",
                         'contentType': "application/json; charset=utf-8",
                         'type': "POST",
                         'data': function (d) {
@@ -90,7 +90,7 @@ const account = {
         },
         createUserInGroup: (type) => {
             const $target = $('#userInGroupTable');
-            const url = type === "mod" ? "/user/user/userInGroup" : "/user/user";
+            const url = type === "mod" ? "/user/userInGroup" : "/user";
             const optionObj = {
                 dom: '<"table_body"rt>',
                 destroy: true,
@@ -104,7 +104,8 @@ const account = {
                         'type': "POST",
                         'data': function () {
                             return JSON.stringify({
-                                userGroupSeq: $("#userGroupForm").data("userGroupSeq")
+                                userGroupSeq: $("#userGroupForm").data("userGroupSeq"),
+                                status: [0,1] //삭제 된 사용자 제외
                             });
                         },
                     }
@@ -147,7 +148,7 @@ const account = {
         },
         getList: (pCallback) => {
             comm.ajaxPost({
-                url: "/user/user"
+                url: "/user"
                 , data: {}
             }, (result) => {
                 pCallback(result);
@@ -155,7 +156,7 @@ const account = {
         },
         get: (pSeq, pCallback) => {
             $.ajax({
-                url: "/user/user/" + pSeq
+                url: "/user/" + pSeq
                 , type: "GET"
             }).done((result) => {
                 pCallback(result);
@@ -163,7 +164,7 @@ const account = {
         },
         checkId: (pId, pCallback) => {
             $.ajax({
-                url: "/user/user/checkid/" + pId
+                url: "/user/checkId/" + pId
                 , type: "GET"
             }).done((result) => {
                 pCallback(result);
@@ -235,7 +236,7 @@ const account = {
             if (formObj.password === $checkPassword.val() && $("#checkIdBtn").data("duplCheck") === true) {
                 if ($('#userAccountForm').doValidation()) {
                     $.ajax({
-                        url: "/user/user"
+                        url: "/user"
                         , type: "PUT"
                         , contentType: "application/json; charset=utf-8"
                         , data: JSON.stringify(formObj)
@@ -279,7 +280,7 @@ const account = {
 
             if ($('#userAccountForm').doValidation()) {
                 $.ajax({
-                    url: "/user/user"
+                    url: "/user"
                     , type: "PATCH"
                     , contentType: "application/json; charset=utf-8"
                     , data: JSON.stringify(formObj)
@@ -294,7 +295,7 @@ const account = {
         },
         delProc: (pSeq) => {
             $.ajax({
-                url: "/user/user/" + pSeq
+                url: "/user/" + pSeq
                 , type: "DELETE"
             }).done((result) => {
                 comm.showAlert("사용자 계정이 삭제되었습니다");
@@ -317,20 +318,31 @@ const account = {
             });
             $("#addUserGroupProcBtn").on('click', () => {
                 const groupName = $("#groupName").val();
+
+                if (groupName === ""){
+                    comm.showAlert("그룹 이름을 입력하세요.");
+                } else{
                     account.group.checkGroupName(
-                    groupName
-                    , (result) => {
-                        if(result === 1) {
-                            account.group.addProc();
-                        } else {
-                            $("#groupName").focus();
-                            comm.showAlert("중복된 그룹 이름이 존재합니다.");
+                        groupName
+                        , (result) => {
+                            if(result === 1) {
+                                account.group.addProc();
+                            } else {
+                                $("#groupName").focus();
+                                comm.showAlert("중복된 그룹 이름이 존재합니다.");
+                            }
                         }
-                    }
-                );
+                    );
+                }
             });
             $("#modUserGroupProcBtn").on('click', () => {
-                account.group.modProc($("#userGroupForm").data("userGroupSeq"));
+                const groupName = $("#groupName").val();
+
+                if (groupName === ""){
+                    comm.showAlert("그룹 이름을 입력하세요.");
+                } else{
+                    account.group.modProc($("#userGroupForm").data("userGroupSeq"));
+                }
             });
             $("#delUserGroupProcBtn").on('click', () => {
                 account.group.delProc($("#userGroupForm").data("userGroupSeq"));
@@ -346,7 +358,7 @@ const account = {
                 scrollY: "calc(100% - 40px)",
                 ajax:
                     {
-                        'url': "/user/group/paging",
+                        'url': "/userGroup/paging",
                         'contentType': "application/json; charset=utf-8",
                         'type': "POST",
                         'data': function (d) {
@@ -354,7 +366,6 @@ const account = {
                             return JSON.stringify(param);
                         },
                         'dataSrc': function (result) {
-                            console.log(result);
                             $('.title dd .count').text(result.recordsTotal);
                             return result.data;
                         }
@@ -395,7 +406,7 @@ const account = {
         createUserInGroup: (type) => {
             const $target = $('#userInGroupTable');
 
-            const url = type === "mod" ? "/user/group/userInGroup" : "/user/group"
+            const url = type === "mod" ? "/userGroup/userInGroup" : "/userGroup"
 
             const optionObj = {
                 dom: '<"table_body"rt>',
@@ -460,7 +471,7 @@ const account = {
         },
         checkGroupName: (pId, pCallback) => {
             $.ajax({
-                url: "/user/group/checkGroupName/" + pId
+                url: "/userGroup/checkGroupName/" + pId
                 , type: "GET"
             }).done((result) => {
                 pCallback(result);
@@ -468,7 +479,7 @@ const account = {
         },
         getList: (pCallback) => {
             comm.ajaxPost({
-                url: "/user/group"
+                url: "/userGroup"
                 , data: {}
             }, (result) => {
                 pCallback(result);
@@ -476,7 +487,7 @@ const account = {
         },
         get: (pSeq, pCallback) => {
             $.ajax({
-                url: "/user/group/" + pSeq
+                url: "/userGroup/" + pSeq
                 , type: "GET"
             }).done((result) => {
                 pCallback(result);
@@ -517,23 +528,34 @@ const account = {
             });
 
             let permit = {};
+            let isEmptyPermit = false;
             $('#permitTable tbody tr').each((i, element) => {
                 let name = $(element).find("input").eq(0).attr("name");
                 permit[name] = $("[name=" + name + "]:checked").data("value");
+                if(!permit[name] === undefined){
+                    isEmptyPermit = true;
+                    return 0;
+                }
             });
             formObj.permitList = permit;
 
-            $.ajax({
-                url: "/user/group"
-                , type: "PUT"
-                , data: JSON.stringify(formObj)
-                , contentType: "application/json; charset=utf-8"
-                , dataType: "json"
-            }).done((result) => {
-                comm.showAlert("사용자 그룹이 등록되었습니다");
-                account.group.create($('#userGroupTable'));
-                account.group.hidePopup();
-            });
+            if(isEmptyPermit){
+                comm.showAlert("권한을 모두 체크하세요.");
+            } else if(!$("[name=userGroupStatus]:checked").data("value") === undefined) {
+                comm.showAlert("사용 여부를 체크하세요.");
+            } else{
+                $.ajax({
+                    url: "/userGroup"
+                    , type: "PUT"
+                    , data: JSON.stringify(formObj)
+                    , contentType: "application/json; charset=utf-8"
+                    , dataType: "json"
+                }).done((result) => {
+                    comm.showAlert("사용자 그룹이 등록되었습니다");
+                    account.group.create($('#userGroupTable'));
+                    account.group.hidePopup();
+                });
+            }
         },
         modProc: (pSeq) => {
             const formObj = $('#userGroupForm').serializeJSON();
@@ -548,27 +570,38 @@ const account = {
             });
 
             let permit = {};
+            let isEmptyPermit = false;
             $('#permitTable tbody tr').each((i, element) => {
                 let name = $(element).find("input").eq(0).attr("name");
                 permit[name] = $("[name=" + name + "]:checked").data("value");
+                if(!permit[name] === undefined){
+                    isEmptyPermit = true;
+                    return 0;
+                }
             });
             formObj.permitList = permit;
 
-            $.ajax({
-                url: "/user/group"
-                , type: "PATCH"
-                , data: JSON.stringify(formObj)
-                , contentType: "application/json; charset=utf-8"
-                , dataType: "json"
-            }).done((result) => {
-                comm.showAlert("사용자 그룹이 수정되었습니다");
-                account.group.create($('#userGroupTable'));
-                account.group.hidePopup();
-            });
+            if(isEmptyPermit){
+                comm.showAlert("권한을 모두 체크하세요.");
+            } else if($("[name=userGroupStatus]:checked").data("value") === undefined) {
+                comm.showAlert("사용 여부를 체크하세요.");
+            } else{
+                $.ajax({
+                    url: "/userGroup"
+                    , type: "PATCH"
+                    , data: JSON.stringify(formObj)
+                    , contentType: "application/json; charset=utf-8"
+                    , dataType: "json"
+                }).done((result) => {
+                    comm.showAlert("사용자 그룹이 수정되었습니다");
+                    account.group.create($('#userGroupTable'));
+                    account.group.hidePopup();
+                });
+            }
         },
         delProc: (pSeq) => {
             $.ajax({
-                url: "/user/group/" + pSeq
+                url: "/userGroup/" + pSeq
                 , type: "DELETE"
             }).done((result) => {
                 comm.showAlert("사용자 그룹이 삭제되었습니다");

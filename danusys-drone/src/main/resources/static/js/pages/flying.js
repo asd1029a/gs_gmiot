@@ -20,18 +20,24 @@ const pageFlying = {
         const listData = await axios.post("/drone/api/dronemissiondetails", {});
         const listCnt = common.getQs(".subTitle span");
         listCnt.innerText = listData.data.length;
+
         listData.data.map((data) => {
+            //set drone feature
+            setDrawDrone.createFeature(data);
+            setDrawDrone.createMissionFeature(data);
+
             const li = common.crtEl("li");
             li.dataset.id = data.id;
             li.addEventListener("click", function(e) {
                 const mapComponent = common.getQs(".mapComponent");
+                setDrawDrone.resetValue();
+                mapComponent.querySelector(".values h6").innerText = `${data.droneDeviceName + " Values"}`;
                 mapComponent.dataset.id = data.id;
-                setDrawDrone.createFeature(data.id);
-                //let check = setDrawDrone.createFeature(data.id);
-                /*if(!check) {
-                    return false;
-                }*/
-                pageFlying.lnbMenuClickEvent(data.mission);
+                let mission = data.mission;
+                if(mission.missionDetails[0]) {
+                    mapManager.map.getView().setCenter(ol.proj.transform([mission.missionDetails[0].gpsX, mission.missionDetails[0].gpsY],mapManager.baseProjection, mapManager.projection));
+                }
+                pageFlying.setMissionSummary(mission);
             });
             const dl = common.crtEl("dl");
             const dlDt = common.crtEl("dt");
@@ -85,26 +91,6 @@ const pageFlying = {
             li.append(dl, article);
             ul.append(li);
         });
-    },
-    lnbMenuClickEvent(data) {
-        data.missionDetails.map((missionDetails) => {
-            let obj = {};
-            obj.coordinate = ol.proj.transform([missionDetails.gpsX,missionDetails.gpsY],mapManager.baseProjection,mapManager.projection);
-            obj.index = missionDetails.index;
-            if(missionDetails.name == "waypoint" || missionDetails.name == "takeOff") {
-                obj.style = mission.setIconStyle(missionDetails.index + 1);
-            } else if(missionDetails.name == "loi") {
-                obj.style = mission.setIconStyle("L");
-            } else if(missionDetails.name == "roi") {
-                obj.style = mission.setIconStyle("R");
-            }
-            setDrawDrone.drawMissionFeature(obj);
-        });
-        if(data.missionDetails) {
-            mapManager.map.getView().setCenter(ol.proj.transform([data.missionDetails[0].gpsX, data.missionDetails[0].gpsY],mapManager.baseProjection, mapManager.projection));
-        }
-
-        pageFlying.setMissionSummary(data);
     },
     setMissionSummary: function(data) {
         const missionSummary = common.getQs(".missionSummary");
@@ -171,111 +157,141 @@ const setDrawDrone = {
     },
     
     // li 클릭 시 실행
-    createFeature: function(id) {
-        /*if(this.layer.getSource().getFeatureById(id)) {
-           return false;
-        }*/
-        mission.removeFeatureAll(this.layer)
-
-
+    createFeature: function(data) {
         let droneFeatureType = new ol.geom.Point({});
         let directionPieType = new ol.geom.Point({});
-        let missionRouteType = new ol.geom.LineString([0,0]);
+        let missionRouteType = new ol.geom.LineString([[0,0],[0,0]]);
 
 
         //let feature = new ol.Feature();
-        let droneFeature = mission.setFeature(droneFeatureType, this.setDroneStyle(),this.layer);
-        let directionPie = mission.setFeature(directionPieType, this.setPieStyle(),this.layer);
-        let missionRoute = mission.setFeature(missionRouteType, setDrawDrone.setRouteStyle(),this.layer);
-        droneFeature.setId(id);
-        directionPie.setId(`pie-${id}`);
-        missionRoute.setId(`line-${id}`);
+        let droneFeature = mission.setFeature(droneFeatureType, setDrawDrone.setDroneStyle(),setDrawDrone.layer);
+        let directionPie = mission.setFeature(directionPieType, setDrawDrone.setPieStyle(),setDrawDrone.layer);
+        let missionRoute = mission.setFeature(missionRouteType, setDrawDrone.setRouteStyle(),setDrawDrone.layer);
+        droneFeature.setId(data.id);
+        directionPie.setId(`pie-${data.id}`);
+        missionRoute.setId(`line-${data.id}`);
 
     },
-    
+    createMissionFeature: function(data) {
+        if(!data.mission.missionDetails) {
+            return false;
+        }
+        let lineStringCoordinates = [];
+        data.mission.missionDetails.map((missionDetails) => {
+            if(!missionDetails.gpsX) {
+                
+                //return lineString 좌표 설정
+                lineStringCoordinates.push(lineStringCoordinates[0]);
+                return false;
+            }
+            let obj = {};
+            obj.droneId = data.id
+            obj.coordinate = ol.proj.transform([missionDetails.gpsX,missionDetails.gpsY],mapManager.baseProjection,mapManager.projection);
+            obj.index = missionDetails.index;
+
+            lineStringCoordinates.push(obj.coordinate);
+            if(missionDetails.name == "waypoint" || missionDetails.name == "takeOff") {
+                obj.style = mission.setIconStyle(missionDetails.index + 1);
+            } else if(missionDetails.name == "loi") {
+                obj.style = mission.setIconStyle("L");
+            } else if(missionDetails.name == "roi") {
+                obj.style = mission.setIconStyle("R");
+            } else if(missionDetails.name == "return"){
+                return false;
+            }
+            setDrawDrone.drawMissionFeature(obj);
+        });
+        let lineFeatureType = new ol.geom.LineString(lineStringCoordinates);
+        let lineFeature = mission.setFeature(lineFeatureType, waypoint.lineStyle(), setDrawDrone.layer);
+
+    },
     // 미션 재생 시 실행
     reloadFeature: function(obj) {
 
         // create right click menu
         pageFlying.setContextMenu();
         // set state popup
-        const flyAlt = common.getQs("#flyAlt");
-        const flySpeed= common.getQs("#flySpeed");
-        const flyTime = common.getQs("#flyTime");
-        const flyYaw = common.getQs("#flyYaw");
-
         let bodyData = JSON.parse(obj.body);
+        const mapComponent = common.getQs(`.mapComponent`);
+        const flyAlt = mapComponent.querySelector(`[data-id='${bodyData.droneId}'] #flyAlt`);
+        const flySpeed= mapComponent.querySelector(`[data-id='${bodyData.droneId}'] #flySpeed`);
+        const flyTime = mapComponent.querySelector(`[data-id='${bodyData.droneId}'] #flyTime`);
+        const flyYaw = mapComponent.querySelector(`[data-id='${bodyData.droneId}'] #flyYaw`);
+
+        if(flyAlt) {
+            flyAlt.innerText = bodyData.currentHeight;
+            flySpeed.innerText = bodyData.airSpeed;
+            flyTime.innerText = `${bodyData.hour}:${bodyData.min}:${bodyData.sec}`
+            flyYaw.innerText = bodyData.heading;
+        }
+
+        // coordinate transform
         let coordinate = ol.proj.transform([bodyData.gpsX,bodyData.gpsY],mapManager.baseProjection,mapManager.projection);
+
+        // setting left menu
         let li = common.getQs(`.listScroll li[data-id='${bodyData.droneId}']`);
         const span = li.querySelector(`dt span`);
         const circle = common.arr.call(li.querySelectorAll(".route li .circle"));
 
+        // set drone, pie, missionLine, progressiveMission
+        let drone = mapManager.getVectorLayer("droneLayer").getSource().getFeatureById(bodyData.droneId);
+        let pie = mapManager.getVectorLayer("droneLayer").getSource().getFeatureById(`pie-${bodyData.droneId}`);
+        let missionLine = mapManager.getVectorLayer("droneLayer").getSource().getFeatureById(`line-${bodyData.droneId}`);
+        let progressiveMission;
+
+
+        //class circle on
+        circle.map((data) => {
+            data.classList.remove("on");
+        });
+
+        // drone parse
         if(!bodyData.status) {
 
             // end mission
             span.className = "gray";
             span.innerText = "대기 중";
         } else if(bodyData.status == "2") {
+
+            // pause mission
             span.className = "yellow";
             span.innerText = "비행 중";
         } else {
 
-            // status == 1
+            // play mission
             span.className = "green";
             span.innerText = "비행 중";
         }
-        //class circle on
-        circle.map((data) => {
-            data.classList.remove("on");
-        });
 
-
-        // 클릭 시 드론 아이디 생성
-        let drone = mapManager.getVectorLayer("droneLayer").getSource().getFeatureById(bodyData.droneId);
-        let pie = mapManager.getVectorLayer("droneLayer").getSource().getFeatureById(`pie-${bodyData.droneId}`);
-        let missionLine = mapManager.getVectorLayer("droneLayer").getSource().getFeatureById(`line-${bodyData.droneId}`);
-
-        // mission end
+        // end mission
         if(bodyData.missionType == "end") {
 
-            // 해수면 고도
-            flyAlt.innerText = "0"
+            // drone, pie, missionLine feature reset
             drone.getGeometry().setCoordinates([0,0]);
             pie.getGeometry().setCoordinates([0,0]);
-            missionLine.getGeometry().setCoordinates([0,0]);
+            missionLine.getGeometry().setCoordinates([[0,0],[0,0]]);
 
+            setDrawDrone.resetValue();
             return false;
         } else if(bodyData.missionType == "return") {
+
+            //return mission
             bodyData.missionType = 0;
             circle[circle.length -1].classList.add("on");
         } else if(bodyData.missionType == "waypoint") {
 
         } else {
+
+            // mission index
             circle[bodyData.missionType].classList.add("on");
         }
 
-        if(bodyData.droneId != common.getQs(".mapComponent").dataset.id) {
-            //setDrawDrone.clearPopup();
-            flyAlt.innerText = "0"
-            flyTime.innerText = "00:00:00"
-            flySpeed.innerText = "0"
-            flyYaw.innerText = "0"
-
-            return false;
-        }
-
-        let missionFeature = mapManager.getVectorLayer("droneLayer").getSource().getFeatureById(`mission-${bodyData.missionType}`);
-
-
+        // set coordinate of drone, pie, missionLine
         drone.getGeometry().setCoordinates(coordinate);
         pie.getGeometry().setCoordinates(coordinate);
-        missionLine.getGeometry().setCoordinates([coordinate, missionFeature.getGeometry().getCoordinates()]);
+        progressiveMission = mapManager.getVectorLayer("droneLayer").getSource().getFeatureById(`mission-${bodyData.droneId}-${bodyData.missionType}`);
+        missionLine.getGeometry().setCoordinates([coordinate, progressiveMission.getGeometry().getCoordinates()]);
         setDrawDrone.setRotate(bodyData.heading,drone, pie);
-
-        flyAlt.innerText = bodyData.currentHeight;
-        flySpeed.innerText = bodyData.airSpeed;
-        flyTime.innerText = `${bodyData.hour}:${bodyData.min}:${bodyData.sec}`
-        flyYaw.innerText = bodyData.heading;
     },
 
     setDroneStyle() {
@@ -314,7 +330,7 @@ const setDrawDrone = {
         });
         return style;
     },
-    clearPopup() {
+    resetValue() {
         // set state popup
         common.getQs("#flyAlt").innerText = "0";
         common.getQs("#flySpeed").innerText = "0";
@@ -325,8 +341,13 @@ const setDrawDrone = {
         let featureType = new ol.geom.Point({});
         featureType.setCoordinates(data.coordinate);
         let style = data.style;
-        let feature = mission.setFeature(featureType, style, this.layer);
-        feature.setId(`mission-${data.index}`);
+        let feature = mission.setFeature(featureType, style, setDrawDrone.layer);
+        /*let lineFeatureType = new ol.geom.LineString([[0,0],[0,0]]);
+        lineFeatureType.setCoordinates([[],[]]);
+        let lineFeature = mission.setFeature(lineFeatureType, waypoint.lineStyle(), setDrawDrone.layer);*/
+
+
+        feature.setId(`mission-${data.droneId}-${data.index}`);
     },
     createGoToPopup(e) {
         let data = e.coordinate;
@@ -451,6 +472,12 @@ const droneSocket = {
                 console.log(drone + " : topic/waypoint");
                 setDrawDrone.reloadGotoFeature(drone);
             }, {id: "goToMission"});
+            self.stompClient.subscribe('/topic/arm',function (drone){
+                console.log(drone);
+            });
+            self.stompClient.subscribe('/topic/disarm',function (drone){
+                console.log(drone);
+            });
         });
     },
     disConnect: function() {

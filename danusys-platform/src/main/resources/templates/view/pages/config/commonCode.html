@@ -1,7 +1,8 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layout/layout_config">
+      layout:decorate="layout/layout_config"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <th:block layout:fragment="content">
         <h4>
@@ -31,7 +32,7 @@
                             <dd><span class="count">0</span>건</dd>
                         </dl>
                         <ul>
-                            <li id="addMainCodeBtn" data-add-popup="0">
+                            <li sec:authorize="hasAnyRole('ROLE_config_rw')" id="addMainCodeBtn" data-add-popup="0">
                                 <i><img src="/images/default/add.svg"></i>코드 추가
                             </li>
                         </ul>
@@ -56,7 +57,7 @@
                             <dd><span class="count">0</span>건</dd>
                         </dl>
                         <ul>
-                            <li id="addSubCodeBtn" data-add-popup="1">
+                            <li sec:authorize="hasAnyRole('ROLE_config_rw')" id="addSubCodeBtn" data-add-popup="1">
                                 <i><img src="/images/default/add.svg"></i>코드 추가
                             </li>
                         </ul>
@@ -81,7 +82,7 @@
                             <dd><span class="count">0</span>건</dd>
                         </dl>
                         <ul>
-                            <li id="addDetailCodeBtn" data-add-popup="2">
+                            <li sec:authorize="hasAnyRole('ROLE_config_rw')" id="addDetailCodeBtn" data-add-popup="2">
                                 <i><img src="/images/default/add.svg"></i>코드 추가
                             </li>
                         </ul>
@@ -142,8 +143,8 @@
                     </fieldset>
                 </div>
                 <ul class="bottom">
-                    <li data-mod="true" id="modProcBtn">정보 수정</li>
-                    <li class="color" data-add="true" id="addProcBtn">등록</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mod="true" id="modProcBtn">정보 수정</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-add="true" id="addProcBtn">등록</li>
                 </ul>
             </div>
         </section>

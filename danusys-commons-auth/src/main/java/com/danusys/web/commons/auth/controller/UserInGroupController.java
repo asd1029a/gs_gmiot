@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/user/userInGroup")
+@RequestMapping(value = "/userInGroup")
 @RequiredArgsConstructor
 @Slf4j
 public class UserInGroupController {
@@ -36,7 +36,7 @@ public class UserInGroupController {
     }
     /*
        name: getListGroupInUserProc
-       url: /userInGroup
+       url: /userInGroup/paging
        type: post
        param : userSeq
        do: paramMap조건에 맞는 userInGroup List 조회

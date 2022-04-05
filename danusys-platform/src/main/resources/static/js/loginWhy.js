@@ -19,7 +19,7 @@ $(".login-btn").on("click", function () {
         type: "POST",
         data: sendData,
         success: function (resultData) {
-            console.log("성공",resultData);
+
             let keys = Object.keys(resultData);
 
             keys.forEach(key => {
@@ -36,8 +36,8 @@ $(".login-btn").on("click", function () {
             if (flag === true) {
                 document.location = page;
             } else {
+                document.location.reload();
 
-                document.write(resultData);
             }
 
         }

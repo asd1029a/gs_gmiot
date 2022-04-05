@@ -2,7 +2,7 @@ package com.danusys.web.drone.utils;
 
 
 import com.danusys.web.commons.socket.config.CustomServerSocket;
-import com.danusys.web.drone.controller.SocketDroneController;
+import com.danusys.web.drone.dto.response.ArmDisArm;
 import com.danusys.web.drone.dto.response.Gps;
 import com.danusys.web.drone.model.Drone;
 import com.danusys.web.drone.model.DroneLog;
@@ -60,10 +60,13 @@ public class Flight {
     private Timer waypointTimer = null;
     private TimerTask waypointTimerTask = null;
     private boolean isMissionAndDrone = false;
-
+    private boolean isFirstArming = true;
+    private boolean isFirstTimer = true;
+    private boolean isArm = false;
+    private boolean isStarted = false;
 
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
-
+        isStarted=true;
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         //시간 초기화
         //마지막에 추가됨
@@ -95,67 +98,68 @@ public class Flight {
 
 
         //  log.info("alreadyDo={}", alreadyDo);
-        if (!alreadyDo) {
-            Gson gson = new Gson();
+        log.info("isArm={}", isArm);
+        if (!alreadyDo && isArm) {
+            if (isFirstTimer) {
+                Gson gson = new Gson();
 
-            droneLog = inputDroneLog;
-            gps.setMissionType("0");
-            gps.setStatus(1);
-            gps.setDroneId(droneId);
-            isEnd = false;
-            isPauseOrStopEnd = false;
-            sec = 0;
-            min = 0;
-            hour = 0;
-            stringSeconds = null;
-            stringMinutes = null;
-            stringHours = null;
-            tt = new TimerTask() {
-                @Override
-                public void run() {
+                droneLog = inputDroneLog;
+                gps.setMissionType("0");
+                gps.setStatus(1);
+                gps.setDroneId(droneId);
+                isEnd = false;
+                isPauseOrStopEnd = false;
+                sec = 0;
+                min = 0;
+                hour = 0;
+                stringSeconds = null;
+                stringMinutes = null;
+                stringHours = null;
+                tt = new TimerTask() {
+                    @Override
+                    public void run() {
 
-                    stringSeconds = Integer.toString(sec);
-                    stringMinutes = Integer.toString(min);
-                    stringHours = Integer.toString(hour);
+                        stringSeconds = Integer.toString(sec);
+                        stringMinutes = Integer.toString(min);
+                        stringHours = Integer.toString(hour);
 
-                    if (sec < 10) {
-                        stringSeconds = "0" + stringSeconds;
+                        if (sec < 10) {
+                            stringSeconds = "0" + stringSeconds;
+                        }
+                        if (min < 10) {
+                            stringMinutes = "0" + stringMinutes;
+                        }
+                        if (hour < 10) {
+                            stringHours = "0" + stringHours;
+                        }
+                        gps.setSec(stringSeconds);
+                        gps.setMin(stringMinutes);
+                        gps.setHour(stringHours);
+
+
+                        sec += 1;
+                        if (sec == 60) {
+                            sec = 0;
+                            min++;
+                        }
+                        if (min == 60) {
+                            min = 0;
+                            hour++;
+                        }
+                        simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
                     }
-                    if (min < 10) {
-                        stringMinutes = "0" + stringMinutes;
-                    }
-                    if (hour < 10) {
-                        stringHours = "0" + stringHours;
-                    }
-                    gps.setSec(stringSeconds);
-                    gps.setMin(stringMinutes);
-                    gps.setHour(stringHours);
+                };
+            }
 
 
-                    sec += 1;
-                    if (sec == 60) {
-                        sec = 0;
-                        min++;
-                    }
-                    if (min == 60) {
-                        min = 0;
-                        hour++;
-                    }
-                    simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-                }
-            };
-
-            Socket socket = null;
+            //    Socket socket = null;
             int index = -1;
             try {
-                Drone searchDrone = new Drone();
-                searchDrone.setDroneDeviceName(droneLog.getDroneDeviceName());
-                Drone findDrone = droneService.findDrone(searchDrone);
-                index = findDrone.getSocketIndex();
-                HashMap<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
-                //log.info("socketIndex={}", index);
-                socket = socketList.get(index);
-                connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+//                Drone searchDrone = new Drone();
+//                searchDrone.setDroneDeviceName(droneLog.getDroneDeviceName());
+//                Drone findDrone = droneService.findDrone(searchDrone);
+//                index = findDrone.getSocketIndex();
+
                 //connection = connectionService.getMavlinkConnection(index);
                 Heartbeat heartbeat = null;
 
@@ -196,18 +200,6 @@ public class Flight {
                 //4 guided mode
                 //new command
 
-                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
-                DroneLogDetails droneLogDetailsDoSetMode = new DroneLogDetails();
-                droneLogDetailsDoSetMode.setDroneLog(droneLog);
-
-                writeLog(droneLogDetailsDoSetMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE", "1", "4", "0"
-                        , "0", "0", "0", "0");
-                connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(1).param2(0).build(), linkId, timestamp, secretKey);
-
-
-                DroneLogDetails droneLogDetailsArmDisarm = new DroneLogDetails();
-                writeLog(droneLogDetailsArmDisarm, droneLog, "gcs", "drone", "MAV_CMD_COMPONENT_ARM_DISARM", "1", "0", "0"
-                        , "0", "0", "0", "0");
                 CommandLong takeoffCommandLong = new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).
                         param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100).build();
                 //TODO 높이 고정으로 되있어서 높이 입력 되는 대로 take off 할 수 있게 변경해야됨
@@ -946,7 +938,7 @@ public class Flight {
     public String doMission(HashMap<String, MissionItemInt> missionItemMap, int maxFlag, HashMap<String, Integer> speeds
             , HashMap<String, Float> yaws, HashMap<Integer, String> missionIndex) {
         //alreadyDo =false
-        if (!alreadyDo) {
+        if (!alreadyDo && isArm) {
             try {
                 alreadyDo = true;
                 int systemId = 1;
@@ -971,7 +963,6 @@ public class Flight {
 
                 int flag = 0;
                 while ((message = connection.next()) != null) {
-
                     if (isEnd)
                         break;
                     if (message.getPayload().getClass().getName().contains("GlobalPositionInt")) {      //x,y,z
@@ -1141,14 +1132,16 @@ public class Flight {
                 gps.setMissionType("end");
                 gps.setStatus(0);
                 simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-
+                isFirstArming = true;
+                isFirstTimer = true;
+                isStarted=false;
 //                    socket.close();
                 connection = null;
 
 
             }
         }
-
+        isStarted=false;
         return "no";
     }
 
@@ -1393,6 +1386,96 @@ public class Flight {
         droneLogDetails.setParam7(param7);
         droneLogDetailsService.saveDroneLogDetails(droneLogDetails);
     }
+
+    /**
+     * 작성자 :엄태혁 연구원
+     * mode : 3 -> auto 4-> guided
+     *
+     * @param
+     */
+
+    public void armDisarm(int armDisarm, int droneId) {
+        try {
+            int systemId = 1;
+            int componentId = 1;
+            int linkId = 1;
+            long timeBootMs = 0;
+            long minTimeBootMs = 0;
+            long timestamp = System.currentTimeMillis();/* provide microsecond time */
+            byte[] secretKey = new byte[0];
+
+            secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
+
+            Socket socket = null;
+
+            HashMap<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
+            //log.info("socketIndex={}", index);
+            int index = -1;
+
+
+            Drone searchDrone = new Drone();
+            searchDrone.setId(Long.valueOf(droneId));
+            Drone findDrone = droneService.findDrone(searchDrone);
+            index = findDrone.getSocketIndex();
+            if (isFirstArming) {
+                socket = socketList.get(index);
+                connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+                isFirstArming = false;
+            }
+
+            MavlinkMessage message;
+            //arm 1 disarm 0
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
+            DroneLogDetails droneLogDetailsDoSetMode = new DroneLogDetails();
+            droneLogDetailsDoSetMode.setDroneLog(droneLog);
+
+            writeLog(droneLogDetailsDoSetMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE", "1", "4", "0"
+                    , "0", "0", "0", "0");
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(armDisarm).param2(0).build(), linkId, timestamp, secretKey);
+
+
+            DroneLogDetails droneLogDetailsArmDisarm = new DroneLogDetails();
+            writeLog(droneLogDetailsArmDisarm, droneLog, "gcs", "drone", "MAV_CMD_COMPONENT_ARM_DISARM", Integer.toString(armDisarm), "0", "0"
+                    , "0", "0", "0", "0");
+
+            while ((message = connection.next()) != null) {
+                if (isStarted) {
+                    break;
+                }
+
+                if (message.getPayload() instanceof Statustext) {
+                    MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
+                    String missionText = statustextMavlinkMessage.getPayload().text();
+                    ArmDisArm armDisArm = new ArmDisArm();
+                    if (missionText.equals("Disarming motors")) {
+                        armDisArm.setArmDisarm(0);
+                        armDisArm.setDroneId(droneId);
+                        isArm = false;
+                        simpMessagingTemplate.convertAndSend("/topic/arm", gson.toJson(armDisArm));
+                        break;
+                    } else if (missionText.equals("Arming motors")) {
+                        armDisArm.setArmDisarm(1);
+                        armDisArm.setDroneId(droneId);
+                        isArm = true;
+                        simpMessagingTemplate.convertAndSend("/topic/arm", gson.toJson(armDisArm));
+
+                    }
+
+
+                }
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
 }
 
 
