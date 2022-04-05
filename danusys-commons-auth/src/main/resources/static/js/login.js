@@ -1,5 +1,6 @@
 let page = "/pages/mntr";
 
+
 $(".login-btn").on("click", function () {
     let flag=false;
     if ($('#id').val() == "") {
@@ -27,8 +28,6 @@ $(".login-btn").on("click", function () {
                 }
             });
 
-
-            // document.location=page;
 
                 document.location = page;
 

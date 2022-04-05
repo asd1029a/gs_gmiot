@@ -24,6 +24,8 @@
     <button id="return">누르면 리턴되요 </button>
     <button id="setmissioncurrent">미션이바뀌어요</button>
     <button id="waypoint">경유지</button>
+    <button id="arm">arm</button>
+    <button id="disarm">disarm</button>
 </table>
 
 </body>
@@ -93,6 +95,13 @@
 
 
     });
+
+    $("#arm").on("click",function (){
+        stompClient.send("/app/arm",{},JSON.stringify({'droneId':141}));
+    })
+    $("#disarm").on("click",function (){
+        stompClient.send("/app/disarm",{},JSON.stringify({'droneId':141}));
+    })
     $("#setmissioncurrent").on("click",function (){
         stompClient.send("/app/setmissioncurrent",{},JSON.stringify({'seq':4}));
     })
@@ -118,6 +127,13 @@
 
           //  console.log('Connected: ' + frame);
             // droneLog();
+
+            stompClient.subscribe('/topic/arm',function (drone){
+
+            });
+            stompClient.subscribe('/topic/disarm',function (drone){
+
+            });
 
             stompClient.subscribe('/topic/startmission', function (drone) {
              //   console.log(drone);

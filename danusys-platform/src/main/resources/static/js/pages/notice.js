@@ -4,7 +4,12 @@
 const notice = {
     eventHandler : () => {
         $("#searchBtn").on('click', () => {
-            notice.create();
+            comm.checkAuthority("/user/check/authority", "config", "rw")
+                .then(
+                    (result) => {
+                        notice.create(result);
+                    }
+                );
         });
         $("#addNoticeProcBtn").on('click', () => {
            notice.addProc();
@@ -22,13 +27,15 @@ const notice = {
             notice.showPopup("add");
         });
     }
-    , create : () => {
+    , create : (pPermit) => {
         const $target = $('#noticeTable');
         const optionObj = {
             dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
             pageLength: 15,
             scrollY: "calc(100% - 40px)",
+            security : true,
+            autoWidth: true,
             ajax :
                 {
                     'url' : "/notice",
@@ -78,11 +85,6 @@ const notice = {
                     "data": null,
                     "defaultContent": '<span class="button detail">상세보기</span>'
                 }
-                , {
-                    "targets": 6,
-                    "data": null,
-                    "defaultContent": '<span class="button mod">수정</span>'
-                }
             ]
             , excelDownload : {
                 url : "/notice/excel/download"
@@ -98,7 +100,13 @@ const notice = {
                     , "수정일|updateDt"]
             }
         }
-
+        if(pPermit !== "none") {
+            optionObj.columnDefs.push({
+                "targets": 6,
+                "data": null,
+                "defaultContent": '<span class="button mod">수정</span>'
+            });
+        }
         const evt = {
             click : function(e) {
                 const $form = $('#noticeForm');

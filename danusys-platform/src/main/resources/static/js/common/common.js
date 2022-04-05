@@ -225,7 +225,7 @@ $.fn.extend({
                 if (element.type === "checkbox") {
                     element.checked = (strValue === 'Y') ? true : false;
                 } else if (element.type === "radio") {
-                    if ($(element).data('value') === strValue) element.checked = "checked";
+                    if (String($(element).data('value')) === strValue) element.checked = "checked";
                 } else {
                     if ($(element).attr("data-set") !== "false") {
                         element.value = strValue;
@@ -274,7 +274,16 @@ const comm = {
         result += '</table>';
         return result;
     }*/
-    ,
+    , checkAuthority : (url, authName, permit) => {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+                   url : url + "/" + authName + "/"+ permit
+                   , type : "GET"
+                   , success : (result) => {resolve(result)}
+                   , error : (xhr) => {reject(new Error("권한이 존재하지 않거나, 세션이 만료되었습니다."));}
+            });
+        });
+    },
     createTable: ($target, optionObj, evt) => {
         //comm.showLoading();
 

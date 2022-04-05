@@ -39,10 +39,12 @@ public class Drone {
 
     @Column(name = "update_dt")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
-    //@Temporal(TemporalType.TIMESTAMP)
-//    private Date updateDt;
+
     private Timestamp updateDt;
 
+
+    @Column(name = "arm_status")
+    private int armStatus;
 
     @OneToOne(mappedBy = "drone")
     @JsonManagedReference

@@ -18,10 +18,18 @@ public class BaseController {
 
     @RequestMapping(value = "/")
     public String index() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (!principal.toString().equals("anonymousUser"))
-            return "redirect:"+homePageUrl;
+
+               if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+                    log.info("principal={}",principal);
+                    if (!principal.toString().equals("anonymousUser"))
+                        return "redirect:" + homePageUrl;
+                }
+//        if (!principal.toString().equals("anonymousUser"))
+//            return "redirect:"+homePageUrl;
 
         return loginPagePath;
     }

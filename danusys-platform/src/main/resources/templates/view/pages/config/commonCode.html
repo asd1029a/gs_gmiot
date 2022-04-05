@@ -143,8 +143,8 @@
                     </fieldset>
                 </div>
                 <ul class="bottom">
-                    <li data-mod="true" id="modProcBtn">정보 수정</li>
-                    <li class="color" data-add="true" id="addProcBtn">등록</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mod="true" id="modProcBtn">정보 수정</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-add="true" id="addProcBtn">등록</li>
                 </ul>
             </div>
         </section>
