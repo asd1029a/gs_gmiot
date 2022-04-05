@@ -123,11 +123,14 @@ public class UserService {
     public Map<String, Object> getListGroupInUser(Map<String, Object> paramMap) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        /* 키워드 검색조건 */
-        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+        /* 계정 상태 검색조건 */
+        List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword));
+        if (statusParam.isEmpty()){
+            statusParam.add("''");
+        }
+
+        Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
         UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
         List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
 
@@ -156,11 +159,14 @@ public class UserService {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
-            /* 키워드 검색조건 */
-            String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+            /* 계정 상태 검색조건 */
+            List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-            Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                    .or(UserSpecification.likeTel(keyword));
+            if (statusParam.isEmpty()){
+                statusParam.add("''");
+            }
+
+            Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
             UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
             List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
 
@@ -279,7 +285,7 @@ public class UserService {
     public void del(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
         findUser.setStatus("2");
-//        userRepository.save(findUser);
+        userInGroupRepository.deleteAllByUserSeq(findUser.getUserSeq());
     }
 
     public int checkId(String userId) {

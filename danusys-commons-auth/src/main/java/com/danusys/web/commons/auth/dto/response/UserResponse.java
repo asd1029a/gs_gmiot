@@ -19,7 +19,7 @@ public class UserResponse {
     private String email;
     private String tel;
     private String address;
-    private String status;
+    private int status;
     private String statusName;
     private String detailAddress;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
@@ -31,7 +31,7 @@ public class UserResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp lastLoginDt;
     private String checked;
-    private UserStatus userStatus;
+    private UserStatusDto userStatus;
 
     public UserResponse(User user) {
         this.userSeq = user.getUserSeq();
@@ -40,14 +40,14 @@ public class UserResponse {
         this.email = user.getEmail();
         this.tel = user.getTel();
         this.address = user.getAddress();
-        this.status = user.getStatus();
+        this.status = Integer.parseInt(user.getStatus());
         this.detailAddress = user.getDetailAddress();
         this.lastLoginDt = user.getLastLoginDt();
         this.insertUserSeq = user.getInsertUserSeq();
         this.updateUserSeq = user.getUpdateUserSeq();
         this.insertDt = user.getInsertDt();
         this.updateDt = user.getUpdateDt();
-        this.userStatus = user.getUserStatus();
+        this.userStatus = new UserStatusDto(user.getUserStatus());
     }
     public UserResponse(User user, boolean inGroup) {
         this.userSeq = user.getUserSeq();
@@ -56,7 +56,7 @@ public class UserResponse {
         this.email = user.getEmail();
         this.tel = user.getTel();
         this.address = user.getAddress();
-        this.status = user.getStatus();
+        this.status = Integer.parseInt(user.getStatus());
         this.detailAddress = user.getDetailAddress();
         this.lastLoginDt = user.getLastLoginDt();
         this.insertUserSeq = user.getInsertUserSeq();
@@ -64,6 +64,6 @@ public class UserResponse {
         this.insertDt = user.getInsertDt();
         this.updateDt = user.getUpdateDt();
         this.checked = inGroup ? "checked" : "unchecked";
-        this.userStatus = user.getUserStatus();
+        this.userStatus = new UserStatusDto(user.getUserStatus());
     }
 }
