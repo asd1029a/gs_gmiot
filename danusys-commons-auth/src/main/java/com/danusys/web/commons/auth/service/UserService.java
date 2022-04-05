@@ -3,23 +3,23 @@ package com.danusys.web.commons.auth.service;
 
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.PagingUtil;
-import com.danusys.web.commons.auth.dto.request.UserRequest;
 import com.danusys.web.commons.auth.dto.response.UserResponse;
 import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserInGroup;
-import com.danusys.web.commons.auth.model.UserStatus;
 import com.danusys.web.commons.auth.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.repository.UserRepository;
 import com.danusys.web.commons.auth.repository.UserStatusRepository;
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -271,6 +271,15 @@ public class UserService {
         return (user == null) ? 1 : 0;
     }
 
+    public String checkAuthority(String authName, String permit) {
+        GrantedAuthority flag = LoginInfoUtil.getUserDetails().getAuthorities()
+                .stream()
+                .filter(auth -> auth.getAuthority().toString().equals("ROLE_" + authName + "_" + permit))
+                .findFirst()
+                .orElse(null);
+
+        return flag != null ? flag.getAuthority().toString() : "none";
+    }
 
 //
 //    public com.danusys.web.commons.app.model.paging.Page<List<Map<String, Object>>> getLists(PagingRequest pagingRequest) {

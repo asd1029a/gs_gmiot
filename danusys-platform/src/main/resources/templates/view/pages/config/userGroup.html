@@ -237,9 +237,9 @@
             <ul class="bottom">
 <!--                <li>취소</li>-->
 <!--                <li class="color">추가</li>-->
-                <li data-mode="mod" id="delUserGroupProcBtn">삭제</li>
-                <li data-mode="mod" id="modUserGroupProcBtn">정보 수정</li>
-                <li class="color" data-mode="add" id="addUserGroupProcBtn">등록</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="delUserGroupProcBtn">삭제</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="modUserGroupProcBtn">정보 수정</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-mode="add" id="addUserGroupProcBtn">등록</li>
             </ul>
         </div>
     </section>

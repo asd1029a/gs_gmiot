@@ -163,7 +163,7 @@ const account = {
         },
         checkId: (pId, pCallback) => {
             $.ajax({
-                url: "/user/user/checkid/" + pId
+                url: "/user/user/checkId/" + pId
                 , type: "GET"
             }).done((result) => {
                 pCallback(result);
@@ -354,7 +354,6 @@ const account = {
                             return JSON.stringify(param);
                         },
                         'dataSrc': function (result) {
-                            console.log(result);
                             $('.title dd .count').text(result.recordsTotal);
                             return result.data;
                         }

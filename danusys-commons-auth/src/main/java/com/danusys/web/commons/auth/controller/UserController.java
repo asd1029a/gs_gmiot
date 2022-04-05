@@ -1,8 +1,6 @@
 package com.danusys.web.commons.auth.controller;
 
-import com.danusys.web.commons.auth.dto.request.UserRequest;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,19 +24,25 @@ public class UserController {
 
     /*
       name: idCheck
-      url: /checkid/{userSeq}
+      url: /checkId/{userSeq}
       type: get
       do: 아이디 중복 체크
       return : 아이디 중복일경우 0 , 중복아닐경우 1 리턴
 
      */
-    @GetMapping("/checkid/{userId}")
+    @GetMapping("/checkId/{userId}")
     public ResponseEntity<?> checkId(@PathVariable String userId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.checkId(userId));
     }
 
+    @GetMapping("/check/authority/{authName}/{permit}")
+    public ResponseEntity<?> checkAuthority(@PathVariable String authName, @PathVariable String permit) {
+        return  ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.checkAuthority(authName, permit));
+    }
     /*
        name: get
        url: /user/{userSeq}

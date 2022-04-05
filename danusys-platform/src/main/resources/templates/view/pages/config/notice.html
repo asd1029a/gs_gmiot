@@ -44,24 +44,15 @@
                 </div>
                 <div class="search_table">
                     <table id="noticeTable">
-                        <colgroup>
-                            <col width="20%">
-                            <col width="35%">
-                            <col width="10%">
-                            <col width="10%">
-                            <col width="8%">
-                            <col width="10%">
-                            <col width="7%">
-                        </colgroup>
                         <thead>
                             <tr>
-                                <th scope="col">제목</th>
-                                <th scope="col">내용</th>
-                                <th scope="col">작성자</th>
-                                <th scope="col">작성일시</th>
-                                <th scope="col">첨부파일</th>
-                                <th scope="col">상세보기</th>
-                                <th scope="col">수정</th>
+                                <th>제목</th>
+                                <th>내용</th>
+                                <th>작성자</th>
+                                <th>작성일시</th>
+                                <th>첨부파일</th>
+                                <th>상세보기</th>
+                                <th sec:authorize="hasAnyRole('ROLE_config_rw')">수정</th>
                             </tr>
                         </thead>
                     </table>
@@ -110,9 +101,9 @@
                     </fieldset>
                 </div>
                 <ul class="bottom">
-                    <li data-mod="true" id="delNoticeProcBtn">삭제</li>
-                    <li data-mod="true" id="modNoticeProcBtn">정보 수정</li>
-                    <li class="color" data-add="true" id="addNoticeProcBtn">등록</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mod="true" id="delNoticeProcBtn">삭제</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mod="true" id="modNoticeProcBtn">정보 수정</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-add="true" id="addNoticeProcBtn">등록</li>
                 </ul>
             </div>
         </section>

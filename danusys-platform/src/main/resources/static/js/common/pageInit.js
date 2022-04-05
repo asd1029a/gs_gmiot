@@ -3,7 +3,7 @@ $(document).ready(() => {
     comm.initModal();
     const path = location.pathname;
     const pathArr = path.split("/");
-    
+
     /* 탑메뉴 및 lnb 메뉴 관련 */
     $("#"+pathArr[2]).addClass("active");
 
@@ -75,7 +75,12 @@ $(document).ready(() => {
         commonCode.create($("[data-table-seq='0']"),0);
     } else if(path === "/pages/config/notice") {
         notice.eventHandler();
-        notice.create();
+        comm.checkAuthority("/user/user/check/authority", "config", "rw")
+            .then(
+                (result) => {
+                    notice.create(result);
+                }
+            );
     }
     // 관제
     else if(path === "/pages/mntr") {
