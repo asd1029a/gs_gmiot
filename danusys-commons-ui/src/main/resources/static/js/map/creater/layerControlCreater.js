@@ -35,9 +35,7 @@ class layerControl {
                 layer.setVisible(false);
                 //레이어의 팝업끄기
                 let popup = new mapPopup(this.mapName);
-                if(popup.exist('mouseClickPopup')){
-                    popup.remove('mouseClickPopup');
-                }
+                popup.remove('mouseClickPopup');
             }
         });
     }

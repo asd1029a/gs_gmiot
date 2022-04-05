@@ -81,6 +81,8 @@ $(document).ready(() => {
                     notice.create(result);
                 }
             );
+    } else if(path === "/pages/config/signage") {
+        signage.eventHandler();
     }
     // 관제
     else if(path === "/pages/mntr") {

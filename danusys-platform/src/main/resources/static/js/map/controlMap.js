@@ -234,12 +234,27 @@ const mapPopupContent = {
         return content;
     }
     //개소
-    , station() {
-
+    , station : (data, length) => {
+        let content = "";
+        if(length == 1){ //단일 팝업
+            const info = data.getProperties().features[0].getProperties();
+            content = "<dl>" + info.stationName + "</dl>";
+        } else if(length > 1) { //다중 팝업
+            content = "<li><span class='circle lv3'></span>" + data.getProperties().stationName + "</li>";
+        }
+        return content;
     }
-    //이벤트
-    , event() {
-
+    //이벤트 //이벤트 과거
+    , event : (data, length) =>  {
+        let content = "";
+        if(length == 1){ //단일 팝업
+            const info = data.getProperties().features[0].getProperties();
+            content = "<dl><dt>"+ info.eventGradeName + " " + info.eventKindName + "</dt>" +
+                "<dd>" + info.insertDt + "<span class='state state"+ info.eventProcStat +"'>" + info.eventProcStatName +"</span></dd></dl>";
+        } else if(length > 1) { //다중 팝업
+            content += "<li><span class='circle lv"+ data.getProperties().eventProcStat +"'></span>" + data.getProperties().eventMessage + "</li>";
+        }
+        return content;
     }
 }
 
@@ -247,30 +262,37 @@ const mapPopupContent = {
  * 레이어별 클릭 이벤트
  * */
 function clickIcon(layerType, layerObj) {
-    const len = layerObj.getProperties().features.length;
-
+    //리스트 클릭시
+    let len = 1;
+    let features = layerObj;
     let popup = new mapPopup('map');
-    let position = layerObj.getGeometry().getCoordinates();
-    let content = "<div>";
+    let position = null;
+    //지도 클릭시
+    if(layerObj instanceof ol.Feature) {
+        len = layerObj.getProperties().features.length;
+        features = layerObj.getProperties().features;
+        position = layerObj.getGeometry().getCoordinates();
+    }
 
     switch (layerType)  {
         case "station": ///개소 클릭 이벤트
             if(len == 1){
-                //오른쪽 패널 show/////////////
-                $('.area_right[data-value='+layerType+']').show();
+                $('.area_right').removeClass('select');
+                rnbList.createStation(features[0]);
                 window.map.updateSize();
             } else if(len > 1) {
-                //목록 팝업 제작
-                layerObj.getProperties().features.forEach(obj => {
-                   content += "<li>" + obj.getProperties().stationName + "</li>";
-                });
                 popup.create('mouseClickPopup');
-                content += "</div>";
-                popup.content('mouseClickPopup', content);
-                popup.move('mouseClickPopup', position);
-                break;
-            }
+                popup.content("mouseClickPopup"
+                    , "<ul class='multiple_list'></ul>");
 
+                features.forEach(obj => {
+                    let content = mapPopupContent.station(obj, len);
+                    $('#mouseClickPopup .multiple_list').append(content);
+                    $('#mouseClickPopup .multiple_list li').last().data(obj);
+                });
+                popup.move('mouseClickPopup', position);
+            }
+            break;
 
         case "facility" : //시설물 클릭 이벤트
             console.log(layerObj);
@@ -278,18 +300,22 @@ function clickIcon(layerType, layerObj) {
 
         case "event" : //이벤트 클릭 이벤트
             if(len == 1){
-                console.log(layerObj.getProperties().features[0].getProperties().eventMessage);
-                //오른쪽 패널 show/////////////
-                $('.area_right[data-value='+layerType+']').show();
+                $('.area_right').removeClass('select');
+                rnbList.createEvent(features[0]);
                 window.map.updateSize();
             } else if(len > 1) {
-                //목록 팝업 제작
-                layerObj.getProperties().features.forEach(obj => {
-                    content += "<li>" + obj.getProperties().eventMessage + "</li>";
-                });
                 popup.create('mouseClickPopup');
-                content += "</div>";
-                popup.content('mouseClickPopup', content);
+                popup.content("mouseClickPopup"
+                    , "<ul class='multiple_list'></ul>");
+
+                features.forEach(obj => {
+                    let content = mapPopupContent.event(obj, len);
+                    $('#mouseClickPopup .multiple_list').append(content);
+                    $('#mouseClickPopup .multiple_list li').last().data(obj);
+                });
+
+                let point = window.map.map.getPixelFromCoordinate(position);
+                position = window.map.map.getCoordinateFromPixel([point[0], point[1] - 50]);
                 popup.move('mouseClickPopup', position);
             }
             break;
@@ -301,6 +327,19 @@ function clickIcon(layerType, layerObj) {
     $("#mouseClickPopupCloser").on("click", e => {
         let features = window.lySelect.getFeatures();
         features.clear();
+    });
+
+    //리스트 팝업 클릭 -> 오른쪽 패널
+    $("#mouseClickPopup .multiple_list li").on("click", e => {
+        let data = $(e.currentTarget).data();
+        const layerNm = data.getId().replace(/[0-9]/gi,'');
+
+        $('.area_right').removeClass('select');
+        if(layerNm == "station"){
+            rnbList.createStation(data);
+        } else if((layerNm == "event")||(layerNm == "eventPast")){
+            rnbList.createEvent(data);
+        }
     });
 
 }
