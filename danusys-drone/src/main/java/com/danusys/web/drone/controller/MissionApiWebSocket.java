@@ -187,12 +187,9 @@ public class MissionApiWebSocket {
         while (iterator.hasNext()) {
             MissionDetailResponse missionDetails = (MissionDetailResponse) iterator.next();
             if (missionDetails.getName().equals("takeOff")) {
-
                 gpsZs.put("takeOff", missionDetails.getMapZ());
                 //  log.info("Index={}", missionDetails.getIndex());
                 missionIndex.put(missionDetails.getIndex(), "takeOff");
-
-
             } else if (missionDetails.getName().equals("waypoint")) {
                 //각 waypoint에 값 받아와서 넣기
                 missionIndex.put(missionDetails.getIndex(), "waypoint" + missionDetails.getIndex());
@@ -315,6 +312,7 @@ public class MissionApiWebSocket {
         }
 //        alreadyStartMission.set(false);
         //TODO isEnd 두번실행시 오류
+        log.info("Mission2");
         String isEnd = flight.doMission(missionMap, flag, speeds, yaws, missionIndex);
         log.info("isEnd={}", isEnd);
         if (isEnd.equals("stop")) {
@@ -346,6 +344,7 @@ public class MissionApiWebSocket {
     }
 
     @MessageMapping("/arm")
+    @SendTo("/topic/waypoint")
     public void arm(@RequestBody Map<String, Object> paramMap) {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
@@ -363,9 +362,8 @@ public class MissionApiWebSocket {
         }
 
 
-
         Flight flight = flightMap.get(droneId);
-        flight.armDisarm(1,droneId);
+        flight.armDisarm(1, droneId);
         alreadyStartMission.set(false);
     }
 
@@ -376,9 +374,8 @@ public class MissionApiWebSocket {
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
         log.info("droneId={}", droneId);
         Flight flight = flightMap.get(droneId);
-        flight.armDisarm(0,droneId);
+        flight.armDisarm(0, droneId);
     }
-
 
 
 }
