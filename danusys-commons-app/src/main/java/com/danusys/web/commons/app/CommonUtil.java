@@ -43,7 +43,12 @@ public class CommonUtil {
 
 	public static ArrayList<String> valiArrNull(Map<String, Object> paramMap, String key){
 		if(paramMap.get(key) != null && paramMap.get(key).getClass().getSimpleName().equals("ArrayList")){
-			return (ArrayList<String>) paramMap.get(key);
+			ArrayList<String> result = new ArrayList<>();
+			ArrayList<?> arr = (ArrayList<?>) paramMap.get(key);
+			arr.forEach(r -> {
+				result.add(String.valueOf(r));
+			});
+			return result;
 		}else if(paramMap.get(key) != null){
 			ArrayList<String> arr = new ArrayList<>();
 			arr.add(paramMap.get(key).toString());
@@ -52,15 +57,6 @@ public class CommonUtil {
 			return new ArrayList<String>();
 		}
 	}
-
-	public static List<String> inQryString(List<?> list, String joinStr){
-		List<String> result = new ArrayList<>();
-		list.stream().forEach(val -> {
-			result.add(joinStr + val.toString() + joinStr);
-		});
-		return result;
-	}
-
 
 	public static boolean checkDataFilter(Map<String, String> map) {
 		for (String key : map.keySet()) {
