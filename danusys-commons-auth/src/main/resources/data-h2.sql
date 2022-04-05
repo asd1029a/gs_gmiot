@@ -46,6 +46,6 @@ insert into t_user_group values(5,'groupA','Agroup',now(),5);
 
 insert into t_permit(permit_seq,permit_name, insert_dt, insert_user_seq) values(1,'ROLE_ADMIN',now(),123);
 
-insert into t_user_group_in_user values(5,6,now(),0,1);
+insert into t_user_in_user_group values(5,6,now(),0,1);
 
 insert into t_user_group_permit (user_group_seq, permit_seq,insert_dt,insert_user_seq,idx)values(5,1,now(),8,1);
