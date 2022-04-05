@@ -225,7 +225,7 @@ $.fn.extend({
                 if (element.type === "checkbox") {
                     element.checked = (strValue === 'Y') ? true : false;
                 } else if (element.type === "radio") {
-                    if (String($(element).data('value')) === strValue) element.checked = "checked";
+                    if ($(element).data('value') === strValue) element.checked = "checked";
                 } else {
                     if ($(element).attr("data-set") !== "false") {
                         element.value = strValue;
