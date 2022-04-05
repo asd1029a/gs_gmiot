@@ -144,7 +144,7 @@ public class Flight {
                 }
             };
 
-        //    Socket socket = null;
+            //    Socket socket = null;
             int index = -1;
             try {
 //                Drone searchDrone = new Drone();
@@ -1378,8 +1378,7 @@ public class Flight {
      * @param
      */
 
-
-    public void armDisarm(int armDisarm,int droneId) {
+    public void armDisarm(int armDisarm, int droneId) {
         try {
             int systemId = 1;
             int componentId = 1;
@@ -1391,11 +1390,11 @@ public class Flight {
 
             secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
-            Socket socket=null;
+            Socket socket = null;
 
             HashMap<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
             //log.info("socketIndex={}", index);
-            int index=-1;
+            int index = -1;
 
 
             Drone searchDrone = new Drone();
@@ -1420,7 +1419,22 @@ public class Flight {
             writeLog(droneLogDetailsArmDisarm, droneLog, "gcs", "drone", "MAV_CMD_COMPONENT_ARM_DISARM", Integer.toString(armDisarm), "0", "0"
                     , "0", "0", "0", "0");
 
+            while ((message = connection.next()) != null) {
+                if (message.getPayload() instanceof Statustext) {
+                    MavlinkMessage<Statustext> statustextMavlinkMessage = (MavlinkMessage<Statustext>) message;
+                    String missionText = statustextMavlinkMessage.getPayload().text();
 
+                    if (missionText.equals("Disarming motors")) {
+                        droneService.chnagearmStatus(findDrone,0);
+                        break;
+                    } else if (missionText.equals("Arming motors")) {
+                        droneService.chnagearmStatus(findDrone,1);
+                        break;
+                    }
+
+
+                }
+            }
 
 
         } catch (IOException e) {

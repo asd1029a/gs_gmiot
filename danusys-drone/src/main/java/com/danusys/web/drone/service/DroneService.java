@@ -57,12 +57,30 @@ public class DroneService {
 
         if (drone.getDroneDeviceName() != null)
             updateDrone.setDroneDeviceName(drone.getDroneDeviceName());
+
         updateDrone.setUserId(drone.getUserId());
 
         updateDrone.setUpdateDt(timestamp);
 
         return "success";
 
+    }
+
+    public String chnagearmStatus(Drone drone, int armStatus) {
+
+        Optional optionalDrone = droneRepository.findById(drone.getId());
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Drone updateDrone = (Drone) optionalDrone.get();
+
+        if (!optionalDrone.isPresent()) {
+            return "fail";
+        }
+        updateDrone.setArmStatus(armStatus);
+        updateDrone.setUpdateDt(timestamp);
+
+
+        return "success";
     }
 
 

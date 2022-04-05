@@ -363,9 +363,10 @@ public class MissionApiWebSocket {
         }
 
 
-        alreadyStartMission.set(false);
+
         Flight flight = flightMap.get(droneId);
         flight.armDisarm(1,droneId);
+        alreadyStartMission.set(false);
     }
 
     @MessageMapping("/disarm")
