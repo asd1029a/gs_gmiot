@@ -3,27 +3,29 @@
 <th:block th:fragment="headerFragment">
     <header>
         <!-- <h1 class="logo"><i><img src="/images/default/headerMenu.svg"></i>Title</h1> -->
-        <h1><img src="/images/default/logo.svg">광명 IoT 플랫폼</h1>
+        <h1><img th:src="'/images/default/'+${@environment.getProperty('mainPage.logo')}">
+            <span th:text="${@environment.getProperty('mainPage.title')}"></span>
+        </h1>
         <ul class="gnm">
             <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
-            <li sec:authorize="hasAnyRole('ROLE_dashboard_rw', 'ROLE_dashboard_r-')" id="dashboard">
-                <a href="/pages/dashboard">대시보드</a>
-            </li>
-            <li sec:authorize="hasAnyRole('ROLE_mntr_rw, ROLE_mntr_r-')" id="mntr">
-                <a href="/pages/mntr">관제</a>
-            </li>
-            <li id="inqry">
-                <a href="/pages/inqry/event1">조회/관리</a>
-            </li>
-            <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" th:if="${municipality == '41210000'}" id="stats">
-                <a href="/pages/stats/statistics_03">통계</a>
-            </li>
-            <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" th:if="${municipality == '45210000'}" id="stats">
-                <a href="/pages/stats/statistics_01">통계</a>
-            </li>
-            <li sec:authorize="hasAnyRole('ROLE_config_rw', 'ROLE_config_r-')" th:if="${municipality == '41210000'}" id="config">
-                <a href="/pages/config/dimmingGroup">환경설정</a>
-            </li>
+                <li sec:authorize="hasAnyRole('ROLE_dashboard_rw', 'ROLE_dashboard_r-')" id="dashboard">
+                    <a href="/pages/dashboard">대시보드</a>
+                </li>
+                <li sec:authorize="hasAnyRole('ROLE_mntr_rw, ROLE_mntr_r-')" id="mntr">
+                    <a href="/pages/mntr">관제</a>
+                </li>
+                <li id="inqry">
+                    <a href="/pages/inqry/event1">조회/관리</a>
+                </li>
+                <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" th:if="${municipality == '41210000'}" id="stats">
+                    <a href="/pages/stats/statistics_03">통계</a>
+                </li>
+                <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" th:if="${municipality == '45210000'}" id="stats">
+                    <a href="/pages/stats/statistics_01">통계</a>
+                </li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw', 'ROLE_config_r-')" th:if="${municipality == '41210000'}" id="config">
+                    <a href="/pages/config/dimmingGroup">환경설정</a>
+                </li>
             </th:block>
         </ul>
         <ul class="util_menu">
