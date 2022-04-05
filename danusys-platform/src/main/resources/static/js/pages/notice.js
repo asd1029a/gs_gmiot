@@ -4,7 +4,12 @@
 const notice = {
     eventHandler : () => {
         $("#searchBtn").on('click', () => {
-            notice.create();
+            comm.checkAuthority("/user/check/authority", "config", "rw")
+                .then(
+                    (result) => {
+                        notice.create(result);
+                    }
+                );
         });
         $("#addNoticeProcBtn").on('click', () => {
            notice.addProc();

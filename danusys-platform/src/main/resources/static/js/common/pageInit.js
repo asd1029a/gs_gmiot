@@ -75,7 +75,7 @@ $(document).ready(() => {
         commonCode.create($("[data-table-seq='0']"),0);
     } else if(path === "/pages/config/notice") {
         notice.eventHandler();
-        comm.checkAuthority("/user/user/check/authority", "config", "rw")
+        comm.checkAuthority("/user/check/authority", "config", "rw")
             .then(
                 (result) => {
                     notice.create(result);
