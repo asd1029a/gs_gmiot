@@ -341,17 +341,7 @@ const account = {
                 if (groupName === ""){
                     comm.showAlert("그룹 이름을 입력하세요.");
                 } else{
-                    account.group.checkGroupName(
-                        groupName
-                        , (result) => {
-                            if(result === 1) {
-                                account.group.modProc($("#userGroupForm").data("userGroupSeq"));
-                            } else {
-                                $("#groupName").focus();
-                                comm.showAlert("중복된 그룹 이름이 존재합니다.");
-                            }
-                        }
-                    );
+                    account.group.modProc($("#userGroupForm").data("userGroupSeq"));
                 }
             });
             $("#delUserGroupProcBtn").on('click', () => {
@@ -538,15 +528,20 @@ const account = {
             });
 
             let permit = {};
+            let isEmptyPermit = false;
             $('#permitTable tbody tr').each((i, element) => {
                 let name = $(element).find("input").eq(0).attr("name");
                 permit[name] = $("[name=" + name + "]:checked").data("value");
+                if(!permit[name] === undefined){
+                    isEmptyPermit = true;
+                    return 0;
+                }
             });
             formObj.permitList = permit;
 
             if(isEmptyPermit){
                 comm.showAlert("권한을 모두 체크하세요.");
-            } else if(!$("[name=userGroupStatus]:checked").data("value")) {
+            } else if(!$("[name=userGroupStatus]:checked").data("value") === undefined) {
                 comm.showAlert("사용 여부를 체크하세요.");
             } else{
                 $.ajax({
@@ -579,16 +574,18 @@ const account = {
             $('#permitTable tbody tr').each((i, element) => {
                 let name = $(element).find("input").eq(0).attr("name");
                 permit[name] = $("[name=" + name + "]:checked").data("value");
-                if(!permit[name]){
+                if(!permit[name] === undefined){
                     isEmptyPermit = true;
                     return 0;
                 }
             });
             formObj.permitList = permit;
 
-            if(Object.keys(formObj.permitList).length !== $('#permitTable tbody tr').length) {
+            if(isEmptyPermit){
                 comm.showAlert("권한을 모두 체크하세요.");
-            } else {
+            } else if($("[name=userGroupStatus]:checked").data("value") === undefined) {
+                comm.showAlert("사용 여부를 체크하세요.");
+            } else{
                 $.ajax({
                     url: "/userGroup"
                     , type: "PATCH"
