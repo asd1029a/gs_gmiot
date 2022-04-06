@@ -30,15 +30,17 @@ public class UserInGroupService {
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
 
-    public UserInGroup getOneUserGroupSeq(int UserGroupSeq, String errorMessage) {
-        return userInGroupRepository.findByUserGroup(UserGroupSeq);
-    }
+    /* 추후 사용 예정 */
+//    public UserInGroup getOneUserGroupSeq(int UserGroupSeq, String errorMessage) {
+//        return userInGroupRepository.findByUserGroup(UserGroupSeq);
+//    }
 
-    public UserInGroup getOneUserSeq(int UserSeq) {
-        User findUser = new User();
-        findUser.setUserSeq(UserSeq);
-        return userInGroupRepository.findByUser(findUser);
-    }
+    /* 추후 사용 예정 */
+//    public UserInGroup getOneUserSeq(int UserSeq) {
+//        User findUser = new User();
+//        findUser.setUserSeq(UserSeq);
+//        return userInGroupRepository.findByUser(findUser);
+//    }
 
     public Map<String, Object> getListGroup(Map<String, Object> paramMap) throws Exception {
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -54,55 +56,59 @@ public class UserInGroupService {
         return resultMap;
     }
 
-    public Map<String, Object> getListGroupPaging(Map<String, Object> paramMap) throws Exception {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
+    /* 추후 사용 예정 */
+//    public Map<String, Object> getListGroupPaging(Map<String, Object> paramMap) throws Exception {
+//        Map<String, Object> resultMap = new HashMap<String, Object>();
+//
+//        try {
+//            List<UserInGroup> userGroupList;
+//            UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
+//            userGroupList = userInGroupRepository.findAllByUserGroup(userGroup);
+//            List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
+//                    .map(UserInGroupResponse::new)
+//                    .collect(Collectors.toList());
+//            resultMap = PagingUtil.createPagingMap(paramMap, userInGroupResponse);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return resultMap;
+//    }
 
-        try {
-            List<UserInGroup> userGroupList;
-            UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
-            userGroupList = userInGroupRepository.findAllByUserGroup(userGroup);
-            List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
-                    .map(UserInGroupResponse::new)
-                    .collect(Collectors.toList());
-            resultMap = PagingUtil.createPagingMap(paramMap, userInGroupResponse);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    /* 추후 사용 예정 */
+//    public Map<String, Object> getListUser(Map<String, Object> paramMap) throws Exception {
+//        Map<String, Object> resultMap = new HashMap<String, Object>();
+//
+//        List<UserInGroup> userGroupList;
+//        UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
+//        userGroupList = userInGroupRepository.findAllByUserGroup(userGroup);
+//        List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
+//                .map(UserInGroupResponse::new)
+//                .collect(Collectors.toList());
+//        resultMap.put("data", userInGroupResponse);
+//
+//        return resultMap;
+//    }
 
-        return resultMap;
-    }
 
-    public Map<String, Object> getListUser(Map<String, Object> paramMap) throws Exception {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        List<UserInGroup> userGroupList;
-        UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
-        userGroupList = userInGroupRepository.findAllByUserGroup(userGroup);
-        List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
-                .map(UserInGroupResponse::new)
-                .collect(Collectors.toList());
-        resultMap.put("data", userInGroupResponse);
-
-        return resultMap;
-    }
-
-    public Map<String, Object> getListUserPaging(Map<String, Object> paramMap) throws Exception {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        try {
-            List<UserInGroup> userGroupList;
-            UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
-            userGroupList = userInGroupRepository.findAllByUserGroup(userGroup);
-            List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
-                    .map(UserInGroupResponse::new)
-                    .collect(Collectors.toList());
-            resultMap = PagingUtil.createPagingMap(paramMap, userInGroupResponse);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return resultMap;
-    }
+    /* 추후 사용 예정 */
+//    public Map<String, Object> getListUserPaging(Map<String, Object> paramMap) throws Exception {
+//        Map<String, Object> resultMap = new HashMap<String, Object>();
+//
+//        try {
+//            List<UserInGroup> userGroupList;
+//            UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
+//            userGroupList = userInGroupRepository.findAllByUserGroup(userGroup);
+//            List<UserInGroupResponse> userInGroupResponse = userGroupList.stream()
+//                    .map(UserInGroupResponse::new)
+//                    .collect(Collectors.toList());
+//            resultMap = PagingUtil.createPagingMap(paramMap, userInGroupResponse);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return resultMap;
+//    }
 
     @Transactional
     public List<Integer> add(Map<String, Object> paramMap) {
@@ -120,13 +126,11 @@ public class UserInGroupService {
                 User user = new User();
                 user.setUserSeq(userSeq);
 
-//                if (userGroupInUserRepository.findByUserAndUserGroup(user, userGroup).isEmpty()) {
                 userInGroup.setUser(user);
                 userInGroup.setUserGroup(userGroup);
                 userInGroup.setInsertDt(timestamp);
                 userInGroup.setInsertUserSeq(insertUserSeq);
                 userInGroupList.add(userInGroup);
-//                }
             });
         });
         userInGroupRepository.saveAll(userInGroupList);

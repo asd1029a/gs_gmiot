@@ -3,7 +3,6 @@ package com.danusys.web.commons.auth.controller;
 import com.danusys.web.commons.auth.dto.request.UserGroupPermitRequest;
 import com.danusys.web.commons.auth.service.UserGroupPermitService;
 import com.danusys.web.commons.auth.service.UserGroupService;
-import com.danusys.web.commons.auth.service.UserInGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +21,6 @@ public class UserGroupController {
 
     private final UserGroupService userGroupService;
     private final UserGroupPermitService userGroupPermitService;
-    private final UserInGroupService userInGroupService;
 
     /*
        name: get
