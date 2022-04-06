@@ -7,6 +7,7 @@
 
         <module>danusys-commons-app</module>
         <module>danusys-commons-auth</module>
+        <module>danusys-commons-auth-session</module>
         <module>danusys-commons-api</module>
         <module>danusys-commons-ui</module>
         <module>danusys-commons-socket</module>

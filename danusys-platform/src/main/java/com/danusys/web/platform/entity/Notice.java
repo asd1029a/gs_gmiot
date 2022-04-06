@@ -1,6 +1,6 @@
 package com.danusys.web.platform.entity;
 
-import com.danusys.web.commons.auth.util.LoginInfoUtil;
+import com.danusys.web.commons.auth.session.util.LoginInfoUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;

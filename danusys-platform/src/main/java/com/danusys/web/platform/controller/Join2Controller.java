@@ -1,15 +1,13 @@
 package com.danusys.web.platform.controller;
 
 
-import com.danusys.web.commons.auth.util.LoginInfoUtil;
+import com.danusys.web.commons.auth.session.util.LoginInfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 

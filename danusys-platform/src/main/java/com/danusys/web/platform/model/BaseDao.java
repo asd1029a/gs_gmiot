@@ -3,10 +3,10 @@ package com.danusys.web.platform.model;
 import java.util.List;
 import java.util.Map;
 
-/*
 //  인터페이스  명 : BaseDao (기본 Dao)
 //  인터페이스설명 : BaseDao (기본 Dao) 인터페이스
-*/
+
+
 public interface BaseDao
 {
     // List 조회

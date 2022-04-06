@@ -19,8 +19,8 @@
 	<typeAliases>   
 		<typeAlias alias="hashMap" type="java.util.HashMap" />
 		<typeAlias alias="String" type="java.lang.String"/>
-		<typeAlias alias="uisRsMap" type="com.danusys.smartmetering.common.util.UISResultMap" />
-		<typeAlias alias="adminInfo" type="com.danusys.smartmetering.common.model.AdminInfo" />
+		<typeAlias alias="uisRsMap" type="com.danusys.web.smartmetering.common.util.UISResultMap" />
+		<typeAlias alias="adminInfo" type="com.danusys.web.commons.auth.session.config.auth.CommonsUserDetails" />
 	</typeAliases>
 
 </configuration>

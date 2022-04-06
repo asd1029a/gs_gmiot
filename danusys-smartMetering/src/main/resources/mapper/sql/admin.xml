@@ -2,405 +2,405 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="admin">
-	
-	<resultMap type="com.danusys.smartmetering.common.model.AdminInfo" id="adminMap">
-		<result property="adminSeq" column="ADMIN_SEQ" />
-		<result property="adminId" column="ADMIN_ID" />
+
+	<resultMap type="com.danusys.web.commons.auth.session.config.auth.CommonsUserDetails" id="adminMap">
+		<result property="adminSeq" column="USER_SEQ" />
+		<result property="adminId" column="ID" />
 		<result property="password" column="PASSWORD" />
 	</resultMap>
-	
-	<!-- 
+
+	<!--
 		##################
 		관리자
 		##################
 	-->
-	
+
 	<!-- 관리자 : 조건절 -->
 	<sql id="WHERE_ADMIN_LIST">
-		AND T1.ADMIN_ID LIKE CONCAT('%', #{keyword}, '%')
-		OR T1.ADMIN_NAME LIKE CONCAT('%', #{keyword}, '%')
+		AND T1.ID LIKE CONCAT('%', #{keyword}, '%')
+		OR T1.USER_NAME LIKE CONCAT('%', #{keyword}, '%')
 	</sql>
-	
+
 	<!-- 관리자 : 목록 조회 카운트-->
 	<select id="SELECT_LIST_ADMIN_CNT" parameterType="hashMap" resultType="int">
 		SELECT COUNT(*)
-		FROM T_ADMIN T1
+		FROM T_USER T1
 		WHERE 1=1
 		<if test='keyword != null and keyword != ""'>
 			<include refid="WHERE_ADMIN_LIST"/>
 		</if>
 	</select>
-	
+
 	<!-- 관리자 : 목록 조회 -->
 	<select id="SELECT_LIST_ADMIN" parameterType="hashMap" resultType="uisRsMap">
 		-- 관리자 목록 조회 : SELECT_LIST_ADMIN
-		
-		SELECT T1.ADMIN_SEQ, T1.ADMIN_ID, T1.ADMIN_NAME, T1.EMAIL
-			, IFNULL(
-					CASE CHAR_LENGTH(T1.TEL)
-						WHEN '11' THEN concat(LEFT(T1.TEL,3),'-',SUBSTRING(T1.TEL,4,4),'-',RIGHT(T1.TEL,4))
-						WHEN '10' THEN concat(LEFT(T1.TEL,3),'-',SUBSTRING(T1.TEL,4,3),'-',RIGHT(T1.TEL,4))
-					END, TEL
-					) AS 'TEL'
-			, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
-			, DATE_FORMAT(T1.UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
-			, DATE_FORMAT(T1.LAST_LOGIN_DT, '%Y-%m-%d %H:%i:%S') AS LAST_LOGIN_DT
-			, T1.BIRTH
-			, T1.ZIPCODE
-			, T1.ADDRESS
-			, T1.DETAIL_ADDRESS
-			, T1.EMPLOYEE_NUMBER
-			, T1.USE_FLAG
-			, T2.CODE_NAME 
-		FROM T_ADMIN T1
-		INNER JOIN T_CODE T2 ON T1.USE_FLAG = T2.CODE_VALUE
+
+		SELECT T1.USER_SEQ, T1.ID, T1.USER_NAME, T1.EMAIL
+		, IFNULL(
+		CASE CHAR_LENGTH(T1.TEL)
+		WHEN '11' THEN concat(LEFT(T1.TEL,3),'-',SUBSTRING(T1.TEL,4,4),'-',RIGHT(T1.TEL,4))
+		WHEN '10' THEN concat(LEFT(T1.TEL,3),'-',SUBSTRING(T1.TEL,4,3),'-',RIGHT(T1.TEL,4))
+		END, TEL
+		) AS 'TEL'
+		, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
+		, DATE_FORMAT(T1.UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
+		, DATE_FORMAT(T1.LAST_LOGIN_DT, '%Y-%m-%d %H:%i:%S') AS LAST_LOGIN_DT
+		, T1.BIRTH
+		, T1.ZIPCODE
+		, T1.ADDRESS
+		, T1.DETAIL_ADDRESS
+		, T1.EMPLOYEE_NUMBER
+		, T1.USE_FLAG
+		, T2.CODE_NAME
+		FROM T_USER T1
+		INNER JOIN T_COMMON_CODE T2 ON T1.USE_FLAG = T2.CODE_VALUE
 		AND T2.CODE_GROUP = 'COMMON(USE_FLAG)'
 		WHERE 1=1
 		<if test='keyword != null and keyword != ""'>
 			<include refid="WHERE_ADMIN_LIST"/>
 		</if>
-		ORDER BY ADMIN_SEQ
+		ORDER BY USER_SEQ
 		<if test="start != null and length != null">
- 			LIMIT ${start} , ${length}
- 		</if>
+			LIMIT ${start} , ${length}
+		</if>
 	</select>
-	
+
 	<!-- 관리자 : 아이디 중복 조회 -->
 	<select id="SELECT_CHECK_DUPL_ADMIN_ID" parameterType="hashMap" resultType="uisRsMap">
 		-- 관리자 아이디 중복 조회 : SELECT_CHECK_DUPL_ADMIN_ID
-		
-		SELECT CASE WHEN COUNT(ADMIN_ID) > 0 THEN 'Y' ELSE 'N' END ADMIN_ID_USE_FLAG
-		FROM T_ADMIN
-		WHERE ADMIN_ID=#{adminId}
+
+		SELECT CASE WHEN COUNT(ID) > 0 THEN 'Y' ELSE 'N' END ADMIN_ID_USE_FLAG
+		FROM T_USER
+		WHERE ID=#{adminId}
 	</select>
-	
+
 	<!-- 관리자 : 등록 -->
 	<insert id="INSERT_ADMIN" parameterType="hashMap">
 		-- 관리자 등록 : INSERT_ADMIN
-		
-		INSERT INTO T_ADMIN (
-			ADMIN_ID
-			, PASSWORD
-			, ADMIN_NAME
-			, EMAIL
-			, INSERT_DT
-			, INSERT_ADMIN_SEQ
-			, USE_FLAG
-			, TEL
-			, BIRTH
-			, ZIPCODE
-			, ADDRESS
-			, DETAIL_ADDRESS
-			, EMPLOYEE_NUMBER
+
+		INSERT INTO T_USER (
+							 ID
+						   , PASSWORD
+						   , USER_NAME
+						   , EMAIL
+						   , INSERT_DT
+						   , INSERT_USER_SEQ
+						   , USE_FLAG
+						   , TEL
+						   , BIRTH
+						   , ZIPCODE
+						   , ADDRESS
+						   , DETAIL_ADDRESS
+						   , EMPLOYEE_NUMBER
 		) VALUES (
-			#{adminId}
-			, #{password}
-			, #{adminName}
-			, #{email}
-			, NOW()
-			, #{sessionAdminSeq}
-			, 0
-			, REPLACE(#{tel}, '-', '')
-			, #{birth}
-			, #{zipcode}
-			, #{address}
-			, #{detailAddress}
-			, #{employeeNumber}
-		)
+					 #{adminId}
+				 , #{password}
+				 , #{adminName}
+				 , #{email}
+				 , NOW()
+				 , #{sessionAdminSeq}
+				 , 0
+				 , REPLACE(#{tel}, '-', '')
+				 , #{birth}
+				 , #{zipcode}
+				 , #{address}
+				 , #{detailAddress}
+				 , #{employeeNumber}
+				 )
 	</insert>
-	
+
 	<!-- 관리자 : 수정 -->
 	<update id="UPDATE_ADMIN" parameterType="hashMap">
-		-- 관리자 수정 : UPDATE_ADMIN 
-		
-		UPDATE T_ADMIN
-		SET 
-			ADMIN_NAME=#{adminName}
-			, EMAIL = #{email}
-			, UPDATE_DT = NOW()
-			, UPDATE_ADMIN_SEQ = #{sessionAdminSeq}
-			, USE_FLAG = #{useFlag}
-			, TEL = REPLACE(#{tel}, '-', '')
-			, BIRTH = #{birth}
-			, ZIPCODE = #{zipcode}
-			, ADDRESS = #{address}
-			, DETAIL_ADDRESS = #{detailAddress}
-			, EMPLOYEE_NUMBER = #{employeeNumber}
-		WHERE ADMIN_SEQ = #{adminSeq}
+		-- 관리자 수정 : UPDATE_ADMIN
+
+		UPDATE T_USER
+		SET
+			USER_NAME=#{adminName}
+		  , EMAIL = #{email}
+		  , UPDATE_DT = NOW()
+		  , UPDATE_USER_SEQ = #{sessionAdminSeq}
+		  , USE_FLAG = #{useFlag}
+		  , TEL = REPLACE(#{tel}, '-', '')
+		  , BIRTH = #{birth}
+		  , ZIPCODE = #{zipcode}
+		  , ADDRESS = #{address}
+		  , DETAIL_ADDRESS = #{detailAddress}
+		  , EMPLOYEE_NUMBER = #{employeeNumber}
+		WHERE USER_SEQ = #{adminSeq}
 	</update>
-	
+
 	<!-- 관리자 : 삭제 -->
 	<delete id="DELETE_ADMIN" parameterType="hashMap">
-		-- 관리자 삭제 : DELETE_ADMIN 
-		
-		UPDATE T_ADMIN
+		-- 관리자 삭제 : DELETE_ADMIN
+
+		UPDATE T_USER
 		SET USE_FLAG = 2
-		WHERE ADMIN_SEQ=#{adminSeq}
+		WHERE USER_SEQ=#{adminSeq}
 	</delete>
-	
+
 	<!-- 관리자 : 패스워드 수정 -->
 	<update id="UPDATE_ADMIN_PASSWORD" parameterType="hashMap">
-		-- 관리자 패스워드 수정 : UPDATE_ADMIN_PASSWORD 
-		
-		UPDATE T_ADMIN
-		SET 
+		-- 관리자 패스워드 수정 : UPDATE_ADMIN_PASSWORD
+
+		UPDATE T_USER
+		SET
 			PASSWORD = #{password}
-		WHERE ADMIN_SEQ = #{adminSeq}
+		WHERE USER_SEQ = #{adminSeq}
 	</update>
-	
+
 	<!-- 관리자 : 엑셀 다운로드 -->
 	<select id="SELECT_LIST_ADMIN_EXCEL" parameterType="hashMap" resultType="uisRsMap">
 		-- 사용자 엑셀 다운로드 : SELECT_LIST_ADMIN_EXCEL
-		
-		SELECT T1.ADMIN_SEQ, T1.ADMIN_ID, T1.ADMIN_NAME, T1.EMAIL
-			, IFNULL(
-					CASE CHAR_LENGTH(T1.TEL)
-						WHEN '11' THEN concat(LEFT(T1.TEL,3),'-',SUBSTRING(T1.TEL,4,4),'-',RIGHT(T1.TEL,4))
-						WHEN '10' THEN concat(LEFT(T1.TEL,3),'-',SUBSTRING(T1.TEL,4,3),'-',RIGHT(T1.TEL,4))
+
+		SELECT T1.USER_SEQ, T1.ID, T1.USER_NAME, T1.EMAIL
+			 , IFNULL(
+				CASE CHAR_LENGTH(T1.TEL)
+					WHEN '11' THEN concat(LEFT(T1.TEL,3),'-',SUBSTRING(T1.TEL,4,4),'-',RIGHT(T1.TEL,4))
+					WHEN '10' THEN concat(LEFT(T1.TEL,3),'-',SUBSTRING(T1.TEL,4,3),'-',RIGHT(T1.TEL,4))
 					END, TEL
-					) AS 'TEL'
+			) AS 'TEL'
 			, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
-			, DATE_FORMAT(T1.UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
-			, DATE_FORMAT(T1.LAST_LOGIN_DT, '%Y-%m-%d %H:%i:%S') AS LAST_LOGIN_DT
-			, T1.BIRTH
-			, T1.ZIPCODE
-			, T1.ADDRESS
-			, T1.DETAIL_ADDRESS
-			, T1.EMPLOYEE_NUMBER
-			, T1.USE_FLAG
-			, T2.CODE_NAME 
-		FROM T_ADMIN T1
-		INNER JOIN T_CODE T2 ON T1.USE_FLAG = T2.CODE_VALUE
-		AND T2.CODE_GROUP = 'COMMON(USE_FLAG)'
+			 , DATE_FORMAT(T1.UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
+			 , DATE_FORMAT(T1.LAST_LOGIN_DT, '%Y-%m-%d %H:%i:%S') AS LAST_LOGIN_DT
+			 , T1.BIRTH
+			 , T1.ZIPCODE
+			 , T1.ADDRESS
+			 , T1.DETAIL_ADDRESS
+			 , T1.EMPLOYEE_NUMBER
+			 , T1.USE_FLAG
+			 , T2.CODE_NAME
+		FROM T_USER T1
+				 INNER JOIN T_COMMON_CODE T2 ON T1.USE_FLAG = T2.CODE_VALUE
+			AND T2.CODE_GROUP = 'COMMON(USE_FLAG)'
 	</select>
-	
+
 	<!-- 관리자 : 상세 조회 (로그인시 사용) -->
 	<select id="SELECT_DETAIL_ADMIN_LOGIN" parameterType="hashMap" resultMap="adminMap">
 		-- 관리자 상세 조회 : SELECT_DETAIL_ADMIN_LOGIN
-		
-		SELECT ADMIN_SEQ, ADMIN_ID, PASSWORD
-		FROM T_ADMIN
-		WHERE ADMIN_ID=#{adminId} AND USE_FLAG=0
+
+		SELECT USER_SEQ, ID, PASSWORD
+		FROM T_USER
+		WHERE USER_ID=#{adminId} AND USE_FLAG=0
 	</select>
-	
+
 	<!-- 관리자 : 상세 조회 -->
 	<select id="SELECT_DETAIL_ADMIN" parameterType="hashMap" resultType="uisRsMap">
 		-- 관리자 상세 조회 : SELECT_DETAIL_ADMIN
-		
-		SELECT ADMIN_SEQ, ADMIN_ID, ADMIN_NAME, USE_FLAG, EMAIL
-			, DATE_FORMAT(INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT, DATE_FORMAT(UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
-			, DATE_FORMAT(LAST_LOGIN_DT, '%Y-%m-%d %H:%i:%S') AS LAST_LOGIN_DT
-		FROM T_ADMIN
-		WHERE ADMIN_SEQ=#{adminSeq}
+
+		SELECT USER_SEQ, ID, USER_NAME, USE_FLAG, EMAIL
+			 , DATE_FORMAT(INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT, DATE_FORMAT(UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
+			 , DATE_FORMAT(LAST_LOGIN_DT, '%Y-%m-%d %H:%i:%S') AS LAST_LOGIN_DT
+		FROM T_USER
+		WHERE USER_SEQ=#{adminSeq}
 	</select>
-	
+
 	<!-- 관리자 : 로그인 로그 등록 -->
 	<insert id="INSERT_ADMIN_LOGIN_LOG" parameterType="hashMap">
 		-- 로그인 로그 등록 : INSERT_ADMIN_LOGIN_LOG
-		
+
 		INSERT INTO T_ADMIN_LOGIN_LOG (
 			ADMIN_SEQ, LOGIN_TYPE, LOGIN_DT, REQUEST_IP
 		) VALUES (
-			#{adminSeq}, #{loginType}, NOW(), #{requestIp}
-		)
+					 #{adminSeq}, #{loginType}, NOW(), #{requestIp}
+				 )
 	</insert>
-	
-	
+
+
 	<!-- 관리자 : 권한 목록 조회 -->
 	<select id="SELECT_LIST_ADMIN_PERMIT" parameterType="hashMap" resultType="String">
 		-- 관리자 권한 목록 : SELECT_LIST_ADMIN_PERMIT
-		
+
 		SELECT R1.PERMIT_SEQ
 		FROM (
-			SELECT S1.ADMIN_SEQ, S1.ADMIN_ID, S3.PERMIT_SEQ
-			FROM T_ADMIN S1
-				LEFT JOIN T_ADMIN_IN_ADMIN_GROUP S2 ON S1.ADMIN_SEQ=S2.ADMIN_SEQ
-				LEFT JOIN T_ADMIN_GROUP_PERMIT S3 ON S2.GROUP_SEQ=S3.GROUP_SEQ
-			WHERE S1.ADMIN_SEQ=#{sessionAdminSeq} AND S3.PERMIT_SEQ IS NOT NULL
-			ORDER BY S3.PERMIT_SEQ
-		) R1
+				 SELECT S1.USER_SEQ, S1.ID, S3.PERMIT_SEQ
+				 FROM T_USER S1
+						  LEFT JOIN T_ADMIN_IN_ADMIN_GROUP S2 ON S1.ADMIN_SEQ=S2.ADMIN_SEQ
+						  LEFT JOIN T_ADMIN_GROUP_PERMIT S3 ON S2.GROUP_SEQ=S3.GROUP_SEQ
+				 WHERE S1.ADMIN_SEQ=#{sessionAdminSeq} AND S3.PERMIT_SEQ IS NOT NULL
+				 ORDER BY S3.PERMIT_SEQ
+			 ) R1
 		GROUP BY PERMIT_SEQ
 		ORDER BY PERMIT_SEQ
 	</select>
-	
+
 	<!-- 관리자 : 로그인 후 업데이트 -->
 	<update id="UPDATE_ADMIN_AFTER_LOGIN" parameterType="hashMap">
 		-- 로그인 후 업데이트 : UPDATE_ADMIN_AFTER_LOGIN
-		
-		UPDATE T_ADMIN
+
+		UPDATE T_USER
 		SET LAST_LOGIN_DT=NOW()
-		WHERE ADMIN_SEQ=#{adminSeq}
+		WHERE USER_SEQ=#{adminSeq}
 	</update>
-	
-	<!-- 
+
+	<!--
 		##################
 		관리자 그룹
 		##################
 	-->
-	
+
 	<!-- 관리자 그룹 : 목록 조회 카운트-->
 	<select id="SELECT_LIST_ADMIN_GROUP_CNT" parameterType="hashMap" resultType="int">
-	-- 관리자 그룹 목록 조회 카운트 : SELECT_LIST_ADMIN_GROUP_CNT
-	
+		-- 관리자 그룹 목록 조회 카운트 : SELECT_LIST_ADMIN_GROUP_CNT
+
 		SELECT COUNT(*)
-		FROM T_ADMIN_GROUP
+		FROM T_USER_GROUP
 	</select>
-	
+
 	<!-- 관리자 그룹: 목록 조회 -->
 	<select id="SELECT_LIST_ADMIN_GROUP" parameterType="hashMap" resultType="uisRsMap">
 		-- 관리자 그룹 목록 조회 : SELECT_LIST_ADMIN_GROUP
-		
-		SELECT T1.ADMIN_GROUP_SEQ, T1.ADMIN_GROUP_NAME, T1.ADMIN_GROUP_CONTENT
-			, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
-			, DATE_FORMAT(T1.UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
-            , T2.PERMIT_SEQ_LIST
-		FROM T_ADMIN_GROUP T1
-        LEFT JOIN (
-        	SELECT ADMIN_GROUP_SEQ, GROUP_CONCAT(PERMIT_SEQ ORDER BY PERMIT_SEQ) AS PERMIT_SEQ_LIST
-            FROM T_PERMIT_IN_ADMIN_GROUP
-            GROUP BY ADMIN_GROUP_SEQ
-        ) T2 ON T1.ADMIN_GROUP_SEQ = T2.ADMIN_GROUP_SEQ
+
+		SELECT T1.USER_GROUP_SEQ, T1.USER_GROUP_NAME, T1.ADMIN_GROUP_CONTENT
+		, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
+		, DATE_FORMAT(T1.UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
+		, T2.PERMIT_SEQ_LIST
+		FROM T_USER_GROUP T1
+		LEFT JOIN (
+		SELECT ADMIN_GROUP_SEQ, GROUP_CONCAT(PERMIT_SEQ ORDER BY PERMIT_SEQ) AS PERMIT_SEQ_LIST
+		FROM T_PERMIT_IN_ADMIN_GROUP
+		GROUP BY ADMIN_GROUP_SEQ
+		) T2 ON T1.USER_GROUP_SEQ = T2.ADMIN_GROUP_SEQ
 		WHERE 1=1
 		ORDER BY ADMIN_GROUP_SEQ
 		<if test="start != null and length != null">
- 			LIMIT ${start} , ${length}
- 		</if>
+			LIMIT ${start} , ${length}
+		</if>
 	</select>
-	
+
 	<!-- 관리자 그룹 : 등록 -->
 	<insert id="INSERT_ADMIN_GROUP" parameterType="hashMap">
 		-- 관리자 그룹 등록 : INSERT_ADMIN_GROUP
 		<selectKey resultType="int" keyProperty="adminGroupSeq" order="AFTER">
-			SELECT ADMIN_GROUP_SEQ
-			FROM T_ADMIN_GROUP
-			WHERE ADMIN_GROUP_SEQ = LAST_INSERT_ID()
+			SELECT USER_GROUP_SEQ
+			FROM T_USER_GROUP
+			WHERE USER_GROUP_SEQ = LAST_INSERT_ID()
 		</selectKey>
-		
-		INSERT INTO T_ADMIN_GROUP (
-			ADMIN_GROUP_NAME, ADMIN_GROUP_CONTENT, INSERT_DT, INSERT_ADMIN_SEQ
+
+		INSERT INTO T_USER_GROUP (
+		USER_GROUP_NAME, ADMIN_GROUP_CONTENT, INSERT_DT, INSERT_USER_SEQ
 		) VALUES (
-			#{adminGroupName}, #{adminGroupContent}, NOW(), #{sessionAdminSeq}
+		#{adminGroupName}, #{adminGroupContent}, NOW(), #{sessionAdminSeq}
 		)
 	</insert>
-	
+
 	<!-- 관리자 그룹 : 수정 -->
 	<update id="UPDATE_ADMIN_GROUP" parameterType="hashMap">
 		-- 관리자 그룹 수정 : UPDATE_ADMIN_GROUP
-		
-		UPDATE T_ADMIN_GROUP
-		SET ADMIN_GROUP_NAME=#{adminGroupName}
-			, ADMIN_GROUP_CONTENT=#{adminGroupContent}
-			, UPDATE_DT=NOW()
-			, UPDATE_ADMIN_SEQ= #{sessionAdminSeq}
-		WHERE ADMIN_GROUP_SEQ = #{adminGroupSeq}
+
+		UPDATE T_USER_GROUP
+		SET USER_GROUP_NAME=#{adminGroupName}
+		  , ADMIN_GROUP_CONTENT=#{adminGroupContent}
+		  , UPDATE_DT=NOW()
+		  , UPDATE_USER_SEQ= #{sessionAdminSeq}
+		WHERE USER_GROUP_SEQ = #{adminGroupSeq}
 	</update>
-	
+
 	<!-- 관리자 그룹 : 삭제 -->
 	<delete id="DELETE_ADMIN_GROUP" parameterType="hashMap">
 		-- 관리자 그룹 삭제 : DELETE_ADMIN_GROUP
-		
-		DELETE FROM T_ADMIN_GROUP	
-		WHERE ADMIN_GROUP_SEQ=#{adminGroupSeq}
+
+		DELETE FROM T_USER_GROUP
+		WHERE USER_GROUP_SEQ=#{adminGroupSeq}
 	</delete>
-	
+
 	<!-- 관리자 : 권한 목록 조회 -->
 	<select id="SELECT_LIST_PERMIT" parameterType="hashMap" resultType="uisRsMap">
 		-- 관리자 권한 목록 : SELECT_LIST_PERMIT
-		
+
 		SELECT PERMIT_SEQ, PERMIT_NAME
 		FROM T_PERMIT
 	</select>
-	
+
 	<!-- 관리자 그룹 권한 : 등록 -->
 	<insert id="INSERT_ADMIN_GROUP_PERMIT" parameterType="hashMap">
 		-- 관리자 권한 등록 : INSERT_ADMIN_GROUP_PERMIT
-		
+
 		INSERT INTO T_PERMIT_IN_ADMIN_GROUP (ADMIN_GROUP_SEQ, PERMIT_SEQ, INSERT_DT, INSERT_ADMIN_SEQ)
-		VALUES 
+		VALUES
 		<foreach collection="permitSeqList" item="item" index="index" separator=",">
 			(#{adminGroupSeq}, #{item}, NOW(), #{sessionAdminSeq})
 		</foreach>
 	</insert>
-	
+
 	<!-- 관리자 그룹 권한 : 삭제 -->
 	<delete id="DELETE_ADMIN_GROUP_PERMIT" parameterType="hashMap">
 		-- 관리자 그룹 권한 삭제 : DELETE_ADMIN_GROUP_PERMIT
-		
+
 		DELETE FROM T_PERMIT_IN_ADMIN_GROUP
 		WHERE ADMIN_GROUP_SEQ=#{adminGroupSeq}
 	</delete>
-	
-	
+
+
 	<!-- 관리자 그룹 : 소속 관리자 목록 조회 카운트-->
 	<select id="SELECT_LIST_ADMIN_IN_GROUP_CNT" parameterType="hashMap" resultType="int">
-	-- 소속 관리자 목록 조회 카운트 : SELECT_LIST_ADMIN_IN_GROUP_CNT
-	
+		-- 소속 관리자 목록 조회 카운트 : SELECT_LIST_ADMIN_IN_GROUP_CNT
+
 		SELECT COUNT(*)
-		FROM T_ADMIN_IN_ADMIN_GROUP T1
-		INNER JOIN T_ADMIN T2 ON T1.ADMIN_SEQ = T2.ADMIN_SEQ
-		INNER JOIN T_ADMIN_GROUP T3 ON T1.ADMIN_GROUP_SEQ = T3.ADMIN_GROUP_SEQ 
-		WHERE T1.ADMIN_GROUP_SEQ = #{adminGroupSeq}
+		FROM T_USER_GROUP_IN_USER T1
+				 INNER JOIN T_USER T2 ON T1.USER_SEQ = T2.USER_SEQ
+				 INNER JOIN T_USER_GROUP T3 ON T1.USER_GROUP_SEQ = T3.USER_GROUP_SEQ
+		WHERE T1.USER_GROUP_SEQ = #{adminGroupSeq}
 	</select>
-	
+
 	<!-- 관리자 그룹: 소속 관리자 목록 조회 -->
 	<select id="SELECT_LIST_ADMIN_IN_GROUP" parameterType="hashMap" resultType="uisRsMap">
 		-- 소속 관리자 목록 조회 : SELECT_LIST_ADMIN_IN_GROUP
-		
-		SELECT T2.ADMIN_SEQ, T2.ADMIN_ID, T2.ADMIN_NAME
-			, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
-		FROM T_ADMIN_IN_ADMIN_GROUP T1
-		INNER JOIN T_ADMIN T2 ON T1.ADMIN_SEQ = T2.ADMIN_SEQ
-		INNER JOIN T_ADMIN_GROUP T3 ON T1.ADMIN_GROUP_SEQ = T3.ADMIN_GROUP_SEQ 
-		WHERE T1.ADMIN_GROUP_SEQ = #{adminGroupSeq}
+
+		SELECT T2.USER_SEQ, T2.ID, T2.USER_NAME
+		, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
+		FROM T_USER_GROUP_IN_USER T1
+		INNER JOIN T_USER T2 ON T1.USER_SEQ = T2.USER_SEQ
+		INNER JOIN T_USER_GROUP T3 ON T1.USER_GROUP_SEQ = T3.USER_GROUP_SEQ
+		WHERE T1.USER_GROUP_SEQ = #{adminGroupSeq}
 		<if test="start != null and length != null">
- 			LIMIT ${start} , ${length}
- 		</if>
+			LIMIT ${start} , ${length}
+		</if>
 	</select>
-	
+
 	<!-- 관리자 그룹: 소속 관리자 체크 목록 조회 -->
 	<select id="SELECT_LIST_ADMIN_IN_GROUP_CHECK" parameterType="hashMap" resultType="uisRsMap">
 		-- 소속 관리자 체크 목록 조회 : SELECT_LIST_ADMIN_IN_GROUP_CHECK
-		
-		SELECT T1.ADMIN_SEQ, T1.ADMIN_ID, T1.ADMIN_NAME,
-			IF(T2.ADMIN_SEQ IS NULL, NULL, 'checked') AS CHECKED 
-		FROM T_ADMIN T1
-		LEFT JOIN T_ADMIN_IN_ADMIN_GROUP T2
-		ON T1.ADMIN_SEQ = T2.ADMIN_SEQ
-		AND T2.ADMIN_GROUP_SEQ = #{adminGroupSeq}
-		WHERE T1.ADMIN_ID LIKE CONCAT('%', #{keyword}, '%')
+
+		SELECT T1.USER_SEQ, T1.ID, T1.USER_NAME,
+			   IF(T2.USER_SEQ IS NULL, NULL, 'checked') AS CHECKED
+		FROM T_USER T1
+				 LEFT JOIN T_USER_GROUP_IN_USER T2
+						   ON T1.USER_SEQ = T2.USER_SEQ
+							   AND T2.USER_GROUP_SEQ = #{adminGroupSeq}
+		WHERE T1.ID LIKE CONCAT('%', #{keyword}, '%')
 	</select>
-	
+
 	<!-- 관리자 그룹 : 소속 관리자 등록 -->
 	<insert id="INSERT_ADMIN_IN_ADMIN_GROUP" parameterType="hashMap">
 		-- 관리자 그룹 소속 관리자 등록 : INSERT_ADMIN_IN_ADMIN_GROUP
-		
-		INSERT INTO T_ADMIN_IN_ADMIN_GROUP (
-			ADMIN_GROUP_SEQ, ADMIN_SEQ, INSERT_DT, INSERT_ADMIN_SEQ
+
+		INSERT INTO T_USER_GROUP_IN_USER (
+		USER_GROUP_SEQ, USER_SEQ, INSERT_DT, INSERT_USER_SEQ
 		) VALUES
-			<foreach collection="adminSeqList" item="item" index="index" separator=",">
-				(#{adminGroupSeq}, #{item}, NOW(), #{sessionAdminSeq})
-			</foreach>
+		<foreach collection="adminSeqList" item="item" index="index" separator=",">
+			(#{adminGroupSeq}, #{item}, NOW(), #{sessionAdminSeq})
+		</foreach>
 	</insert>
-	
+
 	<!-- 관리자 그룹 : 소속 관리자 목록 삭제 (ADMIN_SEQ)-->
 	<insert id="DELETE_ADMIN_IN_ADMIN_GROUP_ADMIN_SEQ" parameterType="hashMap">
 		-- 관리자 그룹 소속 관리자 삭제 (ADMIN_SEQ) : DELETE_ADMIN_IN_ADMIN_GROUP_ADMIN_SEQ
-		
+
 		DELETE
-		FROM T_ADMIN_IN_ADMIN_GROUP
-		WHERE ADMIN_SEQ=#{adminSeq}
+		FROM T_USER_GROUP_IN_USER
+		WHERE USER_SEQ=#{adminSeq}
 		<if test="adminGroupSeq != null and adminGroupSeq != ''">
-			AND ADMIN_GROUP_SEQ=#{adminGroupSeq}
+			AND USER_GROUP_SEQ=#{adminGroupSeq}
 		</if>
 	</insert>
-	
+
 	<!-- 관리자 그룹 : 소속 관리자 목록 삭제 (GROUP_SEQ)-->
 	<insert id="DELETE_ADMIN_IN_ADMIN_GROUP_GROUP_SEQ" parameterType="hashMap">
 		-- 관리자 그룹 소속 관리자 삭제 (GROUP_SEQ) : DELETE_ADMIN_IN_ADMIN_GROUP_GROUP_SEQ
-		
+
 		DELETE
-		FROM T_ADMIN_IN_ADMIN_GROUP
-		WHERE ADMIN_GROUP_SEQ=#{adminGroupSeq}
+		FROM T_USER_GROUP_IN_USER
+		WHERE USER_GROUP_SEQ=#{adminGroupSeq}
 	</insert>
-	
+
 </mapper>
