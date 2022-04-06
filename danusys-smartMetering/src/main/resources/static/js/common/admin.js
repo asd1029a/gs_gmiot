@@ -157,8 +157,8 @@ const admin = {
 					}
         	},
 			columns : [
-				{data: "adminId", className: "alignLeft"},
-				{data: "adminName", className: "alignLeft"},
+				{data: "id", className: "alignLeft"},
+				{data: "userName", className: "alignLeft"},
 				{data: "tel"},
 				{data: "address", className: "alignLeft"},
 				{data: "email", className: "alignLeft"},
@@ -478,7 +478,7 @@ const adminGroup = {
 	                toggleable: false
 	            },
 				columns : [
-					{data: "adminGroupName"},
+					{data: "userGroupName"},
 					{data: "adminGroupContent"},
 					{data: null}
 				],
