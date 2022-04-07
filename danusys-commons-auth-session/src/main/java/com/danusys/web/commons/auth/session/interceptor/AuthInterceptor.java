@@ -1,31 +1,34 @@
-/*
-package com.danusys.web.smartmetering.common.interceptor;
+package com.danusys.web.commons.auth.session.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.danusys.web.smartmetering.common.util.SessionUtil;
+import com.danusys.web.commons.auth.session.util.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
-public class CommonInterceptor extends HandlerInterceptorAdapter {
-	
-	Logger logger = LoggerFactory.getLogger(CommonInterceptor.class);
+public class AuthInterceptor extends HandlerInterceptorAdapter {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		MDC.put("sessionId", SessionUtil.getSessionAdminId());
-		
 		String uri = request.getRequestURI();
-		String regex = "^[A-Za-z0-9_/.]+(do|ado)$";
+		Map<?, ?> adminInfo = SessionUtil.getSessionInfo();
+		boolean isAjax = false;
 		
-		if(Pattern.matches(regex, uri)) {
-			//logger.info(request.getRequestURI());
+		if(uri.indexOf(".ado")>-1) {
+			isAjax = true;
+		}
+		
+		if(adminInfo==null) {
+			if(isAjax) {
+				response.sendError(403);
+			} else {
+				response.sendRedirect("/admin/loginForm.do");
+			}
 		}
 		return true;
 	}
@@ -39,4 +42,4 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 		super.afterCompletion(request, response, handler, ex);
 	}
-}*/
+}

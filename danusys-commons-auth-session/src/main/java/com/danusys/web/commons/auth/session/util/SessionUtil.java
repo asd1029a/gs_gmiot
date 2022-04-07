@@ -19,7 +19,8 @@ public class SessionUtil {
 	    String result = "NoAuth";
 		
 	    if(adminInfo!=null) {
-	    	result = adminInfo.get("adminId").toString();
+	    	result = adminInfo.get("id").toString(); // adminId -> id로 변경
+			System.out.println("sessionUtil에 로그인 세션 adminInfo : " + adminInfo);
 	    }
 		return result;
 	}
@@ -32,7 +33,8 @@ public class SessionUtil {
 		String result = "";
 		
 	    if(adminInfo!=null) {
-	    	result = adminInfo.get("adminName").toString();
+
+	    	result = adminInfo.get("userName").toString(); //adminName -> userName으로 변경
 	    }
 		return result;
 	}
@@ -82,14 +84,16 @@ public class SessionUtil {
 			sessionMap = (Map<String, Object>) hsr.getSession().getAttribute("adminInfo");
 
 			String result = StrUtils.getStr(sessionMap);
-			System.out.println("result::: " + result);
-			ObjectMapper objectMapper = new ObjectMapper();
-			//json string을 map으로 변환하기 ---> 이거 에러
-			sessionMap = objectMapper.readValue(result, new TypeReference<Map<String ,Object>>() {});
+
 
 			System.out.println("hsr.getsession ::::: " + hsr.getSession());
 			System.out.println("getAttribute::::::::::" + hsr.getSession().getAttribute("adminInfo"));
-			System.out.println("3333" + sessionMap);
+			System.out.println("3333result::: " + result);
+//			ObjectMapper objectMapper = new ObjectMapper();
+			//json string을 map으로 변환하기 ---> 이거 에러
+//			sessionMap = objectMapper.readValue(result, new TypeReference<Map<String ,Object>>() {});
+
+
 		} catch (Exception e) {
 			/*if(SecurityContextHolder.getContext().getAuthentication()!=null) {
 				if(!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Object)) {

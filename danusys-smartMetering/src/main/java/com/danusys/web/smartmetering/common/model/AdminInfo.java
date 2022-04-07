@@ -67,7 +67,6 @@ public class AdminInfo //implements UserDetails {
 		return true;
 	}
 
-
  *//*
 
 }

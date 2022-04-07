@@ -169,6 +169,8 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String selectListAdminInGroup(Map<String, Object> paramMap) throws Exception {
+		log.info("####selectListAdminInGroup : {} ",paramMap.toString());
+
 		return JsonUtil.getOriJsonString(pagingUtil.getSettingMap("admin.SELECT_LIST_ADMIN_IN_GROUP", paramMap));
 	}
 
@@ -206,6 +208,10 @@ public class AdminServiceImpl implements AdminService {
 	public String updateAdminGroup(Map<String, Object> paramMap) throws Exception {
 		List<?> permitSeqList = new ArrayList<String>();
 		permitSeqList = (List<?>) paramMap.get("permitSeqList");
+
+		System.out.println("관리자 그룹 수정에 permitSeqList : " + permitSeqList);
+		System.out.println("관리자 그룹 수정에 paramMap : " + paramMap);
+
 		commonDao.delete("admin.DELETE_ADMIN_GROUP_PERMIT", paramMap);
 		if(!permitSeqList.isEmpty()) {
 			commonDao.insert("admin.INSERT_ADMIN_GROUP_PERMIT", paramMap);
@@ -218,6 +224,8 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String deleteAdminGroup(Map<String, Object> paramMap) throws Exception {
+		System.out.println("관리자 그룹 삭제 paramMap : " + paramMap);
+
 		commonDao.delete("admin.DELETE_ADMIN_GROUP_PERMIT", paramMap);
 		commonDao.delete("admin.DELETE_ADMIN_IN_ADMIN_GROUP_GROUP_SEQ", paramMap);
 		return JsonUtil.getCntJsonString(commonDao.delete("admin.DELETE_ADMIN_GROUP", paramMap));
@@ -237,6 +245,7 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String deleteAdminInGroup(Map<String, Object> paramMap) throws Exception {
+		System.out.println("소속 관리자 해제 : " + paramMap);
 		return JsonUtil.getCntJsonString(commonDao.delete("admin.DELETE_ADMIN_IN_ADMIN_GROUP_ADMIN_SEQ", paramMap));
 	}
 
@@ -245,6 +254,7 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String selectListAdminInGroupCheck(Map<String, Object> paramMap) throws Exception {
+
 		return JsonUtil.getJsonString(commonDao.selectList("admin.SELECT_LIST_ADMIN_IN_GROUP_CHECK", paramMap));
 	}
 

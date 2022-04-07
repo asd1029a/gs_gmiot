@@ -21,21 +21,20 @@ public class CommonsUserDetails implements UserDetails {
     private List<String> permitList;
 
 
-
-
     public CommonsUserDetails(User user) {
 
         this.user = user;
 
-     /*   permitList = new ArrayList<>();*/
+        /*   permitList = new ArrayList<>();*/
     }
 
-    public String getUserId(){ return user.getUserId();}
+    public String getUserId() {
+        return user.getUserId();
+    }
 
     public int getUserSeq() {
         return user.getUserSeq();
     }
-
 
 
     @Override
@@ -69,8 +68,11 @@ public class CommonsUserDetails implements UserDetails {
     }
 
 
-/*    *//**
+    /*    */
+
+    /**
      * 계정의 권한 목록 리턴
+     *
      * @return
      *//*
     @Override
@@ -80,26 +82,27 @@ public class CommonsUserDetails implements UserDetails {
 
         return collectors;
     }*/
-
     @Override
     @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+/*
 
-     /*   if (user != null) {
+        if (user != null) {
             // TODO - 게시판 별 권한 처리 협의 필요 @엄태혁
             user.getUserInGroup().forEach(r -> {
                 r.getUserGroup().getUserGroupPermit().forEach(rr -> {
+                    log.info("aaaaa" + rr.getPermit().getCodeValue());
                     permitList.add(rr.getPermit().getCodeValue());
                 });
             });
+
             permitList.forEach(r -> {
                 authorities.add(() -> {
                     return r;
                 });
             });
         }*/
-
         return authorities;
     }
 

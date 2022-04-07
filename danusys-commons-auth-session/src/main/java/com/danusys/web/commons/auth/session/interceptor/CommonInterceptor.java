@@ -1,16 +1,14 @@
-/*
-package com.danusys.web.smartmetering.common.interceptor;
+package com.danusys.web.commons.auth.session.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.danusys.web.smartmetering.common.util.SessionUtil;
+import com.danusys.web.commons.auth.session.util.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Pattern;
 
 public class CommonInterceptor extends HandlerInterceptorAdapter {
@@ -39,4 +37,4 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 		super.afterCompletion(request, response, handler, ex);
 	}
-}*/
+}

@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -144,6 +145,17 @@ public class AdminController {
 	 */
 	@JsonRequestMapping(value = "/admin/getListAdminInGroup.ado")
 	public String getListAdminInGroup(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+
+		logger.info("### getListAdminInGroup {} ", paramMap.toString());
+
+//		List columns  = (List)paramMap.get("columns");
+//		Map row1 = (Map) columns.get(0);
+//		row1.put("data", "adminId");
+//
+//		Map row2 = (Map) columns.get(1);
+//		row2.put("data", "adminName");
+
+
 		return adminService.selectListAdminInGroup(paramMap);
 	}
 
@@ -168,6 +180,7 @@ public class AdminController {
 	 */
 	@JsonRequestMapping(value = "/admin/modAdminGroup.ado", method = RequestMethod.PATCH)
 	public String modAdminGroup(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+		System.out.println("관리자그룹 컨트롤러 사용자 수정 : " + paramMap);
 		return adminService.updateAdminGroup(paramMap);
 	}
 
