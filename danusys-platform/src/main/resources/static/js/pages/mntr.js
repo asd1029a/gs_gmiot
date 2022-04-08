@@ -53,7 +53,7 @@ const mntr = {
         //맵 이동 (move end) 이벤트
         map.setMapEventListener('moveend',e => {
             //동네 날씨 기능
-            centerVilageInfo(e);
+            //centerVilageInfo(e);
         });
 
         //레이어 마우스오버 이벤트
@@ -283,8 +283,9 @@ const mntr = {
         });
         //LNM TAB SWITCH (왼쪽창 탭별 변경)
         $('.mntr_container .menu_fold .tab li').on("click", e => {
+            window.lySelect.getFeatures().clear();
             const tab = $(e.currentTarget).attr('data-value');
-
+            const rVisivle = $('.area_right[data-value=event]').is(':visible');
             switch(tab) {
                 case "event" :
                     window.lyControl.off('eventPastLayer');
@@ -299,6 +300,7 @@ const mntr = {
                 default :
                     break;
             }
+            if(rVisivle) { $('.area_right_closer').trigger("click")}
             window.lyControl.on(tab + "Layer");
 
             $(e.currentTarget).parents('section').find('.lnb_tab_section').removeClass("select");
@@ -340,6 +342,8 @@ const mntr = {
             //팝업 목록 삭제
             let popup = new mapPopup('map');
             popup.remove('mouseClickPopup');
+            //펄스 제거
+            window.map.removePluse();
         });
         //RNM TAB SWITCH (오른쪽 창 탭 변경)
         $('.area_right .tab li').on("click", e => {
@@ -599,12 +603,11 @@ const lnbList = {
             let level = prop.eventGrade.replace("0",""); //////?
             let cnt = Number($target.find('.area_title[data-value=lv' + level + '] .count').text());
 
-            //TODO 리스트 x분전 처리
             content = "<dl>" +
                 "<dt>" + prop.eventSeq + "<span class='state'>" + prop.eventProcStatName + "</span></dt>" +
                 "<dd class='event_level'><span class='level lv" + level + "'>" + prop.eventGradeName + "</span>" + prop.eventKindName + "</dd>" +
                 "<dd>" + (prop.address ? prop.address : "-") + "</dd>" +
-                "<dd>" + prop.insertDt + "<span class='ago'>" + "x분 전</span></dd>" +
+                "<dd>" + prop.insertDt + "<span class='ago'>" + dateFunc.getDateText(prop.insertDt) + "</span></dd>" +
                 "</dl>";
 
             $target.find('.search_list[data-value=lv' + level + ']').append(content);
@@ -651,7 +654,7 @@ const lnbList = {
                 "<dt>" + prop.eventSeq + "<span class='state'>" + prop.eventProcStatName + "</span></dt>" +
                 "<dd class='event_level'><span class='level lv" + level + "'>" + prop.eventGradeName + "</span>" + prop.eventKindName + "</dd>" +
                 "<dd>" + (prop.address ? prop.address : "-") + "</dd>" +
-                "<dd>" + prop.insertDt + "<span class='ago'>" + "x일 전</span></dd>" +
+                "<dd>" + prop.insertDt + "<span class='ago'>" + dateFunc.getDateText(prop.insertDt) + "</span></dd>" +
                 "</dl>";
 
             $target.find('.search_list').append(content);
@@ -749,6 +752,10 @@ const rnbList = {
         propList.map(propStr => {
             target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
         });
+        //animation end
+        window.map.removePluse();
+        window.map.setPluse(obj.getGeometry().getCoordinates());
+
     }
     , createEvent : obj => {
         /*TODO 데이터 오면 정보 채우기*/
@@ -767,6 +774,9 @@ const rnbList = {
         propList.map(propStr => {
             target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
         });
+
+        window.map.removePluse();
+        window.map.setPluse(obj.getGeometry().getCoordinates());
     }
 }
 

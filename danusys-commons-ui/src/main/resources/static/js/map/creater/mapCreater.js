@@ -220,12 +220,15 @@ class mapCreater {
         this.map = this.createMap();
         this.view = this.map.getView();
 
+        //TODO 펄스 반복 -> 중지
+        this.pluseInterval = null;
+        this.pluseStop = false;
+
         this.cursorStyle();
 
         this.createTileLayers();
 
         this.switchTileMap('btnImgmap');
-
 
         this.map.getLayers().getArray().forEach((layer, idx) => {
             layer.setZIndex(idx);
@@ -513,6 +516,56 @@ class mapCreater {
         this.map.addControl(scaleLine);
     }
 
+    setPulseFeature(coord) {
+        let f = new ol.Feature (new ol.geom.Point(coord));
+        f.setStyle (new ol.style.Style({
+            image: new ol.style["Circle"] ({
+                radius: 30,
+                points: 4,
+                stroke: new ol.style.Stroke ({ color: "#ff0000", width:5 })
+            })
+        }));
+        this.map.animateFeature (f, new ol.featureAnimation.Zoom({
+            fade: ol.easing.easeOut,
+            duration: 500,
+            easing: ol.easing["easyOut"] //bounce
+        }));
+        this.map.renderSync();
+    }
+
+    //TODO 펄스 반복 -> 중지
+    setPluse(coord) {
+        const fn = () => {
+            if(this.pluseStop) {
+                this.removePluse();
+            } else {
+                this.setPluse(coord);
+            }
+        }
+        this.pluseStop = false;
+        this.setPulseFeature(coord);
+
+        this.pluseInterval = setTimeout(fn , 500);
+
+        // this.map.pluseStop = false;
+        // // let nb = 5; //bounce==1;
+        // // for (let i=0; i<nb; i++) {
+        //     this.pluseInterval = setInterval (() => {
+        //         if(!this.pluseStop) {
+        //             this.setPulseFeature(coord);
+        //             this.map.pluseStop = false;
+        //         } else {
+        //             clearInterval(this.pluseInterval);
+        //             this.map.pluseStop = true;
+        //         }
+        //     }, 500);
+            // }, i*500);
+        // };
+    }
+
+    removePluse() {
+        clearTimeout(this.pluseInterval);
+    }
 
 
 

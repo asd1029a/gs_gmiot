@@ -334,12 +334,25 @@ function clickIcon(layerType, layerObj) {
         let data = $(e.currentTarget).data();
         const layerNm = data.getId().replace(/[0-9]/gi,'');
 
+        const coordinate = data.getGeometry().getCoordinates();
+        window.map.setZoom(11);
+        window.map.setCenter(coordinate);
+
+        window.map.map.renderSync();
+
+        const targetFeature = window.lyControl.find(layerNm + 'Layer').getSource().getClosestFeatureToCoordinate(coordinate);
+        window.lySelect.getFeatures().clear();
+        window.lySelect.getFeatures().push(targetFeature);
+
         $('.area_right').removeClass('select');
         if(layerNm == "station"){
             rnbList.createStation(data);
         } else if((layerNm == "event")||(layerNm == "eventPast")){
             rnbList.createEvent(data);
         }
+
+
+
     });
 
 }
