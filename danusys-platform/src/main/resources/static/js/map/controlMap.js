@@ -299,6 +299,7 @@ function clickIcon(layerType, layerObj) {
             break;
 
         case "event" : //이벤트 클릭 이벤트
+        case "eventPast" :
             if(len == 1){
                 $('.area_right').removeClass('select');
                 rnbList.createEvent(features[0]);

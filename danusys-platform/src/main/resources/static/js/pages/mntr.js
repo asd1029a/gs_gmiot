@@ -49,6 +49,9 @@ const mntr = {
         //측정 도구
         let measure = new measureTool('map');
         window.measure = measure;
+        //맵 선 도구
+        let lyConnect = new mapConnectLineCreater('map');
+        window.lyConnect = lyConnect;
 
         //맵 이동 (move end) 이벤트
         map.setMapEventListener('moveend',e => {
@@ -343,7 +346,7 @@ const mntr = {
             let popup = new mapPopup('map');
             popup.remove('mouseClickPopup');
             //펄스 제거
-            window.map.removePluse();
+            window.map.removePulse();
         });
         //RNM TAB SWITCH (오른쪽 창 탭 변경)
         $('.area_right .tab li').on("click", e => {
@@ -753,8 +756,11 @@ const rnbList = {
             target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
         });
         //animation end
-        window.map.removePluse();
-        window.map.setPluse(obj.getGeometry().getCoordinates());
+        window.map.removePulse();
+        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=station]');
+        window.map.addLayer(line);
+        console.log(obj);
+        window.map.setPulse(obj.getGeometry().getCoordinates());
 
     }
     , createEvent : obj => {
@@ -775,8 +781,11 @@ const rnbList = {
             target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
         });
 
-        window.map.removePluse();
-        window.map.setPluse(obj.getGeometry().getCoordinates());
+        window.map.removePulse();
+        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=event]');
+        window.map.addLayer(line);
+        console.log(obj);
+        window.map.setPulse(obj.getGeometry().getCoordinates());
     }
 }
 

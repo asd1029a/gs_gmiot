@@ -221,8 +221,8 @@ class mapCreater {
         this.view = this.map.getView();
 
         //TODO 펄스 반복 -> 중지
-        this.pluseInterval = null;
-        this.pluseStop = false;
+        this.pulseInterval = null;
+        this.pulseStop = false;
 
         this.cursorStyle();
 
@@ -534,37 +534,23 @@ class mapCreater {
     }
 
     //TODO 펄스 반복 -> 중지
-    setPluse(coord) {
+    setPulse(coord) {
         const fn = () => {
-            if(this.pluseStop) {
-                this.removePluse();
+            if(this.pulseStop) {
+                this.removePulse();
             } else {
-                this.setPluse(coord);
+                this.setPulse(coord);
             }
         }
-        this.pluseStop = false;
+        this.pulseStop = false;
         this.setPulseFeature(coord);
 
-        this.pluseInterval = setTimeout(fn , 500);
+        this.pulseInterval = setTimeout(fn , 500);
 
-        // this.map.pluseStop = false;
-        // // let nb = 5; //bounce==1;
-        // // for (let i=0; i<nb; i++) {
-        //     this.pluseInterval = setInterval (() => {
-        //         if(!this.pluseStop) {
-        //             this.setPulseFeature(coord);
-        //             this.map.pluseStop = false;
-        //         } else {
-        //             clearInterval(this.pluseInterval);
-        //             this.map.pluseStop = true;
-        //         }
-        //     }, 500);
-            // }, i*500);
-        // };
     }
 
-    removePluse() {
-        clearTimeout(this.pluseInterval);
+    removePulse() {
+        clearTimeout(this.pulseInterval);
     }
 
 
