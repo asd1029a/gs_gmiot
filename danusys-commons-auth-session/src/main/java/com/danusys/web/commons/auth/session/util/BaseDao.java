@@ -16,10 +16,6 @@ public abstract class BaseDao {
     public abstract void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory);
     
 	public List<Map<String, Object>> selectList(String qid, Map<String, Object> paramMap) throws Exception {
-		System.out.println("?????????????" + qid);
-		System.out.println("?????????????" + paramMap.values());
-
-
 
 		return sqlSession.selectList(qid, paramMap);
 	}

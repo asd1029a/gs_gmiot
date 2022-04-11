@@ -28,8 +28,8 @@ public class DbConfig {
          return DataSourceBuilder
                  .create()
                  .driverClassName("org.mariadb.jdbc.Driver")
- //                .url("jdbc:mariadb://danuservice2.kro.kr:41036/smartmeter")
-                 .url("jdbc:mariadb://localhost:3306/smartmeteringmaria")
+                 .url("jdbc:mariadb://danuservice2.kro.kr:41036/smartMeteringTest")
+  //               .url("jdbc:mariadb://localhost:3306/smartmeteringmaria")
                  .username("root")
                  .password("danu1234")
                  .build();

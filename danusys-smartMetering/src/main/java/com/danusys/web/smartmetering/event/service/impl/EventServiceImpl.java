@@ -45,6 +45,8 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public String selectListEventGeojson(Map<String, Object> paramMap) throws Exception {
 		List<Map<String,Object>> geoList = commonDao.selectList("event.SELECT_LIST_EVENT_FOR_LAYER", paramMap);
+		System.out.println("이벤트목록 : " + geoList);
+
 		return JsonUtil.getJsonString(commonService.getGeoJson(geoList, "event"));
 	}
 

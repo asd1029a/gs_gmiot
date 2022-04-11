@@ -331,6 +331,8 @@ const accountGroup = {
 			
 			$("#addAccountInGroupBtn").on('click', () => {
 				const selectedData = $('#accountGroupTable').DataTable().row('.selected').data();
+				console.log("selectedData??" + selectedData.accountGroupSeq );
+
 				if(typeof selectedData !== "undefined" && selectedData.accountGroupSeq !== "" && selectedData.accountGroupSeq !== null) {
 					accountGroup.showAccountInGroupPopup(selectedData.accountGroupSeq);
 				} else {

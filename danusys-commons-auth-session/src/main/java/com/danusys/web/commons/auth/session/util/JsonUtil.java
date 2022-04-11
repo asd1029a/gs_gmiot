@@ -17,6 +17,8 @@ public class JsonUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public static String getJsonString(Object obj) throws JsonProcessingException {
+		log.info("넘어온obj값 : " + obj);
+
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		ObjectMapper mapper = new ObjectMapper();
 		String result = "";

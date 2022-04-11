@@ -105,14 +105,6 @@ public class CommonsUserDetails implements UserDetails {
             });
         }*/
 
-        //권한에 대한 security 규픽이 role_권한명 이렇게되있어서 permitlist에 등록을하고...
-        //그걸 authorites에 넣는거긴한데.. 그럼 이 권한manager를 어디서 ? 찾아오는지?? 디비?? 없는데??
-        //지금  아래는 그냥 막셋팅한거고 잠시만요결국엔 또 권한이 문젠가..??
-        //아이거어떻게하지..
-        //지금 model 구조에서는stackoverflow가날수박에없는데 ..
-        //stackoverflow 에러나면 무조건 error 페이지로 넘어가게되있나봐요 ...
-        // 아하..
-
 
         permitList.add("ROLE_MANAGER");
 
