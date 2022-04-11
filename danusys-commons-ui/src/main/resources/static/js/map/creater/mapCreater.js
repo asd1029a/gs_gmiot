@@ -220,12 +220,15 @@ class mapCreater {
         this.map = this.createMap();
         this.view = this.map.getView();
 
+        //TODO 펄스 반복 -> 중지
+        this.pulseInterval = null;
+        this.pulseStop = false;
+
         this.cursorStyle();
 
         this.createTileLayers();
 
         this.switchTileMap('btnImgmap');
-
 
         this.map.getLayers().getArray().forEach((layer, idx) => {
             layer.setZIndex(idx);
@@ -513,6 +516,42 @@ class mapCreater {
         this.map.addControl(scaleLine);
     }
 
+    setPulseFeature(coord) {
+        let f = new ol.Feature (new ol.geom.Point(coord));
+        f.setStyle (new ol.style.Style({
+            image: new ol.style["Circle"] ({
+                radius: 30,
+                points: 4,
+                stroke: new ol.style.Stroke ({ color: "#ff0000", width:5 })
+            })
+        }));
+        this.map.animateFeature (f, new ol.featureAnimation.Zoom({
+            fade: ol.easing.easeOut,
+            duration: 500,
+            easing: ol.easing["easyOut"] //bounce
+        }));
+        this.map.renderSync();
+    }
+
+    //TODO 펄스 반복 -> 중지
+    setPulse(coord) {
+        const fn = () => {
+            if(this.pulseStop) {
+                this.removePulse();
+            } else {
+                this.setPulse(coord);
+            }
+        }
+        this.pulseStop = false;
+        this.setPulseFeature(coord);
+
+        this.pulseInterval = setTimeout(fn , 500);
+
+    }
+
+    removePulse() {
+        clearTimeout(this.pulseInterval);
+    }
 
 
 
