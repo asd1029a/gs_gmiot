@@ -187,7 +187,7 @@ public class UserController {
     @PostMapping(value = "excel/download")
     public void exportNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
         Workbook wb = null;
-        Map<String, Object> dataMap = userService.getList(paramMap);
+        Map<String, Object> dataMap = userService.getList((Map<String, Object>) paramMap.get("search"));
 
         paramMap.put("dataMap", dataMap.get("data"));
 //        log.info("dataList = {}", dataMap.get("data"));
