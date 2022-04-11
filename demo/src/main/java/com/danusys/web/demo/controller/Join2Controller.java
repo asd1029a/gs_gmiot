@@ -33,25 +33,25 @@ public class Join2Controller {
         return "test2";
     }
 
-    @RequestMapping("/permitadminpage")
-    public String permitadminpage() {
-        return "permitadminpage";
+    @RequestMapping("/permitAdminPage")
+    public String permitAdminPage() {
+        return "permitAdminPage";
     }
 
-    @RequestMapping("/permitmanagerpage")
-    public String permitmanagerpage() {
-        return "permitmanagerpage";
+    @RequestMapping("/permitManagerPage")
+    public String permitManagerPage() {
+        return "permitManagerPage";
     }
 
-    @RequestMapping("/permitauthpage")
-    public String permitauthpage() {
-        return "permitauthpage";
+    @RequestMapping("/permitAuthPage")
+    public String permitAuthPage() {
+        return "permitAuthPage";
     }
 
 
-    @RequestMapping("/permitallpage")
-    public String permitallpage() {
-        return "permitallpage";
+    @RequestMapping("/permitAllPage")
+    public String permitAllPage() {
+        return "permitAllPage";
     }
 
     @RequestMapping("/loginpage")

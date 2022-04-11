@@ -14,7 +14,7 @@
                 <li sec:authorize="hasAnyRole('ROLE_mntr_rw, ROLE_mntr_r-')" id="mntr">
                     <a href="/pages/mntr">관제</a>
                 </li>
-                <li id="inqry">
+                <li sec:authorize="hasAnyRole('ROLE_inqry_rw', 'ROLE_inqry_r-')"  id="inqry">
                     <a href="/pages/inqry/event1">조회/관리</a>
                 </li>
                 <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" th:if="${municipality == '41210000'}" id="stats">
@@ -29,6 +29,7 @@
             </th:block>
         </ul>
         <ul class="util_menu">
+<!--            TODO: 사용자 이름 매핑-->
             <li><i><img src="/images/default/utmenu_login.svg"></i>admin 님</li>
             <li id="logoutBtn"><i><img src="/images/default/utmenu_logout.svg"></i>로그아웃</li>
         </ul>
