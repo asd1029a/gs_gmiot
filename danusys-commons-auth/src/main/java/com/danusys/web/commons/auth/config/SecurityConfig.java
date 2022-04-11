@@ -120,8 +120,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         for (String str : roleMenuPage){
             String permitMenu = str.split("-")[0];
             String url = str. split("-")[1];
+            String[] roles = {permitMenu + "_rw", permitMenu + "_r-"};
             httpSecurity.authorizeRequests()
-                .antMatchers(url).hasAnyRole(permitMenu+"_r");
+                .antMatchers(url).hasAnyRole(roles);
         }
 
         httpSecurity
