@@ -5,6 +5,7 @@ import com.danusys.web.commons.auth.session.config.security.LoginFailureHandler;
 import com.danusys.web.commons.auth.session.config.security.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,6 +54,8 @@ public class SecurityConfigSession extends WebSecurityConfigurerAdapter {
     }
 
 
+
+
     @Value("#{'${permit.all.page.basic}'.split(',')}")
     private String[] permitAllBasic;
 
@@ -60,6 +63,8 @@ public class SecurityConfigSession extends WebSecurityConfigurerAdapter {
     private String[] permitAllAdd;
 
     private String[] permitAll = null;
+
+
 
 
     @Override
@@ -89,7 +94,7 @@ public class SecurityConfigSession extends WebSecurityConfigurerAdapter {
  //                 .loginProcessingUrl("/login")
                     .usernameParameter("username")
                     .passwordParameter("password")
-                .defaultSuccessUrl("/dashboard/index.do") // 로그인 성공 시 아무런 설정을 하지 않았을 때 넘어가는 페이지 설정
+ //               .defaultSuccessUrl("/dashboard/index.do") // 로그인 성공 시 아무런 설정을 하지 않았을 때 넘어가는 페이지 설정
 
                 .successHandler(authenticationSuccessHandler())
 

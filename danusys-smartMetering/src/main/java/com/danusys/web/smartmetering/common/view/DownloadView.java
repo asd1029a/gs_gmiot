@@ -14,6 +14,8 @@ public class DownloadView extends AbstractView {
 
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("downloadview에 model : " + model);
+
 		String fileName = model.get("fileName").toString();
         String userAgent = request.getHeader("User-Agent");
         

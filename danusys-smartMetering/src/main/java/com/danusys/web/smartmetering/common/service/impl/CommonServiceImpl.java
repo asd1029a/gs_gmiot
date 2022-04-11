@@ -126,6 +126,9 @@ public class CommonServiceImpl implements CommonService {
 	 * @return isAjax에 따라 ModelAndView, JSON String 리턴
 	*/
 	public Object exceptionProc(HttpServletRequest request) throws Exception {
+
+		System.out.println("commonserviceimple에 exceptionProc안들어옴???");
+
 		ModelAndView mav = new ModelAndView();
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Map<String, Object> jsonMap = new HashMap<String, Object>();
@@ -172,7 +175,7 @@ public class CommonServiceImpl implements CommonService {
 				message = "처리중 오류가 발생하였습니다.";
 				break;
 		}
-		
+
 		String exceptionStr = "";
 		if(request.getAttribute("javax.servlet.error.exception")!=null) {
 			exceptionStr = request.getAttribute("javax.servlet.error.exception").toString();
@@ -206,7 +209,10 @@ public class CommonServiceImpl implements CommonService {
 			resultMap.put("exception", exceptionStr);
 			
 			mav.addObject("resultMap", resultMap);
-			mav.setViewName("common/error.tiles"); //  fragments/error 로 추후 변경..
+			mav.setViewName("fragments/error"); //  fragments/error 로 추후 변경..
+
+			System.out.println("commonserviceimple에 mav정보 : " + mav);
+
 			resultObj = mav;
 		}
 		
@@ -224,6 +230,8 @@ public class CommonServiceImpl implements CommonService {
 			commonDao.insert("sys.INSERT_EXCEPTION", resultMap);
 			errorLogger.error("Code : " + code + " / RequestUri : " + requestUri + " / Exception : " + exceptionSb.toString());
 		}
+		System.out.println("resultobj???? : " + resultObj);
+		//검색좀해보고올게요넵
 		return resultObj;
 	}
 	

@@ -1,6 +1,7 @@
 package com.danusys.web.smartmetering.config;
 
 
+import com.danusys.web.smartmetering.common.view.DownloadView;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +48,10 @@ public class DbConfig {
         return sessionFactoryBean.getObject();
     }
 
+    @Bean // 엑셀 downloadView 빈 등록
+    public DownloadView downloadView(){
+        DownloadView downloadView = new DownloadView();
+        return downloadView;
+    }
 
 }

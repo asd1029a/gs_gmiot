@@ -3,10 +3,12 @@ package com.danusys.web.smartmetering.admin.controller;
 import com.danusys.web.commons.auth.session.service.AdminService;
 import com.danusys.web.smartmetering.common.annotation.JsonRequestMapping;
 import com.danusys.web.smartmetering.common.util.DateUtil;
+import com.danusys.web.smartmetering.common.util.ExcelUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,8 +26,8 @@ public class AdminController {
 	private final AdminService adminService;
 
 
-	//@Autowired
-	//ExcelUtil excelUtil;
+	@Autowired
+	ExcelUtil excelUtil;
 
 	/**
 	 * ################
@@ -105,7 +107,7 @@ public class AdminController {
 	@RequestMapping(value = "/admin/exportExcelAdmin.do")
 	public ModelAndView exportAdmin(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> paramMap) throws Exception {
 		String fileName = "사용자목록_"+DateUtil.getCurrentDate("yyyyMmddHHmmss");
-		String columnArr = "adminId|tel|address|detailAddress|employeeNumber|codeName";
+		String columnArr = "id|tel|address|detailAddress|employeeNumber|codeName";
 		String columnNmArr = "관리자 ID|전화번호|주소|상세주소|사번|상태";
 		String qId = "admin.SELECT_LIST_ADMIN_EXCEL";
 
@@ -114,8 +116,10 @@ public class AdminController {
 		paramMap.put("qId", qId);
 		paramMap.put("fileName", fileName+".xlsx");
 
-		//return excelUtil.exportExcel(paramMap);
-		return null;
+
+
+		return excelUtil.exportExcel(paramMap);
+
 	}
 
 	/**

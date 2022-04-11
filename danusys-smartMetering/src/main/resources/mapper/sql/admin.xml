@@ -71,7 +71,7 @@
 
 		SELECT CASE WHEN COUNT(ID) > 0 THEN 'Y' ELSE 'N' END ADMIN_ID_USE_FLAG
 		FROM T_USER
-		WHERE ID=#{adminId}
+		WHERE ID=#{id}
 	</select>
 
 	<!-- 관리자 : 등록 -->
@@ -95,7 +95,7 @@
 		) VALUES (
 					 #{adminId}
 				 , #{password}
-				 , #{adminName}
+				 , #{userName}
 				 , #{email}
 				 , NOW()
 				 , #{sessionAdminSeq}

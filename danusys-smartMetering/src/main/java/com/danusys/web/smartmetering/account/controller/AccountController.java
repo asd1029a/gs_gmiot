@@ -4,6 +4,7 @@ import com.danusys.web.smartmetering.account.service.AccountService;
 import com.danusys.web.smartmetering.account.service.impl.AccountServiceImpl;
 import com.danusys.web.smartmetering.common.annotation.JsonRequestMapping;
 import com.danusys.web.smartmetering.common.util.DateUtil;
+import com.danusys.web.smartmetering.common.util.ExcelUtil;
 import com.danusys.web.smartmetering.schedule.AccountJobSchedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ public class AccountController {
 	@Autowired
     AccountJobSchedule accountJobSchedule;
 	
-	//@Autowired
-	//ExcelUtil excelUtil;
+	@Autowired
+	ExcelUtil excelUtil;
 	
 	@RequestMapping("/account/test.do")
 	public void test() throws Exception {
@@ -95,8 +96,7 @@ public class AccountController {
 		paramMap.put("qId", qId);
 		paramMap.put("fileName", fileName+".xlsx");
 		
-		//return excelUtil.exportExcel(paramMap);
-		return null;
+		return excelUtil.exportExcel(paramMap);
 	}
 	
 	/**
@@ -230,8 +230,7 @@ public class AccountController {
 		paramMap.put("qId", qId);
 		paramMap.put("fileName", fileName+".xlsx");
 		
-		//return excelUtil.exportExcel(paramMap);
-		return null;
+		return excelUtil.exportExcel(paramMap);
 	}
 	
 	/**

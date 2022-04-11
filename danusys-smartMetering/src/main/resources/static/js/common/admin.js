@@ -30,8 +30,8 @@ const admin = {
 				if(adminObj.useFlag !== "2") {
 					comm.showModal($("#adminPwdPopup"));
 					$("#adminPwdPopup").css('display', 'flex');
-					$('#adminPwdForm input[name="id"]').val(adminObj.adminId);
-					$('#adminPwdForm input[name="userSeq"]').val(adminObj.adminSeq);
+					$('#adminPwdForm input[name="id"]').val(adminObj.id);
+					$('#adminPwdForm input[name="userSeq"]').val(adminObj.userSeq);
 				} else {
 					comm.showAlert("삭제된 사용자입니다");
 				}
@@ -72,7 +72,7 @@ const admin = {
 		});
 
 		$("#delAdminProcBtn").on('click', () => {
-			const adminSeq = $('#adminSeq').val();
+			const adminSeq = $('#userSeq').val();
 			comm.confirm("해당 사용자를 제거하시겠습니까?"
 				, {}
 				, () => {admin.delAdminProc(adminSeq);}
@@ -95,6 +95,8 @@ const admin = {
 
 		$("#duplicateCheckBtn").on('click', (e) => {
 			const adminId = $('#adminId').val();
+			console.log("중복체크 아이디 입력값1 : " + adminId);
+
 			if(adminId !== '' && stringFunc.validRegex(adminId, "loginId") === true) {
 				admin.checkDuplAdminId(adminId);
 			} else {

@@ -6,6 +6,7 @@ import com.danusys.web.commons.auth.session.util.PagingUtil;
 import com.danusys.web.commons.auth.session.util.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class AdminServiceImpl implements AdminService {
 	//PasswordEncoder passwordEncoder;
 	@Autowired
 	PagingUtil pagingUtil;
+
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	SessionUtil sessionUtil;
 
@@ -98,9 +102,9 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String insertAdmin(Map<String, Object> paramMap) throws Exception {
-		//paramMap.put("password", passwordEncoder.encode(paramMap.get("password").toString()));
-		//return JsonUtil.getCntJsonString(commonDao.insert("admin.INSERT_ADMIN", paramMap));
-		return null;
+		paramMap.put("password", passwordEncoder.encode(paramMap.get("password").toString()));
+		return JsonUtil.getCntJsonString(commonDao.insert("admin.INSERT_ADMIN", paramMap));
+
 	}
 
 	/**
@@ -108,11 +112,12 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String updateAdmin(Map<String, Object> paramMap) throws Exception {
-		/*if(paramMap.get("password") != null) {
+		log.info("관리자 수정 : " + paramMap);
+		if(paramMap.get("password") != null) {
 			paramMap.put("password", passwordEncoder.encode(paramMap.get("password").toString()));
 		}
-		return 	JsonUtil.getCntJsonString(commonDao.insert("admin.UPDATE_ADMIN", paramMap));*/
-		return null;
+		log.info("관리자 수정 파람 패스워드 : " + paramMap.get("password"));
+		return 	JsonUtil.getCntJsonString(commonDao.insert("admin.UPDATE_ADMIN", paramMap));
 	}
 
 	/**
@@ -120,9 +125,9 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String updateAdminPwd(Map<String, Object> paramMap) throws Exception {
-		/*paramMap.put("password", passwordEncoder.encode(paramMap.get("password").toString()));
-		return JsonUtil.getCntJsonString(commonDao.insert("admin.UPDATE_ADMIN_PASSWORD", paramMap));*/
-		return null;
+		paramMap.put("password", passwordEncoder.encode(paramMap.get("password").toString()));
+		return JsonUtil.getCntJsonString(commonDao.insert("admin.UPDATE_ADMIN_PASSWORD", paramMap));
+
 	}
 
 	/**

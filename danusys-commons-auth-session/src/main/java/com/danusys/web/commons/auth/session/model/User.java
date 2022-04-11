@@ -4,6 +4,8 @@ package com.danusys.web.commons.auth.session.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode
 @Table(name = "t_user")
 public class User {
@@ -62,15 +65,6 @@ public class User {
     private String refreshToken;
 
     private String status;
-
-    /*
-    public List<String> getRoleList(){
-            if(this.roles.length() >0){
-                    return Arrays.asList(this.roles.split(","));
-            }
-            return new ArrayList<>();
-    }
-    */
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserInGroup> userInGroup =new ArrayList<>();

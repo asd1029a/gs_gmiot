@@ -1,10 +1,9 @@
 package com.danusys.web.commons.auth.session.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+//기존 ㅔㅇ러페이지살려봐요
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "t_user_group")
 public class UserGroup implements Serializable {
@@ -40,8 +41,13 @@ public class UserGroup implements Serializable {
     @Column(name = "user_group_status")
     private String userGroupStatus;
 
+//    @OneToMany(mappedBy = "userGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JsonBackReference
+//    private final List<UserInGroup> userInGroup = new ArrayList<>();
+
+    // 04-08 엄태혁
     @OneToMany(mappedBy = "userGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonIgnore
     private final List<UserInGroup> userInGroup = new ArrayList<>();
 
     @OneToMany(mappedBy = "userGroup2", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

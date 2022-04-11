@@ -1,20 +1,26 @@
+/*
 package com.danusys.web.commons.auth.session.interceptor;
 
 import com.danusys.web.commons.auth.session.util.SessionUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+@Slf4j
 
 public class AuthInterceptor extends HandlerInterceptorAdapter {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		log.info("#####AuthInterceptor Prehandle");
+
 		String uri = request.getRequestURI();
 		Map<?, ?> adminInfo = SessionUtil.getSessionInfo();
 		boolean isAjax = false;
@@ -30,6 +36,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 				response.sendRedirect("/admin/loginForm.do");
 			}
 		}
+
+		log.info("####AuthInterceptor isAjax? : " + isAjax);
+
 		return true;
 	}
 
@@ -42,4 +51,4 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 		super.afterCompletion(request, response, handler, ex);
 	}
-}
+}*/
