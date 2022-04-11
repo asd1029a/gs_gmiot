@@ -1,13 +1,17 @@
 package com.danusys.web.commons.auth.controller;
 
+import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
@@ -177,5 +181,18 @@ public class UserController {
     @GetMapping("/userCount")
     public ResponseEntity<?> getUserCountProc() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserSize());
+    }
+
+    @ResponseBody
+    @PostMapping(value = "excel/download")
+    public void exportNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        Workbook wb = null;
+        Map<String, Object> dataMap = userService.getList(paramMap);
+
+        paramMap.put("dataMap", dataMap.get("data"));
+//        log.info("dataList = {}", dataMap.get("data"));
+        wb = FileUtil.excelDownload2(paramMap) ;
+        wb.write(response.getOutputStream());
+        wb.close();
     }
 }
