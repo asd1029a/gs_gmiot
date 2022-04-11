@@ -77,28 +77,30 @@ const mntr = {
                         if(layer){
                             if(layer.get("title")){
                                 const layerName = layer.get("title");
-                                const len = feature.getProperties().features.length;
-                                if(len == 1){
-                                    let position = feature.getGeometry().getCoordinates();
-                                    let content = "";
-                                    //개소
-                                    if(layerName == "stationLayer"){
-                                        content = mapPopupContent.station(feature, len);
-                                    //이벤트
-                                    } else if((layerName == "eventLayer")||(layerName == "eventPastLayer")){
-                                        content = mapPopupContent.event(feature, len);
-                                        let point = window.map.map.getPixelFromCoordinate(position);
-                                        position = window.map.map.getCoordinateFromPixel([point[0], point[1] - 50]); //아이콘 높이만큼
-                                    } else {}
-                                    popup.create('mouseOverPopup');
-                                    popup.content('mouseOverPopup', content);
-                                    popup.move('mouseOverPopup', position);
-                                }
-                            }
-
-                        }
-                    });
-                }
+                                //클러스터 인가
+                                if(feature.getProperties().features){
+                                    const len = feature.getProperties().features.length;
+                                    if(len == 1){
+                                        let position = feature.getGeometry().getCoordinates();
+                                        let content = "";
+                                        //개소
+                                        if(layerName == "stationLayer"){
+                                            content = mapPopupContent.station(feature, len);
+                                        //이벤트
+                                        } else if((layerName == "eventLayer")||(layerName == "eventPastLayer")){
+                                            content = mapPopupContent.event(feature, len);
+                                            let point = window.map.map.getPixelFromCoordinate(position);
+                                            position = window.map.map.getCoordinateFromPixel([point[0], point[1] - 50]); //아이콘 높이만큼
+                                        }
+                                        popup.create('mouseOverPopup');
+                                        popup.content('mouseOverPopup', content);
+                                        popup.move('mouseOverPopup', position);
+                                    }
+                                }// end cluster?
+                            }// end layer title
+                        } // end layer
+                    }); // end mouseon
+                } // end hit canvas
                 map.map.renderSync();
             } else {
                 jTarget.css("cursor", "all-scroll");
@@ -210,6 +212,13 @@ const mntr = {
 
         //축척별 레이어 반응
         map.setMapViewEventListener('propertychange' ,e => {
+            //연결선 리로드
+            window.map.map.getLayers().getArray().map(ly => {
+                if(ly.get('title').includes('lineLayer')){
+                    window.lyConnect.reload(ly.getProperties().type);
+                }
+            });
+
             if(String(e.key)=="resolution"){
                 const zoom = map.map.getView().getZoom();
                 let popup = new mapPopup('map');
@@ -338,6 +347,7 @@ const mntr = {
         });
         //RNM CLOSER (오른쪽창 닫기)
         $('.area_right_closer').on("click", e => {
+            const type = $(e.currentTarget).parents('.area_right').attr('data-value');
             $('.area_right').removeClass("select");
             //선택 해제
             window.map.updateSize();
@@ -347,6 +357,8 @@ const mntr = {
             popup.remove('mouseClickPopup');
             //펄스 제거
             window.map.removePulse();
+            //연결선 제거
+            window.lyConnect.remove(type);
         });
         //RNM TAB SWITCH (오른쪽 창 탭 변경)
         $('.area_right .tab li').on("click", e => {
@@ -747,6 +759,7 @@ const rnbList = {
         const target = $('.area_right[data-value=station]');
         const prop = obj.getProperties();
 
+        target.data(obj);
         target.addClass('select');
         target.find('.stationTitle').text("[ " + prop.stationSeq + " ] "  + prop.stationName);
 
@@ -757,7 +770,10 @@ const rnbList = {
         });
         //animation end
         window.map.removePulse();
-        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=station]');
+        //다른 유형 중복선 제거
+        window.lyConnect.remove('event');
+        window.lyConnect.remove('station');
+        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=station]', 'station' );
         window.map.addLayer(line);
         console.log(obj);
         window.map.setPulse(obj.getGeometry().getCoordinates());
@@ -768,6 +784,7 @@ const rnbList = {
         const target = $('.area_right[data-value=event]');
         const prop = obj.getProperties();
 
+        target.data(obj);
         target.addClass('select');
         target.find('.eventTitle').text("[ " + prop.eventSeq + " ] "  + prop.eventKindName);
 
@@ -782,7 +799,10 @@ const rnbList = {
         });
 
         window.map.removePulse();
-        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=event]');
+        //다른 유형 중복선 제거
+        window.lyConnect.remove('event');
+        window.lyConnect.remove('station');
+        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=event]', 'event');
         window.map.addLayer(line);
         console.log(obj);
         window.map.setPulse(obj.getGeometry().getCoordinates());
