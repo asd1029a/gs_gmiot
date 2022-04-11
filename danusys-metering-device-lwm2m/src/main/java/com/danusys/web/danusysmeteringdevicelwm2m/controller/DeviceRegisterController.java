@@ -402,7 +402,7 @@ public class DeviceRegisterController {
      * @param objectId
      * @return
      */
-    @DeleteMapping(value = {"/{deviceId}/{objectId}/{objectInstanceId"})
+    @DeleteMapping(value = {"/{deviceId}/{objectId}/{objectInstanceId}"})
     public ResponseEntity<?> deleteObject(HttpServletRequest request,
                                               @PathVariable String deviceId,
                                               @PathVariable String objectId,
