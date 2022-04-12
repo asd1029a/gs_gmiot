@@ -1,9 +1,9 @@
-package com.danusys.web.commons.auth.session.controller;
+package com.danusys.web.commons.auth.controller;
 
-import com.danusys.web.commons.auth.session.dto.request.UserGroupPermitRequest;
-import com.danusys.web.commons.auth.session.service.UserGroupPermitService;
-import com.danusys.web.commons.auth.session.service.UserGroupService;
-import com.danusys.web.commons.auth.session.service.UserInGroupService;
+import com.danusys.web.commons.auth.dto.request.UserGroupPermitRequest;
+import com.danusys.web.commons.auth.service.UserGroupPermitService;
+import com.danusys.web.commons.auth.service.UserGroupService;
+import com.danusys.web.commons.auth.service.UserInGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

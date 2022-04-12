@@ -64,14 +64,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private String[] permitAll = null;
 
 
-
-    @Value("#{'${role.manager.page}'.split(',')}")
-    private String[] roleManagerPage;
-
-
-
     @Value("#{'${role.admin.page}'.split(',')}")
     private String[] roleAdminPage;
+    @Value("#{'${role.manager.page}'.split(',')}")
+    private String[] roleManagerPage;
+    @Value("#{'${role.menu.page}'.split(',')}")
+    private String[] roleMenuPage;
+
+    private String[] permitMenuPage = null;
+
 
 
     @Bean
@@ -112,15 +113,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .addFilter(corsConfig.corsFilter()) //corsconfig
                 .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
-                .csrf().disable()       //서버에 인증정보를 보관하지 않기때문에 불필요
-                .authorizeRequests() //시큐리티 처리에 HttpServletRequest를 이용한다
-//                .antMatchers("/**").permitAll()
-                .antMatchers(permitAll).permitAll()
-//                .antMatchers(String.valueOf(PERMIT_PATH)).permitAll()
+                .csrf().disable();       //서버에 인증정보를 보관하지 않기때문에 불필요
 
-                .antMatchers(roleManagerPage).access("hasRole('rw')")
-               // .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
+        for (String str : roleMenuPage){
+            String permitMenu = str.split("-")[0];
+            String url = str. split("-")[1];
+            String[] roles = {permitMenu + "_rw", permitMenu + "_r-"};
+            httpSecurity.authorizeRequests()
+                .antMatchers(url).hasAnyRole(roles);
+        }
+
+        httpSecurity
+                .authorizeRequests() //시큐리티 처리에 HttpServletRequest를 이용한다
+                .antMatchers(permitAll).permitAll()
                 .antMatchers(roleAdminPage).access("hasRole('ROLE_ADMIN')")
+                .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
@@ -128,7 +135,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
     }
 
 

@@ -1,8 +1,8 @@
-package com.danusys.web.commons.auth.session.controller;
+package com.danusys.web.commons.auth.controller;
 
-import com.danusys.web.commons.auth.session.model.User;
-import com.danusys.web.commons.auth.session.service.UserInGroupService;
-import com.danusys.web.commons.auth.session.service.UserService;
+import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.service.UserInGroupService;
+import com.danusys.web.commons.auth.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

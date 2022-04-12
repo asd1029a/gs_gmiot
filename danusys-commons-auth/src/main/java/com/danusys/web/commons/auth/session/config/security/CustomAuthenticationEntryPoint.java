@@ -24,11 +24,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Value("${defaultFailureUrl}")
     private String defaultFailureUrl;
 
-    @Value("${defaultHomeUrl}")
-    private String defaultHomeUrl;
+//    @Value("${defaultHomeUrl}")
+//    private String defaultHomeUrl;
 
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-/*
+/*z
     public CustomAuthenticationEntryPoint(String defaultFailureUrl) {
         this.defaultFailureUrl = defaultFailureUrl;
     }
