@@ -7,12 +7,18 @@ import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.json.XML;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.NodeList;
 
 import javax.xml.soap.*;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -93,27 +99,35 @@ public class SoapApiExecutor implements ApiExecutor  {
             SOAPMessage responseMessage = soapConnection.call(soapMessage, targetURL);
             log.trace("soapBody : {}", soapBody.getTextContent());
 //            soapMessage.writeTo(System.out);
-            responseMessage.writeTo(System.out);
+//            responseMessage.writeTo(System.out);
 
             SOAPBody resBody = responseMessage.getSOAPBody();
+            log.trace("response to json : {}", xmlToJsonStr(responseMessage));
             Iterator resBodyChildElements = resBody.getChildElements();
             Node rootNode = (Node) resBodyChildElements.next();
-            NodeList nodeList = rootNode.getChildNodes();
-            int limit = nodeList.getLength();
+
+            NodeList nodes = rootNode.getChildNodes();
+            int limit = nodes.getLength();
             for (int i = 0; i < limit; i++) {
-                Node node = (Node) nodeList.item(i);
+                Node node = (Node) nodes.item(i);
+                log.trace("node to json : {}", xmlToJsonStr(node));
             }
-            NodeList nodes = rootNode.getChildNodes().item(0).getChildNodes();
+//            NodeList nodes = rootNode.getChildNodes().item(0).getChildNodes();
 
             //        final Map<String, Object> reqMap = apiRequestParams.stream().collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
             log.trace("api.getApiResponseParams() :{}", api.getApiResponseParams().toString());
 
-            api.getApiResponseParams().forEach(resApi -> {
-                if (resApi.getDataType().equals(DataType.ARRAY)) {
+            List<ApiParam> apiResponseParams = api.getApiResponseParams();
 
+            apiResponseParams.forEach(resApi -> {
+                if (resApi.getDataType().equals(DataType.ARRAY)) {
+                    List<Map<String, Object>> inner = new ArrayList<>();
+                    api.getApiResponseParams().stream().filter(f -> f.getParentSeq() == resApi.getApiId()).forEach(f -> {
+
+                    });
                 }
                 log.trace("응답 : {} <- {} = {}", resApi.getFieldNm(), resApi.getFieldMapNm(), this.getNodeValue(nodes, resApi.getFieldMapNm()));
-                result.put(resApi.getFieldNm(), this.getNodeValue(nodes, resApi.getFieldMapNm()));
+                result.put(resApi.getFieldNm(), this.getNodeValue2(nodes, resApi.getFieldMapNm(), resApi, apiResponseParams));
             });
 
             log.trace("result {} ", result.toString());
@@ -147,6 +161,53 @@ public class SoapApiExecutor implements ApiExecutor  {
             if(StrUtils.getStr(nodes.item(i).getLocalName()).equals(fieldMapNm)) {
                 return StrUtils.getStr(nodes.item(i).getChildNodes().item(0).getNodeValue());
             }
+        }
+        return "";
+    }
+
+    /**
+     * 응답값 세팅
+     * @param nodes
+     * @param fieldMapNm
+     * @return
+     */
+    private Object getNodeValue2(NodeList nodes, String fieldMapNm, ApiParam resApi, List<ApiParam> apiResponseParams) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        for(int i=0; i<nodes.getLength();i++) {
+            if (resApi.getDataType().equals(DataType.ARRAY)) {
+                NodeList l = nodes.item(i).getChildNodes();
+                for(int j = 0; j < l.getLength(); j++) {
+                    String name = l.item(j).getChildNodes().item(0).getLocalName();
+                }
+            } else {
+                if(StrUtils.getStr(nodes.item(i).getLocalName()).equals(fieldMapNm)) {
+                    return nodes.item(i).getChildNodes().item(0).getNodeValue();
+                }
+            }
+        }
+        return "";
+    }
+
+    private String xmlToJsonStr(SOAPMessage message) {
+        final StringWriter writer = new StringWriter();
+        try {
+            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(message.getSOAPPart()), new StreamResult(writer));
+            String xmlStr = writer.toString();
+            return XML.toJSONObject(xmlStr).toString();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private String xmlToJsonStr(Node node) {
+        final StringWriter writer = new StringWriter();
+        try {
+            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(node), new StreamResult(writer));
+            String xmlStr = writer.toString();
+            return XML.toJSONObject(xmlStr).toString();
+        } catch (TransformerException e) {
+            e.printStackTrace();
         }
         return "";
     }
