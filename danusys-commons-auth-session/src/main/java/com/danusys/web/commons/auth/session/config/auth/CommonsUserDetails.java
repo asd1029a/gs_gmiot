@@ -22,9 +22,7 @@ public class CommonsUserDetails implements UserDetails {
 
 
     public CommonsUserDetails(User user) {
-
         this.user = user;
-
         permitList = new LinkedHashSet<String>();
     }
 
@@ -83,10 +81,57 @@ public class CommonsUserDetails implements UserDetails {
 
         return collectors;
     }*/
+
     @Override
     @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+
+//        if (user != null) {
+//            user.getUserInGroup().forEach(userInGroup -> {
+//                userInGroup.getUserGroup()
+//                        .getUserGroupPermit()
+//                        .forEach(groupPermit -> {
+//                    permitList.add("ROLE_" + groupPermit.getPermitMenu().getCodeValue() + "_" + groupPermit.getPermit().getCodeValue());
+//                });
+//            });
+//            permitList.forEach(r -> {
+//                authorities.add(new SimpleGrantedAuthority(r));
+//            });
+//        }
+
+        if (user != null) {
+            System.out.println("여기들어옴");
+            user.getUserInGroup().forEach(userInGroup -> {
+                userInGroup.getUserGroup()
+                        .getUserGroupPermit()
+                        .stream()
+                        .filter(userGroupPermit -> !permitList.add("ROLE_" + userGroupPermit.getPermitMenu().getCodeValue() + "_" + userGroupPermit.getPermit().getCodeValue()))
+                        .collect(Collectors.toList());
+            });
+            System.out.println("permitlist!! : " + permitList);
+            permitList.forEach(permit -> {
+                authorities.add(new SimpleGrantedAuthority(permit));
+            });
+        }
+
+        return authorities;
+    }
+
+
+
+
+
+
+
+
+
+/*
+    @Override
+    @Transactional
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+*/
 /*
 
         if (user != null) {
@@ -103,7 +148,8 @@ public class CommonsUserDetails implements UserDetails {
                     return r;
                 });
             });
-        }*/
+        }*//*
+
 
 
         permitList.add("ROLE_MANAGER");
@@ -114,5 +160,6 @@ public class CommonsUserDetails implements UserDetails {
 
         return authorities;
     }
+*/
 
 }

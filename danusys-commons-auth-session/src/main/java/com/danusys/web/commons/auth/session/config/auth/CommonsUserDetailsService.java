@@ -1,6 +1,6 @@
 package com.danusys.web.commons.auth.session.config.auth;
-import com.danusys.web.commons.auth.session.model.User;
 import com.danusys.web.commons.auth.session.repository.UserRepository;
+import com.danusys.web.commons.auth.session.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetailsService;

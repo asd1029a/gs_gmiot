@@ -1,7 +1,7 @@
 package com.danusys.web.platform.controller;
 
 
-import com.danusys.web.commons.auth.session.util.LoginInfoUtil;
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

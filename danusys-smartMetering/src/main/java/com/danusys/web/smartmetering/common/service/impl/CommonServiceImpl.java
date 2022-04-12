@@ -4,6 +4,7 @@ import com.danusys.web.commons.auth.session.util.CommonDao;
 import com.danusys.web.commons.auth.session.util.JsonUtil;
 import com.danusys.web.commons.auth.session.util.NetworkUtil;
 import com.danusys.web.smartmetering.common.service.CommonService;
+import com.danusys.web.smartmetering.common.util.ExcelUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
@@ -37,8 +38,8 @@ public class CommonServiceImpl implements CommonService {
 	@Autowired
 	CommonDao commonDao;
 
-	//@Autowired
-	//ExcelUtil excelUtil;
+	@Autowired
+	ExcelUtil excelUtil;
 	
 	@Override
 	public String getApiData(Map<String, Object> paramMap) throws Exception {
@@ -127,8 +128,6 @@ public class CommonServiceImpl implements CommonService {
 	*/
 	public Object exceptionProc(HttpServletRequest request) throws Exception {
 
-		System.out.println("commonserviceimple에 exceptionProc안들어옴???");
-
 		ModelAndView mav = new ModelAndView();
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Map<String, Object> jsonMap = new HashMap<String, Object>();
@@ -164,7 +163,7 @@ public class CommonServiceImpl implements CommonService {
 				break;
 			case 404:
 				codeText = HttpStatus.NOT_FOUND;
-				message = "요청하신 페이지를 찾을수 없습니다.";
+				message = "요청하신 페이지를 찾을 수 없습니다.";
 				break;
 			case 405:
 				codeText = HttpStatus.METHOD_NOT_ALLOWED;
@@ -209,7 +208,7 @@ public class CommonServiceImpl implements CommonService {
 			resultMap.put("exception", exceptionStr);
 			
 			mav.addObject("resultMap", resultMap);
-			mav.setViewName("fragments/error"); //  fragments/error 로 추후 변경..
+			mav.setViewName("fragments/error");
 
 			System.out.println("commonserviceimple에 mav정보 : " + mav);
 
@@ -230,8 +229,6 @@ public class CommonServiceImpl implements CommonService {
 			commonDao.insert("sys.INSERT_EXCEPTION", resultMap);
 			errorLogger.error("Code : " + code + " / RequestUri : " + requestUri + " / Exception : " + exceptionSb.toString());
 		}
-		System.out.println("resultobj???? : " + resultObj);
-		//검색좀해보고올게요넵
 		return resultObj;
 	}
 	

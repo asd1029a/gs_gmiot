@@ -1,7 +1,6 @@
 package com.danusys.web.commons.auth.session.model;
 
 import com.fasterxml.jackson.annotation.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

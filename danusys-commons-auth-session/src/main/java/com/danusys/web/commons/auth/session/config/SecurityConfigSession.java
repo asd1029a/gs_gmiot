@@ -5,7 +5,6 @@ import com.danusys.web.commons.auth.session.config.security.LoginFailureHandler;
 import com.danusys.web.commons.auth.session.config.security.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
