@@ -41,6 +41,15 @@ public class CommonUtil {
 				}).collect(Collectors.toList());
 	}
 
+	public static Map<String, Object> validMapNullMap(Map<String, Object> paramMap) {
+		Map<String, Object> result = new HashMap<>();
+
+		paramMap.forEach((k,v) -> {
+			result.put(k, v != null ? v : "");
+		});
+		return result;
+	}
+
 	public static ArrayList<String> valiArrNull(Map<String, Object> paramMap, String key){
 		if(paramMap.get(key) != null && paramMap.get(key).getClass().getSimpleName().equals("ArrayList")){
 			ArrayList<String> result = new ArrayList<>();

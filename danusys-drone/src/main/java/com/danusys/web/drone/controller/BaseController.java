@@ -1,20 +1,24 @@
 package com.danusys.web.drone.controller;
 
-import com.danusys.web.commons.socket.config.CustomServerSocket;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
-
-@RestController
+@Controller
 @RequiredArgsConstructor
+@Slf4j
 public class BaseController {
 
+
+    @Value("${homePage.url}")
+    private String homePageUrl;
+
+    @Value("${loginPage.path}")
+    private String loginPagePath;
 //    @RequestMapping(value = "/")
 //    public String index() {
 //        return "/layout/layout_login";
@@ -27,6 +31,21 @@ public class BaseController {
         mav.setViewName("view/pages/loginError");
 
         return mav;
+    }
+
+
+    @RequestMapping(value = "/")
+    public String index() {
+
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            log.info("principal={}", principal);
+            if (!principal.toString().equals("anonymousUser"))
+                return "redirect:" + homePageUrl;
+        }
+
+        return loginPagePath;
     }
 
 
