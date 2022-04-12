@@ -115,6 +115,22 @@
                     <div class="search_fold"><!-- active 시, display: flex; -->
                         <!-- form 통째로 -->
                         <form>
+                            <!-- TODO : 필요한 검색조건 data-selectbox-type (commonCode type에 따름)에 기입-->
+                            <dl class="dropdown_checkbox" data-selectbox-type="eventKind">
+                                <dt class="checkbox_title select_title">이벤트 종류</dt>
+                                <dd class="checkbox_list list" style="display: none;">
+                                </dd>
+                            </dl>
+                            <!--                            <dl class="dropdown_checkbox">-->
+                            <!--                                <dt class="checkbox_title select_title">장소유형</dt>-->
+                            <!--                                <dd class="checkbox_list list" style="display: none;">-->
+                            <!--                                </dd>-->
+                            <!--                            </dl>-->
+                            <dl class="dropdown_checkbox" data-selectbox-type="administZone">
+                                <dt class="checkbox_title select_title">행정구역</dt>
+                                <dd class="checkbox_list list" style="display: none;">
+                                </dd>
+                            </dl>
                         </form>
                         <ul class="button">
                             <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>

@@ -30,13 +30,11 @@ const commonCode = {
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
                     'data' : function ( d ) {
-                        console.log(d);
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
                         param.pParentCode = pParentCode;
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
-                        console.log(result);
                         const targetSeq = Number($target.data('tableSeq'));
                         $('.search_list:nth-of-type('+(targetSeq+1)+') .title dd .count').text(result.recordsTotal);
                         return result.data;

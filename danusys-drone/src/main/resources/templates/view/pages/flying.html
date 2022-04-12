@@ -59,8 +59,9 @@
                     <div class="mission">
                         <h6>미션 제어</h6>
                         <ul>
+                            <li onclick="droneSocket.droneArm()"><i class="controlButton"><img src="images/default/controlsPower.svg"></i>시동</li>
                             <li onclick="droneSocket.startMission()"><i class="controlButton"><img src="images/default/controlsPlay.svg"></i>미션시작</li>
-                            <li id="startAndStop" onclick="droneSocket.pauseMission()"><i class="controlButton"><img src="images/default/controlsStop.svg"></i><span>일시정지</span></li>
+                            <!--<li id="startAndStop" onclick="droneSocket.pauseMission()"><i class="controlButton"><img src="images/default/controlsStop.svg"></i><span>일시정지</span></li>-->
                             <li onclick="droneSocket.returnMission()"><i class="controlButton"><img src="images/default/controlsHome.svg"></i>귀환</li>
                         </ul>
                     </div>

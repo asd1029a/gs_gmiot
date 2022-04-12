@@ -1,5 +1,5 @@
 //let page = "/pages/mntr";
-let page = "/permitallpage";
+let page = "/permitAllPage";
 
 $(".login-btn").on("click", function () {
     let flag = false;

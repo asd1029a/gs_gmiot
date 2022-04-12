@@ -1,24 +1,232 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="navRFragment">
 
-    <!-- RNM -->
-    <!--<section class="area_info smart_power">
-        <h6>[Tab 1 관리번호] [Tab 1 형태] Tab 1 이름
-            <i class="rnm_closer">
-                <img src="/images/default/close.svg">
-            </i>
-        </h6>
-        <ul class="tab">
-            <li class="active"><a>기본 정보</a></li>
-            <li><a>시설물 제어</a></li>
-            <li><a>제어 로그</a></li>
-        </ul>
-        <div class="info_tab_section">
+    <!-- 개소 (기본/제어) -->
+    <section class="area_right" data-value="station">
+        <!--[개소 번호] 개소명-->
+        <h6><span class="stationTitle"></span><i class="area_right_closer"><img src="/images/default/close.svg"></i></h6>
+        <div class="area_right_contents">
             <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon03.svg"></i>CCTV
                     <select>
-                        <option>번호 올림차순</option>
-                        <option>번호 내림차순</option>
+                        <option selected>회전형</option>
+                        <option>고정형</option>
+                    </select>
+                </dt>
+                <dd class="ptz_toggle">
+                    <span>PTZ</span>
+                    <!-- TODO ID-->
+                    <input type="checkbox" id="switch1"><label for="switch">Toggle</label>
+                </dd>
+            </dl>
+            <div class="area_video">
+                <div><!-- 영상 --></div>
+            </div>
+            <ul class="tab">
+                <li class="active" data-value="info"><a>기본 정보</a></li>
+                <li data-value="control"><a>시설물 제어</a></li>
+            </ul>
+            <div class="area_right_scroll select" data-value="info">
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon06.svg"></i>스마트 버스정류소 개소 정보</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>관리 번호</span>
+                            <input data-value="stationSeq" type="text" placeholder="관리 번호" disabled>
+                        </li>
+                        <li>
+                            <span>장소 유형</span>
+                            <input type="text" placeholder="장소 유형" disabled>
+                        </li>
+                        <li>
+                            <span>행정동</span>
+                            <input data-value="administZone" type="text" placeholder="행정동" disabled>
+                        </li>
+                        <li>
+                            <span>개소 주소</span>
+                            <input data-value="address" type="text" placeholder="개소 주소" disabled>
+                        </li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon04.svg"></i>스마트 버스정류소 개소 상태</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>장비 연결 끊김</span>
+                            <input type="text" placeholder="없음">
+                        </li>
+                        <li>
+                            <span>장비 고장</span>
+                            <input type="text" placeholder="없음">
+                        </li>
+                        <li>
+                            <span>설치여부</span>
+                            <input type="text" placeholder="교통약자편의시설(미설치), 선팅필름(미부착)">
+                        </li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon04.svg"></i>스마트 버스정류소 현황</dt>
+                </dl>
+                <div class="area_right_bus_status">
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState01.svg"></i>현재인원</dt>
+                        <dd><span class="value">8</span>명</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState05.svg"></i>대기지수</dt>
+                        <!-- blue : 좋음 / green : 보통 / yellow : 나쁨 / red : 매우나쁨 -->
+                        <dd class="green"><span class="value">79</span>보통</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState02.svg"></i>전력</dt>
+                        <dd><span class="value">30</span>kWh</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState02.svg"></i>전력량</dt>
+                        <dd><span class="value">30</span>kWh</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState04.svg"></i>기온</dt>
+                        <dd><span class="value">28</span>&#186;&#1057;</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState06.svg"></i>습도</dt>
+                        <dd><span class="value">68</span>&#37;</dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="area_right_scroll" data-value="control">
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon06.svg"></i>스마트 버스정류소 시설물 제어</dt>
+                </dl>
+                <div class="area_right_bus_control">
+                    <dl>
+                        <dt>
+                            <span class="circle green"></span>
+                            <span>CCTV</span>
+                        </dt>
+                        <dd class="ptz_toggle">
+                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <span class="circle red"></span>
+                            <span>AED</span>
+                        </dt>
+                        <dd class="ptz_toggle">
+                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <span class="circle green"></span>
+                            <span>비상벨</span>
+                        </dt>
+                        <dd class="ptz_toggle">
+                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <span class="circle green"></span>
+                            <span>금연벨</span>
+                        </dt>
+                        <dd class="ptz_toggle">
+                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <span class="circle green"></span>
+                            <span>홍보전광판</span>
+                        </dt>
+                        <dd class="ptz_toggle">
+                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                        </dd>
+                        <dd class="filebox">
+                            <input class="uploadName" value="첨부파일" placeholder="첨부파일">
+                            <label for="file">파일찾기</label>
+                            <input type="file" id="file">
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <span class="circle red"></span>
+                            <span>무정차 방지등</span>
+                        </dt>
+                        <dd class="ptz_toggle">
+                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <span class="circle red"></span>
+                            <span>스마트 공기청정기</span>
+                        </dt>
+                        <dd class="ptz_toggle">
+                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <span class="circle green"></span>
+                            <span>냉난방기</span>
+                        </dt>
+                        <dd class="ptz_toggle">
+                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                        </dd>
+                    </dl>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon04.svg"></i>스마트 버스정류소 현황</dt>
+                </dl>
+                <div class="area_right_bus_status">
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState01.svg"></i>현재인원</dt>
+                        <dd><span class="value">8</span>명</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState05.svg"></i>대기지수</dt>
+                        <!-- blue : 좋음 / green : 보통 / yellow : 나쁨 / red : 매우나쁨 -->
+                        <dd class="green"><span class="value">79</span>보통</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState02.svg"></i>전력</dt>
+                        <dd><span class="value">30</span>kWh</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState02.svg"></i>전력량</dt>
+                        <dd><span class="value">30</span>kWh</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState04.svg"></i>기온</dt>
+                        <dd><span class="value">28</span>&#186;&#1057;</dd>
+                    </dl>
+                    <dl>
+                        <dt><i><img src="/images/default/busStationState06.svg"></i>습도</dt>
+                        <dd><span class="value">68</span>&#37;</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 이벤트 -->
+    <section class="area_right" data-value="event">
+        <!--[EVENT ID] 이벤트 종류-->
+        <h6><span class="eventTitle"></span><i class="area_right_closer"><img src="/images/default/close.svg"></i></h6>
+        <div class="area_right_contents">
+            <dl class="area_title">
+                <dt><i><img src="/images/default/titleIcon03.svg"></i>CCTV
+                    <select>
+                        <option selected>회전형</option>
+                        <option>고정형</option>
                     </select>
                 </dt>
                 <dd class="ptz_toggle">
@@ -27,80 +235,8 @@
                 </dd>
             </dl>
             <div class="area_video">
-                <div>&lt;!&ndash; 영상 &ndash;&gt;</div>
+                <div><!-- 영상 --></div>
             </div>
-            <dl class="area_title">
-                <dt><i><img src="/images/default/titleIcon04.svg"></i>개소 정보</dt>
-            </dl>
-            <div class="area_contents">
-                <ul>
-                    <li>[관리번호] 이름</li>
-                    <li>종류</li>
-                    <li class="gray">행정동/도로명 주소 or 지번 주소</li>
-                </ul>
-            </div>
-            <dl class="area_title">
-                <dt><i><img src="/images/default/titleIcon04.svg"></i>장비 상태</dt>
-            </dl>
-            <div class="area_contents">
-                <div>
-                    <dl>
-                        <dt><i class="circle green"></i>장비 연결 끊김</dt>
-                        <dd class="white">AED, 비상벨</dd>
-                    </dl>
-                    <dl>
-                        <dt><i class="circle red"></i>장비 고장</dt>
-                        <dd>없음</dd>
-                    </dl>
-                    <dl>
-                        <dd>교통약자 편의시설 : 미설치</dd>
-                        <dd>선팅 필름 : 미부착</dd>
-                    </dl>
-                </div>
-            </div>
-            <dl class="area_title">
-                <dt><i><img src="/images/default/titleIcon05.svg"></i>정류장 현황</dt>
-            </dl>
-            <div class="area_bus_station_state">
-                <dl>
-                    <dt><i><img src="/images/default/busStationState01.svg"></i>현재 인원</dt>
-                    <dd>8<span>명</span></dd>
-                </dl>
-                <dl>
-                    <dt><i><img src="/images/default/busStationState02.svg"></i>전력</dt>
-                    <dd>30<span>kwh</span></dd>
-                </dl>
-                <dl>
-                    <dt><i><img src="/images/default/busStationState02.svg"></i>전력량</dt>
-                    <dd>30<span>w</span></dd>
-                </dl>
-                <dl>
-                    <dt><i><img src="/images/default/busStationState04.svg"></i>기온</dt>
-                    <dd>30<span>℃</span></dd>
-                </dl>
-                <dl>
-                    <dt><i><img src="/images/default/busStationState05.svg"></i>대기지수</dt>
-                    <dd class="green">79<span>보통</span></dd>
-                </dl>
-                <dl>
-                    <dt><i><img src="/images/default/busStationState06.svg"></i>습도</dt>
-                    <dd>66<span>%</span></dd>
-                </dl>
-            </div>
-        </div>
-    </section>
-
-    <!- 시설물 정보 -->
-    <section class="area_right" data-value="station" style="display: none;">
-        <h6>{장소유형} {개소명} {이벤트 등급} {이벤트 종류} 발생정보<i class="rnm_closer"><img src="/images/default/close.svg"></i></h6>
-        <ul class="tab">
-            <li class="active"><a>기본 정보</a></li>
-            <li><a>추가 메뉴</a></li>
-        </ul>
-        <div class="area_right_contents">
-            <dl class="area_title">
-                <dt><i><img src="/images/default/titleIcon06.svg"></i>{장소유형} {개소명} 이벤트 발생 정보</dt>
-            </dl>
             <div class="occur_process">
                 <div class="process_contents step1">
                     <dl class="on">
@@ -109,11 +245,11 @@
                     </dl>
                     <dl>
                         <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
-                        <dd>조치 중</dd>
+                        <dd>조치 완료</dd>
                     </dl>
                     <dl>
                         <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
-                        <dd>조치 완료</dd>
+                        <dd>대응중</dd>
                     </dl>
                     <dl>
                         <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
@@ -127,11 +263,11 @@
                     </dl>
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
-                        <dd>조치 중</dd>
+                        <dd>조치 완료</dd>
                     </dl>
                     <dl>
                         <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
-                        <dd>조치 완료</dd>
+                        <dd>대응 중</dd>
                     </dl>
                     <dl>
                         <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
@@ -145,11 +281,11 @@
                     </dl>
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
-                        <dd>조치 중</dd>
+                        <dd>조치 완료</dd>
                     </dl>
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
-                        <dd>조치 완료</dd>
+                        <dd>대응 중</dd>
                     </dl>
                     <dl>
                         <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
@@ -163,11 +299,11 @@
                     </dl>
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
-                        <dd>조치 중</dd>
+                        <dd>조치 완료</dd>
                     </dl>
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
-                        <dd>조치 완료</dd>
+                        <dd>대응 중</dd>
                     </dl>
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
@@ -175,85 +311,116 @@
                     </dl>
                 </div>
                 <ul class="button">
-                    <li class="active">투망감시</li>
-                    <li>조치완료</li>
+                    <li>투망 감시</li>
+                    <li>조치사항 입력/수정</li>
                     <li>이벤트 종료</li>
                 </ul>
             </div>
-            <div class="area_right_text">
-                <ul>
-                    <li>
-                        <span>이벤트 등급</span>
-                        <span>{이벤트 등급}</span>
-                    </li>
-                    <li>
-                        <span>이벤트 종류</span>
-                        <span>{이벤트 종류}</span>
-                    </li>
-                    <li>
-                        <span>장소 유형</span>
-                        <span>{장소 유형}</span>
-                    </li>
-                    <li>
-                        <span>구역명</span>
-                        <span>{구역명}</span>
-                    </li>
-                    <li>
-                        <span>개소 ID / 개소명</span>
-                        <span>{개소 ID}&nbsp;{개소명}</span>
-                    </li>
-                    <li>
-                        <span>개소 주소</span>
-                        <span>{개소 주소}</span>
-                    </li>
-                    <li>
-                        <span>이벤트 발생시각</span>
-                        <span>{이벤트 발생시각}</span>
-                    </li>
-                </ul>
+            <div class="area_right_scroll select">
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon06.svg"></i>발생 이벤트 정보</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>이벤트 등급</span>
+                            <span data-value="eventGrade" class="checkbox">
+                                        <input type="checkbox" id="lv1" name="" disabled>
+                                        <label for="lv1"><span></span><p class="checked lv1">긴급</p></label>
+                                        <input type="checkbox" id="lv2" name="" disabled>
+                                        <label for="lv2"><span></span><p class="checked lv2">주의</p></label>
+                                    </span>
+                        </li>
+                        <li>
+                            <span>이벤트 종류</span>
+                            <input data-value="eventKindName" type="text" placeholder="이벤트 종류" disabled>
+                        </li>
+                        <li>
+                            <span>장소 유형</span>
+                            <input type="text" placeholder="장소 유형" >
+                        </li>
+                        <li>
+                            <span>구역명</span>
+                            <input type="text" placeholder="구역명">
+                        </li>
+                        <li>
+                            <span>개소 ID / 개소명</span>
+                            <input data-value="stationSeq" type="text" placeholder="개소 ID / 개소명" disabled>
+                        </li>
+                        <li>
+                            <span>개소 주소</span>
+                            <input type="text" placeholder="개소 주소">
+                        </li>
+                        <li>
+                            <span>이벤트 발생시각</span>
+                            <input data-value="insertDt" type="text" placeholder="이벤트 발생시각" disabled>
+                        </li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon04.svg"></i>이벤트 조치 사항</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>현재 온도</span>
+                            <input type="text" placeholder="현재 온도">
+                        </li>
+                        <li>
+                            <span>현재 전압</span>
+                            <input type="text" placeholder="현재 전압">
+                        </li>
+                        <li>
+                            <span>현재 전류</span>
+                            <input type="text" placeholder="현재 전류">
+                        </li>
+                        <li>
+                            <span>허용전류 대비<br>현재 사용량</span>
+                            <input type="text" placeholder="허용전류 대비 현재 사용량">
+                        </li>
+                        <li>
+                            <span>전기 안전 상태</span>
+                            <input type="text" placeholder="전기 안전 상태">
+                        </li>
+                        <li>
+                            <span>연기 감지 여부</span>
+                            <input type="text" placeholder="연기 감지 여부">
+                        </li>
+                        <li>
+                            <span>지진 감지 여부</span>
+                            <input type="text" placeholder="지진 감지 여부">
+                        </li>
+                        <li>
+                            <span>심야시간 설정치<br>이상 전기 사용 여부</span>
+                            <input type="text" placeholder="심야시간 설정치 이상 전기 사용 여부">
+                        </li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon04.svg"></i>이벤트 종료 사항</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>조치자</span>
+                            <input type="text" placeholder="조치자 이름">
+                        </li>
+                        <li>
+                            <span>종료일시</span>
+                            <input type="text" placeholder="종료일시">
+                        </li>
+                        <li>
+                            <span>이벤트 종료 내용</span>
+                            <input type="text" placeholder="이벤트 종료 내용">
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <dl class="area_title">
-                <dt><i><img src="/images/default/titleIcon04.svg"></i>{장소유형} {개소명} 스마트분전함 정보</dt>
-            </dl>
-            <div class="area_right_text">
-                <ul>
-                    <li>
-                        <span>현재 온도</span>
-                        <span>{현재 온도}</span>
-                    </li>
-                    <li>
-                        <span>현재 전압</span>
-                        <span>{현재 전압}</span>
-                    </li>
-                    <li>
-                        <span>현재 전류</span>
-                        <span>{현재 전류}</span>
-                    </li>
-                    <li>
-                        <span>허용전류 대비<br>현재 사용량</span>
-                        <span>{허용전류 대비 현재 사용량}</span>
-                    </li>
-                    <li>
-                        <span>전기 안전 상태</span>
-                        <span>{전기 안전 상태}</span>
-                    </li>
-                    <li>
-                        <span>연기 감지 여부</span>
-                        <span>{연기 감지 여부}</span>
-                    </li>
-                    <li>
-                        <span>지진 감지 여부</span>
-                        <span>{지진 감지 여부}</span>
-                    </li>
-                    <li>
-                        <span>심야시간 설정치<br>이상 전기 사용 여부</span>
-                        <span>{심야시간 설정치 이상 전기 사용 여부}</span>
-                    </li>
-                </ul>
-            </div>
+
+
+
         </div>
     </section>
-
 
 </th:block>
 </html>
