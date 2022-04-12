@@ -1,13 +1,6 @@
 package com.danusys.web.danusysmeteringdevicelwm2m.controller;
 
 import com.danusys.web.danusysmeteringdevicelwm2m.model.AppData;
-import com.danusys.web.danusysmeteringdevicelwm2m.model.M2mCsr;
-import com.danusys.web.danusysmeteringdevicelwm2m.model.RdData;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.RequestWrapper;
 import java.util.Map;
 
 /**
