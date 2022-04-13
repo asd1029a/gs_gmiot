@@ -68,65 +68,9 @@ const layerStyle = {
                 return a.getProperties().eventGrade - b.getProperties().eventGrade;
             });
 
-            const grade = list[0].getProperties().eventGrade;
-            //이벤트 등급 (긴급 10 주의 20 과거 ?)
-            const gradeName  = {"10": "danger" ,"20": "caution"};
-
-            const key = "event_" + gradeName[grade] + flag;
-            const size = features.length;
-            let textStyle = null;
-
-            if(size > 1) {
-                textStyle =  new ol.style.Text({
-                    scale: 2,
-                    offsetY: -50,
-                    offsetX: 10,
-                    text: "+" + (size-1) ,
-                    fill: new ol.style.Fill({
-                        color:'black',
-                        width: 3
-                    }),
-                    font: 'Bold 10px Arial',
-                    stroke: new ol.style.Stroke({
-                        color: 'white',
-                        width: 3
-                    })
-                });
-            }
-
-            return new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor : [20,60],
-                    anchorXUnits : 'pixel',
-                    anchorYUnits : 'pixel',
-                    img : imgObj[key],
-                    imgSize: [50,50],
-                    scale : 1
-                }),
-                text: textStyle
-            });
-        }
-    }
-    //이벤트
-    , event : (selectFlag) => {
-        return (feature, resolution) => {
-            let flag = selectFlag ? "_select" : "";
-
-            const features = feature.get("features");
-            //grade 중복제거
-            let list = features.filter((item1, idx1) => {
-                return features.findIndex((item2, idx2)=> {
-                    return item1.getProperties().eventGrade == item2.getProperties().eventGrade
-                }) == idx1;
-            });
-            //grade 오름차순 정렬
-            list.sort((a,b) => {
-                return a.getProperties().eventGrade - b.getProperties().eventGrade;
-            });
-
             const firstInfo =  list[0].getProperties();
             let grade = firstInfo.eventGrade;
-            if( firstInfo.eventProcStat == "9"){ //과거이력
+            if(firstInfo.eventProcStat == "9"){ //과거이력
                 grade = "9";
             }
             //이벤트 등급 (긴급 10 주의 20 과거 9)
@@ -249,10 +193,14 @@ const mapPopupContent = {
         let content = "";
         if(length == 1){ //단일 팝업
             const info = data.getProperties().features[0].getProperties();
-            content = "<dl><dt>"+ info.eventGradeName + " " + info.eventKindName + "</dt>" +
-                "<dd>" + info.insertDt + "<span class='state state"+ info.eventProcStat +"'>" + info.eventProcStatName +"</span></dd></dl>";
+            content = "<dl><dt><span class='level lv"+ info.eventGrade + "'>" + info.eventGradeName + "</span> " + info.eventKindName + "</dt>" +
+                "<dd>" + info.insertDt + "<span class='state'>" + info.eventProcStatName +"</span></dd></dl>";
         } else if(length > 1) { //다중 팝업
-            content += "<li><span class='circle lv"+ data.getProperties().eventProcStat +"'></span>" + data.getProperties().eventMessage + "</li>";
+            let grade = data.getProperties().eventGrade;
+            if(data.getProperties().eventProcStat == "9") {
+                grade = "3";
+            }
+            content += "<li><span class='circle lv"+ grade +"'></span>" + data.getProperties().eventMessage + "</li>";
         }
         return content;
     }
