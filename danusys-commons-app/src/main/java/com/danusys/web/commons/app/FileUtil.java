@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
@@ -250,15 +251,19 @@ public class FileUtil {
     }
 
 
-    public static Workbook excelDownload(
-            Map<String, Object> paramMap) {
-
-        List<Map<String, Object>> dataMap = null;
+    public static Workbook excelDownload(Map<String, Object> paramMap) {
+        List<Map<String, Object>> dataMap = new ArrayList<Map<String, Object>>();
         List<String> headerList = null;
         List<String> excludeList = null;
+
         if (paramMap.get("dataMap") != null) {
-            dataMap = (List<Map<String, Object>>) paramMap.get("dataMap");
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<?> data = (List<?>) paramMap.get("dataMap");
+            for(int i = 0; i < data.size(); i++){
+                dataMap.add(objectMapper.convertValue(data.get(i), Map.class));
+            }
         }
+
         if (paramMap.get("headerList") != null) {
             headerList = (List<String>) paramMap.get("headerList");
         }
@@ -269,7 +274,6 @@ public class FileUtil {
             while (iter.hasNext()) {
                 Map<String, Object> map2 = iter.next();
                 excludeList.forEach(r -> {
-
                     map2.remove(r);
                 });
             }
@@ -293,71 +297,51 @@ public class FileUtil {
 
             cellNum.set(0);
             if (headerList == null) {
-
                 data.forEach((k, v) -> {
-
                     Cell cell = headRow.createCell(cellNum.get());
                     if (k != null)
                         cell.setCellValue(k);
-
-
                     cellNum.incrementAndGet();
                 });
             } else {
                 headerList.forEach((s) -> {
-
                     Cell cell = headRow.createCell(cellNum.get());
                     if (s != null)
                         cell.setCellValue(s);
-
-
                     cellNum.incrementAndGet();
                 });
             }
 
             cellNum.set(0);
             data.forEach((k, v) -> {
-
                 Cell cell = row.createCell(cellNum.get());
                 if (v != null)
                     cell.setCellValue(v.toString());
 
                 //cell에 데이터 삽입
-
                 cellNum.incrementAndGet();
             });
 
             sheet.autoSizeColumn(finalRowNum);
-            //  sheet.setColumnWidth(finalRowNum, (sheet.getColumnWidth(finalRowNum))+100 );
             rowNum++;
-
         }
-
-
-        // Excel File Output
-        //  response.setHeader("Content-Disposition", "attachment;filename=testExcel1.xlsx");
-        //    response.setHeader("Content-Disposition",  String.format("attachment; filename=fileName;charset=utf-8"));
-
-        //    response.setHeader("Content-Disposition",  String.format("attachment; filename=fileName;charset=utf-8"));
-
         return wb;
-
-
     }
 
-    public static Workbook excelDownload2(
-            Map<String, Object> paramMap) {
-
-        List<Map<String, Object>> dataMap = null;
+    public static Workbook excelDownload2(Map<String, Object> paramMap) {
+        List<Map<String, Object>> dataMap = new ArrayList<Map<String, Object>>();
         List<String> headerList = null;
         List<String> headerEn = new ArrayList<>();
         List<String> headerKo = new ArrayList<>();
-        List<String> headerKey = null;
-        List<Map<String, Object>> newMap = new ArrayList<>();
+
         if (paramMap.get("dataMap") != null) {
-            dataMap = (List<Map<String, Object>>) paramMap.get("dataMap");
-        //    log.info("dataMap={}",dataMap);
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<?> data = (List<?>) paramMap.get("dataMap");
+            for(int i = 0; i < data.size(); i++){
+                dataMap.add(objectMapper.convertValue(data.get(i), Map.class));
+            }
         }
+
         if (paramMap.get("headerList") != null) {
             headerList = (List<String>) paramMap.get("headerList");
             headerList.forEach(r -> {
@@ -368,12 +352,11 @@ public class FileUtil {
                 headerEn.add(header[1]);
             });
 
-            Map<String,Object> map4=dataMap.get(0);
-            Set<String> keySet=map4.keySet();
-            List<String> keyList=new ArrayList<>(keySet);
-            List<String> newKeyList=new ArrayList<>();
+            Map<String, Object> map4 = dataMap.get(0);
+            Set<String> keySet = map4.keySet();
+            List<String> keyList = new ArrayList<>(keySet);
 
-            headerEn.forEach(r->{
+            headerEn.forEach(r -> {
                 keyList.remove(r);
             });
 
@@ -382,24 +365,17 @@ public class FileUtil {
 
             while (iter.hasNext()) {
                 Map<String, Object> map3 = iter.next();
-
                 keyList.forEach(keyListValue -> {
-               //     log.info(headerEnValue);
                     map3.remove(keyListValue);
                 });
-//            map2.remove(headerEn);
-
             }
         }
-
 
         int rowNum = 0;
         AtomicInteger cellNum = new AtomicInteger();
         //log.info("paramMap={}", paramMap);
-
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("sheet 1");
-
         rowNum = 1;
 
         for (Map<String, Object> data : dataMap) {
@@ -407,60 +383,36 @@ public class FileUtil {
             Integer finalRowNum = rowNum;
             Row row = sheet.createRow(finalRowNum);
             Row headRow = sheet.createRow(0);
-
             cellNum.set(0);
             if (headerList == null) {
-
                 data.forEach((k, v) -> {
-
                     Cell cell = headRow.createCell(cellNum.get());
                     if (k != null)
                         cell.setCellValue(k);
-
-
                     cellNum.incrementAndGet();
                 });
             } else {
                 headerKo.forEach((s) -> {
-
                     Cell cell = headRow.createCell(cellNum.get());
                     if (s != null)
                         cell.setCellValue(s);
-
-
                     cellNum.incrementAndGet();
                 });
             }
 
             cellNum.set(0);
             data.forEach((k, v) -> {
-
                 Cell cell = row.createCell(cellNum.get());
                 if (v != null)
                     cell.setCellValue(v.toString());
 
                 //cell에 데이터 삽입
-
                 cellNum.incrementAndGet();
             });
 
             sheet.autoSizeColumn(finalRowNum);
-            //  sheet.setColumnWidth(finalRowNum, (sheet.getColumnWidth(finalRowNum))+100 );
             rowNum++;
-
         }
-
-
-        // Excel File Output
-        //  response.setHeader("Content-Disposition", "attachment;filename=testExcel1.xlsx");
-        //    response.setHeader("Content-Disposition",  String.format("attachment; filename=fileName;charset=utf-8"));
-
-        //    response.setHeader("Content-Disposition",  String.format("attachment; filename=fileName;charset=utf-8"));
-
         return wb;
-
-
     }
-
-
 }

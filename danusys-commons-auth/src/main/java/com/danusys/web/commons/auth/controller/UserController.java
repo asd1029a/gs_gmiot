@@ -1,16 +1,17 @@
 package com.danusys.web.commons.auth.controller;
 
+import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
@@ -20,7 +21,6 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final UserInGroupService userInGroupService;
 
     /*
       name: idCheck
@@ -138,17 +138,9 @@ public class UserController {
      */
     @PutMapping()
     public ResponseEntity<?> add(@RequestBody Map<String, Object> paramMap) {
-        /* TODO : 트랜젝션 처리 요망 */
-        ObjectMapper objectMapper = new ObjectMapper();
-        User user = objectMapper.convertValue(paramMap, User.class);
-
-        int result = userService.add(user);
-        paramMap.put("userSeqList", Arrays.asList(result));
-        userInGroupService.add(paramMap);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(result);
+                .body(userService.add(paramMap));
     }
 
     /*
@@ -166,16 +158,9 @@ public class UserController {
     */
     @PatchMapping()
     public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) {
-        /* TODO : 트랜젝션 처리 요망 */
-        ObjectMapper objectMapper = new ObjectMapper();
-        User user = objectMapper.convertValue(paramMap, User.class);
-
-        int result = userService.mod(user);
-        userInGroupService.delUserSeq(user.getUserSeq());
-        userInGroupService.add(paramMap);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(result);
+                .body(userService.mod(paramMap));
     }
 
     /*
@@ -196,5 +181,18 @@ public class UserController {
     @GetMapping("/userCount")
     public ResponseEntity<?> getUserCountProc() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserSize());
+    }
+
+    @ResponseBody
+    @PostMapping(value = "excel/download")
+    public void exportNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        Workbook wb = null;
+        Map<String, Object> dataMap = userService.getList((Map<String, Object>) paramMap.get("search"));
+
+        paramMap.put("dataMap", dataMap.get("data"));
+//        log.info("dataList = {}", dataMap.get("data"));
+        wb = FileUtil.excelDownload2(paramMap) ;
+        wb.write(response.getOutputStream());
+        wb.close();
     }
 }

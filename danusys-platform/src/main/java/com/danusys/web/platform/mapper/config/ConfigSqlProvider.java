@@ -16,6 +16,9 @@ public class ConfigSqlProvider {
             FROM("t_common_code");
             WHERE("parent_code_seq = "+pParentCode);
             WHERE("use_kind != 'D'");
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("code_name LIKE '%" + keyword + "%'");
+            }
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);
@@ -32,6 +35,9 @@ public class ConfigSqlProvider {
             SELECT("COUNT(*) AS count");
             FROM("t_common_code");
             WHERE("parent_code_seq = "+pParentCode);
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("code_name LIKE '%" + keyword + "%'");
+            }
         }};
         return sql.toString();
     }
@@ -43,7 +49,7 @@ public class ConfigSqlProvider {
                 case "stationKind" : FROM("v_facility_station"); break;
                 case "district" : FROM("v_facility_district"); break;
                 case "facilityKind" : FROM("v_facility_kind"); break;
-                case "eventKind" : FROM("v_facility_problem"); break;
+                case "eventKind" : FROM("v_event_kind"); break;
                 case "administZone" : FROM("v_administ"); break;
                 default : FROM("t_common_code"); break;
             }

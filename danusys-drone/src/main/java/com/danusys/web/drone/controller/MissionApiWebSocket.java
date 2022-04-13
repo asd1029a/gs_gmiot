@@ -45,6 +45,7 @@ public class MissionApiWebSocket {
     private final ConnectionService connectionService;
     //    private Flight flight;
     private Map<Integer, Flight> flightMap = new HashMap<>();
+    private Map<Integer, Boolean> isStarted = new HashMap<>();
 
 /*
 
@@ -151,174 +152,187 @@ public class MissionApiWebSocket {
     public void startMission(@RequestBody Map<String, Object> paramMap) {
 
         int droneId = 0;
-
+        String isEnd=null;
         if (paramMap.get("droneId") != null)
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
         //flight check
 
-        Flight flight = flightMap.get(droneId);
+        if(isStarted.getOrDefault(droneId,false)!=true) {
+            log.info("처음시작됨");
 
-        DroneResponse drone = droneService.findOneDrone(droneId);
-        MissionResponse missionResponse = drone.getDroneInmission().getMission();
-        DroneLog inputDroneLog = new DroneLog();
+            Flight flight = flightMap.get(droneId);
 
-        inputDroneLog.setMissionName(missionResponse.getName());
-        String droneName = drone.getDroneDeviceName();
-        inputDroneLog.setDroneDeviceName(droneName);
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        inputDroneLog.setInsertDt(timestamp);
-        DroneLog droneLog = droneLogService.saveDroneLog(inputDroneLog);
+            DroneResponse drone = droneService.findOneDrone(droneId);
+            MissionResponse missionResponse = drone.getDroneInmission().getMission();
+            DroneLog inputDroneLog = new DroneLog();
+
+            inputDroneLog.setMissionName(missionResponse.getName());
+            String droneName = drone.getDroneDeviceName();
+            inputDroneLog.setDroneDeviceName(droneName);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            inputDroneLog.setInsertDt(timestamp);
+            DroneLog droneLog = droneLogService.saveDroneLog(inputDroneLog);
 
 
-        //미션 수행
+            //미션 수행
 //        int i = 2;
-        int step = 0;
-        int flag = 0;
-        HashMap<Integer, String> missionIndex = new HashMap<>();
-        HashMap<String, Integer> gpsXs = new HashMap<>();
-        HashMap<String, Integer> gpsYs = new HashMap<>();
-        HashMap<String, Integer> gpsZs = new HashMap<>();
-        HashMap<String, Integer> speeds = new HashMap<>();
-        HashMap<String, Integer> times = new HashMap<>();
-        HashMap<String, Float> yaws = new HashMap<>();
-        HashMap<String, MissionItemInt> missionMap = new HashMap<>();
-        HashMap<String, Integer> radiusMap = new HashMap<>();
-        Iterator iterator = missionResponse.getMissionDetails().iterator();
-        while (iterator.hasNext()) {
-            MissionDetailResponse missionDetails = (MissionDetailResponse) iterator.next();
-            if (missionDetails.getName().equals("takeOff")) {
-                gpsZs.put("takeOff", missionDetails.getMapZ());
-                //  log.info("Index={}", missionDetails.getIndex());
-                missionIndex.put(missionDetails.getIndex(), "takeOff");
-            } else if (missionDetails.getName().equals("waypoint")) {
-                //각 waypoint에 값 받아와서 넣기
-                missionIndex.put(missionDetails.getIndex(), "waypoint" + missionDetails.getIndex());
-                gpsXs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getMapX() * 10000000));
-                speeds.put("waypoint" + missionDetails.getIndex(), missionDetails.getSpeed());
-                gpsYs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
-                gpsZs.put("waypoint" + missionDetails.getIndex(), missionDetails.getMapZ());
-                yaws.put("waypoint" + missionDetails.getIndex(), (float) (missionDetails.getYaw()));
-                times.put("waypoint" + missionDetails.getIndex(), missionDetails.getTime());
-            } else if (missionDetails.getName().equals("loi")) {
-                missionIndex.put(missionDetails.getIndex(), "loi" + missionDetails.getIndex());
-                times.put("loi" + missionDetails.getIndex(), missionDetails.getTime());
-                gpsXs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getMapX() * 10000000));
-                gpsYs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
-                gpsZs.put("loi" + missionDetails.getIndex(), missionDetails.getMapZ());
-                radiusMap.put("loi" + missionDetails.getIndex(), missionDetails.getRadius());
-            } else if (missionDetails.getName().equals("return")) {
+            int step = 0;
+            int flag = 0;
+            HashMap<Integer, String> missionIndex = new HashMap<>();
+            HashMap<String, Integer> gpsXs = new HashMap<>();
+            HashMap<String, Integer> gpsYs = new HashMap<>();
+            HashMap<String, Integer> gpsZs = new HashMap<>();
+            HashMap<String, Integer> speeds = new HashMap<>();
+            HashMap<String, Integer> times = new HashMap<>();
+            HashMap<String, Float> yaws = new HashMap<>();
+            HashMap<String, MissionItemInt> missionMap = new HashMap<>();
+            HashMap<String, Integer> radiusMap = new HashMap<>();
+            Iterator iterator = missionResponse.getMissionDetails().iterator();
+            while (iterator.hasNext()) {
+                MissionDetailResponse missionDetails = (MissionDetailResponse) iterator.next();
+                if (missionDetails.getName().equals("takeOff")) {
+                    gpsZs.put("takeOff", missionDetails.getMapZ());
+                    //  log.info("Index={}", missionDetails.getIndex());
+                    missionIndex.put(missionDetails.getIndex(), "takeOff");
+                } else if (missionDetails.getName().equals("waypoint")) {
+                    //각 waypoint에 값 받아와서 넣기
+                    missionIndex.put(missionDetails.getIndex(), "waypoint" + missionDetails.getIndex());
+                    gpsXs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getMapX() * 10000000));
+                    speeds.put("waypoint" + missionDetails.getIndex(), missionDetails.getSpeed());
+                    gpsYs.put("waypoint" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
+                    gpsZs.put("waypoint" + missionDetails.getIndex(), missionDetails.getMapZ());
+                    yaws.put("waypoint" + missionDetails.getIndex(), (float) (missionDetails.getYaw()));
+                    times.put("waypoint" + missionDetails.getIndex(), missionDetails.getTime());
+                } else if (missionDetails.getName().equals("loi")) {
+                    missionIndex.put(missionDetails.getIndex(), "loi" + missionDetails.getIndex());
+                    times.put("loi" + missionDetails.getIndex(), missionDetails.getTime());
+                    gpsXs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getMapX() * 10000000));
+                    gpsYs.put("loi" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
+                    gpsZs.put("loi" + missionDetails.getIndex(), missionDetails.getMapZ());
+                    radiusMap.put("loi" + missionDetails.getIndex(), missionDetails.getRadius());
+                } else if (missionDetails.getName().equals("return")) {
 
-                missionIndex.put(missionDetails.getIndex(), "return");
+                    missionIndex.put(missionDetails.getIndex(), "return");
 
-                gpsXs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getMapX() * 10000000));
-                speeds.put("return" + missionDetails.getIndex(), missionDetails.getSpeed());
-                gpsYs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
-                gpsZs.put("return" + missionDetails.getIndex(), missionDetails.getMapZ());
+                    gpsXs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getMapX() * 10000000));
+                    speeds.put("return" + missionDetails.getIndex(), missionDetails.getSpeed());
+                    gpsYs.put("return" + missionDetails.getIndex(), (int) (missionDetails.getMapY() * 10000000));
+                    gpsZs.put("return" + missionDetails.getIndex(), missionDetails.getMapZ());
 
+                }
             }
-        }
-        //TODO takeoff 높이 지정 해야됨
+            //TODO takeoff 높이 지정 해야됨
 
 
-        // log.info("{}", missionDetailsService.findByNameAndMission("takeOff", mission).getIndex());
-        // float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex()));
-        //float takeOffAlt = gpsZs.get(missionIndex.get(1));
+            // log.info("{}", missionDetailsService.findByNameAndMission("takeOff", mission).getIndex());
+            // float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex()));
+            //float takeOffAlt = gpsZs.get(missionIndex.get(1));
 
 
-        while (!missionIndex.getOrDefault(step, "finish").equals("finish")) {
-            int x = 0;
-            int y = 0;
-            int z = 0;
-            int time = 0;
+            while (!missionIndex.getOrDefault(step, "finish").equals("finish")) {
+                int x = 0;
+                int y = 0;
+                int z = 0;
+                int time = 0;
 
-            int radius = 0;
-            float yaw = 0;
-            //      log.info("step={}", step);
+                int radius = 0;
+                float yaw = 0;
+                //      log.info("step={}", step);
 //x,y 지금 바뀐 상황임 latitude longtitude 떄문에 바꿧음
-            y = gpsXs.getOrDefault(missionIndex.get(step), 0);
-            x = gpsYs.getOrDefault(missionIndex.get(step), 0);
-            z = gpsZs.getOrDefault(missionIndex.get(step), 0);
-            yaw = yaws.getOrDefault(missionIndex.get(step), 0f);
-            time = times.getOrDefault(missionIndex.get(step), 0);
+                y = gpsXs.getOrDefault(missionIndex.get(step), 0);
+                x = gpsYs.getOrDefault(missionIndex.get(step), 0);
+                z = gpsZs.getOrDefault(missionIndex.get(step), 0);
+                yaw = yaws.getOrDefault(missionIndex.get(step), 0f);
+                time = times.getOrDefault(missionIndex.get(step), 0);
 
-            radius = radiusMap.getOrDefault(missionIndex.get(step), 0);
-            if (missionIndex.getOrDefault(step, "finish").equals("takeOff")) {
-                missionMap = flight.missionTakeoff(droneLog, droneId);
-                flag++;
+                radius = radiusMap.getOrDefault(missionIndex.get(step), 0);
+                if (missionIndex.getOrDefault(step, "finish").equals("takeOff")) {
+                    isStarted.put(droneId, true);
+                    missionMap = flight.missionTakeoff(droneLog, droneId);
+                    isStarted.put(droneId, false);
+                    flag++;
 
-            } else if (missionIndex.getOrDefault(step, "finish").contains("waypoint")) {
-                MissionItemInt missionItemInt = new MissionItemInt.Builder()
-                        .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
-                        .param1(time)
-                        .param2(0)
-                        .param3(0)
-                        .param4(yaw)      //yaw
-                        .x(x)
-                        .y(y)
-                        .z(z)
-                        .seq(flag)
-                        .targetComponent(1)
-                        .targetSystem(1)
-                        .current(0)
-                        .autocontinue(1)
-                        .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
-                        .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
-                        .build();
-                missionMap.put("missionItemInt" + flag, missionItemInt);
-                flag++;
+                } else if (missionIndex.getOrDefault(step, "finish").contains("waypoint")) {
+                    MissionItemInt missionItemInt = new MissionItemInt.Builder()
+                            .command(MavCmd.MAV_CMD_NAV_WAYPOINT)
+                            .param1(time)
+                            .param2(0)
+                            .param3(0)
+                            .param4(yaw)      //yaw
+                            .x(x)
+                            .y(y)
+                            .z(z)
+                            .seq(flag)
+                            .targetComponent(1)
+                            .targetSystem(1)
+                            .current(0)
+                            .autocontinue(1)
+                            .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
+                            .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
+                            .build();
+                    missionMap.put("missionItemInt" + flag, missionItemInt);
+                    flag++;
 
-            } else if (missionIndex.getOrDefault(step, "finish").contains("loi")) {
-                MissionItemInt missionItemInt = new MissionItemInt.Builder()
-                        .command(MavCmd.MAV_CMD_NAV_LOITER_TURNS)
-                        .param1(time)
-                        .param2(0)
-                        .param3(radius)
-                        .param4(0)
-                        .x(x)
-                        .y(y)
-                        .z(z)
-                        .seq(flag)
-                        .targetComponent(1)
-                        .targetSystem(1)
-                        .current(0)
-                        .autocontinue(1)
-                        .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
-                        .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
-                        .build();
-                missionMap.put("missionItemInt" + flag, missionItemInt);
-                flag++;
+                } else if (missionIndex.getOrDefault(step, "finish").contains("loi")) {
+                    MissionItemInt missionItemInt = new MissionItemInt.Builder()
+                            .command(MavCmd.MAV_CMD_NAV_LOITER_TURNS)
+                            .param1(time)
+                            .param2(0)
+                            .param3(radius)
+                            .param4(0)
+                            .x(x)
+                            .y(y)
+                            .z(z)
+                            .seq(flag)
+                            .targetComponent(1)
+                            .targetSystem(1)
+                            .current(0)
+                            .autocontinue(1)
+                            .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
+                            .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
+                            .build();
+                    missionMap.put("missionItemInt" + flag, missionItemInt);
+                    flag++;
 
-            } else if (missionIndex.getOrDefault(step, "finish").contains("return")) {
+                } else if (missionIndex.getOrDefault(step, "finish").contains("return")) {
 
-                MissionItemInt missionItemInt = new MissionItemInt.Builder()
-                        .command(MavCmd.MAV_CMD_NAV_RETURN_TO_LAUNCH)
-                        .seq(flag)
-                        .targetComponent(0)
-                        .targetSystem(0)
-                        .current(0)
-                        .autocontinue(1)
-                        .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
-                        .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
-                        .build();
-                missionMap.put("missionItemInt" + flag, missionItemInt);
-                flag++;
+                    MissionItemInt missionItemInt = new MissionItemInt.Builder()
+                            .command(MavCmd.MAV_CMD_NAV_RETURN_TO_LAUNCH)
+                            .seq(flag)
+                            .targetComponent(0)
+                            .targetSystem(0)
+                            .current(0)
+                            .autocontinue(1)
+                            .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
+                            .missionType(MavMissionType.MAV_MISSION_TYPE_MISSION)
+                            .build();
+                    missionMap.put("missionItemInt" + flag, missionItemInt);
+                    flag++;
 
-            } else if (missionIndex.getOrDefault(step, "finish").contains("finish")) {
-                break;
+                } else if (missionIndex.getOrDefault(step, "finish").contains("finish")) {
+                    break;
+                }
+                step++;
+
+
             }
-            step++;
 
-
-        }
 //        alreadyStartMission.set(false);
         //TODO isEnd 두번실행시 오류
+
+            log.info("isStarted={}",isStarted);
         log.info("Mission2");
-        String isEnd = flight.doMission(missionMap, flag, speeds, yaws, missionIndex);
-        log.info("isEnd={}", isEnd);
-        if (isEnd.equals("stop")) {
-            log.info("here");
-            flightMap.remove(droneId);
+         isEnd = flight.doMission(missionMap, flag, speeds, yaws, missionIndex);
+            if (isEnd.equals("stop")) {
+                log.info("here");
+                flightMap.remove(droneId);
+                isStarted.remove(droneId);
+            }
         }
+
+
+        log.info("isEnd={}", isEnd);
+
     }
 
 
@@ -344,7 +358,7 @@ public class MissionApiWebSocket {
     }
 
     @MessageMapping("/arm")
-    @SendTo("/topic/waypoint")
+    @SendTo("/topic/arm")
     public void arm(@RequestBody Map<String, Object> paramMap) {
         int droneId = 0;
         if (paramMap.get("droneId") != null)

@@ -473,7 +473,16 @@ const droneSocket = {
                 setDrawDrone.reloadGotoFeature(drone);
             }, {id: "goToMission"});
             self.stompClient.subscribe('/topic/arm',function (drone){
-                console.log(drone);
+                let bodyData = JSON.parse(drone.body);
+                let li = common.getQs(`.listScroll li[data-id='${bodyData.droneId}']`);
+                const span = li.querySelector(`dt span`);
+                if(bodyData.armDisarm) {
+                    span.className = "green";
+                    span.innerText = "ARM";
+                } else {
+                    span.className = "gray";
+                    span.innerText = "대기중";
+                }
             });
             self.stompClient.subscribe('/topic/disarm',function (drone){
                 console.log(drone);
@@ -534,6 +543,11 @@ const droneSocket = {
         obj.seq = Number.parseInt(missionNo) - 1;
         obj.droneId=droneId;
         droneSocket.stompClient.send("/app/setmissioncurrent", {}, JSON.stringify(obj));
+    },
+    droneArm: function(obj = {}) {
+        let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
+        obj.droneId=droneId;
+        this.stompClient.send("/app/arm", {}, JSON.stringify(obj));
     },
     init: function() {
         this.connect();

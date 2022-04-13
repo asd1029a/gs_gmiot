@@ -21,8 +21,8 @@ public class DroneApplication extends SpringBootServletInitializer {
 		SpringApplication.run(DroneApplication.class, args);
 	}
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder){
-		return builder.sources(DroneApplication.class);
-	}
+//	@Override
+//	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder){
+//		return builder.sources(DroneApplication.class);
+//	}
 }

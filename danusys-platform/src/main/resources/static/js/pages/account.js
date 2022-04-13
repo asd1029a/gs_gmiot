@@ -69,7 +69,20 @@ const account = {
                     "data": null,
                     "defaultContent": '<span class="button">상세보기</span>'
                 }]
-                , excelDownload: true
+                , excelDownload: {
+                    url : "/user/excel/download"
+                    , fileName : "사용자 목록_"+ dateFunc.getCurrentDateYyyyMmDd(0, '') +".xlsx"
+                    , search : $("#searchForm form").serializeJSON()
+                    , headerList : ["고유번호|userSeq"
+                        , "ID|userId"
+                        , "이름|userName"
+                        // , "사용여부|userStatus.codeName"
+                        , "마지막 접속|lastLoginDt"
+                        , "생성자|insertUserId"
+                        , "생성일|insertDt"
+                        , "수정자|updateUserId"
+                        , "수정일|updateDt"]
+                }
             }
 
             const evt = {
@@ -384,7 +397,19 @@ const account = {
                     "data": null,
                     "defaultContent": '<span class="button">상세보기</span>'
                 }]
-                , excelDownload: true
+                , excelDownload: {
+                    url : "/userGroup/excel/download"
+                    , fileName : "사용자 그룹 목록_"+ dateFunc.getCurrentDateYyyyMmDd(0, '') +".xlsx"
+                    , search : $("#searchForm form").serializeJSON()
+                    , headerList : ["고유번호|userGroupSeq"
+                        , "이름|groupName"
+                        , "설명|groupDesc"
+                        // , "사용여부|user"
+                        , "생성자|insertUserId"
+                        , "생성일|insertDt"
+                        , "수정자|updateUserId"
+                        , "수정일|updateDt"]
+                }
             }
 
             const evt = {
