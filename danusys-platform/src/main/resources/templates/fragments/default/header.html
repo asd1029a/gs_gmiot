@@ -24,7 +24,7 @@
                     <a href="/pages/stats/statistics_01">통계</a>
                 </li>
                 <li sec:authorize="hasAnyRole('ROLE_config_rw', 'ROLE_config_r-')" th:if="${municipality == '41210000'}" id="config">
-                    <a href="/pages/config/dimmingGroup">환경설정</a>
+                    <a href="/pages/config/userAccount">환경설정</a>
                 </li>
             </th:block>
         </ul>

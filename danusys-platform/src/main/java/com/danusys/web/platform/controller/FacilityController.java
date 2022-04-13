@@ -83,4 +83,20 @@ public class FacilityController {
         facilityService.del(facilitySeq);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * 시설물 : 디밍 그룹 조회
+     */
+    @PostMapping(value="/dimmingGroup")
+    public ResponseEntity<EgovMap> getListDimmingGroup(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.getListDimmingGroup(paramMap));
+    }
+
+    /**
+     * 시설물 : 시설물 단건 조회
+     */
+    @GetMapping(value="/{dimmingGroupSeq}")
+    public ResponseEntity<EgovMap> getDimmingGroup(@PathVariable("dimmingGroupSeq") int dimmingGroupSeq) throws Exception {
+        return ResponseEntity.ok().body(facilityService.getOne(dimmingGroupSeq));
+    }
 }

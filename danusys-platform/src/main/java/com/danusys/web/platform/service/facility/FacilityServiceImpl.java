@@ -60,4 +60,18 @@ public class FacilityServiceImpl implements FacilityService{
     public void del(int seq) throws Exception {
         commonMapper.delete(fsp.deleteQry(seq));
     }
+
+    @Override
+    public EgovMap getListDimmingGroup(Map<String, Object> paramMap) throws Exception {
+        if(paramMap.get("draw") != null) {
+            Map<String, Object> pagingMap = new HashMap<>();
+            pagingMap.put("data", commonMapper.selectList(fsp.selectListDimmingGroupQry(paramMap)));
+            pagingMap.put("count", commonMapper.selectOne(fsp.selectCountDimmingGroupQry(paramMap)).get("count"));
+            return PagingUtil.createPagingMap(paramMap, pagingMap);
+        } else {
+            EgovMap resultMap = new EgovMap();
+            resultMap.put("data", commonMapper.selectList(fsp.selectListDimmingGroupQry(paramMap)));
+            return resultMap;
+        }
+    }
 }

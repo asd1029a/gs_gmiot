@@ -1,6 +1,7 @@
 /* document 공통 기능 */
 $(document).ready(() => {
     comm.initModal();
+    $("#searchForm form").on('submit', () => {return false;});
     const path = location.pathname;
     const pathArr = path.split("/");
 
@@ -62,8 +63,9 @@ $(document).ready(() => {
         event.create($('#dronEventTable'), 'dron');
     }
     // 환경설정
-    else if(path === "/pages/config/dimmingGroup") {
-
+    else if(path === "/pages/config/dimmingSet") {
+        dimming.eventHandler();
+        dimming.create();
     } else if(path === "/pages/config/userAccount") {
         account.user.eventHandler();
         account.user.create();
