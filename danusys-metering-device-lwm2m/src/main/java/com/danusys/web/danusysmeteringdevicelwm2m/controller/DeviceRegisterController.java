@@ -33,6 +33,12 @@ public class DeviceRegisterController {
     private String ONEM2M_URL = "https://testbrks.onem2m.uplus.co.kr:8433/";//ASN_CSE-D-33da4b19b5-FSTD/10250/0/0";
 
 
+    @GetMapping("/")
+    public ResponseEntity<?> index() {
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+
     /**
      * 1.4 Bootstrap 서비스 서버 interface
      * @param request
