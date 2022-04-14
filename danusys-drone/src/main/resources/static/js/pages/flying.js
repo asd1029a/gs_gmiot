@@ -459,17 +459,17 @@ const droneSocket = {
             self.stompClient.subscribe('/topic/startmission', function (drone) {
             });
             self.stompClient.subscribe('/topic/log', function (drone) {
-                console.log(drone + " : topic/log ");
+                // console.log(drone + " : topic/log ");
                 setDrawDrone.reloadFeature(drone);
             }, {id: "missionLog"});
             self.stompClient.subscribe('/topic/pause',function (drone){
-                console.log(drone);
+                //console.log(drone);
             });
             self.stompClient.subscribe('/topic/play',function (drone){
-                console.log(drone);
+                //console.log(drone);
             });
             self.stompClient.subscribe('/topic/waypoint',function (drone){
-                console.log(drone + " : topic/waypoint");
+                // console.log(drone + " : topic/waypoint");
                 setDrawDrone.reloadGotoFeature(drone);
             }, {id: "goToMission"});
             self.stompClient.subscribe('/topic/arm',function (drone){
@@ -485,7 +485,7 @@ const droneSocket = {
                 }
             });
             self.stompClient.subscribe('/topic/disarm',function (drone){
-                console.log(drone);
+                // console.log(drone);
             });
         });
     },

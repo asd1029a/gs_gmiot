@@ -467,11 +467,12 @@ function loadAllSocketList() {
         type: "POST",
         data: JSON.stringify(param),
         success: function (resultData) {
+
             console.log(resultData);
             $(".socket_list").html(``);
             $.each(resultData, function (i, item) {
                 //   console.log("item", item.baseName);
-                $(".socket_list").append(`<option data-id="${item.index}">address:${item.ip},port:${item.port}</option>`);
+                $(".socket_list").append(`<option data-id="${item.index}">${item.index} : address:${item.ip},port:${item.port}</option>`);
             })
         }
     });
@@ -486,6 +487,7 @@ function saveSocketList() {
         type: "PUT",
         data: JSON.stringify(param),
         success: function (resultData) {
+            alert("동기화 완료");
             loadAllSocketList();
         }
     });

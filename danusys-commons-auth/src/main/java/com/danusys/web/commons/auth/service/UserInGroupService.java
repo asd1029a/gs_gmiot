@@ -1,13 +1,12 @@
 package com.danusys.web.commons.auth.service;
 
-import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.auth.dto.response.UserInGroupResponse;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserInGroup;
-import com.danusys.web.commons.auth.repository.UserInGroupRepository;
-import com.danusys.web.commons.auth.repository.UserGroupRepository;
-import com.danusys.web.commons.auth.repository.UserRepository;
+import com.danusys.web.commons.auth.service.repository.UserInGroupRepository;
+import com.danusys.web.commons.auth.service.repository.UserGroupRepository;
+import com.danusys.web.commons.auth.service.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

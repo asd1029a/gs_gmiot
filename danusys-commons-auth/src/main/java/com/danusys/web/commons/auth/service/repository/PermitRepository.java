@@ -1,4 +1,4 @@
-package com.danusys.web.commons.auth.repository;
+package com.danusys.web.commons.auth.service.repository;
 
 import com.danusys.web.commons.auth.model.Permit;
 import org.springframework.data.jpa.repository.JpaRepository;
