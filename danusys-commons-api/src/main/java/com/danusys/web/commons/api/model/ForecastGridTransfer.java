@@ -1,6 +1,5 @@
 package com.danusys.web.commons.api.model;
 
-import ch.qos.logback.core.Layout;
 import lombok.Getter;
 import lombok.Setter;
 

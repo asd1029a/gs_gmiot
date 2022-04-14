@@ -1,6 +1,5 @@
 package com.danusys.web.commons.api.service;
 
-import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.repository.StationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Project : danusys-webservice-parent

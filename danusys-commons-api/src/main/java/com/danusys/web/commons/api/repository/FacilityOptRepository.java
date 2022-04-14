@@ -3,8 +3,6 @@ package com.danusys.web.commons.api.repository;
 import com.danusys.web.commons.api.model.FacilityOpt;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 /**
  * Project : danusys-webservice-parent
  * Created by Intellij IDEA
