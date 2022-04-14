@@ -414,3 +414,6 @@ tr.selected td {background-color: #23252b;}
         opacity: 0;
     }
 }
+
+/* map */
+.map_wrap{position:relative; flex:1; height:100%; background:#0c0c0d;}

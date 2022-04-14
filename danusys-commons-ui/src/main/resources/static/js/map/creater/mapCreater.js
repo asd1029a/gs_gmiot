@@ -19,7 +19,7 @@ class mapCreater {
         undefined // vworld
     ];
     defaultZoom = [
-        8, // daum
+        9.5, // daum
         undefined, // naver
         15, // vworld
     ];

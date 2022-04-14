@@ -56,7 +56,7 @@ const mntr = {
         //맵 이동 (move end) 이벤트
         map.setMapEventListener('moveend',e => {
             //동네 날씨 기능
-            //centerVilageInfo(e);
+            centerVilageInfo(e);
         });
 
         //레이어 마우스오버 이벤트
