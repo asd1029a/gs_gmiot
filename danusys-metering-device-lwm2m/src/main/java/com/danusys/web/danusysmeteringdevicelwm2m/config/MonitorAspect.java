@@ -1,11 +1,11 @@
 package com.danusys.web.danusysmeteringdevicelwm2m.config;
 
 import com.danusys.web.danusysmeteringdevicelwm2m.service.DeviceRegisterService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 @Slf4j
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class MonitorAspect {
 //    private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 //    private static final Logger log = LoggerFactory.getLogger("FILE_LOGGER");
@@ -23,8 +24,7 @@ public class MonitorAspect {
 //    private String ip = "";
 //    private String clientIp = "";
 //    private String clientUrl = "";
-    @Autowired
-    private DeviceRegisterService deviceRegisterService;
+    private final DeviceRegisterService deviceRegisterService;
 
     @PostConstruct
     public void init() throws UnknownHostException {
@@ -112,7 +112,7 @@ public class MonitorAspect {
 
 //    }
 
-    @AfterReturning(pointcut = "execution(* com.danusys.web.*.*.*Controller.*(..))", returning = "returnObj")
+    @AfterReturning(pointcut = "execution(* com.danusys.web.*.*.*Controller.postObserveDataNotice(..))", returning = "returnObj")
     public void allReturningLogging(JoinPoint jp, Object returnObj) throws Throwable {
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>allReturningLogging");
         System.out.println(">>> returning >>>>>>>>>>>>>>>>>");
