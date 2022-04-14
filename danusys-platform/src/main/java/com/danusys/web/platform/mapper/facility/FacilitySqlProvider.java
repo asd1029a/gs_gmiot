@@ -12,11 +12,18 @@ public class FacilitySqlProvider {
         String keyword = CommonUtil.validOneNull(paramMap,"keyword");
         String start = CommonUtil.validOneNull(paramMap,"start");
         String length = CommonUtil.validOneNull(paramMap,"length");
+        String optType = CommonUtil.validOneNull(paramMap,"optType");
+        String dimmingGroupSeq = CommonUtil.validOneNull(paramMap,"dimmingGroupSeq");
 
         SQL sql = new SQL() {{
             SELECT("*, '' as station_kind, '' as station_name, '' as address");
             FROM("t_facility t1");
-            //INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
+            if("dimming".equals(optType)) {
+                INNER_JOIN("v_dimming_group v1 on t1.facility_seq = v1.facility_seq");
+                if(dimmingGroupSeq != null) {
+                    WHERE("v1.dimming_group_seq::integer = " + dimmingGroupSeq);
+                }
+            }
             if(keyword != null && !keyword.equals("")) {
                 WHERE("facility_kind LIKE" + keyword);
             }
@@ -113,75 +120,44 @@ public class FacilitySqlProvider {
         String start = CommonUtil.validOneNull(paramMap,"start");
         String length = CommonUtil.validOneNull(paramMap,"length");
 
-        String dimmingWithQry = this.getDimmingWithQry();
         SQL sql = new SQL() {{
 
-            SELECT("w1.dimming_group_name");
+            SELECT("v1.dimming_group_seq, v1.dimming_group_name");
             FROM("(" +
                     "SELECT *" +
-                    "FROM dimming_set" +
-                    ") w1");
+                    "FROM v_dimming_group" +
+                    ") v1");
             if(keyword != null && !keyword.equals("")) {
-                WHERE("w1.dimming_group_name LIKE" + keyword);
+                WHERE("v1.dimming_group_name LIKE" + keyword);
             }
-            GROUP_BY("dimming_group_name");
+            GROUP_BY("v1.dimming_group_seq, v1.dimming_group_name");
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);
             }
         }};
-        return dimmingWithQry + sql.toString();
+        return sql.toString();
     }
 
     public String selectCountDimmingGroupQry(Map<String, Object> paramMap) {
         String keyword = CommonUtil.validOneNull(paramMap,"keyword");
 
-        String dimmingWithQry = this.getDimmingWithQry();
         SQL sql = new SQL() {{
 
             SELECT("COUNT(s1.*)");
             FROM(
                 "(" +
-                    "SELECT w1.dimming_group_name " +
+                    "SELECT v1.dimming_group_name " +
                     "FROM (" +
                         "SELECT * " +
-                        "FROM dimming_set" +
-                    ") w1"
+                        "FROM v_dimming_group" +
+                    ") v1"
             );
             if(keyword != null && !keyword.equals("")) {
-                WHERE("w1.dimming_group_name LIKE" + keyword);
+                WHERE("v1.dimming_group_name LIKE" + keyword);
             }
-            GROUP_BY("dimming_group_name ) s1");
+            GROUP_BY("v1.dimming_group_name ) s1");
         }};
-        return dimmingWithQry + sql.toString();
-    }
-
-    private String getDimmingWithQry() {
-        return "WITH dimming_set " +
-                "AS ( " +
-                "  SELECT * " +
-                "  FROM crosstab( " +
-                "   'SELECT facility_seq, facility_opt_name, facility_opt_value ' || " +
-                "   'FROM t_facility_opt ' ||" +
-                "   'WHERE facility_opt_name in (' || " +
-                "         '''dimming_group_name''' || " +
-                "         ', ''dimming_group_seq''' || " +
-                "         ', ''dimming_time_zone'' ' || " +
-                "         ', ''keep_bright_time'' ' || " +
-                "         ', ''max_bright_time'' ' || " +
-                "         ', ''min_bright_time'')' || " +
-                "    'GROUP BY facility_seq, facility_opt_name, facility_opt_value ' || " +
-                "    'ORDER BY facility_seq, facility_opt_name' " +
-                "   ) " +
-                "AS ( " +
-                "  facility_seq integer, " +
-                "  dimming_group_name varchar, " +
-                "  dimming_group_seq varchar, " +
-                "  dimming_time_zone varchar, " +
-                "  keep_bright_time varchar, " +
-                "  max_bright_time varchar, " +
-                "  min_bright_time varchar " +
-                " ) " +
-                ")";
+        return sql.toString();
     }
 }

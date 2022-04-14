@@ -72,7 +72,6 @@ const facility = {
                     event.get(rowData.facilitySeq, (result) => console.log(result));
                 }
             }
-            // 클릭시 디테일 select 추가해야함
         }
         comm.createTable($target ,optionObj, evt);
     }
@@ -80,7 +79,8 @@ const facility = {
         $.ajax({
             url : "/facility"
             , type : "POST"
-            , data : param
+            , data : JSON.stringify(param)
+            , contentType : "application/json; charset=utf-8"
         }).done((result) => {
             pCallback(result);
         });
@@ -161,9 +161,6 @@ const dimming = {
                 );
         });
     }
-    , getList : () => {
-
-    }
     , create : (pPermit) => {
         const $target = $('#dimmingGroupTable');
         const optionObj = {
@@ -208,16 +205,21 @@ const dimming = {
         }
         const evt = {
             click : function(e) {
-                const $form = $('#noticeForm');
+                const $form = $('#dimmingGroupForm');
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
                 if($(e.target).hasClass('button')) {
+                    /* TODO : 팝업 적용 후 작동 예정*/
                     dimming.showPopup();
                     dimming.get(rowData.dimmingGroupSeq ,(result) => {
-                        $form.data("noticeSeq", rowData.dimmingGroupSeq);
+                        $form.data("dimmingGroupSeq", rowData.dimmingGroupSeq);
                         $form.setItemValue(result);
                     });
                 } else {
-
+                    const param = {
+                        'optType' : "dimming"
+                        , 'dimmingGroupSeq' : rowData.dimmingGroupSeq
+                    };
+                    facility.getList(param, (result)=> {console.log(result)});
                 }
             }
         }
@@ -230,6 +232,21 @@ const dimming = {
         }).done((result) => {
             pCallback(result);
         });
+    }
+    , addGroup : () => {
+
+    }
+    , modGroup : () => {
+
+    }
+    , delGroup : () => {
+
+    }
+    , getDimming : () => {
+
+    }
+    , addDimming : () => {
+
     }
     , showPopup : () => {
         $("dimmingGroupPopup").css('display', 'flex');
