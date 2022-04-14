@@ -3,7 +3,7 @@ package com.danusys.web.platform.service.notice;
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.app.StringUtil;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.repository.UserRepository;
+import com.danusys.web.commons.auth.service.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.dto.request.NoticeRequestDto;

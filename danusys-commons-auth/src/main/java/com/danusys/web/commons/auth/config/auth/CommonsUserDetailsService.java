@@ -3,7 +3,7 @@ package com.danusys.web.commons.auth.config.auth;
 
 
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.repository.UserRepository;
+import com.danusys.web.commons.auth.service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

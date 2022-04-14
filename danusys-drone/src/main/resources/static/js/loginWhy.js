@@ -1,4 +1,4 @@
-//let page = "/pages/mntr";
+
 let page = "/flying";
 
 $(".login-btn").on("click", function () {
@@ -37,7 +37,7 @@ $(".login-btn").on("click", function () {
                 document.location = page;
             } else {
 
-                document.write(resultData);
+                document.location.reload();
             }
 
         }

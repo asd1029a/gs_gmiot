@@ -2,11 +2,10 @@ package com.danusys.web.commons.auth.service;
 
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.commons.auth.model.*;
-import com.danusys.web.commons.auth.repository.PermitMenuRepository;
-import com.danusys.web.commons.auth.repository.PermitRepository;
-import com.danusys.web.commons.auth.repository.UserGroupPermitRepository;
-import com.danusys.web.commons.auth.repository.UserGroupRepository;
-import com.danusys.web.commons.auth.util.LoginInfoUtil;
+import com.danusys.web.commons.auth.service.repository.PermitMenuRepository;
+import com.danusys.web.commons.auth.service.repository.PermitRepository;
+import com.danusys.web.commons.auth.service.repository.UserGroupPermitRepository;
+import com.danusys.web.commons.auth.service.repository.UserGroupRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
