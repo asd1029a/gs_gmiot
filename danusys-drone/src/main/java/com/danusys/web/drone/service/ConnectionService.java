@@ -3,6 +3,7 @@ package com.danusys.web.drone.service;
 import com.danusys.web.commons.socket.config.CustomServerSocket;
 import com.danusys.web.drone.model.DroneSocket;
 import io.dronefleet.mavlink.MavlinkConnection;
+import io.dronefleet.mavlink.MavlinkDialect;
 import io.dronefleet.mavlink.MavlinkMessage;
 import io.dronefleet.mavlink.common.Heartbeat;
 import io.dronefleet.mavlink.common.MavAutopilot;
@@ -17,10 +18,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,7 +31,7 @@ public class ConnectionService {
     int currentIndex = -1;
 
     public List<Map<String, Object>> getSocketList() {
-        List<Map<String, Object>> listMap = new ArrayList<>();
+        List<Map <String, Object>> listMap = new ArrayList<>();
         Map<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
 
         MavlinkConnection connection = null;
@@ -53,7 +51,7 @@ public class ConnectionService {
 
             log.info("connection={}", connection);
 
-            if (isConnected(connection)) {
+            if ( isConnected(connection)) {
                 log.info("addMap={}", index);
                 saveMap(index,socketList);
               //  addMap(index, socketList, listMap);
@@ -72,6 +70,7 @@ public class ConnectionService {
         for (Integer deleteIndex : deleteList) {
             ServerSocket.serverThread.destroySocket(deleteIndex);
         }
+
         return listMap;
     }
 
@@ -88,11 +87,19 @@ public class ConnectionService {
     }
 
     public boolean isConnected(MavlinkConnection connection) {
-        Heartbeat heartbeat = null;
+
         int linkId = 1;
         long timestamp = System.currentTimeMillis();/* provide microsecond time */
         MavlinkMessage message;
         byte[] secretKey = new byte[0];
+        final int[] timeSec = {0};
+        Timer t=new Timer();
+        TimerTask tt=new TimerTask() {
+            @Override
+            public void run() {
+                timeSec[0]++;
+            }
+        };
         try {
             secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
             Heartbeat firstHeartbeat = Heartbeat.builder()
@@ -102,37 +109,51 @@ public class ConnectionService {
                     .baseMode()
                     .mavlinkVersion(3)
                     .build();
+
+
             connection.send2(1, 1, firstHeartbeat, linkId, timestamp, secretKey);
+            t.schedule(tt,0,1000);
             while ((message = connection.next()) != null) {
                 //TODO socket try catch 안쪽으로 별개로 작성
                 if (message.getPayload() instanceof Heartbeat) {
                     //  MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
                     break;
                 }
+                if(timeSec[0]>=2) {
+                    return true;
+                }
             }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            //e.printStackTrace();
+            log.info("IOEEXCEPTION");
             return false;
+        } catch(Exception e){
+            e.printStackTrace();
         }
+        finally {
+            tt.cancel();
+            t.cancel();
+            timeSec[0]=0;
+        }
+
         return true;
 
 
     }
 
-    public void addMap(int index, Map<Integer, Socket> socketList, List<Map<String, Object>> listMap) {
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("index", index);
-        map.put("port", socketList.get(index).getPort());
-        map.put("address", socketList.get(index).getInetAddress());
-        map.put("localPort", socketList.get(index).getLocalPort());
-        log.info("map={}", map);
-        listMap.add(map);
-
-
-    }
+//    public void addMap(int index, Map<Integer, Socket> socketList, List<Map<String, Object>> listMap) {
+//        Map<String, Object> map = new HashMap<>();
+//
+//        map.put("index", index);
+//        map.put("port", socketList.get(index).getPort());
+//        map.put("address", socketList.get(index).getInetAddress());
+//        map.put("localPort", socketList.get(index).getLocalPort());
+//        log.info("map={}", map);
+//        listMap.add(map);
+//
+//
+//    }
 
 
     public void saveMap(int index, Map<Integer, Socket> socketList) {

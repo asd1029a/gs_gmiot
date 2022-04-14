@@ -1,7 +1,7 @@
 package com.danusys.web.commons.auth.service;
 
 import com.danusys.web.commons.auth.model.Permit;
-import com.danusys.web.commons.auth.repository.PermitRepository;
+import com.danusys.web.commons.auth.service.repository.PermitRepository;
 import org.springframework.stereotype.Service;
 
 @Service

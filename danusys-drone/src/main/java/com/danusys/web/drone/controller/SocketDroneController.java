@@ -27,7 +27,7 @@ public class SocketDroneController {
     public ResponseEntity<?> getSocketList() {
         List<Map<String, Object>> listMap = new ArrayList<>();
         listMap = connectionService.getSocketList();
-        log.info("listMap={}",listMap);
+        log.info("listMap1={}",listMap);
         log.info("connectionMap={}",connectionService.getConnectionMap());
         return ResponseEntity.ok(listMap);
     }
@@ -46,7 +46,7 @@ public class SocketDroneController {
 //        listMap.forEach(socketMap -> {
 //            socketMap.get()
 //        });
-        log.info("listMap={}",listMap);
+        log.info("listMap2={}",listMap);
         return null;
 
     }
