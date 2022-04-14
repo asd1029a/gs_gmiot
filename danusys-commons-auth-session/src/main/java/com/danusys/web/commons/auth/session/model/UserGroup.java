@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-//기존 ㅔㅇ러페이지살려봐요
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "t_user_group")
 public class UserGroup implements Serializable {

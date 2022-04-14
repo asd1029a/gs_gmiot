@@ -248,7 +248,27 @@
 
 	<!-- 관리자 그룹: 목록 조회 -->
 	<select id="SELECT_LIST_ADMIN_GROUP" parameterType="hashMap" resultType="uisRsMap">
-		-- 관리자 그룹 목록 조회 : SELECT_LIST_ADMIN_GROUP
+	&#45;&#45; 관리자 그룹 목록 조회 : SELECT_LIST_ADMIN_GROUP
+		SELECT T1.USER_GROUP_SEQ, T1.USER_GROUP_NAME, T1.ADMIN_GROUP_CONTENT
+		, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
+		, DATE_FORMAT(T1.UPDATE_DT, '%Y-%m-%d %H:%i:%S') AS UPDATE_DT
+		, T2.PERMIT_SEQ_LIST
+		FROM T_USER_GROUP T1
+		LEFT JOIN (
+		SELECT USER_GROUP_SEQ, GROUP_CONCAT(PERMIT_SEQ ORDER BY PERMIT_SEQ) AS PERMIT_SEQ_LIST
+		FROM T_USER_GROUP_PERMIT
+		GROUP BY USER_GROUP_SEQ
+		) T2 ON T1.USER_GROUP_SEQ = T2.USER_GROUP_SEQ
+		WHERE 1=1
+		ORDER BY USER_GROUP_SEQ
+		<if test="start != null and length != null">
+			LIMIT ${start} , ${length}
+		</if>
+
+	</select>
+<!--
+	<select id="SELECT_LIST_ADMIN_GROUP" parameterType="hashMap" resultType="uisRsMap">
+		&#45;&#45; 관리자 그룹 목록 조회 : SELECT_LIST_ADMIN_GROUP
 
 		SELECT T1.USER_GROUP_SEQ, T1.USER_GROUP_NAME, T1.ADMIN_GROUP_CONTENT
 		, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
@@ -266,6 +286,7 @@
 			LIMIT ${start} , ${length}
 		</if>
 	</select>
+-->
 
 	<!-- 관리자 그룹 : 등록 -->
 	<insert id="INSERT_ADMIN_GROUP" parameterType="hashMap">
@@ -305,15 +326,28 @@
 
 	<!-- 관리자 : 권한 목록 조회 -->
 	<select id="SELECT_LIST_PERMIT" parameterType="hashMap" resultType="uisRsMap">
-		-- 관리자 권한 목록 : SELECT_LIST_PERMIT
+		&#45;&#45; 관리자 권한 목록 : SELECT_LIST_PERMIT
 
 		SELECT PERMIT_SEQ, PERMIT_NAME
 		FROM T_PERMIT
 	</select>
 
+
+
 	<!-- 관리자 그룹 권한 : 등록 -->
 	<insert id="INSERT_ADMIN_GROUP_PERMIT" parameterType="hashMap">
-		-- 관리자 권한 등록 : INSERT_ADMIN_GROUP_PERMIT
+		&#45;&#45; 관리자 권한 등록 : INSERT_ADMIN_GROUP_PERMIT
+
+		INSERT INTO T_USER_GROUP_PERMIT (USER_GROUP_SEQ, PERMIT_SEQ, INSERT_DT, INSERT_USER_SEQ, PERMIT_MENU_SEQ)
+		VALUES
+		<foreach collection="permitSeqList" item="item" index="index" separator=",">
+			(#{userGroupSeq},#{permitSeq}, NOW(), #{sessionAdminSeq}, #{item})
+		</foreach>
+	</insert>
+
+	<!--
+	<insert id="INSERT_ADMIN_GROUP_PERMIT" parameterType="hashMap">
+		&#45;&#45; 관리자 권한 등록 : INSERT_ADMIN_GROUP_PERMIT
 
 		INSERT INTO T_PERMIT_IN_ADMIN_GROUP (ADMIN_GROUP_SEQ, PERMIT_SEQ, INSERT_DT, INSERT_ADMIN_SEQ)
 		VALUES
@@ -321,14 +355,23 @@
 			(#{userGroupSeq}, #{item}, NOW(), #{sessionAdminSeq})
 		</foreach>
 	</insert>
+-->
 
 	<!-- 관리자 그룹 권한 : 삭제 -->
 	<delete id="DELETE_ADMIN_GROUP_PERMIT" parameterType="hashMap">
-		-- 관리자 그룹 권한 삭제 : DELETE_ADMIN_GROUP_PERMIT
+		&#45;&#45; 관리자 그룹 권한 삭제 : DELETE_ADMIN_GROUP_PERMIT
+
+		DELETE FROM T_USER_GROUP_PERMIT
+		WHERE USER_GROUP_SEQ=#{userGroupSeq}
+	</delete>
+<!--
+	<delete id="DELETE_ADMIN_GROUP_PERMIT" parameterType="hashMap">
+		&#45;&#45; 관리자 그룹 권한 삭제 : DELETE_ADMIN_GROUP_PERMIT
 
 		DELETE FROM T_PERMIT_IN_ADMIN_GROUP
 		WHERE ADMIN_GROUP_SEQ=#{userGroupSeq}
 	</delete>
+-->
 
 
 	<!-- 관리자 그룹 : 소속 관리자 목록 조회 카운트-->

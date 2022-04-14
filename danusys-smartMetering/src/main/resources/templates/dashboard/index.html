@@ -1,34 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout/baseLayout">
 
-
 <body>
-
 <th:block layout:fragment="content">
     <div class="settingMainBody">
         <div class="areaLeft">
             <dl class="leftTop">
-                <dt class="cursor" onclick="location.href='/gis/main.do';">관제<span><img src="/images/common/iconNewTab.svg"></span></dt>
-                <dd class="cursor" onclick="location.href='/dashboard/main.do';">대시보드</dd>
-                <dd class="cursor" onclick="location.href='/search/account/accountList.do';">조회</dd>
+                <dt class="cursor mntr" style="opacity: 0.5">관제<span><img src="/images/common/iconNewTab.svg"></span></dt>
+                <dd class="cursor dash" style="opacity: 0.5">대시보드</dd>
+                <dd class="cursor inqr" style="opacity: 0.5" >조회</dd>
             </dl>
-            <section class="leftBottom">
+            <section class="leftBottom">s
                 <h4>공지사항</h4>
                 <ul id="boardListUl"></ul>
             </section>
         </div>
         <div class="areaCenter">
             <ul class="centerTop">
-                <li class="cursor" onclick="location.href='/setting/admin/adminList.do';">사용자 및 그룹 설정</li>
-                <li class="cursor" onclick="location.href='/stats/accountStats.do';">검침 & 이벤트 통계</li>
+                <li class="cursor config" id="configA" style="opacity: 0.5">사용자 및 그룹 설정</li>
+                <li class="cursor stats" style="opacity: 0.5" >검침 & 이벤트 통계</li>
             </ul>
             <ul class="centerBottom">
-                <li class="cursor" onclick="location.href='/search/account/accountDataList.do';">검침 조회</li>
-                <li class="cursor" onclick="location.href='/search/event/eventList.do';">이벤트 조회</li>
-                <li class="cursor" onclick="location.href='/search/account/accountList.do';">수용가 조회</li>
-                <li class="cursor" onclick="location.href='/setting/account/accountGroupList.do';">수용가 그룹 설정</li>
+                <li class="cursor inqr" id="inqrA" style="opacity: 0.5">검침 조회</li>
+                <li class="cursor inqr" id="inqrB" style="opacity: 0.5">이벤트 조회</li>
+                <li class="cursor inqr" id="inqrC" style="opacity: 0.5">수용가 조회</li>
+                <li class="cursor config" id="configB" style="opacity: 0.5" >수용가 그룹 설정</li>
             </ul>
         </div>
         <div class="right">
@@ -48,6 +47,54 @@
     <script>
         init.dashboardIndex();
     </script>
+
+    <script sec:authorize="hasRole('ROLE_mntr_permit' )">
+        $('.mntr').css("opacity","1");
+        $('.mntr').on("click",function (){
+            document.location.href='/gis/main.do';
+        })
+    </script>
+
+    <script sec:authorize="hasRole('ROLE_dashboard_permit' )">
+        $('.dash').css("opacity","1");
+        $('.dash').on("click",function (){
+            document.location.href='/dashboard/main.do';
+        })
+    </script>
+
+    <script sec:authorize="hasRole('ROLE_inqry_permit' )">
+        $('.inqr').css("opacity","1");
+        $('.inqr').on("click",function (){
+            document.location.href='/search/account/accountList.do';
+        })
+        $('#inqrA').on("click", function (){
+            document.location.href='/search/account/accountDataList.do';
+        })
+        $('#inqrB').on("click", function (){
+            document.location.href='/search/event/eventList.do';
+        })
+        $('#inqrC').on("click", function (){
+            document.location.href='/search/account/accountList.do';
+        })
+    </script>
+
+    <script sec:authorize="hasRole('ROLE_stats_permit' )">
+        $('.stats').css("opacity","1");
+        $('.stats').on("click",function (){
+            document.location.href='/stats/accountStats.do';
+        })
+    </script>
+
+    <script sec:authorize="hasRole('ROLE_config_permit' )">
+        $('.config').css("opacity","1");
+        $('#configA').on("click",function (){
+            document.location.href='/setting/admin/adminList.do';
+        })
+        $('#configB').on("click",function (){
+            document.location.href='/setting/account/accountGroupList.do';
+        })
+    </script>
+
 
 
 </th:block>

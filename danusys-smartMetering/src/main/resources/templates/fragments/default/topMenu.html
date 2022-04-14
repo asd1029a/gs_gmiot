@@ -1,5 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <th:block th:fragment="topMenu">
 <header>
     <h1 class="logo">
@@ -10,13 +11,13 @@
             <li>
                 <a href="/">메인</a>
             </li>
-            <li>
+            <li sec:authorize="hasRole('ROLE_mntr_permit')">
                 <a href="/gis/main.do" target="_blank">관제<span class="icon"><img src="/images/common/iconNewTab.svg"></span></a>
             </li>
-            <li class="active">
+            <li sec:authorize="hasRole('ROLE_dashboard_permit')" class="active">
                 <a href="/dashboard/main.do">대시보드</a>
             </li>
-            <li><a href="/search/account/accountList.do">조회</a> <!-- 헤더 메뉴 표출 -->
+            <li sec:authorize="hasRole('ROLE_inqry_permit')"><a href="/search/account/accountList.do">조회</a> <!-- 헤더 메뉴 표출 -->
                 <div class="gnbSubWrap">
                     <div class="gnbSub">
                         <ul>
@@ -34,7 +35,7 @@
                     </div>
                 </div>
             </li>
-            <li>
+            <li sec:authorize="hasRole('ROLE_stats_permit')">
                 <a href="/stats/accountStats.do">통계</a>
                 <div class="gnbSubWrap">
                     <div class="gnbSub">
@@ -55,7 +56,7 @@
                     </ul>
                 </div>
             </div>
-            <p class="button" onclick="location.href='/setting/admin/adminList.do'">
+            <p sec:authorize="hasRole('ROLE_config_permit')" class="button" onclick="location.href='/setting/admin/adminList.do'">
                 <span class="icon"><img src="/images/common/iconSetting.svg"></span>환경설정
             </p>
         </div>

@@ -194,15 +194,19 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public String insertAdminGroup(Map<String, Object> paramMap) throws Exception {
 
-
 		commonDao.insert("admin.INSERT_ADMIN_GROUP", paramMap);
 
 		List<?> permitSeqList = new ArrayList<String>();
-		permitSeqList = (List<?>) paramMap.get("permitSeqList");
+		permitSeqList = (List<?>) paramMap.get("permitSeqList");  // seqlist가 들어와야한다.
+
+		paramMap.put("permitSeq", 33 );  // 임시
 
 		if(!permitSeqList.isEmpty()) {
 			commonDao.insert("admin.INSERT_ADMIN_GROUP_PERMIT", paramMap);
 		}
+
+		System.out.println("관리자 그룹 등록 파람맵 : " + paramMap);
+
 		return JsonUtil.getCntJsonString(1);
 	}
 
@@ -214,8 +218,7 @@ public class AdminServiceImpl implements AdminService {
 		List<?> permitSeqList = new ArrayList<String>();
 		permitSeqList = (List<?>) paramMap.get("permitSeqList");
 
-		System.out.println("관리자 그룹 수정에 permitSeqList : " + permitSeqList);
-		System.out.println("관리자 그룹 수정에 paramMap : " + paramMap);
+		paramMap.put("permitSeq", 33);
 
 		commonDao.delete("admin.DELETE_ADMIN_GROUP_PERMIT", paramMap);
 		if(!permitSeqList.isEmpty()) {
@@ -229,7 +232,6 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String deleteAdminGroup(Map<String, Object> paramMap) throws Exception {
-		System.out.println("관리자 그룹 삭제 paramMap : " + paramMap);
 
 		commonDao.delete("admin.DELETE_ADMIN_GROUP_PERMIT", paramMap);
 		commonDao.delete("admin.DELETE_ADMIN_IN_ADMIN_GROUP_GROUP_SEQ", paramMap);
@@ -250,7 +252,6 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String deleteAdminInGroup(Map<String, Object> paramMap) throws Exception {
-		System.out.println("소속 관리자 해제 : " + paramMap);
 		return JsonUtil.getCntJsonString(commonDao.delete("admin.DELETE_ADMIN_IN_ADMIN_GROUP_ADMIN_SEQ", paramMap));
 	}
 

@@ -679,17 +679,25 @@ const adminGroup = {
 		$('#adminInGroupKeyword').val('');
 		$('#adminInGroupPopup').hide();
 	},
+
 	addAdminGroupProc : () => {
 		const formObj = $('#adminGroupForm').serializeJSON();
-		const permitSeqList = [];
+		const permitMenuSeqList = [];
 		$('#adminGroupPopup .checkboxList li').each((i,e) => {
-			const permitSeq = $(e).find('input:checked').data('value');
-			const eleId = $(e).find('input:checked').attr('id');
-			if (typeof permitSeq !== "undefined" && permitSeq !== "" && eleId.includes('permit')) {
-				permitSeqList.push(permitSeq);
+			const permitMenuSeq = $(e).find('input:checked').data('value');
+
+			console.log("addadmingroupProc에 체크값 확인 : " + permitMenuSeq);
+
+			// const eleId = $(e).find('input:checked').attr('id');
+			if(typeof  permitMenuSeq !=="undefined"){
+				permitMenuSeqList.push(permitMenuSeq)
 			}
+
+			// if (typeof permitSeq !== "undefined" && permitSeq !== "" && eleId.includes('permit')) {
+			// permitSeqList.push(permitSeq);
+			// }
 		});
-		formObj.permitSeqList = permitSeqList;
+		formObj.permitSeqList = permitMenuSeqList;
 		comm.ajaxPost({
 				url : "/admin/addAdminGroup.ado"
 				, type : "PUT"
@@ -706,10 +714,14 @@ const adminGroup = {
 		const permitSeqList = [];
 		$('#adminGroupPopup .checkboxList li').each((i,e) => {
 			const permitSeq = $(e).find('input:checked').data('value');
-			if (typeof permitSeq !== "undefined" && permitSeq !== "") {
+			console.log("permitseq: " + permitSeq )
+			if (typeof permitSeq !== "undefined") {
 				permitSeqList.push(permitSeq);
 			}
-		});
+	/*		if (typeof permitSeq !== "undefined" && permitSeq !== "") {
+				permitSeqList.push(permitSeq);
+			}
+*/		});
 		formObj.permitSeqList = permitSeqList;
 		comm.ajaxPost({
 				url : "/admin/modAdminGroup.ado"

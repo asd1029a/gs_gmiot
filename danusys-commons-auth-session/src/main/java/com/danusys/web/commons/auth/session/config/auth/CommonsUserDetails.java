@@ -2,6 +2,7 @@ package com.danusys.web.commons.auth.session.config.auth;
 
 
 import com.danusys.web.commons.auth.session.model.User;
+import com.danusys.web.commons.auth.session.model.UserGroupPermit;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -81,7 +82,6 @@ public class CommonsUserDetails implements UserDetails {
 
         return collectors;
     }*/
-
     @Override
     @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -101,20 +101,21 @@ public class CommonsUserDetails implements UserDetails {
 //        }
 
         if (user != null) {
-            System.out.println("여기들어옴");
             user.getUserInGroup().forEach(userInGroup -> {
                 userInGroup.getUserGroup()
                         .getUserGroupPermit()
                         .stream()
                         .filter(userGroupPermit -> !permitList.add("ROLE_" + userGroupPermit.getPermitMenu().getCodeValue() + "_" + userGroupPermit.getPermit().getCodeValue()))
                         .collect(Collectors.toList());
+
             });
-            System.out.println("permitlist!! : " + permitList);
+
             permitList.forEach(permit -> {
                 authorities.add(new SimpleGrantedAuthority(permit));
             });
-        }
 
+            System.out.println("authorities::" + authorities);
+        }
         return authorities;
     }
 
