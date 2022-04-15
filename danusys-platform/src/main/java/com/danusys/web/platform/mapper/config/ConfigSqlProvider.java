@@ -16,6 +16,9 @@ public class ConfigSqlProvider {
             FROM("t_common_code");
             WHERE("parent_code_seq = "+pParentCode);
             WHERE("use_kind != 'D'");
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("code_name LIKE '%" + keyword + "%'");
+            }
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);
@@ -32,6 +35,9 @@ public class ConfigSqlProvider {
             SELECT("COUNT(*) AS count");
             FROM("t_common_code");
             WHERE("parent_code_seq = "+pParentCode);
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("code_name LIKE '%" + keyword + "%'");
+            }
         }};
         return sql.toString();
     }
