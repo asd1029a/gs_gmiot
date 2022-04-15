@@ -15,7 +15,7 @@
             </dl>
             <section class="leftBottom">s
                 <h4>공지사항</h4>
-                <ul id="boardListUl"></ul>
+                <ul sec:authorize="hasRole('ROLE_config_permit')" id="boardListUl"></ul>
             </section>
         </div>
         <div class="areaCenter">
@@ -32,7 +32,7 @@
         </div>
         <div class="right">
             <h2>미처리 이벤트</h2>
-            <ul class="eventList">
+            <ul sec:authorize="hasRole('ROLE_mntr_permit')" class="eventList">
                 <li>
                     <dl>
                         <dt><span class="tit title00">이벤트 없음</span></dt>
