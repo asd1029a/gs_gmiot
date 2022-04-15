@@ -1,14 +1,11 @@
 package com.danusys.web.commons.auth.controller;
 
-<<<<<<< HEAD:danusys-commons-auth/src/main/java/com/danusys/web/commons/auth/controller/UserController.java
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserService;
-=======
-import com.danusys.web.commons.auth.session.model.User;
-import com.danusys.web.commons.auth.session.service.UserInGroupService;
-import com.danusys.web.commons.auth.session.service.UserService;
->>>>>>> 1e0a893bc70128278dfd3c79c3fd64c78411661c:danusys-commons-auth/src/main/java/com/danusys/web/commons/auth/session/controller/UserController.java
+import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.service.UserInGroupService;
+import com.danusys.web.commons.auth.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

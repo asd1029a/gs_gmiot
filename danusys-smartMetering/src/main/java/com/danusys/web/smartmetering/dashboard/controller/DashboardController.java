@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +28,7 @@ public class DashboardController {
 	 * 메뉴 페이지
 	 */
 	@RequestMapping("/dashboard/index.do")
-	public String indexMain(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String indexMain(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		return "dashboard/index";
 	}
 }

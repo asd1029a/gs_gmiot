@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -85,6 +86,7 @@ public class CommonsUserDetails implements UserDetails {
     @Override
     @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        HttpSession session = null;
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
 //        if (user != null) {
@@ -113,8 +115,7 @@ public class CommonsUserDetails implements UserDetails {
             permitList.forEach(permit -> {
                 authorities.add(new SimpleGrantedAuthority(permit));
             });
-
-            System.out.println("authorities::" + authorities);
+            log.info("###authorities = {}", authorities);
         }
         return authorities;
     }

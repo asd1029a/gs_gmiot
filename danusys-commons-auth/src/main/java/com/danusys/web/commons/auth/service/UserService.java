@@ -3,7 +3,6 @@ package com.danusys.web.commons.auth.service;
 
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.PagingUtil;
-<<<<<<< HEAD:danusys-commons-auth/src/main/java/com/danusys/web/commons/auth/service/UserService.java
 import com.danusys.web.commons.auth.dto.response.UserResponse;
 import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
@@ -15,19 +14,17 @@ import com.danusys.web.commons.auth.service.repository.UserRepository;
 import com.danusys.web.commons.auth.service.repository.UserStatusRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
-=======
-import com.danusys.web.commons.auth.session.dto.response.UserResponse;
-import com.danusys.web.commons.auth.session.entity.UserSpecification;
-import com.danusys.web.commons.auth.session.model.User;
-import com.danusys.web.commons.auth.session.model.UserGroup;
-import com.danusys.web.commons.auth.session.model.UserInGroup;
-import com.danusys.web.commons.auth.session.repository.UserGroupRepository;
-import com.danusys.web.commons.auth.session.repository.UserInGroupRepository;
-import com.danusys.web.commons.auth.session.repository.UserRepository;
-import com.danusys.web.commons.auth.session.repository.UserStatusRepository;
-import com.danusys.web.commons.auth.session.util.LoginInfoUtil;
-import com.danusys.web.commons.auth.session.util.SHA256;
->>>>>>> 1e0a893bc70128278dfd3c79c3fd64c78411661c:danusys-commons-auth/src/main/java/com/danusys/web/commons/auth/session/service/UserService.java
+import com.danusys.web.commons.auth.dto.response.UserResponse;
+import com.danusys.web.commons.auth.entity.UserSpecification;
+import com.danusys.web.commons.auth.model.User;
+import com.danusys.web.commons.auth.model.UserGroup;
+import com.danusys.web.commons.auth.model.UserInGroup;
+import com.danusys.web.commons.auth.service.repository.UserGroupRepository;
+import com.danusys.web.commons.auth.service.repository.UserInGroupRepository;
+import com.danusys.web.commons.auth.service.repository.UserRepository;
+import com.danusys.web.commons.auth.service.repository.UserStatusRepository;
+import com.danusys.web.commons.auth.util.LoginInfoUtil;
+import com.danusys.web.commons.auth.util.SHA256;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

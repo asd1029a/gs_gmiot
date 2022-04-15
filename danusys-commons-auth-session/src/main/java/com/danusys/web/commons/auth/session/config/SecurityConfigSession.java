@@ -62,6 +62,22 @@ public class SecurityConfigSession extends WebSecurityConfigurerAdapter {
     private String[] permitAll = null;
 
 
+    @Value("#{'${role.dash.page}'}") // 대시보드
+    private  String roleDashPage;
+    @Value("#{'${role.mntr.page}'}") // 관제
+    private  String roleMntrPage;
+    @Value("#{'${role.inqry.page}'}") // 조회
+    private  String roleInqryPage;
+    @Value("#{'${role.stats.page}'}") // 통계
+    private  String roleStatsPage;
+    @Value("#{'${role.config.page}'}") // 환경설정
+    private  String roleConfigPage;
+
+    @Value("#{'${role.menu.page}'.split(',')}")
+    private  String[] roleMenuPage;
+
+
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(commonsUserDetailsService).passwordEncoder(passwordEncoder());
@@ -80,8 +96,21 @@ public class SecurityConfigSession extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
 
+        for (String str : roleMenuPage){
+            String permitMenu = str.split("-")[0];
+            String url = str.split("-")[1];
+            String role = permitMenu + "_permit";
+            http.authorizeRequests()
+                    .antMatchers(url).hasRole(role);
+        }
+
         http.authorizeRequests()
                 .antMatchers(permitAll).permitAll()
+                .antMatchers(roleDashPage).access("hasRole('ROLE_dashboard_permit')")
+                .antMatchers(roleMntrPage).access("hasRole('ROLE_mntr_permit')")
+                .antMatchers(roleInqryPage).access("hasRole('ROLE_inqry_permit')")
+                .antMatchers(roleStatsPage).access("hasRole('ROLE_stats_permit')")
+                .antMatchers(roleConfigPage).access("hasRole('ROLE_config_permit')")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

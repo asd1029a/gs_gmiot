@@ -641,6 +641,7 @@ const adminGroup = {
 		comm.showModal($('#adminGroupPopup'));
 		$('#adminGroupPopup').css("display", "flex");
 		$('#adminGroupPopup .popupTabButton li:first-child').trigger('click');
+
 		$('#adminGroupPopup .checkboxList li input').not('[id*=permit]').each((index, ele)=> {
 			$(ele).prop('checked', true);
 		})
@@ -685,17 +686,11 @@ const adminGroup = {
 		const permitMenuSeqList = [];
 		$('#adminGroupPopup .checkboxList li').each((i,e) => {
 			const permitMenuSeq = $(e).find('input:checked').data('value');
-
-			console.log("addadmingroupProc에 체크값 확인 : " + permitMenuSeq);
-
-			// const eleId = $(e).find('input:checked').attr('id');
-			if(typeof  permitMenuSeq !=="undefined"){
+			const eleId = $(e).find('input:checked').attr('id');
+			if (typeof permitMenuSeq !== "undefined" && permitMenuSeq !== "" && eleId.includes('permit')) {
+				console.log("일로들어옴 : " + permitMenuSeq + "/" + eleId)
 				permitMenuSeqList.push(permitMenuSeq)
 			}
-
-			// if (typeof permitSeq !== "undefined" && permitSeq !== "" && eleId.includes('permit')) {
-			// permitSeqList.push(permitSeq);
-			// }
 		});
 		formObj.permitSeqList = permitMenuSeqList;
 		comm.ajaxPost({
@@ -709,19 +704,17 @@ const adminGroup = {
 				comm.showAlert("사용자 그룹이 등록되었습니다");
 			});
 	},
+
 	modAdminGroupProc : () => {
 		const formObj = $('#adminGroupForm').serializeJSON();
 		const permitSeqList = [];
 		$('#adminGroupPopup .checkboxList li').each((i,e) => {
-			const permitSeq = $(e).find('input:checked').data('value');
-			console.log("permitseq: " + permitSeq )
-			if (typeof permitSeq !== "undefined") {
-				permitSeqList.push(permitSeq);
+			const permitMenuSeq = $(e).find('input:checked').data('value');
+			console.log("permitseq: " + permitMenuSeq )
+			if (typeof permitMenuSeq !== "undefined" && permitMenuSeq !== "") {
+				permitSeqList.push(permitMenuSeq);
 			}
-	/*		if (typeof permitSeq !== "undefined" && permitSeq !== "") {
-				permitSeqList.push(permitSeq);
-			}
-*/		});
+		});
 		formObj.permitSeqList = permitSeqList;
 		comm.ajaxPost({
 				url : "/admin/modAdminGroup.ado"

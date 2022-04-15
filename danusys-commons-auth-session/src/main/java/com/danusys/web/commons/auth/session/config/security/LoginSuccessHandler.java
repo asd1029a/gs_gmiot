@@ -56,16 +56,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 			paramMap.put("loginType", 0);
 			paramMap.put("requestIp", NetworkUtil.getLocalReqIp(request));
 
-			log.info("파람맵 : " + paramMap);
-
 			// 1. 로그인후 업데이트
 //            adminService2.updateAdminAfterLogin(paramMap);
 
 			// 2. 로그인 이력 등록
 			adminMap = (Map<String, Object>) adminService.selectDetailAdmin(commonsUserDetails.getUserSeq());
-
-			log.info("adminmap1111 : " + adminMap);
-
 			request.getSession().setAttribute("adminInfo", adminMap);
 
 		}catch (Exception e){
@@ -73,9 +68,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		}
 
 		request.getSession(true).setAttribute("adminInfo", adminMap);
-		System.out.println("성공핸들러 adminInfo 새션 : " + request.getSession());
-		System.out.println("성공핸들러 adminInfo" + adminMap);
-
 
 		response.sendRedirect(defaultSuccessUrl);
 

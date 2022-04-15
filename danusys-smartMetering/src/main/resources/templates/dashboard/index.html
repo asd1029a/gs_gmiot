@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layout/baseLayout">
+      layout:decorate="~{layout/baseLayout}">
 
 <body>
 <th:block layout:fragment="content">
@@ -13,7 +13,7 @@
                 <dd class="cursor dash" style="opacity: 0.5">대시보드</dd>
                 <dd class="cursor inqr" style="opacity: 0.5" >조회</dd>
             </dl>
-            <section class="leftBottom">s
+            <section class="leftBottom">
                 <h4>공지사항</h4>
                 <ul sec:authorize="hasRole('ROLE_config_permit')" id="boardListUl"></ul>
             </section>
