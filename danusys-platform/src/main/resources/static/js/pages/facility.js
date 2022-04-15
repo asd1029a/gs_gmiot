@@ -220,12 +220,32 @@ const dimming = {
                         'optType' : "dimming"
                         , 'dimmingGroupSeq' : rowData.dimmingGroupSeq
                     };
-                    facility.getList(param, (result)=> {console.log(result)});
+                    facility.getList(param, (result)=> {
+
+                        //디밍 그룹별 맵 제어
+                        const dimmingLayer = new dataLayer('dimmMap').fromRaw(
+                            result.data, 'dimmingLayer', true, layerStyle.facility()
+                        );
+
+                        let dimmControl = new layerControl('dimmMap', 'title');
+                        window.dimmControl = dimmControl;
+                        window.dimmControl.remove('dimmingLayer');
+                        window.dimmMap.addLayer(dimmingLayer);
+
+                        let fitExtent = window.dimmControl.find('dimmingLayer').getSource().getExtent();
+                        // TODO 데이터보고 조정하거나 삭제하거나
+                        // fitExtent.forEach((ind, v) => {
+                        //     console.log(ind, v);
+                        // });
+
+                        dimmMap.map.getView().fit(fitExtent,dimmMap.map.getSize());
+                    });
+
                 }
             }
         }
         comm.createTable($target ,optionObj, evt);
-        //디밍 맵 초기화
+        //디밍 그룹별 맵 초기화
         dimming.init();
     }
     , init : () => {
@@ -234,39 +254,8 @@ const dimming = {
         window.dimmMap.setCenter(new ol.proj.fromLonLat(['126.8646558753815' ,'37.47857596680809'], 'EPSG:5181'));
         window.dimmMap.setZoom(11);
 
-        //TODO sample layer
-        let result1 =
-            {
-                type: 'FeatureCollection',
-                name: 'sample',
-                crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
-                features: [
-                    { type: 'Feature', id: 'facility123', properties: { id: 123, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
-                    { type: 'Feature', id: 'facility234', properties: { id: 234, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
-                    { type: 'Feature', id: 'facility345', properties: { id: 345, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
-                    { type: 'Feature', id: 'facility456', properties: { id: 456, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
-                    { type: 'Feature', id: 'facility567', properties: { id: 567, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
-                    { type: 'Feature', id: 'facility678', properties: { id: 678, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
-                    { type: 'Feature', id: 'facility789', properties: { id: 789, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
-                ]
-            };
-        let facilityLayer = new dataLayer('dimmMap')
-            .fromGeoJSon(result1,'facilityLayer', true, layerStyle.facility(false));
-        dimmMap.map.addLayer(facilityLayer);
-
-        let dimmControl = new layerControl('dimmMap', 'title');
-        window.dimmControl = dimmControl;
-
-        let fitExtent = dimmControl.find('facilityLayer').getSource().getExtent();
-        fitExtent.forEach(ind => {
-            console.log(ind);
-            return ind + 1000;
-        });
-
-        dimmMap.map.getView().fit(fitExtent,dimmMap.map.getSize());
-        //제어 ban
+        //디밍 그룹별맵 제어 ban
         $('#dimmMap').prepend('<canvas style="position: absolute;background: #ff000000;width: 100%;height: 100%;z-index: 1;"></canvas>');
-        // console.log(fitExtent);
     }
     , get : (pSeq, pCallback) => {
         $.ajax({
