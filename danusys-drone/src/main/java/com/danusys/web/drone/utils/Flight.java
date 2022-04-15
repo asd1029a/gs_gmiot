@@ -19,8 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -58,6 +60,8 @@ public class Flight {
     private Timer waypointTimer = null;
     private TimerTask waypointTimerTask = null;
 
+    private int EOFCheck = 0;
+
     private boolean isEnd = false;
     private boolean isPauseOrStopEnd = false;
     private boolean alreadyDo = false;
@@ -65,11 +69,13 @@ public class Flight {
     private boolean isMissionAndDrone = false;
     private boolean isFirstArming = true;
     private boolean isFirstTimer = true;
-    private boolean isArm = false;
+    private int isArm = 0;
     private boolean isStarted = false;
     private boolean isReturn = false;
 
+
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
+        log.info("startMissionTakeOff");
         isStarted = true;
         HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
         //시간 초기화
@@ -103,7 +109,8 @@ public class Flight {
 
         //  log.info("alreadyDo={}", alreadyDo);
         log.info("isArm={}", isArm);
-        if (!alreadyDo && isArm) {
+//        if (!alreadyDo && isArm) {
+        if (!alreadyDo && isArm !=-1) {
             if (isFirstTimer) {
                 Gson gson = new Gson();
 
@@ -119,40 +126,7 @@ public class Flight {
                 stringSeconds = null;
                 stringMinutes = null;
                 stringHours = null;
-                tt = new TimerTask() {
-                    @Override
-                    public void run() {
-
-                        stringSeconds = Integer.toString(sec);
-                        stringMinutes = Integer.toString(min);
-                        stringHours = Integer.toString(hour);
-
-                        if (sec < 10) {
-                            stringSeconds = "0" + stringSeconds;
-                        }
-                        if (min < 10) {
-                            stringMinutes = "0" + stringMinutes;
-                        }
-                        if (hour < 10) {
-                            stringHours = "0" + stringHours;
-                        }
-                        gps.setSec(stringSeconds);
-                        gps.setMin(stringMinutes);
-                        gps.setHour(stringHours);
-
-
-                        sec += 1;
-                        if (sec == 60) {
-                            sec = 0;
-                            min++;
-                        }
-                        if (min == 60) {
-                            min = 0;
-                            hour++;
-                        }
-                        simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
-                    }
-                };
+                tt = setTimerTask();
             }
 
 
@@ -166,11 +140,7 @@ public class Flight {
 
                 //connection = connectionService.getMavlinkConnection(index);
                 Heartbeat heartbeat = null;
-
-                t = new Timer();
-
-                t.schedule(tt, 0, 1000);
-
+                t = makeTimer(tt);
                 MavlinkMessage message;
 
 
@@ -180,7 +150,7 @@ public class Flight {
                         , "0", "0", "0", "0", "0");
                 while ((message = connection.next()) != null) {
 
-                    if(isEnd)
+                    if (isEnd)
                         break;
                     if (message.getPayload() instanceof HomePosition) {
                         MavlinkMessage<HomePosition> homePositionMavlinkMessage = (MavlinkMessage<HomePosition>) message;
@@ -216,9 +186,9 @@ public class Flight {
                         "0", "0", "0", "0", "100");
                 int flag = 0;
                 while ((message = connection.next()) != null) {
-                        if(isEnd){
-                            break;
-                        }
+                    if (isEnd) {
+                        break;
+                    }
                     if (message.getPayload() instanceof TerrainReport) {
                         MavlinkMessage<TerrainReport> terrainReportMavlinkMessage = (MavlinkMessage<TerrainReport>) message;
                         float takeoff = terrainReportMavlinkMessage.getPayload().currentHeight();
@@ -277,7 +247,6 @@ public class Flight {
                         }
 
 
-
                     } else if (message.getPayload() instanceof CommandAck) {
                         MavlinkMessage<CommandAck> commandAckMavlinkMessage = (MavlinkMessage<CommandAck>) message;
                         DroneLogDetails droneLogDetailsCommandAck = new DroneLogDetails();
@@ -294,19 +263,16 @@ public class Flight {
                 //end while
 
 
-            } catch (Exception ioe) {
+            } catch (EOFException e) {
+                EOFCheck=1;
+            } catch(SocketException e) {
+                EOFCheck=1;
+            }catch (Exception ioe) {
                 ioe.printStackTrace();
-                ServerSocket.serverThread.destroySocket(index);
+                // ServerSocket.serverThread.destroySocket(index);
             } finally {
-//            t.purge();
+
                 log.info("endtakeoff");
-//            try {
-//                //socket.close();
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//
-//            }
 
 
             }
@@ -634,7 +600,11 @@ public class Flight {
             }
 
 
-        } catch (Exception ioe) {
+        } catch (EOFException e) {
+            EOFCheck=1;
+        } catch(SocketException e) {
+            EOFCheck=1;
+        }catch (Exception ioe) {
 
 
         } finally {
@@ -653,10 +623,8 @@ public class Flight {
     }
 
 
-    //public MavlinkConnection returnDrone(Socket socket) {
-//        try {
     public String returnDrone() {
-
+        log.info("startReturnDrone");
         try {
             isReturn = true;
             isMissionAndDrone = true;
@@ -677,7 +645,7 @@ public class Flight {
 
             Heartbeat heartbeat = null;
 
-
+            log.info("isEnd={}", isEnd);
             while ((message = connection.next()) != null) {
 
                 if (isEnd)
@@ -749,7 +717,11 @@ public class Flight {
             }
 
 
-        } catch (Exception ioe) {
+        } catch (EOFException e) {
+            EOFCheck=1;
+        } catch(SocketException e) {
+            EOFCheck=1;
+        }catch (Exception ioe) {
 
         } finally {
             log.info("returnDroneTimerOut");
@@ -957,9 +929,12 @@ public class Flight {
 
     public String doMission(HashMap<String, MissionItemInt> missionItemMap, int maxFlag, HashMap<String, Integer> speeds
             , HashMap<String, Float> yaws, HashMap<Integer, String> missionIndex) {
-        //alreadyDo =false
-        if (!alreadyDo && isArm) {
+
+
+//        if (!alreadyDo && isArm) {
+        if (!alreadyDo && isArm!=-1) {
             try {
+
                 alreadyDo = true;
                 int systemId = 1;
                 int componentId = 1;
@@ -970,8 +945,8 @@ public class Flight {
                 byte[] secretKey = MessageDigest.getInstance("SHA-256").digest("danusys".getBytes(StandardCharsets.UTF_8));
 
                 MavlinkMessage message;
-                log.info("doMission -> isReturn ={}",isReturn);
-                if(!isReturn){
+                log.info("doMission -> isReturn ={}", isReturn);
+                if (!isReturn) {
                     MissionCount count = MissionCount.builder().count(maxFlag).targetComponent(1).targetSystem(1).missionType(MavMissionType.MAV_MISSION_TYPE_MISSION).build();
                     connection.send2(systemId, componentId, count, linkId, timestamp, secretKey);
                 }
@@ -1140,6 +1115,10 @@ public class Flight {
 
                 }
 
+            } catch (EOFException e) {
+                EOFCheck = 1;
+            } catch (SocketException e) {
+                EOFCheck = 1;
             } catch (Exception ioe) {
                 ioe.printStackTrace();
 
@@ -1148,8 +1127,10 @@ public class Flight {
                 System.out.println("Mission");
                 alreadyDo = false;
                 if (!isReturn) {
-                    tt.cancel();
                     t.cancel();
+                    tt.cancel();
+
+
                     gps.setMissionType("end");
                     gps.setStatus(0);
                     simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
@@ -1163,7 +1144,7 @@ public class Flight {
 
 
 //                    socket.close();
-                connection = null;
+                //      connection = null;
 
 
             }
@@ -1201,6 +1182,10 @@ public class Flight {
             DroneLogDetails droneLogDetailsChangeYaw = new DroneLogDetails();
             writeLog(droneLogDetailsChangeYaw, droneLog, "gcs", "drone", "MAV_CMD_CONDITION_YAW",
                     Integer.toString(yaw), "0", "1", "0", "0", "0", "0");
+        } catch (EOFException e) {
+            EOFCheck = 1;
+        } catch (SocketException e) {
+            EOFCheck = 1;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -1227,6 +1212,10 @@ public class Flight {
             DroneLogDetails droneLogDetailsDoSetMissionCurrent = new DroneLogDetails();
             writeLog(droneLogDetailsDoSetMissionCurrent, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MISSION_CURRENT",
                     Integer.toString(seq), "0", "0", "0", "0", "0", "0");
+        } catch (EOFException e) {
+            EOFCheck = 1;
+        } catch (SocketException e) {
+            EOFCheck = 1;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -1267,6 +1256,7 @@ public class Flight {
      */
 
     public void armDisarm(int armDisarm, int droneId) {
+        log.info("startArmDisArm");
         try {
             int systemId = 1;
             int componentId = 1;
@@ -1294,7 +1284,6 @@ public class Flight {
                 connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
                 isFirstArming = false;
             }
-
             MavlinkMessage message;
             //arm 1 disarm 0
             connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_DO_SET_MODE).param1(1).param2(4).build(), linkId, timestamp, secretKey);
@@ -1303,7 +1292,8 @@ public class Flight {
 
             writeLog(droneLogDetailsDoSetMode, droneLog, "gcs", "drone", "MAV_CMD_DO_SET_MODE", "1", "4", "0"
                     , "0", "0", "0", "0");
-            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).param1(armDisarm).param2(0).build(), linkId, timestamp, secretKey);
+            connection.send2(systemId, componentId, new CommandLong.Builder().command(MavCmd.MAV_CMD_COMPONENT_ARM_DISARM).
+                    param1(armDisarm).param2(0).build(), linkId, timestamp, secretKey);
 
 
             DroneLogDetails droneLogDetailsArmDisarm = new DroneLogDetails();
@@ -1323,13 +1313,13 @@ public class Flight {
                     if (missionText.equals("Disarming motors")) {
                         armDisArm.setArmDisarm(0);
                         armDisArm.setDroneId(droneId);
-                        isArm = false;
+                        isArm = -1;
                         simpMessagingTemplate.convertAndSend("/topic/arm", gson.toJson(armDisArm));
                         break;
                     } else if (missionText.equals("Arming motors")) {
                         armDisArm.setArmDisarm(1);
                         armDisArm.setDroneId(droneId);
-                        isArm = true;
+                        isArm = 1;
                         simpMessagingTemplate.convertAndSend("/topic/arm", gson.toJson(armDisArm));
                     }
 
@@ -1338,7 +1328,11 @@ public class Flight {
             }
 
 
-        } catch (IOException e) {
+        } catch (EOFException e) {
+            EOFCheck=1;
+        } catch(SocketException e) {
+            EOFCheck=1;
+        }catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -1347,7 +1341,76 @@ public class Flight {
 
     }
 
+    private Timer makeTimer(TimerTask tt) {
+        Timer t = new Timer();
+        t.schedule(tt, 0, 1000);
+        return t;
+    }
 
+    private TimerTask setTimerTask() {
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+
+                stringSeconds = Integer.toString(sec);
+                stringMinutes = Integer.toString(min);
+                stringHours = Integer.toString(hour);
+
+                if (sec < 10) {
+                    stringSeconds = "0" + stringSeconds;
+                }
+                if (min < 10) {
+                    stringMinutes = "0" + stringMinutes;
+                }
+                if (hour < 10) {
+                    stringHours = "0" + stringHours;
+                }
+                gps.setSec(stringSeconds);
+                gps.setMin(stringMinutes);
+                gps.setHour(stringHours);
+
+                sec += 1;
+                if (sec == 60) {
+                    sec = 0;
+                    min++;
+                }
+                if (min == 60) {
+                    min = 0;
+                    hour++;
+                }
+                simpMessagingTemplate.convertAndSend("/topic/log", gson.toJson(gps));
+            }
+        };
+
+
+        return timerTask;
+    }
+
+    public void connect(int droneId) {
+        Socket socket = null;
+        HashMap<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
+        //log.info("socketIndex={}", index);
+        int index = -1;
+        Drone searchDrone = new Drone();
+        searchDrone.setId(Long.valueOf(droneId));
+        Drone findDrone = droneService.findDrone(searchDrone);
+        index = findDrone.getSocketIndex();
+        socket = socketList.get(index);
+
+        try {
+            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getEOFCheck() {
+        return this.EOFCheck;
+    }
+
+    public void setEOFCheck(int EOFCheck) {
+        this.EOFCheck = EOFCheck;
+    }
 }
 
 

@@ -24,6 +24,6 @@ public class DroneSocketService {
     }
     @Transactional
     public void delete() {
-        droneSocketRepository.deleteAll();
+        droneSocketRepository.deleteAllInBatch();
     }
 }

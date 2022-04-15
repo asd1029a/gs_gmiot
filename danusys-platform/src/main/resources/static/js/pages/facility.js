@@ -72,7 +72,6 @@ const facility = {
                     event.get(rowData.facilitySeq, (result) => console.log(result));
                 }
             }
-            // 클릭시 디테일 select 추가해야함
         }
         comm.createTable($target ,optionObj, evt);
     }
@@ -80,7 +79,8 @@ const facility = {
         $.ajax({
             url : "/facility"
             , type : "POST"
-            , data : param
+            , data : JSON.stringify(param)
+            , contentType : "application/json; charset=utf-8"
         }).done((result) => {
             pCallback(result);
         });
@@ -147,5 +147,111 @@ const facility = {
             facility.create($('#facilityTable'));
             facility.hidePopup();
         });
+    }
+}
+
+const dimming = {
+    eventHandler : () => {
+        $("#searchBtn").on('click', () => {
+            comm.checkAuthority("/user/check/authority", "config", "rw")
+                .then(
+                    (result) => {
+                        dimming.create(result);
+                    }
+                );
+        });
+    }
+    , create : (pPermit) => {
+        const $target = $('#dimmingGroupTable');
+        const optionObj = {
+            dom: '<"table_body"rt><"table_bottom"p>',
+            destroy: true,
+            pageLength: 15,
+            scrollY: "calc(100% - 40px)",
+            security : true,
+            autoWidth: true,
+            ajax :
+                {
+                    'url' : "/facility/dimmingGroup",
+                    'contentType' : "application/json; charset=utf-8",
+                    'type' : "POST",
+                    'data' : function ( d ) {
+                        const param = $.extend({}, d, $("#searchForm form").serializeJSON());
+                        return JSON.stringify( param );
+                    },
+                    'dataSrc' : function (result) {
+                        $('.title dd .count').text(result.recordsTotal);
+                        return result.data;
+                    }
+                },
+            select: true,
+            columns : [
+                {data: "dimmingGroupName"},
+                {data: null}
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    render: $.fn.dataTable.render.ellipsis( 50, true )
+                }
+            ]
+        }
+        if(pPermit !== "none") {
+            optionObj.columnDefs.push({
+                "targets": 1,
+                "data": null,
+                "defaultContent": '<span class="button mod">수정</span>'
+            });
+        }
+        const evt = {
+            click : function(e) {
+                const $form = $('#dimmingGroupForm');
+                const rowData = $target.DataTable().row($(e.currentTarget)).data();
+                if($(e.target).hasClass('button')) {
+                    /* TODO : 팝업 적용 후 작동 예정*/
+                    dimming.showPopup();
+                    dimming.get(rowData.dimmingGroupSeq ,(result) => {
+                        $form.data("dimmingGroupSeq", rowData.dimmingGroupSeq);
+                        $form.setItemValue(result);
+                    });
+                } else {
+                    const param = {
+                        'optType' : "dimming"
+                        , 'dimmingGroupSeq' : rowData.dimmingGroupSeq
+                    };
+                    facility.getList(param, (result)=> {console.log(result)});
+                }
+            }
+        }
+        comm.createTable($target ,optionObj, evt);
+    }
+    , get : (pSeq, pCallback) => {
+        $.ajax({
+            url : "/facility/dimmingGroup/" + pSeq
+            , type : "GET"
+        }).done((result) => {
+            pCallback(result);
+        });
+    }
+    , addGroup : () => {
+
+    }
+    , modGroup : () => {
+
+    }
+    , delGroup : () => {
+
+    }
+    , getDimming : () => {
+
+    }
+    , addDimming : () => {
+
+    }
+    , showPopup : () => {
+        $("dimmingGroupPopup").css('display', 'flex');
+    }
+    , hidePopup : () => {
+        $("dimmingGroupPopup").hide();
     }
 }

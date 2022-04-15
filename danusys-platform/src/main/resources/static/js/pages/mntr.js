@@ -187,7 +187,7 @@ const mntr = {
         //이벤트 레이어
         event.getListGeoJson({
             "eventState": ["1", "2", "3"]
-            }, result => {
+        }, result => {
             let eventLayer = new dataLayer('map')
                 // .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
                 .toCluster(result, 'eventLayer', true, layerStyle.event(false));
@@ -200,7 +200,7 @@ const mntr = {
         //과거 이벤트 레이어
         event.getListGeoJson({
             "eventState": ["9"]
-            }, result => {
+        }, result => {
             let eventPastLayer = new dataLayer('map')
                 .toCluster(result, 'eventPastLayer', true, layerStyle.event(false));
             map.addLayer(eventPastLayer);
@@ -365,6 +365,9 @@ const mntr = {
             const type = $(e.currentTarget).attr('data-value');
             $('.area_right_scroll').removeClass("select");
             $('.area_right_scroll[data-value='+ type +']').addClass("select");
+            //ACTIVE STYLE
+            $(e.currentTarget).parent().children("li").removeClass("active");
+            $(e.currentTarget).addClass("active");
         });
         //LAYER ORDER LIST (레이어 순서 제어창)
         $("#layerViewer").hide();
@@ -468,6 +471,7 @@ const mntr = {
             const keyword = elem.data().keyword;
             if ( elem.scrollTop() + elem.innerHeight()  >= elem[0].scrollHeight ) {
                 const id = elem.parents('.lnb_tab_section').attr('data-value');
+                console.log(id);
                 switch(id) {
                     case "addressPlaceTab" : //주소장소 탭
                         const target = elem.attr('data-value');
@@ -486,7 +490,6 @@ const mntr = {
                 } // switch
             } // srcoll 끝
         });
-
 
     }
 }
@@ -743,6 +746,16 @@ const lnbList = {
             clickIcon("station", tempFeature);
         });
     }
+    /**
+     * 해당 리스트 초기화
+     * type : data-value 값
+     * */
+    , removeAllList(type) {
+        const $target = $('section.select .lnb_tab_section[data-value=' + type + ']');
+        $target.find('.area_title .count').text(0);
+        $target.find('.search_list dl').remove();
+
+    }
 }
 
 /**
@@ -812,21 +825,74 @@ const rnbList = {
 
 /**
  * 리스트 검색
+ * section : rnm 대메뉴 분류
+ * keyword : 검색 키워드
  * */
 function searchList(section, keyword) {
+
     if(keyword!="" && keyword!=null){
         switch(section) {
+            case "smartPole" : //스마트폴검색
+                const tab = $('#'+section +" .tab li.active").attr('data-value');
+                if(tab == "station") {
+                    //리스트 ajax
+                    station.getListGeoJson({
+                        ///
+                    }, result => {
+                        lnbList.removeAllList(tab);
+                        lnbList.createStation(result);
+                    });
+                } else if(tab == "eventPast") {
+                    //TODO 조건 form serialize
+                    //리스트 ajax
+                    event.getListGeoJson({
+                        "eventState": ["9"]
+                        , "eventGrade": [20]
+                        //////////
+                    }, result => {
+                        // 리스트 초기화
+                        lnbList.removeAllList(tab);
+                        lnbList.createEventPast(result);
+                        // 과거 이벤트 레이어 reload
+                        reloadCluster(result, 'eventPastLayer');
+                        //패널 제어
+                        const rVisivle = $('.area_right[data-value=event]').is(':visible');
+                        if(rVisivle) { $('.area_right_closer').trigger("click")}
+                    });
+                }
+                break;
             case "addressPlace" : //주소장소검색
                     const addressObj = kakaoApi.getAddress({query: keyword});
                     const placeObj = kakaoApi.getPlace({query: keyword});
                     lnbList.createAddressPlace('address', addressObj, keyword, true);
                     lnbList.createAddressPlace('place', placeObj, keyword, true);
                 break;
-            //case "" :
             default :
                 break;
         }
     } else {
         alert("키워드를 입력하여 주십시오.");
     }
+}
+
+/**
+ * 클러스터 레이어 reload
+ * result : 변경할 데이터
+ * layer : 적용할 레이어명
+ * */
+function reloadCluster(result, layer) {
+    const newFeatures = new ol.format.GeoJSON().readFeatures(result);
+    newFeatures.forEach( each => {
+        each.getGeometry().transform('EPSG:4326','EPSG:5181');
+    });
+
+    const newSource = new ol.source.Vector();
+    newSource.addFeatures(newFeatures);
+
+    const clusterSource = new ol.source.Cluster({
+        distance: 30, source : newSource
+    });
+
+    window.lyControl.find(layer).setSource(clusterSource);
+    window.lyControl.find(layer).changed();
 }

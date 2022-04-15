@@ -175,8 +175,11 @@
 /* popup_mini */
 .popup_mini{overflow: inherit; position: relative; top: 50%; left: 50%; transform: translate(-50%, -5%); display: flex; flex-direction: column; width: max-content;  padding: 14px 36px 14px 14px; border-radius: 10px; box-shadow: 0px 0px 20px rgba(0,0,0,0.5); background: #1e1f23; cursor: auto;}
 .popup_mini::after{content: '▼'; position: absolute; bottom: 0px; left: 50%; transform: translate(-50%, 19px); z-index: 10; font-size: 28px; color: #1e1f23;}
-.popup_mini dl{display: flex; flex-direction: column;}
-.popup_mini dl dt{display: flex; align-items: center; justify-content: space-between; margin: 0px 0px 12px; color: #dee0e4; font-size: 16px;}
+.popup_mini dl{display: flex; flex-direction: column; grid-gap: 6px;}
+.popup_mini dl dt{display: inline-block; align-items: center; justify-content: space-between; /*margin: 0px 0px 12px;*/ color: #dee0e4; font-size: 14px;}
+.popup_mini dl dt span.level{display: inline; height: 22px; line-height: 20px; margin: 0px 6px 0px 0px; padding: 2px 4px; color: #dee0e4; border-radius: 4px;}
+.popup_mini dl dt span.lv10{background: #f04242;}
+.popup_mini dl dt span.lv20{background: #dd9200;}
 /*.popup_mini dl dt i{width: 16px; height: 16px; margin: 0px 0px 0px 20px; cursor: pointer;}*/
 .popup_mini dl dd{display: flex; align-items: center; justify-content: space-between; grid-gap: 20px; line-height: 1.268rem;  color: #797d87; font-size: 14px;}
 .popup_mini dl dd span.state{width:82px; height:26px; line-height:22px; color:#797d87; font-size:13px; font-weight:normal; text-align:center; border:2px solid #797d87; border-radius:26px;}
@@ -185,8 +188,8 @@
 .popup_mini dl dd span.state.state3{color:#7a8094; border:2px solid #4e5466;}
 
 /* map tooltip */
-#mouseOverPopup #mouseOverPopupContent{padding: 10px; background: #1e1f23c2; transform: translate(-50%, -18%); box-shadow: 0px 0px 20px rgb(0 0 0 / 20%);}
-#mouseOverPopupContent::after{color: #1e1f23c2; transform: translate(-50%, 15px); font-size: 22px;}
+#mouseOverPopup #mouseOverPopupContent{padding: 10px; background: #1e1f23; transform: translate(-50%, -18%); box-shadow: 0px 0px 20px rgb(0 0 0 / 20%);}
+#mouseOverPopupContent::after{color: #1e1f23; transform: translate(-50%, 15px); font-size: 22px;}
 #mouseOverPopup .my-ol-popup-closer{display:none;}
 
 #mouseClickPopup{width: 280px;}
@@ -202,9 +205,9 @@
 .popup_mini .multiple_list li:hover{background: #dee0e417; cursor: pointer;}
 .popup_mini .multiple_list li:nth-last-child(1){border: none;}
 .popup_mini .multiple_list li span.circle{width: 14px; height: 14px; border-radius: 14px; background: #7a8094;}
-.popup_mini .multiple_list li span.circle.lv1{background: #ff4f4f;}
-.popup_mini .multiple_list li span.circle.lv2{background: #f99b22;}
-.popup_mini .multiple_list li span.circle.lv3{background: #6c8ce6;}
+.popup_mini .multiple_list li span.circle.lv10{background: #ff4f4f;}
+.popup_mini .multiple_list li span.circle.lv20{background: #f99b22;}
+.popup_mini .multiple_list li span.circle.lv30{background: #4e5466;}
 
 /* area_right */
 .area_right h6{display: flex; align-items: center; justify-content: space-between; grid-gap: 8px; height: 40px; max-height: 40px; min-height: 40px; margin: 0px; padding: 0px 14px; font-size: 15px; font-weight: bold; background: #23252b;}

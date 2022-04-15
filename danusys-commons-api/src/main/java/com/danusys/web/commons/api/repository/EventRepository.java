@@ -1,11 +1,8 @@
 package com.danusys.web.commons.api.repository;
 
-import com.danusys.web.commons.api.dto.EventReqeustDTO;
 import com.danusys.web.commons.api.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
 
 /**
  * Project : danusys-webservice-parent

@@ -1,9 +1,6 @@
 package com.danusys.web.commons.api.service;
 
-import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.repository.FacilityOptRepository;
-
-import java.util.List;
 
 /**
  * Project : danusys-webservice-parent

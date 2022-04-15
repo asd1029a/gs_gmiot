@@ -9,10 +9,10 @@ import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.model.UserGroup;
 import com.danusys.web.commons.auth.model.UserInGroup;
-import com.danusys.web.commons.auth.repository.UserGroupRepository;
-import com.danusys.web.commons.auth.repository.UserInGroupRepository;
-import com.danusys.web.commons.auth.repository.UserRepository;
-import com.danusys.web.commons.auth.repository.UserStatusRepository;
+import com.danusys.web.commons.auth.service.repository.UserGroupRepository;
+import com.danusys.web.commons.auth.service.repository.UserInGroupRepository;
+import com.danusys.web.commons.auth.service.repository.UserRepository;
+import com.danusys.web.commons.auth.service.repository.UserStatusRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
 =======

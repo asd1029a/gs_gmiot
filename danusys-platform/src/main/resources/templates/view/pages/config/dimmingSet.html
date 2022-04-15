@@ -17,7 +17,7 @@
     <section class="setting_content">
         <div class="dimming_contents">
             <div class="dimming_column">
-                <article class="search_form">
+                <article class="search_form" id="searchForm">
                     <h6>디밍 검색</h6>
                     <form>
                         <div>
@@ -40,15 +40,11 @@
                         </ul>
                     </div>
                     <div class="search_table">
-                        <table>
+                        <table id="dimmingGroupTable">
                             <thead>
                             <tr>
-                                <th>Index</th>
-                                <th>디밍 관리 ID</th>
-                                <th>구역 이름</th>
-                                <th>설명</th>
-                                <th>스마트폴</th>
-                                <th>마지막 수정일시</th>
+                                <th>그룹 이름</th>
+                                <th>수정</th>
                             </tr>
                             </thead>
                         </table>
@@ -66,8 +62,8 @@
                 </dl>
                 <div>
                     <ul>
-                        <li><i><img src="/images/default/refresh.svg"></i>기본값으로 되돌리기</li>
-                        <li><i><img src="/images/default/apply.svg"></i>적용</li>
+                        <li sec:authorize="hasAnyRole('ROLE_config_rw')"><i><img src="/images/default/refresh.svg"></i>기본값으로 되돌리기</li>
+                        <li sec:authorize="hasAnyRole('ROLE_config_rw')"><i><img src="/images/default/apply.svg"></i>적용</li>
                     </ul>
                 </div>
             </div>
@@ -75,112 +71,155 @@
                 <ul>
                     <li>
                         <span>최대 밝기 도달 시간</span>
-                        <input type="text" placeholder="00">초
+                        <input name="max_bright_time" type="text" placeholder="00">초
                     </li>
                     <li>
                         <span>최대 밝기 유지 시간</span>
-                        <input type="text" placeholder="00">초
+                        <input name="min_bright_time" type="text" placeholder="00">초
                     </li>
                     <li>
                         <span>최소 밝기 도달 시간</span>
-                        <input type="text" placeholder="00">초
+                        <input name="keep_bright_time" type="text" placeholder="00">초
                     </li>
                 </ul>
                 <div class="dimming_by_time">
                     <p>시간대별 최대/최소 밝기</p>
                     <table>
                         <thead>
-                        <tr>
-                            <th>시간(시)</th>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
-                            <td>7</td>
-                            <td>8</td>
-                            <td>9</td>
-                            <td>10</td>
-                            <td>11</td>
-                            <td>12</td>
-                            <td>13</td>
-                            <td>14</td>
-                            <td>15</td>
-                            <td>16</td>
-                            <td>17</td>
-                            <td>18</td>
-                            <td>19</td>
-                            <td>20</td>
-                            <td>21</td>
-                            <td>22</td>
-                            <td>23</td>
-                            <td>24</td>
-                        </tr>
+                            <tr>
+                                <th>시간(시)</th>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td>6</td>
+                                <td>7</td>
+                                <td>8</td>
+                                <td>9</td>
+                                <td>10</td>
+                                <td>11</td>
+                                <td>12</td>
+                                <td>13</td>
+                                <td>14</td>
+                                <td>15</td>
+                                <td>16</td>
+                                <td>17</td>
+                                <td>18</td>
+                                <td>19</td>
+                                <td>20</td>
+                                <td>21</td>
+                                <td>22</td>
+                                <td>23</td>
+                                <td>24</td>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th>최대</th>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                            <td><input type="text" placeholder="100"></td>
-                        </tr>
-                        <tr>
-                            <th>최소</th>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                            <td><input type="text" placeholder="50"></td>
-                        </tr>
+                            <tr>
+                                <th>최대</th>
+                                <td><input name="time_0_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_1_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_2_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_3_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_4_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_5_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_6_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_7_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_8_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_9_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_10_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_11_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_12_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_13_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_14_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_15_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_16_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_17_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_18_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_19_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_20_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_21_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_22_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_23_max" type="text" value="100" placeholder="100"></td>
+                                <td><input name="time_24_max" type="text" value="100" placeholder="100"></td>
+                            </tr>
+                            <tr>
+                                <th>최소</th>
+                                <td><input name="time_0_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_1_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_2_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_3_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_4_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_5_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_6_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_7_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_8_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_9_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_10_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_11_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_12_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_13_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_14_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_15_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_16_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_17_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_18_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_19_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_20_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_21_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_22_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_23_min" type="text" value="50" placeholder="50"></td>
+                                <td><input name="time_24_min" type="text" value="50" placeholder="50"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </article>
+        <!-- 디밍 그룹 설정 팝업  -->
+        <div class="popup" id="dimmingGroupPopup">
+            <dl class="title">
+                <dt>디밍 그룹 추가</dt>
+                <dd><i><img src="/images/default/close.svg"></i></dd>
+            </dl>
+            <div class="popup_writing">
+                <div class="half_layout">
+                    <!--디밍 그룹 정보 -->
+                    <fieldset>
+                        <legend>디밍 그룹 정보</legend>
+                        <form id="userGroupForm">
+                            <dl>
+                                <dt>그룹 이름</dt>
+                                <dd><input id="groupName" type="text" placeholder="*필수 입력" name="groupName"></dd>
+                            </dl>
+                        </form>
+                        <!-- 소속 가로등 설정 -->
+                        <div class="list_search">
+                            <p class="legend">소속 가로등 설정</p>
+                            <div class="list_table">
+                                <table id="lampLoadTable">
+                                    <thead>
+                                    <tr>
+                                        <th>가로등 ID</th>
+                                        <th>선택</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div>
+                        <!-- 지도 영역 -->
+                    </div>
+                </div>
+            </div>
+            <ul class="bottom">
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="delUserGroupProcBtn">삭제</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="modUserGroupProcBtn">정보 수정</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-mode="add" id="addUserGroupProcBtn">등록</li>
+            </ul>
+        </div>
     </section>
 </th:block>
 
