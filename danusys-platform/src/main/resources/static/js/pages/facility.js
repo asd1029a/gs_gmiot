@@ -181,6 +181,7 @@ const dimming = {
                     'url' : "/facility/dimmingGroup",
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
+                    'async' : false,
                     'data' : function ( d ) {
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
                         return JSON.stringify( param );
@@ -246,6 +247,8 @@ const dimming = {
             }
         }
         comm.createTable($target ,optionObj, evt);
+        //디밍 그룹별 맵 초기화
+        dimming.init();
     }
     , createLampRoad : () => {
         const $target = $('#lampRoadInGroupTable');
@@ -296,8 +299,6 @@ const dimming = {
             }
         }
         comm.createTable($target, optionObj, evt);
-        //디밍 그룹별 맵 초기화
-        dimming.init();
     }
     , init : () => {
         let dimmMap = new mapCreater('dimmMap', 0);
