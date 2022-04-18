@@ -156,12 +156,18 @@ const dimming = {
             comm.checkAuthority("/user/check/authority", "config", "rw")
                 .then(
                     (result) => {
-                        dimming.create(result);
+                        dimming.createGroup(result);
                     }
                 );
         });
+        $("#dimmingGroupPopup .title dd").on('click', () => {
+            dimming.hidePopup();
+        });
+        $("#addDimmingGroupBtn").on('click', () => {
+            dimming.showPopup("add");
+        });
     }
-    , create : (pPermit) => {
+    , createGroup : (pPermit) => {
         const $target = $('#dimmingGroupTable');
         const optionObj = {
             dom: '<"table_body"rt><"table_bottom"p>',
@@ -207,28 +213,79 @@ const dimming = {
             click : function(e) {
                 const $form = $('#dimmingGroupForm');
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
+                const param = {
+                    'dimmingGroupSeq' : rowData.dimmingGroupSeq
+                };
                 if($(e.target).hasClass('button')) {
-                    /* TODO : 팝업 적용 후 작동 예정*/
-                    dimming.showPopup();
-                    dimming.get(rowData.dimmingGroupSeq ,(result) => {
-                        $form.data("dimmingGroupSeq", rowData.dimmingGroupSeq);
-                        $form.setItemValue(result);
+                    dimming.showPopup("mod");
+                    dimming.getListLampRoadInGroup(param ,(result) => {
+
                     });
                 } else {
-                    const param = {
-                        'optType' : "dimming"
-                        , 'dimmingGroupSeq' : rowData.dimmingGroupSeq
-                    };
-                    facility.getList(param, (result)=> {console.log(result)});
+                    dimming.getListLampRoadInGroup(param, (result)=> {
+                        dimming.setData(result.data[0]);
+                    });
                 }
             }
         }
         comm.createTable($target ,optionObj, evt);
     }
-    , get : (pSeq, pCallback) => {
+    , createLampRoad : () => {
+        const $target = $('#lampRoadInGroupTable');
+        const optionObj = {
+            dom: '<"table_body"rt>',
+            destroy: true,
+            bPaginate: false,
+            bServerSide: false,
+            scrollY: "calc(100% - 50px)",
+            ajax:
+                {
+                    'url': "/facility",
+                    'contentType': "application/json; charset=utf-8",
+                    'type': "POST",
+                    'data' : function ( ) {
+                        return JSON.stringify( {"facilityKind" : "lamp_road"} );
+                    }
+                }
+            ,
+            select: {
+                toggleable: false
+            }
+            , columns: [
+                {data: "facilitySeq"},
+                {data: "facilityId"},
+                {data: null}
+            ]
+            , columnDefs: [{
+                "targets": -1,
+                "data": null,
+                "defaultContent": '<span><input type="checkbox"/><label><span></span></label></span>'
+            }]
+            , fnCreatedRow: (nRow, aaData, iDataIndex) => {
+                const facilitySeq = aaData.facilitySeq;
+                $(nRow).find('input').prop('id', "check" + facilitySeq);
+                $(nRow).find('input').prop('value', facilitySeq);
+                $(nRow).find('label').prop('for', "check" + facilitySeq);
+            }
+            , excelDownload: false
+            , search: {
+                "search": "Fred"
+            }
+        }
+
+        const evt = {
+            click: function (e) {
+                const rowData = $target.DataTable().row($(e.currentTarget)).data();
+            }
+        }
+        comm.createTable($target, optionObj, evt);
+    }
+    , getListLampRoadInGroup : (param, pCallback) => {
         $.ajax({
-            url : "/facility/dimmingGroup/" + pSeq
-            , type : "GET"
+            url : "/facility/lampRoadInGroup"
+            , type : "POST"
+            , contentType : "application/json; charset=utf-8"
+            , data : JSON.stringify(param)
         }).done((result) => {
             pCallback(result);
         });
@@ -242,16 +299,31 @@ const dimming = {
     , delGroup : () => {
 
     }
-    , getDimming : () => {
+    , setData : (pData) => {
+        $.each(pData, (name, value)=> {
+            $(".setting_dimming #"+name).val(value);
+            if(name === "dimmingTimeZone") {
+                const dimmingTimeZone = JSON.parse(value.replaceAll('\n', ''));
+                $.each(dimmingTimeZone, (time, setValue) => {
+                    $("#dimmingTimeZoneTable input[name="+time+"_max]").val(setValue.max);
+                    $("#dimmingTimeZoneTable input[name="+time+"_min]").val(setValue.min);
+                })
+            }
+        })
+    }
+    , add : () => {
 
     }
-    , addDimming : () => {
-
-    }
-    , showPopup : () => {
-        $("dimmingGroupPopup").css('display', 'flex');
+    , showPopup : (type) => {
+        comm.showModal($('#dimmingGroupPopup'));
+        $("#dimmingGroupPopup").css('display', 'flex');
+        $("#dimmingGroupPopup #dimmingGroupName").val("");
+        dimming.createLampRoad();
+        $('#dimmingGroupPopup [data-add], [data-mod]').hide();
+        $('#dimmingGroupPopup [data-'+type+'="true"]').show();
     }
     , hidePopup : () => {
-        $("dimmingGroupPopup").hide();
+        comm.hideModal($('#dimmingGroupPopup'));
+        $("#dimmingGroupPopup").hide();
     }
 }

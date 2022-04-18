@@ -10,23 +10,31 @@ public class FacilitySqlProvider {
 
     public String selectListQry(Map<String, Object> paramMap) {
         String keyword = CommonUtil.validOneNull(paramMap,"keyword");
+        String facilityKind = CommonUtil.validOneNull(paramMap,"facilityKind");
         String start = CommonUtil.validOneNull(paramMap,"start");
         String length = CommonUtil.validOneNull(paramMap,"length");
-        String optType = CommonUtil.validOneNull(paramMap,"optType");
-        String dimmingGroupSeq = CommonUtil.validOneNull(paramMap,"dimmingGroupSeq");
 
         SQL sql = new SQL() {{
-            SELECT("*, '' as station_kind, '' as station_name, '' as address");
+            SELECT("t1.facility_seq, t1.facility_id" +
+                    ", t1.administ_zone, t1.facility_image" +
+                    ", t1.facility_instl_info, t1.facility_instl_dt" +
+                    ", t1.facility_status, t1.latitude" +
+                    ", t1.longitude, t1.insert_dt, t3.id AS insert_user_id" +
+                    ", t1.update_user_seq , t4.id AS update_user_id" +
+                    ", t2.code_value AS facility_kind" +
+                    ", t5.station_kind, t5.station_name, t5.address");
             FROM("t_facility t1");
-            if("dimming".equals(optType)) {
-                INNER_JOIN("v_dimming_group v1 on t1.facility_seq = v1.facility_seq");
-                if(dimmingGroupSeq != null) {
-                    WHERE("v1.dimming_group_seq::integer = " + dimmingGroupSeq);
-                }
-            }
+            INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
+            LEFT_OUTER_JOIN("t_user t3 on t1.insert_user_seq = t3.user_seq");
+            LEFT_OUTER_JOIN("t_user t4 on t1.update_user_seq = t4.user_seq");
+            LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");
             if(keyword != null && !keyword.equals("")) {
-                WHERE("facility_kind LIKE" + keyword);
+                WHERE("t1.facility_id LIKE" + keyword);
             }
+            if(facilityKind != null && !facilityKind.equals("")) {
+                WHERE("t2.code_value = '" + facilityKind + "'");
+            }
+            ORDER_BY("t1.facility_seq");
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);
@@ -158,6 +166,21 @@ public class FacilitySqlProvider {
             }
             GROUP_BY("v1.dimming_group_name ) s1");
         }};
+        return sql.toString();
+    }
+
+    public String selectListLampRoadInDimmingGroup(Map<String, Object> paramMap) {
+        String dimmingGroupSeq = CommonUtil.validOneNull(paramMap,"dimmingGroupSeq");
+
+        SQL sql = new SQL() {
+            {
+                SELECT("t1.facility_seq, t1.longitude, t1.latitude, t1.administ_zone" +
+                        ", v1.dimming_group_name, v1.dimming_group_seq, v1.keep_bright_time" +
+                        ", v1.max_bright_time, v1.min_bright_time, v1.dimming_time_zone");
+                FROM("t_facility t1");
+                INNER_JOIN("v_dimming_group v1 on t1.facility_seq = v1.facility_seq");
+                WHERE("v1.dimming_group_seq::integer = " + dimmingGroupSeq);
+            }};
         return sql.toString();
     }
 }
