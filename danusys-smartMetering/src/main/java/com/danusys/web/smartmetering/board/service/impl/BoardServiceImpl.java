@@ -2,10 +2,10 @@ package com.danusys.web.smartmetering.board.service.impl;
 
 import java.util.Map;
 
-import com.danusys.web.commons.auth.session.util.CommonDao;
-import com.danusys.web.commons.auth.session.util.JsonUtil;
-import com.danusys.web.commons.auth.session.util.PagingUtil;
 import com.danusys.web.smartmetering.board.service.BoardService;
+import com.danusys.web.smartmetering.common.dao.CommonDao;
+import com.danusys.web.smartmetering.common.util.JsonUtil;
+import com.danusys.web.smartmetering.common.util.PagingUtil;
 import org.springframework.stereotype.Service;
 
 @Service

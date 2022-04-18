@@ -2,9 +2,13 @@
 package com.danusys.web.commons.auth.session.config.security;
 
 import com.danusys.web.commons.auth.session.config.auth.CommonsUserDetails;
-import com.danusys.web.commons.auth.session.service.AdminService;
+import com.danusys.web.commons.auth.session.dto.response.UserResponse;
+import com.danusys.web.commons.auth.session.model.User;
+import com.danusys.web.commons.auth.session.repository.UserRepository;
+import com.danusys.web.commons.auth.session.service.user.UserService;
 import com.danusys.web.commons.auth.session.util.NetworkUtil;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
@@ -27,16 +31,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private String defaultSuccessUrl;
 
+
 	public LoginSuccessHandler(String defaultSuccessUrl) throws Exception {
 		this.defaultSuccessUrl = defaultSuccessUrl;
 	}
 
 	protected final Log logger = LogFactory.getLog(getClass());
-
-	@Autowired
-	AdminService adminService;
-
-
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -45,7 +45,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		log.info("loginSuccess Handler");
 
 		CommonsUserDetails commonsUserDetails = null;
-		Map<String, Object> adminMap = null;
+		Map<String, Object> adminMap = new HashMap<String, Object>();
 
 		try {
 			commonsUserDetails = (CommonsUserDetails) authentication.getPrincipal();
@@ -55,13 +55,26 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 			paramMap.put("adminSeq", commonsUserDetails.getUserSeq());
 			paramMap.put("loginType", 0);
 			paramMap.put("requestIp", NetworkUtil.getLocalReqIp(request));
+			request.getSession().setAttribute("adminId", paramMap.get("adminId"));
 
 			// 1. 로그인후 업데이트
 //            adminService2.updateAdminAfterLogin(paramMap);
 
 			// 2. 로그인 이력 등록
-			adminMap = (Map<String, Object>) adminService.selectDetailAdmin(commonsUserDetails.getUserSeq());
+
+//			adminMap = (Map<String, Object>) adminService.selectDetailAdmin(commonsUserDetails.getUserSeq());
+
+			adminMap.put("adminSeq", commonsUserDetails.getUserSeq());
+			adminMap.put("adminId", commonsUserDetails.getUserId());
+			adminMap.put("password", commonsUserDetails.getPassword());
+
 			request.getSession().setAttribute("adminInfo", adminMap);
+
+
+			log.info("###adminMap : {} ", adminMap);
+
+
+
 
 		}catch (Exception e){
 			e.printStackTrace();

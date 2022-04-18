@@ -1,4 +1,4 @@
-/*
+
 package com.danusys.web.smartmetering.common.util;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,10 +10,10 @@ import java.util.Map;
 
 public class SessionUtil {
 
-	*/
+
 /**
 	 * 로그인된 세션 아이디
-	 *//*
+	 */
 
 	public static String getSessionAdminId() throws Exception {
 		Map<?, ?> adminInfo = getSessionInfo();
@@ -25,10 +25,10 @@ public class SessionUtil {
 		return result;
 	}
 
-	*/
+
 /**
 	 * 로그인된 세션 아이디 이름
-	 *//*
+	 */
 
 	public static String getSessionAdminName() throws Exception {
 		Map<?, ?> adminInfo = getSessionInfo();
@@ -40,10 +40,10 @@ public class SessionUtil {
 		return result;
 	}
 
-	*/
+
 /**
 	 * 로그인된 세션 회원 SQ
-	 *//*
+	 */
 
 	public static String getSessionAdminSeq() throws Exception {
 		String result = "";
@@ -55,13 +55,13 @@ public class SessionUtil {
 		return result;
 	}
 
-	*/
+
 /**
 	 * 로그인된 회원정보 세션값
-	 *//*
+	 */
 
 	public static Map<String, Object> getSessionInfo() throws Exception {
-		*/
+
 /*
 		if(SecurityContextHolder.getContext().getAuthentication()!=null) {
 			UserInfo userInfo = (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -69,7 +69,7 @@ public class SessionUtil {
 			result = userInfo.getUserId();
 			System.out.println("=== userId : " + result);
 		}
-		*//*
+		*/
 
 		ServletRequestAttributes sra = null;
 		HttpServletRequest hsr = null;
@@ -95,10 +95,10 @@ public class SessionUtil {
 		return sessionMap;
 	}
 
-	*/
+
 /**
 	 * 로그인된 회원정보 세션ID
-	 *//*
+	 */
 
 	public static String getSessionId() throws Exception {
 		ServletRequestAttributes sra = null;
@@ -111,4 +111,4 @@ public class SessionUtil {
 
 		return sessionId;
 	}
-}*/
+}

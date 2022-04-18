@@ -1,4 +1,3 @@
-/*
 package com.danusys.web.smartmetering.common.dao;
 
 import javax.annotation.Resource;
@@ -24,4 +23,4 @@ public class CommonDao extends BaseDao {
 	public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
 		super.sqlSessionFactory = sqlSessionFactory;
 	}
-}*/
+}

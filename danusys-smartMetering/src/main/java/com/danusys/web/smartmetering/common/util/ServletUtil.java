@@ -1,4 +1,4 @@
-/*
+
 package com.danusys.smartmetering.common.util;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,4 +21,4 @@ public class ServletUtil {
 		}
 		return hsr;
 	}
-}*/
+}

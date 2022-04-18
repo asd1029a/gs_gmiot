@@ -1,4 +1,4 @@
-/*
+
 package com.danusys.web.smartmetering.common.util;
 
 import java.util.HashMap;
@@ -22,7 +22,7 @@ public class PagingUtil {
 	@Autowired
 	CommonDao commonDao;
 	
-	*/
+
 /*
 	public String getPageHtml(Map<?, ?> map) {
 		StringBuffer sb = new StringBuffer();
@@ -116,7 +116,7 @@ public class PagingUtil {
 	 * resultMap.put("data", list); resultMap.put("pagingParam", paramMap);
 	 * 
 	 * return resultMap; }
-	 *//*
+	 */
 
 	
 	public Map<String, Object> getSettingMap(String qId, Map<String, Object> paramMap) throws Exception {
@@ -130,4 +130,4 @@ public class PagingUtil {
 		resultMap.put("recordsFiltered", cnt.intValue());
 		return resultMap;
 	}
-}*/
+}

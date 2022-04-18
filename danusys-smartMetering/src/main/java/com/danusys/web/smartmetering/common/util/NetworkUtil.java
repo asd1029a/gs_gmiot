@@ -1,4 +1,4 @@
-/*
+
 package com.danusys.web.smartmetering.common.util;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,12 +7,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 public class NetworkUtil {
 
-	*/
+
 /**
 	 * 접속 클라이언트 IP
 	 * @param HttpServletRequest
 	 * @return XXX.XXX.XXX.XXX 문자열
-	 *//*
+	 */
 
 	public static String getLocalReqIp(HttpServletRequest request) throws Exception {
 		String ip = request.getHeader("x-Forwarded-For");
@@ -42,15 +42,15 @@ public class NetworkUtil {
 		return ip;
 	}
 	
-	*/
+
 /**
 	 * 접속 클라이언트 IP
 	 * @return XXX.XXX.XXX.XXX 문자열
-	 *//*
+	 */
 
 	public static String getLocalReqIp() throws Exception {
 		ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 	    HttpServletRequest hsr = sra.getRequest();
 		return getLocalReqIp(hsr);
 	}
-}*/
+}

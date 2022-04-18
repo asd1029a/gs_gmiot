@@ -47,46 +47,17 @@ public class CommonsUserDetails implements UserDetails {
         return user.getUserId();
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-
-    /*    */
-    //
 
     /**
      * 계정의 권한 목록 리턴
      *
      * @return
-     *//*
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collectors = new ArrayList<>();
-        collectors.add(() -> String.valueOf(user.getRole()));
+     */
 
-        return collectors;
-    }*/
     @Override
     @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        HttpSession session = null;
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
 //        if (user != null) {
@@ -115,53 +86,30 @@ public class CommonsUserDetails implements UserDetails {
             permitList.forEach(permit -> {
                 authorities.add(new SimpleGrantedAuthority(permit));
             });
-            log.info("###authorities = {}", authorities);
         }
         return authorities;
     }
 
-
-
-
-
-
-
-
-
-/*
     @Override
-    @Transactional
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-*/
-/*
-
-        if (user != null) {
-            // TODO - 게시판 별 권한 처리 협의 필요 @엄태혁
-            user.getUserInGroup().forEach(r -> {
-                r.getUserGroup().getUserGroupPermit().forEach(rr -> {
-                    log.info("aaaaa" + rr.getPermit().getCodeValue());
-                    permitList.add(rr.getPermit().getCodeValue());
-                });
-            });
-
-            permitList.forEach(r -> {
-                authorities.add(() -> {
-                    return r;
-                });
-            });
-        }*//*
-
-
-
-        permitList.add("ROLE_MANAGER");
-
-        permitList.forEach(permit -> {
-            authorities.add(new SimpleGrantedAuthority(permit));
-        });
-
-        return authorities;
+    public boolean isAccountNonExpired() {
+        return true;
     }
-*/
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+
 
 }

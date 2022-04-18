@@ -1,4 +1,3 @@
-/*
 package com.danusys.web.smartmetering.common.dao;
 
 import java.util.List;
@@ -47,4 +46,4 @@ public abstract class BaseDao {
 	public int delete(String qid, Map<String, Object> paramMap) throws Exception {
 		return sqlSession.delete(qid, paramMap);
 	}
-}*/
+}
