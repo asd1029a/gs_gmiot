@@ -19,10 +19,7 @@ public class BaseController {
 
     @Value("${loginPage.path}")
     private String loginPagePath;
-//    @RequestMapping(value = "/")
-//    public String index() {
-//        return "/layout/layout_login";
-//    }
+
 
 
     @RequestMapping("/login/errorTest")
