@@ -31,7 +31,7 @@ public class ConnectionService {
     int currentIndex = -1;
 
     public List<Map<String, Object>> getSocketList() {
-        List<Map <String, Object>> listMap = new ArrayList<>();
+        List<Map<String, Object>> listMap = new ArrayList<>();
         Map<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
 
         MavlinkConnection connection = null;
@@ -51,16 +51,17 @@ public class ConnectionService {
 
             log.info("connection={}", connection);
 
-            if ( isConnected(connection)) {
+            if (isConnected(connection)) {
                 log.info("addMap={}", index);
-                saveMap(index,socketList);
-              //  addMap(index, socketList, listMap);
+                saveMap(index, socketList);
+                //  addMap(index, socketList, listMap);
 //                if (!connectionMap.containsValue(connection)) {
 //                    log.info("여기왜와요???");
 //                    connectionMap.put("connection" + index, connection);
 //                }
 
             } else {
+                connection = null;
                 log.info("deleteList={}", index);
                 deleteList.add(index);
             }
@@ -93,8 +94,8 @@ public class ConnectionService {
         MavlinkMessage message;
         byte[] secretKey = new byte[0];
         final int[] timeSec = {0};
-        Timer t=new Timer();
-        TimerTask tt=new TimerTask() {
+        Timer t = new Timer();
+        TimerTask tt = new TimerTask() {
             @Override
             public void run() {
                 timeSec[0]++;
@@ -112,15 +113,23 @@ public class ConnectionService {
 
 
             connection.send2(1, 1, firstHeartbeat, linkId, timestamp, secretKey);
-            t.schedule(tt,0,1000);
-            while ((message = connection.next()) != null) {
-                //TODO socket try catch 안쪽으로 별개로 작성
-                if (message.getPayload() instanceof Heartbeat) {
-                    //  MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
+            t.schedule(tt, 0, 1000);
+            while (timeSec[0] >= 2) {
+
+                if (timeSec[0] >= 2) {
                     break;
                 }
-                if(timeSec[0]>=2) {
-                    return true;
+                while ((message = connection.next()) != null) {
+                    //TODO socket try catch 안쪽으로 별개로 작성
+                    if (timeSec[0] >= 2) {
+                        break;
+                    }
+
+                    if (message.getPayload() instanceof Heartbeat) {
+                        //  MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
+                        break;
+                    }
+
                 }
             }
         } catch (NoSuchAlgorithmException e) {
@@ -128,13 +137,12 @@ public class ConnectionService {
         } catch (IOException e) {
             log.info("IOEEXCEPTION");
             return false;
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             tt.cancel();
             t.cancel();
-            timeSec[0]=0;
+            timeSec[0] = 0;
         }
 
         return true;

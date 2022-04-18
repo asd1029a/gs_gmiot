@@ -224,6 +224,23 @@ const dimming = {
                 } else {
                     dimming.getListLampRoadInGroup(param, (result)=> {
                         dimming.setData(result.data[0]);
+                        //디밍 그룹별 맵 제어
+                        const dimmingLayer = new dataLayer('dimmMap').fromRaw(
+                            result.data, 'dimmingLayer', true, layerStyle.facility()
+                        );
+
+                        let dimmControl = new layerControl('dimmMap', 'title');
+                        window.dimmControl = dimmControl;
+                        window.dimmControl.remove('dimmingLayer');
+                        window.dimmMap.addLayer(dimmingLayer);
+
+                        let fitExtent = window.dimmControl.find('dimmingLayer').getSource().getExtent();
+                        // TODO 데이터보고 조정하거나 삭제하거나
+                        // fitExtent.forEach((ind, v) => {
+                        //     console.log(ind, v);
+                        // });
+
+                        dimmMap.map.getView().fit(fitExtent,dimmMap.map.getSize());
                     });
                 }
             }
@@ -279,6 +296,17 @@ const dimming = {
             }
         }
         comm.createTable($target, optionObj, evt);
+        //디밍 그룹별 맵 초기화
+        dimming.init();
+    }
+    , init : () => {
+        let dimmMap = new mapCreater('dimmMap', 0);
+        window.dimmMap = dimmMap;
+        window.dimmMap.setCenter(new ol.proj.fromLonLat(['126.8646558753815' ,'37.47857596680809'], 'EPSG:5181'));
+        window.dimmMap.setZoom(11);
+
+        //디밍 그룹별맵 제어 ban
+        $('#dimmMap').prepend('<canvas style="position: absolute;background: #ff000000;width: 100%;height: 100%;z-index: 1;"></canvas>');
     }
     , getListLampRoadInGroup : (param, pCallback) => {
         $.ajax({

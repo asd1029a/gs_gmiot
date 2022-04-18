@@ -247,6 +247,7 @@ public class DroneService {
                     if (missionText.equals("ArduPilot Ready"))
                         break;
 
+
                 }
 
             }

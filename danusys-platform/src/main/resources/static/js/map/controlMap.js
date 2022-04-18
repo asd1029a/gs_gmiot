@@ -198,7 +198,7 @@ const mapPopupContent = {
         } else if(length > 1) { //다중 팝업
             let grade = data.getProperties().eventGrade;
             if(data.getProperties().eventProcStat == "9") {
-                grade = "3";
+                grade = "999";
             }
             content += "<li><span class='circle lv"+ grade +"'></span>" + data.getProperties().eventMessage + "</li>";
         }
