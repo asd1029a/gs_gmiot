@@ -79,24 +79,16 @@ public class RestApiExecutor implements ApiExecutor {
 
             log.trace("웹서비스 주소:{}, 메소드:{}, 미디어타입:{}, 파라미터:{}", targetUrl, method, mediaType, reqMap);
 
-
-
             ResponseEntity<String> responseEntity = getResponseEntity(api, method, mediaType, reqMap);
-
-            log.info("body : {}",  responseEntity);
-
             final String res = responseEntity.getBody();
 
             AtomicReference<String> body = new AtomicReference(res);
-            log.info("body : {}",  body);
-
             api.getApiResponseParams().forEach(apiRes -> {
                 log.trace("### 응답 {} => {}", apiRes.getFieldMapNm(), apiRes.getFieldNm());
                 body.set(StringUtils.replace(body.get(), apiRes.getFieldMapNm(), apiRes.getFieldNm()));
             });
 //            log.trace("convert body:{}", body);
             result = body.get();
-
 
         } catch (RestClientResponseException rcrex) {
             return ResponseEntity.status(rcrex.getRawStatusCode()).body("");
