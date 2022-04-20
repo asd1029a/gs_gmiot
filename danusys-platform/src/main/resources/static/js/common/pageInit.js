@@ -97,5 +97,18 @@ $(document).ready(() => {
         svgToImage.init();
         mntr.init();
         mntr.eventHandler();
+        /* date picker */
+        $("input.input_date").attr("autocomplete", "off");
+        $('input[name=startDt]').each((idx, item) => {
+            const $startDt = $(item);
+            const $endDt = $(item).parents('form').find('input[name=endDt]');
+            dateFunc.datePickerSet($startDt, $endDt, true);
+            //초기값
+            const now = new Date();
+            const ago = new Date();
+            ago.setDate(now.getDate() - 2);
+            $startDt.datepicker().data('datepicker').selectDate(ago);
+            $endDt.datepicker().data('datepicker').selectDate(now);
+        });
     }
 })

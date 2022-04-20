@@ -240,7 +240,7 @@ const dimming = {
                 )
         });
         $("#addDimmingSetBtn").on('click', () => {
-            
+
         });
         $("#defaultDimmingSetBtn").on('click', () => {
             comm.confirm("기본값으로 설정하시겠습니까?",
