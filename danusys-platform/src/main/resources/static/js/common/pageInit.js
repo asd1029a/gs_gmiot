@@ -71,7 +71,6 @@ $(document).ready(() => {
                     dimming.createGroup(result);
                 }
             );
-        //디밍 그룹별 맵 초기화
         dimming.init();
     } else if(path === "/pages/config/userAccount") {
         account.user.eventHandler();

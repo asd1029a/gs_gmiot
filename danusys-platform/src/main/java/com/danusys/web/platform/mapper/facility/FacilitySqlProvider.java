@@ -4,6 +4,7 @@ import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.List;
 import java.util.Map;
 
 public class FacilitySqlProvider {
@@ -13,6 +14,7 @@ public class FacilitySqlProvider {
         String facilityKind = CommonUtil.validOneNull(paramMap,"facilityKind");
         String start = CommonUtil.validOneNull(paramMap,"start");
         String length = CommonUtil.validOneNull(paramMap,"length");
+        String createType = CommonUtil.validOneNull(paramMap,"createType");
 
         SQL sql = new SQL() {{
             SELECT("t1.facility_seq, t1.facility_id" +
@@ -28,11 +30,23 @@ public class FacilitySqlProvider {
             LEFT_OUTER_JOIN("t_user t3 on t1.insert_user_seq = t3.user_seq");
             LEFT_OUTER_JOIN("t_user t4 on t1.update_user_seq = t4.user_seq");
             LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");
-            if(keyword != null && !keyword.equals("")) {
-                WHERE("t1.facility_id LIKE" + keyword);
-            }
             if(facilityKind != null && !facilityKind.equals("")) {
                 WHERE("t2.code_value = '" + facilityKind + "'");
+                if("lamp_road".equals(facilityKind)) {
+                    String modifyQry = "";
+                        if("mod".equals(createType)) {
+                            modifyQry = "AND v1.dimming_group_seq::integer != " + paramMap.get("dimmingGroupSeq");
+                        }
+                        WHERE("NOT EXISTS (" +
+                                "SELECT * " +
+                                "FROM v_dimming_group v1 " +
+                                "WHERE v1.facility_seq = t1.facility_seq " +
+                                modifyQry +
+                                ")");
+                }
+            }
+            if(keyword != null && !keyword.equals("")) {
+                WHERE("t1.facility_id LIKE" + keyword);
             }
             ORDER_BY("t1.facility_seq");
             if (!start.equals("") && !length.equals("")) {
@@ -78,24 +92,37 @@ public class FacilitySqlProvider {
     }
 
     public String insertOptQry(Map<String, Object> paramMap) {
-        Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
+        List<Map<String, Object>> facilityOptList = (List<Map<String, Object>>) paramMap.get("facilityOptList");
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
 
-        SQL sql = new SQL() {{
-            INSERT_INTO("t_facility_opt");
-            VALUES(qryMap.get("columns").toString(), qryMap.get("values").toString());
-        }};
-        return sql.toString();
+        for (Map<String, Object> facilityOpt : facilityOptList) {
+            if( index == 0 ) {
+                sb.append("INSERT INTO t_facility_opt (")
+                        .append(SqlUtil.getInsertValuesStr(facilityOpt).get("columns").toString())
+                        .append(")")
+                        .append(" VALUES ");
+            }
+            sb.append("(")
+                    .append(SqlUtil.getInsertValuesStr(facilityOpt).get("values").toString());
+            if( index == facilityOptList.size() -1 ) {
+                sb.append(")");
+                break;
+            } else {
+                sb.append("), ");
+            }
+            index ++;
+        }
+        return sb.toString();
     }
 
     public String updateQry(Map<String, Object> paramMap) {
         String facilitySeq = paramMap.get("facilitySeq").toString();
 
         SQL sql = new SQL() {{
-            SQL sql = new SQL() {{
-                UPDATE("t_facility");
-                SET(SqlUtil.getMultiSetStr(paramMap));
-                WHERE("facility_seq =" + facilitySeq);
-            }};
+            UPDATE("t_facility");
+            SET(SqlUtil.getMultiSetStr(paramMap));
+            WHERE("facility_seq =" + facilitySeq);
         }};
         return sql.toString();
     }
@@ -104,21 +131,46 @@ public class FacilitySqlProvider {
         String facilitySeq = paramMap.get("facilitySeq").toString();
 
         SQL sql = new SQL() {{
-            SQL sql = new SQL() {{
-                UPDATE("t_facility_opt");
-                SET(SqlUtil.getMultiSetStr(paramMap));
-                WHERE("facility_seq =" + facilitySeq);
-            }};
+            UPDATE("t_facility_opt");
+            SET(SqlUtil.getMultiSetStr(paramMap));
+            WHERE("facility_seq =" + facilitySeq);
         }};
         return sql.toString();
     }
 
     public String deleteQry(int seq) {
         SQL sql = new SQL() {{
-            SQL sql = new SQL() {{
-               DELETE_FROM("t_facility");
-               WHERE("facility_seq =" + seq);
-            }};
+           DELETE_FROM("t_facility");
+           WHERE("facility_seq =" + seq);
+        }};
+        return sql.toString();
+    }
+
+    public String deleteOptQry(Map<String, Object> paramMap) {
+        String facilityOptType = CommonUtil.validOneNull(paramMap,"facilityOptType");
+        List<Integer> delFacilitySeqList = (List<Integer>) paramMap.get("delFacilitySeqList");
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+
+        for (Integer facilitySeq : delFacilitySeqList) {
+            if (index == delFacilitySeqList.size() - 1) {
+                sb.append(facilitySeq.toString());
+                break;
+            } else {
+                sb.append(facilitySeq.toString()).append(", ");
+            }
+            index++;
+        }
+        SQL sql = new SQL() {{
+            DELETE_FROM("t_facility_opt t1 ");
+            WHERE("t1.facility_seq IN ( " + sb.toString() +" )");
+            if("mod".equals(paramMap.get("type"))) {
+                WHERE("t1.facility_opt_name != '" + paramMap.get("ignoreDeleteOpt") + "'");
+            }
+            WHERE("t1.facility_opt_type::varchar = (" +
+                    "SELECT code_value " +
+                    "FROM v_facility_opt_type " +
+                    "WHERE code_id = '" + facilityOptType + "')");
         }};
         return sql.toString();
     }
@@ -169,7 +221,7 @@ public class FacilitySqlProvider {
         return sql.toString();
     }
 
-    public String selectListLampRoadInDimmingGroup(Map<String, Object> paramMap) {
+    public String selectListLampRoadInDimmingGroupQry(Map<String, Object> paramMap) {
         String dimmingGroupSeq = CommonUtil.validOneNull(paramMap,"dimmingGroupSeq");
 
         SQL sql = new SQL() {
@@ -180,6 +232,15 @@ public class FacilitySqlProvider {
                 FROM("t_facility t1");
                 INNER_JOIN("v_dimming_group v1 on t1.facility_seq = v1.facility_seq");
                 WHERE("v1.dimming_group_seq::integer = " + dimmingGroupSeq);
+            }};
+        return sql.toString();
+    }
+
+    public String selectOneDimmingGroupSeqQry() {
+        SQL sql = new SQL() {
+            {
+               SELECT("MAX(v1.dimming_group_seq) AS dimming_group_seq");
+               FROM("v_dimming_group v1");
             }};
         return sql.toString();
     }
