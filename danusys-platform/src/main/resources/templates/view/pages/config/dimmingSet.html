@@ -203,8 +203,9 @@
                     </div>
                 </div>
                 <!-- 지도 영역 -->
-                <div class="map_area">
-                </div>
+                <div id="dimmGroupMap" class="map_wrap">
+                    <div id="mousePosition" style="right: 0px; bottom: 0px; border-radius: unset;"></div>
+                </div> <!-- map_area -->
             </div>
             <ul class="bottom">
                 <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mod="true" id="delDimmingGroupProcBtn">삭제</li>

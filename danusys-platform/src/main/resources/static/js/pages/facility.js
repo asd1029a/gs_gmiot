@@ -165,6 +165,8 @@ const dimming = {
         });
         $("#addDimmingGroupBtn").on('click', () => {
             dimming.showPopup("add");
+            window.dimmGroupMap.updateSize();
+            //TODO 그룹이 없는 나머지 시설물이 전부 보이는 맵 view move
         });
     }
     , createGroup : (pPermit) => {
@@ -219,6 +221,8 @@ const dimming = {
                 };
                 if($(e.target).hasClass('button')) {
                     dimming.showPopup("mod");
+                    //TODO 누른 행 그룹에 속하는 모든 시설물이 보이는 맵
+                    window.dimmGroupMap.updateSize();
                     dimming.getListLampRoadInGroup(param ,(result) => {
 
                     });
@@ -299,13 +303,22 @@ const dimming = {
         comm.createTable($target, optionObj, evt);
     }
     , init : () => {
+        const baseCenter = new ol.proj.fromLonLat(['126.8646558753815' ,'37.47857596680809'], 'EPSG:5181');
+
+        //디밍 그룹별맵
         let dimmMap = new mapCreater('dimmMap', 0);
         window.dimmMap = dimmMap;
-        window.dimmMap.setCenter(new ol.proj.fromLonLat(['126.8646558753815' ,'37.47857596680809'], 'EPSG:5181'));
+        window.dimmMap.setCenter(baseCenter);
         window.dimmMap.setZoom(11);
-
         //디밍 그룹별맵 제어 ban
         $('#dimmMap').prepend('<canvas style="position: absolute;background: #ff000000;width: 100%;height: 100%;z-index: 1;"></canvas>');
+
+        //디밍 그룹 설정맵
+        let dimmGroupMap = new mapCreater('dimmGroupMap', 0);
+        dimmGroupMap.createMousePosition('mousePosition');
+        window.dimmGroupMap = dimmGroupMap;
+        window.dimmGroupMap.setCenter(baseCenter);
+        window.dimmGroupMap.setZoom(11);
     }
     , getListLampRoadInGroup : (param, pCallback) => {
         $.ajax({
