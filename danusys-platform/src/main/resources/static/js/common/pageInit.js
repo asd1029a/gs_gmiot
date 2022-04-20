@@ -65,7 +65,12 @@ $(document).ready(() => {
     // 환경설정
     else if(path === "/pages/config/dimmingSet") {
         dimming.eventHandler();
-        dimming.create();
+        comm.checkAuthority("/user/check/authority", "config", "rw")
+            .then(
+                (result) => {
+                    dimming.createGroup(result);
+                }
+            );
         //디밍 그룹별 맵 초기화
         dimming.init();
     } else if(path === "/pages/config/userAccount") {

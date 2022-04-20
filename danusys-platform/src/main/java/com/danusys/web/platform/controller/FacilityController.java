@@ -93,10 +93,10 @@ public class FacilityController {
     }
 
     /**
-     * 시설물 : 시설물 단건 조회
+     * 시설물 : 디밍 그룹 소속 시설물 조회
      */
-    @GetMapping(value="/{dimmingGroupSeq}")
-    public ResponseEntity<EgovMap> getDimmingGroup(@PathVariable("dimmingGroupSeq") int dimmingGroupSeq) throws Exception {
-        return ResponseEntity.ok().body(facilityService.getOne(dimmingGroupSeq));
+    @PostMapping(value="/lampRoadInGroup")
+    public ResponseEntity<EgovMap> getListLampRoadInDimmingGroup(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.getListLampRoadInDimmingGroup(paramMap));
     }
 }

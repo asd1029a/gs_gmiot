@@ -32,11 +32,11 @@
                 <article class="search_list">
                     <div class="article_title">
                         <dl class="title">
-                            <dt>디밍 목록</dt>
-                            <dd><span class="count">123</span>건</dd>
+                            <dt>디밍 그룹 목록</dt>
+                            <dd><span class="count">0</span>건</dd>
                         </dl>
                         <ul>
-                            <li sec:authorize="hasAnyRole('ROLE_config_rw')"><i><img src="/images/default/add.svg"></i>디밍 추가</li>
+                            <li id="addDimmingGroupBtn" sec:authorize="hasAnyRole('ROLE_config_rw')"><i><img src="/images/default/add.svg"></i>디밍 그룹 추가</li>
                         </ul>
                     </div>
                     <div class="search_table">
@@ -71,24 +71,23 @@
                 <ul>
                     <li>
                         <span>최대 밝기 도달 시간</span>
-                        <input name="max_bright_time" type="text" placeholder="00">초
+                        <input name="max_bright_time" id="maxBrightTime" type="text" placeholder="00">초
                     </li>
                     <li>
                         <span>최대 밝기 유지 시간</span>
-                        <input name="min_bright_time" type="text" placeholder="00">초
+                        <input name="min_bright_time" id="minBrightTime" type="text" placeholder="00">초
                     </li>
                     <li>
                         <span>최소 밝기 도달 시간</span>
-                        <input name="keep_bright_time" type="text" placeholder="00">초
+                        <input name="keep_bright_time" id="keepBrightTime" type="text" placeholder="00">초
                     </li>
                 </ul>
                 <div class="dimming_by_time">
                     <p>시간대별 최대/최소 밝기</p>
-                    <table>
+                    <table id="dimmingTimeZoneTable">
                         <thead>
                             <tr>
                                 <th>시간(시)</th>
-                                <td>0</td>
                                 <td>1</td>
                                 <td>2</td>
                                 <td>3</td>
@@ -118,7 +117,6 @@
                         <tbody>
                             <tr>
                                 <th>최대</th>
-                                <td><input name="time_0_max" type="text" value="100" placeholder="100"></td>
                                 <td><input name="time_1_max" type="text" value="100" placeholder="100"></td>
                                 <td><input name="time_2_max" type="text" value="100" placeholder="100"></td>
                                 <td><input name="time_3_max" type="text" value="100" placeholder="100"></td>
@@ -146,7 +144,6 @@
                             </tr>
                             <tr>
                                 <th>최소</th>
-                                <td><input name="time_0_min" type="text" value="50" placeholder="50"></td>
                                 <td><input name="time_1_min" type="text" value="50" placeholder="50"></td>
                                 <td><input name="time_2_min" type="text" value="50" placeholder="50"></td>
                                 <td><input name="time_3_min" type="text" value="50" placeholder="50"></td>
@@ -178,46 +175,41 @@
             </div>
         </article>
         <!-- 디밍 그룹 설정 팝업  -->
-        <div class="popup" id="dimmingGroupPopup" style="display:none;">
+        <div class="popup" id="dimmingGroupPopup" style="height: 650px;">
             <dl class="title">
-                <dt>디밍 그룹 추가</dt>
+                <dt>디밍 그룹 설정</dt>
                 <dd><i><img src="/images/default/close.svg"></i></dd>
             </dl>
-            <div class="popup_writing">
-                <div class="half_layout">
-                    <!--디밍 그룹 정보 -->
-                    <fieldset>
-                        <legend>디밍 그룹 정보</legend>
-                        <form id="userGroupForm">
-                            <dl>
-                                <dt>그룹 이름</dt>
-                                <dd><input id="groupName" type="text" placeholder="*필수 입력" name="groupName"></dd>
-                            </dl>
-                        </form>
-                        <!-- 소속 가로등 설정 -->
-                        <div class="list_search">
-                            <p class="legend">소속 가로등 설정</p>
-                            <div class="list_table">
-                                <table id="lampLoadTable">
-                                    <thead>
-                                    <tr>
-                                        <th>가로등 ID</th>
-                                        <th>선택</th>
-                                    </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </fieldset>
-                    <div>
-                        <!-- 지도 영역 -->
+            <div class="popup_writing popup_dimming_group">
+                <!-- 구역 검색 -->
+                <div class="list_search">
+                    <dl>
+                        <dt>디밍 그룹명 입력</dt>
+                        <dd><input type="text" id="dimmingGroupName" data-required="true" placeholder="디밍 그룹명 이름"></dd>
+                    </dl>
+                    <p class="legend">시설물 조회
+                        <span><input type="text" placeholder="시설물 검색"></span>
+                    </p>
+                    <div class="list_table">
+                        <table id="lampRoadInGroupTable">
+                            <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th>시설물 이름</th>
+                                    <th>선택</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
+                </div>
+                <!-- 지도 영역 -->
+                <div class="map_area">
                 </div>
             </div>
             <ul class="bottom">
-                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="delUserGroupProcBtn">삭제</li>
-                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="modUserGroupProcBtn">정보 수정</li>
-                <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-mode="add" id="addUserGroupProcBtn">등록</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mod="true" id="delDimmingGroupProcBtn">삭제</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mod="true" id="modDimmingGroupProcBtn">수정</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-add="true" id="addDimmingGroupProcBtn">등록</li>
             </ul>
         </div>
     </section>

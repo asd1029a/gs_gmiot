@@ -80,7 +80,6 @@ public class RestApiExecutor implements ApiExecutor {
             log.trace("웹서비스 주소:{}, 메소드:{}, 미디어타입:{}, 파라미터:{}", targetUrl, method, mediaType, reqMap);
 
             ResponseEntity<String> responseEntity = getResponseEntity(api, method, mediaType, reqMap);
-
             final String res = responseEntity.getBody();
 
             AtomicReference<String> body = new AtomicReference(res);
@@ -90,7 +89,6 @@ public class RestApiExecutor implements ApiExecutor {
             });
 //            log.trace("convert body:{}", body);
             result = body.get();
-
 
         } catch (RestClientResponseException rcrex) {
             return ResponseEntity.status(rcrex.getRawStatusCode()).body("");
@@ -133,7 +131,7 @@ public class RestApiExecutor implements ApiExecutor {
             Consumer<HttpHeaders> headersConsumer = httpHeaders -> {
                 httpHeaders.setContentType(mediaType);
                 httpHeaders.setAccept(Collections.singletonList(mediaType));
-                if((!authInfo.isEmpty()) && (authInfo != null)){
+                if(authInfo != null && !authInfo.isEmpty()){
                     httpHeaders.set("Authorization", authInfo);
                 }
             };

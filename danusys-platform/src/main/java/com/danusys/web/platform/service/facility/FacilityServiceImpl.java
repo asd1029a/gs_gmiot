@@ -74,4 +74,11 @@ public class FacilityServiceImpl implements FacilityService{
             return resultMap;
         }
     }
+
+    @Override
+    public EgovMap getListLampRoadInDimmingGroup(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(fsp.selectListLampRoadInDimmingGroup(paramMap)));
+        return resultMap;
+    }
 }
