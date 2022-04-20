@@ -17,12 +17,10 @@ const facility = {
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
                     'data' : function ( d ) {
-                        console.log(d);
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
-                        console.log(result);
                         $('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
@@ -166,6 +164,94 @@ const dimming = {
         $("#addDimmingGroupBtn").on('click', () => {
             dimming.showPopup("add");
         });
+        $("#addDimmingGroupProcBtn").on('click', () => {
+            const dimmingGroupName = $("#dimmingGroupName").val();
+            const $checkedLampRoads = $("#lampRoadInGroupTable input[type='checkbox']:checked");
+            const facilitySeqList = [];
+            let obj = {};
+            if(dimmingGroupName === "" || typeof dimmingGroupName === "undefined") {
+                comm.showAlert("그룹이름이 작성되지 않았습니다.");
+            } else {
+                $checkedLampRoads.each((i, e)=> {
+                    facilitySeqList.push($(e).val());
+                });
+                if(facilitySeqList.length === 0) {
+                    comm.showAlert("시설물을 선택해주십시오.");
+                } else {
+                    obj.facilitySeqList = facilitySeqList;
+                    obj.dimmingGroupName = dimmingGroupName;
+                    obj.facilityOptType = "dimming";
+                    dimming.addGroupProc(obj);
+                }
+            }
+        });
+        $("#modDimmingGroupProcBtn").on('click', () => {
+            const dimmingGroupName = $("#dimmingGroupName").val();
+            const dimmingGroupSeq = $("#dimmingGroupPopup").data("dimmingGroupSeq");
+            const $checkedLampRoads = $("#lampRoadInGroupTable input[type='checkbox']:checked");
+
+            if(dimmingGroupName === "" || typeof dimmingGroupName === "undefined") {
+                comm.showAlert("그룹이름이 작성되지 않았습니다.");
+            } else {
+                if($checkedLampRoads.length === 0) {
+                    comm.showAlert("시설물을 선택해주십시오.");
+                } else {
+                    const obj = {};
+                    dimming.getListLampRoadInGroup({
+                            'dimmingGroupSeq' : dimmingGroupSeq
+                        },(result) => {
+                            const delFacilitySeqList = [];
+                            $.each(result.data, (i, e) => {
+                                delFacilitySeqList.push(Number(e.facilitySeq));
+                            })
+                            const newFacilitySeqList = [];
+                            $checkedLampRoads.each((i, e)=> {
+                                newFacilitySeqList.push(Number($(e).val()));
+                            });
+                            obj.dimmingGroupSeq = dimmingGroupSeq;
+                            obj.delFacilitySeqList = delFacilitySeqList;
+                            obj.facilitySeqList = newFacilitySeqList;
+                            obj.dimmingGroupName = dimmingGroupName;
+                            obj.facilityOptType = "dimming";
+                            dimming.modGroupProc(obj);
+                        }
+                    );
+                }
+            }
+        });
+        $("#delDimmingGroupProcBtn").on('click', () => {
+            const dimmingGroupSeq = $("#dimmingGroupPopup").data("dimmingGroupSeq");
+            comm.confirm("해당 그룹을 삭제하시겠습니까?",
+                {},
+            () => {
+                    dimming.getListLampRoadInGroup({"dimmingGroupSeq" : dimmingGroupSeq}
+                    ,(result) => {
+                        const delFacilitySeqList = [];
+                        const obj = {};
+                        $.each(result.data, (i, e) => {
+                            delFacilitySeqList.push(e.facilitySeq);
+                        });
+                        obj.delFacilitySeqList = delFacilitySeqList;
+                        obj.facilityOptType = "dimming"
+                        dimming.delGroupProc(obj);
+                    });
+                },
+                () => {return false;}
+                )
+        });
+        $("#addDimmingSetBtn").on('click', () => {
+            
+        });
+        $("#defaultDimmingSetBtn").on('click', () => {
+            comm.confirm("기본값으로 설정하시겠습니까?",
+                {text : "작성한 설정값이 사라집니다."},
+                () => {
+                    $(".setting_dimming ul li input").val("");
+                    $("#dimmingTimeZoneTable tbody tr:nth-child(1) td input").val("100");
+                    $("#dimmingTimeZoneTable tbody tr:nth-child(2) td input").val("50");
+                },
+                () => {return false;});
+        });
     }
     , createGroup : (pPermit) => {
         const $target = $('#dimmingGroupTable');
@@ -173,7 +259,7 @@ const dimming = {
             dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
             pageLength: 15,
-            scrollY: "calc(100% - 40px)",
+            scrollY: "100px",
             security : true,
             autoWidth: true,
             ajax :
@@ -212,18 +298,14 @@ const dimming = {
         }
         const evt = {
             click : function(e) {
-                const $form = $('#dimmingGroupForm');
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
-                const param = {
-                    'dimmingGroupSeq' : rowData.dimmingGroupSeq
-                };
-                if($(e.target).hasClass('button')) {
-                    dimming.showPopup("mod");
-                    dimming.getListLampRoadInGroup(param ,(result) => {
 
-                    });
+                if($(e.target).hasClass('button')) {
+                    dimming.showPopup("mod", rowData);
                 } else {
-                    dimming.getListLampRoadInGroup(param, (result)=> {
+                    dimming.getListLampRoadInGroup({
+                        'dimmingGroupSeq' : rowData.dimmingGroupSeq
+                    }, (result)=> {
                         dimming.setData(result.data[0]);
                         //디밍 그룹별 맵 제어
                         const dimmingLayer = new dataLayer('dimmMap').fromRaw(
@@ -247,10 +329,9 @@ const dimming = {
             }
         }
         comm.createTable($target ,optionObj, evt);
-        //디밍 그룹별 맵 초기화
-        dimming.init();
+        window.dimmMap.updateSize();
     }
-    , createLampRoad : () => {
+    , createLampRoad : (pObj) => {
         const $target = $('#lampRoadInGroupTable');
         const optionObj = {
             dom: '<"table_body"rt>',
@@ -263,8 +344,9 @@ const dimming = {
                     'url': "/facility",
                     'contentType': "application/json; charset=utf-8",
                     'type': "POST",
+                    'async': false,
                     'data' : function ( ) {
-                        return JSON.stringify( {"facilityKind" : "lamp_road"} );
+                        return JSON.stringify( pObj );
                     }
                 }
             ,
@@ -319,40 +401,101 @@ const dimming = {
             pCallback(result);
         });
     }
-    , addGroup : () => {
-
+    , addGroupProc : (pObj) => {
+        $.ajax({
+            url : "/facility/opt"
+            , type: "PUT"
+            , data :  JSON.stringify(pObj)
+            , contentType : "application/json; charset=utf-8",
+        }).done(() => {
+            comm.showAlert("디밍 그룹이 등록되었습니다. <br/> 디밍설정을 설정해주십시오.");
+            dimming.createGroup();
+            dimming.hidePopup();
+        }).fail(() => {
+            comm.showAlert("디밍 그룹 등록에 실패했습니다.");
+        });
     }
-    , modGroup : () => {
-
+    , modGroupProc : (pObj) => {
+        $.ajax({
+            url : "/facility/opt"
+            , type: "PATCH"
+            , data :  JSON.stringify(pObj)
+            , contentType : "application/json; charset=utf-8",
+        }).done(() => {
+            comm.showAlert("디밍 그룹이 수정되었습니다. <br/> 디밍설정을 재설정해주십시오.");
+            dimming.createGroup();
+            dimming.hidePopup();
+        }).fail(() => {
+            comm.showAlert("디밍 그룹 수정에 실패했습니다.");
+        });
     }
-    , delGroup : () => {
-
+    , delGroupProc : (pObj) => {
+        $.ajax({
+            url : "/facility/opt"
+            , type: "DELETE"
+            , data :  JSON.stringify(pObj)
+            , contentType : "application/json; charset=utf-8",
+        }).done(() => {
+            comm.showAlert("디밍 그룹이 삭제되었습니다.");
+            dimming.createGroup();
+            dimming.hidePopup();
+        }).fail(() => {
+            comm.showAlert("디밍 그룹 삭제에 실패했습니다.");
+        });
     }
     , setData : (pData) => {
-        $.each(pData, (name, value)=> {
-            $(".setting_dimming #"+name).val(value);
-            if(name === "dimmingTimeZone") {
-                const dimmingTimeZone = JSON.parse(value.replaceAll('\n', ''));
-                $.each(dimmingTimeZone, (time, setValue) => {
-                    $("#dimmingTimeZoneTable input[name="+time+"_max]").val(setValue.max);
-                    $("#dimmingTimeZoneTable input[name="+time+"_min]").val(setValue.min);
-                })
-            }
-        })
+        if(pData.maxBrightTime === null || pData.minBrightTime === null
+            || pData.keepBrightTime === null || pData.dimmingTimeZone === null) {
+            comm.showAlert("디밍 설정을 진행해주십시오.");
+        } else {
+            $.each(pData, (name, value)=> {
+                $(".setting_dimming #"+name).val(value);
+                if(name === "dimmingTimeZone") {
+                    const dimmingTimeZone = JSON.parse(value.replaceAll('\n', ''));
+                    $.each(dimmingTimeZone, (time, setValue) => {
+                        $("#dimmingTimeZoneTable input[name="+time+"_max]").val(setValue.max);
+                        $("#dimmingTimeZoneTable input[name="+time+"_min]").val(setValue.min);
+                    })
+                }
+            })
+        }
     }
-    , add : () => {
+    , addProc : () => {
 
     }
-    , showPopup : (type) => {
+    , showPopup : (type, pRowData) => {
+        const createObj = {
+            facilityKind : "lamp_road"
+            , createType : type
+        }
+
         comm.showModal($('#dimmingGroupPopup'));
         $("#dimmingGroupPopup").css('display', 'flex');
         $("#dimmingGroupPopup #dimmingGroupName").val("");
-        dimming.createLampRoad();
         $('#dimmingGroupPopup [data-add], [data-mod]').hide();
         $('#dimmingGroupPopup [data-'+type+'="true"]').show();
+
+        if(type === "add") {
+            dimming.createLampRoad(createObj);
+        } else if(type === "mod") {
+            const dimmingGroupSeq = pRowData.dimmingGroupSeq;
+            $('#dimmingGroupPopup').data("dimmingGroupSeq", dimmingGroupSeq);
+            createObj.dimmingGroupSeq = dimmingGroupSeq
+
+            dimming.createLampRoad(createObj);
+            dimming.getListLampRoadInGroup({
+                'dimmingGroupSeq' : dimmingGroupSeq
+            } ,(result) => {
+                $("#dimmingGroupPopup #dimmingGroupName").val(result.data[0].dimmingGroupName);
+                $.each(result.data, (idx, obj) => {
+                    $("#lampRoadInGroupTable #check"+obj.facilitySeq).prop("checked", true);
+                });
+            });
+        }
     }
     , hidePopup : () => {
         comm.hideModal($('#dimmingGroupPopup'));
+        $('#dimmingGroupPopup').removeData("dimmingGroupSeq");
         $("#dimmingGroupPopup").hide();
     }
 }

@@ -907,7 +907,7 @@ const dateFunc = {
     },
     /**
      * 현재날짜
-     * @param 이전날짜, 이후날짜
+     * @param 날짜 기준(0: 현재, 1: 내일)
      * @returns date 타입 Object
      */
     getCurrentDate: function(d) {
@@ -917,7 +917,7 @@ const dateFunc = {
     },
     /**
      * 현재날짜
-     * @param 이전날짜, 이후날짜
+     * @param 날짜 기준(0: 현재, 1: 내일), 이전날짜, 이후날짜
      * @returns EX) 201908191500
      */
     getCurrentDateYyyyMmDdHh24Mi: function(d, dateSep, timeSep) {

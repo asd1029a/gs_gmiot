@@ -85,6 +85,15 @@ public class FacilityController {
     }
 
     /**
+     * 시설물 : 시설물 삭제
+     */
+    @DeleteMapping(value="/opt")
+    public ResponseEntity<?> del (@RequestBody Map<String, Object> paramMap) throws Exception {
+        facilityService.delOpt(paramMap);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
      * 시설물 : 디밍 그룹 조회
      */
     @PostMapping(value="/dimmingGroup")
