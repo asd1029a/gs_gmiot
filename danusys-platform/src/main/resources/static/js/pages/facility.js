@@ -245,8 +245,6 @@ const dimming = {
             }
         }
         comm.createTable($target ,optionObj, evt);
-        //디밍 그룹별 맵 초기화
-        dimming.init();
     }
     , init : () => {
         let dimmMap = new mapCreater('dimmMap', 0);

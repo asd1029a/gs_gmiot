@@ -59,6 +59,7 @@
 .search_form > dl > dt > i{width: 34px; height: 34px; cursor: pointer;}
 .search_form > dl > dt > i > img{width: 20px; height: 20px;}
 .search_form > dl > dd{display: flex; align-items: center; justify-content: flex-end; grid-gap: 6px; padding: 0px 10px; color: #797d87; cursor: pointer;}
+.search_form > dl > dd.active{text-decoration-line: underline; text-decoration-color: #3a66e5;}
 .search_form > dl > dd:hover{color: #797d87; font-weight: bold;}
 .search_form > dl > dd:hover i{transform: rotate(360deg);}
 .search_form > dl > dd > i{width: 16px; height: 16px;}
