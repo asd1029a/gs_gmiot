@@ -202,6 +202,7 @@ const dimming = {
                     dimming.getListLampRoadInGroup({
                             'dimmingGroupSeq' : dimmingGroupSeq
                         },(result) => {
+                            debugger;
                             const delFacilitySeqList = [];
                             $.each(result.data, (i, e) => {
                                 delFacilitySeqList.push(Number(e.facilitySeq));
@@ -304,24 +305,22 @@ const dimming = {
 
                 if($(e.target).hasClass('button')) {
                     dimming.showPopup("mod", rowData);
-                    //TODO 누른 행 그룹에 속하는 모든 시설물이 보이는 맵
-                    window.dimmGroupMap.updateSize();
                 } else {
                     dimming.getListLampRoadInGroup({
                         'dimmingGroupSeq' : rowData.dimmingGroupSeq
                     }, (result)=> {
                         dimming.setData(result.data[0]);
                         //디밍 그룹별 맵 제어
-                        const dimmingLayer = new dataLayer('dimmMap').fromRaw(
-                            result.data, 'dimmingLayer', true, layerStyle.facility()
+                        const dimmLayer = new dataLayer('dimmMap').fromRaw(
+                            result.data, 'dimmLayer', true, layerStyle.facility()
                         );
 
                         let dimmControl = new layerControl('dimmMap', 'title');
                         window.dimmControl = dimmControl;
-                        window.dimmControl.remove('dimmingLayer');
-                        window.dimmMap.addLayer(dimmingLayer);
+                        window.dimmControl.remove('dimmLayer');
+                        window.dimmMap.addLayer(dimmLayer);
 
-                        let fitExtent = window.dimmControl.find('dimmingLayer').getSource().getExtent();
+                        let fitExtent = window.dimmControl.find('dimmLayer').getSource().getExtent();
                         // TODO 데이터보고 조정하거나 삭제하거나
                         // fitExtent.forEach((ind, v) => {
                         //     console.log(ind, v);
@@ -500,6 +499,22 @@ const dimming = {
                 'dimmingGroupSeq' : dimmingGroupSeq
             } ,(result) => {
                 $("#dimmingGroupPopup #dimmingGroupName").val(result.data[0].dimmingGroupName);
+                debugger;
+                // //TODO 누른 행 그룹에 속하는 모든 시설물이 보이는 맵
+                // const dimmGroupLayer = new dataLayer('dimmGroupMap').fromRaw(
+                //     result.data, 'dimmGroupLayer', true, layerStyle.facility()
+                // );
+                // let dimmGroupControl = new layerControl('dimmGroupMap', 'title');
+                // window.dimmGroupControl = dimmGroupControl;
+                // dimmGroupControl.remove('dimmGroupLayer');
+                // window.dimmGroupMap.addLayer(dimmGroupLayer);
+                //
+                // window.dimmGroupMap.updateSize();
+                //
+                // let fitExtent = window.dimmControl.find('dimmGroupLayer').getSource().getExtent();
+                //
+                // window.dimmGroupMap.map.getView().fit(fitExtent,window.dimmMap.map.getSize());
+
                 $.each(result.data, (idx, obj) => {
                     $("#lampRoadInGroupTable #check"+obj.facilitySeq).prop("checked", true);
                 });
