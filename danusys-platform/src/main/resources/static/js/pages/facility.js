@@ -148,6 +148,7 @@ const facility = {
     }
 }
 
+/* 디밍 관련 JS*/
 const dimming = {
     eventHandler : () => {
         $("#searchBtn").on('click', () => {
@@ -463,10 +464,11 @@ const dimming = {
             $.each(pData, (name, value)=> {
                 $(".setting_dimming #"+name).val(value);
                 if(name === "dimmingTimeZone") {
-                    const dimmingTimeZone = JSON.parse(value.replaceAll('\n', ''));
-                    $.each(dimmingTimeZone, (time, setValue) => {
-                        $("#dimmingTimeZoneTable input[name="+time+"_max]").val(setValue.max);
-                        $("#dimmingTimeZoneTable input[name="+time+"_min]").val(setValue.min);
+                    const dimmingTimeZone = value.split(',');
+                    $.each(dimmingTimeZone, (idx, time) => {
+                        const setValue = time.split('/');
+                        $("#dimmingTimeZoneTable input[name=time_" + String(idx + 1)+"_max]").val(setValue[1]);
+                        $("#dimmingTimeZoneTable input[name=time_" + String(idx + 1)+"_min]").val(setValue[0]);
                     })
                 }
             })
