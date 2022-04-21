@@ -30,7 +30,7 @@ public class DroneResponse {
     private String status;
     private DroneInMissionResponse droneInmission;
     private DroneBase droneBase;
-    private int droneSocket;
+    private Long droneSocket;
 
     public DroneResponse(Drone drone){
         this.id=drone.getId();
