@@ -19,6 +19,7 @@ public class DroneSocketService {
     }
     @Transactional
     public void saveList(DroneSocket droneSocket){
+        droneSocketRepository.deleteAllBySystemId(droneSocket.getSystemId());
         droneSocketRepository.save(droneSocket);
         //droneSocketRepository.saveAll();
     }

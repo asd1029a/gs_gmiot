@@ -7,7 +7,10 @@ document.addEventListener("DOMContentLoaded",function () {
     pageFlying.init();
 });
 
+
 const pageFlying = {
+
+
     init: function() {
         pageFlying.lnbMenuInit();
         mapManager.createVectorLayer("droneLayer",null,new ol.source.Vector({}));
@@ -15,6 +18,8 @@ const pageFlying = {
         droneSocket.init();
     },
     lnbMenuInit: async function() {
+
+
         const ul = common.getQs(".listScroll ul");
         ul.innerText = "";
         const listData = await axios.post("/drone/api/dronemissiondetails", {});
@@ -38,9 +43,14 @@ const pageFlying = {
                     mapManager.map.getView().setCenter(ol.proj.transform([mission.missionDetails[0].gpsX, mission.missionDetails[0].gpsY],mapManager.baseProjection, mapManager.projection));
                 }
                 pageFlying.setMissionSummary(mission);
+
                 //엄태혁 코드 추가
-                let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
-                droneSocket.stompClient.send("/app/logging", {}, JSON.stringify({'droneId': droneId}));
+
+                    let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
+                    droneSocket.stompClient.send("/app/logging", {}, JSON.stringify({'droneId': droneId}));
+
+
+
 
             });
             const dl = common.crtEl("dl");
@@ -509,7 +519,8 @@ const droneSocket = {
 
     //엄태혁작성
     logging : function (){
-        this.stompClient.send("/app/logging", {}, JSON.stringify({'droneId': droneId}))
+        let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
+        this.stompClient.send("/app/logging", {}, JSON.stringify({'droneId': droneId}));
     },
     disConnect: function() {
         this.stompClient.disconnect();

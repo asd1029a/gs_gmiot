@@ -45,6 +45,7 @@ public class ServerThread extends Thread {
         while (flag) {
             try {
 
+
                 socket = serverSocket.accept();
                 //OutputStream outputStream = socket.getOutputStream();
                 //outputStream.write("hello client \n".getBytes());

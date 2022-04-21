@@ -1,9 +1,9 @@
 package com.danusys.web.drone.controller;
 
 
-import com.danusys.web.commons.socket.config.CustomServerSocket;
+
+import com.danusys.web.drone.socket.CustomServerSocket;
 import com.danusys.web.drone.dto.response.DroneResponse;
-import com.danusys.web.drone.dto.response.Gps;
 import com.danusys.web.drone.dto.response.MissionDetailResponse;
 import com.danusys.web.drone.dto.response.MissionResponse;
 import com.danusys.web.drone.model.DroneLog;
@@ -15,8 +15,6 @@ import io.dronefleet.mavlink.common.MavMissionType;
 import io.dronefleet.mavlink.common.MissionItemInt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/drone/api")
@@ -45,12 +42,13 @@ public class MissionApiWebSocket {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final DroneLogDetailsService droneLogDetailsService;
     private final ConnectionService connectionService;
-
+    private final FlightManager flightManager;
 
     //    private Flight flight;
     private Map<Integer, Flight> flightMap = new HashMap<>();
     private Map<Integer, Integer> isStarted = new HashMap<>();
     private Map<Integer, Integer> hasFlightMap = new HashMap<>();
+    private Map<Integer, Integer> loggingMap = new HashMap<>();
 /*
 
     url:/return
@@ -61,30 +59,41 @@ public class MissionApiWebSocket {
 
     @MessageMapping("/logging")
     public void logging(Map<String, Object> paramMap) {
+
         int droneId = 0;
 
         if (paramMap.get("droneId") != null) {
             droneId = Integer.parseInt(paramMap.get("droneId").toString());
         }
-        log.info("LoggingDroneId={}", droneId);
-        AtomicBoolean alreadyStartMission = new AtomicBoolean(false);
-        int finalDroneId = droneId;
-        flightMap.forEach((k, v) -> {
-            if (finalDroneId == k)
-                alreadyStartMission.set(true);
-        });
-        if (alreadyStartMission.get() == false) {
-            Flight flight = new Flight(ServerSocket, simpMessagingTemplate, droneLogDetailsService, droneService, connectionService);
-            flightMap.put(droneId, flight);
-            hasFlightMap.put(droneId, 2);
+        if (loggingMap.getOrDefault(droneId, -1) != 1) {
+            loggingMap.put(droneId, 1);
+            log.info("LoggingDroneId={}", droneId);
+            AtomicBoolean alreadyStartMission = new AtomicBoolean(false);
+            int finalDroneId = droneId;
+            flightMap.forEach((k, v) -> {
+                if (finalDroneId == k)
+                    alreadyStartMission.set(true);
+            });
+            if (alreadyStartMission.get() == false) {
+                Flight flight = new Flight(ServerSocket, simpMessagingTemplate, droneLogDetailsService, droneService, connectionService,flightManager);
+                flightMap.put(droneId, flight);
+                hasFlightMap.put(droneId, 2);
+            }
+            Flight flight = flightMap.get(droneId);
+            flight.logging(droneId);
+            loggingMap.put(droneId, 0);
+
+            alreadyStartMission.set(false);
+
+        } else {
+            log.info("here");
+
         }
-        Flight flight = flightMap.get(droneId);
-        flight.logging(droneId);
-        alreadyStartMission.set(false);
+
+
     }
 
     @MessageMapping("/return")
-
     public void returnDrone(Map<String, Object> paramMap) {
         int droneId = 0;
         if (paramMap.get("droneId") != null)
@@ -244,7 +253,7 @@ public class MissionApiWebSocket {
 
         // log.info("{}", missionDetailsService.findByNameAndMission("takeOff", mission).getIndex());
         // float takeOffAlt = gpsZs.get(missionIndex.get(missionDetailsService.findByNameAndMission("takeOff", mission).getIndex()));
-        //float takeOffAlt = gpsZs.get(missionIndex.get(1));
+        float takeOffAlt = gpsZs.get(missionIndex.get(1));
 
 
         while (!missionIndex.getOrDefault(step, "finish").equals("finish")) {
@@ -281,8 +290,8 @@ public class MissionApiWebSocket {
                         .y(y)
                         .z(z)
                         .seq(flag)
-                        .targetComponent(1)
-                        .targetSystem(1)
+                        .targetComponent(0)
+                        .targetSystem(0)
                         .current(0)
                         .autocontinue(1)
                         .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
@@ -302,8 +311,8 @@ public class MissionApiWebSocket {
                         .y(y)
                         .z(z)
                         .seq(flag)
-                        .targetComponent(1)
-                        .targetSystem(1)
+                        .targetComponent(0)
+                        .targetSystem(0)
                         .current(0)
                         .autocontinue(1)
                         .frame(MavFrame.MAV_FRAME_GLOBAL_INT)
@@ -341,10 +350,12 @@ public class MissionApiWebSocket {
         Timer startMissionTimer2 = new Timer();
         HashMap<String, MissionItemInt> finalMissionMap = missionMap;
         int finalFlag = flag;
+        int finalDroneId1 = droneId;
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 if (flight.getIsTakeOffEnd()) {
+                    log.info("droneIdTakeOffEnd={}", finalDroneId1);
                     isEnd[0] = flight.doMission(finalMissionMap, finalFlag, speeds, yaws, missionIndex);
                     this.cancel();
 
@@ -364,8 +375,8 @@ public class MissionApiWebSocket {
 
             }
         };
-        startMissionTimer.schedule(timerTask,0,1000);
-        startMissionTimer2.schedule(timerTask2,0,1000);
+        startMissionTimer.schedule(timerTask, 0, 1000);
+        startMissionTimer2.schedule(timerTask2, 0, 1000);
 
 
         log.info("isStarted={}", isStarted);

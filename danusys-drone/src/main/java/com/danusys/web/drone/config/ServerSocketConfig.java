@@ -1,6 +1,7 @@
-package com.danusys.web.drone.controller.config;
+package com.danusys.web.drone.config;
 
-import com.danusys.web.commons.socket.config.CustomServerSocket;
+
+import com.danusys.web.drone.socket.CustomServerSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
