@@ -30,7 +30,6 @@ import java.util.*;
 @Slf4j
 public class ServerThread extends Thread {
 
-
     DroneSocketService droneSocketService;
     ServerSocket serverSocket;
     HashMap<Integer, Socket> socketList = new HashMap<>();
@@ -39,14 +38,10 @@ public class ServerThread extends Thread {
     int count = 1;
     boolean flag = true;
 
-
-
-
     public ServerThread(ServerSocket serverSocket, DroneSocketService droneSocketService) {
         this.serverSocket = serverSocket;
         this.droneSocketService =droneSocketService;
     }
-
 
     public HashMap<Integer, Socket> getSocketList() {
         return socketList;
@@ -75,8 +70,6 @@ public class ServerThread extends Thread {
 
                 int systemId =0;
                 socket = serverSocket.accept();
-                //OutputStream outputStream = socket.getOutputStream();
-                //outputStream.write("hello client \n".getBytes());
                 System.out.println("Thread " + count + "connected");
                 //ClientThread testThread = new ClientThread(socket, count);
                 socketList.put(count, socket);
@@ -95,9 +88,6 @@ public class ServerThread extends Thread {
                    this.destroySocket(deleteIndex);
                 }
 
-
-
-
             } catch (IOException e) {
                 System.out.println("통신소켓 생성불가");
                 if (!socket.isClosed()) {
@@ -110,6 +100,7 @@ public class ServerThread extends Thread {
                     }
                 }
             }
+            socketList.remove(count);
             count++;
         }
     }
@@ -155,7 +146,7 @@ public class ServerThread extends Thread {
             t.schedule(tt, 0, 1000);
 
             log.info("여기는?1");
-//            flightManager.addConecctionMap(connection, 1);
+//           flightManager.addConecctionMap(connection, 1);
 
 //            MavlinkDialect dialect = new AbstractMavlinkDialect(
 //                    "testdialect",

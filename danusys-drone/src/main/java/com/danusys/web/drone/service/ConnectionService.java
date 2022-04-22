@@ -113,7 +113,7 @@ public class ConnectionService {
                     .build();
 
 
-            connection.send2(1, 1, firstHeartbeat, linkId, timestamp, secretKey);
+            connection.send2(0, 0, firstHeartbeat, linkId, timestamp, secretKey);
             t.schedule(tt, 0, 1000);
 
 
@@ -188,6 +188,7 @@ public class ConnectionService {
         droneSocket.setLocalport(Integer.toString(socketList.get(index).getLocalPort()));
         droneSocket.setSystemId(systemId);
         droneSocketService.saveList(droneSocket);
+        socketList=new HashMap<>();
 
 
     }

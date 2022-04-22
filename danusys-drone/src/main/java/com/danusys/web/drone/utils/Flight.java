@@ -83,7 +83,7 @@ public class Flight {
     private boolean setTimer = false;
     private boolean istakeoffMissionItemMap = false;
     private boolean isTakeOffEnd = false;
-
+    private Map <Integer,Object> systemIdConnectionMap=null;
     public HashMap<String, MissionItemInt> missionTakeoff(DroneLog inputDroneLog, int droneId) {
         log.info("startMissionTakeOff");
         isStarted = true;
@@ -1265,7 +1265,8 @@ public class Flight {
         searchDrone.setId(Long.valueOf(droneId));
         Drone findDrone = droneService.findDrone(searchDrone);
         index = findDrone.getSocketIndex().intValue();
-        socket = socketList.get(index);
+        Map<String,Object> socketMap=(Map<String, Object>) systemIdConnectionMap.get(index);
+        socket=(Socket) socketMap.get("socket");
 
         try {
             connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
@@ -1298,7 +1299,7 @@ public class Flight {
 
             Socket socket = null;
 
-            Map <Integer,Object> systemIdConnectionMap =ServerSocket.getServerThread().getSystemIdConnectionMap();
+            systemIdConnectionMap=ServerSocket.getServerThread().getSystemIdConnectionMap();
             log.info("systemIdConnectionMap={}",systemIdConnectionMap);
             //log.info("socketIndex={}", index);
             int index = -1;
