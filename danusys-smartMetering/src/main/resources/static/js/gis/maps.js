@@ -107,12 +107,10 @@ const gis = {
 			data: {},
 			async: false
 		}, resultData =>{
-//			console.log(resultData.data);
 
 			let accountLayer = makeLayer.fromGeoJSON(resultData.data,'accountLayer', "", true);
 			map.addLayer(accountLayer);
 			layerControl.off(accountLayer);
-			console.log("data?? : " + resultData.data);
 		});
 
 		comm.ajaxPost({
@@ -134,8 +132,6 @@ const gis = {
 			data : {},
 			async : false
 		}, resultData => {
-//			console.log("================");
-//			console.log(resultData.data);
 
 			let accountCntLayer = makeLayer.fromGeoJSON(resultData.data,'accountCntLayer', "", true);
 			map.addLayer(accountCntLayer);

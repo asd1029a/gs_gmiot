@@ -119,10 +119,10 @@ public class MonitorAspect {
         System.out.println(returnObj);
 //        String timeStamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Timestamp(System.currentTimeMillis()));
 
-        deviceRegisterService.getDeviceStatusCheck();
+  /*      deviceRegisterService.getDeviceStatusCheck();
 
         log.info("{}",returnObj);
         System.out.println(jp.getSignature());
-    }
+ */   }
 
 }

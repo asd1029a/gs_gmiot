@@ -3,7 +3,7 @@
 
 <mapper namespace="admin">
 
-	<resultMap type="com.danusys.web.commons.auth.session.config.auth.CommonsUserDetails" id="adminMap">
+	<resultMap type="com.danusys.web.commons.auth.config.auth.CommonsUserDetails" id="adminMap">
 		<result property="adminSeq" column="USER_SEQ" />
 		<result property="adminId" column="ID" />
 		<result property="password" column="PASSWORD" />
@@ -201,7 +201,7 @@
 		INSERT INTO T_ADMIN_LOGIN_LOG (
 			ADMIN_SEQ, LOGIN_TYPE, LOGIN_DT, REQUEST_IP
 		) VALUES (
-					 #{userSeq}, #{loginType}, NOW(), #{requestIp}
+					 #{adminSeq}, #{loginType}, NOW(), #{requestIp}
 				 )
 	</insert>
 
@@ -229,7 +229,7 @@
 
 		UPDATE T_USER
 		SET LAST_LOGIN_DT=NOW()
-		WHERE USER_SEQ=#{userSeq}
+		WHERE USER_SEQ=#{adminSeq}
 	</update>
 
 	<!--
@@ -358,7 +358,7 @@
 		-- 소속 관리자 목록 조회 카운트 : SELECT_LIST_ADMIN_IN_GROUP_CNT
 
 		SELECT COUNT(*)
-		FROM T_USER_GROUP_IN_USER T1
+		FROM t_user_in_user_group T1
 				 INNER JOIN T_USER T2 ON T1.USER_SEQ = T2.USER_SEQ
 				 INNER JOIN T_USER_GROUP T3 ON T1.USER_GROUP_SEQ = T3.USER_GROUP_SEQ
 		WHERE T1.USER_GROUP_SEQ = #{userGroupSeq}
@@ -370,7 +370,7 @@
 
 		SELECT T2.USER_SEQ, T2.ID, T2.USER_NAME
 		, DATE_FORMAT(T1.INSERT_DT, '%Y-%m-%d %H:%i:%S') AS INSERT_DT
-		FROM T_USER_GROUP_IN_USER T1
+		FROM t_user_in_user_group T1
 		INNER JOIN T_USER T2 ON T1.USER_SEQ = T2.USER_SEQ
 		INNER JOIN T_USER_GROUP T3 ON T1.USER_GROUP_SEQ = T3.USER_GROUP_SEQ
 		WHERE T1.USER_GROUP_SEQ = #{userGroupSeq}
@@ -386,7 +386,7 @@
 		SELECT T1.USER_SEQ, T1.ID, T1.USER_NAME,
 			   IF(T2.USER_SEQ IS NULL, NULL, 'checked') AS CHECKED
 		FROM T_USER T1
-				 LEFT JOIN T_USER_GROUP_IN_USER T2
+				 LEFT JOIN t_user_in_user_group T2
 						   ON T1.USER_SEQ = T2.USER_SEQ
 							   AND T2.USER_GROUP_SEQ = #{userGroupSeq}
 		WHERE T1.ID LIKE CONCAT('%', #{keyword}, '%')
@@ -396,7 +396,7 @@
 	<insert id="INSERT_ADMIN_IN_ADMIN_GROUP" parameterType="hashMap">
 		-- 관리자 그룹 소속 관리자 등록 : INSERT_ADMIN_IN_ADMIN_GROUP
 
-		INSERT INTO T_USER_GROUP_IN_USER (
+		INSERT INTO t_user_in_user_group (
 		USER_GROUP_SEQ, USER_SEQ, INSERT_DT, INSERT_USER_SEQ
 		) VALUES
 		<foreach collection="adminSeqList" item="item" index="index" separator=",">
@@ -409,7 +409,7 @@
 		-- 관리자 그룹 소속 관리자 삭제 (ADMIN_SEQ) : DELETE_ADMIN_IN_ADMIN_GROUP_ADMIN_SEQ
 
 		DELETE
-		FROM T_USER_GROUP_IN_USER
+		FROM t_user_in_user_group
 		WHERE USER_SEQ=#{userSeq}
 		<if test="userGroupSeq != null and userGroupSeq != ''">
 			AND USER_GROUP_SEQ=#{userGroupSeq}
@@ -421,7 +421,7 @@
 		-- 관리자 그룹 소속 관리자 삭제 (GROUP_SEQ) : DELETE_ADMIN_IN_ADMIN_GROUP_GROUP_SEQ
 
 		DELETE
-		FROM T_USER_GROUP_IN_USER
+		FROM t_user_in_user_group
 		WHERE USER_GROUP_SEQ=#{userGroupSeq}
 	</insert>
 

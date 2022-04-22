@@ -3,6 +3,8 @@ package com.danusys.web.smartmetering.board.controller;
 import com.danusys.web.smartmetering.board.service.BoardService;
 import com.danusys.web.smartmetering.common.annotation.JsonRequestMapping;
 import com.danusys.web.smartmetering.common.util.DateUtil;
+import com.danusys.web.smartmetering.common.util.ExcelUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,8 +20,8 @@ public class BoardController {
 
 	public BoardController(BoardService boardService) {	this.boardService = boardService;}
 
-	// @Autowired
-	//ExcelUtil excelUtil;
+	 @Autowired
+	 ExcelUtil excelUtil;
 	
 	/**
 	 * ################
@@ -81,20 +83,21 @@ public class BoardController {
 	/**
 	 * 공지사항 : 공지사항 엑셀
 	 */
-	@JsonRequestMapping(value = "/board/exportExcelBoard.do")
+//	@JsonRequestMapping(value = "/board/exportExcelBoard.do")
+	@RequestMapping(value = "/board/exportExcelBoard.do")
 	public ModelAndView exportBoard(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> paramMap) throws Exception {
+
 		String fileName = "공지사항목록_"+DateUtil.getCurrentDate("yyyyMmddHHmmss");
 		String columnArr = "title|content|insertDt|insertAdminId|updateDt|updateAdminId";
 		String columnNmArr = "제목|내용|입력일|입력 ID|수정일|수정 ID";
 		String qId = "board.SELECT_LIST_BOARD_EXCEL";
-		
+
 		paramMap.put("columnArr", columnArr);
 		paramMap.put("columnNmArr", columnNmArr);
 		paramMap.put("qId", qId);
 		paramMap.put("fileName", fileName+".xlsx");
 		
-		//return excelUtil.exportExcel(paramMap);
-		return null;
+		return excelUtil.exportExcel(paramMap);
 	}
 
 }

@@ -100,11 +100,9 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public String updateAdmin(Map<String, Object> paramMap) throws Exception {
-		log.info("관리자 수정 : " + paramMap);
 		if(paramMap.get("password") != null) {
 			paramMap.put("password", passwordEncoder.encode(paramMap.get("password").toString()));
 		}
-		log.info("관리자 수정 파람 패스워드 : " + paramMap.get("password"));
 		return 	JsonUtil.getCntJsonString(commonDao.insert("admin.UPDATE_ADMIN", paramMap));
 	}
 

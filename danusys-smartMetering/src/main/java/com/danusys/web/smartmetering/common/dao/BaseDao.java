@@ -42,6 +42,9 @@ public abstract class BaseDao {
 		paramMap.put("sessionAdminSeq", SessionUtil.getSessionAdminSeq());
 		return sqlSession.update(qid, paramMap);
 	}
+
+
+
 	
 	public int delete(String qid, Map<String, Object> paramMap) throws Exception {
 		return sqlSession.delete(qid, paramMap);

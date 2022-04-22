@@ -7,6 +7,7 @@ import com.danusys.web.smartmetering.common.util.ExcelUtil;
 import com.danusys.web.smartmetering.common.util.JsonUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.json.XML;
 import org.slf4j.Logger;
@@ -29,17 +30,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+@RequiredArgsConstructor
 @Service
 public class CommonServiceImpl implements CommonService {
 	private final Logger errorLogger = LoggerFactory.getLogger("XERR." + this.getClass());
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	@Autowired
-	CommonDao commonDao;
 
-	@Autowired
-	ExcelUtil excelUtil;
+	private final CommonDao commonDao;
+//	@Autowired
+//	CommonDao commonDao;
+
+	private final ExcelUtil excelUtil;
+//	@Autowired
+//	ExcelUtil excelUtil;
 	
 	@Override
 	public String getApiData(Map<String, Object> paramMap) throws Exception {

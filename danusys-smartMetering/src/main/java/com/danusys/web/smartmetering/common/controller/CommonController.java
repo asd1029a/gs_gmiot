@@ -2,6 +2,7 @@ package com.danusys.web.smartmetering.common.controller;
 
 import com.danusys.web.smartmetering.common.annotation.JsonRequestMapping;
 import com.danusys.web.smartmetering.common.service.CommonService;
+import com.danusys.web.smartmetering.common.util.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,9 @@ public class CommonController implements ErrorController {
 
 	@Autowired
     CommonService commonService;
-	//@Autowired
-	//ExcelUtil excelUtil;
+
+	@Autowired
+	ExcelUtil excelUtil;
 
 	@Override
 	public String getErrorPath() {
@@ -40,6 +42,7 @@ public class CommonController implements ErrorController {
 		
 		Object principal= SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		System.out.println("principal 정보 : " + principal);
+
 		if(!principal.toString().equals("anonymousUser")) {
 			return "redirect:/dashboard/index.do";
 		}

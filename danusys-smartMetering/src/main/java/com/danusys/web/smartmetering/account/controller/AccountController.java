@@ -220,6 +220,8 @@ public class AccountController {
 	 */
 	@RequestMapping(value = "/account/exportExcelAccountData.do")
 	public ModelAndView exportExcelAccountData(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, Object> paramMap) throws Exception {
+		System.out.println("일로 들어옴 검침 데이터 엑셀");
+
 		String fileName = "수용가목록_"+DateUtil.getCurrentDate("yyyyMmddHHmmss");
 		String columnArr = "accountNo|meterDtm|value|digits|leakState|termBatt|mLowBatt|mLeak|mOverload|mReverse|mNotUse";
 		String columnNmArr = "수용가 번호|검침일시|지침값|소수점|누수예상|배터리 레벨|계량기 저전압|계량기 누수|계량기 과부하|계량기 역류|계량기 장기 미사용";

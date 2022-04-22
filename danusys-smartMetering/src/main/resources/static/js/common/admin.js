@@ -688,7 +688,6 @@ const adminGroup = {
 			const permitMenuSeq = $(e).find('input:checked').data('value');
 			const eleId = $(e).find('input:checked').attr('id');
 			if (typeof permitMenuSeq !== "undefined" && permitMenuSeq !== "" && eleId.includes('permit')) {
-				console.log("일로들어옴 : " + permitMenuSeq + "/" + eleId)
 				permitMenuSeqList.push(permitMenuSeq)
 			}
 		});

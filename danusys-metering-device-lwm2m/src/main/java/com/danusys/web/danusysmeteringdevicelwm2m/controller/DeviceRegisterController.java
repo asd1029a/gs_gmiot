@@ -52,6 +52,7 @@ public class DeviceRegisterController {
         log.info("### requestURI : {}", request.getRequestURI());
         log.info("### serviceId  : {}", serviceId);
 
+
         String origin = request.getHeader(X_M2M_ORIGIN);
         String ri = request.getHeader(X_M2M_RI);
 

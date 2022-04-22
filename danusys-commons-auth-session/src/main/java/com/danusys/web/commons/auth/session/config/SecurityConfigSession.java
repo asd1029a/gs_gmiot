@@ -1,6 +1,7 @@
 package com.danusys.web.commons.auth.session.config;
 
-import com.danusys.web.commons.auth.session.config.auth.CommonsUserDetailsService;
+import com.danusys.web.commons.auth.config.DefaultPasswordEncoderFactories;
+import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
 import com.danusys.web.commons.auth.session.config.security.LoginFailureHandler;
 import com.danusys.web.commons.auth.session.config.security.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;

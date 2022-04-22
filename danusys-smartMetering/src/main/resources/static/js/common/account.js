@@ -331,7 +331,6 @@ const accountGroup = {
 			
 			$("#addAccountInGroupBtn").on('click', () => {
 				const selectedData = $('#accountGroupTable').DataTable().row('.selected').data();
-				console.log("selectedData??" + selectedData.accountGroupSeq );
 
 				if(typeof selectedData !== "undefined" && selectedData.accountGroupSeq !== "" && selectedData.accountGroupSeq !== null) {
 					accountGroup.showAccountInGroupPopup(selectedData.accountGroupSeq);
@@ -649,6 +648,7 @@ const accountData = {
 		});
 		
 		$('.excelDownloadBtn').on('click', (e) => {
+			console.log("이거누름")
 			let paramObj = {
 				url : "/account/exportExcelAccountData.do"
 			}

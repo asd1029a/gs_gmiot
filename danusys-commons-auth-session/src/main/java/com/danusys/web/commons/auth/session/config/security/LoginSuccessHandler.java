@@ -1,11 +1,12 @@
 
 package com.danusys.web.commons.auth.session.config.security;
-
-import com.danusys.web.commons.auth.session.config.auth.CommonsUserDetails;
-import com.danusys.web.commons.auth.session.dto.response.UserResponse;
-import com.danusys.web.commons.auth.session.model.User;
-import com.danusys.web.commons.auth.session.repository.UserRepository;
-import com.danusys.web.commons.auth.session.service.user.UserService;
+//
+//import com.danusys.web.commons.auth.session.config.auth.CommonsUserDetails;
+//import com.danusys.web.commons.auth.session.dto.response.UserResponse;
+//import com.danusys.web.commons.auth.session.model.User;
+//import com.danusys.web.commons.auth.session.repository.UserRepository;
+//import com.danusys.web.commons.auth.session.service.user.UserService;
+import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.commons.auth.session.util.NetworkUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private String defaultSuccessUrl;
 
+	@Autowired
+
 
 	public LoginSuccessHandler(String defaultSuccessUrl) throws Exception {
 		this.defaultSuccessUrl = defaultSuccessUrl;
@@ -38,11 +41,17 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+
+
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 										Authentication authentication) throws IOException, ServletException {
 
 		log.info("loginSuccess Handler");
+
+		/*
+		 *  스마트 미터링용 세팅
+		 */
 
 		CommonsUserDetails commonsUserDetails = null;
 		Map<String, Object> adminMap = new HashMap<String, Object>();
@@ -55,13 +64,18 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 			paramMap.put("adminSeq", commonsUserDetails.getUserSeq());
 			paramMap.put("loginType", 0);
 			paramMap.put("requestIp", NetworkUtil.getLocalReqIp(request));
-			request.getSession().setAttribute("adminId", paramMap.get("adminId"));
+//			request.getSession().setAttribute("adminId", paramMap.get("adminId"));
 
-			// 1. 로그인후 업데이트
-//            adminService2.updateAdminAfterLogin(paramMap);
+			request.getSession().setAttribute("paramMap", paramMap); // 로그인 업데이트 정보
 
-			// 2. 로그인 이력 등록
 
+			// 1. 로그인후 업데이트 --> 로그인 성공 후 이동한 페이지에서 세팅(/dashboard/index.do)
+//            adminService.updateAdminAfterLogin(paramMap);
+
+			// 2. 로그인 이력 등록  --> 로그인 성공 후 이동한 페이지에서 세팅(/dashboard/index.do)
+//			adminService.insertAdminLoginLog(paramMap);
+
+			// 3. 세션 저장
 //			adminMap = (Map<String, Object>) adminService.selectDetailAdmin(commonsUserDetails.getUserSeq());
 
 			adminMap.put("adminSeq", commonsUserDetails.getUserSeq());
@@ -69,7 +83,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 			adminMap.put("password", commonsUserDetails.getPassword());
 
 			request.getSession().setAttribute("adminInfo", adminMap);
-
 
 			log.info("###adminMap : {} ", adminMap);
 
