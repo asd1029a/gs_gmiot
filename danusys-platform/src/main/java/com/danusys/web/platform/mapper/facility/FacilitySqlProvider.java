@@ -6,6 +6,7 @@ import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FacilitySqlProvider {
 
@@ -149,23 +150,32 @@ public class FacilitySqlProvider {
     public String deleteOptQry(Map<String, Object> paramMap) {
         String facilityOptType = CommonUtil.validOneNull(paramMap,"facilityOptType");
         List<Integer> delFacilitySeqList = (List<Integer>) paramMap.get("delFacilitySeqList");
+        List<String> ignoreDeleteOptList = (List<String>) paramMap.get("ignoreDeleteOptList");
+        String ignoreDeleteOptListStr = "";
+        String delFacilitySeqListStr = delFacilitySeqList
+                .stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
         StringBuilder sb = new StringBuilder();
         int index = 0;
-
-        for (Integer facilitySeq : delFacilitySeqList) {
-            if (index == delFacilitySeqList.size() - 1) {
-                sb.append(facilitySeq.toString());
-                break;
-            } else {
-                sb.append(facilitySeq.toString()).append(", ");
+        if(ignoreDeleteOptList != null && !ignoreDeleteOptList.isEmpty()) {
+            for (String ignoreDeleteOpt : ignoreDeleteOptList) {
+                if (index == ignoreDeleteOptList.size() - 1) {
+                    sb.append("'" + ignoreDeleteOpt + "'");
+                    break;
+                } else {
+                    sb.append("'" + ignoreDeleteOpt + "'").append(", ");
+                }
+                index++;
             }
-            index++;
         }
+
         SQL sql = new SQL() {{
             DELETE_FROM("t_facility_opt t1 ");
-            WHERE("t1.facility_seq IN ( " + sb.toString() +" )");
-            if("mod".equals(paramMap.get("type"))) {
-                WHERE("t1.facility_opt_name != '" + paramMap.get("ignoreDeleteOpt") + "'");
+            WHERE("t1.facility_seq IN ( " + delFacilitySeqListStr +" )");
+            if(ignoreDeleteOptList != null && !ignoreDeleteOptList.isEmpty()) {
+                WHERE("t1.facility_opt_name NOT IN ( " + sb.toString() + " )");
             }
             WHERE("t1.facility_opt_type::varchar = (" +
                     "SELECT code_value " +
@@ -226,7 +236,7 @@ public class FacilitySqlProvider {
 
         SQL sql = new SQL() {
             {
-                SELECT("t1.facility_seq, t1.longitude, t1.latitude, t1.administ_zone" +
+                SELECT("t1.facility_seq, t1.facility_Id, t1.longitude, t1.latitude, t1.administ_zone" +
                         ", v1.dimming_group_name, v1.dimming_group_seq, v1.keep_bright_time" +
                         ", v1.max_bright_time, v1.min_bright_time, v1.dimming_time_zone");
                 FROM("t_facility t1");
@@ -236,7 +246,7 @@ public class FacilitySqlProvider {
         return sql.toString();
     }
 
-    public String selectOneDimmingGroupSeqQry() {
+    public String selectOneLastDimmingGroupSeqQry() {
         SQL sql = new SQL() {
             {
                SELECT("MAX(v1.dimming_group_seq) AS dimming_group_seq");

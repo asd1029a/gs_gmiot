@@ -46,35 +46,6 @@ public class FacilityServiceImpl implements FacilityService{
 
     @Override
     public int addOpt(Map<String, Object> paramMap) throws Exception {
-        if("dimming".equals(paramMap.get("facilityOptType"))) {
-            int dimmingGroupSeq;
-            List<Object> facilitySeqList = (List<Object>) paramMap.get("facilitySeqList");
-            List<Map<String, Object>> facilityOptList = new ArrayList<Map<String, Object>>();
-
-            if(getDimmingGroupSeq().get("dimmingGroupSeq") != null) {
-                dimmingGroupSeq = Integer.parseInt(getDimmingGroupSeq().get("dimmingGroupSeq").toString()) + 1;
-            } else {
-                dimmingGroupSeq = 1;
-            }
-
-            for (Object facilitySeq : facilitySeqList) {
-                Map<String, Object> dimmingGroupSeqMap = new HashMap<String, Object>();
-                dimmingGroupSeqMap.put("facility_seq", facilitySeq.toString());
-                dimmingGroupSeqMap.put("facility_opt_name", "dimming_group_seq");
-                dimmingGroupSeqMap.put("facility_opt_value", String.valueOf(dimmingGroupSeq));
-                dimmingGroupSeqMap.put("facility_opt_type", "1");
-
-                Map<String, Object> dimmingGroupNameMap = new HashMap<String, Object>();
-                dimmingGroupNameMap.put("facility_seq", facilitySeq.toString());
-                dimmingGroupNameMap.put("facility_opt_name", "dimming_group_name");
-                dimmingGroupNameMap.put("facility_opt_value", paramMap.get("dimmingGroupName"));
-                dimmingGroupNameMap.put("facility_opt_type", "1");
-
-                facilityOptList.add(dimmingGroupSeqMap);
-                facilityOptList.add(dimmingGroupNameMap);
-            }
-            paramMap.put("facilityOptList", facilityOptList);
-        }
         return commonMapper.insert(fsp.insertOptQry(paramMap));
     }
 
@@ -87,29 +58,6 @@ public class FacilityServiceImpl implements FacilityService{
     @Transactional
     public int modOpt(Map<String, Object> paramMap) throws Exception {
         commonMapper.delete(fsp.deleteOptQry(paramMap));
-
-        if("dimming".equals(paramMap.get("facilityOptType"))) {
-            List<Object> facilitySeqList = (List<Object>) paramMap.get("facilitySeqList");
-            List<Map<String, Object>> facilityOptList = new ArrayList<Map<String, Object>>();
-
-            for (Object facilitySeq : facilitySeqList) {
-                Map<String, Object> dimmingGroupSeqMap = new HashMap<String, Object>();
-                dimmingGroupSeqMap.put("facility_seq", facilitySeq.toString());
-                dimmingGroupSeqMap.put("facility_opt_name", "dimming_group_seq");
-                dimmingGroupSeqMap.put("facility_opt_value", String.valueOf(paramMap.get("dimmingGroupSeq")));
-                dimmingGroupSeqMap.put("facility_opt_type", "1");
-
-                Map<String, Object> dimmingGroupNameMap = new HashMap<String, Object>();
-                dimmingGroupNameMap.put("facility_seq", facilitySeq.toString());
-                dimmingGroupNameMap.put("facility_opt_name", "dimming_group_name");
-                dimmingGroupNameMap.put("facility_opt_value", paramMap.get("dimmingGroupName"));
-                dimmingGroupNameMap.put("facility_opt_type", "1");
-
-                facilityOptList.add(dimmingGroupSeqMap);
-                facilityOptList.add(dimmingGroupNameMap);
-            }
-            paramMap.put("facilityOptList", facilityOptList);
-        }
         return commonMapper.update(fsp.insertOptQry(paramMap));
     }
 
@@ -138,8 +86,8 @@ public class FacilityServiceImpl implements FacilityService{
     }
 
     @Override
-    public EgovMap getDimmingGroupSeq() throws Exception {
-        return commonMapper.selectOne(fsp.selectOneDimmingGroupSeqQry());
+    public EgovMap getLastDimmingGroupSeq() throws Exception {
+        return commonMapper.selectOne(fsp.selectOneLastDimmingGroupSeqQry());
     }
 
     @Override
