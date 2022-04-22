@@ -1,3 +1,4 @@
+/*
 package com.danusys.web.commons.socket.config;
 
 import java.io.*;
@@ -7,13 +8,15 @@ import java.net.SocketException;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+*/
 /**
  * Project : danusys-webservice-parent
  * Created by IntelliJ IDEA
  * Developer : kai
  * Date : 2022/03/21
  * Time : 6:55 PM
- */
+ *//*
+
 
 public class ServerThread extends Thread {
     ServerSocket serverSocket;
@@ -44,6 +47,7 @@ public class ServerThread extends Thread {
         Socket socket = null;
         while (flag) {
             try {
+
 
                 socket = serverSocket.accept();
                 //OutputStream outputStream = socket.getOutputStream();
@@ -94,3 +98,4 @@ public class ServerThread extends Thread {
         }
     }
 }
+*/

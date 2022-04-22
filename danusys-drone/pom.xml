@@ -208,6 +208,13 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
         </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>com.danusys.web</groupId>-->
+        <!--            <artifactId>danusys-commons-socket</artifactId>-->
+        <!--            <version>0.9.0-SNAPSHOT</version>-->
+
+        <!--        </dependency>-->
         <dependency>
             <groupId>com.danusys.web</groupId>
             <artifactId>danusys-commons-app</artifactId>
@@ -215,12 +222,7 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.danusys.web</groupId>
-            <artifactId>danusys-commons-socket</artifactId>
-            <version>0.9.0-SNAPSHOT</version>
 
-        </dependency>
 
     </dependencies>
 

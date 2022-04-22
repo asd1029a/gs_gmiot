@@ -1,4 +1,4 @@
-package com.danusys.web.drone.controller.config;
+package com.danusys.web.drone.config;
 
 import com.danusys.web.commons.ui.config.UiWebMvcConfig;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -86,6 +86,7 @@ public class DroneService {
 
     @Transactional
     public String saveDrone(Drone drone) {
+
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         drone.setUpdateDt(timestamp);
         droneRepository.save(drone);
