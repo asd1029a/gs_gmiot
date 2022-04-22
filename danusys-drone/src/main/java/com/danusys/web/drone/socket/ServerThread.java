@@ -2,22 +2,17 @@ package com.danusys.web.drone.socket;
 
 import com.danusys.web.drone.model.DroneSocket;
 import com.danusys.web.drone.service.DroneSocketService;
-import io.dronefleet.mavlink.AbstractMavlinkDialect;
 import io.dronefleet.mavlink.MavlinkConnection;
 import io.dronefleet.mavlink.MavlinkDialect;
-import io.dronefleet.mavlink.MavlinkMessage;
 import io.dronefleet.mavlink.common.Heartbeat;
 import io.dronefleet.mavlink.common.MavAutopilot;
 import io.dronefleet.mavlink.common.MavState;
 import io.dronefleet.mavlink.common.MavType;
-import io.dronefleet.mavlink.util.UnmodifiableMapBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -74,7 +69,7 @@ public class ServerThread extends Thread {
                 //ClientThread testThread = new ClientThread(socket, count);
                 socketList.put(count, socket);
                 log.info("socketList={}",socketList);
-                MavlinkConnection connection=this.connect(socket);
+                CustomMavlinkConnection connection=this.connect(socket);
 
                 if ((systemId = isConnected(connection)) != -1) {
                     log.info("syststemId={}",systemId);
@@ -105,23 +100,23 @@ public class ServerThread extends Thread {
         }
     }
 
-    public MavlinkConnection connect(Socket socket) {
+    public CustomMavlinkConnection connect(Socket socket) {
 
-        MavlinkConnection connection = null;
+        CustomMavlinkConnection connection = null;
 
         try {
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+            connection = CustomMavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
         return connection;
     }
-    public int isConnected(MavlinkConnection connection) {
+    public int isConnected(CustomMavlinkConnection connection) {
 
         int linkId = 1;
         int systemId = 0;
         long timestamp = System.currentTimeMillis();/* provide microsecond time */
-        MavlinkMessage message;
+        CustomMavlinkMessage message;
         byte[] secretKey = new byte[0];
         final int[] timeSec = {0};
         Timer t = new Timer();
@@ -168,7 +163,7 @@ public class ServerThread extends Thread {
 
             //log.info("mavlinkDialect.toString() {}", connection.next());
             log.info("여기는?2");
-            MavlinkDialect mavlinkDialect = connection.getDialect(0);
+//            MavlinkDialect mavlinkDialect = connection.getDialect(0);
 
             while (timeSec[0] < 3) {
 
