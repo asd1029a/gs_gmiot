@@ -40,18 +40,20 @@ class dataLayer {
     fromRaw(data, layerName, projFlag, style) {
         const featureCollection = new ol.Collection();
 
-        data.forEach( each => {
-            let coordinates = [Number(each.longitude), Number(each.latitude)];
-            if(projFlag){
-                coordinates = ol.proj.transform(coordinates, 'EPSG:4326', this.map.projection);
-            }
-            const featureOne = new ol.Feature({
-                geometry: new ol.geom.Point(coordinates),
-                properties : each
-            });
-            featureCollection.push(featureOne);
+        if(data.length > 0){
+            data.forEach( each => {
+                let coordinates = [Number(each.longitude), Number(each.latitude)];
+                if(projFlag){
+                    coordinates = ol.proj.transform(coordinates, 'EPSG:4326', this.map.projection);
+                }
+                const featureOne = new ol.Feature({
+                    geometry: new ol.geom.Point(coordinates),
+                    properties : each
+                });
+                featureCollection.push(featureOne);
 
-        });
+            });
+        }
         const pointsLayer = new ol.layer.Vector({
             source : new ol.source.Vector({features: featureCollection}),
             title : layerName,

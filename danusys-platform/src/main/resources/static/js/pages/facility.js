@@ -368,10 +368,16 @@ const dimming = {
                 "defaultContent": '<span><input type="checkbox"/><label><span></span></label></span>'
             }]
             , fnCreatedRow: (nRow, aaData, iDataIndex) => {
+                const coordinates = new ol.proj.transform([Number(aaData.longitude), Number(aaData.latitude)], 'EPSG:4326', 'EPSG:5181');
+                const feature = new ol.Feature({
+                    geometry : new ol.geom.Point(coordinates),
+                    properties : Object.assign(aaData, {"selected": false})
+                })
                 const facilitySeq = aaData.facilitySeq;
                 $(nRow).find('input').prop('id', "check" + facilitySeq);
                 $(nRow).find('input').prop('value', facilitySeq);
                 $(nRow).find('label').prop('for', "check" + facilitySeq);
+                $(nRow).data('feature', feature);
             }
             , excelDownload: false
             , search: {
@@ -382,14 +388,38 @@ const dimming = {
         const evt = {
             click: function (e) {
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
+                //해당 시설물로 이동 및 펄스
+                const feature = $(e.currentTarget).data('feature');
+                const coordinates = feature.getGeometry().getCoordinates();
+                window.dimmGroupMap.setCenter(coordinates);
+                window.dimmGroupMap.setZoom(13);
+
+                window.dimmGroupMap.setPulse(coordinates);
+                window.dimmGroupMap.removePulse();
+
+                window.dimmGroupMap.map.render();
             }
         }
         comm.createTable($target, optionObj, evt);
+
+        //시설물 표출
+        window.dimmGroupMap.updateSize();
+        const features = new Array();
+        $('#lampRoadInGroupTable tbody tr').each((idx, item) => {
+            features.push($(item).data('feature'));
+        });
+        const source =  window.dimmGroupControl.find('dimmGroupLayer').getSource();
+        source.clear();
+        source.addFeatures(features);
+        source.changed();
+        const fitExtent = source.getExtent();
+        window.dimmGroupMap.map.getView().fit(fitExtent, window.dimmGroupMap.map.getSize());
+
     }
     , init : () => {
         const baseCenter = new ol.proj.fromLonLat(['126.8646558753815' ,'37.47857596680809'], 'EPSG:5181');
 
-        //디밍 그룹별맵
+        //디밍 그룹별맵 초기설정
         let dimmMap = new mapCreater('dimmMap', 0);
         window.dimmMap = dimmMap;
         window.dimmMap.setCenter(baseCenter);
@@ -397,10 +427,34 @@ const dimming = {
         //디밍 그룹별맵 제어 ban
         $('#dimmMap').prepend('<canvas style="position: absolute;background: #ff000000;width: 100%;height: 100%;z-index: 1;"></canvas>');
 
-        //디밍 그룹 설정맵
+
+        //디밍 그룹 설정맵 초기설정
         let dimmGroupMap = new mapCreater('dimmGroupMap', 0);
         dimmGroupMap.createMousePosition('mousePosition');
+        // window.dimmGroupSelected = [];
         window.dimmGroupMap = dimmGroupMap;
+        //select 처리
+        dimmGroupMap.setMapEventListener('singleclick', e => {
+            window.dimmGroupMap.map.forEachFeatureAtPixel(e.pixel, f => {
+                const selectFlag = f.getProperties().properties.selected;
+                if(!selectFlag) {
+                    f.getProperties().properties.selected = true;
+                    debugger;
+                } else {
+                    f.getProperties().properties.selected = false;
+                }
+                window.dimmGroupControl.find('dimmGroupLayer').getSource().changed();
+                window.dimmGroupMap.map.render();
+            });
+        });
+        const dimmGroupLayer = new dataLayer('dimmGroupMap').fromRaw(
+            {}, 'dimmGroupLayer', true, layerStyle.facility()
+        );
+        window.dimmGroupMap.addLayer(dimmGroupLayer);
+
+        const dimmGroupControl = new layerControl('dimmGroupMap', 'title');
+        window.dimmGroupControl = dimmGroupControl;
+        dimmGroupControl.remove(dimmGroupLayer);
         window.dimmGroupMap.setCenter(baseCenter);
         window.dimmGroupMap.setZoom(11);
     }
@@ -418,7 +472,7 @@ const dimming = {
         $.ajax({
             url : "/facility/opt"
             , type: "PUT"
-            , data :  JSON.stringify(pObj)
+            , data :  JSON.strddddddddingify(pObj)
             , contentType : "application/json; charset=utf-8",
         }).done(() => {
             comm.showAlert("디밍 그룹이 등록되었습니다. <br/> 디밍설정을 설정해주십시오.");
@@ -501,25 +555,22 @@ const dimming = {
                 'dimmingGroupSeq' : dimmingGroupSeq
             } ,(result) => {
                 $("#dimmingGroupPopup #dimmingGroupName").val(result.data[0].dimmingGroupName);
-                debugger;
-                // //TODO 누른 행 그룹에 속하는 모든 시설물이 보이는 맵
-                // const dimmGroupLayer = new dataLayer('dimmGroupMap').fromRaw(
-                //     result.data, 'dimmGroupLayer', true, layerStyle.facility()
-                // );
-                // let dimmGroupControl = new layerControl('dimmGroupMap', 'title');
-                // window.dimmGroupControl = dimmGroupControl;
-                // dimmGroupControl.remove('dimmGroupLayer');
-                // window.dimmGroupMap.addLayer(dimmGroupLayer);
-                //
-                // window.dimmGroupMap.updateSize();
-                //
-                // let fitExtent = window.dimmControl.find('dimmGroupLayer').getSource().getExtent();
-                //
-                // window.dimmGroupMap.map.getView().fit(fitExtent,window.dimmMap.map.getSize());
-
                 $.each(result.data, (idx, obj) => {
                     $("#lampRoadInGroupTable #check"+obj.facilitySeq).prop("checked", true);
-                });
+                })
+                //
+                // //TODO 누른 행 그룹에 속하는 모든 시설물(선택)
+                // const $checkRows = $("#lampRoadInGroupTable input[type=checkbox]:checked");
+                // $.each($checkRows, (idx, obj) => {
+                //     const selectFeature = $(obj).parents('tr').data('feature');
+                //     window.dimmGroupControl.find('dimmGroupLayer').getSource().forEachFeature(f => {
+                //         if(f == selectFeature){
+                //             f.getProperties().properties.selected = true;
+                //         }
+                //     })
+                // });
+                // window.dimmGroupControl.find('dimmGroupLayer').getSource().changed();
+                // window.dimmGroupMap.map.render();
             });
         }
     }
