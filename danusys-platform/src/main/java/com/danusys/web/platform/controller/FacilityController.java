@@ -102,6 +102,14 @@ public class FacilityController {
     }
 
     /**
+     * 시설물 : 디밍 그룹 조회
+     */
+    @GetMapping(value="/lastDimmingGroupSeq")
+    public ResponseEntity<EgovMap> getLastDimmingGroupSeq() throws Exception {
+        return ResponseEntity.ok().body(facilityService.getLastDimmingGroupSeq());
+    }
+
+    /**
      * 시설물 : 디밍 그룹 소속 시설물 조회
      */
     @PostMapping(value="/lampRoadInGroup")

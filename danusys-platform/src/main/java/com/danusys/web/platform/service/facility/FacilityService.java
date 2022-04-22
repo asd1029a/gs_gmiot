@@ -14,6 +14,6 @@ public interface FacilityService {
     void del(int seq) throws Exception;
     void delOpt(Map<String, Object> paramMap) throws Exception;
     EgovMap getListDimmingGroup(Map<String, Object> paramMap) throws Exception;
-    EgovMap getDimmingGroupSeq() throws Exception;
+    EgovMap getLastDimmingGroupSeq() throws Exception;
     EgovMap getListLampRoadInDimmingGroup(Map<String, Object> paramMap) throws Exception;
 }
