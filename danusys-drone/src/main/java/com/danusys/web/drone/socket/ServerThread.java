@@ -2,22 +2,17 @@ package com.danusys.web.drone.socket;
 
 import com.danusys.web.drone.model.DroneSocket;
 import com.danusys.web.drone.service.DroneSocketService;
-import io.dronefleet.mavlink.AbstractMavlinkDialect;
 import io.dronefleet.mavlink.MavlinkConnection;
-import io.dronefleet.mavlink.MavlinkDialect;
 import io.dronefleet.mavlink.MavlinkMessage;
 import io.dronefleet.mavlink.common.Heartbeat;
 import io.dronefleet.mavlink.common.MavAutopilot;
 import io.dronefleet.mavlink.common.MavState;
 import io.dronefleet.mavlink.common.MavType;
-import io.dronefleet.mavlink.util.UnmodifiableMapBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.io.*;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +25,6 @@ import java.util.*;
 @Slf4j
 public class ServerThread extends Thread {
 
-
     DroneSocketService droneSocketService;
     ServerSocket serverSocket;
     HashMap<Integer, Socket> socketList = new HashMap<>();
@@ -39,14 +33,10 @@ public class ServerThread extends Thread {
     int count = 1;
     boolean flag = true;
 
-
-
-
     public ServerThread(ServerSocket serverSocket, DroneSocketService droneSocketService) {
         this.serverSocket = serverSocket;
         this.droneSocketService =droneSocketService;
     }
-
 
     public HashMap<Integer, Socket> getSocketList() {
         return socketList;
@@ -75,30 +65,26 @@ public class ServerThread extends Thread {
 
                 int systemId =0;
                 socket = serverSocket.accept();
-                //OutputStream outputStream = socket.getOutputStream();
-                //outputStream.write("hello client \n".getBytes());
                 System.out.println("Thread " + count + "connected");
                 //ClientThread testThread = new ClientThread(socket, count);
                 socketList.put(count, socket);
                 log.info("socketList={}",socketList);
-                MavlinkConnection connection=this.connect(socket);
-
-                if ((systemId = isConnected(connection)) != -1) {
-                    log.info("syststemId={}",systemId);
-                    saveMap(systemId, count, socketList);
-                } else {
-                    connection = null;
-                    log.info("deleteList={}", count);
-                    deleteList.add(count);
+                MavlinkConnection connection = this.connect(socket);
+                if(connection != null) {
+                    if ((systemId = isConnected(connection)) != -1) {
+                        log.info("syststemId={}", systemId);
+                        saveMap(systemId, count, socketList);
+                    } else {
+                        connection = null;
+                        log.info("deleteList={}", count);
+                        deleteList.add(count);
+                    }
+                    for (Integer deleteIndex : deleteList) {
+                        this.destroySocket(deleteIndex);
+                    }
                 }
-                for (Integer deleteIndex : deleteList) {
-                   this.destroySocket(deleteIndex);
-                }
 
-
-
-
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 System.out.println("통신소켓 생성불가");
                 if (!socket.isClosed()) {
                     try {
@@ -110,16 +96,25 @@ public class ServerThread extends Thread {
                     }
                 }
             }
+            socketList.remove(count);
             count++;
         }
     }
 
-    public MavlinkConnection connect(Socket socket) {
+    public MavlinkConnection connect(Socket socket) throws InterruptedException {
 
         MavlinkConnection connection = null;
 
         try {
-            connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+            InputStream input = socket.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            Thread.sleep(500);
+            boolean ready = reader.ready();
+            log.info("###reader.ready() : {}", ready);
+
+            if (ready)
+                connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -155,34 +150,8 @@ public class ServerThread extends Thread {
             t.schedule(tt, 0, 1000);
 
             log.info("여기는?1");
-//            flightManager.addConecctionMap(connection, 1);
-
-//            MavlinkDialect dialect = new AbstractMavlinkDialect(
-//                    "testdialect",
-//                    Collections.emptyList(),
-//                    new UnmodifiableMapBuilder<Integer, Class>()
-//                            .put(0, TestMessage.class)
-//                            .build());
-//
-//            PipedInputStream in = new PipedInputStream();
-//            PipedOutputStream out =new PipedOutputStream();
-//
-//
-//
-//            MavlinkConnection target = MavlinkConnection.builder(in, out)
-//                    .defaultDialect(dialect)
-//                    .build();
-//            target.next();
-//            MavlinkDialect actual = target.getDialect(0);
-
-            //log.info("mavlinkDialect.toString() {}", connection.next());
-            log.info("여기는?2");
-            MavlinkDialect mavlinkDialect = connection.getDialect(0);
-
             while (timeSec[0] < 3) {
-
                 if((message = connection.next()) != null) {
-
                     if (timeSec[0] >= 3) {
                         break;
                     }
@@ -197,12 +166,10 @@ public class ServerThread extends Thread {
 ////
 ////                        break;
 ////                    }
-//
-//
-//
 //                }
-
             }
+
+            log.info("여기는?3");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (EOFException e) {
