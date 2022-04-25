@@ -242,7 +242,8 @@ const dimming = {
                         , () => {
                             comm.showAlert("디밍 그룹이 등록되었습니다. <br/> 디밍설정을 설정해주십시오.");
                             dimming.createGroup();
-                            dimming.hidePopup()
+                            dimming.hidePopup();
+                            dimming.setDefault();
                         }
                         , () => {
                             comm.showAlert("디밍 그룹 등록에 실패했습니다.");
@@ -288,6 +289,7 @@ const dimming = {
                                     comm.showAlert("디밍 그룹이 수정되었습니다. <br/> 디밍설정을 재설정해주십시오.");
                                     dimming.createGroup();
                                     dimming.hidePopup();
+                                    dimming.setDefault();
                                 }
                                 , () => {
                                     comm.showAlert("디밍 그룹 수정에 실패했습니다.");
@@ -317,6 +319,7 @@ const dimming = {
                                     comm.showAlert("디밍 그룹이 삭제되었습니다.");
                                     dimming.createGroup();
                                     dimming.hidePopup();
+                                    dimming.setDefault();
                                 }
                                 , () => {
                                     comm.showAlert("디밍 그룹 삭제에 실패했습니다.");
@@ -658,6 +661,5 @@ const dimming = {
         comm.hideModal($('#dimmingGroupPopup'));
         $('#dimmingGroupPopup').removeData("dimmingGroupSeq");
         $("#dimmingGroupPopup").hide();
-        dimming.setDefault();
     }
 }
