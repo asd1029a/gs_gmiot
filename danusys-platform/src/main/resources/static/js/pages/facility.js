@@ -530,7 +530,6 @@ const dimming = {
                 "defaultContent": '<span><input type="checkbox"/><label><span></span></label></span>'
             }]
             , fnCreatedRow: (nRow, aaData, iDataIndex) => {
-                console.log("1");
                 const coordinates = new ol.proj.transform([Number(aaData.longitude), Number(aaData.latitude)], 'EPSG:4326', 'EPSG:5181');
                 const feature = new ol.Feature({
                     geometry : new ol.geom.Point(coordinates),
@@ -564,12 +563,23 @@ const dimming = {
                 window.dimmGroupMap.setPulse(coordinates);
                 window.dimmGroupMap.removePulse();
 
+                //체크박스 선택시 시설물 선택
+                if($(e.target).prop('tagName') == "INPUT"){
+                    window.dimmGroupControl.find('dimmGroupLayer').getSource().forEachFeature(f => {
+                        if(feature == f){
+                            const flag = f.getProperties().properties.selected;
+                            if(flag){
+                                //시설물 해제
+                                f.getProperties().properties.selected = false;
+                            } else {
+                                //시설물 선택
+                                f.getProperties().properties.selected = true;
+                            }
+                        }
+                    });
+                    window.dimmGroupControl.find('dimmGroupLayer').getSource().changed();
+                }
                 window.dimmGroupMap.map.render();
-                window.dimmGroupControl.find('dimmGroupLayer').getSource().forEachFeature(f => {
-                    if(feature == f){
-                        f.setStyle(layerStyle.facility(true));
-                    }
-                });
             }
         }
         comm.createTable($target, optionObj, evt);
@@ -589,8 +599,6 @@ const dimming = {
         source.changed();
         const fitExtent = source.getExtent();
         window.dimmGroupMap.map.getView().fit(fitExtent, window.dimmGroupMap.map.getSize());
-
-
     }
     , init : () => {
         const baseCenter = new ol.proj.fromLonLat(['126.8646558753815' ,'37.47857596680809'], 'EPSG:5181');
@@ -612,13 +620,22 @@ const dimming = {
         dimmGroupMap.setMapEventListener('singleclick', e => {
             window.dimmGroupMap.map.forEachFeatureAtPixel(e.pixel, f => {
                 const selectFlag = f.getProperties().properties.selected;
-                if(!selectFlag) {
-                    f.getProperties().properties.selected = true;
-                    f.setStyle(layerStyle.facility(true));
-                } else {
-                    f.getProperties().properties.selected = false;
-                    f.setStyle(layerStyle.facility(false));
-                }
+                const selectSeq = f.getProperties().properties.facilitySeq;
+                const $checkInput = $('#lampRoadInGroupTable tbody input#check'+selectSeq);
+
+                //시설물 선택 토글
+                f.getProperties().properties.selected = !selectFlag;
+                //체크 박스 토글
+                $checkInput.prop('checked', !selectFlag);
+
+                //TODO 체크박스로 ScrollTop
+                /////////////////////////////
+                // let st = $('#lampRoadInGroupTable .dataTables_scrollBody').scrollTop();
+                // let top = $checkInput.position().top;
+                // debugger;
+                // let y = st + top -200;
+                // $('#lampRoadInGroupTable tbody').animate({'scrollTop': y});
+
                 window.dimmGroupControl.find('dimmGroupLayer').getSource().changed();
                 window.dimmGroupMap.map.render();
             });
@@ -633,6 +650,35 @@ const dimming = {
         dimmGroupControl.remove(dimmGroupLayer);
         window.dimmGroupMap.setCenter(baseCenter);
         window.dimmGroupMap.setZoom(11);
+
+        //map mouse over event
+        let target = dimmGroupMap.map.getTarget();
+        let jTarget = typeof target === "string" ? $("#" + target) : $(target);
+        $(dimmGroupMap.map.getViewport()).on('mousemove', e => {
+            const pixel = dimmGroupMap.map.getEventPixel(e.originalEvent);
+            const hit = dimmGroupMap.map.forEachFeatureAtPixel(pixel, (feature, layer) => true);
+            const cTarget = $(e.target);
+            let popup = new mapPopup('dimmGroupMap');
+
+            if (hit) {
+                if(cTarget[0].tagName=="CANVAS") {
+                    jTarget.css("cursor", "pointer");
+                    dimmGroupMap.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
+                        if (layer) {
+                            let position = feature.getGeometry().getCoordinates();
+                            let content = mapPopupContent.dimming(feature.getProperties().properties);
+
+                            popup.create('mouseOverPopup');
+                            popup.content('mouseOverPopup', content);
+                            popup.move('mouseOverPopup', position);
+                        }
+                    });
+                }
+            } else {
+                jTarget.css("cursor", "all-scroll");
+                popup.remove('mouseOverPopup');
+            }
+        });
     }
     , getListLampRoadInGroup : (param, pCallback) => {
         $.ajax({
