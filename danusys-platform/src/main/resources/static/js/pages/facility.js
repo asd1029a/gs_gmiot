@@ -381,7 +381,6 @@ const dimming = {
                         //});
                     }
                 );
-
             }
         });
         $("#defaultDimmingSetBtn").on('click', () => {
@@ -537,7 +536,7 @@ const dimming = {
                 const feature = new ol.Feature({
                     geometry : new ol.geom.Point(coordinates),
                     properties : aaData
-                })
+                });
                 const facilitySeq = aaData.facilitySeq;
                 const selected = aaData.selected;
                 $(nRow).find('input').prop('id', "check" + facilitySeq);
@@ -549,9 +548,6 @@ const dimming = {
                 $(nRow).data('feature', feature);
             }
             , excelDownload: false
-            , search: {
-                "search": "Fred"
-            }
         }
 
         const evt = {
@@ -583,6 +579,24 @@ const dimming = {
                     window.dimmGroupControl.find('dimmGroupLayer').getSource().changed();
                 }
                 window.dimmGroupMap.map.render();
+            }
+            , keyup : function() {
+                $("#lampRoadKeyword").off("keyup");
+                $("#lampRoadKeyword").on("keyup", function (input) {
+                    const keyword = $(input.currentTarget).val();
+                    if(keyword === "") {
+                        $('#lampRoadInGroupTable tbody tr').show();
+                    } else {
+                        $('#lampRoadInGroupTable').DataTable().rows().data().each((data, idx)=> {
+                            const rowHtml = $('#lampRoadInGroupTable').DataTable().row(idx).node();
+                            if(data.facilityId.includes(keyword)) {
+                                $(rowHtml).show();
+                            } else {
+                                $(rowHtml).hide();
+                            }
+                        });
+                    }
+                });
             }
         }
         comm.createTable($target, optionObj, evt);
