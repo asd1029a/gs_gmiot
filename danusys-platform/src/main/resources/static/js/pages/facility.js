@@ -639,19 +639,13 @@ const dimming = {
                 const selectFlag = f.getProperties().properties.selected;
                 const selectSeq = f.getProperties().properties.facilitySeq;
                 const $checkInput = $('#lampRoadInGroupTable tbody input#check'+selectSeq);
-
                 //시설물 선택 토글
                 f.getProperties().properties.selected = !selectFlag;
                 //체크 박스 토글
                 $checkInput.prop('checked', !selectFlag);
 
                 //TODO 체크박스로 ScrollTop
-                /////////////////////////////
-                // let st = $('#lampRoadInGroupTable .dataTables_scrollBody').scrollTop();
-                // let top = $checkInput.position().top;
-                // debugger;
-                // let y = st + top -200;
-                // $('#lampRoadInGroupTable tbody').animate({'scrollTop': y});
+                //hide된 row는 alert? //////////
 
                 window.dimmGroupControl.find('dimmGroupLayer').getSource().changed();
                 window.dimmGroupMap.map.render();
