@@ -79,8 +79,26 @@ public class MissionApiWebSocket {
                 flightMap.put(droneId, flight);
                 hasFlightMap.put(droneId, 2);
             }
+
+            HashMap<Integer, String> missionIndex = new HashMap<>();
+
+
+            DroneResponse drone = droneService.findOneDrone(droneId);
+            MissionResponse missionResponse = drone.getDroneInmission().getMission();
+            Iterator iterator = missionResponse.getMissionDetails().iterator();
+            HashMap<String, Integer> gpsZs = new HashMap<>();
+            while (iterator.hasNext()) {
+                MissionDetailResponse missionDetails = (MissionDetailResponse) iterator.next();
+                if (missionDetails.getName().equals("takeOff")) {
+                    gpsZs.put("takeOff", missionDetails.getMapZ());
+                    //  log.info("Index={}", missionDetails.getIndex());
+                    missionIndex.put(missionDetails.getIndex(), "takeOff");
+                }
+            }
+            float takeOffAlt = gpsZs.getOrDefault("takeOff",50);
+
             Flight flight = flightMap.get(droneId);
-            flight.logging(droneId);
+            flight.logging(droneId,takeOffAlt);
             loggingMap.put(droneId, 0);
 
             alreadyStartMission.set(false);

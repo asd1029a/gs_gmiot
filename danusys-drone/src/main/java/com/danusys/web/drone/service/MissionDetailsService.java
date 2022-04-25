@@ -108,7 +108,8 @@ public class MissionDetailsService {
         // log.info("isExist={}", isExist);
         if (isExist.isEmpty()) {
             missionDetailsList.forEach(r -> {
-
+                if (r.getAlt()==0)
+                    r.setAlt(50);
                 if (r.getName().equals("takeOff"))
                     r.setKoName("이륙");
                 else if (r.getName().equals("loi"))

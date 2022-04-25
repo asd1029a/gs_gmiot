@@ -48,7 +48,13 @@ public class ServerThread extends Thread {
 
     public boolean destroySocket(int index) {
         if (index != -1) {
-            System.out.println("index : "+ (index));
+            System.out.println("deleteSocketindex : "+ (index));
+            Socket socket=socketList.get(index);
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             socketList.remove(index);
             return true;
         } else {
@@ -69,7 +75,7 @@ public class ServerThread extends Thread {
                 //ClientThread testThread = new ClientThread(socket, count);
                 socketList.put(count, socket);
                 log.info("socketList={}",socketList);
-                MavlinkConnection connection = this.connect(socket);
+                MavlinkConnection connection = this.connect(socket,count);
                 if(connection != null) {
                     if ((systemId = isConnected(connection)) != -1) {
                         log.info("syststemId={}", systemId);
@@ -101,19 +107,23 @@ public class ServerThread extends Thread {
         }
     }
 
-    public MavlinkConnection connect(Socket socket) throws InterruptedException {
+    public MavlinkConnection connect(Socket socket,int count) throws InterruptedException {
 
         MavlinkConnection connection = null;
 
         try {
             InputStream input = socket.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            Thread.sleep(500);
+            Thread.sleep(2000);
             boolean ready = reader.ready();
             log.info("###reader.ready() : {}", ready);
 
-            if (ready)
+            if (ready) {
                 connection = MavlinkConnection.create(socket.getInputStream(), socket.getOutputStream());
+
+            } else {
+                this.destroySocket(count);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
