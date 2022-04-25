@@ -220,7 +220,6 @@ class mapCreater {
         this.map = this.createMap();
         this.view = this.map.getView();
 
-        //TODO 펄스 반복 -> 중지
         this.pulseInterval = null;
         this.pulseStop = false;
 
@@ -533,7 +532,6 @@ class mapCreater {
         this.map.renderSync();
     }
 
-    //TODO 펄스 반복 -> 중지
     setPulse(coord) {
         const fn = () => {
             if(this.pulseStop) {
