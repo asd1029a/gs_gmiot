@@ -213,7 +213,6 @@ const dimming = {
         $("#addDimmingGroupBtn").on('click', () => {
             dimming.showPopup("add");
             window.dimmGroupMap.updateSize();
-            //TODO 그룹이 없는 나머지 시설물이 전부 보이는 맵 view move
         });
         $("#addDimmingGroupProcBtn").on('click', () => {
             const dimmingGroupName = $("#dimmingGroupName").val();
@@ -531,10 +530,11 @@ const dimming = {
                 "defaultContent": '<span><input type="checkbox"/><label><span></span></label></span>'
             }]
             , fnCreatedRow: (nRow, aaData, iDataIndex) => {
+                console.log("1");
                 const coordinates = new ol.proj.transform([Number(aaData.longitude), Number(aaData.latitude)], 'EPSG:4326', 'EPSG:5181');
                 const feature = new ol.Feature({
                     geometry : new ol.geom.Point(coordinates),
-                    properties : Object.assign(aaData, {"selected": false})
+                    properties : aaData
                 })
                 const facilitySeq = aaData.facilitySeq;
                 const selected = aaData.selected;
@@ -565,6 +565,11 @@ const dimming = {
                 window.dimmGroupMap.removePulse();
 
                 window.dimmGroupMap.map.render();
+                window.dimmGroupControl.find('dimmGroupLayer').getSource().forEachFeature(f => {
+                    if(feature == f){
+                        f.setStyle(layerStyle.facility(true));
+                    }
+                });
             }
         }
         comm.createTable($target, optionObj, evt);
@@ -578,9 +583,13 @@ const dimming = {
         const source =  window.dimmGroupControl.find('dimmGroupLayer').getSource();
         source.clear();
         source.addFeatures(features);
+        source.forEachFeature(f => {
+           f.setStyle(layerStyle.facility(f.getProperties().properties.selected));
+        });
         source.changed();
         const fitExtent = source.getExtent();
         window.dimmGroupMap.map.getView().fit(fitExtent, window.dimmGroupMap.map.getSize());
+
 
     }
     , init : () => {
@@ -594,7 +603,6 @@ const dimming = {
         //디밍 그룹별맵 제어 ban
         $('#dimmMap').prepend('<canvas style="position: absolute;background: #ff000000;width: 100%;height: 100%;z-index: 1;"></canvas>');
 
-
         //디밍 그룹 설정맵 초기설정
         let dimmGroupMap = new mapCreater('dimmGroupMap', 0);
         dimmGroupMap.createMousePosition('mousePosition');
@@ -606,16 +614,17 @@ const dimming = {
                 const selectFlag = f.getProperties().properties.selected;
                 if(!selectFlag) {
                     f.getProperties().properties.selected = true;
-                    debugger;
+                    f.setStyle(layerStyle.facility(true));
                 } else {
                     f.getProperties().properties.selected = false;
+                    f.setStyle(layerStyle.facility(false));
                 }
                 window.dimmGroupControl.find('dimmGroupLayer').getSource().changed();
                 window.dimmGroupMap.map.render();
             });
         });
         const dimmGroupLayer = new dataLayer('dimmGroupMap').fromRaw(
-            {}, 'dimmGroupLayer', true, layerStyle.facility()
+            {}, 'dimmGroupLayer', true, layerStyle.facility(false)
         );
         window.dimmGroupMap.addLayer(dimmGroupLayer);
 

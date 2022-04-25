@@ -115,9 +115,9 @@ const layerStyle = {
     , facility : (selectFlag) => {
         return feature => {
             // if(feature.getProperties().properties.selected){
-            selectFlag = feature.getProperties().properties.selected;
+            //selectFlag = feature.getProperties().properties.selected;
             // }
-            console.log(selectFlag);
+            //console.log(selectFlag);
             let fillColor = selectFlag ? "white" : "blue";
             let strokeColor =  selectFlag ? "blue" : "white";
 
