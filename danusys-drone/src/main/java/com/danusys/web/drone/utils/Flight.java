@@ -77,6 +77,8 @@ public class Flight {
     private boolean isStarted = false;
     private boolean isReturn = false;
 
+    private int flightHeight=1000;
+
     private int maxFlag = 0;
     private int flag = 0;
     private HashMap<String, MissionItemInt> missionItemMap = new HashMap<>();
@@ -191,13 +193,13 @@ public class Flight {
                 //new command
 
                 CommandLong takeoffCommandLong = new CommandLong.Builder().command(MavCmd.MAV_CMD_NAV_TAKEOFF).
-                        param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(100).build();
+                        param1(15).param2(0).param3(0).param4(0).param5(0).param6(0).param7(450).build();
                 //TODO 높이 고정으로 되있어서 높이 입력 되는 대로 take off 할 수 있게 변경해야됨
                 connection.send2(systemId, componentId, takeoffCommandLong, linkId, timestamp, secretKey);
                 DroneLogDetails droneLogDetailsTakeOff = new DroneLogDetails();
 
                 writeLog(droneLogDetailsTakeOff, droneLog, "gcs", "drone", "MAV_CMD_NAV_TAKEOFF", "15", "0",
-                        "0", "0", "0", "0", "100");
+                        "0", "0", "0", "0", "450");
 
 
 
@@ -1285,7 +1287,7 @@ public class Flight {
         this.EOFCheck = EOFCheck;
     }
 
-    public void logging(int droneId) {
+    public void logging(int droneId,float takeOffAlt) {
         try {
             int systemId = 0;
             int componentId = 0;
@@ -1343,7 +1345,7 @@ public class Flight {
                     gps.setCurrentHeight((double) z / 1000);
                     gps.setHeading(heading / 100);
 
-                    if ((double) z / 1000 > 50 - 1.5) {
+                    if ((double) z / 1000 > takeOffAlt - 1.5) {
                         isTakeOffEnd = true;
                     }
                 } else if (message.getPayload().getClass().getName().contains("NavControllerOutput")) {//wpdist
@@ -1497,7 +1499,7 @@ public class Flight {
             t.cancel();
             if(tt!=null)
             tt.cancel();
-
+            flightHeight=1000;
             flag = 0;
             maxFlag = 0;
             sec = 0;
