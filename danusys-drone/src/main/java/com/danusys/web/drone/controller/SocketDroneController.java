@@ -44,9 +44,7 @@ public class SocketDroneController {
         Map<Integer, Map<String, Object>> listMap = new HashMap<>();
         droneSocketService.delete();
         listMap=connectionService.getSocketList();
-//        listMap.forEach(socketMap -> {
-//            socketMap.get()
-//        });
+
         log.info("listMap2={}",listMap);
 
         return null;

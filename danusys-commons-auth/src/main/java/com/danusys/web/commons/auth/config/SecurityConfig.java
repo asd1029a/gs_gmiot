@@ -42,10 +42,6 @@ import static com.danusys.web.commons.auth.config.PermitPath.*;
 //@Secured("ROLE_ADMIN")
 //@PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('
 
-//해야할일 1. form 로그인시 처리되게
-//2. 프론트에서 세션으로 jwt 저장
-//3. refreshtoekn,유효기간 달아
-
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -100,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         permitAll = list.toArray(new String[list.size()]);
         log.info("permitAll={}", permitAll);
-        //TODO permit group 바뀐 부분 적용f
+        //TODO permit group 바뀐 부분 적용
         //TODO db 하나 새로파서 개발용으로 한벌 더 작성
         httpSecurity
                 .addFilter(corsConfig.corsFilter()) //corsconfig
@@ -118,8 +114,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests() //시큐리티 처리에 HttpServletRequest를 이용한다
                 .antMatchers(permitAll).permitAll()
-                .antMatchers(roleAdminPage).access("hasRole('ROLE_ADMIN')")
-                .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')")
+                .antMatchers(roleAdminPage).access("hasRole('ROLE_ADMIN')")  // properties 에서 설정
+                .antMatchers(roleManagerPage).access("hasRole('ROLE_MANAGER')") // properties 에서 설정
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

@@ -14,12 +14,16 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * 사용안함
+ *
+ */
 @Slf4j
 @Controller
 public class DroneInfoController {
 
 	@Value("${tcp.server.host}")
-//	@Value("127.0.0.1")
 	private String tcpServerHost;
 
 	@Value("${tcp.server.port}")
