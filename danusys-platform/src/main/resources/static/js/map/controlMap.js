@@ -114,10 +114,11 @@ const layerStyle = {
     //시설물
     , facility : (selectFlag) => {
         return feature => {
-            // if(feature.getProperties().properties.selected){
-            //selectFlag = feature.getProperties().properties.selected;
-            // }
-            //console.log(selectFlag);
+            const selected = feature.getProperties().properties.selected;
+            const text = feature.getProperties().properties.facilityId;
+            if(selected != undefined){
+                selectFlag = selected;
+            }
             let fillColor = selectFlag ? "white" : "blue";
             let strokeColor =  selectFlag ? "blue" : "white";
 
@@ -130,6 +131,19 @@ const layerStyle = {
                     }),
                     fill: new ol.style.Fill({
                         color: fillColor,
+                    })
+                }),
+                text : new ol.style.Text({
+                    text: text,
+                    offsetY: 20,
+                    fill: new ol.style.Fill({
+                        color:'black',
+                        width: 3
+                    }),
+                    font: 'Bold 10px Arial',
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 3
                     })
                 })
             });
@@ -207,6 +221,10 @@ const mapPopupContent = {
             content += "<li><span class='circle lv"+ grade +"'></span>" + data.getProperties().eventMessage + "</li>";
         }
         return content;
+    }
+    //디밍 시설물
+    , dimming : (data) => {
+        return "<div>" + data.facilityId + "</div>";
     }
 }
 

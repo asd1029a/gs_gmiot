@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 
-
+			//TODO setClientLibraryUrl 수정해야됨
 		registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS()
 				.setClientLibraryUrl("https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js");;
 

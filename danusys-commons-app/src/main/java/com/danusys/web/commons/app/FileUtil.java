@@ -327,6 +327,29 @@ public class FileUtil {
         }
         return wb;
     }
+    /**
+     * excel donwload
+     * 엑셀 다운로드
+     *
+     * @param paramMap ex)
+     *                 paramMap = {
+     *                 dataMap: resultData,  <- 조회한 결과
+     *                 fileName: "Log.xlsx",
+     *                 headerList: ["아이디", "드론이름", "미션이름", "입력날짜"]
+     *                 };
+     *                 <p>
+     *                 dataMap-> List<Map<String,Object>> dataMap
+     *                 headerList -> List<String> heartList
+     *                 dataMap -> 엑셀에 담을 data map 리스트
+     *                 headerList -> 엑셀 첫줄에 해더 부분을 임의로 지정할 경우
+     *                 <p>
+     *                 필수 : dataMap ,
+     *                 선택 : headerList
+     *                 *
+     *
+     * @throws IOException
+     */
+
 
     public static Workbook excelDownload2(Map<String, Object> paramMap) {
         List<Map<String, Object>> dataMap = new ArrayList<Map<String, Object>>();

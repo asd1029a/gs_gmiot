@@ -84,19 +84,7 @@ public class MissionCurdController {
                 .body(missionDetailsService.findMissionDetails(name));
     }
 
-//    @DeleteMapping("/missiondetails")
-//    public ResponseEntity<?> updateMissionDetails(@RequestBody Map<String, Object> missionList){
-//        List<MissionDetails> missionDetailsList = new ArrayList<>();
-//        missionDetailsList = (List<MissionDetails>) missionList.get("missionList");
-//
-//        int missionId = 0;
-//        missionId = (int) missionList.get("missionId");
-//        log.info("missionId={}",missionId);
-//        missionDetailsService.deleteMissionDetails(missionId);
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body(null);
-//    }
+
 
     @DeleteMapping("/mission")
     public ResponseEntity<?> deleteMission(@RequestBody Mission mission) {
