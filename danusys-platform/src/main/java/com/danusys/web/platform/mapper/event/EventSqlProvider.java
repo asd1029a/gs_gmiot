@@ -1,8 +1,8 @@
 package com.danusys.web.platform.mapper.event;
 
 import com.danusys.web.commons.app.CommonUtil;
+import com.danusys.web.commons.app.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
-import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -66,10 +66,10 @@ public class EventSqlProvider {
                 WHERE("t1.insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
             }
             if(eventGrade != null && !eventGrade.isEmpty()) {
-                WHERE("event_grade in ('" + StringUtils.join(eventGrade, "', '") + "')");
+                WHERE("event_grade" + SqlUtil.getWhereInStr(eventGrade));
             }
             if(eventState != null && !eventState.isEmpty()) {
-                WHERE("event_proc_stat in ('" + StringUtils.join(eventState, "', '") + "')");
+                WHERE("event_proc_stat" + SqlUtil.getWhereInStr(eventState));
             }
 
             if (!start.equals("") && !length.equals("")) {
