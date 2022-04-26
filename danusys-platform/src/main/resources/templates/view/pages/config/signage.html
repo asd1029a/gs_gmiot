@@ -27,8 +27,8 @@
                     <div class="template_list">
                         <dl>
                             <dt>
-                                <input type="checkbox" id="" name="">
-                                <label for=""><span></span>템플릿 01</label>
+                                <input type="checkbox" id="template_1" name="">
+                                <label for="template_1"><span></span>템플릿 01</label>
                             </dt>
                             <dd>Rtsp 영상<span>(0x0)</span></dd>
                         </dl>
@@ -42,6 +42,7 @@
                         <ul>
                             <li>취소</li>
                             <li>저장</li>
+                            <li>미리보기</li>
                         </ul>
                     </div>
                     <div class="layout_field">
@@ -49,24 +50,24 @@
                             <li><p class="input_height">높이<input type="text">&#37;</p></li>
                             <li>
                                 <p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>
-                                <select>
-                                    <option selected>rtsp 영상</option>
-                                    <option>대기환경</option>
-                                    <option>BIS</option>
-                                    <option>이미지 / 영상 선택</option>
-                                    <option>URL 링크</option>
+                                <select class="contents_kind">
+                                    <!--<option selected>rtsp 영상</option>-->
+                                    <!--<option>대기환경</option>-->
+                                    <!--<option>BIS</option>-->
+                                    <option value="fileSystem">이미지 / 영상 선택</option>
+                                    <option value="urlLink">URL 링크</option>
                                 </select>
                                 <input type="text">
                             </li>
                             <li><p class="input_height">높이<input type="text">&#37;</p></li>
                             <li>
                                 <p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>
-                                <select>
+                                <select class="contents_kind">
                                     <option>rtsp 영상</option>
                                     <option>대기환경</option>
                                     <option>BIS</option>
-                                    <option selected>이미지 / 영상 선택</option>
-                                    <option>URL 링크</option>
+                                    <option value="fileSystem">이미지 / 영상 선택</option>
+                                    <option value="urlLink">URL 링크</option>
                                 </select>
                                 <div class="fileBox">
                                     <input class="uploadName" value="첨부파일" placeholder="첨부파일">
@@ -77,7 +78,7 @@
                             <li><p class="input_height">높이<input type="text">&#37;</p></li>
                             <li>
                                 <p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>
-                                <select>
+                                <select class="contents_kind">
                                     <option>rtsp 영상</option>
                                     <option>대기환경</option>
                                     <option>BIS</option>
