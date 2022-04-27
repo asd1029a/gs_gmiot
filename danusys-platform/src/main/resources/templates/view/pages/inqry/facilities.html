@@ -27,11 +27,11 @@
                         <dt>시설물 상태</dt>
                         <dd>
 							<span>
-								<input type="checkbox" id="normal" name="">
+								<input type="checkbox" id="normal" name="" data-init-value="checked" checked>
 								<label for="normal"><span></span>정상</label>
 							</span>
                             <span>
-								<input type="checkbox" id="strange" name="">
+								<input type="checkbox" id="strange" name="" data-init-value="checked" checked>
 								<label for="strange"><span></span>이상</label>
 							</span>
                         </dd>
@@ -51,7 +51,7 @@
                         </dd>
                     </dl>
                     <ul class="button">
-                        <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요."></li>
+                        <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요." onkeydown="if(event.keyCode==13){facility.create();}"></li>
                         <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
                         <li id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</li>
                     </ul>
@@ -62,17 +62,17 @@
             <div class="article_title">
                 <dl class="title">
                     <dt>시설물 목록</dt>
-                    <dd><span class="count">123</span>건</dd>
+                    <dd><span class="count">0</span>건</dd>
                 </dl>
                 <div>
                     <ul class="status_label">
-                        <li><span class="gray"></span>미사용 : 5</li>
-                        <li><span class="red"></span>이상 : 3</li>
-                        <li><span class="green"></span>정상 : 14</li>
+                        <li id="notUseCount"><span class="gray"></span>미사용 : 0</li>
+                        <li id="normalCount"><span class="green"></span>정상 : 0</li>
+                        <li id="errorCount"><span class="red"></span>이상 : 0</li>
                     </ul>
-                    <ul>
-                        <li sec:authorize="hasAnyRole('ROLE_inqry_rw')"><i><img src="/images/default/add.svg"></i>추가</li>
-                    </ul>
+<!--                    <ul>-->
+<!--                        <li sec:authorize="hasAnyRole('ROLE_inqry_rw')"><i><img src="/images/default/add.svg"></i>추가</li>-->
+<!--                    </ul>-->
                 </div>
             </div>
             <div class="search_table">

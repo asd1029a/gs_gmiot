@@ -1,6 +1,9 @@
 package com.danusys.web.commons.app;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -45,4 +48,7 @@ public class SqlUtil {
         return setStr.toString();
     }
 
+    public static String getWhereInStr(List<?> ele){
+        return " in ('" + StringUtils.join(ele, "', '") + "')";
+    }
 }

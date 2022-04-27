@@ -55,7 +55,8 @@ $(document).ready(() => {
     } else if(path === "/pages/inqry/station") {
         // station.create();
     } else if(path === "/pages/inqry/facilities") {
-        // facility.create();
+        facility.eventHandler();
+        facility.create();
     } else if(path === "/pages/inqry/eventCabinet") {
         event.eventHandler($('#cabinetEventTable'), 'cabinet');
         event.create($('#cabinetEventTable'), 'cabinet');

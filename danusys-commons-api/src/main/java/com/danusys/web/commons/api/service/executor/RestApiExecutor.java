@@ -167,13 +167,160 @@ public class RestApiExecutor implements ApiExecutor {
             , HttpMethod method
             , MediaType mediaType
             , Map<String, Object> reqMap) {
-
+        //TODO drone에 AUTHINFO에 따라 cookie 넣어주는 작업 -엄태혁연구원
         if (api.getAuthInfo().contains("Session")) {
             return this.getResponseEntity2(api.getTargetUrl(), api.getTargetPath(), method, mediaType, reqMap, api.getAuthInfo());
+        }else if(api.getAuthInfo().contains("Bearer")){
+            return this.getResponseEntity3(api.getTargetUrl(), api.getTargetPath(), method, mediaType, reqMap, api.getAuthInfo());
         }
         return this.getResponseEntity(api.getTargetUrl(), api.getTargetPath(), method, mediaType, reqMap, api.getAuthInfo());
 
     }
+    //TODO  entity 2 3 메소드 하나로 합치고 구분점 두기
+    private ResponseEntity getResponseEntity3(String targetUrl
+            , String targetPath
+            , HttpMethod method
+            , MediaType mediaType
+            , Map<String, Object> reqMap
+            , String authInfo) {
+
+        URI uri = null;
+
+        //HttpEntity requestEntity = null;
+        ResponseEntity<String> responseEntity = null;
+
+        Mono<ResponseEntity<String>> mono = null;
+        WebClient webClient = WebClient.create(targetUrl);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        String json = "";
+        try {
+            //final HttpHeaders headers = new HttpHeaders();
+            Consumer<HttpHeaders> headersConsumer = httpHeaders -> {
+                httpHeaders.setContentType(mediaType);
+                httpHeaders.setAccept(Collections.singletonList(mediaType));
+                //엄태혁 연구원 추가
+                ObjectMapper objectMapper=new ObjectMapper();
+                String cookie = objectMapper.convertValue(authManager.getAuthMap().get("LG_DRONE"),String.class);
+                log.info("cookie={}",cookie);
+                httpHeaders.add("Cookie",cookie);
+
+                if (authInfo != null && !authInfo.isEmpty()) {
+                    httpHeaders.set("Authorization", authInfo);
+                    httpHeaders.setBearerAuth("");
+                }
+            };
+
+            DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(targetUrl);
+            factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+
+            ExchangeStrategies exchangeStrategies = ExchangeStrategies
+                    .builder()
+                    .codecs(configure -> configure.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build();
+
+
+            if (method == HttpMethod.GET || method == HttpMethod.DELETE) {
+                reqMap.entrySet().stream().forEach(f -> {
+                    params.add(f.getKey(), (String) f.getValue());
+                });
+                URI tUri = factory.builder().queryParams(params).path(targetPath).build();
+
+                mono = WebClient.builder()
+                        .filter(ExchangeFilterFunction.ofRequestProcessor(
+                                clientRequest -> {
+                                    log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
+                                    clientRequest.headers()
+                                            .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
+                                    return Mono.just(clientRequest);
+                                }
+                        ))
+                        .filter(ExchangeFilterFunction.ofResponseProcessor(
+                                clientResponse -> {
+                                    log.trace("response status code : {}", clientResponse.statusCode());
+                                    clientResponse.headers()
+                                            .asHttpHeaders()
+                                            .forEach((name, values) -> {
+
+                                                        values.forEach(value -> {
+                                                            if (name.equals("Set-Cookie") && value.contains("_drone_service_session=")) {
+
+                                                                log.info("여기={}", value);
+                                                            }
+                                                            log.debug("{} : {}", name, value);
+                                                        });
+                                                    }
+                                            );
+                                    return Mono.just(clientResponse);
+                                }
+                        ))
+                        .uriBuilderFactory(factory)
+                        .build().method(method)
+                        .uri(tUri)
+                        .headers(headersConsumer)
+                        .exchange()
+                        .flatMap(response -> {
+                            log.trace("response status code : {}", response.statusCode());
+
+                            return response.toEntity(String.class);
+                        });
+
+            } else if (method == HttpMethod.POST || method == HttpMethod.PUT) {
+                json = new ObjectMapper().writeValueAsString(reqMap);
+
+                mono = WebClient.builder()
+                        .filter(ExchangeFilterFunction.ofRequestProcessor(
+                                clientRequest -> {
+                                    log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
+                                    clientRequest.headers()
+                                            .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
+                                    return Mono.just(clientRequest);
+                                }
+                        ))
+                        .filter(ExchangeFilterFunction.ofResponseProcessor(
+                                clientResponse -> {
+                                    log.trace("response status code : {}", clientResponse.statusCode());
+                                    clientResponse.headers()
+                                            .asHttpHeaders()
+                                            .forEach((name, values) -> {
+
+                                                        values.forEach(value -> {
+                                                            if (name.equals("Set-Cookie") && value.contains("_drone_service_session=")) {
+
+                                                                log.info("여기={}", value);
+                                                                authManager.getAuthMap().put("LG_DRONE",value);
+                                                            }
+                                                            log.debug("{} : {}", name, value);
+                                                        });
+                                                    }
+                                            );
+                                    return Mono.just(clientResponse);
+                                }
+                        ))
+                        .exchangeStrategies(exchangeStrategies)
+                        .uriBuilderFactory(factory)
+                        .build().method(method)
+                        .uri(uriBuilder -> uriBuilder.path(targetPath)
+                                .build())
+                        .bodyValue(json)
+                        .headers(headersConsumer)
+                        .exchange()
+                        .flatMap(response -> {
+                            log.trace("response status code : {}", response.statusCode());
+
+                            return response.toEntity(String.class);
+                        });
+            }
+
+            responseEntity = mono.block();
+
+        } catch (RestClientResponseException rcrex) {
+            return ResponseEntity.status(rcrex.getRawStatusCode()).body("");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
+        }
+        return responseEntity;
+    }
+
 
     private ResponseEntity getResponseEntity2(String targetUrl
             , String targetPath

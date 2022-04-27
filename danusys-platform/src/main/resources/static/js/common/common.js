@@ -601,7 +601,7 @@ const comm = {
                 if($tabType) { seq = $tabType + seq; }
                 let listEle =
                     `<span class="checked_all">
-                        <input type="checkbox" class="checkAll" id="${seq}All" name="${codeValue}" data-value="all">
+                        <input type="checkbox" class="checkAll" id="${seq}All" name="${codeValue}" data-value="all" checked>
                         <label for="${seq}All"><span></span>전체</label>
                     </span>`;
 
@@ -611,7 +611,7 @@ const comm = {
                     if($tabType) { id = $tabType + id; }
                     let spanEle =
                         `<span>
-                            <input type="checkbox" id="${id}" name="${codeValue}" data-value="${item.codeSeq}">
+                            <input type="checkbox" id="${id}" name="${codeValue}" data-value="${item.codeValue}" checked>
                             <label for="${id}"><span></span>${item.codeName}</label>
                         </span>`;
 
@@ -808,7 +808,7 @@ var stringFunc = {
         return result;
     },
     camelize: function(text) {
-        return text.replace(/^([A-Z])|[\s-_]+(\w)/g, function(match, p1, p2, offset) {
+        return text.replace(/^([A-Z]+)|[\s-_]+(\w)/g, function(match, p1, p2, offset) {
             if (p2) return p2.toUpperCase();
             return p1.toLowerCase();
         });

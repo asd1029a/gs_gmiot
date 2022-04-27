@@ -3,6 +3,11 @@
 */
 
 const facility = {
+    eventHandler: () => {
+        $("#searchBtn").on('click', (e) => {
+            facility.create();
+        });
+    },
     create : () => {
         const $target = $('#facilityTable');
 
@@ -22,6 +27,9 @@ const facility = {
                     },
                     'dataSrc' : function (result) {
                         $('.title dd .count').text(result.recordsTotal);
+                        $('.status_label li#notUseCount').html(`<span class="gray"></span>미사용 : ${result.statusCount.notUseCount}`);
+                        $('.status_label li#normalCount').html(`<span class="green"></span>정상 : ${result.statusCount.normalCount}`);
+                        $('.status_label li#errorCount').html(`<span class="red"></span>이상 : ${result.statusCount.errorCount}`);
                         return result.data;
                     }
                 },
@@ -30,11 +38,11 @@ const facility = {
             },
             columns : [
                 {data: "facilitySeq", className: "alignLeft"},
-                {data: "facilityKind"},
+                {data: "facilityKindName"},
                 {data: "facilityStatus"},
-                {data: "stationKind"},
+                {data: "stationKindName"},
                 {data: "stationName"},
-                {data: "administZone"},
+                {data: "administZoneName"},
                 {data: "address"},
                 {data: null}
             ],
@@ -42,17 +50,6 @@ const facility = {
                 "targets": -1,
                 "data": null,
                 "defaultContent": '<span class="button">상세보기</span>'
-            }
-            , {
-                targets: 3,
-                createdCell: function (td, cellData) {
-                    if ( cellData !== null ) {
-                        $(td).text("");
-                        $(td).append("<i><img src='/images/default/clipboard.svg'></i>");
-                    } else {
-                        $(td).text("없음");
-                    }
-                }
             }
             , {
                 targets: 6,

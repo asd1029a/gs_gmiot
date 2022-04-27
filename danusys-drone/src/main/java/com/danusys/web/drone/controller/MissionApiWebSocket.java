@@ -26,6 +26,12 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Flight를 드론id을 와 함께 map 으로 관리하며
+ * 비행탭에서 왼쪽 드론을 클릭할시 logging 발생 -> 여기서부터 연결된 정보를 websocket으로 보내준다.
+ * logging ,return ,arm ,startmission 이외에 다른 것들 수정이 필요함
+ * logging 이 루프를 돌면서 특정 상황에 맞는 명령이 내려지고 return arm startmission 명령을 내릴시 mavlink 명령이 내려짐
+ */
 @RestController
 @RequestMapping("/drone/api")
 @Slf4j
@@ -50,11 +56,7 @@ public class MissionApiWebSocket {
     private Map<Integer, Integer> hasFlightMap = new HashMap<>();
     private Map<Integer, Integer> loggingMap = new HashMap<>();
 /*
-
-    url:/return
-    do: 해당 드론 귀환
     param: paramMap{droneId}
-
  */
 
     @MessageMapping("/logging")

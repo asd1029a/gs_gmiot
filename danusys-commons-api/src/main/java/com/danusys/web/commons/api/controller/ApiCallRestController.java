@@ -208,8 +208,16 @@ public class ApiCallRestController {
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         ObjectMapper objectMapper = new ObjectMapper();
         String body = (String) responseEntity.getBody();
-        log.info("INSTACEOF ={}",objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){}));
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+        Object resultBody = null;
+        // TODO : List 와 Map 형태를 구분 임시 처리
+        if (body.indexOf("[") == 0) {
+
+            List<Map<String, Object>> result = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>(){});
+            resultBody = result;
+        } else if (body.indexOf("{") == 0) {
+            Map<String, Object> result = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+            resultBody = result;
+        }
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(resultBody);
