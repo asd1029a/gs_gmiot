@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <head>
-        <th:block th:insert="fragments/default/includes :: includes_head(~{::pagesLink})"></th:block>
+        <!--<th:block th:insert="fragments/default/includes :: includes_head(~{::pagesLink})"></th:block>-->
+        <th:block th:insert="fragments/default/default" />
+        <link rel="stylesheet" type="text/css" href="/css/dashboard.css">
     </head>
     <body>
         <div class="wrap">

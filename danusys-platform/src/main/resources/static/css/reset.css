@@ -26,7 +26,7 @@ a{color: unset; text-decoration: none;}
 /* input : checkbox */
 input[type="checkbox"]{display: none;}
 input[type="checkbox"] + label{display: flex; align-items: center; color: #dee0e4; line-height: 24px; cursor: pointer;}
-input[type="checkbox"] + label span{display: inline-block; width: 20px; height: 20px; margin: 0px 8px 0px 0px; vertical-align: middle; background: url('/images/default/checkboxDefault.svg') center center no-repeat; background-size: 100% 100%; cursor: pointer;}
+input[type="checkbox"] + label span{display: inline-block; width: 20px; height: 20px; min-width: 20px; min-height: 20px; max-width: 20px; max-height: 20px; margin: 0px 8px 0px 0px; vertical-align: middle; background: url('/images/default/checkboxDefault.svg') center center no-repeat; background-size: 100% 100%; cursor: pointer;}
 input[type="checkbox"]:checked + label span{background: url('/images/default/checkboxActive.svg') center center no-repeat; background-size: 100% 100%;}
 
 /* input : radio */
