@@ -29,7 +29,11 @@ public class DroneLogController {
     private final DroneLogService droneLogService;
 
 
-
+    /**
+     * 드론 로그 검색 api
+     * @param paramMap
+     * @return
+     */
     @PostMapping("/dronelog")
     public ResponseEntity<?> findAllDroneLog(@RequestBody Map<String,Object> paramMap){
         log.info("paramMap={}",paramMap);

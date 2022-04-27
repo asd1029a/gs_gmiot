@@ -45,7 +45,7 @@
             <div data-value="station" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>
-                    <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
+                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
                 </dl>
                 <div class="search_form"> <!-- search_form 변경 -->
                     <dl>
@@ -74,7 +74,6 @@
                             </dl>
                         </form>
                         <ul class="button">
-                            <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>
                             <li><i><img src="/images/default/search.svg"></i>검색</li>
                         </ul>
                     </div>
@@ -104,36 +103,72 @@
             <div data-value="eventPast" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
-                    <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
+                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
                 </dl>
                 <div class="search_form"> <!-- search_form 변경 -->
                     <dl>
                         <dt><input type="text" placeholder="검색어를 입력하세요."><i><img src="/images/default/search.svg"></i></dt>
-                        <dd class="detail_btn"><i><img src="/images/default/arrowBottom.svg"></i>검색 조건 더보기</dd>
+                        <dd class="detail_btn active"><i><img src="/images/default/arrowBottom.svg"></i>검색 조건 더보기</dd>
                     </dl>
                     <!-- search_fold -->
                     <div class="search_fold"><!-- active 시, display: flex; -->
                         <!-- form 통째로 -->
                         <form>
+                            <dl class="date_set">
+                                <dt>발생 기간</dt>
+                                <dd><input type="text" id="smartPoleEventPastStartDt" placeholder="날짜를 입력하세요" name="startDt" class="input_date"></dd>
+                                <span>부터</span>
+                                <dd><input type="text" id="smartPoleEventPastEndDt" placeholder="날짜를 입력하세요" name="endDt" class="input_date"></dd>
+                                <span>까지</span>
+                            </dl>
                             <!-- TODO : 필요한 검색조건 data-selectbox-type (commonCode type에 따름)에 기입-->
                             <dl class="dropdown_checkbox" data-selectbox-type="eventKind">
                                 <dt class="checkbox_title select_title">이벤트 종류</dt>
                                 <dd class="checkbox_list list" style="display: none;">
                                 </dd>
                             </dl>
-                            <!--                            <dl class="dropdown_checkbox">-->
-                            <!--                                <dt class="checkbox_title select_title">장소유형</dt>-->
-                            <!--                                <dd class="checkbox_list list" style="display: none;">-->
-                            <!--                                </dd>-->
-                            <!--                            </dl>-->
+<!--                            <dl class="dropdown_checkbox">-->
+<!--                                <dt class="checkbox_title select_title">장소유형</dt>-->
+<!--                                <dd class="checkbox_list list" style="display: none;">-->
+<!--                                </dd>-->
+<!--                            </dl>-->
                             <dl class="dropdown_checkbox" data-selectbox-type="administZone">
                                 <dt class="checkbox_title select_title">행정구역</dt>
                                 <dd class="checkbox_list list" style="display: none;">
                                 </dd>
                             </dl>
+                            <dl class="checkbox_set">
+                                <dt>이벤트 등급</dt>
+                                <dd>
+							<span>
+								<input type="checkbox" id="urgent" name="eventGrade" data-value="1" checked>
+								<label for="urgent"><span></span>긴급</label>
+							</span>
+                                    <span>
+								<input type="checkbox" id="caution" name="eventGrade" data-value="2" checked>
+								<label for="caution"><span></span>주의</label>
+							</span>
+                                </dd>
+                            </dl>
+                            <dl class="checkbox_set">
+                                <dt>처리 상태</dt>
+                                <dd>
+    <!--							<span>-->
+    <!--								<input type="checkbox" id="staus00" name="eventState" data-value="0" multiple="multiple">-->
+    <!--								<label for="staus00"><span></span>미처리</label>-->
+    <!--							</span>-->
+                                    <span>
+                                        <input type="checkbox" id="staus01" name="eventState" data-value="1" multiple="multiple" checked>
+                                        <label for="staus01"><span></span>조치완료</label>
+                                    </span>
+                                    <span>
+                                        <input type="checkbox" id="staus02" name="eventState" data-value="2" multiple="multiple" checked>
+                                        <label for="staus02"><span></span>종료</label>
+                                    </span>
+                                </dd>
+                            </dl>
                         </form>
                         <ul class="button">
-                            <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>
                             <li><i><img src="/images/default/search.svg"></i>검색</li>
                         </ul>
                     </div>
@@ -238,7 +273,7 @@
             <div data-value="station" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>
-                    <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
+                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
                 </dl>
                 <div class="search_form"> <!-- search_form 변경 -->
                     <dl>
@@ -267,7 +302,6 @@
                             </dl>
                         </form>
                         <ul class="button">
-                            <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>
                             <li><i><img src="/images/default/search.svg"></i>검색</li>
                         </ul>
                     </div>
@@ -315,7 +349,7 @@
             <div data-value="eventPast" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
-                    <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
+                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
                 </dl>
                 <div class="search_form"> <!-- search_form 변경 -->
                     <dl>
@@ -326,6 +360,13 @@
                     <div class="search_fold"><!-- active 시, display: flex; -->
                         <!-- form 통째로 -->
                         <form>
+                            <dl class="date_set">
+                                <dt>발생 기간</dt>
+                                <dd><input type="text" id="smartBusStopEventPastStartDt" placeholder="날짜를 입력하세요" name="startDt" class="input_date"></dd>
+                                <span>부터</span>
+                                <dd><input type="text" id="smartBusStopEventPastEndDt" placeholder="날짜를 입력하세요" name="endDt" class="input_date"></dd>
+                                <span>까지</span>
+                            </dl>
                             <!--<dl class="checkbox_set">
                                 <dt>이벤트 등급</dt>
                                 <dd>
@@ -538,9 +579,8 @@
                                 <dd><input type="date" class="input_date"><span>까지</span></dd>
                             </dl>-->
                         </form>
-                        <ul class="button">
+                        <ul class="button refresh">
                             <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>
-                            <li><i><img src="/images/default/search.svg"></i>검색</li>
                         </ul>
                     </div>
                 </div>

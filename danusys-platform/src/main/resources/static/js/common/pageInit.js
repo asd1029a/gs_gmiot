@@ -55,7 +55,8 @@ $(document).ready(() => {
     } else if(path === "/pages/inqry/station") {
         // station.create();
     } else if(path === "/pages/inqry/facilities") {
-        // facility.create();
+        facility.eventHandler();
+        facility.create();
     } else if(path === "/pages/inqry/eventCabinet") {
         event.eventHandler($('#cabinetEventTable'), 'cabinet');
         event.create($('#cabinetEventTable'), 'cabinet');
@@ -65,7 +66,13 @@ $(document).ready(() => {
     // 환경설정
     else if(path === "/pages/config/dimmingSet") {
         dimming.eventHandler();
-        dimming.create();
+        comm.checkAuthority("/user/check/authority", "config", "rw")
+            .then(
+                (result) => {
+                    dimming.createGroup(result);
+                }
+            );
+        dimming.init();
     } else if(path === "/pages/config/userAccount") {
         account.user.eventHandler();
         account.user.create();
@@ -91,5 +98,18 @@ $(document).ready(() => {
         svgToImage.init();
         mntr.init();
         mntr.eventHandler();
+        /* date picker */
+        $("input.input_date").attr("autocomplete", "off");
+        $('input[name=startDt]').each((idx, item) => {
+            const $startDt = $(item);
+            const $endDt = $(item).parents('form').find('input[name=endDt]');
+            dateFunc.datePickerSet($startDt, $endDt, true);
+            //초기값
+            const now = new Date();
+            const ago = new Date();
+            ago.setDate(now.getDate() - 2);
+            $startDt.datepicker().data('datepicker').selectDate(ago);
+            $endDt.datepicker().data('datepicker').selectDate(now);
+        });
     }
 })

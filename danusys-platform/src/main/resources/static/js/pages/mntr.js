@@ -56,7 +56,7 @@ const mntr = {
         //맵 이동 (move end) 이벤트
         map.setMapEventListener('moveend',e => {
             //동네 날씨 기능
-            //centerVilageInfo(e);
+            centerVilageInfo(e);
         });
 
         //레이어 마우스오버 이벤트
@@ -452,7 +452,7 @@ const mntr = {
             $(e.currentTarget).parent('div').scrollTop(0);
         });
         //검색 키워드 입력 이벤트 (임시공통)
-        $(".search_form input[type=text]").on('keydown', key => {
+        $(".search_form dt input[type=text]").on('keydown', key => {
             if(key.keyCode==13){
                 const keyword = $(key.target).val();
                 const section = $(key.currentTarget).parents('section').attr('id');
@@ -460,8 +460,8 @@ const mntr = {
             }
         });
         //검색 키워드 아이콘 클릭 이벤트 (임시공통)
-        $(".search_form input[type=text]").next('i').on('click', e => {
-            const keyword = $(e.currentTarget).parent().find('input').val();
+        $(".search_form dt input[type=text] + i, .search_fold .button").on('click', e => {
+            const keyword = $(e.currentTarget).parents('.search_form').find('input').val();
             const section = $(e.currentTarget).parents('section').attr('id');
             searchList(section, keyword);
         });
@@ -489,6 +489,74 @@ const mntr = {
                         break;
                 } // switch
             } // srcoll 끝
+        });
+        //관제 검색 조건 더보기 check
+        $('.lnb_tab_section .search_fold form input').on('change', e => {
+            const $form = $(e.currentTarget).parents('.search_form');
+            const checkLen = $form.find('input[type="checkbox"]:checked').length;
+            const $target = $form.find('.detail_btn');
+
+            let dateFlag = false;
+            $form.find('.date_set input').each((idx, item) => {
+                const text = $(item).val();
+                if(text != ""){
+                    dateFlag = true;
+                }
+            });
+            if(checkLen > 0){
+                $target.addClass("active");
+            } else {
+                if(dateFlag){
+                    $target.addClass("active");
+                } else {
+                    $target.removeClass("active");
+                }
+            }
+        });
+        //관제 검색 조건 더보기 text
+        $('.lnb_tab_section .search_fold form .date_set input').datepicker({
+            onSelect: (text, inst, elem) => {
+                const $form = elem.$el.parents('.search_form');
+
+                const $target = $form.find('.detail_btn');
+                const checkLen = $form.find('input[type="checkbox"]:checked').length;
+
+                let dateFlag = false;
+                $form.find('.date_set input').each((idx, item) => {
+                    const text = $(item).val();
+                    if(text != ""){
+                        dateFlag = true;
+                    }
+                });
+                if(dateFlag){
+                    $target.addClass("active");
+                } else {
+                    if(checkLen > 0){
+                        $target.addClass("active");
+                    } else {
+                        $target.removeClass("active");
+                    }
+                }
+            }
+        })
+        //관제 검색 조건 초기화
+        $('.lnb_tab_section .button.refresh').on("click", e => {
+            const section = $(e.currentTarget).parents('section').attr('id');
+            const tab = $('#'+section +" .tab li.active").attr('data-value');
+            //keyword 처리
+            const $target = $('section.select div[data-value='+tab+'].select');
+            const $form = $target.find('.search_form');
+            $form.find('input').val("");
+            //check 풀기
+            $form.find('input[type=checkbox]:checked').prop('checked',false);
+            $target.find('.detail_btn').removeClass('active');
+            //타이틀 초기화
+            $form.find('.checkbox_title').each((idx, item) => {
+                const text = $(item).data('placeholder');
+                $(item).text(text);
+            });
+            //list reload
+            searchList(section, "");
         });
 
     }
@@ -829,50 +897,56 @@ const rnbList = {
  * keyword : 검색 키워드
  * */
 function searchList(section, keyword) {
+    // if(keyword!="" && keyword!=null){
+    switch(section) {
+        case "smartPole" : //스마트폴검색
+            const tab = $('#'+section +" .tab li.active").attr('data-value');
 
-    if(keyword!="" && keyword!=null){
-        switch(section) {
-            case "smartPole" : //스마트폴검색
-                const tab = $('#'+section +" .tab li.active").attr('data-value');
-                if(tab == "station") {
-                    //리스트 ajax
-                    station.getListGeoJson({
-                        ///
-                    }, result => {
-                        lnbList.removeAllList(tab);
-                        lnbList.createStation(result);
-                    });
-                } else if(tab == "eventPast") {
-                    //TODO 조건 form serialize
-                    //리스트 ajax
-                    event.getListGeoJson({
-                        "eventState": ["9"]
-                        , "eventGrade": [20]
-                        //////////
-                    }, result => {
-                        // 리스트 초기화
-                        lnbList.removeAllList(tab);
-                        lnbList.createEventPast(result);
-                        // 과거 이벤트 레이어 reload
-                        reloadCluster(result, 'eventPastLayer');
-                        //패널 제어
-                        const rVisivle = $('.area_right[data-value=event]').is(':visible');
-                        if(rVisivle) { $('.area_right_closer').trigger("click")}
-                    });
-                }
-                break;
-            case "addressPlace" : //주소장소검색
-                    const addressObj = kakaoApi.getAddress({query: keyword});
-                    const placeObj = kakaoApi.getPlace({query: keyword});
-                    lnbList.createAddressPlace('address', addressObj, keyword, true);
-                    lnbList.createAddressPlace('place', placeObj, keyword, true);
-                break;
-            default :
-                break;
-        }
-    } else {
-        alert("키워드를 입력하여 주십시오.");
+            let objJSON = {};
+            if(keyword!="" && keyword!=null){
+                objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
+                objJSON.keyword = keyword;
+           }
+            if(tab == "station") {
+                //리스트 ajax
+                station.getListGeoJson({
+                    /// objJSON
+                }, result => {
+                    lnbList.removeAllList(tab);
+                    lnbList.createStation(result);
+                });
+            } else if(tab == "eventPast") {
+                //TODO 조건 form serialize
+                //리스트 ajax
+                event.getListGeoJson({
+                    "eventState": ["9"]
+                    , "eventGrade": [20]
+                    ////////// objJSON
+                }, result => {
+                    // 리스트 초기화
+                    lnbList.removeAllList(tab);
+                    lnbList.createEventPast(result);
+                    // 과거 이벤트 레이어 reload
+                    reloadCluster(result, 'eventPastLayer');
+                    //패널 제어
+                    const rVisivle = $('.area_right[data-value=event]').is(':visible');
+                    if(rVisivle) { $('.area_right_closer').trigger("click")}
+                });
+            }
+            break;
+        case "addressPlace" : //주소장소검색
+                const addressObj = kakaoApi.getAddress({query: keyword});
+                const placeObj = kakaoApi.getPlace({query: keyword});
+                lnbList.createAddressPlace('address', addressObj, keyword, true);
+                lnbList.createAddressPlace('place', placeObj, keyword, true);
+            break;
+        default :
+            break;
     }
+    // } else {
+    //     //TODO 전체검색 || 초기조건
+    //     //alert("키워드를 입력하여 주십시오.");
+    // }
 }
 
 /**

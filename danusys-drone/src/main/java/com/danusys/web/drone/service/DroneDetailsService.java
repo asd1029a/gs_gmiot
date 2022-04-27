@@ -105,7 +105,7 @@ public class DroneDetailsService {
 
     @Transactional
     public String updateDroneDetails(DroneDetails droneDetails, Long droneId, Long droneBaseId, Long droneMissionId, String droneStatus,
-                                     int droneSocket) {
+                                     Long droneSocket) {
 
         log.info("droneSocket={}",droneSocket);
         //drone

@@ -85,6 +85,15 @@ public class FacilityController {
     }
 
     /**
+     * 시설물 : 시설물 삭제
+     */
+    @DeleteMapping(value="/opt")
+    public ResponseEntity<?> del (@RequestBody Map<String, Object> paramMap) throws Exception {
+        facilityService.delOpt(paramMap);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
      * 시설물 : 디밍 그룹 조회
      */
     @PostMapping(value="/dimmingGroup")
@@ -93,10 +102,18 @@ public class FacilityController {
     }
 
     /**
-     * 시설물 : 시설물 단건 조회
+     * 시설물 : 디밍 그룹 조회
      */
-    @GetMapping(value="/{dimmingGroupSeq}")
-    public ResponseEntity<EgovMap> getDimmingGroup(@PathVariable("dimmingGroupSeq") int dimmingGroupSeq) throws Exception {
-        return ResponseEntity.ok().body(facilityService.getOne(dimmingGroupSeq));
+    @GetMapping(value="/lastDimmingGroupSeq")
+    public ResponseEntity<EgovMap> getLastDimmingGroupSeq() throws Exception {
+        return ResponseEntity.ok().body(facilityService.getLastDimmingGroupSeq());
+    }
+
+    /**
+     * 시설물 : 디밍 그룹 소속 시설물 조회
+     */
+    @PostMapping(value="/lampRoadInGroup")
+    public ResponseEntity<EgovMap> getListLampRoadInDimmingGroup(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.getListLampRoadInDimmingGroup(paramMap));
     }
 }

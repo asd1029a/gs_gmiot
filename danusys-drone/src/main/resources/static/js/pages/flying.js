@@ -7,7 +7,10 @@ document.addEventListener("DOMContentLoaded",function () {
     pageFlying.init();
 });
 
+
 const pageFlying = {
+
+
     init: function() {
         pageFlying.lnbMenuInit();
         mapManager.createVectorLayer("droneLayer",null,new ol.source.Vector({}));
@@ -15,6 +18,8 @@ const pageFlying = {
         droneSocket.init();
     },
     lnbMenuInit: async function() {
+
+
         const ul = common.getQs(".listScroll ul");
         ul.innerText = "";
         const listData = await axios.post("/drone/api/dronemissiondetails", {});
@@ -38,6 +43,15 @@ const pageFlying = {
                     mapManager.map.getView().setCenter(ol.proj.transform([mission.missionDetails[0].gpsX, mission.missionDetails[0].gpsY],mapManager.baseProjection, mapManager.projection));
                 }
                 pageFlying.setMissionSummary(mission);
+
+                //엄태혁 코드 추가
+
+                    let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
+                    droneSocket.stompClient.send("/app/logging", {}, JSON.stringify({'droneId': droneId}));
+
+
+
+
             });
             const dl = common.crtEl("dl");
             const dlDt = common.crtEl("dt");
@@ -251,11 +265,20 @@ const setDrawDrone = {
             // end mission
             span.className = "gray";
             span.innerText = "대기 중";
-        } else if(bodyData.status == "2") {
+        }
+
+        // 엄태혁 수정  innerText -> 비행중 -> arm
+        // else if(bodyData.status == "2") {
+        //
+        //     // pause mission
+        //     span.className = "yellow";
+        //     span.innerText = "비행 중";
+        // }
+        else if(bodyData.status == "2") {
 
             // pause mission
-            span.className = "yellow";
-            span.innerText = "비행 중";
+            span.className = "green";
+            span.innerText = "ARM";
         } else {
 
             // play mission
@@ -459,7 +482,7 @@ const droneSocket = {
             self.stompClient.subscribe('/topic/startmission', function (drone) {
             });
             self.stompClient.subscribe('/topic/log', function (drone) {
-                // console.log(drone + " : topic/log ");
+            //     console.log(drone + " : topic/log ");
                 setDrawDrone.reloadFeature(drone);
             }, {id: "missionLog"});
             self.stompClient.subscribe('/topic/pause',function (drone){
@@ -476,18 +499,28 @@ const droneSocket = {
                 let bodyData = JSON.parse(drone.body);
                 let li = common.getQs(`.listScroll li[data-id='${bodyData.droneId}']`);
                 const span = li.querySelector(`dt span`);
-                if(bodyData.armDisarm) {
-                    span.className = "green";
-                    span.innerText = "ARM";
-                } else {
-                    span.className = "gray";
-                    span.innerText = "대기중";
-                }
+                // if(bodyData.armDisarm) {
+                //     span.className = "green";
+                //     span.innerText = "ARM";
+                // } else {
+                //     span.className = "gray";
+                //     span.innerText = "대기중";
+                // }
             });
             self.stompClient.subscribe('/topic/disarm',function (drone){
                 // console.log(drone);
             });
+            self.stompClient.subscribe('/topic/logging',function (drone){
+                // console.log(drone);
+                console.log(drone);
+            });
         });
+    },
+
+    //엄태혁작성
+    logging : function (){
+        let droneId = Number.parseInt(common.getQs(".mapComponent").dataset.id);
+        this.stompClient.send("/app/logging", {}, JSON.stringify({'droneId': droneId}));
     },
     disConnect: function() {
         this.stompClient.disconnect();

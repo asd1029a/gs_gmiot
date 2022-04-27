@@ -49,7 +49,7 @@
 .accordion > li.on > a:before{border: 3px solid #3a66e5;}
 /* Sub Menu */
 .accordion_sub_menu{}
-.accordion_sub_menu li a {padding: 0px 24px 0px 446x; color: #797d87; font-size: 14px; border: none; background: #1e1f23;}
+.accordion_sub_menu li a {padding: 0px 24px 0px 446px; color: #797d87; font-size: 14px; border: none; background: #1e1f23;}
 .accordion_sub_menu li a:before{position: absolute; top: 20px; left: 24px; content: ''; width: 12px; height: 12px; margin: 0px; box-sizing: border-box; background: url(../images/default/settingMenuTree.svg);}
 .accordion_sub_menu li > a span{color: #bc4a4a; font-size: 15px; font-weight: bold;}
 /* Functionality */
@@ -102,7 +102,7 @@
 
 /* dropdown_checkbox */
 .search_form form dl.dropdown_checkbox{padding: 0px;}
-.search_form form dl.dropdown_checkbox .checkbox_title{width: 100%; height: 34px; line-height: 32px; margin: 0px; padding: 0px 14px; color: #dee0e4; font-size: 14px; box-sizing: border-box; border: 1px solid #292c34; border-radius: 3px; background: url("../images/default/arrowSelectBox.svg") 248px center no-repeat #1a1b1d; background-size: 14px; cursor: pointer;}
+.search_form form dl.dropdown_checkbox .checkbox_title{width: 100%; height: 34px; line-height: 32px; margin: 0px; padding: 0px 14px; color: #dee0e4; font-size: 14px; box-sizing: border-box; border: 1px solid #292c34; border-radius: 3px; background: url("../images/default/arrowSelectBox.svg") 248px center no-repeat #1a1b1d; background-size: 14px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 2rem;}
 .search_form form dl.dropdown_checkbox .checkbox_list{z-index: 10; position: absolute; top: 48px; overflow: hidden; width: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-gap: 8px 14px; margin: -15px 0px 0px 0px; padding: 10px 12px; box-sizing: border-box; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border: 1px solid #292c34; background: #1a1b1d;}
 .search_form form dl.dropdown_checkbox .checkbox_list > span.checked_all{grid-column: 1 / 3;}
 .search_form form dl.dropdown_checkbox .checkbox_list > span > label{display: block; max-width: 120px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 18px; font-size: 13px;}
@@ -329,8 +329,14 @@ tr.selected td {background-color: #23252b;}
 .popup div.list_search .list_table.table_authorize tbody tr td:nth-child(1){border-right: 2px solid #292c34;}
 .popup div.list_search .list_table table tbody td span input[type="radio"] + label,
 .popup div.list_search .list_table table tbody td span input[type="radio"] + label span{margin: 0px; padding: 0px;}
-.popup div.list_search .list_table .dataTables_scrollHead{display: table;}
+.popup div.list_search .list_table .dataTables_scrollHead{display: table; flex: initial;}
 .popup div.list_search .list_table .dataTables_scrollBody{border-bottom: none;}
+.popup div.popup_dimming_group{display: flex; flex-direction: row; border-bottom: 2px solid #292c34; grid-gap: 20px; padding: 20px 30px;}
+.popup div.popup_dimming_group div.list_search{margin: 0; padding: 0; border: none;}
+.popup div.popup_dimming_group .map_area{min-height: 460px; margin: 0; padding: 0; background: darkseagreen;}
+.popup div.popup_dimming_group dl{position: relative; display: flex; flex-direction: column; grid-gap: 14px; margin: 0px 0px 20px;}
+.popup div.popup_dimming_group dl dt{display: flex; align-items: center; font-size: 16px;}
+.popup div.popup_dimming_group dl dt::before{content: ''; width: 4px; height: 4px; margin: 0px 8px 0px 0px; background: #434751;}
 
 /* statistics */
 .statistics{display: flex; height: calc(100% - 60px);}
@@ -414,3 +420,9 @@ tr.selected td {background-color: #23252b;}
         opacity: 0;
     }
 }
+
+/* map */
+.map_wrap{position:relative; flex:1; height:100%; background:#0c0c0d;}
+/* map tooltip */
+#mouseOverPopup #mouseOverPopupContent{padding: 7px; background: #1e1f239e; box-shadow: 0px 0px 20px rgb(0 0 0 / 20%); border-radius: 10px;}
+#mouseOverPopup .my-ol-popup-closer{display:none;}

@@ -1,14 +1,11 @@
 package com.danusys.web.drone.service;
 
-import com.danusys.web.commons.socket.config.CustomServerSocket;
+
+import com.danusys.web.drone.socket.CustomServerSocket;
 import com.danusys.web.drone.model.DroneSocket;
 import io.dronefleet.mavlink.MavlinkConnection;
-import io.dronefleet.mavlink.MavlinkDialect;
 import io.dronefleet.mavlink.MavlinkMessage;
-import io.dronefleet.mavlink.common.Heartbeat;
-import io.dronefleet.mavlink.common.MavAutopilot;
-import io.dronefleet.mavlink.common.MavState;
-import io.dronefleet.mavlink.common.MavType;
+import io.dronefleet.mavlink.common.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,13 +24,16 @@ public class ConnectionService {
 
     private final DroneSocketService droneSocketService;
     private final CustomServerSocket ServerSocket;
+    private final FlightManager flightManager;
     Map<String, Object> connectionMap = new HashMap<>();
-    int currentIndex = -1;
+    Map<Integer, Map<String, Object>> systemIdConnectionMap = new HashMap<>();
+    Long currentIndex = -1L;
 
-    public List<Map<String, Object>> getSocketList() {
-        List<Map <String, Object>> listMap = new ArrayList<>();
-        Map<Integer, Socket> socketList = ServerSocket.serverThread.getSocketList();
-
+    public Map<Integer, Map<String, Object>> getSocketList() {
+//    public List<Map<String, Object>> getSocketList() {
+        List<Map<String, Object>> listMap = new ArrayList<>();
+        Map<Integer, Socket> socketList = ServerSocket.getServerThread().getSocketList();
+        int systemId = -1;
         MavlinkConnection connection = null;
         List<Integer> deleteList = new ArrayList<>();
         log.info("socketList={}", socketList);
@@ -44,34 +44,35 @@ public class ConnectionService {
         for (Integer index : socketList.keySet()) {
             log.info("key={}", index);
             Socket socket = socketList.get(index);
-            currentIndex = index;
+            currentIndex = Long.valueOf(index);
 
             connection = connect(socket);
 
 
             log.info("connection={}", connection);
 
-            if ( isConnected(connection)) {
+            if ((systemId = isConnected(connection)) != -1) {
                 log.info("addMap={}", index);
-                saveMap(index,socketList);
-              //  addMap(index, socketList, listMap);
+                saveMap(systemId, index, socketList);
+                //  addMap(index, socketList, listMap);
 //                if (!connectionMap.containsValue(connection)) {
 //                    log.info("여기왜와요???");
 //                    connectionMap.put("connection" + index, connection);
 //                }
 
             } else {
+                connection = null;
                 log.info("deleteList={}", index);
                 deleteList.add(index);
             }
-
+            systemId = 0;
 
         }
         for (Integer deleteIndex : deleteList) {
-            ServerSocket.serverThread.destroySocket(deleteIndex);
+            ServerSocket.getServerThread().destroySocket(deleteIndex);
         }
 
-        return listMap;
+        return systemIdConnectionMap;
     }
 
     public MavlinkConnection connect(Socket socket) {
@@ -86,15 +87,16 @@ public class ConnectionService {
         return connection;
     }
 
-    public boolean isConnected(MavlinkConnection connection) {
+    public int isConnected(MavlinkConnection connection) {
 
         int linkId = 1;
-        long timestamp = System.currentTimeMillis();/* provide microsecond time */
+        int systemId = 0;
+        long timestamp = System.currentTimeMillis(); /* provide microsecond time */
         MavlinkMessage message;
         byte[] secretKey = new byte[0];
         final int[] timeSec = {0};
-        Timer t=new Timer();
-        TimerTask tt=new TimerTask() {
+        Timer t = new Timer();
+        TimerTask tt = new TimerTask() {
             @Override
             public void run() {
                 timeSec[0]++;
@@ -111,33 +113,47 @@ public class ConnectionService {
                     .build();
 
 
-            connection.send2(1, 1, firstHeartbeat, linkId, timestamp, secretKey);
-            t.schedule(tt,0,1000);
-            while ((message = connection.next()) != null) {
-                //TODO socket try catch 안쪽으로 별개로 작성
-                if (message.getPayload() instanceof Heartbeat) {
-                    //  MavlinkMessage<Heartbeat> heartbeatMavlinkMessage = (MavlinkMessage<Heartbeat>) message;
-                    break;
+            connection.send2(0, 0, firstHeartbeat, linkId, timestamp, secretKey);
+            t.schedule(tt, 0, 1000);
+
+
+//            flightManager.addConecctionMap(connection, 1);
+            while (timeSec[0] < 3) {
+
+
+                while ((message = connection.next()) != null) {
+                    //TODO socket try catch 안쪽으로 별개로 작성
+//                    if (flightManager.getConnectionMap().getOrDefault(connection, -1) == 2) {
+//
+//                        break;
+//                    }
+                    if (timeSec[0] >= 3) {
+                        break;
+                    }
+                    if (message.getPayload() instanceof Heartbeat) {
+                        systemId = message.getOriginSystemId();
+                        break;
+                    }
+
+
                 }
-                if(timeSec[0]>=2) {
-                    return true;
-                }
+
             }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (IOException e) {
             log.info("IOEEXCEPTION");
-            return false;
-        } catch(Exception e){
+            return -1;
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             tt.cancel();
             t.cancel();
-            timeSec[0]=0;
+            timeSec[0] = 0;
+            flightManager.addConecctionMap(connection, 0);
         }
 
-        return true;
+        return systemId;
 
 
     }
@@ -156,7 +172,7 @@ public class ConnectionService {
 //    }
 
 
-    public void saveMap(int index, Map<Integer, Socket> socketList) {
+    public void saveMap(int systemId, int index, Map<Integer, Socket> socketList) {
         Map<String, Object> map = new HashMap<>();
 
         map.put("index", index);
@@ -164,12 +180,15 @@ public class ConnectionService {
         map.put("address", socketList.get(index).getInetAddress());
         map.put("localPort", socketList.get(index).getLocalPort());
         log.info("map={}", map);
+        systemIdConnectionMap.put(systemId, map);
         DroneSocket droneSocket = new DroneSocket();
-        droneSocket.setIndex(index);
+        droneSocket.setIndex(Long.valueOf(index));
         droneSocket.setPort(Integer.toString(socketList.get(index).getPort()));
         droneSocket.setIp(socketList.get(index).getInetAddress().toString());
         droneSocket.setLocalport(Integer.toString(socketList.get(index).getLocalPort()));
+        droneSocket.setSystemId(systemId);
         droneSocketService.saveList(droneSocket);
+        socketList=new HashMap<>();
 
 
     }

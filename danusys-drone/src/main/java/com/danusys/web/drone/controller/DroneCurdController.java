@@ -36,6 +36,7 @@ public class  DroneCurdController {
 
     @PutMapping("/drone")
     public ResponseEntity<?> saveDrone(@RequestBody Drone drone) {
+        log.info("drone={}",drone.getId());
         String returnResult = null;
         DroneDetails droneDetails = new DroneDetails();
 //        droneDetails.setStatus("임시저장");
@@ -50,6 +51,7 @@ public class  DroneCurdController {
         droneBase.setId(1l);
         drone.setDroneBase(droneBase);
         drone.setStatus("임시저장");
+
 
         droneService.saveDrone(drone);
         DroneDetails saveDroneDetails = droneDetailsService.saveDroneDetails(droneDetails, drone.getId());
@@ -114,7 +116,7 @@ public class  DroneCurdController {
          //   log.info("droneBaseId={}",droneBaseId);
 
             long droneMissionId =droneDetailRequest.getDroneMission();
-            int droneSocket =droneDetailRequest.getDroneSocket();
+            Long droneSocket =droneDetailRequest.getDroneSocket();
             String droneStatus = droneDetailRequest.getDroneStatus();
         return ResponseEntity
                 .status(HttpStatus.OK)

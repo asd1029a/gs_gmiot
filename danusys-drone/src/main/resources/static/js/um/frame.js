@@ -99,6 +99,7 @@ $(".add_drone").on("click", function () {
 });
 
 $(".update_drone_detail_button").on("click", function () {
+    let isSuccess =0;
     // console.log($(".location_select option:selected").data("id"));
     let param = {
         "droneId": $(".drone_id").val(),
@@ -136,6 +137,7 @@ $(".update_drone_detail_button").on("click", function () {
         data: JSON.stringify(param),
         success: function (resultData) {
             //    console.log(resultData);
+            isSuccess=1;
         }
     });
 
@@ -156,7 +158,12 @@ $(".update_drone_detail_button").on("click", function () {
         success: function (resultData) {
             //console.log("resultData", resultData);
             $(".uploadName").val(resultData);
-            alert("저장되었습니다.");
+            if(isSuccess ==1){
+                alert("저장되었습니다.");
+            }
+            else{
+                alert("중복된 드론 입니다.다시　드론을　선택해주세요．");
+            }
 
 
         }
@@ -455,9 +462,9 @@ function loadSocketList() {
     });
 }
 
-$(".sync_button").on("click", function () {
-    saveSocketList();
-})
+// $(".sync_button").on("click", function () {
+//     saveSocketList();
+// })
 
 function loadAllSocketList() {
     let param = {};
@@ -471,8 +478,9 @@ function loadAllSocketList() {
             console.log(resultData);
             $(".socket_list").html(``);
             $.each(resultData, function (i, item) {
+                console.log(resultData);
                 //   console.log("item", item.baseName);
-                $(".socket_list").append(`<option data-id="${item.index}">${item.index} : address:${item.ip},port:${item.port}</option>`);
+                $(".socket_list").append(`<option data-id="${item.systemId}">${item.systemId} : address:${item.ip},port:${item.port}</option>`);
             })
         }
     });

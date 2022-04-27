@@ -47,7 +47,7 @@ class layerControl {
     remove(layerName) {
         this.map.getLayers().forEach( layer => {
             if(layer.get(this.check)==layerName){
-                map.removeLayer(layer);
+                this.map.removeLayer(layer);
             }
         });
     }
@@ -59,7 +59,7 @@ class layerControl {
     removeList(word) {
         this.map.getLayers().forEach( layer => {
             if(layer.get(this.check).indexOf(word)>-1) {
-                map.removeLayer(layer);
+                this.map.removeLayer(layer);
             }
         });
     }

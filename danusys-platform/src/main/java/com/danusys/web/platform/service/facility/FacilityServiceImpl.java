@@ -1,10 +1,11 @@
 package com.danusys.web.platform.service.facility;
 
 import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.commons.app.PagingUtil;
+import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +22,10 @@ public class FacilityServiceImpl implements FacilityService{
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         if(paramMap.get("draw") != null) {
             Map<String, Object> pagingMap = new HashMap<>();
+            EgovMap count = commonMapper.selectOne(fsp.selectCountQry(paramMap));
             pagingMap.put("data", commonMapper.selectList(fsp.selectListQry(paramMap)));
-            pagingMap.put("count", commonMapper.selectOne(fsp.selectCountQry(paramMap)).get("count"));
+            pagingMap.put("count", count.get("count"));
+            pagingMap.put("statusCount", count);
             return PagingUtil.createPagingMap(paramMap, pagingMap);
         } else {
             EgovMap resultMap = new EgovMap();
@@ -52,13 +55,20 @@ public class FacilityServiceImpl implements FacilityService{
     }
 
     @Override
+    @Transactional
     public int modOpt(Map<String, Object> paramMap) throws Exception {
-        return commonMapper.update(fsp.updateOptQry(paramMap));
+        commonMapper.delete(fsp.deleteOptQry(paramMap));
+        return commonMapper.update(fsp.insertOptQry(paramMap));
     }
 
     @Override
     public void del(int seq) throws Exception {
         commonMapper.delete(fsp.deleteQry(seq));
+    }
+
+    @Override
+    public void delOpt(Map<String, Object> paramMap) throws Exception {
+        commonMapper.delete(fsp.deleteOptQry(paramMap));
     }
 
     @Override
@@ -74,4 +84,17 @@ public class FacilityServiceImpl implements FacilityService{
             return resultMap;
         }
     }
+
+    @Override
+    public EgovMap getLastDimmingGroupSeq() throws Exception {
+        return commonMapper.selectOne(fsp.selectOneLastDimmingGroupSeqQry());
+    }
+
+    @Override
+    public EgovMap getListLampRoadInDimmingGroup(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(fsp.selectListLampRoadInDimmingGroupQry(paramMap)));
+        return resultMap;
+    }
+
 }

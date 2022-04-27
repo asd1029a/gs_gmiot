@@ -14,6 +14,8 @@ public interface DroneSocketRepository extends CrudRepository<DroneSocket, Integ
 
    void deleteAllInBatch();
 
+   void deleteAllBySystemId(int systemId);
+
 
 
 

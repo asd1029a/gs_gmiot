@@ -1,5 +1,5 @@
 package com.danusys.web.commons.socket.config;
-
+/*
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,3 +25,4 @@ public class CustomServerSocket {
             }
         }
 }
+*/

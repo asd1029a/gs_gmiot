@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ import java.util.Date;
 @Setter
 @EqualsAndHashCode
 @DynamicUpdate
+@DynamicInsert
 public class Drone {
 
     @Id
@@ -34,8 +36,9 @@ public class Drone {
     @Column(name = "user_id")
     private String userId;
 
-    @Column(name ="socket_index")
-    private int socketIndex;
+    @Column(name ="socket_index" ,unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long socketIndex;
 
     @Column(name = "update_dt")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")

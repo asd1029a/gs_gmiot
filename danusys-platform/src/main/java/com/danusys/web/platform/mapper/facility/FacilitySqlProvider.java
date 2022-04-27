@@ -4,29 +4,81 @@ import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FacilitySqlProvider {
 
     public String selectListQry(Map<String, Object> paramMap) {
-        String keyword = CommonUtil.validOneNull(paramMap,"keyword");
-        String start = CommonUtil.validOneNull(paramMap,"start");
-        String length = CommonUtil.validOneNull(paramMap,"length");
-        String optType = CommonUtil.validOneNull(paramMap,"optType");
-        String dimmingGroupSeq = CommonUtil.validOneNull(paramMap,"dimmingGroupSeq");
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+        ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
+        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
+        ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
+        String start = CommonUtil.validOneNull(paramMap, "start");
+        String length = CommonUtil.validOneNull(paramMap, "length");
+        String createType = CommonUtil.validOneNull(paramMap, "createType");
 
         SQL sql = new SQL() {{
-            SELECT("*, '' as station_kind, '' as station_name, '' as address");
+            SELECT("t1.facility_seq, t1.facility_id" +
+                    ", t1.administ_zone, t1.facility_image" +
+                    ", t1.facility_instl_info, t1.facility_instl_dt" +
+                    ", t1.facility_status, t1.latitude" +
+                    ", t1.longitude, t1.insert_dt, t3.id AS insert_user_id" +
+                    ", t1.update_user_seq , t4.id AS update_user_id" +
+                    ", t2.code_value AS facility_kind" +
+                    ", t2.code_name AS facility_kind_name" +
+                    ", t5.station_kind, t5.station_name, t5.address" +
+//                    현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
+//                    ", t6.code_name AS administ_zone_name");
+                    ", t6.emd_nm AS administ_zone_name" +
+                    ", t7.code_name AS station_kind_name" +
+                    ", t7.code_value AS station_kind_value");
             FROM("t_facility t1");
-            if("dimming".equals(optType)) {
-                INNER_JOIN("v_dimming_group v1 on t1.facility_seq = v1.facility_seq");
-                if(dimmingGroupSeq != null) {
-                    WHERE("v1.dimming_group_seq::integer = " + dimmingGroupSeq);
+            INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
+            LEFT_OUTER_JOIN("t_user t3 on t1.insert_user_seq = t3.user_seq");
+            LEFT_OUTER_JOIN("t_user t4 on t1.update_user_seq = t4.user_seq");
+            LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");
+//            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
+//            LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
+            LEFT_OUTER_JOIN("t_area_emd t6 on t1.administ_zone = t6.emd_cd");
+            LEFT_OUTER_JOIN("v_facility_station t7 on t5.station_kind = t7.code_seq");
+
+            if (facilityKind != null && !facilityKind.isEmpty()) {
+                WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
+                if (facilityKind.contains("lamp_road")) {
+                    String modifyQry = "";
+                    if ("mod".equals(createType)) {
+                        modifyQry = "AND v1.dimming_group_seq::integer != " + paramMap.get("dimmingGroupSeq");
+                    }
+                    WHERE("NOT EXISTS (" +
+                            "SELECT * " +
+                            "FROM v_dimming_group v1 " +
+                            "WHERE v1.facility_seq = t1.facility_seq " +
+                            modifyQry +
+                            ")");
                 }
             }
-            if(keyword != null && !keyword.equals("")) {
-                WHERE("facility_kind LIKE" + keyword);
+//            현재는 데이터가 안맞아서 주석 해놓음
+//            if (administZone != null && !administZone.isEmpty()) {
+////                WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
+//                WHERE("t6.emd_cd" + SqlUtil.getWhereInStr(administZone));
+//            }
+            if (station != null && !station.isEmpty()) {
+                WHERE("t7.code_value" + SqlUtil.getWhereInStr(station));
             }
+            if (keyword != null && !keyword.equals("")) {
+                WHERE("(t1.facility_id LIKE '%" + keyword + "%'" +
+                        " OR t2.code_name LIKE '%" + keyword + "%'" +
+                        " OR t5.station_name LIKE '%" + keyword + "%'" +
+//                        현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
+//                        " OR t6.code_name LIKE '%" + keyword + "%'" +
+                        " OR t6.emd_nm LIKE '%" + keyword + "%'" +
+                        " OR t7.code_name LIKE '%" + keyword + "%'" +
+                        ")");
+            }
+            ORDER_BY("t1.facility_seq");
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);
@@ -36,14 +88,56 @@ public class FacilitySqlProvider {
     }
 
     public String selectCountQry(Map<String, Object> paramMap) {
-        String keyword = paramMap.get("keyword").toString();
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+        ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
+        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
+        ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
+        String createType = CommonUtil.validOneNull(paramMap, "createType");
 
         SQL sql = new SQL() {{
-            SELECT("COUNT(*) AS count");
+            SELECT("COUNT(*) AS count" +
+                    ", count(case when t1.facility_status = 0 then 1 end) AS not_use_count" +
+                    ", count(case when t1.facility_status = 1 then 1 end) AS normal_count" +
+                    ", count(case when t1.facility_status = 2 then 1 end) AS error_count");
             FROM("t_facility t1");
-            INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
-            if(keyword != null && !keyword.equals("")) {
-                WHERE("facility_kind LIKE" + keyword);
+            INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
+            LEFT_OUTER_JOIN("t_station t3 on t1.station_seq = t3.station_seq");
+//            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
+//            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
+            LEFT_OUTER_JOIN("t_area_emd t4 on t1.administ_zone = t4.emd_cd");
+            LEFT_OUTER_JOIN("v_facility_station t5 on t3.station_kind = t5.code_seq");
+            if (facilityKind != null && !facilityKind.isEmpty()) {
+                WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
+                if (facilityKind.contains("lamp_road")) {
+                    String modifyQry = "";
+                    if ("mod".equals(createType)) {
+                        modifyQry = "AND v1.dimming_group_seq::integer != " + paramMap.get("dimmingGroupSeq");
+                    }
+                    WHERE("NOT EXISTS (" +
+                            "SELECT * " +
+                            "FROM v_dimming_group v1 " +
+                            "WHERE v1.facility_seq = t1.facility_seq " +
+                            modifyQry +
+                            ")");
+                }
+            }
+//            현재는 데이터가 안맞아서 주석 해놓음
+//            if (administZone != null && !administZone.isEmpty()) {
+////                WHERE("t5.code_value" + SqlUtil.getWhereInStr(administZone));
+//                WHERE("t4.emd_cd" + SqlUtil.getWhereInStr(administZone));
+//            }
+            if (station != null && !station.isEmpty()) {
+                WHERE("t5.code_value" + SqlUtil.getWhereInStr(station));
+            }
+            if (keyword != null && !keyword.equals("")) {
+                WHERE("(t1.facility_id LIKE '%" + keyword + "%'" +
+                        " OR t2.code_name LIKE '%" + keyword + "%'" +
+                        " OR t3.station_name LIKE '%" + keyword + "%'" +
+//                        현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
+//                        " OR t6.code_name LIKE '%" + keyword + "%'" +
+                        " OR t4.emd_nm LIKE '%" + keyword + "%'" +
+                        " OR t5.code_name LIKE '%" + keyword + "%'" +
+                        ")");
             }
         }};
         return sql.toString();
@@ -70,24 +164,37 @@ public class FacilitySqlProvider {
     }
 
     public String insertOptQry(Map<String, Object> paramMap) {
-        Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
+        List<Map<String, Object>> facilityOptList = (List<Map<String, Object>>) paramMap.get("facilityOptList");
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
 
-        SQL sql = new SQL() {{
-            INSERT_INTO("t_facility_opt");
-            VALUES(qryMap.get("columns").toString(), qryMap.get("values").toString());
-        }};
-        return sql.toString();
+        for (Map<String, Object> facilityOpt : facilityOptList) {
+            if (index == 0) {
+                sb.append("INSERT INTO t_facility_opt (")
+                        .append(SqlUtil.getInsertValuesStr(facilityOpt).get("columns").toString())
+                        .append(")")
+                        .append(" VALUES ");
+            }
+            sb.append("(")
+                    .append(SqlUtil.getInsertValuesStr(facilityOpt).get("values").toString());
+            if (index == facilityOptList.size() - 1) {
+                sb.append(")");
+                break;
+            } else {
+                sb.append("), ");
+            }
+            index++;
+        }
+        return sb.toString();
     }
 
     public String updateQry(Map<String, Object> paramMap) {
         String facilitySeq = paramMap.get("facilitySeq").toString();
 
         SQL sql = new SQL() {{
-            SQL sql = new SQL() {{
-                UPDATE("t_facility");
-                SET(SqlUtil.getMultiSetStr(paramMap));
-                WHERE("facility_seq =" + facilitySeq);
-            }};
+            UPDATE("t_facility");
+            SET(SqlUtil.getMultiSetStr(paramMap));
+            WHERE("facility_seq =" + facilitySeq);
         }};
         return sql.toString();
     }
@@ -96,29 +203,63 @@ public class FacilitySqlProvider {
         String facilitySeq = paramMap.get("facilitySeq").toString();
 
         SQL sql = new SQL() {{
-            SQL sql = new SQL() {{
-                UPDATE("t_facility_opt");
-                SET(SqlUtil.getMultiSetStr(paramMap));
-                WHERE("facility_seq =" + facilitySeq);
-            }};
+            UPDATE("t_facility_opt");
+            SET(SqlUtil.getMultiSetStr(paramMap));
+            WHERE("facility_seq =" + facilitySeq);
         }};
         return sql.toString();
     }
 
     public String deleteQry(int seq) {
         SQL sql = new SQL() {{
-            SQL sql = new SQL() {{
-               DELETE_FROM("t_facility");
-               WHERE("facility_seq =" + seq);
-            }};
+            DELETE_FROM("t_facility");
+            WHERE("facility_seq =" + seq);
+        }};
+        return sql.toString();
+    }
+
+    public String deleteOptQry(Map<String, Object> paramMap) {
+        String facilityOptType = CommonUtil.validOneNull(paramMap, "facilityOptType");
+        List<Integer> delFacilitySeqList = (List<Integer>) paramMap.get("delFacilitySeqList");
+        List<String> ignoreDeleteOptList = (List<String>) paramMap.get("ignoreDeleteOptList");
+        String ignoreDeleteOptListStr = "";
+        String delFacilitySeqListStr = delFacilitySeqList
+                .stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        if (ignoreDeleteOptList != null && !ignoreDeleteOptList.isEmpty()) {
+            for (String ignoreDeleteOpt : ignoreDeleteOptList) {
+                if (index == ignoreDeleteOptList.size() - 1) {
+                    sb.append("'" + ignoreDeleteOpt + "'");
+                    break;
+                } else {
+                    sb.append("'" + ignoreDeleteOpt + "'").append(", ");
+                }
+                index++;
+            }
+        }
+
+        SQL sql = new SQL() {{
+            DELETE_FROM("t_facility_opt t1 ");
+            WHERE("t1.facility_seq IN ( " + delFacilitySeqListStr + " )");
+            if (ignoreDeleteOptList != null && !ignoreDeleteOptList.isEmpty()) {
+                WHERE("t1.facility_opt_name NOT IN ( " + sb.toString() + " )");
+            }
+            WHERE("t1.facility_opt_type::varchar = (" +
+                    "SELECT code_value " +
+                    "FROM v_facility_opt_type " +
+                    "WHERE code_id = '" + facilityOptType + "')");
         }};
         return sql.toString();
     }
 
     public String selectListDimmingGroupQry(Map<String, Object> paramMap) {
-        String keyword = CommonUtil.validOneNull(paramMap,"keyword");
-        String start = CommonUtil.validOneNull(paramMap,"start");
-        String length = CommonUtil.validOneNull(paramMap,"length");
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+        String start = CommonUtil.validOneNull(paramMap, "start");
+        String length = CommonUtil.validOneNull(paramMap, "length");
 
         SQL sql = new SQL() {{
 
@@ -127,8 +268,8 @@ public class FacilitySqlProvider {
                     "SELECT *" +
                     "FROM v_dimming_group" +
                     ") v1");
-            if(keyword != null && !keyword.equals("")) {
-                WHERE("v1.dimming_group_name LIKE" + keyword);
+            if (keyword != null && !keyword.equals("")) {
+                WHERE("v1.dimming_group_name LIKE '%" + keyword + "%'");
             }
             GROUP_BY("v1.dimming_group_seq, v1.dimming_group_name");
             if (!start.equals("") && !length.equals("")) {
@@ -140,7 +281,7 @@ public class FacilitySqlProvider {
     }
 
     public String selectCountDimmingGroupQry(Map<String, Object> paramMap) {
-        String keyword = CommonUtil.validOneNull(paramMap,"keyword");
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
 
         SQL sql = new SQL() {{
 
@@ -153,11 +294,37 @@ public class FacilitySqlProvider {
                         "FROM v_dimming_group" +
                     ") v1"
             );
-            if(keyword != null && !keyword.equals("")) {
-                WHERE("v1.dimming_group_name LIKE" + keyword);
+            if (keyword != null && !keyword.equals("")) {
+                WHERE("v1.dimming_group_name LIKE '%" + keyword + "%'");
             }
             GROUP_BY("v1.dimming_group_name ) s1");
         }};
+        return sql.toString();
+    }
+
+    public String selectListLampRoadInDimmingGroupQry(Map<String, Object> paramMap) {
+        String dimmingGroupSeq = CommonUtil.validOneNull(paramMap, "dimmingGroupSeq");
+
+        SQL sql = new SQL() {
+            {
+                SELECT("t1.facility_seq, t1.facility_Id, t1.longitude, t1.latitude, t1.administ_zone" +
+                        ", v1.dimming_group_name, v1.dimming_group_seq, v1.keep_bright_time" +
+                        ", v1.max_bright_time, v1.min_bright_time, v1.dimming_time_zone");
+                FROM("t_facility t1");
+                INNER_JOIN("v_dimming_group v1 on t1.facility_seq = v1.facility_seq");
+                WHERE("v1.dimming_group_seq::integer = " + dimmingGroupSeq);
+            }
+        };
+        return sql.toString();
+    }
+
+    public String selectOneLastDimmingGroupSeqQry() {
+        SQL sql = new SQL() {
+            {
+                SELECT("MAX(v1.dimming_group_seq) AS dimming_group_seq");
+                FROM("v_dimming_group v1");
+            }
+        };
         return sql.toString();
     }
 }

@@ -19,10 +19,7 @@ public class BaseController {
 
     @Value("${loginPage.path}")
     private String loginPagePath;
-//    @RequestMapping(value = "/")
-//    public String index() {
-//        return "/layout/layout_login";
-//    }
+
 
 
     @RequestMapping("/login/errorTest")
@@ -33,6 +30,10 @@ public class BaseController {
         return mav;
     }
 
+    /**
+     * 권한이 있을경우와 없을경우를 나눠서 페이지 이동
+     * @return
+     */
 
     @RequestMapping(value = "/")
     public String index() {

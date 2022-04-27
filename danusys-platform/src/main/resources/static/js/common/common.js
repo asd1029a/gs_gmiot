@@ -587,25 +587,31 @@ const comm = {
 
         comm.createMultiSelectBox.prototype.setList = function(datas) {
             if (datas.data.length != 0) {
-
                 let tData = datas.data[0];
                 let data = datas.data.slice(1);
 
                 comm.createMultiSelectBox.prototype.$select.html(tData.codeName);
                 comm.createMultiSelectBox.prototype.$select.data("placeholder", tData.codeName);
 
+                //페이지 전환없이 여러개 생성시(관제에서) 구분을 위해
+                let $tabType = comm.createMultiSelectBox.prototype.$select.parents('.lnb_tab_section').attr('data-value');
                 let codeValue = stringFunc.camelize(tData.codeValue);
+                let seq = tData.codeSeq;
+                if($tabType) { seq = $tabType + seq; }
                 let listEle =
                     `<span class="checked_all">
-                        <input type="checkbox" class="checkAll" id="${tData.codeSeq}All" name="${codeValue}" data-value="all">
-                        <label for="${tData.codeSeq}All"><span></span>전체</label>
+                        <input type="checkbox" class="checkAll" id="${seq}All" name="${codeValue}" data-value="all" checked>
+                        <label for="${seq}All"><span></span>전체</label>
                     </span>`;
 
                 data.forEach((item, idx) => {
+                    //페이지 전환없이 여러개 생성시(관제에서) 구분을 위해
+                    let id = item.codeSeq;
+                    if($tabType) { id = $tabType + id; }
                     let spanEle =
                         `<span>
-                            <input type="checkbox" id="${item.codeSeq}" name="${codeValue}" data-value="${item.codeSeq}">
-                            <label for="${item.codeSeq}"><span></span>${item.codeName}</label>
+                            <input type="checkbox" id="${id}" name="${codeValue}" data-value="${item.codeValue}" checked>
+                            <label for="${id}"><span></span>${item.codeName}</label>
                         </span>`;
 
                     listEle += spanEle;
@@ -642,7 +648,6 @@ const comm = {
         }
         comm.createMultiSelectBox.prototype.listSelect = function($target) {
             $target.toggleClass('selected');
-
             let $targetType = $target.parents(".dropdown_checkbox").data("selectboxType");
 
             let selectStr = "";
@@ -651,6 +656,13 @@ const comm = {
             let $targetSelectBox = $("[data-selectbox-type=" + $targetType + "]");
             let $targetSelect = $targetSelectBox.find(".select_title");
             let $targetListLi = $targetSelectBox.find(".list > span");
+
+            //페이지 전환없이 여러개 생성시(관제에서) 구분을 위해
+            let $tabType = $target.parents('.lnb_tab_section').attr('data-value');
+            if($tabType) {
+                $targetSelect = $targetSelectBox.filter('.selected_box').find('.select_title');
+                $targetListLi = $targetSelectBox.filter('.selected_box').find('.list > span');
+            }
 
             if ($targetInput.hasClass("checkAll")) {
                 selectStr = $targetInput.prop('checked') ? $target.text() : $targetSelect.data("placeholder");
@@ -795,7 +807,7 @@ var stringFunc = {
         return result;
     },
     camelize: function(text) {
-        return text.replace(/^([A-Z])|[\s-_]+(\w)/g, function(match, p1, p2, offset) {
+        return text.replace(/^([A-Z]+)|[\s-_]+(\w)/g, function(match, p1, p2, offset) {
             if (p2) return p2.toUpperCase();
             return p1.toLowerCase();
         });
@@ -907,7 +919,7 @@ const dateFunc = {
     },
     /**
      * 현재날짜
-     * @param 이전날짜, 이후날짜
+     * @param 날짜 기준(0: 현재, 1: 내일)
      * @returns date 타입 Object
      */
     getCurrentDate: function(d) {
@@ -917,7 +929,7 @@ const dateFunc = {
     },
     /**
      * 현재날짜
-     * @param 이전날짜, 이후날짜
+     * @param 날짜 기준(0: 현재, 1: 내일), 이전날짜, 이후날짜
      * @returns EX) 201908191500
      */
     getCurrentDateYyyyMmDdHh24Mi: function(d, dateSep, timeSep) {

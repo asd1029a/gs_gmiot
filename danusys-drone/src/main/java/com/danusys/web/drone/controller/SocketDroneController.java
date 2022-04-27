@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class SocketDroneController {
 
     @RequestMapping("/droneSocket")
     public ResponseEntity<?> getSocketList() {
-        List<Map<String, Object>> listMap = new ArrayList<>();
+        Map<Integer, Map<String, Object>> listMap = new HashMap<>();
         listMap = connectionService.getSocketList();
         log.info("listMap1={}",listMap);
         log.info("connectionMap={}",connectionService.getConnectionMap());
@@ -40,13 +41,12 @@ public class SocketDroneController {
 
     @PutMapping("/socket")
     public ResponseEntity<?> saveSocketList() {
-        List<Map<String, Object>> listMap = new ArrayList<>();
+        Map<Integer, Map<String, Object>> listMap = new HashMap<>();
         droneSocketService.delete();
         listMap=connectionService.getSocketList();
-//        listMap.forEach(socketMap -> {
-//            socketMap.get()
-//        });
+
         log.info("listMap2={}",listMap);
+
         return null;
 
     }
