@@ -12,4 +12,4 @@
 .dashboard_snb dd:hover i,
 .dashboard_snb dd.active i{filter: brightness(2);}
 /*TODO 대시보드 css 변경*/
-.empty_area{flex: 1; /*padding: 25px;*/ background: darkgreen; /*임시*/overflow-x: hidden;}
+.empty_area{flex: 1; /*padding: 25px;*/ /*background: darkgreen;*/ /*임시*/overflow-x: hidden;}
