@@ -148,6 +148,7 @@ const signage = {
             "<select class='contents_kind' id='kind_"+idx+"'>" +
             "<option value='urlLink'>URL 링크</option>" +
             "<option value='fileSystem'>이미지 / 영상 선택</option>" +
+            "<option value='airPollution'>미세먼지 정보</option>" +
             "</select>" +
             "<input type='text'>" +
             "</li>";
