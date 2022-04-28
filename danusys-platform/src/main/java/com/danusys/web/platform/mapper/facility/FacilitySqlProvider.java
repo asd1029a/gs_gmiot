@@ -254,4 +254,16 @@ public class FacilitySqlProvider {
             }};
         return sql.toString();
     }
+
+    public String selectListSignageTemplateQry(Map<String, Object> paramMap) {
+        //String signageTemplateSeq = CommonUtil.validOneNull(paramMap, "templateSeq");
+
+        SQL sql = new SQL() {
+            {
+                SELECT("t1.template_seq, t1.template_name, t1.template_explain, t1.template_content");
+                FROM("t_signage_template t1");
+                //WHERE("t1.template_seq::integer = " + signageTemplateSeq);
+            }};
+        return sql.toString();
+    }
 }
