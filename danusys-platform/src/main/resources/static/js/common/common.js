@@ -301,6 +301,7 @@ const comm = {
             searching: false,
             select: true,
             scrollY: "calc(100% - 6px)",
+            scroll: true,
             language: {
                 emptyTable: "데이터가 없습니다.",
                 zeroRecords: "검색된 데이터가 없습니다.",

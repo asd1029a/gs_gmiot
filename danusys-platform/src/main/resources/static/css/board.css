@@ -49,7 +49,7 @@
 .accordion > li.on > a:before{border: 3px solid #3a66e5;}
 /* Sub Menu */
 .accordion_sub_menu{}
-.accordion_sub_menu li a {padding: 0px 24px 0px 446px; color: #797d87; font-size: 14px; border: none; background: #1e1f23;}
+.accordion_sub_menu li a {padding: 0px 24px 0px 44px; color: #797d87; font-size: 14px; border: none; background: #1e1f23;}
 .accordion_sub_menu li a:before{position: absolute; top: 20px; left: 24px; content: ''; width: 12px; height: 12px; margin: 0px; box-sizing: border-box; background: url(../images/default/settingMenuTree.svg);}
 .accordion_sub_menu li > a span{color: #bc4a4a; font-size: 15px; font-weight: bold;}
 /* Functionality */

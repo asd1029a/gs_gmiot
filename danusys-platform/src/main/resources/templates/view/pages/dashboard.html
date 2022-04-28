@@ -10,7 +10,16 @@
 </th:block>
 
 <th:block layout:fragment="content">
-    <h1>Dashboard</h1>
+    <div class="dashboard">
+        <dl class="dashboard_snb">
+            <dt>유동인구 분석 통합 모니터링 대시보드</dt>
+            <dd class="dashboardType active" data-value="peopleCount"><i><img src="/images/default/dashboardSnb01Default.svg"></i>유동인구 분석</dd>
+            <dd class="dashboardType" data-value="smartPoleEvent"><i><img src="/images/default/dashboardSnb02Default.svg"></i>스마트폴 이벤트</dd>
+        </dl>
+        <div class="empty_area">
+            <div><img src="/images/sample/dashboard_peopleCount.png"></div>
+        </div>
+    </div>
 </th:block>
 
 <th:block th:fragment="pagesScript">

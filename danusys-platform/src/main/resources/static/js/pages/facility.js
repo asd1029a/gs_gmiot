@@ -640,9 +640,9 @@ const dimming = {
                 f.getProperties().properties.selected = !selectFlag;
                 //체크 박스 토글
                 $checkInput.prop('checked', !selectFlag);
-
-                //TODO 체크박스로 ScrollTop
-                //hide된 row는 alert? //////////
+                //리스트 스크롤
+                const checkPosition = $checkInput.parents('tr').position().top;
+                $('#lampRoadInGroupTable').parents('.dataTables_scrollBody').scrollTop(checkPosition);
 
                 window.dimmGroupControl.find('dimmGroupLayer').getSource().changed();
                 window.dimmGroupMap.map.render();
