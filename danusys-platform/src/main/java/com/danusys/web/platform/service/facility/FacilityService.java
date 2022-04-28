@@ -16,4 +16,5 @@ public interface FacilityService {
     EgovMap getListDimmingGroup(Map<String, Object> paramMap) throws Exception;
     EgovMap getLastDimmingGroupSeq() throws Exception;
     EgovMap getListLampRoadInDimmingGroup(Map<String, Object> paramMap) throws Exception;
+    EgovMap getListSignageTemplate(Map<String, Object> paramMap) throws Exception;
 }

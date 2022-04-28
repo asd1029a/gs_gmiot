@@ -97,4 +97,11 @@ public class FacilityServiceImpl implements FacilityService{
         return resultMap;
     }
 
+    @Override
+    public EgovMap getListSignageTemplate(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(fsp.selectListSignageTemplateQry(paramMap)));
+        return resultMap;
+    }
+
 }
