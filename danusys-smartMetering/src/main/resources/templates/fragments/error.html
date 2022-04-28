@@ -2,7 +2,7 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layout/singleLayout">
+      layout:decorate="~{layout/singleLayout}">
 
 <th:block layout:fragment="content">
 
@@ -12,13 +12,20 @@
             <p>원격검침 통합관리 시스템</p>
         </section>
         <section class="loginForm" style="color:#FFFFFF; line-height:30px;">
-	        <dl>
+            <dl>
+                > 요청호스트 : <th:block th:text="${resultMap.requestHost}"/> <br />
+                > Exception : <th:block th:text="${resultMap.message}"/> <br /> <!-- exception대신 message 담아줌 -->
+                > 시스템 : <th:block th:text="${resultMap.systemType}"/><br />
+                > 요청 IP : <th:block th:text="${resultMap.requestIp}"/><br /><br />
+                <dd onclick="location.href='/'">메인으로 가기</dd>
+            </dl>
+	 <!--       <dl>
 	        	> 요청호스트 : ${resultMap.requestHost}<br />
 		        > Exception : ${resultMap.exception}<br />
 		        > 시스템 : ${resultMap.systemType}<br />
 		        > 요청 IP : ${resultMap.requestIp}<br /><br />
 		        <dd onclick="location.href='../../../webapp'">메인으로 가기</dd>
-	        </dl>
+	        </dl>-->
         </section>
         <!-- 
         <section class="loginForm">

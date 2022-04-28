@@ -38,6 +38,8 @@ public class CommonsUserDetails implements UserDetails {
         return user.getUserId();
     }
 
+    public String getUserId() {   return user.getUserId(); }
+
     public int getUserSeq() {
         return user.getUserSeq();
     }

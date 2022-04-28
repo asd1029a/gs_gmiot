@@ -1,18 +1,19 @@
 package com.danusys.web.commons.auth.controller;
 
-import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.commons.auth.dto.request.UserGroupPermitRequest;
 import com.danusys.web.commons.auth.service.UserGroupPermitService;
 import com.danusys.web.commons.auth.service.UserGroupService;
+import com.danusys.web.commons.auth.service.UserInGroupService;
+import com.danusys.web.commons.auth.dto.request.UserGroupPermitRequest;
+import com.danusys.web.commons.auth.service.UserGroupPermitService;
+import com.danusys.web.commons.auth.service.UserGroupService;
+import com.danusys.web.commons.auth.service.UserInGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class UserGroupController {
 
     private final UserGroupService userGroupService;
     private final UserGroupPermitService userGroupPermitService;
+    private final UserInGroupService userInGroupService;
 
     /*
        name: get
@@ -190,18 +192,5 @@ public class UserGroupController {
                 userGroupPermitRequest.getUserGroupSeq(), userGroupPermitRequest.getPermitSeq());
         return ResponseEntity
                 .status(HttpStatus.OK).build();
-    }
-
-    @ResponseBody
-    @PostMapping(value = "excel/download")
-    public void exportNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
-        Workbook wb = null;
-        Map<String, Object> dataMap = userGroupService.getList((Map<String, Object>) paramMap.get("search"));
-
-        paramMap.put("dataMap", dataMap.get("data"));
-//        log.info("dataList = {}", dataMap.get("data"));
-        wb = FileUtil.excelDownload2(paramMap) ;
-        wb.write(response.getOutputStream());
-        wb.close();
     }
 }

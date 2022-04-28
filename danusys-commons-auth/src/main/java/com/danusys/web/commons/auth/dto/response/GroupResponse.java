@@ -1,7 +1,6 @@
 package com.danusys.web.commons.auth.dto.response;
 
 import com.danusys.web.commons.auth.model.UserGroup;
-import com.danusys.web.commons.auth.model.UserGroupPermit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +24,7 @@ public class GroupResponse {
     private String inUserId = "";
 
     //private List<UserGroupPermit> userGroupPermit;
-    private List<UserGroupPermitResponse> userGroupPermit;
+    private List<com.danusys.web.commons.auth.dto.response.UserGroupPermitResponse> userGroupPermit;
     //    private List<UserGroupInUser> userGroupInUser;
     private String checked;
     private int userGroupStatus;

@@ -516,8 +516,7 @@ var comm = {
 	}
 	, audioPlay : function(src) {
 		var audioId = "audio" + Math.floor(Math.random()*1000);
-		var audioHtml = "<audio id='"+audioId+"' src='"+src+"' autoplay></audio>";
-		//console.log(audioId);
+		var audioHtml = "<audio id='"+audioId+"' src='"+src+"' autoplay></audio>";		//console.log(audioId);
 
 		$("body").append(audioHtml);
 		

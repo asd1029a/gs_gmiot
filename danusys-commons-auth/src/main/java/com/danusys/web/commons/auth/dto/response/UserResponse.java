@@ -1,7 +1,6 @@
 package com.danusys.web.commons.auth.dto.response;
 
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;

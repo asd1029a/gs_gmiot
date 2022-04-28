@@ -84,7 +84,7 @@
 	<bean id="requestContextFilter" class="org.springframework.web.filter.RequestContextFilter" />
 	
 	<bean id="customAuthenticationFailureHandler" class="com.danusys.smartmetering.common.handler.LoginFailureHandler" />
- 	<bean id="customAuthenticationSuccessHandler" class="com.danusys.smartmetering.common.handler.LoginSuccessHandler" />
+ 	<bean id="customAuthenticationSuccessHandler" class="com.danusys.web.smartmetering.common.handler.LoginSuccessHandler" />
  	<bean id="customAuthenticationLogoutSuccessHandler" class="com.danusys.smartmetering.common.handler.LogoutSuccessHandler" />
  	
  	<bean id="sas" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">

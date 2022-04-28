@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>0f17e585-2a28-4a38-993d-28c148561e12.SCHEMA:anyang</OriginalElement>
+  <nodes>
+    <node x="1112.0" y="1243.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_safety</node>
+    <node x="456.0" y="1391.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnfiledetail</node>
+    <node x="1157.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.stat_1</node>
+    <node x="584.0000000000001" y="-220.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnentrprsmber</node>
+    <node x="50.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.record_details</node>
+    <node x="1400.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.expenses</node>
+    <node x="2734.9910714285716" y="1243.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnroleinfo</node>
+    <node x="603.0" y="2420.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.tl_scco_emd</node>
+    <node x="-235.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_rest</node>
+    <node x="1661.875" y="-423.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettccmmnclcode</node>
+    <node x="232.0" y="-423.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.center_eqpmn_def</node>
+    <node x="80.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.eqpmn_cvpl</node>
+    <node x="2461.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.rtetngoods</node>
+    <node x="763.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_other</node>
+    <node x="849.0" y="2420.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.tl_scco_sig</node>
+    <node x="-235.0" y="924.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team_dtl_1</node>
+    <node x="1743.0" y="1243.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.cctv_eqpmn</node>
+    <node x="2428.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_dump</node>
+    <node x="2756.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_alarm</node>
+    <node x="976.9772727272727" y="-423.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorgroupinfo</node>
+    <node x="293.0" y="2420.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnprogrmlist</node>
+    <node x="1230.0" y="946.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team_dtl_4</node>
+    <node x="2219.25" y="1490.5">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnroles_hierarchy</node>
+    <node x="1660.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.cctv_eqpmn_n</node>
+    <node x="-235.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettczip</node>
+    <node x="283.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.cctv_stat</node>
+    <node x="2246.324404761905" y="1276.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorinfo</node>
+    <node x="611.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.cctv_tree</node>
+    <node x="905.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.VIEW:anyang.comvnusermaster</node>
+    <node x="1105.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_coast</node>
+    <node x="150.0" y="1243.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_work</node>
+    <node x="-235.0" y="1243.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.eqpmn_trobl</node>
+    <node x="741.0" y="924.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team_dtl_3</node>
+    <node x="2450.25" y="1479.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnemplyrscrtyestbs</node>
+    <node x="1915.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.cctv_bbs</node>
+    <node x="1273.0" y="2420.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.spatial_ref_sys</node>
+    <node x="-27.0" y="2420.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.geometry_columns</node>
+    <node x="2120.0" y="946.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_day_dtl</node>
+    <node x="-235.0" y="2420.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.member_auths</node>
+    <node x="1319.0" y="-253.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnemplyrinfo</node>
+    <node x="1633.875" y="115.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettccmmndetailcode</node>
+    <node x="1523.0" y="2420.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.ids</node>
+    <node x="1455.0" y="1243.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnqustnrrespondinfo</node>
+    <node x="1387.875" y="-412.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnorgnztinfo</node>
+    <node x="1445.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnqustnrrspnsresult</node>
+    <node x="961.0" y="-187.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettngnrlmber</node>
+    <node x="2129.0" y="468.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_day</node>
+    <node x="-235.0" y="-423.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.center_eqpmn</node>
+    <node x="2756.25" y="1479.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorrolerelate</node>
+    <node x="489.5" y="1243.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnfile</node>
+    <node x="754.0" y="1243.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_handle</node>
+    <node x="370.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_police</node>
+    <node x="1645.375" y="-165.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettccmmncode</node>
+    <node x="2095.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.emgnc_contact</node>
+    <node x="2758.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.path_details</node>
+    <node x="1735.0" y="468.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.cctv_eqpmn_dtl</node>
+    <node x="251.99999999999994" y="957.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team_dtl_2</node>
+    <node x="1774.0" y="1738.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_fire</node>
+    <node x="545.0" y="468.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team</node>
+    <node x="2544.0" y="468.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.cctv_eqpmn_dtl_def</node>
+    <node x="1086.0" y="2420.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lp_pa_cbnd</node>
+    <node x="2205.0" y="2101.0">0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.member_manage</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team_dtl_4" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team" relationship="REFERENCES">
+      <point x="0.0" y="-115.0" />
+      <point x="1460.0" y="899.0" />
+      <point x="731.0" y="899.0" />
+      <point x="0.0" y="203.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnentrprsmber" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorgroupinfo" relationship="REFERENCES">
+      <point x="0.0" y="-280.0" />
+      <point x="762.5000000000001" y="-278.0" />
+      <point x="1128.4772727272727" y="-278.0" />
+      <point x="0.0" y="60.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettccmmndetailcode" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettccmmncode" relationship="REFERENCES">
+      <point x="0.0" y="-115.0" />
+      <point x="0.0" y="115.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnemplyrinfo" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnorgnztinfo" relationship="REFERENCES">
+      <point x="65.75" y="-313.0" />
+      <point x="1516.25" y="-278.0" />
+      <point x="1488.375" y="-278.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettngnrlmber" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorgroupinfo" relationship="REFERENCES">
+      <point x="0.0" y="-247.0" />
+      <point x="1130.0" y="-278.0" />
+      <point x="1128.4772727272727" y="-278.0" />
+      <point x="0.0" y="60.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnemplyrscrtyestbs" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorinfo" relationship="REFERENCES">
+      <point x="0.0" y="-49.0" />
+      <point x="2593.25" y="1459.0" />
+      <point x="2662.25" y="1459.0" />
+      <point x="2662.25" y="1449.0" />
+      <point x="2434.6577380952385" y="1449.0" />
+      <point x="75.33333333333348" y="60.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_day_dtl" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_day" relationship="REFERENCES">
+      <point x="0.0" y="-115.0" />
+      <point x="0.0" y="214.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnfiledetail" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnfile" relationship="REFERENCES">
+      <point x="0.0" y="-104.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnroles_hierarchy" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorinfo" relationship="REFERENCES">
+      <point x="-52.75" y="-37.5" />
+      <point x="2272.0" y="1459.0" />
+      <point x="2283.9910714285716" y="1459.0" />
+      <point x="-75.33333333333348" y="60.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorrolerelate" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnroleinfo" relationship="REFERENCES">
+      <point x="53.5" y="-49.0" />
+      <point x="2916.75" y="1459.0" />
+      <point x="2867.4910714285716" y="1459.0" />
+      <point x="0.0" y="93.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnemplyrinfo" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorgroupinfo" relationship="REFERENCES">
+      <point x="-65.75" y="-313.0" />
+      <point x="1384.75" y="-278.0" />
+      <point x="1128.4772727272727" y="-278.0" />
+      <point x="0.0" y="60.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettccmmncode" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettccmmnclcode" relationship="REFERENCES">
+      <point x="0.0" y="-115.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team_dtl_1" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team" relationship="REFERENCES">
+      <point x="0.0" y="-137.0" />
+      <point x="-1.5" y="899.0" />
+      <point x="731.0" y="899.0" />
+      <point x="0.0" y="203.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorrolerelate" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.lettnauthorinfo" relationship="REFERENCES">
+      <point x="-53.5" y="-49.0" />
+      <point x="2809.75" y="1459.0" />
+      <point x="2662.25" y="1459.0" />
+      <point x="2662.25" y="1449.0" />
+      <point x="2434.6577380952385" y="1449.0" />
+      <point x="75.33333333333348" y="60.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team_dtl_2" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team" relationship="REFERENCES">
+      <point x="5.6843418860808015E-14" y="-104.0" />
+      <point x="486.5" y="899.0" />
+      <point x="731.0" y="899.0" />
+      <point x="0.0" y="203.0" />
+    </edge>
+    <edge source="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team_dtl_3" target="0f17e585-2a28-4a38-993d-28c148561e12.TABLE:anyang.report_cntrl_team" relationship="REFERENCES">
+      <point x="0.0" y="-137.0" />
+      <point x="975.5" y="899.0" />
+      <point x="731.0" y="899.0" />
+      <point x="0.0" y="203.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.26994464343861935" showDependencies="false" x="1410.5" y="1112.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

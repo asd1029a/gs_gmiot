@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone</OriginalElement>
+  <nodes>
+    <node x="753.3333333333333" y="-225.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user_group</node>
+    <node x="-25.5" y="-302.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_base</node>
+    <node x="246.0" y="1077.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_in_mission</node>
+    <node x="-189.0" y="1077.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_permit</node>
+    <node x="1022.3333333333333" y="-302.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user</node>
+    <node x="1263.3333333333333" y="-302.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_log</node>
+    <node x="568.6666666666665" y="110.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user_group_permit</node>
+    <node x="-189.0" y="291.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.mission</node>
+    <node x="886.9345238095239" y="121.5">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user_in_user_group</node>
+    <node x="545.3333333333333" y="-247.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_common_code</node>
+    <node x="16.0" y="82.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_details</node>
+    <node x="-75.5" y="-176.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone</node>
+    <node x="1279.3333333333333" y="-132.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_log_details</node>
+    <node x="52.0" y="1077.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_socket</node>
+    <node x="-187.0" y="736.0">42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.mission_details</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user_group_permit" target="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_common_code" relationship="REFERENCES">
+      <point x="-70.66666666666663" y="-82.0" />
+      <point x="604.0" y="85.0" />
+      <point x="592.3333333333333" y="85.0" />
+      <point x="-47.0" y="126.0" />
+    </edge>
+    <edge source="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user_in_user_group" target="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user" relationship="REFERENCES">
+      <point x="55.0" y="-70.5" />
+      <point x="1051.9345238095239" y="85.0" />
+      <point x="1120.3333333333333" y="85.0" />
+      <point x="0.0" y="181.0" />
+    </edge>
+    <edge source="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.mission_details" target="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.mission" relationship="REFERENCES">
+      <point x="0.0" y="-148.0" />
+      <point x="0.0" y="93.0" />
+    </edge>
+    <edge source="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.mission" target="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone" relationship="REFERENCES">
+      <point x="0.0" y="-93.0" />
+      <point x="-96.5" y="57.0" />
+      <point x="54.0" y="57.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone" target="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_base" relationship="REFERENCES">
+      <point x="0.0" y="-104.0" />
+      <point x="0.0" y="38.0" />
+    </edge>
+    <edge source="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_details" target="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone" relationship="REFERENCES">
+      <point x="0.0" y="-302.0" />
+      <point x="204.5" y="57.0" />
+      <point x="54.0" y="57.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user_in_user_group" target="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user_group" relationship="REFERENCES">
+      <point x="-55.0" y="-70.5" />
+      <point x="941.9345238095239" y="85.0" />
+      <point x="877.8333333333333" y="85.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_log_details" target="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.drone_log" relationship="REFERENCES">
+      <point x="0.0" y="-159.0" />
+      <point x="0.0" y="60.0" />
+    </edge>
+    <edge source="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user_group_permit" target="42212522-94c1-4040-a172-0a90010f6387.TABLE:drone.public.t_user_group" relationship="REFERENCES">
+      <point x="70.66666666666663" y="-82.0" />
+      <point x="745.3333333333333" y="85.0" />
+      <point x="877.8333333333333" y="85.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.5942750466708152" showDependencies="false" x="656.0" y="501.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

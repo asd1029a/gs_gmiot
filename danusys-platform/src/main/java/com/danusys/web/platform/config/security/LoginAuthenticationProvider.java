@@ -1,3 +1,4 @@
+/*
 //package com.danusys.web.platform.config.security;
 //
 //import com.danusys.web.commons.app.EgovFileScrty;
@@ -64,3 +65,4 @@
 //	}
 //
 //}
+*/
