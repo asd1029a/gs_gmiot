@@ -1,7 +1,9 @@
 package com.danusys.web.commons.auth.service;
 
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
-import com.danusys.web.commons.auth.model.*;
+import com.danusys.web.commons.auth.model.Permit;
+import com.danusys.web.commons.auth.model.UserGroup;
+import com.danusys.web.commons.auth.model.UserGroupPermit;
 import com.danusys.web.commons.auth.service.repository.PermitMenuRepository;
 import com.danusys.web.commons.auth.service.repository.PermitRepository;
 import com.danusys.web.commons.auth.service.repository.UserGroupPermitRepository;

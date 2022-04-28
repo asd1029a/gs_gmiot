@@ -15,20 +15,21 @@
 		<!-- <setting name="defaultStatementTimeout" value="25000" /> -->
 		<setting name="jdbcTypeForNull" value="NULL"/>
 	</settings>
-	
-	<typeAliases>   
+
+	<typeAliases>
 		<typeAlias alias="hashMap" type="java.util.HashMap" />
 		<typeAlias alias="String" type="java.lang.String"/>
-		<typeAlias alias="uisRsMap" type="com.danusys.smartmetering.common.util.UISResultMap" />
-		<typeAlias alias="adminInfo" type="com.danusys.smartmetering.common.model.AdminInfo" />
+		<typeAlias alias="uisRsMap" type="com.danusys.web.smartmetering.common.util.UISResultMap" />
+		<!--		<typeAlias alias="adminInfo" type="com.danusys.web.smartmetering.common.model.AdminInfo" />  -->
+		<typeAlias alias="adminInfo" type="com.danusys.web.commons.auth.config.auth.CommonsUserDetails"/>
 	</typeAliases>
-	
+
 	<!--
 	<typeHandlers>
 		<typeHandler javaType="String" handler="com.prom.dao.typeHandler.StringTypeHandlerEx"/>
 	</typeHandlers>
   	-->
-  	
+
 	<!-- <plugins>
     	<plugin interceptor="com.java.interceptor.MybatisLogInterceptor"/>
 	</plugins> -->

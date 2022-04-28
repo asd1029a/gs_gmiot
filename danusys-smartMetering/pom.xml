@@ -29,10 +29,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<version>2.3.12.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>2.3.12.RELEASE</version>
 		</dependency>
 
 		<dependency>
@@ -47,20 +49,20 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+		<!--		<dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-security</artifactId>
+                </dependency>
 
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		-->
+                <dependency>
+                    <groupId>org.springframework.security</groupId>
+                    <artifactId>spring-security-test</artifactId>
+                    <scope>test</scope>
+                </dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
+			<version>2.3.12.RELEASE</version>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
@@ -75,6 +77,14 @@
 			<artifactId>json</artifactId>
 			<version>20160212</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -83,27 +93,29 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<version>2.3.12.RELEASE</version>
 		</dependency>
-	<!--	<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-websocket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-messaging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-messaging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>webjars-locator-core</artifactId>
-		</dependency>-->
+		<!--	<dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-websocket</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-messaging</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-messaging</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>webjars-locator-core</artifactId>
+            </dependency>-->
 
 		<dependency>
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
 			<artifactId>thymeleaf-layout-dialect</artifactId>
+			<version>2.4.1</version>
 		</dependency>
 
 
@@ -160,20 +172,58 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.17</version>
-			<scope>compile</scope>
+			<version>3.7</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>3.17</version>
-			<scope>compile</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.17</version>
-			<scope>compile</scope>
+			<version>3.7</version>
+		</dependency>
+
+
+		<!--       <dependency>
+                   <groupId>org.springframework.cloud</groupId>
+                   <artifactId>spring-cloud-netflix-zuul</artifactId>
+                   <version>2.2.7.RELEASE</version>
+                   <scope>compile</scope>
+               </dependency>-->
+
+
+<!--		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+			<version>2.2.7.RELEASE</version>
+		</dependency>-->
+		<!--       <dependency>
+                   <groupId>org.springframework.security</groupId>
+                   <artifactId>spring-security-core</artifactId>
+               </dependency>
+               <dependency>
+                   <groupId>org.springframework.security</groupId>
+                   <artifactId>spring-security-web</artifactId>
+               </dependency>
+       -->
+
+		<!--
+                &lt;!&ndash; 타임리프에 security 사용 &ndash;&gt;
+                <dependency>
+                    <groupId>org.thymeleaf.extras</groupId>
+                    <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+                </dependency>
+        -->
+
+
+		<!-- auth, app 모듈 사용 -->
+		<!--		<dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                    <scope>provided</scope>
+                </dependency>-->
+		<dependency>
+			<groupId>com.danusys.web</groupId>
+			<artifactId>danusys-commons-auth-session</artifactId>
+			<version>${revision}</version>
 		</dependency>
 
 	</dependencies>

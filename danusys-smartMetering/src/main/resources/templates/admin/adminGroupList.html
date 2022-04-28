@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layout/settingLayout">
+      layout:decorate="~{layout/settingLayout}">
 
 <th:block layout:fragment="content">
 
@@ -81,10 +81,12 @@
                 </ul>
                 <form id="adminGroupForm" data-groupcontent="info">
                     <dl>
-                        <dt><label for="adminGroupName">사용자 그룹 이름</label><span>필수</span></dt>
+                        <dt><label for="userGroupName">사용자 그룹 이름</label><span>필수</span></dt>
                         <dd>
-                            <input type="hidden" id="adminGroupSeq" name="adminGroupSeq"/>
-                            <input type="text" id="adminGroupName" name="adminGroupName" data-required="true" placeholder="이름을 입력해주세요"/>
+                  <!--      <input type="hidden" id="adminGroupSeq" name="adminGroupSeq"/>  -->
+                            <input type="hidden" id="userGroupSeq" name="userGroupSeq"/> <!-- 테스트 추가  -->
+                            <!-- 기존 adminGroupName을 userGroupName으로 수정 -->
+                            <input type="text" id="userGroupName" name="userGroupName" data-required="true" placeholder="이름을 입력해주세요"/>
                         </dd>
                     </dl>
                     <dl>
