@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>com.danusys.web</groupId>
-            <artifactId>danusys-commons-auth</artifactId>
+            <artifactId>danusys-commons-auth-token</artifactId>
             <version>${revision}</version>
         </dependency>
 

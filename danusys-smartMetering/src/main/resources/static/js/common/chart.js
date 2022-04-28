@@ -1,24 +1,24 @@
 const chart = {
-	/**
+    /**
      * @param pOptions(차트 옵션)
      * @param pId(chart ID)
      * @returns void
-    */
+     */
     createChart : (pOptions, pId) => {
-    	let charts;
-    	const options = $.extend(chart.getDefaultOption(), pOptions);
-    	
-    	if(typeof($("#"+pId).data("charts"))!="undefined") {
-    		charts = $("#"+pId).data("charts");
-    		charts.destroy();
-    	}
-    	charts = new ApexCharts(document.querySelector("#" + pId), options);
-    	charts.render();
-    	$("#"+pId).data("charts", charts);
+        let charts;
+        const options = $.extend(chart.getDefaultOption(), pOptions);
+
+        if(typeof($("#"+pId).data("charts"))!="undefined") {
+            charts = $("#"+pId).data("charts");
+            charts.destroy();
+        }
+        charts = new ApexCharts(document.querySelector("#" + pId), options);
+        charts.render();
+        $("#"+pId).data("charts", charts);
     },
     /**
      * @returns chart 기본옵션 object
-    */
+     */
     getDefaultOption : () => {
         const options = {
             zoom: {
@@ -68,7 +68,7 @@ const chart = {
                 }
             },
             theme: {
-                mode: 'dark', 
+                mode: 'dark',
                 palette: 'palette1',
                 monochrome: {
                     enabled: false,

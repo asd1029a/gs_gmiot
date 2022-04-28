@@ -116,4 +116,12 @@ public class FacilityController {
     public ResponseEntity<EgovMap> getListLampRoadInDimmingGroup(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(facilityService.getListLampRoadInDimmingGroup(paramMap));
     }
+
+    /**
+     * 시설물 : 사이니지 템플릿 목록 조회
+     */
+    @PostMapping(value="/signageTemplate")
+    public ResponseEntity<EgovMap> getListSignageTemplate(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.getListSignageTemplate(paramMap));
+    }
 }

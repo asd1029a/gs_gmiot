@@ -10,7 +10,7 @@ const init = {
 			$ul.empty();
 			
 			$.each(data, (i, v) => {
-				$ul.append("<li><span class='txt'>" +data[i].title + "</span><span class='name'>"+data[i].adminName+"</span><span class='date'>"+data[i].insertDt+"</span></li>");	
+				$ul.append("<li><span class='txt'>" +data[i].title + "</span><span class='name'>"+data[i].userName+"</span><span class='date'>"+data[i].insertDt+"</span></li>");
 			});
 			$ul.on("click", ()=> {
 				location.href = "/setting/board/boardList.do";
