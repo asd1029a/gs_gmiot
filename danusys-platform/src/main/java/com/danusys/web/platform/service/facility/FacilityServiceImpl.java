@@ -1,15 +1,13 @@
 package com.danusys.web.platform.service.facility;
 
 import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.commons.app.PagingUtil;
+import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,8 +22,10 @@ public class FacilityServiceImpl implements FacilityService{
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         if(paramMap.get("draw") != null) {
             Map<String, Object> pagingMap = new HashMap<>();
+            EgovMap count = commonMapper.selectOne(fsp.selectCountQry(paramMap));
             pagingMap.put("data", commonMapper.selectList(fsp.selectListQry(paramMap)));
-            pagingMap.put("count", commonMapper.selectOne(fsp.selectCountQry(paramMap)).get("count"));
+            pagingMap.put("count", count.get("count"));
+            pagingMap.put("statusCount", count);
             return PagingUtil.createPagingMap(paramMap, pagingMap);
         } else {
             EgovMap resultMap = new EgovMap();

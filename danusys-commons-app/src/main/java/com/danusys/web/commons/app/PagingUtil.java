@@ -28,6 +28,8 @@ public class PagingUtil {
         resultMap.put("data", dataListMap.get("data"));
         resultMap.put("recordsTotal", dataListMap.get("count"));
         resultMap.put("recordsFiltered", dataListMap.get("count"));
+        if (dataListMap.get("statusCount") != null)
+            resultMap.put("statusCount", dataListMap.get("statusCount"));
         return resultMap;
     }
 

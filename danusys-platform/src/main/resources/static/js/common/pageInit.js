@@ -55,7 +55,8 @@ $(document).ready(() => {
     } else if(path === "/pages/inqry/station") {
         // station.create();
     } else if(path === "/pages/inqry/facilities") {
-        // facility.create();
+        facility.eventHandler();
+        facility.create();
     } else if(path === "/pages/inqry/eventCabinet") {
         event.eventHandler($('#cabinetEventTable'), 'cabinet');
         event.create($('#cabinetEventTable'), 'cabinet');
@@ -109,6 +110,19 @@ $(document).ready(() => {
             ago.setDate(now.getDate() - 2);
             $startDt.datepicker().data('datepicker').selectDate(ago);
             $endDt.datepicker().data('datepicker').selectDate(now);
+        });
+    }
+    // 대시보드 (임시)
+    else if(path === "/pages/dashboard") {
+        //임시 이벤트 핸들러 처리 -> TODO dashboard.js 생성?
+        $('.dashboard_snb dd.dashboardType').on("click", e => {
+            const $target = $(e.currentTarget);
+            const theme = $target.attr('data-value');
+            //선택 css 처리
+            $target.siblings('dd').removeClass('active');
+            $target.addClass('active');
+            //이미지 변경
+            $('.empty_area div img').attr('src','/images/sample/dashboard_' + theme + '.png');
         });
     }
 })
