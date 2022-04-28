@@ -456,12 +456,8 @@ const dimming = {
                         window.dimmMap.addLayer(dimmLayer);
 
                         let fitExtent = window.dimmControl.find('dimmLayer').getSource().getExtent();
-                        // TODO 데이터보고 조정하거나 삭제하거나
-                        // fitExtent.forEach((ind, v) => {
-                        //     console.log(ind, v);
-                        // });
-
                         dimmMap.map.getView().fit(fitExtent,dimmMap.map.getSize());
+                        dimmMap.map.getView().setZoom(dimmMap.map.getView().getZoom() - 0.5);
                     });
                 }
             }
@@ -613,6 +609,7 @@ const dimming = {
         source.changed();
         const fitExtent = source.getExtent();
         window.dimmGroupMap.map.getView().fit(fitExtent, window.dimmGroupMap.map.getSize());
+        window.dimmGroupMap.map.getView().setZoom(window.dimmGroupMap.map.getView().getZoom() - 0.5);
     }
     , init : () => {
         const baseCenter = new ol.proj.fromLonLat(['126.8646558753815' ,'37.47857596680809'], 'EPSG:5181');
