@@ -2,7 +2,12 @@
 * 개소 관련 JS
 */
 
-const station = {
+const stations = {
+    eventHandler: () => {
+        $("#searchBtn").on('click', (e) => {
+            stations.create();
+        });
+    },
     create : () => {
         const $target = $('#stationTable');
 
@@ -13,30 +18,29 @@ const station = {
             scrollY: "calc(100% - 40px)",
             ajax :
                 {
-                    'url' : "/station",
+                    'url' : "/station/paging",
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
                     'data' : function ( d ) {
-                        console.log(d);
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
-                        console.log(result);
                         $('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
                 },
             select: {
-                toggleable: false
+                toggleable: false,
+                style: "single"
             },
             columns : [
-                {data: "stationSeq", className: "alignLeft"},
-                {data: "stationKind"},
+                {data: "stationSeq", class: "alignLeft"},
+                {data: "stationKindName"},
                 {data: "stationName"},
-                {data: "facilityStatus"},
-                {data: "facilityKind"},
-                {data: "administZone"},
+                // {data: "facilityStatus"},
+                {data: "stationKindValue"},
+                {data: "administZoneName"},
                 {data: "address"},
                 {data: null}
             ],
@@ -46,19 +50,15 @@ const station = {
                 "defaultContent": '<span class="button">상세보기</span>'
             }
             , {
-                targets: 1,
-                createdCell: function (td, cellData) {
-                    if ( cellData !== null ) {
-                        $(td).text("");
-                        $(td).append("<i><img src='/images/default/clipboard.svg'></i>");
-                    } else {
-                        $(td).text("없음");
+                "targets": 1,
+                "data": null,
+                "render": function ( data, type, row ) {
+                    switch (row.stationKindValue){
+                        case "lamp_road" : return `<span class="type pole"><i><img src="/images/default/icon_pole.svg"></i></span>`; break;
+                        case "bus" : return `<span class="type bus"><i><img src="/images/default/icon_bus.svg"></i></span>`; break;
+                        default: "";
                     }
                 }
-            }
-            , {
-                targets: 4,
-                render: $.fn.dataTable.render.ellipsis( 50, true )
             }]
             , excelDownload : true
         }

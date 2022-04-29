@@ -35,7 +35,8 @@ const event = {
                     }
                 },
             select: {
-                toggleable: false
+                toggleable: false,
+                style: "single"
             },
             columns : event.getColumns(pEventType),
             columnDefs: [{

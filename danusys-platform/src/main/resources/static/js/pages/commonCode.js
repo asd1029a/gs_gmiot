@@ -41,7 +41,8 @@ const commonCode = {
                     }
                 },
             select: {
-                toggleable: false
+                toggleable: false,
+                style: "single"
             },
             columns : [
                 {data: "codeSeq", className: "alignLeft"},
