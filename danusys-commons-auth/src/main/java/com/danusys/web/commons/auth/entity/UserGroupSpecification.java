@@ -11,7 +11,6 @@ import org.springframework.data.jpa.domain.Specification;
  * 설명 : user Group Specification 클래스, 쿼리 조건문 기술
  *
  **/
-import java.sql.Timestamp;
 
 public class UserGroupSpecification {
     public static Specification<UserGroup> defaultWhere() {

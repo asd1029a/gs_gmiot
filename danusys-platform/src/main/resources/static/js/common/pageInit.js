@@ -73,7 +73,7 @@ $(document).ready(() => {
                     dimming.createGroup(result);
                 }
             );
-        dimming.init();
+        dimming.initMap();
     } else if(path === "/pages/config/userAccount") {
         account.user.eventHandler();
         account.user.create();

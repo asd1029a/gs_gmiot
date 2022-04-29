@@ -18,13 +18,13 @@
                     <div class="article_title">
                         <dl class="title">
                             <dt>템플릿 목록</dt>
-                            <dd><span class="count">20</span></dd>
+                            <dd><span class="count">0</span></dd>
                         </dl>
                         <ul>
-                            <li sec:authorize="hasAnyRole('ROLE_config_rw')" id="addSignageTemplateBtn"><i><img src="/images/default/add.svg"></i>추가</li>
+                            <li id="addSignageTemplateBtn" sec:authorize="hasAnyRole('ROLE_config_rw')"><i><img src="/images/default/add.svg"></i>추가</li>
                         </ul>
                     </div>
-                    <div class="template_list">
+                    <div class="template_list" id="templateList">
                         <dl>
                             <dt>
                                 <input type="checkbox" id="template_1" name="">
@@ -41,19 +41,20 @@
                         </dl>
                         <ul>
                             <li>취소</li>
-                            <li>저장</li>
+                            <li id="addSignage">저장</li>
                             <li>미리보기</li>
                         </ul>
                     </div>
                     <div class="layout_field">
-                        <ul>
-                            <li><p class="input_height">높이<input type="text">&#37;</p></li>
+                        <ul id="templateArea">
+                            목록을 선택해 주세요.
+                            <!--<li><p class="input_height">높이<input type="text">&#37;</p></li>
                             <li>
                                 <p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>
                                 <select class="contents_kind">
-                                    <!--<option selected>rtsp 영상</option>-->
-                                    <!--<option>대기환경</option>-->
-                                    <!--<option>BIS</option>-->
+                                    &lt;!&ndash;<option selected>rtsp 영상</option>&ndash;&gt;
+                                    &lt;!&ndash;<option>대기환경</option>&ndash;&gt;
+                                    &lt;!&ndash;<option>BIS</option>&ndash;&gt;
                                     <option value="fileSystem">이미지 / 영상 선택</option>
                                     <option value="urlLink">URL 링크</option>
                                 </select>
@@ -86,7 +87,7 @@
                                     <option selected>URL 링크</option>
                                 </select>
                                 <input type="text">
-                            </li>
+                            </li>-->
                         </ul>
                     </div>
                 </article>
@@ -101,18 +102,18 @@
                         <form>
                             <dl>
                                 <dt>템플릿 명<span>템플릿 제목을 입력해주세요.</span></dt>
-                                <dd><input type="text"></dd>
+                                <dd><input type="text" id="templateTitle"></dd>
                             </dl>
                             <dl>
                                 <dt>레이아웃<span>레이아웃의 줄 수를 설정해주세요.</span></dt>
-                                <dd><input type="text" placeholder="0" style="">칸</dd>
+                                <dd><input type="text" id="templateCnt" placeholder="0" style="">칸</dd>
                             </dl>
                         </form>
                     </fieldset>
                 </div>
                 <ul class="bottom">
                     <li>취소</li>
-                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color">추가</li>
+                    <li id="addTemplateLayout" sec:authorize="hasAnyRole('ROLE_config_rw')" class="color">추가</li>
                 </ul>
             </div>
         </section>

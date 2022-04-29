@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>SMART-CITY 통합플랫폼</title>
+    <link rel="stylesheet" type="text/css" href="/css/dark/reset.css">
+    <link rel="stylesheet" type="text/css" href="/css/dark/main.css">
+
+    <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+    <script src="/js/loginWhy.js"></script>
+
+    <script th:inline="javascript">
+	$(document).ready(function() {
+		//if ("${message}" != "") {
+		//	alert("${message}");
+		//}
+
+		if ("${sessionId}" == "sessionOut") {
+			if (window.parent.name != "") {
+				window.close();
+				window.opener.location.reload();
+			} else
+				window.location.reload();
+		}
+
+		$('#login').on("click", function() {
+			login();
+		});
+		$('#pwd').keydown(function() {
+			if (event.keyCode == 13) {
+				login();
+			}
+		});
+		$('label[for=remember-me]').bind('keypress', function(e) {
+			if(e.keyCode !== 32 && e.keyCode !== 13) {
+				return;
+			}
+
+			$('#remember-me').is(':checked') ? $('#remember-me').prop('checked', false) : $('#remember-me').prop('checked', true);
+		})
+
+		/* 로그인 디스플레이 설정 */
+		//loginDisplaySet();
+	});
+
+	function login() {
+		if ($('#id').val() == "") {
+			alert("아이디를 입력하세요");
+		} else if ($('#password').val() == "") {
+			alert("비밀번호를 입력하세요");
+		} else {
+			document.loginForm.submit();
+		}
+	}
+</script>
+</head>
+
+<body>
+<div class="login-wrap">
+    <div class="login-img" id="loginImg">
+        <dl>
+            <dd id="loginBgTitSub"></dd>
+            <dt id="loginBgTit"></dt>
+        </dl>
+    </div>
+    <div class="login-form">
+        <form name="loginForm" id="loginForm" action="/login/login" method="post">
+            <dl>
+                <dd>
+                    <span>ID</span>
+                    <span><input type="text" id="id" name="username" placeholder="아이디를 입력하세요." tabindex="1"></span>
+                </dd>
+                <dd>
+                    <span>PW</span>
+                    <span><input type="password" id="pwd" name="password" placeholder="비밀번호를 입력하세요." tabindex="2"></span>
+                </dd>
+                <dt>
+                    <span class=""><input type="checkbox" id="remember-me" name="remember-me"><label for="remember-me" tabindex="3"></label>Save ID</span>
+                    <span><button>LOGIN</button></span>
+                </dt>
+                <!-- <dd class="forgot">Forgot ID or PASSWORD?</dd> -->
+            </dl>
+        </form>
+    </div>
+</div>
+</body>
+</html>

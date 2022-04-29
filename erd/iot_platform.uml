@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.api</OriginalElement>
+  <nodes>
+    <node x="369.0" y="889.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.spatial_ref_sys</node>
+    <node x="377.0" y="-93.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user_group</node>
+    <node x="654.0" y="504.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_common_code</node>
+    <node x="662.0" y="-181.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user</node>
+    <node x="380.0" y="504.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_station</node>
+    <node x="-133.0" y="889.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_district</node>
+    <node x="524.75" y="231.5">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user_group_in_user</node>
+    <node x="-133.0" y="-181.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.api</node>
+    <node x="108.0" y="889.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_facility_opt</node>
+    <node x="-124.5" y="164.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.api_param</node>
+    <node x="-133.0" y="504.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_facility</node>
+    <node x="887.0" y="504.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_notice</node>
+    <node x="161.0" y="-104.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_permit</node>
+    <node x="278.25" y="231.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user_group_permit</node>
+    <node x="118.0" y="504.0">50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_event</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.api_param" target="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.api" relationship="REFERENCES">
+      <point x="0.0" y="-147.5" />
+      <point x="0.0" y="147.5" />
+    </edge>
+    <edge source="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user_group_permit" target="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_permit" relationship="REFERENCES">
+      <point x="-53.0" y="-71.0" />
+      <point x="331.25" y="206.0" />
+      <point x="259.0" y="206.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user_group_in_user" target="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user" relationship="REFERENCES">
+      <point x="55.0" y="-70.5" />
+      <point x="689.75" y="206.0" />
+      <point x="760.0" y="206.0" />
+      <point x="0.0" y="181.0" />
+    </edge>
+    <edge source="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user_group_permit" target="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user_group" relationship="REFERENCES">
+      <point x="53.0" y="-71.0" />
+      <point x="437.25" y="206.0" />
+      <point x="509.5" y="206.0" />
+      <point x="0.0" y="93.0" />
+    </edge>
+    <edge source="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user_group_in_user" target="50efab8f-8e51-48b5-b228-0b4011b75618.TABLE:iot_platform.public.t_user_group" relationship="REFERENCES">
+      <point x="-55.0" y="-70.5" />
+      <point x="579.75" y="206.0" />
+      <point x="509.5" y="206.0" />
+      <point x="0.0" y="93.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.7615629984051037" showDependencies="false" x="485.0" y="446.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

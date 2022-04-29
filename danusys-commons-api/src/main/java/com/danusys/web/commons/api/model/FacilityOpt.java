@@ -1,6 +1,8 @@
 package com.danusys.web.commons.api.model;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -13,6 +15,7 @@ import javax.persistence.*;
  */
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "t_facility_opt")
 public class FacilityOpt {
     @Id
@@ -28,5 +31,13 @@ public class FacilityOpt {
     @Column(nullable = false)
     private String facilityOptValue;
 
-    private String facilityOptGeom;
+    private int facilityOptType;
+
+    @Builder
+    public FacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType) {
+        this.facilitySeq = facilitySeq;
+        this.facilityOptName = facilityOptName;
+        this.facilityOptValue = facilityOptValue;
+        this.facilityOptType = facilityOptType;
+    }
 }
