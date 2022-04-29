@@ -1,6 +1,7 @@
 package com.danusys.web.commons.api.controller;
 
 import com.danusys.web.commons.api.dto.EventReqeustDTO;
+import com.danusys.web.commons.api.dto.FacilityDataRequestDTO;
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.model.Facility;
@@ -25,13 +26,10 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,33 +50,36 @@ import static java.util.stream.Collectors.toMap;
 @RestController
 @RequestMapping(value = "/api")
 public class ApiCallRestController {
-    private HttpServletRequest servletRequest;
+    private ObjectMapper objectMapper;
     private ApiExecutorFactoryService apiExecutorFactoryService;
     private ApiExecutorService apiExecutorService;
     private FacilityService facilityService;
     private StationService stationService;
     private ForecastService forecastService;
     private EventService eventService;
+    private FacilityOptService facilityOptService;
 
-    public ApiCallRestController(ApiExecutorFactoryService apiExecutorFactoryService
+    public ApiCallRestController(ObjectMapper objectMapper
+            , ApiExecutorFactoryService apiExecutorFactoryService
             , ApiExecutorService apiExecutorService
             , FacilityService facilityService
             , StationService stationService
             , ForecastService forecastService
-            , EventService eventService) {
+            , EventService eventService
+            , FacilityOptService facilityOptService) {
+        this.objectMapper = objectMapper;
         this.apiExecutorFactoryService = apiExecutorFactoryService;
         this.apiExecutorService = apiExecutorService;
         this.facilityService = facilityService;
         this.stationService = stationService;
         this.forecastService = forecastService;
         this.eventService = eventService;
+        this.facilityOptService = facilityOptService;
     }
 
     @PostMapping(value = "/facility")
     public ResponseEntity findAllForFacility(@RequestBody Map<String, Object> param) throws Exception {
         List<Facility> list = facilityService.findAll();
-
-        ObjectMapper objectMapper = new ObjectMapper();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
@@ -91,7 +92,6 @@ public class ApiCallRestController {
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
 
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("facility_list");
@@ -105,7 +105,6 @@ public class ApiCallRestController {
     public ResponseEntity findAllForStation(@RequestBody Map<String, Object> param) throws Exception {
         List<Station> list = stationService.findAll();
 
-        ObjectMapper objectMapper = new ObjectMapper();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
@@ -118,7 +117,6 @@ public class ApiCallRestController {
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
 
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("facility_list");
@@ -134,7 +132,6 @@ public class ApiCallRestController {
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
 
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
         Map<String, Object> resultMap = forecastService.getCurSkyTmp(resultBody);
 
@@ -233,6 +230,21 @@ public class ApiCallRestController {
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
+        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(resultBody);
+    }
+
+    @PostMapping(value = "/ext/send")
+    public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
+        log.trace("param {}", param.toString());
+
+        Api api = getRequestApi(param);
+
+        //API DB 정보로 외부 API 호출
+        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+        String body = (String) responseEntity.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
 
@@ -240,13 +252,13 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
+
     @PostMapping("event")
     public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
         Api api = getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
         List<ApiParam> apiResponseParams = api.getApiResponseParams();
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> resultBody = new HashMap<>();
 
         try {
@@ -298,11 +310,68 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
+    @PostMapping("facilityData")
+    public ResponseEntity facilityData(@RequestBody Map<String, Object> param) {
+        Api api = getRequestApi(param);
+
+        List<ApiParam> apiRequestParams = api.getApiRequestParams();
+        List<ApiParam> apiResponseParams = api.getApiResponseParams();
+        Map<String, Object> resultBody = new HashMap<>();
+
+        try {
+            // Reqpuest check and set
+            Map<String, Object> map = apiRequestParams.stream()
+                    .filter(f -> f.getDataType().equals(DataType.ARRAY))
+                    .peek(f -> {
+                        AtomicReference<String> result = new AtomicReference<>();
+                        try {
+                            result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                        apiRequestParams.stream().forEach(a -> {
+                            result.set(StringUtils.replace(result.get(), a.getFieldMapNm(), a.getFieldNm()));
+                        });
+
+                        f.setValue(result.get());
+                    })
+                    .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
+            // Response check and set
+//            resultBody = apiResponseParams
+//                    .stream()
+//                    .peek(f -> {
+//                        ApiParam apiParam = apiRequestParams.stream()
+//                                .filter(ff -> ff.getFieldMapNm().equals(f.getFieldMapNm())).findFirst().get();
+//                        f.setValue(apiParam.getValue());
+//                    })
+//                    .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
+            // event save
+            for(Map.Entry<String, Object> el: map.entrySet()) {
+                List<FacilityDataRequestDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<FacilityDataRequestDTO>>() {
+                });
+
+                facilityOptService.saveAllByFacilityDataRequestDTO(list);
+                log.trace(list.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultBody.put("code", "9999");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(resultBody);
+        }
+
+        resultBody.put("code", "0000");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(resultBody);
+    }
+
     private Api getRequestApi(Map<String, Object> param) {
         String callUrl = StrUtils.getStr(param.get("callUrl"));
 //        String bizCd = StrUtils.getStr(param.get("bizCd"));
         Api api = null;
-        ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             log.trace("callUrl : {}", callUrl);
@@ -315,11 +384,11 @@ public class ApiCallRestController {
                     .findApiParam(api.getId(), ParamType.REQUEST)
                     .stream()
                     .filter(f -> f.getParamType() == ParamType.REQUEST)
-                    .map((f) -> {
+                    .map(f -> {
                         final Object p = param.get(f.getFieldNm());
                         if (p != null) {
                             try {
-                                if (f.getDataType().equals(DataType.ARRAY)) {
+                                if (f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT)) {
                                     f.setValue(objectMapper.writeValueAsString(p));
                                 } else {
                                     f.setValue(StrUtils.getStr(p));
