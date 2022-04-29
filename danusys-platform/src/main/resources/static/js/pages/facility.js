@@ -34,7 +34,8 @@ const facility = {
                     }
                 },
             select: {
-                toggleable: false
+                toggleable: false,
+                style: "single"
             },
             columns : [
                 {data: "facilitySeq", className: "alignLeft"},
