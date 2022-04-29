@@ -240,6 +240,23 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
+    @PostMapping(value = "/ext/send")
+    public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
+        log.trace("param {}", param.toString());
+
+        Api api = getRequestApi(param);
+
+        //API DB 정보로 외부 API 호출
+        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+        String body = (String) responseEntity.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(resultBody);
+    }
+
+
     @PostMapping("event")
     public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
         Api api = getRequestApi(param);
@@ -315,7 +332,7 @@ public class ApiCallRestController {
                     .findApiParam(api.getId(), ParamType.REQUEST)
                     .stream()
                     .filter(f -> f.getParamType() == ParamType.REQUEST)
-                    .map((f) -> {
+                    .map(f -> {
                         final Object p = param.get(f.getFieldNm());
                         if (p != null) {
                             try {
