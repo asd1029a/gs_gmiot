@@ -601,7 +601,7 @@ const comm = {
                 if($tabType) { seq = $tabType + seq; }
                 let listEle =
                     `<span class="checked_all">
-                        <input type="checkbox" class="checkAll" id="${seq}All" name="${codeValue}" data-value="all" checked>
+                        <input type="checkbox" class="checkAll" id="${seq}All" name="${codeValue}" data-value="all" data-init-value="checked" checked>
                         <label for="${seq}All"><span></span>전체</label>
                     </span>`;
 
@@ -611,7 +611,7 @@ const comm = {
                     if($tabType) { id = $tabType + id; }
                     let spanEle =
                         `<span>
-                            <input type="checkbox" id="${id}" name="${codeValue}" data-value="${item.codeValue}" checked>
+                            <input type="checkbox" id="${id}" name="${codeValue}" data-value="${item.codeValue}" data-init-value="checked" checked>
                             <label for="${id}"><span></span>${item.codeName}</label>
                         </span>`;
 

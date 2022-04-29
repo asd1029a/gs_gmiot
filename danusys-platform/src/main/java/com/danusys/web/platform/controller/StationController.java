@@ -21,15 +21,22 @@ public class StationController {
      * 개소 : 개소 목록 조회
      */
     @PostMapping
-    public ResponseEntity<EgovMap> getListStation(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<EgovMap> getList(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(stationService.getList(paramMap));
+    }
+    /**
+     * 개소 : 개소 목록 조회
+     */
+    @PostMapping(value = "/paging")
+    public ResponseEntity<EgovMap> getListPaging(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(stationService.getListPaging(paramMap));
     }
 
     /**
      * 개소 : 개소 GEOJSON 목록 조회
      */
     @PostMapping(value="/geojson", produces ="application/json; charset=utf8")
-    public String getListStationGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public String getListGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = stationService.getList(paramMap);
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
         return GisUtil.getGeoJson(list,"station");
@@ -39,7 +46,7 @@ public class StationController {
      * 개소 : 개소 단건 조회
      */
     @GetMapping(value="/{stationSeq}")
-    public ResponseEntity<EgovMap> getStation(@PathVariable("stationSeq") int stationSeq) throws Exception {
+    public ResponseEntity<EgovMap> get(@PathVariable("stationSeq") int stationSeq) throws Exception {
         return ResponseEntity.ok().body(stationService.getOne(stationSeq));
     }
 

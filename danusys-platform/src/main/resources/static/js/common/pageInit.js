@@ -53,7 +53,8 @@ $(document).ready(() => {
         // event.eventHandler($('#troubleEventTable'),"trouble");
         // event.create($('#troubleEventTable'),"trouble");
     } else if(path === "/pages/inqry/station") {
-        // station.create();
+        stations.eventHandler();
+        stations.create();
     } else if(path === "/pages/inqry/facilities") {
         facility.eventHandler();
         facility.create();

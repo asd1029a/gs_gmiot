@@ -51,7 +51,8 @@ const notice = {
                     }
                 },
             select: {
-                toggleable: false
+                toggleable: false,
+                style: "single"
             },
             columns : [
                 {data: "noticeTitle", className: "alignLeft"},

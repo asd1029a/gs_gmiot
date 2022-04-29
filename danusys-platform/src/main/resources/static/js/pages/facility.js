@@ -34,7 +34,8 @@ const facility = {
                     }
                 },
             select: {
-                toggleable: false
+                toggleable: false,
+                style: "single"
             },
             columns : [
                 {data: "facilitySeq", className: "alignLeft"},
@@ -414,7 +415,8 @@ const dimming = {
                     }
                 },
             select: {
-                toggleable: false
+                toggleable: false,
+                style: "single"
             },
             columns : [
                 {data: "dimmingGroupName"},
@@ -516,7 +518,8 @@ const dimming = {
                 }
             ,
             select: {
-                toggleable: false
+                toggleable: false,
+                style: "single"
             }
             , columns: [
                 {data: "facilitySeq"},
