@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.danusys.web</groupId>
-    <artifactId>danusys-metering-device-lwm2m</artifactId>
+    <artifactId>dandanusys-smart-metering-device</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>danusys-metering-device-lwm2m</name>
-    <description>danusys-metering-device-lwm2m</description>
+    <name>danusys-smart-metering-device</name>
+    <description>danusys-smart-metering-device</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
