@@ -21,8 +21,7 @@ public class StationSqlProvider {
                     ", t1.station_material, t1.latitude, t1.longitude" +
                     ", t2.code_name  AS station_kind_name" +
                     ", t2.code_value AS station_kind_value" +
-                    ", t3.emd_nm     AS administ_zone_name" +
-                    ", t4.in_facility_kind");
+                    ", t3.emd_nm     AS administ_zone_name");
             FROM("t_station t1");
             LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
 //            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
@@ -53,6 +52,7 @@ public class StationSqlProvider {
                             ") t");
                 }};
 
+                SELECT("t4.in_facility_kind");
                 LEFT_OUTER_JOIN("(" + innerSql.toString() + ") t4 on t1.station_seq = t4.station_seq");
                 WHERE("t4.station_seq IS NOT NULL");
             }
@@ -93,8 +93,7 @@ public class StationSqlProvider {
                     ", t1.station_material, t1.latitude, t1.longitude" +
                     ", t2.code_name  AS station_kind_name" +
                     ", t2.code_value AS station_kind_value" +
-                    ", t3.emd_nm     AS administ_zone_name" +
-                    ", t4.in_facility_kind");
+                    ", t3.emd_nm     AS administ_zone_name");
             FROM("t_station t1");
             LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
 //            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
@@ -125,6 +124,7 @@ public class StationSqlProvider {
                             ") t");
                 }};
 
+                SELECT("t4.in_facility_kind");
                 LEFT_OUTER_JOIN("(" + innerSql.toString() + ") t4 on t1.station_seq = t4.station_seq");
                 WHERE("t4.station_seq IS NOT NULL");
             }
