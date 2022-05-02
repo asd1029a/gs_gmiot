@@ -47,22 +47,22 @@ class mapCreater {
         [
             {
                 name : 'base',
-                prefix : '/map-daumcdn-net/map_2d_hd/1909dms/L',
+                prefix : 'http://map.daumcdn.net/map_2d_hd/1909dms/L',
                 surffix : '.png'
             },
             {
                 name : 'satellite',
-                prefix : '/map-daumcdn-net/map_skyview/L',
+                prefix : 'http://map.daumcdn.net/map_skyview/L',
                 surffix : '.jpg'
             },
             {
                 name : 'hybrid',
-                prefix : '/map-daumcdn-net/map_hybrid/1909dms/L',
+                prefix : 'http://map.daumcdn.net/map_hybrid/1909dms/L',
                 surffix : '.png'
             },
             {
                 name : 'roadView',
-                prefix : '/map-daumcdn-net/map_roadviewline/7.00/L',
+                prefix : 'http://map.daumcdn.net/map_roadviewline/7.00/L',
                 surffix : '.png'
             },
             {
@@ -114,22 +114,22 @@ class mapCreater {
         [
             {
                 name : 'base',
-                prefix : '/map-daumcdn-net/map_2d_hd/1909dms/L',
+                prefix : 'http://map.daumcdn.net/map_2d_hd/1909dms/L',
                 surffix : '.png'
             },
             {
                 name : 'satellite',
-                prefix : '/map-daumcdn-net/map_skyview/L',
+                prefix : 'http://map.daumcdn.net/map_skyview/L',
                 surffix : '.jpg'
             },
             {
                 name : 'hybrid',
-                prefix : '/map-daumcdn-net/map_hybrid/1909dms/L',
+                prefix : 'http://map.daumcdn.net/map_hybrid/1909dms/L',
                 surffix : '.png'
             },
             {
                 name : 'roadView',
-                prefix : '/map-daumcdn-net/map_roadviewline/7.00/L',
+                prefix : 'http://map.daumcdn.net/map_roadviewline/7.00/L',
                 surffix : '.png'
             },
             {
