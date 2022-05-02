@@ -53,8 +53,27 @@ const facility = {
                 "defaultContent": '<span class="button">상세보기</span>'
             }
             , {
-                targets: 6,
-                render: $.fn.dataTable.render.ellipsis( 50, true )
+                "targets": 2,
+                "data": null,
+                "render": function ( data, type, row ) {
+                    switch (row.facilityStatus){
+                        case 0 : return `<span class="status red"></span>`; break;
+                        case 1 : return `<span class="status green"></span>`; break;
+                        case 2 : return `<span class="status gary"></span>`; break;
+                        default: "";
+                    }
+                }
+            }
+            , {
+                "targets": 3,
+                "data": null,
+                "render": function ( data, type, row ) {
+                    switch (row.stationKindValue){
+                        case "lamp_road" : return `<span class="type pole"><i><img src="/images/default/icon_pole.svg"></i></span>`; break;
+                        case "bus" : return `<span class="type bus"><i><img src="/images/default/icon_bus.svg"></i></span>`; break;
+                        default: "";
+                    }
+                }
             }]
             , excelDownload : {
                 url : "/facility/excel/download"
