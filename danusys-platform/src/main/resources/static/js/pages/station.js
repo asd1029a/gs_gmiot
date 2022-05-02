@@ -39,7 +39,7 @@ const stations = {
                 {data: "stationKindName"},
                 {data: "stationName"},
                 // {data: "facilityStatus"},
-                {data: "stationKindValue"},
+                {data: "inFacilityKind"},
                 {data: "administZoneName"},
                 {data: null}
             ],
