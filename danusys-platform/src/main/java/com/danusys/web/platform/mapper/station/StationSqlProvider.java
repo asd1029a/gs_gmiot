@@ -30,10 +30,10 @@ public class StationSqlProvider {
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 SQL innerSql = new SQL() {{
-                    SELECT("CASE" +
-                            " WHEN cnt = 1 THEN in_facility_kind_name" +
-                            " ELSE CONCAT(in_facility_kind_name, ' 외 ', CAST(cnt - 1 AS VARCHAR(20)), '종') END AS in_facility_kind" +
-                            ", station_seq");
+                    SELECT("station_seq" +
+                            ", CASE WHEN cnt = 1 THEN in_facility_kind_name" +
+                            " ELSE CONCAT(in_facility_kind_name, ' 외 ', CAST(cnt - 1 AS VARCHAR(20)), '종')" +
+                            " END AS in_facility_kind");
                     FROM("(" +
                             "    SELECT t.station_seq" +
                             "      , MIN(t.facility_kind_name) AS in_facility_kind_name" +
@@ -102,10 +102,10 @@ public class StationSqlProvider {
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 SQL innerSql = new SQL() {{
-                    SELECT("CASE" +
-                            " WHEN cnt = 1 THEN in_facility_kind_name" +
-                            " ELSE CONCAT(in_facility_kind_name, ' 외 ', CAST(cnt - 1 AS VARCHAR(20)), '종') END AS in_facility_kind" +
-                            ", station_seq");
+                    SELECT("station_seq" +
+                            ", CASE WHEN cnt = 1 THEN in_facility_kind_name" +
+                            " ELSE CONCAT(in_facility_kind_name, ' 외 ', CAST(cnt - 1 AS VARCHAR(20)), '종')" +
+                            " END AS in_facility_kind");
                     FROM("(" +
                             "    SELECT t.station_seq" +
                             "      , MIN(t.facility_kind_name) AS in_facility_kind_name" +
@@ -172,10 +172,10 @@ public class StationSqlProvider {
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 SQL innerSql = new SQL() {{
-                    SELECT("CASE" +
-                            " WHEN cnt = 1 THEN in_facility_kind_name" +
-                            " ELSE CONCAT(in_facility_kind_name, ' 외 ', CAST(cnt - 1 AS VARCHAR(20)), '종') END AS in_facility_kind" +
-                            ", station_seq");
+                    SELECT("station_seq" +
+                            ", CASE WHEN cnt = 1 THEN in_facility_kind_name" +
+                            " ELSE CONCAT(in_facility_kind_name, ' 외 ', CAST(cnt - 1 AS VARCHAR(20)), '종')" +
+                            " END AS in_facility_kind");
                     FROM("(" +
                             "    SELECT t.station_seq" +
                             "      , MIN(t.facility_kind_name) AS in_facility_kind_name" +
