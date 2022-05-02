@@ -56,7 +56,19 @@ const facility = {
                 targets: 6,
                 render: $.fn.dataTable.render.ellipsis( 50, true )
             }]
-            , excelDownload : true
+            , excelDownload : {
+                url : "/facility/excel/download"
+                , fileName : "시설물 목록_"+ dateFunc.getCurrentDateYyyyMmDd(0, '') +".xlsx"
+                , search : $("#searchForm form").serializeJSON()
+                , headerList : ["고유번호|facilitySeq"
+                    , "시설물 관리 ID|facilityId"
+                    , "시설물 종류|facilityKindName"
+                    , "시설물 상태|facilityStatus"
+                    , "개소 종류|stationKindName"
+                    , "개소 이름|stationName"
+                    , "주소|address"
+                    , "행정구역|administZoneName"]
+            }
         }
 
         const evt = {
