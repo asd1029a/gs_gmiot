@@ -60,15 +60,14 @@ const station = {
                 {data: "stationKindName"},
                 {data: "stationName"},
                 // {data: "facilityStatus"},
-                {data: "stationKindValue"},
+                {data: "inFacilityKind"},
                 {data: "administZoneName"},
-                {data: "address"},
                 {data: null}
             ],
             columnDefs: [{
                 "targets": -1,
                 "data": null,
-                "defaultContent": '<span class="button">상세보기</span>'
+                "defaultContent": '<span class="button">수정</span>'
             }
             , {
                 "targets": 1,
@@ -88,7 +87,6 @@ const station = {
                 , headerList : ["고유번호|stationSeq"
                     , "이름|stationName"
                     , "종류|stationKindName"
-                    , "주소|address"
                     , "행정구역|administZoneName"]
             }
         }

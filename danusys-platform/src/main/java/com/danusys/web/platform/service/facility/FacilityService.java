@@ -6,6 +6,7 @@ import java.util.Map;
 
 public interface FacilityService {
     EgovMap getList(Map<String, Object> paramMap) throws Exception;
+    EgovMap getListPaging(Map<String, Object> paramMap) throws Exception;
     EgovMap getOne(int seq) throws Exception;
     int add(Map<String, Object> paramMap) throws Exception;
     int addOpt(Map<String, Object> paramMap) throws Exception;

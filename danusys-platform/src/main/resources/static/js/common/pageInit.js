@@ -37,12 +37,18 @@ $(document).ready(() => {
     })
 
     /* date picker */
-    if($("#startDt").length > 0 && $("#endDt").length > 0) {
-        $("#startDt, #endDt").attr("autocomplete", "off");
-        dateFunc.datePickerSet($("#startDt"), $("#endDt"), true);
-    } else if($(".input_date").length > 0) {
-        dateFunc.datePickerSet($(".input_date"));
-    }
+    $("input.input_date").attr("autocomplete", "off");
+    $('input[name=startDt]').each((idx, item) => {
+        const $startDt = $(item);
+        const $endDt = $(item).parents('form').find('input[name=endDt]');
+        dateFunc.datePickerSet($startDt, $endDt, true);
+        //초기값
+        const now = new Date();
+        const ago = new Date();
+        ago.setDate(now.getDate() - 2);
+        $startDt.datepicker().data('datepicker').selectDate(ago);
+        $endDt.datepicker().data('datepicker').selectDate(now);
+    });
 
     /* 페이지별 공통 기능 */
     // 조회/관리
@@ -99,19 +105,6 @@ $(document).ready(() => {
         svgToImage.init();
         mntr.init();
         mntr.eventHandler();
-        /* date picker */
-        $("input.input_date").attr("autocomplete", "off");
-        $('input[name=startDt]').each((idx, item) => {
-            const $startDt = $(item);
-            const $endDt = $(item).parents('form').find('input[name=endDt]');
-            dateFunc.datePickerSet($startDt, $endDt, true);
-            //초기값
-            const now = new Date();
-            const ago = new Date();
-            ago.setDate(now.getDate() - 2);
-            $startDt.datepicker().data('datepicker').selectDate(ago);
-            $endDt.datepicker().data('datepicker').selectDate(now);
-        });
     }
     // 대시보드 (임시)
     else if(path === "/pages/dashboard") {
