@@ -30,7 +30,7 @@ public class Join2Controller {
     @RequestMapping("/login/errorTest")
     public ModelAndView error() {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("view/login/loginErrorTest");
+        mav.setViewName("view/login/loginError");
 
         return mav;
     }

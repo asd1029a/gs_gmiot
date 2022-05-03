@@ -25,8 +25,16 @@ public class FacilityController {
      * 시설물 : 시설물 목록 조회
      */
     @PostMapping
-    public ResponseEntity<EgovMap> getListFacility(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<EgovMap> getList(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(facilityService.getList(paramMap));
+    }
+    
+    /**
+     * 시설물 : 시설물 목록 조회 페이징
+     */
+    @PostMapping(value="/paging")
+    public ResponseEntity<EgovMap> getListPaging(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.getListPaging(paramMap));
     }
 
     /**

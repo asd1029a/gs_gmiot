@@ -18,7 +18,7 @@ const facility = {
             scrollY: "calc(100% - 40px)",
             ajax :
                 {
-                    'url' : "/facility",
+                    'url' : "/facility/paging",
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
                     'data' : function ( d ) {
