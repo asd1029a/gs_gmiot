@@ -8,8 +8,8 @@
 * danusys-commons-mqtt -> MQTT Client
 
 ### Application Server
-* danusys-platform:8082 -> 광명 스마트시티 확산 사업(IoT 연계)
-* danusys-drone:8083 -> 드론관제
+* danusys-platform:8400 -> 광명 스마트시티 확산 사업(IoT 연계)
+* danusys-drone:8300 -> 드론관제
 * danusys-server-netty:8084 -> tcp netty 서버
 * danusys-server-socket:8085 -> 소캣 서버
 * danusys-smartmitering:8086 -> 스마트미터링
