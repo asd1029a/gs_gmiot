@@ -158,15 +158,16 @@ const dimming = {
                             const min = $("#dimmingTimeZoneTable tbody tr:nth-child(2) td input")[i].value;
                             timeList.push(min + "/" + max);
                         }
-                        /* TODO : 외부연계시 Callback 후 데이터 전송 */
-                        // dimmingSetObj.callUrl = "/add/dimming";
-                        // dimmingSetObj.maxBrightTime = $("#maxBrightTime").val();
-                        // dimmingSetObj.keepBrightTime = $("#keepBrightTime").val();
-                        // dimmingSetObj.minBrightTime = $("#minBrightTime").val();
-                        // dimmingSetObj.deviceIds = facilityIdList.join(',');
-                        // dimmingSetObj.time = timeList.join(',');
 
-                        //dimming.sendDimmingProc(dimmingSetObj, () => {
+                        dimmingSetObj.callUrl = "/add/dimmingUpdate";
+                        dimmingSetObj.maxBrightTime = $("#maxBrightTime").val();
+                        dimmingSetObj.keepBrightTime = $("#keepBrightTime").val();
+                        dimmingSetObj.minBrightTime = $("#minBrightTime").val();
+                        dimmingSetObj.deviceIds = facilityIdList.join(',');
+                        dimmingSetObj.time = timeList.join(', ');
+
+                        console.log(dimmingSetObj);
+                        dimming.sendDimmingProc(dimmingSetObj, () => {
                         const optObj = {
                             "dimming_time_zone" : timeList.join(',')
                             , "keep_bright_time" : $("#keepBrightTime").val()
@@ -186,7 +187,7 @@ const dimming = {
                             , () => {
                                 comm.showAlert("디밍 설정을 실패했습니다.");
                             });
-                        //});
+                        });
                     }
                 );
             }

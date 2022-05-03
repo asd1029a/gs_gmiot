@@ -62,7 +62,7 @@
             <div class="article_title">
                 <dl class="title">
                     <dt>개소 목록</dt>
-                    <dd><span class="count">123</span>건</dd>
+                    <dd><span class="count"></span>건</dd>
                 </dl>
                 <div>
 <!--                    <ul class="status_label">-->
@@ -71,7 +71,7 @@
 <!--                        <li><span class="green"></span>정상 : 14</li>-->
 <!--                    </ul>-->
                     <ul>
-                        <li sec:authorize="hasAnyRole('ROLE_inqry_rw')"><i><img src="/images/default/add.svg"></i>추가</li>
+                        <li id="addStationBtn" sec:authorize="hasAnyRole('ROLE_inqry_rw')"><i><img src="/images/default/add.svg"></i>추가</li>
                     </ul>
                 </div>
             </div>
@@ -92,6 +92,72 @@
                 </table>
             </div>
         </article>
+
+        <!--  개소 팝업 -->
+        <div class="popup" id="stationPopup" style="width: 650px;">
+            <dl class="title">
+                <dt></dt>
+                <dd><i><img src="/images/default/close.svg"></i></dd>
+            </dl>
+            <div class="popup_writing">
+                <fieldset>
+                    <legend>개소 정보</legend>
+                    <form id="stationForm">
+                        <dl>
+                            <dt>개소 이름</dt>
+                            <dd><input type="text" data-required="true" id="stationName" name="stationName" placeholder="개소 이름 입력" ></dd>
+                        </dl>
+                        <dl>
+                            <dt>개소 종류</dt>
+                            <dd>
+                                <select id="stationKind" data-required="true" data-type="stationKind">
+                                </select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>행정구역</dt>
+                            <dd>
+                                <select id="administZone" data-required="true" data-type="administZone">
+                                </select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>위도</dt>
+                            <dd><input type="text" id="latitude" data-required="true" name="userName" placeholder="*필수 입력" ></dd>
+                        </dl>
+                        <dl>
+                            <dt>경도</dt>
+                            <dd><input type="text" id="longitude" data-required="true" name="tel" placeholder="*필수 입력" ></dd>
+                        </dl>
+                    </form>
+                </fieldset>
+                <div class="list_search">
+                    <p class="legend">
+                        시설물 리스트
+                        <span><select id="facilityKind" data-type="facilityKind"></select>
+                            <input id="facilityKeyword" type="text" placeholder="시설물 이름 검색">
+                        </span>
+                    </p>
+                    <div class="list_table">
+                        <table id="facilityTable">
+                            <thead>
+                            <tr>
+                                <th>시설물 이름</th>
+                                <th>시설물 종류</th>
+                                <th>행정구역</th>
+                                <th>선택</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <ul class="bottom">
+                <li sec:authorize="hasAnyRole('ROLE_inqry_rw')" data-mod="true" id="delStationProcBtn">삭제</li>
+                <li sec:authorize="hasAnyRole('ROLE_inqry_rw')" data-mod="true" id="modStationProcBtn">정보 수정</li>
+                <li sec:authorize="hasAnyRole('ROLE_inqry_rw')" class="color" data-add="true" id="addStationProcBtn">등록</li>
+            </ul>
+        </div>
     </section>
 </th:block>
 </html>
