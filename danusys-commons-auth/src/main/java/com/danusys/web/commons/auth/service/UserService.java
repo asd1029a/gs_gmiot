@@ -11,20 +11,9 @@ import com.danusys.web.commons.auth.model.UserInGroup;
 import com.danusys.web.commons.auth.service.repository.UserGroupRepository;
 import com.danusys.web.commons.auth.service.repository.UserInGroupRepository;
 import com.danusys.web.commons.auth.service.repository.UserRepository;
-import com.danusys.web.commons.auth.service.repository.UserStatusRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
 import com.danusys.web.commons.auth.util.SHA256;
-import com.danusys.web.commons.auth.dto.response.UserResponse;
-import com.danusys.web.commons.auth.entity.UserSpecification;
-import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.model.UserGroup;
-import com.danusys.web.commons.auth.model.UserInGroup;
-import com.danusys.web.commons.auth.service.repository.UserGroupRepository;
-import com.danusys.web.commons.auth.service.repository.UserInGroupRepository;
-import com.danusys.web.commons.auth.service.repository.UserRepository;
-import com.danusys.web.commons.auth.service.repository.UserStatusRepository;
-import com.danusys.web.commons.auth.util.LoginInfoUtil;
-import com.danusys.web.commons.auth.util.SHA256;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -47,7 +36,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
     private final UserInGroupRepository userInGroupRepository;
-    private final UserStatusRepository userStatusRepository;
+    private final UserInGroupService userInGroupService;
 
     public User get(String userName, String errorMessage) {
         return userRepository.findByUserId(userName);
@@ -134,11 +123,14 @@ public class UserService {
     public Map<String, Object> getListGroupInUser(Map<String, Object> paramMap) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        /* 키워드 검색조건 */
-        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+        /* 계정 상태 검색조건 */
+        List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-        Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                .or(UserSpecification.likeTel(keyword));
+        if (statusParam.isEmpty()){
+            statusParam.add("''");
+        }
+
+        Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
         UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
         List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
 
@@ -167,11 +159,14 @@ public class UserService {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
-            /* 키워드 검색조건 */
-            String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+            /* 계정 상태 검색조건 */
+            List<String> statusParam = CommonUtil.valiArrNull(paramMap, "status");
 
-            Specification<User> spec = Specification.where(UserSpecification.likeName(keyword))
-                    .or(UserSpecification.likeTel(keyword));
+            if (statusParam.isEmpty()){
+                statusParam.add("''");
+            }
+
+            Specification<User> spec = Specification.where(UserSpecification.inStatus(statusParam));
             UserGroup userGroup = userGroupRepository.findByUserGroupSeq((int) paramMap.get("userGroupSeq"));
             List<UserInGroup> userInGroup = userInGroupRepository.findAllByUserGroup(userGroup);
 
@@ -212,7 +207,10 @@ public class UserService {
     }
 
     @Transactional
-    public int add(User user) {
+    public int add(Map<String, Object> paramMap) {
+        /* TODO : 트랜젝션 처리 요망 */
+        ObjectMapper objectMapper = new ObjectMapper();
+        User user = objectMapper.convertValue(paramMap, User.class);
 
         if (user.getUserId() == null || user.getPassword() == null)
             return -1;
@@ -229,45 +227,56 @@ public class UserService {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        //  user.setInsertUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
+
+        user.setInsertUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         user.setInsertDt(timestamp);
 
         userRepository.save(user);
+
+        paramMap.put("userSeqList", Arrays.asList(user.getUserSeq()));
+        userInGroupService.add(paramMap);
+
         return user.getUserSeq();
     }
 
     @Transactional
-    public int mod(User User) {
-        User findUser = userRepository.findByUserSeq(User.getUserSeq());
+    public int mod(Map<String, Object> paramMap) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        User user = objectMapper.convertValue(paramMap, User.class);
+
+        User findUser = userRepository.findByUserSeq(user.getUserSeq());
 
         if (findUser != null) {
-            if (User.getPassword() != null) {
+            if (user.getPassword() != null) {
                 SHA256 sha256 = new SHA256();
                 try {
-                    String cryptoPassword = sha256.encrypt(User.getPassword());
+                    String cryptoPassword = sha256.encrypt(user.getPassword());
                     findUser.setPassword("{SHA-256}" + cryptoPassword);
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
 
             }
-            if (User.getUserName() != null)
-                findUser.setUserName(User.getUserName());
-            if (User.getEmail() != null)
-                findUser.setEmail(User.getEmail());
-            if (User.getTel() != null)
-                findUser.setTel(User.getTel());
-            if (User.getAddress() != null)
-                findUser.setAddress(User.getAddress());
-            if (User.getStatus() != null)
-                findUser.setStatus(User.getStatus());
-            if (User.getDetailAddress() != null)
-                findUser.setDetailAddress(User.getDetailAddress());
+            if (user.getUserName() != null)
+                findUser.setUserName(user.getUserName());
+            if (user.getEmail() != null)
+                findUser.setEmail(user.getEmail());
+            if (user.getTel() != null)
+                findUser.setTel(user.getTel());
+            if (user.getAddress() != null)
+                findUser.setAddress(user.getAddress());
+            if (user.getStatus() != null)
+                findUser.setStatus(user.getStatus());
+            if (user.getDetailAddress() != null)
+                findUser.setDetailAddress(user.getDetailAddress());
 
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             findUser.setUpdateDt(timestamp);
             userRepository.save(findUser);
+
+            userInGroupService.delUserSeq(user.getUserSeq());
+            userInGroupService.add(paramMap);
         } else {
             return 0;
         }
@@ -290,7 +299,7 @@ public class UserService {
     public void del(User user) {
         User findUser = userRepository.findByUserSeq(user.getUserSeq());
         findUser.setStatus("2");
-//        userRepository.save(findUser);
+        userInGroupRepository.deleteAllByUserSeq(findUser.getUserSeq());
     }
 
     public int checkId(String userId) {
@@ -307,28 +316,5 @@ public class UserService {
 
         return flag != null ? flag.getAuthority().toString() : "none";
     }
-
-//
-//    public com.danusys.web.commons.app.model.paging.Page<List<Map<String, Object>>> getLists(PagingRequest pagingRequest) {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//
-////            List<Map<String, Object>> lists = objectMapper
-////                    .readValue(getClass().getClassLoader().getResourceAsStream("notice.json"),
-////                            new TypeReference<List<Map<String, Object>>>() {});
-//
-////            Map<String, Object> lists=  userRepository.findByUserId("asd").stream().collect(Collectors.toMap(
-////                    User::getUserId,User::getUserSeq,(oldValue,newValue) ->{
-////                            log.info("oldValue:{} new VAlue: {}", oldValue,newValue);
-////                            return oldValue;
-////                    })
-////            );
-//            List<Map<String,Object>> lists =userRepository.findAllByAddressLike("%"+"독"+"%");
-//
-//            return Paging.getPage(lists, pagingRequest);
-//
-//
-//        //return new com.danusys.web.commons.app.model.paging.Page<>();
-//    }
 
 }
