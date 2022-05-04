@@ -154,7 +154,7 @@ public class FacilityController {
         Map<String, Object> dataMap = facilityService.getList((Map<String, Object>) paramMap.get("search"));
 
         paramMap.put("dataMap", dataMap.get("data"));
-        Workbook wb = FileUtil.excelDownload2(paramMap);
+        Workbook wb = FileUtil.excelDownload(paramMap);
         wb.write(response.getOutputStream());
         wb.close();
     }

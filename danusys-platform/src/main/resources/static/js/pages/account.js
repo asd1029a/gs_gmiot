@@ -81,7 +81,7 @@ const account = {
                         , "마지막 접속|lastLoginDt"
                         , "생성자|insertUserId"
                         , "생성일|insertDt"
-                        , "수정자|updateUserId"
+                        , "수정자|updateUserSeq"
                         , "수정일|updateDt"]
                 }
             }
@@ -408,9 +408,9 @@ const account = {
                         , "이름|groupName"
                         , "설명|groupDesc"
                         // , "사용여부|user"
-                        , "생성자|insertUserId"
+                        , "생성자|insertUserSeq"
                         , "생성일|insertDt"
-                        , "수정자|updateUserId"
+                        , "수정자|updateUserSeq"
                         , "수정일|updateDt"]
                 }
             }
