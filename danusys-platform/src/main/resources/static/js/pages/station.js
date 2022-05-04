@@ -7,26 +7,58 @@ const station = {
         $("#searchBtn").on('click', (e) => {
             station.create();
         });
+
         $("#stationPopup .title dd").on('click', () => {
             station.hidePopup();
         });
+
         $("#addStationBtn").on('click', () => {
             station.showPopup("add");
         });
+
         $("#addStationProcBtn").on('click', () => {
             if($("#stationForm").doValidation()) {
-                station.addProc();
+                if($("#stationPopup").data("facilitySeqList").length > 0) {
+                    station.addProc();
+                } else {
+                    comm.showAlert("시설물이 선택되지 않았습니다.");
+                }
             }
         });
+
         $("#modStationProcBtn").on('click', () => {
-            station.showPopup("add");
+            if($("#stationForm").doValidation()) {
+                if($("#stationPopup").data("facilitySeqList").length > 0) {
+                    station.modProc($("#stationPopup").data("stationSeq"));
+                } else {
+                    comm.showAlert("시설물이 선택되지 않았습니다.");
+                }
+            }
         });
+
         $("#delStationProcBtn").on('click', () => {
-            station.showPopup("add");
+            comm.confirm("해당 개소를 삭제하시겠습니까?",
+                {},
+                () => {
+                    const stationSeq = $("#stationPopup").data("stationSeq");
+                    station.delProc(stationSeq);
+                },
+                () => {return false;});
         });
+
         $("#facilityKind").on('change', (e) => {
-            const obj = {facilityKind : $(e.currentTarget).val()}
-            station.createFacility(obj, "add");
+            const facilityKind = $(e.currentTarget).val();
+            if(facilityKind === null || facilityKind === "") {
+                $("#facilityTable").DataTable().clear();
+                $("#facilityTable").DataTable().destroy();
+            } else {
+                const obj = {
+                    "popupType" : "station"
+                    , "facilityKind" : facilityKind
+                    , "type" : $("#stationPopup").data("type")
+                }
+                station.createFacility(obj);
+            }
         });
     },
     create : () => {
@@ -97,13 +129,29 @@ const station = {
                 if($(e.target).hasClass('button')) {
                     station.showPopup('mod');
                     $('#stationForm').setItemValue(rowData);
+                    $('#stationKind').val(rowData.stationKindValue);
+                    $('#administZone').val(rowData.administZone);
+                    $('#stationPopup').data("stationSeq", rowData.stationSeq);
+                    station.getListFacilityInStation(
+                        {"stationSeq" : rowData.stationSeq},
+                        (result) => {
+                            const facilitySeqList = [];
+                            $.each(result.data, (i, e) => {
+                                facilitySeqList.push(e.facilitySeq);
+                            });
+                            $("#stationPopup").data("facilitySeqList", facilitySeqList);
+                    });
                 }
             }
         }
         comm.createTable($target ,optionObj, evt);
     },
-    createFacility : (pObj, type) => {
+    createFacility : (pObj) => {
         const $target = $('#facilityTable');
+        if(pObj.type === "mod") {
+            pObj.stationSeq = $("#stationPopup").data("stationSeq");
+        }
+
         const optionObj = {
             dom: '<"table_body"rt>',
             destroy: true,
@@ -120,11 +168,7 @@ const station = {
                         return JSON.stringify( pObj );
                     },
                     'dataSrc' : function(result) {
-                        if(type == "add") {
-                            return result.data;
-                        } else {
-
-                        }
+                        return result.data;
                     }
                 }
             ,
@@ -169,7 +213,6 @@ const station = {
                     const index = facilitySeqList.indexOf(rowData.facilitySeq);
                     facilitySeqList.splice(index, 1);
                 }
-                console.log($("#stationPopup").data("facilitySeqList"));
             }
             , keyup : function() {
                 $("#facilityKeyword").off("keyup");
@@ -181,10 +224,8 @@ const station = {
                         $('#facilityTable').DataTable().rows().data().each((data, idx)=> {
                             const rowHtml = $('#facilityTable').DataTable().row(idx).node();
                             if(data.facilityId.includes(keyword)) {
-                                console.log("1" + data.facilityId);
                                 $(rowHtml).show();
                             } else {
-                                console.log("2" + data.facilityId);
                                 $(rowHtml).hide();
                             }
                         });
@@ -197,6 +238,16 @@ const station = {
     getList : (param, pCallback) => {
         $.ajax({
             url : "/station"
+            , type : "POST"
+            , data : JSON.stringify(param)
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
+            pCallback(result);
+        });
+    },
+    getListFacilityInStation : (param, pCallback) => {
+        $.ajax({
+            url : "/facility/inStation"
             , type : "POST"
             , data : JSON.stringify(param)
             , contentType : "application/json; charset=utf-8"
@@ -224,12 +275,16 @@ const station = {
         });
     },
     addProc : () => {
-        const formObj = $('#stationForm').serializeJSON();
+        const formObj = {
+            "stationInfo" : $('#stationForm').serializeJSON()
+            , "facilitySeqList" : $('#stationPopup').data("facilitySeqList")
+        };
 
         $.ajax({
             url : "/station"
             , type: "PUT"
-            , data : formObj
+            , data : JSON.stringify(formObj)
+            , contentType : "application/json; charset=utf-8"
         }).done((result) => {
             comm.showAlert("개소가 등록되었습니다");
             station.create($('#stationTable'));
@@ -237,12 +292,17 @@ const station = {
         });
     },
     modProc : (pSeq) => {
-        const formObj = $('#stationForm').serializeJSON();
+        const formObj = {
+            "stationSeq" : pSeq
+            , "stationInfo" : $('#stationForm').serializeJSON()
+            , "facilitySeqList" : $('#stationPopup').data("facilitySeqList")
+        };
 
         $.ajax({
             url : "/station"
             , type: "PATCH"
-            , data : formObj
+            , data : JSON.stringify(formObj)
+            , contentType : "application/json; charset=utf-8"
         }).done((result) => {
             comm.showAlert("개소가 수정되었습니다");
             station.create($('#stationTable'));
@@ -260,6 +320,7 @@ const station = {
         });
     },
     createSelectOption : ($select, pObj) => {
+        $select.find("option").remove();
         $.each(pObj.data, (idx, item)=> {
             if(idx === 0) {
                 $select.append("<option value=''>선택</option>");
@@ -289,12 +350,17 @@ const station = {
 
         if(type === "add") {
             $("#stationPopup .title dt").text("개소 추가");
-        } else {
+            $("#stationPopup").data("type", "add");
+        } else if(type === "mod"){
             $("#stationPopup .title dt").text("개소 수정");
+            $("#stationPopup").data("type", "mod");
         }
     },
     hidePopup : () => {
         comm.hideModal($("#stationPopup"));
         $("#stationPopup").hide();
+        $("#facilityKind").val("");
+        $("#facilityTable").DataTable().clear();
+        $("#facilityTable").DataTable().destroy();
     }
 }

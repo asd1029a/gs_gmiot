@@ -286,7 +286,8 @@ const dimming = {
      * @param1 : pObj = {디밍 그룹 정보}
      * @param2 : type = ( 추가 = 'add' || 수정 = 'mod')
      */
-    , createLampRoad : (pObj, type) => {
+    , createLampRoad : (pObj) => {
+        console.log(pObj);
         const $target = $('#lampRoadInGroupTable');
         const optionObj = {
             dom: '<"table_body"rt>',
@@ -304,7 +305,7 @@ const dimming = {
                         return JSON.stringify( pObj );
                     },
                     'dataSrc' : function(result) {
-                        if(type == "add") {
+                        if(pObj.activeType === "add") {
                             return result.data;
                         } else {
                             let selectedFacilityList = null;
@@ -598,7 +599,8 @@ const dimming = {
     , showPopup : (type, pRowData) => {
         const createObj = {
             facilityKind : "lamp_road"
-            , createType : type
+            , activeType : type
+            , popupType : "dimming"
         }
 
         comm.showModal($('#dimmingGroupPopup'));
@@ -608,14 +610,14 @@ const dimming = {
         $('#dimmingGroupPopup [data-'+type+'="true"]').show();
 
         if(type === "add") {
-            dimming.createLampRoad(createObj, type);
+            dimming.createLampRoad(createObj);
         } else if(type === "mod") {
             $("#dimmingGroupPopup #dimmingGroupName").val(pRowData.dimmingGroupName);
             const dimmingGroupSeq = pRowData.dimmingGroupSeq;
             $('#dimmingGroupPopup').data("dimmingGroupSeq", dimmingGroupSeq);
             createObj.dimmingGroupSeq = dimmingGroupSeq
 
-            dimming.createLampRoad(createObj, type);
+            dimming.createLampRoad(createObj);
         }
     }
     /*

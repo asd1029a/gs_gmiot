@@ -18,7 +18,6 @@ public class FacilitySqlProvider {
         ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
         String start = CommonUtil.validOneNull(paramMap, "start");
         String length = CommonUtil.validOneNull(paramMap, "length");
-        String createType = CommonUtil.validOneNull(paramMap, "createType");
 
         SQL sql = new SQL() {{
             SELECT("t1.facility_seq, t1.facility_id" +
@@ -47,18 +46,6 @@ public class FacilitySqlProvider {
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
-                if (facilityKind.contains("lamp_road")) {
-                    String modifyQry = "";
-                    if ("mod".equals(createType)) {
-                        modifyQry = "AND v1.dimming_group_seq::integer != " + paramMap.get("dimmingGroupSeq");
-                    }
-                    WHERE("NOT EXISTS (" +
-                            "SELECT * " +
-                            "FROM v_dimming_group v1 " +
-                            "WHERE v1.facility_seq = t1.facility_seq " +
-                            modifyQry +
-                            ")");
-                }
             }
 //            현재는 데이터가 안맞아서 주석 해놓음
 //            if (administZone != null && !administZone.isEmpty()) {
@@ -199,6 +186,28 @@ public class FacilitySqlProvider {
         return sql.toString();
     }
 
+    public String updateNullStationSeqQry(Map<String, Object> paramMap) {
+        String stationSeq = paramMap.get("stationSeq").toString();
+
+        SQL sql = new SQL() {{
+            UPDATE("t_facility");
+            SET("station_seq = NULL");
+            WHERE("station_seq = " + stationSeq);
+        }};
+        return sql.toString();
+    }
+
+    public String updateStationSeqQry(Map<String, Object> paramMap) {
+        ArrayList<String> facilitySeqList = CommonUtil.valiArrNull(paramMap, "facilitySeqList");
+
+        SQL sql = new SQL() {{
+            UPDATE("t_facility");
+            SET("station_seq = " + paramMap.get("stationSeq"));
+            WHERE("facility_seq " + SqlUtil.getWhereInStr(facilitySeqList));
+        }};
+        return sql.toString();
+    }
+
     public String updateOptQry(Map<String, Object> paramMap) {
         String facilitySeq = paramMap.get("facilitySeq").toString();
 
@@ -252,6 +261,76 @@ public class FacilitySqlProvider {
                     "SELECT code_value " +
                     "FROM v_facility_opt_type " +
                     "WHERE code_id = '" + facilityOptType + "')");
+        }};
+        return sql.toString();
+    }
+
+    public String selectListFacilityForStationQry(Map<String, Object> paramMap) {
+        String facilityKind = CommonUtil.validOneNull(paramMap, "facilityKind");
+        SQL sql = new SQL() {{
+            SELECT("t1.facility_seq, t1.facility_id, t1.administ_zone, t1.facility_image" +
+                    ", t1.facility_instl_info, t1.facility_instl_dt, t1.facility_status" +
+                    ", t1.latitude, t1.longitude, t1.insert_dt, t2.code_value AS facility_kind" +
+                    ", t2.code_name AS facility_kind_name, t6.emd_nm AS administ_zone_name");
+            FROM("t_facility t1");
+            INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq" +
+                    " AND t2.code_value = '" + facilityKind + "'");
+            LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");
+//            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
+//            LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
+            LEFT_OUTER_JOIN("t_area_emd t6 on t1.administ_zone = t6.emd_cd");
+            if("mod".equals(paramMap.get("type"))) {
+                WHERE("t1.station_seq IS NULL " +
+                        "OR t1.station_seq = " + paramMap.get("stationSeq"));
+            } else if("add".equals(paramMap.get("type"))){
+                WHERE("NOT EXISTS(SELECT *" +
+                        " FROM t_station s1" +
+                        " WHERE s1.station_seq = t1.station_seq)");
+            }
+            ORDER_BY("t1.facility_seq");
+        }};
+        return sql.toString();
+    }
+
+    public String selectListFacilityForDimmingQry(Map<String, Object> paramMap) {
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+        ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
+        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
+        String activeType = CommonUtil.validOneNull(paramMap, "activeType");
+
+        SQL sql = new SQL() {{
+            SELECT("t1.facility_seq, t1.facility_id" +
+                    ", t1.administ_zone, t1.latitude"+
+                    ", t1.longitude, t1.insert_dt" +
+                    ", t2.code_value AS facility_kind" +
+                    ", t2.code_name AS facility_kind_name" +
+                    ", t3.emd_nm AS administ_zone_name");
+            FROM("t_facility t1");
+            INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
+            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
+            String modifyQry = "";
+            if ("mod".equals(activeType)) {
+                modifyQry = "AND v1.dimming_group_seq::integer != " + paramMap.get("dimmingGroupSeq");
+            }
+            WHERE("NOT EXISTS (" +
+                    "SELECT * " +
+                    "FROM v_dimming_group v1 " +
+                    "WHERE v1.facility_seq = t1.facility_seq " +
+                    modifyQry +
+                    ")");
+            ORDER_BY("t1.facility_seq");
+        }};
+        return sql.toString();
+    }
+
+    public String selectListFacilityInStationQry(Map<String, Object> paramMap) {
+
+        SQL sql = new SQL() {{
+            SELECT("t1.facility_seq");
+            FROM("t_facility t1");
+            INNER_JOIN("t_station t5 on t1.station_seq = t5.station_seq AND t1.station_seq = " + paramMap.get("stationSeq"));
+            ORDER_BY("t1.facility_seq");
         }};
         return sql.toString();
     }

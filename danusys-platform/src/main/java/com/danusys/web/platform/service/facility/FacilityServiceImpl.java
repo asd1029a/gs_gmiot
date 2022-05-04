@@ -21,7 +21,17 @@ public class FacilityServiceImpl implements FacilityService{
     @Override
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
-        resultMap.put("data", commonMapper.selectList(fsp.selectListQry(paramMap)));
+        switch (paramMap.get("popupType").toString()) {
+            case "station" :
+                resultMap.put("data", commonMapper.selectList(fsp.selectListFacilityForStationQry(paramMap)));
+                break;
+            case "dimming" :
+                resultMap.put("data", commonMapper.selectList(fsp.selectListFacilityForDimmingQry(paramMap)));
+                break;
+            default : resultMap.put("data", commonMapper.selectList(fsp.selectListQry(paramMap)));
+                break;
+        }
+
         return resultMap;
     }
 
@@ -56,7 +66,7 @@ public class FacilityServiceImpl implements FacilityService{
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int modOpt(Map<String, Object> paramMap) throws Exception {
         commonMapper.delete(fsp.deleteOptQry(paramMap));
         return commonMapper.update(fsp.insertOptQry(paramMap));
@@ -70,6 +80,13 @@ public class FacilityServiceImpl implements FacilityService{
     @Override
     public void delOpt(Map<String, Object> paramMap) throws Exception {
         commonMapper.delete(fsp.deleteOptQry(paramMap));
+    }
+
+    @Override
+    public EgovMap getListFacilityInStation(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(fsp.selectListFacilityInStationQry(paramMap)));
+        return resultMap;
     }
 
     @Override
@@ -88,7 +105,9 @@ public class FacilityServiceImpl implements FacilityService{
 
     @Override
     public EgovMap getLastDimmingGroupSeq() throws Exception {
-        return commonMapper.selectOne(fsp.selectOneLastDimmingGroupSeqQry());
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectOne(fsp.selectOneLastDimmingGroupSeqQry()));
+        return resultMap;
     }
 
     @Override

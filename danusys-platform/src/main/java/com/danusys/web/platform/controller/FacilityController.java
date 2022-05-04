@@ -106,6 +106,14 @@ public class FacilityController {
     }
 
     /**
+     * 시설물 : 개소 소속 시설물 조회
+     */
+    @PostMapping(value="/inStation")
+    public ResponseEntity<EgovMap> getListFacilityInStation(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.getListFacilityInStation(paramMap));
+    }
+
+    /**
      * 시설물 : 디밍 그룹 조회
      */
     @PostMapping(value="/dimmingGroup")

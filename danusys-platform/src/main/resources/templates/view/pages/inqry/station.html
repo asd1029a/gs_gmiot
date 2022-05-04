@@ -109,24 +109,24 @@
                         <dl>
                             <dt>개소 종류</dt>
                             <dd>
-                                <select id="stationKind" data-required="true" data-type="stationKind">
+                                <select id="stationKind" data-required="true" name="stationKind" data-type="stationKind">
                                 </select>
                             </dd>
                         </dl>
                         <dl>
                             <dt>행정구역</dt>
                             <dd>
-                                <select id="administZone" data-required="true" data-type="administZone">
+                                <select id="administZone" data-required="true" name="administZone" data-type="administZone">
                                 </select>
                             </dd>
                         </dl>
                         <dl>
                             <dt>위도</dt>
-                            <dd><input type="text" id="latitude" data-required="true" name="userName" placeholder="*필수 입력" ></dd>
+                            <dd><input type="text" id="latitude" data-regex="latitude" data-required="true" name="latitude" placeholder="*필수 입력" ></dd>
                         </dl>
                         <dl>
                             <dt>경도</dt>
-                            <dd><input type="text" id="longitude" data-required="true" name="tel" placeholder="*필수 입력" ></dd>
+                            <dd><input type="text" id="longitude" data-regex="longitude" data-required="true" name="longitude" placeholder="*필수 입력" ></dd>
                         </dl>
                     </form>
                 </fieldset>
