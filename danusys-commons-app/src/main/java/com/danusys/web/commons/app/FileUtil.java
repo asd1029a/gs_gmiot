@@ -20,6 +20,7 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -250,83 +251,6 @@ public class FileUtil {
 
     }
 
-
-    public static Workbook excelDownload(Map<String, Object> paramMap) {
-        List<Map<String, Object>> dataMap = new ArrayList<Map<String, Object>>();
-        List<String> headerList = null;
-        List<String> excludeList = null;
-
-        if (paramMap.get("dataMap") != null) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            List<?> data = (List<?>) paramMap.get("dataMap");
-            for(int i = 0; i < data.size(); i++){
-                dataMap.add(objectMapper.convertValue(data.get(i), Map.class));
-            }
-        }
-
-        if (paramMap.get("headerList") != null) {
-            headerList = (List<String>) paramMap.get("headerList");
-        }
-
-        if (paramMap.get("excludeList") != null) {
-            excludeList = (List<String>) paramMap.get("excludeList");
-            Iterator<Map<String, Object>> iter = dataMap.iterator();
-            while (iter.hasNext()) {
-                Map<String, Object> map2 = iter.next();
-                excludeList.forEach(r -> {
-                    map2.remove(r);
-                });
-            }
-        }
-
-
-        int rowNum = 0;
-        AtomicInteger cellNum = new AtomicInteger();
-        //log.info("paramMap={}", paramMap);
-
-        Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("sheet 1");
-
-        rowNum = 1;
-
-        for (Map<String, Object> data : dataMap) {
-            //row 생성
-            Integer finalRowNum = rowNum;
-            Row row = sheet.createRow(finalRowNum);
-            Row headRow = sheet.createRow(0);
-
-            cellNum.set(0);
-            if (headerList == null) {
-                data.forEach((k, v) -> {
-                    Cell cell = headRow.createCell(cellNum.get());
-                    if (k != null)
-                        cell.setCellValue(k);
-                    cellNum.incrementAndGet();
-                });
-            } else {
-                headerList.forEach((s) -> {
-                    Cell cell = headRow.createCell(cellNum.get());
-                    if (s != null)
-                        cell.setCellValue(s);
-                    cellNum.incrementAndGet();
-                });
-            }
-
-            cellNum.set(0);
-            data.forEach((k, v) -> {
-                Cell cell = row.createCell(cellNum.get());
-                if (v != null)
-                    cell.setCellValue(v.toString());
-
-                //cell에 데이터 삽입
-                cellNum.incrementAndGet();
-            });
-
-            sheet.autoSizeColumn(finalRowNum);
-            rowNum++;
-        }
-        return wb;
-    }
     /**
      * excel donwload
      * 엑셀 다운로드
@@ -342,100 +266,88 @@ public class FileUtil {
      *                 headerList -> List<String> heartList
      *                 dataMap -> 엑셀에 담을 data map 리스트
      *                 headerList -> 엑셀 첫줄에 해더 부분을 임의로 지정할 경우
-     *                 <p>
      *                 필수 : dataMap ,
      *                 선택 : headerList
      *                 *
-     *
      * @throws IOException
      */
 
 
-    public static Workbook excelDownload2(Map<String, Object> paramMap) {
-        List<Map<String, Object>> dataMap = new ArrayList<Map<String, Object>>();
-        List<String> headerList = null;
-        List<String> headerEn = new ArrayList<>();
-        List<String> headerKo = new ArrayList<>();
+    public static Workbook excelDownload(Map<String, Object> paramMap) {
+        List<Map<String, Object>> resultMap = new ArrayList<>();
+        List<String> headerList = CommonUtil.valiArrNull(paramMap, "headerList");
 
         if (paramMap.get("dataMap") != null) {
+            List<String> headerEn = new ArrayList<>();
+            List<String> headerKo = new ArrayList<>();
+
             ObjectMapper objectMapper = new ObjectMapper();
-            List<?> data = (List<?>) paramMap.get("dataMap");
-            for(int i = 0; i < data.size(); i++){
-                dataMap.add(objectMapper.convertValue(data.get(i), Map.class));
-            }
-        }
+            List<?> paramData = (List<?>) paramMap.get("dataMap");
+            Set<String> notContKey = objectMapper.convertValue(paramData.get(0), Map.class).keySet();
 
-        if (paramMap.get("headerList") != null) {
-            headerList = (List<String>) paramMap.get("headerList");
-            headerList.forEach(r -> {
-                log.info("headerList={}", r);
-                String header[] = r.split("\\|");
-                log.info("headerList={},{},{}", header, header[0], header[1]);
-                headerKo.add(header[0]);
-                headerEn.add(header[1]);
+            if (!headerList.isEmpty()){
+                // 머리행 셋팅
+                headerList.forEach(r -> {
+                    String header[] = r.split("\\|");
+                    headerKo.add(header[0]);
+                    headerEn.add(header[1]);
+                    notContKey.remove(header[1]);
+                });
+            }else{
+                headerKo.addAll(notContKey);
+            }
+
+            paramData.forEach(m -> {
+                Map<String, Object> map = objectMapper.convertValue(m, Map.class);
+                notContKey.forEach(r -> {
+                    map.remove(r);
+                });
+                resultMap.add(map);
             });
 
-            Map<String, Object> map4 = dataMap.get(0);
-            Set<String> keySet = map4.keySet();
-            List<String> keyList = new ArrayList<>(keySet);
 
-            headerEn.forEach(r -> {
-                keyList.remove(r);
-            });
+            Workbook wb = new XSSFWorkbook();
+            Sheet sheet = wb.createSheet("sheet 1");
+            AtomicInteger cellNum = new AtomicInteger();
+            int rowNum = 1;
 
-            Iterator<Map<String, Object>> iter = dataMap.iterator();
-            log.info("headerEn={}", headerEn);
+            for (Map<String, Object> data : resultMap) {
+                //row 생성
+                Row row = sheet.createRow(rowNum);
+                Row headRow = sheet.createRow(0);
+                cellNum.set(0);
 
-            while (iter.hasNext()) {
-                Map<String, Object> map3 = iter.next();
-                keyList.forEach(keyListValue -> {
-                    map3.remove(keyListValue);
-                });
-            }
-        }
-
-        int rowNum = 0;
-        AtomicInteger cellNum = new AtomicInteger();
-        //log.info("paramMap={}", paramMap);
-        Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("sheet 1");
-        rowNum = 1;
-
-        for (Map<String, Object> data : dataMap) {
-            //row 생성
-            Integer finalRowNum = rowNum;
-            Row row = sheet.createRow(finalRowNum);
-            Row headRow = sheet.createRow(0);
-            cellNum.set(0);
-            if (headerList == null) {
-                data.forEach((k, v) -> {
-                    Cell cell = headRow.createCell(cellNum.get());
-                    if (k != null)
-                        cell.setCellValue(k);
-                    cellNum.incrementAndGet();
-                });
-            } else {
                 headerKo.forEach((s) -> {
                     Cell cell = headRow.createCell(cellNum.get());
                     if (s != null)
                         cell.setCellValue(s);
                     cellNum.incrementAndGet();
                 });
+
+                cellNum.set(0);
+                if(headerList.isEmpty()){
+                    data.forEach((k, valStr) -> {
+                        Cell cell = row.createCell(cellNum.get());
+                        cell.setCellValue(valStr != null ? valStr.toString() : "");
+                        cellNum.incrementAndGet();
+                    });
+                }else{
+                    headerEn.forEach(r -> {
+                        String valStr = CommonUtil.validOneNull(data, r);
+                        Cell cell = row.createCell(cellNum.get());
+                        cell.setCellValue(valStr);
+                        cellNum.incrementAndGet();
+                    });
+                }
+
+                sheet.autoSizeColumn(rowNum);
+                rowNum++;
             }
-
-            cellNum.set(0);
-            data.forEach((k, v) -> {
-                Cell cell = row.createCell(cellNum.get());
-                if (v != null)
-                    cell.setCellValue(v.toString());
-
-                //cell에 데이터 삽입
-                cellNum.incrementAndGet();
-            });
-
-            sheet.autoSizeColumn(finalRowNum);
-            rowNum++;
+            return wb;
+        }else {
+            Workbook wb = new XSSFWorkbook();
+            Sheet sheet = wb.createSheet("sheet 1");
+            return wb;
         }
-        return wb;
     }
 }
