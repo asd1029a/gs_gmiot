@@ -52,7 +52,8 @@ const account = {
                         }
                     }
                 , select: {
-                    toggleable: false
+                    toggleable: false,
+                    style: "single"
                 }
                 , columns: [
                     {data: "userId", className: "alignLeft"},
@@ -124,7 +125,8 @@ const account = {
                     }
                 ,
                 select: {
-                    toggleable: false
+                    toggleable: false,
+                    style: "single"
                 }
                 , columns: [
                     {data: "userSeq", className: "alignLeft"},
@@ -384,7 +386,8 @@ const account = {
                         }
                     },
                 select: {
-                    toggleable: false
+                    toggleable: false,
+                    style: "single"
                 },
                 columns: [
                     {data: "groupName"},
@@ -451,7 +454,8 @@ const account = {
                         },
                     },
                 select: {
-                    toggleable: false
+                    toggleable: false,
+                    style: "single"
                 },
                 columns: [
                     {data: "userGroupSeq", className: "alignLeft"},

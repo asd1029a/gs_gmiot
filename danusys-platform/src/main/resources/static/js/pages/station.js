@@ -2,7 +2,12 @@
 * 개소 관련 JS
 */
 
-const station = {
+const stations = {
+    eventHandler: () => {
+        $("#searchBtn").on('click', (e) => {
+            stations.create();
+        });
+    },
     create : () => {
         const $target = $('#stationTable');
 
@@ -13,54 +18,56 @@ const station = {
             scrollY: "calc(100% - 40px)",
             ajax :
                 {
-                    'url' : "/station",
+                    'url' : "/station/paging",
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
                     'data' : function ( d ) {
-                        console.log(d);
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
-                        console.log(result);
                         $('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
                 },
             select: {
-                toggleable: false
+                toggleable: false,
+                style: "single"
             },
             columns : [
-                {data: "stationSeq", className: "alignLeft"},
-                {data: "stationKind"},
+                {data: "stationSeq", class: "alignLeft"},
+                {data: "stationKindName"},
                 {data: "stationName"},
-                {data: "facilityStatus"},
-                {data: "facilityKind"},
-                {data: "administZone"},
-                {data: "address"},
+                // {data: "facilityStatus"},
+                {data: "inFacilityKind"},
+                {data: "administZoneName"},
                 {data: null}
             ],
             columnDefs: [{
                 "targets": -1,
                 "data": null,
-                "defaultContent": '<span class="button">상세보기</span>'
+                "defaultContent": '<span class="button">수정</span>'
             }
             , {
-                targets: 1,
-                createdCell: function (td, cellData) {
-                    if ( cellData !== null ) {
-                        $(td).text("");
-                        $(td).append("<i><img src='/images/default/clipboard.svg'></i>");
-                    } else {
-                        $(td).text("없음");
+                "targets": 1,
+                "data": null,
+                "render": function ( data, type, row ) {
+                    switch (row.stationKindValue){
+                        case "lamp_road" : return `<span class="type pole"><i><img src="/images/default/icon_pole.svg"></i></span>`; break;
+                        case "bus" : return `<span class="type bus"><i><img src="/images/default/icon_bus.svg"></i></span>`; break;
+                        default: "";
                     }
                 }
-            }
-            , {
-                targets: 4,
-                render: $.fn.dataTable.render.ellipsis( 50, true )
             }]
-            , excelDownload : true
+            , excelDownload : {
+                url : "/station/excel/download"
+                , fileName : "개소 목록_"+ dateFunc.getCurrentDateYyyyMmDd(0, '') +".xlsx"
+                , search : $("#searchForm form").serializeJSON()
+                , headerList : ["고유번호|stationSeq"
+                    , "이름|stationName"
+                    , "종류|stationKindName"
+                    , "행정구역|administZoneName"]
+            }
         }
 
         const evt = {

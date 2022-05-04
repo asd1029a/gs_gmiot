@@ -1,8 +1,8 @@
 package com.danusys.web.platform.service.station;
 
-import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.PagingUtil;
+import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.station.StationSqlProvider;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +19,19 @@ public class StationServiceImpl implements StationService{
 
     @Override
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
-        if(paramMap.get("draw") != null) {
-            Map<String, Object> pagingMap = new HashMap<>();
-            pagingMap.put("data", commonMapper.selectList(ssp.selectListQry(paramMap)));
-            pagingMap.put("count", commonMapper.selectOne(ssp.selectCountQry(paramMap)).get("count"));
-            return PagingUtil.createPagingMap(paramMap, pagingMap);
-        } else {
-            EgovMap resultMap = new EgovMap();
-            resultMap.put("data", commonMapper.selectList(ssp.selectListQry(paramMap)));
-            return resultMap;
-        }
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(ssp.selectListQry(paramMap)));
+        return resultMap;
+    }
+
+    @Override
+    public EgovMap getListPaging(Map<String, Object> paramMap) throws Exception {
+        Map<String, Object> pagingMap = new HashMap<>();
+        EgovMap count = commonMapper.selectOne(ssp.selectCountQry(paramMap));
+        pagingMap.put("data", commonMapper.selectList(ssp.selectListQry(paramMap)));
+        pagingMap.put("count", count.get("count"));
+        pagingMap.put("statusCount", count);
+        return PagingUtil.createPagingMap(paramMap, pagingMap);
     }
 
     @Override

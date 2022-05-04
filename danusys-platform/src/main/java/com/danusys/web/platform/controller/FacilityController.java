@@ -1,11 +1,15 @@
 package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.app.EgovMap;
+import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.platform.util.GisUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +25,16 @@ public class FacilityController {
      * 시설물 : 시설물 목록 조회
      */
     @PostMapping
-    public ResponseEntity<EgovMap> getListFacility(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<EgovMap> getList(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(facilityService.getList(paramMap));
+    }
+    
+    /**
+     * 시설물 : 시설물 목록 조회 페이징
+     */
+    @PostMapping(value="/paging")
+    public ResponseEntity<EgovMap> getListPaging(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.getListPaging(paramMap));
     }
 
     /**
@@ -123,5 +135,19 @@ public class FacilityController {
     @PostMapping(value="/signageTemplate")
     public ResponseEntity<EgovMap> getListSignageTemplate(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(facilityService.getListSignageTemplate(paramMap));
+    }
+
+    /**
+     * 시설물 : 시설물 조회 엑셀 다운로드
+     */
+    @ResponseBody
+    @PostMapping(value = "/excel/download")
+    public void exportNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
+        Map<String, Object> dataMap = facilityService.getList((Map<String, Object>) paramMap.get("search"));
+
+        paramMap.put("dataMap", dataMap.get("data"));
+        Workbook wb = FileUtil.excelDownload2(paramMap);
+        wb.write(response.getOutputStream());
+        wb.close();
     }
 }
