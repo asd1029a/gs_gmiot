@@ -158,15 +158,16 @@ const dimming = {
                             const min = $("#dimmingTimeZoneTable tbody tr:nth-child(2) td input")[i].value;
                             timeList.push(min + "/" + max);
                         }
-                        /* TODO : 외부연계시 Callback 후 데이터 전송 */
-                        // dimmingSetObj.callUrl = "/add/dimming";
-                        // dimmingSetObj.maxBrightTime = $("#maxBrightTime").val();
-                        // dimmingSetObj.keepBrightTime = $("#keepBrightTime").val();
-                        // dimmingSetObj.minBrightTime = $("#minBrightTime").val();
-                        // dimmingSetObj.deviceIds = facilityIdList.join(',');
-                        // dimmingSetObj.time = timeList.join(',');
 
-                        //dimming.sendDimmingProc(dimmingSetObj, () => {
+                        dimmingSetObj.callUrl = "/add/dimmingUpdate";
+                        dimmingSetObj.maxBrightTime = $("#maxBrightTime").val();
+                        dimmingSetObj.keepBrightTime = $("#keepBrightTime").val();
+                        dimmingSetObj.minBrightTime = $("#minBrightTime").val();
+                        dimmingSetObj.deviceIds = facilityIdList.join(',');
+                        dimmingSetObj.time = timeList.join(', ');
+
+                        console.log(dimmingSetObj);
+                        dimming.sendDimmingProc(dimmingSetObj, () => {
                         const optObj = {
                             "dimming_time_zone" : timeList.join(',')
                             , "keep_bright_time" : $("#keepBrightTime").val()
@@ -186,7 +187,7 @@ const dimming = {
                             , () => {
                                 comm.showAlert("디밍 설정을 실패했습니다.");
                             });
-                        //});
+                        });
                     }
                 );
             }
@@ -285,7 +286,8 @@ const dimming = {
      * @param1 : pObj = {디밍 그룹 정보}
      * @param2 : type = ( 추가 = 'add' || 수정 = 'mod')
      */
-    , createLampRoad : (pObj, type) => {
+    , createLampRoad : (pObj) => {
+        console.log(pObj);
         const $target = $('#lampRoadInGroupTable');
         const optionObj = {
             dom: '<"table_body"rt>',
@@ -303,7 +305,7 @@ const dimming = {
                         return JSON.stringify( pObj );
                     },
                     'dataSrc' : function(result) {
-                        if(type == "add") {
+                        if(pObj.activeType === "add") {
                             return result.data;
                         } else {
                             let selectedFacilityList = null;
@@ -597,7 +599,8 @@ const dimming = {
     , showPopup : (type, pRowData) => {
         const createObj = {
             facilityKind : "lamp_road"
-            , createType : type
+            , activeType : type
+            , popupType : "dimming"
         }
 
         comm.showModal($('#dimmingGroupPopup'));
@@ -607,14 +610,14 @@ const dimming = {
         $('#dimmingGroupPopup [data-'+type+'="true"]').show();
 
         if(type === "add") {
-            dimming.createLampRoad(createObj, type);
+            dimming.createLampRoad(createObj);
         } else if(type === "mod") {
             $("#dimmingGroupPopup #dimmingGroupName").val(pRowData.dimmingGroupName);
             const dimmingGroupSeq = pRowData.dimmingGroupSeq;
             $('#dimmingGroupPopup').data("dimmingGroupSeq", dimmingGroupSeq);
             createObj.dimmingGroupSeq = dimmingGroupSeq
 
-            dimming.createLampRoad(createObj, type);
+            dimming.createLampRoad(createObj);
         }
     }
     /*

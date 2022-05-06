@@ -57,7 +57,7 @@ const notice = {
             columns : [
                 {data: "noticeTitle", className: "alignLeft"},
                 {data: "noticeContent", className: "alignLeft"},
-                {data: "insertUserId"},
+                {data: "insertUserSeq"},
                 {data: "insertDt"},
                 {data: "noticeFile"},
                 {data: null}
@@ -95,9 +95,9 @@ const notice = {
                     , "제목|noticeTitle"
                     , "내용|noticeContent"
                     , "파일이름|noticeFile"
-                    , "작성자|insertUserId"
+                    , "작성자|insertUserSeq"
                     , "작성일|insertDt"
-                    , "수정자|updateUserId"
+                    , "수정자|updateUserSeq"
                     , "수정일|updateDt"]
             }
         }

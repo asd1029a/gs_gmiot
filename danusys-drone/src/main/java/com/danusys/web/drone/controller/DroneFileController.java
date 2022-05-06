@@ -1,7 +1,6 @@
 package com.danusys.web.drone.controller;
 
 import com.danusys.web.commons.app.FileUtil;
-import com.danusys.web.drone.dto.response.FileName;
 import com.danusys.web.drone.model.DroneDetails;
 import com.danusys.web.drone.service.DroneDetailsService;
 import com.danusys.web.drone.service.DroneService;
@@ -17,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -142,7 +140,7 @@ public class DroneFileController {
 
         Workbook wb = null;
 //        log.info("param={}",paramMap);
-        wb = FileUtil.excelDownload2(paramMap);
+        wb = FileUtil.excelDownload(paramMap);
 
 
         wb.write(response.getOutputStream());

@@ -24,6 +24,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -34,6 +35,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -231,7 +234,6 @@ public class ApiCallRestController {
     @PostMapping(value = "/call")
     public ResponseEntity call(HttpServletRequest req, @RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
-
         Api api = getRequestApi(param);
 
         /**
@@ -255,6 +257,20 @@ public class ApiCallRestController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(resultBody);
+    }
+
+    @Scheduled(cron = "0/10 * * * * *")
+    public void schedulerTest() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
+        String formatNow = now.format(formatter);
+        int iNow = Integer.parseInt(formatNow);
+        Map<String, Object> param = new HashMap<>();
+        param.put("callUrl","/mjvt/smart-station/people-count");
+        param.put("cameraId","1");
+        param.put("dateTime",iNow-1);
+        log.info("현재 시각 : {}",iNow-1);
+        call(param);
     }
 
     @PostMapping(value = "/ext/send")

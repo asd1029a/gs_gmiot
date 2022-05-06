@@ -5,7 +5,6 @@ import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.platform.service.station.StationService;
 import com.danusys.web.platform.util.GisUtil;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,7 +90,7 @@ public class StationController {
         Map<String, Object> dataMap = stationService.getList((Map<String, Object>) paramMap.get("search"));
 
         paramMap.put("dataMap", dataMap.get("data"));
-        Workbook wb = FileUtil.excelDownload2(paramMap);
+        Workbook wb = FileUtil.excelDownload(paramMap);
         wb.write(response.getOutputStream());
         wb.close();
     }
