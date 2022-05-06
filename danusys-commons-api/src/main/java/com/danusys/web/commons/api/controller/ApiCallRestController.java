@@ -66,6 +66,7 @@ public class ApiCallRestController {
     private EventService eventService;
     private FacilityOptService facilityOptService;
     private CookieService cookieService;
+    private HttpServletRequest request;
 
     public ApiCallRestController(ObjectMapper objectMapper
             , ApiExecutorFactoryService apiExecutorFactoryService
@@ -75,7 +76,8 @@ public class ApiCallRestController {
             , ForecastService forecastService
             , EventService eventService
             , FacilityOptService facilityOptService
-            , CookieService cookieService) {
+            , CookieService cookieService
+            , HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.apiExecutorFactoryService = apiExecutorFactoryService;
         this.apiExecutorService = apiExecutorService;
@@ -85,6 +87,7 @@ public class ApiCallRestController {
         this.eventService = eventService;
         this.facilityOptService = facilityOptService;
         this.cookieService = cookieService;
+        this.request = request;
     }
 
     @PostMapping(value = "/facility")
@@ -232,14 +235,14 @@ public class ApiCallRestController {
 
 
     @PostMapping(value = "/call")
-    public ResponseEntity call(HttpServletRequest req, @RequestBody Map<String, Object> param) throws Exception {
+    public ResponseEntity call(@RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
         Api api = getRequestApi(param);
 
         /**
          * api 요청시 인증 토큰이 필요한 경우
          */
-        String accessToken = this.getApiAccessToken(api, req);
+        String accessToken = this.getApiAccessToken(api, request);
 
         /**
          * API DB 정보로 외부 API 호출
