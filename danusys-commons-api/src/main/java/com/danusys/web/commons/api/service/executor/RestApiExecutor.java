@@ -53,7 +53,6 @@ public class RestApiExecutor implements ApiExecutor {
 //            throw new IllegalArgumentException("입력된 API 파라미터 값이 null 입니다.");
 //        if (api.getCallUrl() == null)
 //            throw new IllegalArgumentException("호출 URL 값이 null 입니다.");
-//        // 파라미터가 없는 요청이 있어서 주석 처리 함 - 엄태혁 연구원
 ////        if (api.getApiRequestParams() == null || api.getApiRequestParams().isEmpty())
 ////            throw new IllegalArgumentException("apiRequestParams 값이 null 입니다.");
 //
@@ -102,7 +101,6 @@ public class RestApiExecutor implements ApiExecutor {
 //                .body(result);
 //    }
 
-    // 엄태혁 연구원 session 처리로 인한 수정
     @Override
     public ResponseEntity execute(final Api api) throws Exception {
         if (api == null)
