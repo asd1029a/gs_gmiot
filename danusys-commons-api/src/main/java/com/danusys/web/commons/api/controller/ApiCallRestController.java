@@ -9,13 +9,11 @@ import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.service.*;
 import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
-import com.danusys.web.commons.api.types.ParamType;
-import com.danusys.web.commons.app.CamelUtil;
 import com.danusys.web.commons.app.StrUtils;
-import com.danusys.web.commons.app.service.CookieService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.parser.JSONParser;
@@ -24,26 +22,21 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -56,39 +49,45 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 @RestController
 @RequestMapping(value = "/api")
+@RequiredArgsConstructor
 public class ApiCallRestController {
-    private ObjectMapper objectMapper;
-    private ApiExecutorFactoryService apiExecutorFactoryService;
-    private ApiExecutorService apiExecutorService;
-    private FacilityService facilityService;
-    private StationService stationService;
-    private ForecastService forecastService;
-    private EventService eventService;
-    private FacilityOptService facilityOptService;
-    private CookieService cookieService;
-    private HttpServletRequest request;
+    private final ObjectMapper objectMapper;
+    private final ApiExecutorFactoryService apiExecutorFactoryService;
+//    private ApiExecutorService apiExecutorService;
 
-    public ApiCallRestController(ObjectMapper objectMapper
-            , ApiExecutorFactoryService apiExecutorFactoryService
-            , ApiExecutorService apiExecutorService
-            , FacilityService facilityService
-            , StationService stationService
-            , ForecastService forecastService
-            , EventService eventService
-            , FacilityOptService facilityOptService
-            , CookieService cookieService
-            , HttpServletRequest request) {
-        this.objectMapper = objectMapper;
-        this.apiExecutorFactoryService = apiExecutorFactoryService;
-        this.apiExecutorService = apiExecutorService;
-        this.facilityService = facilityService;
-        this.stationService = stationService;
-        this.forecastService = forecastService;
-        this.eventService = eventService;
-        this.facilityOptService = facilityOptService;
-        this.cookieService = cookieService;
-        this.request = request;
-    }
+    private final ApiCallService apiService;
+    private final FacilityService facilityService;
+    private final StationService stationService;
+    private final ForecastService forecastService;
+    private final EventService eventService;
+    private final FacilityOptService facilityOptService;
+//    private final  CookieService cookieService;
+    private final HttpServletRequest request;
+//    private final HttpServletResponse response;
+
+
+//    public ApiCallRestController(ObjectMapper objectMapper
+//            , ApiExecutorFactoryService apiExecutorFactoryService
+////            , ApiExecutorService apiExecutorService
+//            , ApiService apiService, FacilityService facilityService
+//            , StationService stationService
+//            , ForecastService forecastService
+//            , EventService eventService
+//            , FacilityOptService facilityOptService
+//            , CookieService cookieService
+//            , HttpServletRequest request) {
+//        this.objectMapper = objectMapper;
+//        this.apiExecutorFactoryService = apiExecutorFactoryService;
+//        this.apiService = apiService;
+////        this.apiExecutorService = apiExecutorService;
+//        this.facilityService = facilityService;
+//        this.stationService = stationService;
+//        this.forecastService = forecastService;
+//        this.eventService = eventService;
+//        this.facilityOptService = facilityOptService;
+//        this.cookieService = cookieService;
+//        this.request = request;
+//    }
 
     @PostMapping(value = "/facility")
     public ResponseEntity findAllForFacility(@RequestBody Map<String, Object> param) throws Exception {
@@ -100,7 +99,7 @@ public class ApiCallRestController {
     public ResponseEntity apiSaveFacility(@RequestBody Map<String, Object> param) throws Exception  {
         log.trace("param {}", param.toString());
 
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
@@ -125,7 +124,7 @@ public class ApiCallRestController {
     public ResponseEntity apiSaveStation(@RequestBody Map<String, Object> param) throws Exception  {
         log.trace("param {}", param.toString());
 
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
@@ -140,7 +139,7 @@ public class ApiCallRestController {
 
     @PostMapping(value="/getCurSkyTmp")
     public ResponseEntity getCurSkyTmp(@RequestBody Map<String, Object> param) throws Exception {
-        Api api = getRequestApi(forecastService.setReqParam(param));
+        Api api = apiService.getRequestApi(forecastService.setReqParam(param));
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
@@ -158,7 +157,7 @@ public class ApiCallRestController {
         param.entrySet().stream().peek(f -> {
             f.setValue(UriEncoder.encode(StrUtils.getStr(f.getValue())));
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
@@ -235,14 +234,21 @@ public class ApiCallRestController {
 
 
     @PostMapping(value = "/call")
-    public ResponseEntity call(@RequestBody Map<String, Object> param) throws Exception {
+    public ResponseEntity call(HttpServletRequest req, @RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
+
+//        Cookie saveCookie = cookieService.createCookie(request, "test", "1111", 60*60);
+//        log.trace("saveCookie {} ", saveCookie.getValue());
+//        response.addCookie(saveCookie);
+//
+//        Cookie findCookie = cookieService.getCookie(request, "test");
+//        log.trace("findCookie ::: {}", findCookie);
 
         /**
          * api 요청시 인증 토큰이 필요한 경우
          */
-        String accessToken = this.getApiAccessToken(api, request);
+//        apiService.getApiAccessToken(api, request);
 
         /**
          * API DB 정보로 외부 API 호출
@@ -262,25 +268,25 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
-    @Scheduled(cron = "0/10 * * * * *")
-    public void schedulerTest() throws Exception {
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
-        String formatNow = now.format(formatter);
-        int iNow = Integer.parseInt(formatNow);
-        Map<String, Object> param = new HashMap<>();
-        param.put("callUrl","/mjvt/smart-station/people-count");
-        param.put("cameraId","1");
-        param.put("dateTime",iNow-1);
-        log.info("현재 시각 : {}",iNow-1);
-        call(param);
-    }
+//    @Scheduled(cron = "0/10 * * * * *")
+//    public void schedulerTest() throws Exception {
+//        LocalDateTime now = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
+//        String formatNow = now.format(formatter);
+//        int iNow = Integer.parseInt(formatNow);
+//        Map<String, Object> param = new HashMap<>();
+//        param.put("callUrl","/mjvt/smart-station/people-count");
+//        param.put("cameraId","1");
+//        param.put("dateTime",iNow-1);
+//        log.info("현재 시각 : {}",iNow-1);
+//        call(param);
+//    }
 
     @PostMapping(value = "/ext/send")
     public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
 
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
@@ -295,7 +301,7 @@ public class ApiCallRestController {
 
     @PostMapping("event")
     public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
         List<ApiParam> apiResponseParams = api.getApiResponseParams();
@@ -352,7 +358,7 @@ public class ApiCallRestController {
 
     @PostMapping("facilityData")
     public ResponseEntity facilityData(@RequestBody Map<String, Object> param) {
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
         List<ApiParam> apiResponseParams = api.getApiResponseParams();
@@ -408,129 +414,72 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
-    private Api getRequestApi(Map<String, Object> param) {
-        String callUrl = StrUtils.getStr(param.get("callUrl"));
-//        String bizCd = StrUtils.getStr(param.get("bizCd"));
-        Api api = null;
 
-        try {
-            log.trace("callUrl : {}", callUrl);
-
-            //API 마스터 정보 가져오기
-            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
-
-            //요청 컬럼 정보 가져오기
-            api.setApiRequestParams(apiExecutorService
-                    .findApiParam(api.getId(), ParamType.REQUEST)
-                    .stream()
-                    .filter(f -> f.getParamType() == ParamType.REQUEST)
-                    .map(f -> {
-                        final Object p = param.get(f.getFieldNm());
-                        if (p != null) {
-                            try {
-                                if (f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT)) {
-                                    f.setValue(objectMapper.writeValueAsString(p));
-                                } else {
-                                    f.setValue(StrUtils.getStr(p));
-                                }
-                            } catch (JsonProcessingException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        return f;
-                    })
-                    .collect(toList())
-            );
-
-            //응답 컬럼 정보 가져오기
-            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
-
-        } catch (Exception ex) {
-            log.error(ex.toString());
-            throw ex;
-        }
-        return api;
-
-//        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
-//
-//        //API 마스터 정보 가져오기
-//        return reqParams == null ? getRequestApi(callUrl) : getRequestApi(callUrl, reqParams);
-    }
 
     private void addEvent() {
 
     }
 
-    private Api getRequestApi(String callUrl) {
-        Api api = null;
-        try {
-            log.trace("callUrl : {}", callUrl);
+//    private Api getRequestApi(String callUrl) {
+//        Api api = null;
+//        try {
+//            log.trace("callUrl : {}", callUrl);
+//
+//            //API 마스터 정보 가져오기
+//            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
+//
+//            //요청 컬럼 정보 가져오기
+//            api.setApiRequestParams(apiExecutorService
+//                    .findApiParam(api.getId(), ParamType.REQUEST)
+//                    .stream()
+//                    .filter(f -> f.getParamType() == ParamType.REQUEST)
+//                    .collect(toList())
+//            );
+//
+//            //응답 컬럼 정보 가져오기
+//            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
+//
+//        } catch (Exception ex) {
+//            log.error(ex.toString());
+//            throw ex;
+//        }
+//
+//        return api;
+//    }
 
-            //API 마스터 정보 가져오기
-            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
+//    private Api getRequestApi(String callUrl, Map<String, Object> reqParams) {
+//        Api api = null;
+//        try {
+//            log.trace("callUrl : {}", callUrl);
+//
+//            //API 마스터 정보 가져오기
+//            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
+//
+//            //요청 컬럼 정보 가져오기
+//            api.setApiRequestParams(apiExecutorService
+//                    .findApiParam(api.getId(), ParamType.REQUEST)
+//                    .stream()
+//                    .filter(f -> f.getParamType() == ParamType.REQUEST)
+//                    .map((f) -> {
+//                        final Object p = reqParams.get(f.getFieldNm());
+//                        if (p != null) f.setValue(p.toString());
+//                        return f;
+//                    })
+//                    .collect(toList())
+//            );
+//
+//            //응답 컬럼 정보 가져오기
+//            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
+//
+//        } catch (Exception ex) {
+//            log.error(ex.toString());
+//            throw ex;
+//        }
+//
+//        return api;
+//    }
 
-            //요청 컬럼 정보 가져오기
-            api.setApiRequestParams(apiExecutorService
-                    .findApiParam(api.getId(), ParamType.REQUEST)
-                    .stream()
-                    .filter(f -> f.getParamType() == ParamType.REQUEST)
-                    .collect(toList())
-            );
 
-            //응답 컬럼 정보 가져오기
-            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
-
-        } catch (Exception ex) {
-            log.error(ex.toString());
-            throw ex;
-        }
-
-        return api;
-    }
-
-    private Api getRequestApi(String callUrl, Map<String, Object> reqParams) {
-        Api api = null;
-        try {
-            log.trace("callUrl : {}", callUrl);
-
-            //API 마스터 정보 가져오기
-            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
-
-            //요청 컬럼 정보 가져오기
-            api.setApiRequestParams(apiExecutorService
-                    .findApiParam(api.getId(), ParamType.REQUEST)
-                    .stream()
-                    .filter(f -> f.getParamType() == ParamType.REQUEST)
-                    .map((f) -> {
-                        final Object p = reqParams.get(f.getFieldNm());
-                        if (p != null) f.setValue(p.toString());
-                        return f;
-                    })
-                    .collect(toList())
-            );
-
-            //응답 컬럼 정보 가져오기
-            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
-
-        } catch (Exception ex) {
-            log.error(ex.toString());
-            throw ex;
-        }
-
-        return api;
-    }
-
-    /**
-     * 파라미터를 API Object에 세팅
-     * @param apiParam
-     * @param param
-     * @return
-     */
-    private ApiParam apiRequestSetValue(ApiParam apiParam, Map<String, Object> param) {
-        log.trace("### 요청 {} => {} = {}", apiParam.getFieldNm(), apiParam.getFieldMapNm(), param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm())));
-        apiParam.setValue(StrUtils.getStr(param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm()))));
-        return apiParam;
-    }
 
     @PostMapping("/deviceInfoList.json")
     public ResponseEntity sample(@RequestBody Map<String, Object> param) throws ParseException {
@@ -547,55 +496,6 @@ public class ApiCallRestController {
                 .body(jsonParser.parse(result));
     }
 
-    /**
-     * 인증 토큰 쿠키 조회 및 저장
-     * 토큰이 있으면 가져와서 리턴하고,
-     * 없으면 요청해서 저장
-     * @param api
-     * @param req
-     * @return
-     * @throws Exception
-     */
-    private String getApiAccessToken(Api api, HttpServletRequest req) throws Exception {
-        String result = "";
-        /**
-         * 연계할 api가 bearer 토큰 값이 필요할 경우
-         */
-        if(api.getAuthInfo() !=null && !api.getAuthInfo().isEmpty()) {
 
-            Cookie cookie = cookieService.getCookie(req, "access_token");
-            if(cookie != null) {
-                log.trace("access_token {} ", cookie.getValue());
-                result = cookie.getValue();
-            }
-
-            if(api.getAuthInfo().contains("bearer") && cookie == null) {
-                String exApiCallUrl = api.getAuthInfo().split("_")[1];
-
-                Map<String, Object> subParam = new HashMap<>();
-                subParam.put("callUrl", exApiCallUrl);
-                Api subApi = getRequestApi(subParam);
-
-                ResponseEntity subResponseEntity = apiExecutorFactoryService.execute(subApi);
-                log.trace( "###subResponseEntity.getBody() {}", subResponseEntity.getBody());
-
-                Map<String, Object> subBody = (Map<String, Object>) subResponseEntity.getBody();
-                /**
-                 * api param -> response에 설정한 값임
-                 */
-                String accessToken = String.valueOf((new HashMap<>((Map) subBody.get("auth"))).get("access_token"));
-
-                log.trace("access_token {}", accessToken);
-                result = accessToken;
-
-                /**
-                 * 시간은 액세스 토큰 만료 시간 보다 작게 설정
-                 */
-                cookieService.createCookie(req, "access_token", accessToken, 5 * 60 );
-            }
-        }
-
-        return result;
-    }
 }
 

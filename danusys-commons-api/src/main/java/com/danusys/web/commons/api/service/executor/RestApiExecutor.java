@@ -2,10 +2,12 @@ package com.danusys.web.commons.api.service.executor;
 
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
+import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.crypto.service.CryptoExecutorFactoryService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.*;
@@ -20,6 +22,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,13 +39,20 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service("REST")
+@RequiredArgsConstructor
 public class RestApiExecutor implements ApiExecutor {
-    private RestTemplate restTemplate;
-    private CryptoExecutorFactoryService cryptoExecutorFactoryService;
-    public RestApiExecutor(RestTemplate restTemplate, CryptoExecutorFactoryService cryptoExecutorFactoryService) {
-        this.restTemplate = restTemplate;
-        this.cryptoExecutorFactoryService = cryptoExecutorFactoryService;
-    }
+    private final RestTemplate restTemplate;
+    private final CryptoExecutorFactoryService cryptoExecutorFactoryService;
+    private final ApiCallService apiCallService;
+
+    private final HttpServletRequest request;
+//    public RestApiExecutor(RestTemplate restTemplate
+//            , CryptoExecutorFactoryService cryptoExecutorFactoryService
+//            , CookieService cookieService) {
+//        this.restTemplate = restTemplate;
+//        this.cryptoExecutorFactoryService = cryptoExecutorFactoryService;
+//        this.cookieService = cookieService;
+//    }
 
 //    @Override
 //    public ResponseEntity execute(final Api api) throws Exception {
@@ -184,39 +194,49 @@ public class RestApiExecutor implements ApiExecutor {
             , HttpMethod method
             , MediaType mediaType
             , Map<String, Object> reqMap) {
-        return this.getResponseEntity(api.getTargetUrl(), api.getTargetPath(), method, mediaType, reqMap, api.getAuthInfo());
-    }
+//        return this.getResponseEntity(api.getTargetUrl(), api.getTargetPath(), method, mediaType, reqMap, api.getAuthInfo());
+//    }
+//
+//    private ResponseEntity getResponseEntity(String targetUrl
+//            , String targetPath
+//            , HttpMethod method
+//            , MediaType mediaType
+//            , Map<String, Object> reqMap
+//            , String authInfo) {
 
-    private ResponseEntity getResponseEntity(String targetUrl
-            , String targetPath
-            , HttpMethod method
-            , MediaType mediaType
-            , Map<String, Object> reqMap
-            , String authInfo) {
-
-        URI uri = null;
+//        URI uri = null;
 
         //HttpEntity requestEntity = null;
         ResponseEntity<String> responseEntity = null;
 
         Mono<ResponseEntity<String>> mono = null;
-        WebClient webClient = WebClient.create(targetUrl);
+        WebClient webClient = WebClient.create(api.getTargetUrl());
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String json = "";
         try {
             //final HttpHeaders headers = new HttpHeaders();
+//            String auth
             Consumer<HttpHeaders> headersConsumer = httpHeaders -> {
                 httpHeaders.setContentType(mediaType);
                 httpHeaders.setAccept(Collections.singletonList(mediaType));
-                if (authInfo != null && !authInfo.isEmpty()) {
-                    httpHeaders.set("Authorization", authInfo);
 
-                    httpHeaders.setBearerAuth("");
+                if (api.getAuthInfo() != null && !api.getAuthInfo().isEmpty()) {
+                    if(api.getAuthInfo().contains("bearer") ) {
+                        String accessToken = null;
+                        try {
+                            accessToken = apiCallService.getApiAccessToken(api);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        httpHeaders.setBearerAuth(accessToken);
+                    } else {
+                        httpHeaders.set("Authorization", api.getAuthInfo());
+                    }
                 }
             };
 
-            DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(targetUrl);
+            DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(api.getTargetUrl());
             factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
 
             ExchangeStrategies exchangeStrategies = ExchangeStrategies
@@ -228,7 +248,7 @@ public class RestApiExecutor implements ApiExecutor {
                 reqMap.entrySet().stream().forEach(f -> {
                     params.add(f.getKey(), (String) f.getValue());
                 });
-                URI tUri = factory.builder().queryParams(params).path(targetPath).build();
+                URI tUri = factory.builder().queryParams(params).path(api.getTargetPath()).build();
 
                 mono = WebClient.builder()
 //                        .filter(ExchangeFilterFunction.ofRequestProcessor(
@@ -284,7 +304,7 @@ public class RestApiExecutor implements ApiExecutor {
                         .exchangeStrategies(exchangeStrategies)
                         .uriBuilderFactory(factory)
                         .build().method(method)
-                        .uri(uriBuilder -> uriBuilder.path(targetPath)
+                        .uri(uriBuilder -> uriBuilder.path(api.getTargetPath())
                                 .build())
                         .bodyValue(json)
                         .headers(headersConsumer)
