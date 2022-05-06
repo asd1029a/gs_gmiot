@@ -13,5 +13,12 @@ public enum BodyType {
 
     ARRAY,
 
-    MULTISET
+    MULTISET,
+
+    NONE,
+
+    STRING,
+
+    OBJECT_MAPPING
+
 }

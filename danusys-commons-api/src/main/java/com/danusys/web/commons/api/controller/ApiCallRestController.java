@@ -7,10 +7,12 @@ import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.service.*;
+import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.api.types.ParamType;
 import com.danusys.web.commons.app.CamelUtil;
 import com.danusys.web.commons.app.StrUtils;
+import com.danusys.web.commons.app.service.CookieService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +28,8 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -58,6 +62,7 @@ public class ApiCallRestController {
     private ForecastService forecastService;
     private EventService eventService;
     private FacilityOptService facilityOptService;
+    private CookieService cookieService;
 
     public ApiCallRestController(ObjectMapper objectMapper
             , ApiExecutorFactoryService apiExecutorFactoryService
@@ -66,7 +71,8 @@ public class ApiCallRestController {
             , StationService stationService
             , ForecastService forecastService
             , EventService eventService
-            , FacilityOptService facilityOptService) {
+            , FacilityOptService facilityOptService
+            , CookieService cookieService) {
         this.objectMapper = objectMapper;
         this.apiExecutorFactoryService = apiExecutorFactoryService;
         this.apiExecutorService = apiExecutorService;
@@ -75,6 +81,7 @@ public class ApiCallRestController {
         this.forecastService = forecastService;
         this.eventService = eventService;
         this.facilityOptService = facilityOptService;
+        this.cookieService = cookieService;
     }
 
     @PostMapping(value = "/facility")
@@ -194,43 +201,57 @@ public class ApiCallRestController {
 //                .body(resultBody);
 //    }
 
-    @PostMapping(value = "/call3")
-    public ResponseEntity call3(@RequestBody Map<String, Object> param) throws Exception {
-        log.trace("param {}", param.toString());
-
-
-        Api api = getRequestApi(param);
-
-        //API DB 정보로 외부 API 호출
-        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String body = (String) responseEntity.getBody();
-        Object resultBody = null;
-        // TODO : List 와 Map 형태를 구분 임시 처리
-        if (body.indexOf("[") == 0) {
-
-            List<Map<String, Object>> result = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>(){});
-            resultBody = result;
-        } else if (body.indexOf("{") == 0) {
-            Map<String, Object> result = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-            resultBody = result;
-        }
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(resultBody);
-    }
+//    @PostMapping(value = "/call3")
+//    public ResponseEntity call3(@RequestBody Map<String, Object> param) throws Exception {
+//        log.trace("param {}", param.toString());
+//
+//
+//        Api api = getRequestApi(param);
+//
+//        //API DB 정보로 외부 API 호출
+//        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String body = (String) responseEntity.getBody();
+//        Object resultBody = null;
+//        // TODO : List 와 Map 형태를 구분 임시 처리
+//        if (body.indexOf("[") == 0) {
+//
+//            List<Map<String, Object>> result = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>(){});
+//            resultBody = result;
+//        } else if (body.indexOf("{") == 0) {
+//            Map<String, Object> result = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+//            resultBody = result;
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(resultBody);
+//    }
 
 
     @PostMapping(value = "/call")
-    public ResponseEntity call(@RequestBody Map<String, Object> param) throws Exception {
+    public ResponseEntity call(HttpServletRequest req, @RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
 
         Api api = getRequestApi(param);
 
-        //API DB 정보로 외부 API 호출
+        /**
+         * api 요청시 인증 토큰이 필요한 경우
+         */
+        String accessToken = this.getApiAccessToken(api, req);
+
+        /**
+         * API DB 정보로 외부 API 호출
+         */
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        String body = (String) responseEntity.getBody();
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+
+        Map<String, Object> resultBody = null;
+        if( api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+            resultBody = (Map<String, Object>) responseEntity.getBody();
+        } else {
+            String body = (String) responseEntity.getBody();
+            resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
+            });
+        }
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(resultBody);
@@ -505,6 +526,57 @@ public class ApiCallRestController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(jsonParser.parse(result));
+    }
+
+    /**
+     * 인증 토큰 쿠키 조회 및 저장
+     * 토큰이 있으면 가져와서 리턴하고,
+     * 없으면 요청해서 저장
+     * @param api
+     * @param req
+     * @return
+     * @throws Exception
+     */
+    private String getApiAccessToken(Api api, HttpServletRequest req) throws Exception {
+        String result = "";
+        /**
+         * 연계할 api가 bearer 토큰 값이 필요할 경우
+         */
+        if(api.getAuthInfo() !=null && !api.getAuthInfo().isEmpty()) {
+
+            Cookie cookie = cookieService.getCookie(req, "access_token");
+            if(cookie != null) {
+                log.trace("access_token {} ", cookie.getValue());
+                result = cookie.getValue();
+            }
+
+            if(api.getAuthInfo().contains("bearer") && cookie == null) {
+                String exApiCallUrl = api.getAuthInfo().split("_")[1];
+
+                Map<String, Object> subParam = new HashMap<>();
+                subParam.put("callUrl", exApiCallUrl);
+                Api subApi = getRequestApi(subParam);
+
+                ResponseEntity subResponseEntity = apiExecutorFactoryService.execute(subApi);
+                log.trace( "###subResponseEntity.getBody() {}", subResponseEntity.getBody());
+
+                Map<String, Object> subBody = (Map<String, Object>) subResponseEntity.getBody();
+                /**
+                 * api param -> response에 설정한 값임
+                 */
+                String accessToken = String.valueOf((new HashMap<>((Map) subBody.get("auth"))).get("access_token"));
+
+                log.trace("access_token {}", accessToken);
+                result = accessToken;
+
+                /**
+                 * 시간은 액세스 토큰 만료 시간 보다 작게 설정
+                 */
+                cookieService.createCookie(req, "access_token", accessToken, 5 * 60 );
+            }
+        }
+
+        return result;
     }
 }
 

@@ -3,10 +3,14 @@ package com.danusys.web.commons.api.service.executor;
 import com.danusys.web.commons.api.map.AuthManager;
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
+import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.crypto.service.CryptoExecutorFactoryService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -20,10 +24,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -115,7 +116,6 @@ public class RestApiExecutor implements ApiExecutor {
             throw new IllegalArgumentException("입력된 API 파라미터 값이 null 입니다.");
         if (api.getCallUrl() == null)
             throw new IllegalArgumentException("호출 URL 값이 null 입니다.");
-        // 파라미터가 없는 요청이 있어서 주석 처리 함 - 엄태혁 연구원
 //        if (api.getApiRequestParams() == null || api.getApiRequestParams().isEmpty())
 //            throw new IllegalArgumentException("apiRequestParams 값이 null 입니다.");
 
@@ -132,7 +132,7 @@ public class RestApiExecutor implements ApiExecutor {
                 .stream()
                 .collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
         final String targetUrl = api.getTargetUrl() + api.getTargetPath();
-        String result = "";
+        Object result = "";
 
         try {
 //            final HttpHeaders headers = new HttpHeaders();
@@ -145,12 +145,40 @@ public class RestApiExecutor implements ApiExecutor {
             final String res = responseEntity.getBody();
 
             AtomicReference<String> body = new AtomicReference(res);
+
+            /**
+             * 외부 업체 응답 컬럼과 내부에서 사용 하는 컬럼 매핑
+             */
             api.getApiResponseParams().forEach(apiRes -> {
                 log.trace("### 응답 {} => {}", apiRes.getFieldMapNm(), apiRes.getFieldNm());
                 body.set(StringUtils.replace(body.get(), apiRes.getFieldMapNm(), apiRes.getFieldNm()));
             });
-//            log.trace("convert body:{}", body);
-            result = body.get();
+
+            if( api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+                log.trace("### Response 객체 리턴");
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, Object> objectMap = objectMapper.readValue(body.get(), new TypeReference<Map<String, Object>>(){});
+                Map<String, Object> resultMap = new HashMap<>();
+                Map<String, Object> resultMap1 = new HashMap<>();
+
+                api.getApiResponseParams().stream().filter(f -> f.getParentSeq() == 0).forEach(apiRes0 -> {
+                    log.trace("### res apiRes0 > {}", apiRes0.getFieldNm() );
+
+                    Map<String, Object> tempMap0 = (Map<String, Object>) objectMap.get(apiRes0.getFieldNm());
+                    api.getApiResponseParams().stream().filter(f -> f.getParentSeq() == 1).forEach(apiRes1 -> {
+                        log.trace("### res apiRes1 > {}", apiRes1.getFieldNm() );
+                        log.trace("### res apiRes1 > {}", tempMap0.get(apiRes1.getFieldNm()));
+                        apiRes1.setValue((String) tempMap0.get(apiRes1.getFieldNm()));
+                        resultMap1.put(apiRes1.getFieldNm(), tempMap0.get(apiRes1.getFieldNm()));
+                    });
+                    resultMap.put(apiRes0.getFieldNm(), resultMap1);
+                });
+
+                result = resultMap;
+
+            } else {
+                result = body.get();
+            }
 
         } catch (RestClientResponseException rcrex) {
             return ResponseEntity.status(rcrex.getRawStatusCode()).body("");
@@ -162,7 +190,8 @@ public class RestApiExecutor implements ApiExecutor {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
     }
-    // 엄태혁 연구원 인증방식에 따라 분기점 추가
+
+
     private ResponseEntity getResponseEntity(Api api
             , HttpMethod method
             , MediaType mediaType
