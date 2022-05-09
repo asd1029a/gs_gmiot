@@ -875,6 +875,10 @@ var stringFunc = {
             regex = /^(19|20)\d{2}$/;
         } else if (type === "day") {
             regex = /^(0[1-9]|[12][0-9]|3[0-1])$/;
+        } else if (type === "latitude") {
+            regex = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/;
+        } else if (type === "longitude") {
+            regex = /^-?(([-+]?)([\d]{1,3})((\.)(\d+))?)/;
         }
 
         if (!tVal.match(regex)) {

@@ -167,7 +167,7 @@ const mntr = {
         window.lySelect = layerSelect;
 
         //개소 레이어
-        stations.getListGeoJson({} ,result => {
+        station.getListGeoJson({} ,result => {
             //console.log(result);
            let stationLayer = new dataLayer('map')
                 // .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
@@ -959,7 +959,7 @@ function searchList(section, keyword) {
            }
             if(tab == "station") {
                 //리스트 ajax
-                stations.getListGeoJson({
+                station.getListGeoJson({
                     /// objJSON
                 }, result => {
                     lnbList.removeAllList(tab);

@@ -101,7 +101,7 @@ public class NoticeController {
 
         paramMap.put("dataMap", dataMap.get("data"));
         log.info("dataList = {}", dataMap.get("data"));
-        wb = FileUtil.excelDownload2(paramMap);
+        wb = FileUtil.excelDownload(paramMap);
         wb.write(response.getOutputStream());
         wb.close();
     }

@@ -2,7 +2,6 @@ package com.danusys.web.commons.auth.controller;
 
 import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.commons.auth.model.User;
-import com.danusys.web.commons.auth.service.UserInGroupService;
 import com.danusys.web.commons.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -191,7 +190,7 @@ public class UserController {
 
         paramMap.put("dataMap", dataMap.get("data"));
 //        log.info("dataList = {}", dataMap.get("data"));
-        Workbook wb = FileUtil.excelDownload2(paramMap) ;
+        Workbook wb = FileUtil.excelDownload(paramMap) ;
         wb.write(response.getOutputStream());
         wb.close();
     }

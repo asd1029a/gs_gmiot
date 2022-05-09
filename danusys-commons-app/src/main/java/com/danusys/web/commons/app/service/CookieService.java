@@ -1,10 +1,12 @@
 package com.danusys.web.commons.app.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @Service
 public class CookieService {
 
@@ -16,6 +18,7 @@ public class CookieService {
         }
         token.setMaxAge(token_validation_second);
         token.setPath("/");
+        log.trace("createCookie 저장 완료 {} {} {}", cookieName, value, token_validation_second);
         return token;
     }
 
@@ -23,8 +26,10 @@ public class CookieService {
         final Cookie[] cookies = req.getCookies();
         if(cookies==null) return null;
         for(Cookie cookie : cookies){
-            if(cookie.getName().equals(cookieName))
+            if(cookie.getName().equals(cookieName)) {
+                log.trace("getCookie 조회 {}", cookieName);
                 return cookie;
+            }
         }
         return null;
     }

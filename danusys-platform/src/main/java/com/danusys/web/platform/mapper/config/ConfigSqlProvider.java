@@ -1,5 +1,6 @@
 package com.danusys.web.platform.mapper.config;
 
+import com.danusys.web.commons.app.StrUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;
@@ -45,7 +46,7 @@ public class ConfigSqlProvider {
     public String selectListTypeQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
             SELECT("*");
-            switch (paramMap.get("type").toString()) {
+            switch (StrUtils.getStr(paramMap.get("type"))) {
                 case "stationKind" : FROM("v_facility_station"); break;
                 case "district" : FROM("v_facility_district"); break;
                 case "facilityKind" : FROM("v_facility_kind"); break;

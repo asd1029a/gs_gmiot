@@ -281,14 +281,15 @@ tr.selected td {background-color: #23252b;}
 .popup div.popup_writing fieldset legend::after{content: ''; width: 4px; height: 4px; margin: 0px 8px 0px 0px; background: #434751;}
 .popup div.list_search p.legend{display: flex; align-items: center; height: 40px; min-height: 40px; max-height: 40px; margin: 0px 0px 10px; font-size: 16px;}
 .popup div.list_search p.legend::before{content: ''; width: 4px; height: 4px; margin: 0px 8px 0px 0px; background: #434751;}
-.popup div.list_search p.legend span{margin-left: auto;}
+.popup div.list_search p.legend span{margin-left: auto; display: flex;}
 .popup div.list_search p.legend span input{flex: 0.3; background: url(../images/default/search.svg) 94% center no-repeat; background-size:20px 20px;}
 .popup div.popup_writing fieldset form{display: flex; flex-direction: column; grid-gap: 10px;}
 .popup div.popup_writing fieldset form dl{flex: 1; overflow: hidden; display: flex; align-items: baseline; justify-content: space-between; grid-gap: 10px; padding: 0px 10px; box-sizing: border-box;}
 .popup div.popup_writing fieldset form dl dt{width: 110px; min-width: 110px; max-width: 110px;}
 .popup div.popup_writing fieldset form dl dd{flex: 1; flex-wrap: wrap; display: flex; align-items: center; justify-content: space-between; grid-gap: 8px;}
 .popup div.popup_writing fieldset form dl dd input{flex: 1;}
-.popup div.popup_writing fieldset form dl dd select{flex: 1;}
+.popup div.popup_writing fieldset form dl dd select{flex: 1; background: url(../images/default/arrowBottom.svg) no-repeat 96% 56%; background-size: 14px;}
+.popup div.popup_writing fieldset form dl dd select option{background-color: #1e1f23; color: #FFFFFF}
 .popup div.popup_writing fieldset form dl dd textarea{flex: 1; resize: none;}
 .popup div.popup_writing fieldset form dl dd .fileBox{flex: 1; width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: space-between; grid-gap: 10px;}
 .popup div.popup_writing fieldset form dl dd .fileBox .upload_name{width: 78%; height: 40px; padding: 0px 10px; vertical-align: middle; border: 1px solid #292c34; color: #999999;}
@@ -342,6 +343,10 @@ tr.selected td {background-color: #23252b;}
 .popup div.popup_dimming_group dl{position: relative; display: flex; flex-direction: column; grid-gap: 14px; margin: 0px 0px 20px;}
 .popup div.popup_dimming_group dl dt{display: flex; align-items: center; font-size: 16px;}
 .popup div.popup_dimming_group dl dt::before{content: ''; width: 4px; height: 4px; margin: 0px 8px 0px 0px; background: #434751;}
+
+.popup div.list_search p.legend span select {flex : 1;}
+.popup div.list_search p.legend span select option{background-color: #1e1f23; color: #FFFFFF}
+.popup div.list_search p.legend span input {flex : 1; margin-left : 10px; width: 200px;}
 
 /* statistics */
 .statistics{display: flex; height: calc(100% - 60px);}

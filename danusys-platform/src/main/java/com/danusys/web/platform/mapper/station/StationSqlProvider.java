@@ -165,21 +165,37 @@ public class StationSqlProvider {
         Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
 
         SQL sql = new SQL() {{
+            INSERT_INTO("t_station");
+            VALUES(qryMap.get("columns").toString(), qryMap.get("values").toString());
         }};
         return sql.toString();
     }
 
     public String updateQry(Map<String, Object> paramMap) {
-        String noticeSeq = paramMap.get("noticeSeq").toString();
+        String stationSeq = paramMap.get("stationSeq").toString();
 
         SQL sql = new SQL() {{
+            UPDATE("t_station");
+            SET(SqlUtil.getMultiSetStr(paramMap));
+            WHERE("station_seq = " + stationSeq);
         }};
         return sql.toString();
     }
 
     public String deleteQry(int seq) {
         SQL sql = new SQL() {{
+            DELETE_FROM("t_station");
+            WHERE("station_seq = " + seq);
         }};
+        return sql.toString();
+    }
+
+    public String selectOneLastStationSeqQry() {
+        SQL sql = new SQL() {
+            {
+                SELECT("currval('t_station_seq_seq') AS last_station_seq");
+            }
+        };
         return sql.toString();
     }
 }

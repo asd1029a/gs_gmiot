@@ -7,13 +7,13 @@ import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.service.*;
+import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
-import com.danusys.web.commons.api.types.ParamType;
-import com.danusys.web.commons.app.CamelUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.parser.JSONParser;
@@ -26,6 +26,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -36,7 +37,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -49,33 +49,45 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 @RestController
 @RequestMapping(value = "/api")
+@RequiredArgsConstructor
 public class ApiCallRestController {
-    private ObjectMapper objectMapper;
-    private ApiExecutorFactoryService apiExecutorFactoryService;
-    private ApiExecutorService apiExecutorService;
-    private FacilityService facilityService;
-    private StationService stationService;
-    private ForecastService forecastService;
-    private EventService eventService;
-    private FacilityOptService facilityOptService;
+    private final ObjectMapper objectMapper;
+    private final ApiExecutorFactoryService apiExecutorFactoryService;
+//    private ApiExecutorService apiExecutorService;
 
-    public ApiCallRestController(ObjectMapper objectMapper
-            , ApiExecutorFactoryService apiExecutorFactoryService
-            , ApiExecutorService apiExecutorService
-            , FacilityService facilityService
-            , StationService stationService
-            , ForecastService forecastService
-            , EventService eventService
-            , FacilityOptService facilityOptService) {
-        this.objectMapper = objectMapper;
-        this.apiExecutorFactoryService = apiExecutorFactoryService;
-        this.apiExecutorService = apiExecutorService;
-        this.facilityService = facilityService;
-        this.stationService = stationService;
-        this.forecastService = forecastService;
-        this.eventService = eventService;
-        this.facilityOptService = facilityOptService;
-    }
+    private final ApiCallService apiService;
+    private final FacilityService facilityService;
+    private final StationService stationService;
+    private final ForecastService forecastService;
+    private final EventService eventService;
+    private final FacilityOptService facilityOptService;
+//    private final  CookieService cookieService;
+    private final HttpServletRequest request;
+//    private final HttpServletResponse response;
+
+
+//    public ApiCallRestController(ObjectMapper objectMapper
+//            , ApiExecutorFactoryService apiExecutorFactoryService
+////            , ApiExecutorService apiExecutorService
+//            , ApiService apiService, FacilityService facilityService
+//            , StationService stationService
+//            , ForecastService forecastService
+//            , EventService eventService
+//            , FacilityOptService facilityOptService
+//            , CookieService cookieService
+//            , HttpServletRequest request) {
+//        this.objectMapper = objectMapper;
+//        this.apiExecutorFactoryService = apiExecutorFactoryService;
+//        this.apiService = apiService;
+////        this.apiExecutorService = apiExecutorService;
+//        this.facilityService = facilityService;
+//        this.stationService = stationService;
+//        this.forecastService = forecastService;
+//        this.eventService = eventService;
+//        this.facilityOptService = facilityOptService;
+//        this.cookieService = cookieService;
+//        this.request = request;
+//    }
 
     @PostMapping(value = "/facility")
     public ResponseEntity findAllForFacility(@RequestBody Map<String, Object> param) throws Exception {
@@ -87,7 +99,7 @@ public class ApiCallRestController {
     public ResponseEntity apiSaveFacility(@RequestBody Map<String, Object> param) throws Exception  {
         log.trace("param {}", param.toString());
 
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
@@ -112,7 +124,7 @@ public class ApiCallRestController {
     public ResponseEntity apiSaveStation(@RequestBody Map<String, Object> param) throws Exception  {
         log.trace("param {}", param.toString());
 
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
@@ -127,7 +139,7 @@ public class ApiCallRestController {
 
     @PostMapping(value="/getCurSkyTmp")
     public ResponseEntity getCurSkyTmp(@RequestBody Map<String, Object> param) throws Exception {
-        Api api = getRequestApi(forecastService.setReqParam(param));
+        Api api = apiService.getRequestApi(forecastService.setReqParam(param));
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
@@ -145,7 +157,7 @@ public class ApiCallRestController {
         param.entrySet().stream().peek(f -> {
             f.setValue(UriEncoder.encode(StrUtils.getStr(f.getValue())));
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
         String body = (String) responseEntity.getBody();
@@ -194,53 +206,87 @@ public class ApiCallRestController {
 //                .body(resultBody);
 //    }
 
-    @PostMapping(value = "/call3")
-    public ResponseEntity call3(@RequestBody Map<String, Object> param) throws Exception {
+//    @PostMapping(value = "/call3")
+//    public ResponseEntity call3(@RequestBody Map<String, Object> param) throws Exception {
+//        log.trace("param {}", param.toString());
+//
+//
+//        Api api = getRequestApi(param);
+//
+//        //API DB 정보로 외부 API 호출
+//        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String body = (String) responseEntity.getBody();
+//        Object resultBody = null;
+//        // TODO : List 와 Map 형태를 구분 임시 처리
+//        if (body.indexOf("[") == 0) {
+//
+//            List<Map<String, Object>> result = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>(){});
+//            resultBody = result;
+//        } else if (body.indexOf("{") == 0) {
+//            Map<String, Object> result = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+//            resultBody = result;
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(resultBody);
+//    }
+
+
+    @PostMapping(value = "/call")
+    public ResponseEntity call(HttpServletRequest req, @RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
+        Api api = apiService.getRequestApi(param);
 
+//        Cookie saveCookie = cookieService.createCookie(request, "test", "1111", 60*60);
+//        log.trace("saveCookie {} ", saveCookie.getValue());
+//        response.addCookie(saveCookie);
+//
+//        Cookie findCookie = cookieService.getCookie(request, "test");
+//        log.trace("findCookie ::: {}", findCookie);
 
-        Api api = getRequestApi(param);
+        /**
+         * api 요청시 인증 토큰이 필요한 경우
+         */
+//        apiService.getApiAccessToken(api, request);
 
-        //API DB 정보로 외부 API 호출
+        /**
+         * API DB 정보로 외부 API 호출
+         */
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String body = (String) responseEntity.getBody();
-        Object resultBody = null;
-        // TODO : List 와 Map 형태를 구분 임시 처리
-        if (body.indexOf("[") == 0) {
 
-            List<Map<String, Object>> result = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>(){});
-            resultBody = result;
-        } else if (body.indexOf("{") == 0) {
-            Map<String, Object> result = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-            resultBody = result;
+        Map<String, Object> resultBody = null;
+        if( api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+            resultBody = (Map<String, Object>) responseEntity.getBody();
+        } else {
+            String body = (String) responseEntity.getBody();
+            resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
+            });
         }
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(resultBody);
     }
 
-
-    @PostMapping(value = "/call")
-    public ResponseEntity call(@RequestBody Map<String, Object> param) throws Exception {
-        log.trace("param {}", param.toString());
-
-        Api api = getRequestApi(param);
-
-        //API DB 정보로 외부 API 호출
-        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        String body = (String) responseEntity.getBody();
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(resultBody);
-    }
+//    @Scheduled(cron = "0/10 * * * * *")
+//    public void schedulerTest() throws Exception {
+//        LocalDateTime now = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
+//        String formatNow = now.format(formatter);
+//        int iNow = Integer.parseInt(formatNow);
+//        Map<String, Object> param = new HashMap<>();
+//        param.put("callUrl","/mjvt/smart-station/people-count");
+//        param.put("cameraId","1");
+//        param.put("dateTime",iNow-1);
+//        log.info("현재 시각 : {}",iNow-1);
+//        call(param);
+//    }
 
     @PostMapping(value = "/ext/send")
     public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
 
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         //API DB 정보로 외부 API 호출
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
@@ -255,7 +301,7 @@ public class ApiCallRestController {
 
     @PostMapping("event")
     public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
         List<ApiParam> apiResponseParams = api.getApiResponseParams();
@@ -312,7 +358,7 @@ public class ApiCallRestController {
 
     @PostMapping("facilityData")
     public ResponseEntity facilityData(@RequestBody Map<String, Object> param) {
-        Api api = getRequestApi(param);
+        Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
         List<ApiParam> apiResponseParams = api.getApiResponseParams();
@@ -368,129 +414,72 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
-    private Api getRequestApi(Map<String, Object> param) {
-        String callUrl = StrUtils.getStr(param.get("callUrl"));
-//        String bizCd = StrUtils.getStr(param.get("bizCd"));
-        Api api = null;
 
-        try {
-            log.trace("callUrl : {}", callUrl);
-
-            //API 마스터 정보 가져오기
-            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
-
-            //요청 컬럼 정보 가져오기
-            api.setApiRequestParams(apiExecutorService
-                    .findApiParam(api.getId(), ParamType.REQUEST)
-                    .stream()
-                    .filter(f -> f.getParamType() == ParamType.REQUEST)
-                    .map(f -> {
-                        final Object p = param.get(f.getFieldNm());
-                        if (p != null) {
-                            try {
-                                if (f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT)) {
-                                    f.setValue(objectMapper.writeValueAsString(p));
-                                } else {
-                                    f.setValue(StrUtils.getStr(p));
-                                }
-                            } catch (JsonProcessingException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        return f;
-                    })
-                    .collect(toList())
-            );
-
-            //응답 컬럼 정보 가져오기
-            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
-
-        } catch (Exception ex) {
-            log.error(ex.toString());
-            throw ex;
-        }
-        return api;
-
-//        Map<String, Object> reqParams = (Map<String, Object>) param.get("reqParams");
-//
-//        //API 마스터 정보 가져오기
-//        return reqParams == null ? getRequestApi(callUrl) : getRequestApi(callUrl, reqParams);
-    }
 
     private void addEvent() {
 
     }
 
-    private Api getRequestApi(String callUrl) {
-        Api api = null;
-        try {
-            log.trace("callUrl : {}", callUrl);
+//    private Api getRequestApi(String callUrl) {
+//        Api api = null;
+//        try {
+//            log.trace("callUrl : {}", callUrl);
+//
+//            //API 마스터 정보 가져오기
+//            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
+//
+//            //요청 컬럼 정보 가져오기
+//            api.setApiRequestParams(apiExecutorService
+//                    .findApiParam(api.getId(), ParamType.REQUEST)
+//                    .stream()
+//                    .filter(f -> f.getParamType() == ParamType.REQUEST)
+//                    .collect(toList())
+//            );
+//
+//            //응답 컬럼 정보 가져오기
+//            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
+//
+//        } catch (Exception ex) {
+//            log.error(ex.toString());
+//            throw ex;
+//        }
+//
+//        return api;
+//    }
 
-            //API 마스터 정보 가져오기
-            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
+//    private Api getRequestApi(String callUrl, Map<String, Object> reqParams) {
+//        Api api = null;
+//        try {
+//            log.trace("callUrl : {}", callUrl);
+//
+//            //API 마스터 정보 가져오기
+//            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
+//
+//            //요청 컬럼 정보 가져오기
+//            api.setApiRequestParams(apiExecutorService
+//                    .findApiParam(api.getId(), ParamType.REQUEST)
+//                    .stream()
+//                    .filter(f -> f.getParamType() == ParamType.REQUEST)
+//                    .map((f) -> {
+//                        final Object p = reqParams.get(f.getFieldNm());
+//                        if (p != null) f.setValue(p.toString());
+//                        return f;
+//                    })
+//                    .collect(toList())
+//            );
+//
+//            //응답 컬럼 정보 가져오기
+//            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
+//
+//        } catch (Exception ex) {
+//            log.error(ex.toString());
+//            throw ex;
+//        }
+//
+//        return api;
+//    }
 
-            //요청 컬럼 정보 가져오기
-            api.setApiRequestParams(apiExecutorService
-                    .findApiParam(api.getId(), ParamType.REQUEST)
-                    .stream()
-                    .filter(f -> f.getParamType() == ParamType.REQUEST)
-                    .collect(toList())
-            );
 
-            //응답 컬럼 정보 가져오기
-            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
-
-        } catch (Exception ex) {
-            log.error(ex.toString());
-            throw ex;
-        }
-
-        return api;
-    }
-
-    private Api getRequestApi(String callUrl, Map<String, Object> reqParams) {
-        Api api = null;
-        try {
-            log.trace("callUrl : {}", callUrl);
-
-            //API 마스터 정보 가져오기
-            api = apiExecutorService.findByCallUrl(StrUtils.getStr(callUrl));
-
-            //요청 컬럼 정보 가져오기
-            api.setApiRequestParams(apiExecutorService
-                    .findApiParam(api.getId(), ParamType.REQUEST)
-                    .stream()
-                    .filter(f -> f.getParamType() == ParamType.REQUEST)
-                    .map((f) -> {
-                        final Object p = reqParams.get(f.getFieldNm());
-                        if (p != null) f.setValue(p.toString());
-                        return f;
-                    })
-                    .collect(toList())
-            );
-
-            //응답 컬럼 정보 가져오기
-            api.setApiResponseParams(apiExecutorService.findApiParam(api.getId(), ParamType.RESPONSE));
-
-        } catch (Exception ex) {
-            log.error(ex.toString());
-            throw ex;
-        }
-
-        return api;
-    }
-
-    /**
-     * 파라미터를 API Object에 세팅
-     * @param apiParam
-     * @param param
-     * @return
-     */
-    private ApiParam apiRequestSetValue(ApiParam apiParam, Map<String, Object> param) {
-        log.trace("### 요청 {} => {} = {}", apiParam.getFieldNm(), apiParam.getFieldMapNm(), param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm())));
-        apiParam.setValue(StrUtils.getStr(param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm()))));
-        return apiParam;
-    }
 
     @PostMapping("/deviceInfoList.json")
     public ResponseEntity sample(@RequestBody Map<String, Object> param) throws ParseException {
@@ -506,5 +495,7 @@ public class ApiCallRestController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(jsonParser.parse(result));
     }
+
+
 }
 

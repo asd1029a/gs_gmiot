@@ -31,6 +31,7 @@ const commonCode = {
                     'type' : "POST",
                     'data' : function ( d ) {
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
+                        pParentCode!==0?param.keyword='':'';
                         param.pParentCode = pParentCode;
                         return JSON.stringify( param );
                     },
