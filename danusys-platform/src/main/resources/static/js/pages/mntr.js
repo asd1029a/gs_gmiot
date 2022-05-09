@@ -37,8 +37,20 @@ const mntr = {
             }
         ];
 
+        let siGunCode;
+        //현재 지자체명 반환
+        $.ajax({
+            url : "/getSiGunCode"
+            , type : "POST"
+            , data : JSON.stringify({})
+            , contentType : "application/json; charset=utf-8"
+            , async : false
+        }).done((result) => {
+            siGunCode = result;
+        });
+
         //지도 생성
-        let map = new mapCreater('map',0);
+        let map = new mapCreater('map',0);//, siGunCode);
         map.createMousePosition('mousePosition');
         map.scaleLine();
         map.createContextMenu(menuObj);
@@ -223,57 +235,76 @@ const mntr = {
                 const zoom = map.map.getView().getZoom();
                 let popup = new mapPopup('map');
                 popup.remove('mouseClickPopup');
-
+                let theme = $('.mntr_container .lnb ul li.active').attr('data-value');
                 let target = $('.mntr_container section.select .tab li.active').attr('data-value');
+
                 if(target=="station"){target = "event"}
+
                 if(zoom > 10){ //13 ~ 9.xxx
+                    if(theme == "smartPower") {
+                        window.lyControl.onList(['station', target]);
+                    }
                     window.lyControl.find("stationLayer").getSource().setDistance(0);
                     window.lyControl.find("eventLayer").getSource().setDistance(0);
                     window.lyControl.find("eventPastLayer").getSource().setDistance(0);
-
-                    window.lyControl.on('stationLayer');
-                    window.lyControl.on(target + "Layer");
                 } else if((10 >= zoom) && (zoom >=5)) { //10 ~ 5
+                    if(theme == "smartPower") {
+                        window.lyControl.onList(['station', target]);
+                    }
                     window.lyControl.find("stationLayer").getSource().setDistance(30);
                     window.lyControl.find("eventLayer").getSource().setDistance(30);
                     window.lyControl.find("eventPastLayer").getSource().setDistance(30);
-
-                    window.lyControl.on('stationLayer');
-                    window.lyControl.on(target + "Layer");
                 } else { //4.xxx ~ 0
-                    window.lyControl.off('stationLayer');
-                    window.lyControl.off('eventLayer');
-                    window.lyControl.off('eventPastLayer');
+                    if(theme == "smartPower"){
+                        window.lyControl.offList(['station', 'event', 'eventPast']);
+                    }
                 }
             }
 
 
         });
-
-        // facility.getListGeoJson({}, (result) => {
-        //    // console.log(result);
-        //     let result1 =
-        //     {
-        //         type: 'FeatureCollection',
-        //         name: 'sample',
-        //         crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
-        //         features: [
-        //             { type: 'Feature', id: 'facility123', properties: { id: 123, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
-        //             { type: 'Feature', id: 'facility234', properties: { id: 234, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
-        //             { type: 'Feature', id: 'facility345', properties: { id: 345, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
-        //             { type: 'Feature', id: 'facility456', properties: { id: 456, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
-        //             { type: 'Feature', id: 'facility567', properties: { id: 567, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
-        //             { type: 'Feature', id: 'facility678', properties: { id: 678, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
-        //             { type: 'Feature', id: 'facility789', properties: { id: 789, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
-        //         ]
-        //     };
-        //
-        //     let facilityLayer = new dataLayer('map')
-        //         .fromGeoJSon(result1,'facilityLayer', true, layerStyle.facility(false));
-        //         //.toCluster(result1,'facilityLayer', true, layerStyle.station(false));
-        //     map.addLayer(facilityLayer);
-        //     window.lyControl.find('facilityLayer').set('selectable',true);
+        //cctv Layer sample
+        // cctv.getListGeoJson({}, (result) => {
+           // console.log(result);
+           //  let result1 =
+           //  {
+           //      type: 'FeatureCollection',
+           //      name: 'sample',
+           //      crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+           //      features: [
+           //          { type: 'Feature', id: 'cctv123', properties: { id: 123, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
+           //          { type: 'Feature', id: 'cctv234', properties: { id: 234, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
+           //          { type: 'Feature', id: 'cctv345', properties: { id: 345, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+           //          { type: 'Feature', id: 'cctv456', properties: { id: 456, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+           //          { type: 'Feature', id: 'cctv567', properties: { id: 567, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
+           //          { type: 'Feature', id: 'cctv678', properties: { id: 678, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
+           //          { type: 'Feature', id: 'cctv789', properties: { id: 789, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
+           //      ]
+           //  };
+           //
+           //  let cctvLayer = new dataLayer('map')
+           //      .fromGeoJSon(result1,'cctvLayer', true, layerStyle.cctv(false));
+           //      //.toCluster(result1,'facilityLayer', true, layerStyle.station(false));
+           //  map.addLayer(cctvLayer);
+           //  window.lyControl.find('cctvLayer').set('selectable',true);
         // });
+
+        //드론 sample 레이어
+        let result2 =
+        {
+            type: 'FeatureCollection',
+            name: 'drone',
+            crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+            features: [                                                                                                        // [ 126.88014811914029, 35.8050522641782 ]
+                { type: 'Feature', id: 'drone123', properties: { id: 123, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.71826051886136, 37.32097533885936 ] } }
+            ]
+        };
+        let droneLayer = new dataLayer('map')
+            .fromGeoJSon(result2,'droneLayer', true, layerStyle.drone());
+        //.toCluster(result1,'facilityLayer', true, layerStyle.station(false));
+        map.addLayer(droneLayer);
+        window.lyControl.find('droneLayer').set('selectable',true);
+        window.lyControl.off('droneLayer');
 
     }
     , eventHandler : () => {
@@ -288,6 +319,25 @@ const mntr = {
             const theme = $(e.currentTarget).attr('data-value');
             $('.mntr_container .menu_fold').removeClass("select");
             $('.mntr_container .menu_fold#'+theme).addClass("select");
+            // let target = $('.mntr_container section.menu_fold.select .lnb_tab_section.select').attr('data-value');
+            // console.log(target);
+            //
+            // if(target=="station"){target = "event";}
+            // let offList = [];
+            // let onList = [];
+            // if(theme == "smartPower") {
+            //     offList = ['drone'];
+            //     onList = ['station', target];
+            // } else if(theme == "drone"){
+            //     offList = ['station', target];
+            //     onList = ['drone'];
+            // }
+            // // else if(theme == "smartPole"){
+            // // } else if(theme == "smartBusStop"){}
+            // window.lyControl.offList(offList);
+            // window.lyControl.onList(onList);
+            // window.map.map.render();
+
             //ACTIVE STYLE
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");

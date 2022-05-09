@@ -490,8 +490,6 @@ public class RestApiExecutor implements ApiExecutor {
                 httpHeaders.setAccept(Collections.singletonList(mediaType));
                 if (authInfo != null && !authInfo.isEmpty()) {
                     httpHeaders.set("Authorization", authInfo);
-
-                    httpHeaders.setBearerAuth("");
                 }
             };
 

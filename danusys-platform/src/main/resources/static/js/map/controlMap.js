@@ -150,6 +150,70 @@ const layerStyle = {
             return style;
         }
     }
+    //cctv
+    , cctv : (selectFlag) => {
+        return feature => {
+            const text = feature.getProperties().id;
+
+            let keys = 'cctv_useCd1';
+            keys = selectFlag ?  keys +'_select' : keys;
+
+            const style = new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor:[0.5,0.5],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    img: imgObj[keys],
+                    imgSize:[50,50],
+                    scale: 0.7
+                }),
+                text : new ol.style.Text({
+                    text: String(text),
+                    offsetY: 20,
+                    fill: new ol.style.Fill({
+                        color:'black',
+                        width: 3
+                    }),
+                    font: 'Bold 10px Arial',
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 13
+                    })
+                })
+            });
+            return style;
+        }
+    }
+    //drone 드론
+    , drone : () => {
+        return feature => {
+            const text = "";//feature.getProperties().id;
+            const style = new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor:[0.5,0.5],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    img: imgObj['drone'],
+                    imgSize:[50,50],
+                    scale: 1
+                }),
+                text : new ol.style.Text({
+                    text: String(text),
+                    offsetY: 20,
+                    fill: new ol.style.Fill({
+                        color:'black',
+                        width: 3
+                    }),
+                    font: 'Bold 10px Arial',
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 13
+                    })
+                })
+            });
+            return style;
+        }
+    }
 }
 
 /**
