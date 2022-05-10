@@ -46,7 +46,9 @@ const mntr = {
             , contentType : "application/json; charset=utf-8"
             , async : false
         }).done((result) => {
+            console.log(result);
             siGunCode = result;
+            window.siGunCode = result;
         });
 
         //지도 생성
@@ -482,8 +484,18 @@ const mntr = {
                         const layerNm = layerAry[i].getProperties().title;
                         const zIdx = window.lyControl.find(layerNm).getZIndex();
 
-                        const li = "<li data-zindex='"+ zIdx +"'>" + layerNm + "</li>";
-                        $("#layers").append(li);
+                        let addFlag = true;
+                        if(layerNm == "cctvLayer"){
+                            if((window.siGunCode == "26290") || (window.siGunCode == "41210")){
+                                addFlag = true;
+                            } else {
+                                addFlag = false;
+                            }
+                        }
+                        if(addFlag){
+                            const li = "<li data-zindex='"+ zIdx +"'>" + layerNm + "</li>";
+                            $("#layers").append(li);
+                        }
                     }
 
                     $("#layers").sortable({
