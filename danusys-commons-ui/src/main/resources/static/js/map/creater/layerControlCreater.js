@@ -27,7 +27,7 @@ class layerControl {
 
     /**
      * @summary 해당 레이어들 모두 보이기
-     * @param layerList : 레이어명 리스트
+     * @param layerList : 레이어명 리스트 (***Layer제외)
      * */
     onList(layerList) {
         if(layerList.length > 0){
@@ -54,11 +54,25 @@ class layerControl {
 
     /**
      * @summary 해당 레이어들 모두 숨기기
-     * @param layerList : 레이어명 리스트
+     * @param layerList : 레이어명 리스트 (***Layer제외)
      * */
     offList(layerList) {
         for(let name of layerList){
             this.off(name+'Layer');
+        }
+    }
+
+    /**
+     * @summary 해당 레이어 on off 토글
+     * 레이어가 켜져 있으면 끄기 꺼져 있으면 켜기
+     * @param layerName : 레이어명
+     * */
+    toggle(layerName) {
+        let flag = this.find(layerName).getVisible();
+        if(flag){
+            this.off(layerName);
+        } else {
+            this.on(layerName);
         }
     }
 
