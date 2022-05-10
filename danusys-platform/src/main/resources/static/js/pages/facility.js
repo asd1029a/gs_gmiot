@@ -96,7 +96,7 @@ const facility = {
                 if($(e.target).hasClass('button')) {
                     //commonCode.showPopup('mod');
                     //$('#commonCodeForm').setItemValue(rowData);
-                    event.get(rowData.facilitySeq, (result) => console.log(result));
+                    facility.get(rowData.facilitySeq, (result) => console.log(result));
                 }
             }
         }

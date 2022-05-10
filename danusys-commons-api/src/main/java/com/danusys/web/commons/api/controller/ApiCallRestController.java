@@ -284,16 +284,60 @@ public class ApiCallRestController {
 
     @PostMapping(value = "/ext/send")
     public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
-        log.trace("param {}", param.toString());
-
         Api api = apiService.getRequestApi(param);
 
-        //API DB 정보로 외부 API 호출
-        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        String body = (String) responseEntity.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+        List<ApiParam> apiRequestParams = api.getApiRequestParams();
+        List<ApiParam> apiResponseParams = api.getApiResponseParams();
+        Map<String, Object> resultBody = new HashMap<>();
 
+        log.trace("external send req data : {}", apiRequestParams.toString());
+        log.trace("external send res data : {}", apiResponseParams.toString());
+
+        try {
+            // Reqpuest check and set
+            Map<String, Object> map = apiRequestParams.stream()
+                    .filter(f -> f.getDataType().equals(DataType.OBJECT))
+                    .peek(f -> {
+                        AtomicReference<String> result = new AtomicReference<>();
+                        try {
+                            result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                        apiRequestParams.stream().forEach(a -> {
+                            result.set(StringUtils.replace(result.get(), a.getFieldMapNm(), a.getFieldNm()));
+                        });
+
+                        f.setValue(result.get());
+                    })
+                    .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
+            // Response check and set
+            resultBody = apiResponseParams
+                    .stream()
+                    .peek(f -> {
+                        ApiParam apiParam = apiRequestParams.stream()
+                                .filter(ff -> ff.getFieldMapNm().equals(f.getFieldMapNm())).findFirst().get();
+                        f.setValue(apiParam.getValue());
+                    })
+                    .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
+            // event save
+//            for(Map.Entry<String, Object> el: map.entrySet()) {
+//                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
+//                });
+//                eventService.saveAllByEeventRequestDTO(list);
+//                log.trace(list.toString());
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultBody.put("code", "9999");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(resultBody);
+        }
+
+        resultBody.put("code", "0000");
         return ResponseEntity.status(HttpStatus.OK)
                 .body(resultBody);
     }
@@ -310,7 +354,7 @@ public class ApiCallRestController {
         try {
             // Reqpuest check and set
             Map<String, Object> map = apiRequestParams.stream()
-                    .filter(f -> f.getDataType().equals(DataType.ARRAY))
+                    .filter(f -> f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
                         AtomicReference<String> result = new AtomicReference<>();
                         try {
