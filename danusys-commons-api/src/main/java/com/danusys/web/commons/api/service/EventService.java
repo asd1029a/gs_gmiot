@@ -35,7 +35,7 @@ public class EventService {
         return this.eventRepository.save(event);
     }
 
-    public List<Event> saveAllByEeventRequestDTO(List<EventReqeustDTO> list) throws Exception {
+    public List<Event> saveAllByEventRequestDTO(List<EventReqeustDTO> list) throws Exception {
         List<Event> eventList = new ArrayList<>();
 
         list.forEach(f -> {
@@ -48,5 +48,16 @@ public class EventService {
 
         eventRepository.saveAll(eventList);
         return eventList;
+    }
+
+    public Event saveByEventRequestDTO(EventReqeustDTO eventReqeustDTO) throws Exception {
+        Facility facility = facilityRepository.findByFacilityId(eventReqeustDTO.getFacilityId());
+        eventReqeustDTO.setFacilitySeq(facility.getFacilitySeq());
+        eventReqeustDTO.setStationSeq(facility.getStationSeq());
+
+        Event event = eventReqeustDTO.toEntity();
+
+        eventRepository.save(event);
+        return event;
     }
 }

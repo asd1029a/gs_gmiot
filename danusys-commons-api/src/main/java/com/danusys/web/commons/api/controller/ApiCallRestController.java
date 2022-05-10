@@ -22,6 +22,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -31,9 +32,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -312,7 +316,7 @@ public class ApiCallRestController {
                         f.setValue(result.get());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
-
+            log.info("map은??? {}",map);
             // Response check and set
             resultBody = apiResponseParams
                     .stream()
@@ -322,14 +326,14 @@ public class ApiCallRestController {
                         f.setValue(apiParam.getValue());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
-
+            log.info("resultBody??? {}",resultBody);
             // event save
-//            for(Map.Entry<String, Object> el: map.entrySet()) {
-//                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
-//                });
-//                eventService.saveAllByEeventRequestDTO(list);
-//                log.trace(list.toString());
-//            }
+            for(Map.Entry<String, Object> el: map.entrySet()) {
+                EventReqeustDTO list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
+                });
+                // eventService.saveAllByEventRequestDTO(list);
+                log.trace(list.toEntity().toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             resultBody.put("code", "9999");
@@ -343,13 +347,16 @@ public class ApiCallRestController {
     }
 
 
-    @PostMapping("event")
+    @PostMapping("/event")
     public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
+        log.info("param  =  {}",param);
         Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
         List<ApiParam> apiResponseParams = api.getApiResponseParams();
         Map<String, Object> resultBody = new HashMap<>();
+
+        AtomicReference<DataType> dataType = new AtomicReference<>();
 
         try {
             // Reqpuest check and set
@@ -357,6 +364,7 @@ public class ApiCallRestController {
                     .filter(f -> f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
                         AtomicReference<String> result = new AtomicReference<>();
+                        dataType.set(f.getDataType());
                         try {
                             result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
                         } catch (JsonProcessingException e) {
@@ -383,10 +391,16 @@ public class ApiCallRestController {
 
             // event save
             for(Map.Entry<String, Object> el: map.entrySet()) {
-                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
-                });
-                eventService.saveAllByEeventRequestDTO(list);
-                log.trace(list.toString());
+                if (dataType.get().equals(DataType.ARRAY)) {
+                    List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
+                    });
+                    eventService.saveAllByEventRequestDTO(list);
+                    log.trace(list.toString());
+                } else if (dataType.get().equals(DataType.OBJECT)) {
+                    EventReqeustDTO eventReqeustDTO = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
+                    });
+                    eventService.saveByEventRequestDTO(eventReqeustDTO);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
