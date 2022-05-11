@@ -362,7 +362,7 @@ const mntr = {
                 window.lyControl.offList(['facility', 'station', 'event', 'eventPast', 'route']);
             } else {
                 if(theme != "addressPlace") {
-                    window.lyControl.offList(['facility', 'route']);
+                    window.lyControl.offList(['facility', 'route','event', 'eventPast']);
                     window.lyControl.onList(['station', target]);
                 }
             }
@@ -372,12 +372,14 @@ const mntr = {
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
             window.map.updateSize();
+
+            const rVisivle = $('.area_right').is(':visible');
+            if(rVisivle) { $('.area_right_closer').trigger("click")}
         });
         //LNM TAB SWITCH (왼쪽창 탭별 변경)
         $('.mntr_container .menu_fold .tab li').on("click", e => {
             window.lySelect.getFeatures().clear();
             let tab = $(e.currentTarget).attr('data-value');
-            const rVisivle = $('.area_right[data-value=event]').is(':visible');
             const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
 
             $(e.currentTarget).parents('section').find('.lnb_tab_section').removeClass("select");
@@ -402,8 +404,10 @@ const mntr = {
                 default :
                     break;
             }
-            if(rVisivle) { $('.area_right_closer').trigger("click")}
             window.lyControl.on(tab + "Layer");
+
+            const rVisivle = $('.area_right').is(':visible');
+            if(rVisivle) { $('.area_right_closer').trigger("click")}
         });
         //LNM TAB SEARCH DETAIL (왼쪽창 검색 조건 더보기)
         $('.detail_btn').on("click", e => {
@@ -457,7 +461,16 @@ const mntr = {
         $("#layerViewer").hide();
         //MAP TOOL (맵 도구)
         $('.map_options li').on("click", e => {
-            const type = $(e.currentTarget).attr('data-value');
+            const $target = $(e.currentTarget);
+            const type = $target.attr('data-value');
+            const toggleFlag = $target.hasClass('toggle');
+            //ACTIVE STYLE
+            if(toggleFlag){
+                const activeFlag = $target.hasClass('active');
+                if(activeFlag){ $target.removeClass('active'); }
+                else { $target.addClass('active'); }
+            }
+
             switch(type) {
                 case "roadView" : window.lyControl.toggle(type); break; //로드뷰
                 case "cctv" : window.lyControl.toggle('cctvLayer'); break; //cctv 레이어 on/off
@@ -486,9 +499,7 @@ const mntr = {
 
                         let addFlag = true;
                         if(layerNm == "cctvLayer"){
-                            if((window.siGunCode == "26290") || (window.siGunCode == "41210")){
-                                addFlag = true;
-                            } else {
+                            if((window.siGunCode != "26290") && (window.siGunCode != "41210")){
                                 addFlag = false;
                             }
                         }

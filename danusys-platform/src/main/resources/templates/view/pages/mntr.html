@@ -29,15 +29,15 @@
             </ul>
             <ul class="map_options">
                 <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
-                <li data-value="roadView" title="로드뷰"><img src="/images/default/mapRoadview.svg"></li>
-                <li th:if="${municipality == '41210000'} or ${municipality == '26290000'}" data-value="cctv" title="cctv"><img src="/images/default/iconCctv.svg"></li>
-                <li data-value="plus" title="확대"><img src="/images/default/mapPlus.svg"></li>
-                <li data-value="minus" title="축소"><img src="/images/default/mapMinus.svg"></li>
-                <li data-value="layer" title="레이어"><img src="/images/default/mapLayer.svg"></li>
-                <li data-value="distance" title="거리측정"><img src="/images/default/mapDistance.svg"></li>
-                <li data-value="measure" title="면적측정"><img src="/images/default/mapMeasure.svg"></li>
-                <li data-value="radius" title="반경측정"><img src="/images/default/mapRadius.svg"></li>
-                <li data-value="eraser" title="지우기"><img src="/images/default/mapEraser.svg"></li>
+                    <li class='toggle' data-value="roadView" title="로드뷰"><img src="/images/default/mapRoadview.svg"></li>
+                    <li class='toggle' th:if="${municipality == '41210000'} or ${municipality == '26290000'}" data-value="cctv" title="cctv"><img src="/images/default/iconCctv.svg"></li>
+                    <li data-value="plus" title="확대"><img src="/images/default/mapPlus.svg"></li>
+                    <li data-value="minus" title="축소"><img src="/images/default/mapMinus.svg"></li>
+                    <li class='toggle' data-value="layer" title="레이어"><img src="/images/default/mapLayer.svg"></li>
+                    <li data-value="distance" title="거리측정"><img src="/images/default/mapDistance.svg"></li>
+                    <li data-value="measure" title="면적측정"><img src="/images/default/mapMeasure.svg"></li>
+                    <li data-value="radius" title="반경측정"><img src="/images/default/mapRadius.svg"></li>
+                    <li data-value="eraser" title="지우기"><img src="/images/default/mapEraser.svg"></li>
                 </th:block>
             </ul>
         </div>
