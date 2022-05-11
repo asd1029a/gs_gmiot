@@ -9,6 +9,7 @@ import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.service.*;
 import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
+import com.danusys.web.commons.api.util.StaticUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,7 +23,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -32,12 +32,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -314,15 +311,15 @@ public class ApiCallRestController {
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
 
-            // event save
+            String checkExist = StaticUtil.checkExist;
+            // event transfer
             for(Map.Entry<String, Object> el: map.entrySet()) {
                 EventReqeustDTO list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
                 });
-                // eventService.saveAllByEventRequestDTO(list);
-                if(list.getEventKind().equals("1")){
-
-                }else{
-
+                if(list.getEventKind().equals("1") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("1") && checkExist.isEmpty())){
+                    //사람있음
+                }else if(list.getEventKind().equals("0") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("0") && checkExist.isEmpty())){
+                    //사람없음
                 }
                 log.trace(list.toEntity().toString());
             }
