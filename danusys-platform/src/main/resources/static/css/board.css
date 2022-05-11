@@ -348,6 +348,31 @@ tr.selected td {background-color: #23252b;}
 .popup div.list_search p.legend span select option{background-color: #1e1f23; color: #FFFFFF}
 .popup div.list_search p.legend span input {flex : 1; margin-left : 10px; width: 200px;}
 
+/* popup_suspect */
+.popup div.popup_suspect{display: flex; flex-direction: initial; grid-gap: 20px; padding: 24px; border-bottom: 1px solid #292c34;}
+.popup div.popup_suspect fieldset{flex: 1; display: flex; flex-direction: column;}
+.popup div.popup_suspect fieldset form{display: flex; flex-direction: column; grid-gap: 10px;}
+.popup div.popup_suspect fieldset form dl{flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: space-between; grid-gap: 10px; padding: 0px 10px; box-sizing: border-box;}
+.popup div.popup_suspect fieldset form dl.checkbox{padding: 8px 10px;}
+.popup div.popup_suspect fieldset form dl.checkbox dd{justify-content: flex-start;}
+.popup div.popup_suspect fieldset form dl.checkbox dd > span{flex: 1;}
+.popup div.popup_suspect fieldset form dl.checkbox dd > span input[type="radio"] + label span{margin-top: 4px;}
+.popup div.popup_suspect fieldset form dl.checkbox dd > span input[type="radio"] + label{line-height: 25px;}
+.popup div.popup_suspect fieldset form dl dt{width: 80px; min-width: 80px; max-width: 80px;}
+.popup div.popup_suspect fieldset form dl dd{flex: 1; flex-wrap: wrap; display: flex; align-items: center; justify-content: space-between; grid-gap: 8px;}
+.popup div.popup_suspect fieldset form dl dd input{flex: 1;}
+.popup div.popup_suspect fieldset form dl dd select{flex: 1;}
+.popup div.popup_suspect fieldset form dl dd textarea{flex: 1; resize: none;}
+.popup div.popup_suspect fieldset form dl dd .fileBox{flex: 1; width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: space-between; grid-gap: 10px;}
+.popup div.popup_suspect fieldset form dl dd .fileBox .uploadName{width: 78%; height: 40px; padding: 0px 10px; vertical-align: middle; border: 1px solid #292c34; color: #999999;}
+.popup div.popup_suspect fieldset form dl dd .fileBox label{height: 40px; line-height: 38px; padding: 0px 14px; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
+.popup div.popup_suspect fieldset form dl dd .fileBox input[type="file"]{position: absolute; overflow: hidden; width: 0; height: 0; padding: 0; border: 0;}
+.popup div.popup_suspect fieldset form dl dd span.button{height: 34px; color: #797d87;}
+.popup div.popup_suspect fieldset form dl dd span.button:hover{color: #dee0e4;}
+.popup div.popup_suspect fieldset form.preview_form{flex: 1;}
+.popup div.popup_suspect fieldset form.preview_form dl{flex: initial; padding: 0px 0px 0px 10px;}
+.popup div.popup_suspect fieldset form .preview{flex: 1; box-sizing: border-box; border: 1px solid #292c34; background: transparent; border-radius: 4px;}
+
 /* statistics */
 .statistics{display: flex; height: calc(100% - 60px);}
 .statistics_container{position: relative; flex: 1; display: flex; flex-direction: column; background: #0c0c0d;}
