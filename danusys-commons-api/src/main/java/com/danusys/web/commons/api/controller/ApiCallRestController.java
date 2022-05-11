@@ -22,6 +22,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -31,9 +32,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -268,22 +272,9 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
-//    @Scheduled(cron = "0/10 * * * * *")
-//    public void schedulerTest() throws Exception {
-//        LocalDateTime now = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
-//        String formatNow = now.format(formatter);
-//        int iNow = Integer.parseInt(formatNow);
-//        Map<String, Object> param = new HashMap<>();
-//        param.put("callUrl","/mjvt/smart-station/people-count");
-//        param.put("cameraId","1");
-//        param.put("dateTime",iNow-1);
-//        log.info("현재 시각 : {}",iNow-1);
-//        call(param);
-//    }
-
     @PostMapping(value = "/ext/send")
     public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
+        log.info("param ?? = {}",param);
         Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
@@ -294,7 +285,7 @@ public class ApiCallRestController {
         log.trace("external send res data : {}", apiResponseParams.toString());
 
         try {
-            // Reqpuest check and set
+            // Request check and set
             Map<String, Object> map = apiRequestParams.stream()
                     .filter(f -> f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
@@ -324,12 +315,17 @@ public class ApiCallRestController {
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
 
             // event save
-//            for(Map.Entry<String, Object> el: map.entrySet()) {
-//                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
-//                });
-//                eventService.saveAllByEeventRequestDTO(list);
-//                log.trace(list.toString());
-//            }
+            for(Map.Entry<String, Object> el: map.entrySet()) {
+                EventReqeustDTO list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
+                });
+                // eventService.saveAllByEventRequestDTO(list);
+                if(list.getEventKind().equals("1")){
+
+                }else{
+
+                }
+                log.trace(list.toEntity().toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             resultBody.put("code", "9999");
@@ -343,13 +339,16 @@ public class ApiCallRestController {
     }
 
 
-    @PostMapping("event")
+    @PostMapping("/event")
     public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
+        log.info("param  =  {}",param);
         Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
         List<ApiParam> apiResponseParams = api.getApiResponseParams();
         Map<String, Object> resultBody = new HashMap<>();
+
+        AtomicReference<DataType> dataType = new AtomicReference<>();
 
         try {
             // Reqpuest check and set
@@ -357,6 +356,7 @@ public class ApiCallRestController {
                     .filter(f -> f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
                         AtomicReference<String> result = new AtomicReference<>();
+                        dataType.set(f.getDataType());
                         try {
                             result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
                         } catch (JsonProcessingException e) {
@@ -383,10 +383,16 @@ public class ApiCallRestController {
 
             // event save
             for(Map.Entry<String, Object> el: map.entrySet()) {
-                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
-                });
-                eventService.saveAllByEeventRequestDTO(list);
-                log.trace(list.toString());
+                if (dataType.get().equals(DataType.ARRAY)) {
+                    List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
+                    });
+                    eventService.saveAllByEventRequestDTO(list);
+                    log.trace(list.toString());
+                } else if (dataType.get().equals(DataType.OBJECT)) {
+                    EventReqeustDTO eventReqeustDTO = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
+                    });
+                    eventService.saveByEventRequestDTO(eventReqeustDTO);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
