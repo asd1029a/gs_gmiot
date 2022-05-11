@@ -8,15 +8,21 @@ const svgToImage = {
      * 이미지 경로 설정
      * */
     init() {
-        const rootPath = '/images/default/'; //icon svg 경로
+        const rootPath = '/images/mapIcon/'; //icon svg 경로
+        const fileType = '.svg';
 
         //관제 이벤트 icon
-        imgSrcObj['event_caution'] = rootPath + 'event_caution' + '.svg';
-        imgSrcObj['event_caution_select'] = rootPath + 'event_caution_select' + '.svg';
-        imgSrcObj['event_danger'] = rootPath + 'event_danger' + '.svg';
-        imgSrcObj['event_danger_select'] = rootPath + 'event_danger_select' + '.svg';
-        imgSrcObj['event_past'] = rootPath + 'event_past' + '.svg';
-        imgSrcObj['event_past_select'] = rootPath + 'event_past_select' + '.svg';
+        imgSrcObj['event_caution'] = rootPath + 'event_caution' + fileType;
+        imgSrcObj['event_caution_select'] = rootPath + 'event_caution_select' + fileType;
+        imgSrcObj['event_danger'] = rootPath + 'event_danger' + fileType;
+        imgSrcObj['event_danger_select'] = rootPath + 'event_danger_select' + fileType;
+        imgSrcObj['event_past'] = rootPath + 'event_past' + fileType;
+        imgSrcObj['event_past_select'] = rootPath + 'event_past_select' + fileType;
+        //관제 cctv icon
+        imgSrcObj['cctv_useCd1'] = rootPath + 'cctv_crime' + fileType;
+        imgSrcObj['cctv_useCd1_select'] = rootPath + 'cctv_crime_select' + fileType;
+        //관제 드론 icon
+        imgSrcObj['drone'] = rootPath + 'drone_pointer' + fileType;
 
         for (const [k, v] of Object.entries(imgSrcObj)) {
             imgObj[k] = svgToImage.create(k);

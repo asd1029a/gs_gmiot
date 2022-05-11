@@ -114,27 +114,18 @@ const layerStyle = {
     //시설물
     , facility : (selectFlag) => {
         return feature => {
-            const selected = feature.getProperties().properties.selected;
-            const text = feature.getProperties().properties.facilityId;
-            if(selected != undefined){
-                selectFlag = selected;
-            }
-            let fillColor = selectFlag ? "white" : "blue";
-            let strokeColor =  selectFlag ? "blue" : "white";
-
+            const text = "";//feature.getProperties().id;
             const style = new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 13,
-                    stroke: new ol.style.Stroke({
-                        color : strokeColor,
-                        width: 2
-                    }),
-                    fill: new ol.style.Fill({
-                        color: fillColor,
-                    })
+                image: new ol.style.Icon({
+                    anchor:[0.5,0.5],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    img: imgObj['drone'],
+                    imgSize:[50,50],
+                    scale: 1
                 }),
                 text : new ol.style.Text({
-                    text: text,
+                    text: String(text),
                     offsetY: 20,
                     fill: new ol.style.Fill({
                         color:'black',
@@ -143,12 +134,133 @@ const layerStyle = {
                     font: 'Bold 10px Arial',
                     stroke: new ol.style.Stroke({
                         color: 'white',
-                        width: 3
+                        width: 13
                     })
                 })
             });
             return style;
         }
+    }
+    //route
+    , route : () => {
+        return feature => {
+            let text = "";
+            if(feature.getGeometry() instanceof ol.geom.Point){ //지점일시
+                text = String(feature.getProperties().properties.properties.order);
+
+                const style =
+                    new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius:10,
+                            stroke: new ol.style.Stroke({
+                                color: 'white',
+                                width: 2,
+                            }),
+                            fill: new ol.style.Fill({
+                                color: 'green'
+                            })
+                        }),
+                        text: new ol.style.Text({
+                            offsetX:10,
+                            offsetY:-16,
+                            text: text,
+                            fill: new ol.style.Fill({
+                                color : 'white',
+                            }),
+                            stroke : new ol.style.Stroke({
+                                color: 'green',//'#FF4747',//'#002060',//'#9857FF',
+                                width: 3
+                            }),
+                            scale: 1.7
+                        })
+                    });
+                return style;
+            } else { //선일시
+                const geometry = feature.getGeometry();
+
+                const style = [new ol.style.Style({
+                    stroke : new ol.style.Stroke({
+                        color : 'green',//'#ff4242',
+                        width: 4,
+                        lineDash: [.1, 5]
+                    })
+                })];
+                return style;
+            }
+        }
+    }
+    //cctv
+    , cctv : (selectFlag) => {
+        return feature => {
+            const text = feature.getProperties().id;
+
+            let keys = 'cctv_useCd1';
+            keys = selectFlag ?  keys +'_select' : keys;
+
+            const style = new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor:[0.5,0.5],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    img: imgObj[keys],
+                    imgSize:[50,50],
+                    scale: 0.7
+                }),
+                text : new ol.style.Text({
+                    text: String(text),
+                    offsetY: 20,
+                    fill: new ol.style.Fill({
+                        color:'black',
+                        width: 3
+                    }),
+                    font: 'Bold 10px Arial',
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 2
+                    })
+                })
+            });
+            return style;
+        }
+    }
+    //(디밍 설정)시설물
+    , dimming : (selectFlag) => {
+       return feature => {
+           const selected = feature.getProperties().properties.selected;
+           const text = feature.getProperties().properties.facilityId;
+           if(selected != undefined){
+               selectFlag = selected;
+           }
+           let fillColor = selectFlag ? "white" : "blue";
+           let strokeColor =  selectFlag ? "blue" : "white";
+
+           const style = new ol.style.Style({
+               image: new ol.style.Circle({
+                   radius: 13,
+                   stroke: new ol.style.Stroke({
+                       color : strokeColor,
+                       width: 2
+                   }),
+                   fill: new ol.style.Fill({
+                       color: fillColor,
+                   })
+               }),
+               text : new ol.style.Text({
+                   text: text,
+                   offsetY: 20,
+                   fill: new ol.style.Fill({
+                       color:'black',
+                       width: 3
+                   }),
+                   font: 'Bold 10px Arial',
+                   stroke: new ol.style.Stroke({
+                       color: 'white',
+                       width: 3
+                   })
+               })
+           });
+           return style;
+       }
     }
 }
 
@@ -239,8 +351,10 @@ function clickIcon(layerType, layerObj) {
     let position = null;
     //지도 클릭시
     if(layerObj instanceof ol.Feature) {
-        len = layerObj.getProperties().features.length;
-        features = layerObj.getProperties().features;
+        if(layerObj.getProperties().features){
+            len = layerObj.getProperties().features.length;
+            features = layerObj.getProperties().features;
+        }
         position = layerObj.getGeometry().getCoordinates();
     }
 
@@ -263,13 +377,12 @@ function clickIcon(layerType, layerObj) {
                 popup.move('mouseClickPopup', position);
             }
             break;
-
-        case "facility" : //시설물 클릭 이벤트
+        case "facility" : //시설물(드론) 클릭 이벤트
             console.log(layerObj);
+            //TODO 드론 오른쪽 패널
             break;
-
         case "event" : //이벤트 클릭 이벤트
-        case "eventPast" :
+        case "eventPast" : //이벤트이력 클릭 이벤트
             if(len == 1){
                 $('.area_right').removeClass('select');
                 rnbList.createEvent(features[0]);
@@ -289,6 +402,10 @@ function clickIcon(layerType, layerObj) {
                 position = window.map.map.getCoordinateFromPixel([point[0], point[1] - 50]);
                 popup.move('mouseClickPopup', position);
             }
+            break;
+        case "cctv" : //cctv 클릭 이벤트
+            //TODO 영상 재생 연결
+            console.log(layerObj);
             break;
         default :
             break;

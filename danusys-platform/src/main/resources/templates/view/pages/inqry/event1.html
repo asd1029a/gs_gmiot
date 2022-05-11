@@ -10,7 +10,7 @@
         <i><img src="/images/default/settingArrowNext.svg"></i>
         <span>스마트 도시 이벤트</span>
     </h4>
-    <section class="inquiry_content">
+    <section class="inquiry_content" th:with="municipality=${@environment.getProperty('municipality.name')}">
         <article class="search_form" id="searchForm">
             <h6>스마트 도시 이벤트 검색</h6>
             <form>
@@ -49,6 +49,12 @@
 								<input type="checkbox" id="staus02" name="eventState" data-value="2" multiple="multiple">
 								<label for="staus02"><span></span>종료</label>
 							</span>
+                        </dd>
+                    </dl>
+                    <p>인상 착의</p> <!-- th:if="${municipality == '26290000'}" -->
+                    <dl class="dropdown_checkbox" data-selectbox-type=""> <!-- th:if="${municipality == '26290000'}" -->
+                        <dt class="checkbox_title select_title">인상착의</dt>
+                        <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
                 </div>

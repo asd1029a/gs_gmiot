@@ -263,7 +263,7 @@ const dimming = {
                         dimming.setData(result.data[0]);
                         //디밍 그룹별 맵 제어
                         const dimmLayer = new dataLayer('dimmMap').fromRaw(
-                            result.data, 'dimmLayer', true, layerStyle.facility()
+                            result.data, 'dimmLayer', true, layerStyle.dimming()
                         );
 
                         let dimmControl = new layerControl('dimmMap', 'title');
@@ -426,7 +426,7 @@ const dimming = {
         source.clear();
         source.addFeatures(features);
         source.forEachFeature(f => {
-            f.setStyle(layerStyle.facility(f.getProperties().properties.selected));
+            f.setStyle(layerStyle.dimming(f.getProperties().properties.selected));
         });
         source.changed();
         const fitExtent = source.getExtent();
@@ -471,7 +471,7 @@ const dimming = {
             });
         });
         const dimmGroupLayer = new dataLayer('dimmGroupMap').fromRaw(
-            {}, 'dimmGroupLayer', true, layerStyle.facility(false)
+            {}, 'dimmGroupLayer', true, layerStyle.dimming(false)
         );
         window.dimmGroupMap.addLayer(dimmGroupLayer);
 
