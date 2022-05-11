@@ -272,22 +272,9 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
-//    @Scheduled(cron = "0/10 * * * * *")
-//    public void schedulerTest() throws Exception {
-//        LocalDateTime now = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
-//        String formatNow = now.format(formatter);
-//        int iNow = Integer.parseInt(formatNow);
-//        Map<String, Object> param = new HashMap<>();
-//        param.put("callUrl","/mjvt/smart-station/people-count");
-//        param.put("cameraId","1");
-//        param.put("dateTime",iNow-1);
-//        log.info("현재 시각 : {}",iNow-1);
-//        call(param);
-//    }
-
     @PostMapping(value = "/ext/send")
     public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
+        log.info("param ?? = {}",param);
         Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
@@ -298,7 +285,7 @@ public class ApiCallRestController {
         log.trace("external send res data : {}", apiResponseParams.toString());
 
         try {
-            // Reqpuest check and set
+            // Request check and set
             Map<String, Object> map = apiRequestParams.stream()
                     .filter(f -> f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
@@ -316,7 +303,7 @@ public class ApiCallRestController {
                         f.setValue(result.get());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
-            log.info("map은??? {}",map);
+
             // Response check and set
             resultBody = apiResponseParams
                     .stream()
@@ -326,12 +313,17 @@ public class ApiCallRestController {
                         f.setValue(apiParam.getValue());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
-            log.info("resultBody??? {}",resultBody);
+
             // event save
             for(Map.Entry<String, Object> el: map.entrySet()) {
                 EventReqeustDTO list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
                 });
                 // eventService.saveAllByEventRequestDTO(list);
+                if(list.getEventKind().equals("1")){
+
+                }else{
+
+                }
                 log.trace(list.toEntity().toString());
             }
         } catch (Exception e) {
