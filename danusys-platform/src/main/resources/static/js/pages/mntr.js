@@ -3,6 +3,22 @@
  */
 const mntr = {
     init : () => {
+
+
+        const eventSource = new EventSource(`/sse/112`);
+
+        eventSource.onopen = (e) => {
+            console.log(e);
+        };
+
+        eventSource.onerror = (e) => {
+            console.log(e);
+        };
+
+        eventSource.onmessage = (e) => {
+            document.querySelector("#messages").appendChild(document.createTextNode(e.data + "\n"));
+        };
+
         $(document).contextmenu( e => {
             e.preventDefault();
 //			if(e.target.className.indexOf('no_target')>-1){
