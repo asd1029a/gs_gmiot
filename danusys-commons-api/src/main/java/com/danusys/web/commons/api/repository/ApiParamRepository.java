@@ -17,4 +17,6 @@ public interface ApiParamRepository extends PagingAndSortingRepository<ApiParam,
     List<ApiParam> findAllByApiIdAndParamType(Long apiId, ParamType paramType);
 
     List<ApiParam> findAllByParentSeq(int seq);
+
+    ApiParam findAllById(Long seq);
 }
