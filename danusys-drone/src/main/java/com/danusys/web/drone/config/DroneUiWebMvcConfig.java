@@ -24,6 +24,8 @@ public class DroneUiWebMvcConfig extends UiWebMvcConfig {
         this.applicationContext = applicationContext;
     }
 
+    //TODO
+    // - ssetest
     @Override
     protected void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("home").setViewName("view/pages/home");
@@ -33,6 +35,7 @@ public class DroneUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("flying").setViewName("view/pages/flying");
         registry.addViewController("log").setViewName("view/pages/log");
         registry.addViewController("config").setViewName("view/pages/config");
+        registry.addViewController("sse2").setViewName("test/sse");
 
 //        registry.addViewController("/login/error").setViewName("view/pages/loginError");
         registry.addViewController("drone/info").setViewName("view/pages/droneInfo");

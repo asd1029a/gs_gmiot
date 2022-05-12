@@ -36,7 +36,7 @@ public class SseController {
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public void send(@RequestBody Map<String,Object> param) {
-        sseService.send();
+        sseService.send(param);
     }
 }
 
