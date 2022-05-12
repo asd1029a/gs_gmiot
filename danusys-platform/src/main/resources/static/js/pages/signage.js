@@ -89,6 +89,7 @@ const signage = {
                 $('#templateList').find("input:checked").parents('dl').data('templateSeq')
                 , () => {
                     comm.showAlert("사이니지 템플릿이 삭제되었습니다.");
+                    signage.getList({}, signage.createTemplateList);
                     signage.hidePopup();
                 }
                 , () => {comm.showAlert("사이니지 템플릿 삭제에 실패했습니다.")})
@@ -179,8 +180,9 @@ const signage = {
         obj.forEach((each,idx) => {
             $('#height_'+idx).val(each.height);
             $('#kind_'+idx).val(each.kind).trigger('change');
-            //todo. 파일일경우, url text일 경우
-            //$('#val_'+idx).val(each.value);
+            if(each.value !== "" && typeof each.value !== "undefined") {
+                $('#kind_'+idx).siblings("div").find("input").val(each.value);
+            }
         });
     }
     , selectOptionHandler : () => {

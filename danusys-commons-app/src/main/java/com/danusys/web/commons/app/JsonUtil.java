@@ -2,6 +2,7 @@ package com.danusys.web.commons.app;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.*;
@@ -213,5 +214,16 @@ public class JsonUtil
         return gson.toJson(map);*/
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(map) ;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static JSONObject convertMapToJson(Map<String, Object> map) throws IOException {
+        JSONObject json = new JSONObject();
+        for (Map.Entry<String, Object> entry: map.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            json.put(key, value);
+        }
+        return json;
     }
 }

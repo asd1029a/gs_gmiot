@@ -142,7 +142,8 @@ public class FacilityServiceImpl implements FacilityService{
     }
 
     @Override
-    public int modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile,
+    @Transactional(rollbackFor = Exception.class)
+    public void modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile,
             HttpServletRequest request, SignageRequestDto signageRequestDto) throws Exception {
         String imageFileName = "";
         String videoFileName = "";
@@ -162,11 +163,10 @@ public class FacilityServiceImpl implements FacilityService{
             } else if("videoFile".equals(map.get("kind"))) {
                 map.put("value", videoFileName);
             }
-            newTemplateContentList.add(JsonUtil.MapToJson(map).toString());
+            newTemplateContentList.add(JsonUtil.convertMapToJson(map));
         }
 
-        signageRequestDto.setTemplateContent(newTemplateContentList.toJSONString());
-        return commonMapper.update(fsp.updateSignageLayoutQry(signageRequestDto));
+        signageRequestDto.setTemplateContent(newTemplateContentList.toString());
     }
 
     @Override

@@ -171,7 +171,8 @@ public class FacilityController {
     @PostMapping(value="/signage/layout", produces = "multipart/form-data")
     public ResponseEntity<?> modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile,
             HttpServletRequest request, SignageRequestDto signageRequestDto) throws Exception {
-        return ResponseEntity.ok().body(facilityService.modSignageLayout(imageFile, videoFile, request, signageRequestDto));
+        facilityService.modSignageLayout(imageFile, videoFile, request, signageRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     /**
