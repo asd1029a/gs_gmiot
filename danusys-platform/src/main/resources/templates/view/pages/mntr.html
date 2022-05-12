@@ -9,7 +9,9 @@
         <ul>
             <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
             <li th:if="${municipality == '41210000'}" data-value="smartPole" class="active">스마트 폴</li>
-            <li th:if="${municipality == '41210000'}" data-value="smartBusStop">스마트 정류장</li>
+            <li data-value="smartBusStop"
+                th:if="${municipality == '41210000'
+                        or municipality == '47210000'}">스마트 정류장</li>
             <li th:if="${municipality == '45210000'}" data-value="smartPower" class="active">스마트 분전함</li>
             <li th:if="${municipality == '45210000'}" data-value="drone">드론<br>관제</li>
             <li th:if="${municipality == '45210000'}" data-value="smart">스마트김제</li>

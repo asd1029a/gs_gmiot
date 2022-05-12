@@ -387,8 +387,10 @@ tr.selected td {background-color: #23252b;}
 .signage_template .template_list dl dd{font-size: 14px;}
 .signage_template .template_list dl dd span{margin: 0px 4px; color: #797d87;}
 .signage_layout{flex: 1; display: flex; flex-direction: column;}
-.layout_field{flex: 1; margin: 26px; border: 2px solid #292c34; background: #292c34;}
-.layout_field ul{display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 2px; height: 100%;}
+.signage_layout .article_title ul{display: none;}
+.layout_field{flex: 1; margin: 26px; border: 2px solid #292c34; background: #1a1b1d;}
+.layout_field form {height: 100%; width: 100%;}
+.layout_field ul{display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 2px; height: 100%; background-color: #292c34}
 .layout_field ul li{background: #1a1b1d;}
 .layout_field ul li .input_height{display: flex; align-items: center; justify-content: flex-end; white-space: nowrap; margin: 14px;}
 .layout_field ul li .input_height input{max-width: 80px; margin: 0px 10px;}
@@ -403,7 +405,7 @@ tr.selected td {background-color: #23252b;}
 .layout_field ul li:nth-child(even) .fileBox label{width: 84px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
 .layout_field ul li:nth-child(even) .fileBox input[type="file"]{position: absolute; overflow: hidden; width: 0; height: 0; padding: 0; border: 0;}
 
-.popup.signage_popup{ width: 420px; height: 340px;}
+.popup.signage_popup{ width: 420px; height: 400px;}
 .popup.signage_popup div{display: flex; justify-content: center; padding: 0px 24px; border-bottom: 1px solid #292c34;}
 .popup.signage_popup div fieldset{}
 .popup.signage_popup div fieldset form{display: flex; flex-direction: column; grid-gap: 26px;}
@@ -411,7 +413,8 @@ tr.selected td {background-color: #23252b;}
 .popup.signage_popup div fieldset dl dt{flex: 1; color: #dee0e4; font-size: 15px; font-weight: bold;}
 .popup.signage_popup div fieldset dl dt span{margin: 0px 6px; color: #797d87; font-size: 14px; font-weight: normal;}
 .popup.signage_popup div fieldset dl dd{display: flex; align-items: center; justify-content: flex-start; grid-gap: 14px;}
-.popup.signage_popup div fieldset dl:nth-child(2) >  dd input{width: 80px;}
+.popup.signage_popup div fieldset dl:nth-child(3) >  dd input{width: 80px;}
+.popup.signage_popup .bottom li{display: none;}
 
 @keyframes fadein {
     from {

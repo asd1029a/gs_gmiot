@@ -1,13 +1,20 @@
 package com.danusys.web.platform.service.facility;
 
 import com.danusys.web.commons.app.EgovMap;
+import com.danusys.web.commons.app.FileUtil;
+import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.PagingUtil;
+import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
+import org.json.simple.JSONArray;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -124,4 +131,46 @@ public class FacilityServiceImpl implements FacilityService{
         return resultMap;
     }
 
+    @Override
+    public int addSignageTemplate(Map<String, Object> paramMap) throws Exception {
+        return commonMapper.insert(fsp.insertSignageTemplateQry(paramMap));
+    }
+
+    @Override
+    public int modSignageTemplate(Map<String, Object> paramMap) throws Exception {
+        return commonMapper.update(fsp.updateSignageTemplateQry(paramMap));
+    }
+
+    @Override
+    public int modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile,
+            HttpServletRequest request, SignageRequestDto signageRequestDto) throws Exception {
+        String imageFileName = "";
+        String videoFileName = "";
+        if (imageFile.length > 0) {
+            imageFileName = FileUtil.uploadAjaxPost(imageFile, request);
+        } else if (videoFile.length > 0) {
+            videoFileName = FileUtil.uploadAjaxPost(videoFile, request);
+        }
+        String templateContentStr = signageRequestDto.getTemplateContent().replaceAll("&quot;", "\"");
+
+        List<Map<String, Object>> templateContentList = JsonUtil.jsonToListMap(templateContentStr);
+
+        JSONArray newTemplateContentList = new JSONArray();
+        for (Map<String, Object> map : templateContentList) {
+            if("imageFile".equals(map.get("kind"))) {
+                map.put("value", imageFileName);
+            } else if("videoFile".equals(map.get("kind"))) {
+                map.put("value", videoFileName);
+            }
+            newTemplateContentList.add(JsonUtil.MapToJson(map).toString());
+        }
+
+        signageRequestDto.setTemplateContent(newTemplateContentList.toJSONString());
+        return commonMapper.update(fsp.updateSignageLayoutQry(signageRequestDto));
+    }
+
+    @Override
+    public void delSignageTemplate(int seq) throws Exception {
+        commonMapper.delete(fsp.deleteSignageTemplateQry(seq));
+    }
 }

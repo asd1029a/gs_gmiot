@@ -3,7 +3,7 @@
     <!-- LNM -->
         <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
         <!-- 스마트 폴 -->
-        <section th:if="${municipality == '41210000'}" id="smartPole" class="menu_fold select">
+        <section id="smartPole" class="menu_fold select">
             <ul class="tab">
                 <li data-value="event" class="active"><a>실시간</a></li>
                 <li data-value="station"><a>개소</a></li>
@@ -195,7 +195,7 @@
 
         </section>
         <!-- 스마트 정류장 -->
-        <section th:if="${municipality == '41210000'}" id="smartBusStop" class="menu_fold">
+        <section id="smartBusStop" class="menu_fold">
             <ul class="tab">
                 <li data-value="event" class="active"><a>실시간</a></li>
                 <li data-value="station"><a>개소</a></li>
@@ -624,7 +624,7 @@
 
         </section>
         <!-- 스마트 분전함 -->
-        <section th:if="${municipality == '45210000'}" id="smartPower" class="menu_fold select">
+        <section id="smartPower" class="menu_fold select">
             <ul class="tab">
                 <li data-value="event" class="active"><a>실시간</a></li>
                 <li data-value="station"><a>개소</a></li>
@@ -1048,7 +1048,7 @@
 
         </section>
         <!-- 드론 관제 -->
-        <section th:if="${municipality == '45210000'}" id="drone" class="menu_fold">
+        <section id="drone" class="menu_fold">
             <ul class="tab">
                 <li data-value="event" class="active"><a>실시간</a></li>
                 <li data-value="station"><a>기체/개소</a></li>

@@ -116,6 +116,18 @@ public class JsonUtil
     }
 
     /**
+     * FuncName : jsonToListMap()
+     * FuncDesc : Json String -> ListMap 변환
+     * Param    : res : Json String
+     * Return   : List<Map<String, Object>>
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Map<String, Object>> jsonToListMap(String param) throws IOException {
+        return new ObjectMapper()
+                .readValue(param, new TypeReference<List<Map<String, Object>>>() {});
+    }
+
+    /**
 	 * Json을 HashMap 으로 변환
 	 * @param param
 	 * @return
