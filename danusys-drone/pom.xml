@@ -94,11 +94,11 @@
             <version>1.1.9</version>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>com.danusys.web</groupId>-->
-        <!--            <artifactId>danusys-commons-api</artifactId>-->
-        <!--            <version>${revision}</version>-->
-        <!--        </dependency>-->
+                <dependency>
+                    <groupId>com.danusys.web</groupId>
+                    <artifactId>danusys-commons-api</artifactId>
+                    <version>${revision}</version>
+                </dependency>
 
         <dependency>
             <groupId>com.danusys.web</groupId>

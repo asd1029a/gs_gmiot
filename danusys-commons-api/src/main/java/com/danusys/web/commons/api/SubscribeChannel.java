@@ -1,9 +1,15 @@
 package com.danusys.web.commons.api;
 
+import com.danusys.web.commons.app.JsonUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
+
+import java.util.Map;
 
 /**
  * Project : danusys-webservice-parent
@@ -36,10 +42,15 @@ public class SubscribeChannel {
 
     }
 
-    public void send(String message) {
-
-        //발행 시작
-        sink.next(message);
+    public void send(Map<String, Object> param) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(param);
+            //발행 시작
+            sink.next(jsonString);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public Flux<String> toFlux() {

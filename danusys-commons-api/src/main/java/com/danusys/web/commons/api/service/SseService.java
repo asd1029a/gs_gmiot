@@ -25,25 +25,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SseService {
     private ConcurrentHashMap<Long, SubscribeChannel> chMap = new ConcurrentHashMap<>();
     /*private SubscribeChannel subscribeChannel;*/
-    private AtomicInteger id = new AtomicInteger();
+    //private AtomicInteger id = new AtomicInteger();
 
     public SubscribeChannel connect(Long userId) {
         return chMap.computeIfAbsent(userId, key -> new SubscribeChannel().onClose(() ->
                 chMap.remove(userId)));
     }
 
-    public void send() {
-        String message = "eventOccurs";
+    public void send(Map<String, Object> param) {
+        //String message = "eventOccurs";
         Optional.ofNullable(chMap).ifPresent(ch -> {
-            ch.entrySet().stream().forEach(entry -> entry.getValue().send(message));
+            ch.entrySet().stream().forEach(entry -> entry.getValue().send(param));
         });
     }
 
     public Flux<ServerSentEvent<String>> userCheck(Long userId) {
         Flux<String> userStream = this.connect(userId).toFlux();
-        Flux<String> tickStream = Flux.interval(Duration.ofSeconds(3))
-                .map(tick -> tick + " connect success " + userId);
-        return Flux.merge(userStream, tickStream)
+        return Flux.merge(userStream)
                 .map(str -> ServerSentEvent.builder(str).build());
     }
 }
