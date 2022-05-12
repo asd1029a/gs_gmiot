@@ -135,7 +135,7 @@ public class FacilitySqlProvider {
         SQL sql = new SQL() {{
             SELECT("*");
             FROM("t_facility t1");
-            INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility");
+            INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
             WHERE("t1.facility_seq = " + seq);
         }};
         return sql.toString();

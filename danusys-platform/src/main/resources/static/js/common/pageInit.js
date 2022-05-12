@@ -45,7 +45,7 @@ $(document).ready(() => {
         //초기값
         const now = new Date();
         const ago = new Date();
-        ago.setDate(now.getDate() - 2);
+        ago.setDate(now.getDate() - 30);
         $startDt.datepicker().data('datepicker').selectDate(ago);
         $endDt.datepicker().data('datepicker').selectDate(now);
     });

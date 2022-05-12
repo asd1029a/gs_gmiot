@@ -118,6 +118,7 @@
 .map_button .map_options li:nth-last-child(1){border:none;}
 .map_button .map_options li:hover{background:#23252b;}
 .map_button .map_options li:hover img{filter:brightness(1.4);}
+.map_button .map_options li.active{filter:brightness(1.4); background:#ffffff30;}
 .map_button .map_options li img{width:20px; height:20px;}
 
 

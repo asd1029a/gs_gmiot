@@ -17,7 +17,6 @@ class dataLayer {
         if(projFlag){
             features.forEach( feature => {
                 feature.getGeometry().transform('EPSG:4326', this.map.projection);
-                
             });
         }
         source.addFeatures(features);
@@ -127,5 +126,53 @@ class dataLayer {
         });
 
         return clusters;
+    }
+
+    /**
+     * @summary fromGeoJson toRoute
+     * @param data: 데이터 Obj, layerName : 레이어명, projFlag : 좌표변환여부, style : 레이어스타일
+     * @return multiLayer
+     * */
+    fromGeoJsonToRoute(data, layerName, projFlag, style) {
+        const featureCollection = new ol.Collection();
+
+        //point
+        data.features.forEach(each => {
+            let coordinates = ol.proj.transform(each.geometry.coordinates,'EPSG:4326',this.map.projection);
+            const featureOne = new ol.Feature({
+                geometry: new ol.geom.Point(coordinates),
+                properties : each,
+            });
+            featureCollection.push(featureOne);
+        });//point end
+
+        //line
+        for(let i=0; i<data.features.length;i++){
+            const features = data.features;
+            //동선이 하나여서 점일때
+            if(features.length==1){
+                const point = new ol.proj.transform(data.features[0].geometry.coordinates,"EPSG:4326",this.map.projection);
+            //vertex가 두 개 이상일때
+            } else {
+                if(i>0){
+                    const from = new ol.proj.transform(data.features[i-1].geometry.coordinates,"EPSG:4326",this.map.projection);
+                    const to = new ol.proj.transform(data.features[i].geometry.coordinates,"EPSG:4326",this.map.projection);
+                    const featureLine = new ol.Feature({
+                        geometry: new ol.geom.LineString([from,to])
+                    });
+                    featureCollection.push(featureLine);
+                }
+            }
+        }// line end
+
+        const routeLayer = new ol.layer.Vector({
+            source : new ol.source.Vector({features: featureCollection}),
+            title: layerName,
+            visible: true,
+            style: style
+        });
+
+        return routeLayer;
+
     }
 }

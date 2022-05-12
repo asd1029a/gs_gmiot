@@ -199,8 +199,14 @@ class mapCreater {
             }
         ],
     ];
+    centers = {
+        '41210': [126.726054, 37.323351], //광명
+        '45210': [126.880651, 35.803587], //김제
+        '26290': [129.084238267311, 35.1365226602861], //부산남구
+        '47210': [128.62393703546, 36.8056192756897], //영주
+    }
 
-    constructor(id, type) {
+    constructor(id, type, sigun) {
         //맵 객체명
         this.id = id;
         //{ 0 : daum, 1 : naver, 2 : vworld }
@@ -210,9 +216,16 @@ class mapCreater {
         //표출용 범용(위경도) 좌표계
         this.baseProjection = 'EPSG:4326';
 
-        //기본 중심점
-        this.lat = 37.323351; //37.44457599567139;
-        this.lon = 126.726054; //126.89482519279865;
+        if(sigun != undefined){
+            const cen = this.centers[sigun];
+            this.lon = cen[0];
+            this.lat = cen[1];
+        } else {
+            //기본 중심점
+            this.lat = 37.323351;
+            this.lon = 126.726054;
+        }
+
         this.center = [this.lon, this.lat];
 
         this.createTileGrid();
@@ -232,6 +245,9 @@ class mapCreater {
         this.map.getLayers().getArray().forEach((layer, idx) => {
             layer.setZIndex(idx);
         });
+
+        console.log(sigun);
+        console.log(this.center);
     }
 
     /**
