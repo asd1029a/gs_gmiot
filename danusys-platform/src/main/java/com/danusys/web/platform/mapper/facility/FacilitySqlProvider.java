@@ -445,7 +445,7 @@ public class FacilitySqlProvider {
 
         SQL sql = new SQL() {{
             UPDATE("t_signage_template");
-            SET("template_content = " + signageRequestDto.getTemplateContent());
+            SET("template_content = '" + signageRequestDto.getTemplateContent() + "'");
             WHERE("template_seq = " + signageRequestDto.getTemplateSeq());
         }};
         return sql.toString();

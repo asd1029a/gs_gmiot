@@ -24,7 +24,7 @@ public interface FacilityService {
     EgovMap getListSignageTemplate(Map<String, Object> paramMap) throws Exception;
     int addSignageTemplate(Map<String, Object> paramMap) throws Exception;
     int modSignageTemplate(Map<String, Object> paramMap) throws Exception;
-    int modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile
+    void modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile
             , HttpServletRequest request, SignageRequestDto signageRequestDto) throws Exception;
     void delSignageTemplate(int seq) throws Exception;
 }
