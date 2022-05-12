@@ -6,7 +6,7 @@ const faceDetection = {
         $("#addFaceDetectionBtn").on('click', () => {
             faceDetection.showPopup("add");
         });
-        $("#addUFaceDetectionProcBtn").on('click', () => {
+        $("#addFaceDetectionProcBtn").on('click', () => {
             faceDetection.addProc();
         });
         $("#modFaceDetectionProcBtn").on('click', () => {
@@ -17,6 +17,29 @@ const faceDetection = {
         });
         $("#faceDetectionPopup .title dd").on('click', () => {
             faceDetection.hidePopup();
+        });
+        $("#file").on('change', (e) => {
+            const maxSize = 10 * 1024 * 1024 // 10MB
+            const file = e.currentTarget.files[0];
+            const fileSize = file.size;
+            const fileExt = file.type;
+            if(fileExt !== "image/jpeg"){
+                comm.showAlert("jpg 이미지만 첨부 가능합니다.");
+                e.currentTarget.value = null;
+            }else if( fileSize > maxSize){
+                comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
+                e.currentTarget.value = null;
+            } else {
+                const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
+                $("#faceFile").val(fileName);
+
+                // 이미지 미리보기
+                const reader = new FileReader()
+                reader.onload = e => {
+                    $("#preview").html(`<img src="${e.target.result}" alt="미리보기 이미지" id="previewImg">`);
+                }
+                reader.readAsDataURL(file)
+            }
         });
     }
     , create: () => {
@@ -51,7 +74,7 @@ const faceDetection = {
                 {data: "faceAge"},
                 {data: "faceGender"},
                 {data: "faceKind"},
-                {data: "faceImgPath"},
+                {data: "faceFile"},
                 {data: "faceSimilarity"},
                 {data: "faceStatus"},
                 {data: "faceUid"},
@@ -66,10 +89,10 @@ const faceDetection = {
                 "data": null,
                 "render": function (data, type, row) {
                     switch (row.faceGender) {
-                        case "F" :
+                        case 0 :
                             return `여성`;
                             break;
-                        case "M" :
+                        case 1 :
                             return `남성`;
                             break;
                         default:
@@ -97,10 +120,10 @@ const faceDetection = {
                 "render": function (data, type, row) {
                     switch (row.faceStatus) {
                         case 0 :
-                            return `검출 전`;
+                            return `검출 대상`;
                             break;
                         case 1 :
-                            return `검출 완료`;
+                            return `보류`;
                             break;
                         default:
                             "";
@@ -112,24 +135,27 @@ const faceDetection = {
                 , fileName: "검출 대상 목록_" + dateFunc.getCurrentDateYyyyMmDd(0, '') + ".xlsx"
                 , search: $("#searchForm form").serializeJSON()
                 , headerList: [
-                    "고유번호|faceDetectionSeq"
-                    , "이름|faceDetectionName"
-                    , "종류|faceDetectionKindName"
+                    "고유번호|faceSeq"
+                    , "이름|faceName"
+                    , "종류|faceKindName"
                     , "행정구역|administZoneName"
                 ]
             }
         }
 
         const evt = {
-            click : function(e) {
+            click: function (e) {
                 const $form = $('#faceDetectionForm');
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
-                if($(e.target).hasClass('button')) {
-                    const buttonType = $(e.target).attr("class").split(' ')[1];
-                    faceDetection.showPopup(buttonType);
-                    faceDetection.get(rowData.faceSeq ,(result) => {
+                if ($(e.target).hasClass('button')) {
+                    faceDetection.showPopup("mod");
+                    faceDetection.get(rowData.faceSeq, (result) => {
                         $form.data("faceSeq", rowData.faceSeq);
                         $form.setItemValue(result);
+                        $("#imgForm").setItemValue(result);
+                        if (result.faceFile !== null && result.faceFile !== "" && result.faceFile !== undefined){
+                            $("#preview").html(`<img src="/image/${result.faceFile}" alt="미리보기 이미지" id="previewImg">`);
+                        }
                     });
                 }
             }
@@ -156,16 +182,19 @@ const faceDetection = {
         comm.showModal($("#faceDetectionPopup"));
         $("#faceDetectionPopup").css('display', 'flex');
         $("#faceDetectionForm").initForm();
-        $('#faceDetectionPopup [data-add], [data-mod]').hide();
-        $('#faceDetectionPopup [data-'+type+'="true"]').show();
-        $("#faceDetectionPopup").data("facilitySeqList", []);
+        $("#imgForm").initForm();
+        $('#faceDetectionPopup [data-mode]').hide();
+        $('#faceDetectionPopup [data-mode="' + type + '"]').show();
+        $("#preview").html("");
 
-        if(type === "add") {
+        if (type === "add") {
             $("#faceDetectionPopup .title dt").text("용의자 · 실종자 추가");
             $("#faceDetectionPopup").data("type", "add");
-        } else if(type === "mod"){
+            $("#faceDetectionPopup [name=faceName]").attr("readonly", false);
+        } else if (type === "mod") {
             $("#faceDetectionPopup .title dt").text("용의자 · 실종자 수정");
             $("#faceDetectionPopup").data("type", "mod");
+            $("#faceDetectionPopup [name=faceName]").attr("readonly", true);
         }
     },
     hidePopup: () => {
@@ -173,33 +202,63 @@ const faceDetection = {
         $('#faceDetectionPopup').hide();
     },
     addProc: () => {
-        const formObj = $('#faceDetectionForm').serializeJSON();
+        const formData = new FormData();
+        const infoForm = $("#faceDetectionForm").serializeJSON();
+        const fileForm = new FormData($("#imgForm")[0]);
+        Object.entries(infoForm).forEach(item => formData.append(item[0], item[1]));
+        for (let key of fileForm.keys()) {
+            formData.append(key, fileForm.get(key))
+        }
 
-        $.ajax({
-            url : "/faceDetection"
-            , type: "PUT"
-            , data : JSON.stringify(formObj)
-            , contentType : "application/json; charset=utf-8"
-        }).done((result) => {
-            comm.showAlert("정보가 등록되었습니다");
-            faceDetection.create();
-            faceDetection.hidePopup();
-        });
+        if ($('#faceDetectionForm').doValidation()) {
+            $.ajax({
+                url: "/faceDetection/checkName/" + infoForm.faceName
+                , type: "GET"
+            }).done((result) => {
+                if(result.count > 0){
+                    comm.showAlert("중복된 이름이 있습니다.");
+                }else{
+                    $.ajax({
+                        url: "/faceDetection/add"
+                        , type: "POST"
+                        , enctype: "multipart/form-data"
+                        , processData: false
+                        , contentType: false
+                        , data: formData
+                    }).done((result) => {
+                        comm.showAlert("정보가 등록되었습니다");
+                        faceDetection.create();
+                        faceDetection.hidePopup();
+                    });
+                }
+            });
+
+        }
     },
     modProc: (pSeq) => {
-        const formObj = $('#faceDetectionForm').serializeJSON();
-        formObj.faceDetectionSeq = pSeq;
+        const formData = new FormData();
+        const infoForm = $("#faceDetectionForm").serializeJSON();
+        const fileForm = new FormData($("#imgForm")[0]);
+        infoForm.faceSeq = pSeq;
+        Object.entries(infoForm).forEach(item => formData.append(item[0], item[1]));
+        for (let key of fileForm.keys()) {
+            formData.append(key, fileForm.get(key))
+        }
 
-        $.ajax({
-            url : "/faceDetection"
-            , type: "PATCH"
-            , data : JSON.stringify(formObj)
-            , contentType : "application/json; charset=utf-8"
-        }).done((result) => {
-            comm.showAlert("정보가 수정되었습니다.");
-            faceDetection.create();
-            faceDetection.hidePopup();
-        });
+        if ($('#faceDetectionForm').doValidation()) {
+            $.ajax({
+                url: "/faceDetection/mod/" + pSeq
+                , type: "POST"
+                , enctype: "multipart/form-data"
+                , processData: false
+                , contentType: false
+                , data: formData
+            }).done((result) => {
+                comm.showAlert("정보가 수정되었습니다.");
+                faceDetection.create();
+                faceDetection.hidePopup();
+            });
+        }
     },
     delProc: (pSeq) => {
         $.ajax({

@@ -351,8 +351,8 @@ tr.selected td {background-color: #23252b;}
 /* popup_suspect */
 .popup div.popup_suspect{display: flex; flex-direction: initial; grid-gap: 20px; padding: 24px; border-bottom: 1px solid #292c34;}
 .popup div.popup_suspect fieldset{flex: 1; display: flex; flex-direction: column;}
-.popup div.popup_suspect fieldset form{display: flex; flex-direction: column; grid-gap: 10px;}
-.popup div.popup_suspect fieldset form dl{flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: space-between; grid-gap: 10px; padding: 0px 10px; box-sizing: border-box;}
+.popup div.popup_suspect fieldset form{display: flex; flex-direction: column; grid-gap: 10px;flex: 1;justify-content: flex-start;}
+.popup div.popup_suspect fieldset form dl{/* flex: 1; */ overflow: hidden; display: flex; align-items: center; justify-content: space-between; grid-gap: 10px; padding: 0px 10px; box-sizing: border-box;}
 .popup div.popup_suspect fieldset form dl.checkbox{padding: 8px 10px;}
 .popup div.popup_suspect fieldset form dl.checkbox dd{justify-content: flex-start;}
 .popup div.popup_suspect fieldset form dl.checkbox dd > span{flex: 1;}
@@ -372,6 +372,7 @@ tr.selected td {background-color: #23252b;}
 .popup div.popup_suspect fieldset form.preview_form{flex: 1;}
 .popup div.popup_suspect fieldset form.preview_form dl{flex: initial; padding: 0px 0px 0px 10px;}
 .popup div.popup_suspect fieldset form .preview{flex: 1; box-sizing: border-box; border: 1px solid #292c34; background: transparent; border-radius: 4px;}
+.popup div.popup_suspect fieldset form .preview img{width: 100%;}
 
 /* statistics */
 .statistics{display: flex; height: calc(100% - 60px);}

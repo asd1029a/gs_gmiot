@@ -328,7 +328,7 @@ public class FileUtil {
                 if(headerList.isEmpty()){
                     data.forEach((k, valStr) -> {
                         Cell cell = row.createCell(cellNum.get());
-                        cell.setCellValue(valStr != null ? valStr.toString() : "");
+                        cell.setCellValue(CommonUtil.validNull(valStr));
                         cellNum.incrementAndGet();
                     });
                 }else{

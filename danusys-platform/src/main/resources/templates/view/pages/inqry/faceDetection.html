@@ -86,30 +86,39 @@
                         </dl>
                         <dl>
                             <dt>나이</dt>
-                            <dd><input type="text" id="faceAge" name="faceAge"></dd>
+                            <dd><input type="number" id="faceAge" name="faceAge"></dd>
                         </dl>
                         <dl class="checkbox">
                             <dt>성별</dt>
                             <dd>
                                 <span>
-                                    <input type="radio" id="M" name="faceGender" data-value="M">
-                                    <label for="M"><span class="round"></span>남성</label>
+                                    <input type="radio" id="F" name="faceGender" data-value="1" data-init-value="checked">
+                                    <label for="F"><span class="round"></span>여성</label>
                                 </span>
                                 <span>
-                                    <input type="radio" id="F" name="faceGender" data-value="F">
-                                    <label for="F"><span class="round"></span>여성</label>
+                                    <input type="radio" id="M" name="faceGender" data-value="0">
+                                    <label for="M"><span class="round"></span>남성</label>
                                 </span>
                             </dd>
                         </dl>
                         <dl>
                             <dt>유사도</dt>
-                            <dd><input type="text" id="faceSimilarity" name="faceSimilarity"></dd>
+                            <dd><input type="number" id="faceSimilarity" name="faceSimilarity"></dd>
                         </dl>
-                        <dl>
+                        <dl class="checkbox">
                             <dt>상태값</dt>
-                            <dd><input type="text" id="faceStatus" name="faceStatus"></dd>
+                            <dd>
+                                <span>
+                                    <input type="radio" id="use" name="faceStatus" data-value="0" data-init-value="checked" checked>
+                                    <label for="use"><span class="round"></span>검출 대상</label>
+                                </span>
+                                <span>
+                                    <input type="radio" id="hold" name="faceStatus" data-value="1">
+                                    <label for="hold"><span class="round"></span>보류</label>
+                                </span>
+                            </dd>
                         </dl>
-                        <dl>
+                        <dl class="checkbox">
                             <dt>구분</dt>
                             <dd>
                                 <span>
@@ -125,24 +134,25 @@
                     </form>
                 </fieldset>
                 <fieldset>
-                    <form class="preview_form">
+                    <form class="preview_form" id="imgForm">
                         <dl>
                             <dt>첨부 파일</dt>
                             <dd>
                                 <div class="fileBox">
-                                    <input class="uploadName" value="첨부파일" placeholder="첨부파일">
+                                    <input class="upload_name" id="faceFile" name="faceFile" placeholder="첨부파일" readonly/>
                                     <label for="file">파일찾기</label>
-                                    <input type="file" id="file">
+                                    <input type="file" id="file" name="file" accept=".jpg">
                                 </div>
                             </dd>
                         </dl>
-                        <div class="preview"></div>
+                        <div class="preview" id="preview"></div>
                     </form>
                 </fieldset>
             </div>
             <ul class="bottom">
-                <li>취소</li>
-                <li class="color">추가</li>
+                <li id="addFaceDetectionProcBtn" data-mode="add" class="color">등록</li>
+                <li id="modFaceDetectionProcBtn" data-mode="mod" class="color">수정</li>
+                <li id="delFaceDetectionProcBtn" data-mode="mod" class="red">삭제</li>
             </ul>
         </div>
 
