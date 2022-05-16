@@ -397,7 +397,7 @@ const comm = {
         var newObj = $.extend(toastr.options, typeof(mainObj.options) == "undefined" ? {} : mainObj.options);
         toastr.options = newObj;
         mainObj.options = {
-            'maxToast': 5
+            'maxToast': 100
         };
 
         if (typeof mainObj.options.maxToast != 'undefined') {
@@ -1043,5 +1043,19 @@ const dateFunc = {
             let otpObj = Object.assign(defaultObj, customObj);
             sDate.datepicker(defaultObj);
         }
+    }
+}
+
+const transProj = {
+    /*
+     * 위경도 -> TM
+     * @param coord 위경도 좌표
+     * @example 126.86724125040395, 37.483144138047656
+     */
+    lonLatToTM(coord) {
+        let lonLat = proj4.Proj(proj4.defs["EPSG:4326"]);
+        let tm = proj4.Proj(proj4.defs["EPSG:5179"]);
+        let point = proj4.Point(coord);
+        return proj4.transform(lonLat, tm, point);
     }
 }
