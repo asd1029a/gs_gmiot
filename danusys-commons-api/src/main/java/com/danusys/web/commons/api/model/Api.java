@@ -59,6 +59,7 @@ public class Api implements Serializable {
     private String serviceNm;
     private String servicePrefix;
     private String authInfo;
+    private String tokens;
 
     @Transient
     private List<ApiParam> apiRequestParams;

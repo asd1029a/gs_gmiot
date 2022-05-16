@@ -22,6 +22,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.*;
@@ -132,6 +133,7 @@ public class RestApiExecutor implements ApiExecutor {
         final String targetUrl = api.getTargetUrl() + api.getTargetPath();
         Object result = "";
 
+        ResponseEntity<String> responseEntity;
         try {
 //            final HttpHeaders headers = new HttpHeaders();
             HttpMethod method = HttpMethod.valueOf(api.getMethodType().name());
@@ -139,7 +141,7 @@ public class RestApiExecutor implements ApiExecutor {
 
             log.trace("웹서비스 주소:{}, 메소드:{}, 미디어타입:{}, 파라미터:{}", targetUrl, method, mediaType, reqMap);
 
-            ResponseEntity<String> responseEntity = getResponseEntity(api, method, mediaType, reqMap);
+            responseEntity = getResponseEntity(api, method, mediaType, reqMap);
             final String res = responseEntity.getBody();
 
             AtomicReference<String> body = new AtomicReference(res);
@@ -152,19 +154,20 @@ public class RestApiExecutor implements ApiExecutor {
                 body.set(StringUtils.replace(body.get(), apiRes.getFieldMapNm(), apiRes.getFieldNm()));
             });
 
-            if( api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+            if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
                 log.trace("### Response 객체 리턴");
                 ObjectMapper objectMapper = new ObjectMapper();
-                Map<String, Object> objectMap = objectMapper.readValue(body.get(), new TypeReference<Map<String, Object>>(){});
+                Map<String, Object> objectMap = objectMapper.readValue(body.get(), new TypeReference<Map<String, Object>>() {
+                });
                 Map<String, Object> resultMap = new HashMap<>();
                 Map<String, Object> resultMap1 = new HashMap<>();
 
                 api.getApiResponseParams().stream().filter(f -> f.getParentSeq() == 0).forEach(apiRes0 -> {
-                    log.trace("### res apiRes0 > {}", apiRes0.getFieldNm() );
+                    log.trace("### res apiRes0 > {}", apiRes0.getFieldNm());
 
                     Map<String, Object> tempMap0 = (Map<String, Object>) objectMap.get(apiRes0.getFieldNm());
                     api.getApiResponseParams().stream().filter(f -> f.getParentSeq() == 1).forEach(apiRes1 -> {
-                        log.trace("### res apiRes1 > {}", apiRes1.getFieldNm() );
+                        log.trace("### res apiRes1 > {}", apiRes1.getFieldNm());
                         log.trace("### res apiRes1 > {}", tempMap0.get(apiRes1.getFieldNm()));
                         apiRes1.setValue((String) tempMap0.get(apiRes1.getFieldNm()));
                         resultMap1.put(apiRes1.getFieldNm(), tempMap0.get(apiRes1.getFieldNm()));
@@ -173,6 +176,9 @@ public class RestApiExecutor implements ApiExecutor {
                 });
 
                 result = resultMap;
+
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(result);
 
             } else {
                 result = body.get();
@@ -185,8 +191,7 @@ public class RestApiExecutor implements ApiExecutor {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(result);
+        return responseEntity;
     }
 
 
@@ -230,6 +235,17 @@ public class RestApiExecutor implements ApiExecutor {
                             throw new RuntimeException(e);
                         }
                         httpHeaders.setBearerAuth(accessToken);
+                    } else if (api.getAuthInfo().contains("session")) {
+                        Cookie[] cookies = null;
+                        try {
+                            cookies = apiCallService.getApiSession(api);
+                            Arrays.asList(cookies).stream().forEach(f -> log.trace("session cookies : {}", f));
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        Arrays.stream(cookies).forEach(f -> {
+                            httpHeaders.set(f.getName(), f.getValue());
+                        });
                     } else {
                         httpHeaders.set("Authorization", api.getAuthInfo());
                     }
@@ -251,23 +267,24 @@ public class RestApiExecutor implements ApiExecutor {
                 URI tUri = factory.builder().queryParams(params).path(api.getTargetPath()).build();
 
                 mono = WebClient.builder()
-//                        .filter(ExchangeFilterFunction.ofRequestProcessor(
-//                                clientRequest -> {
-//                                    log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
-//                                    clientRequest.headers()
-//                                            .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
-//                                    return Mono.just(clientRequest);
-//                                }
-//                        ))
-//                        .filter(ExchangeFilterFunction.ofResponseProcessor(
-//                                clientResponse -> {
-//                                    clientResponse.headers()
-//                                            .asHttpHeaders()
-//                                            .forEach((name, values) ->
-//                                                    values.forEach(value -> log.debug("{} : {}", name, value)));
-//                                    return Mono.just(clientResponse);
-//                                }
-//                        ))
+                        .filter(ExchangeFilterFunction.ofRequestProcessor(
+                                clientRequest -> {
+                                    log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
+                                    clientRequest.headers()
+                                            .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
+                                    return Mono.just(clientRequest);
+                                }
+                        ))
+                        .filter(ExchangeFilterFunction.ofResponseProcessor(
+                                clientResponse -> {
+                                    log.trace("response status code : {}", clientResponse.statusCode());
+                                    clientResponse.headers()
+                                            .asHttpHeaders()
+                                            .forEach((name, values) ->
+                                                    values.forEach(value -> log.debug("{} : {}", name, value)));
+                                    return Mono.just(clientResponse);
+                                }
+                        ))
                         .uriBuilderFactory(factory)
                         .build().method(method)
                         .uri(tUri)

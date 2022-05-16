@@ -168,83 +168,10 @@ public class ApiCallRestController {
         return ResponseEntity.status(HttpStatus.OK).body(resultBody);
     }
 
-
-//    @PostMapping(value = "/call2")
-//    public ResponseEntity call2(@RequestBody Map<String, Object> param) throws Exception {
-//        log.trace("param {}", param.toString());
-//
-//        Api api = getRequestApi(param);
-//
-//        //API DB 정보로 외부 API 호출
-//        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-//
-//
-//        String authInfo = StrUtils.getStr(api.getAuthInfo());
-//        if (authInfo.contains("bearer")) {
-//            String accessToken = Arrays.asList(servletRequest.getCookies()).stream().filter(f -> f.getName().equals("kuto_access_token")).collect()
-//            if(accessToken) {
-//
-//                Map<String, Object> param2 = new HashMap<>();
-//                param2.put("callUrl", "/kudo/login");
-//                param2.put()
-//                Api api = getRequestApi(param);
-//
-//                //API DB 정보로 외부 API 호출
-//                ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-//                Map<> param2 = a
-//                Api api2 = getRequestApi(param);
-//            }
-//
-//
-//
-//        }
-//
-//        String body = (String) responseEntity.getBody();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(resultBody);
-//    }
-
-//    @PostMapping(value = "/call3")
-//    public ResponseEntity call3(@RequestBody Map<String, Object> param) throws Exception {
-//        log.trace("param {}", param.toString());
-//
-//
-//        Api api = getRequestApi(param);
-//
-//        //API DB 정보로 외부 API 호출
-//        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String body = (String) responseEntity.getBody();
-//        Object resultBody = null;
-//        // TODO : List 와 Map 형태를 구분 임시 처리
-//        if (body.indexOf("[") == 0) {
-//
-//            List<Map<String, Object>> result = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>(){});
-//            resultBody = result;
-//        } else if (body.indexOf("{") == 0) {
-//            Map<String, Object> result = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-//            resultBody = result;
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(resultBody);
-//    }
-
-
     @PostMapping(value = "/call")
     public ResponseEntity call(HttpServletRequest req, @RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
         Api api = apiService.getRequestApi(param);
-
-//        Cookie saveCookie = cookieService.createCookie(request, "test", "1111", 60*60);
-//        log.trace("saveCookie {} ", saveCookie.getValue());
-//        response.addCookie(saveCookie);
-//
-//        Cookie findCookie = cookieService.getCookie(request, "test");
-//        log.trace("findCookie ::: {}", findCookie);
 
         /**
          * api 요청시 인증 토큰이 필요한 경우
