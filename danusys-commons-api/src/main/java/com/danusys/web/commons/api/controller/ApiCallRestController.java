@@ -184,16 +184,16 @@ public class ApiCallRestController {
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
 
         Object resultBody = null;
-        if( api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
-            resultBody = (Map<String, Object>) responseEntity.getBody();
-        } else if( api.getResponseBodyType() == BodyType.ARRAY) {
-            resultBody = (Object)responseEntity.getBody();
-        } else {
+        if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+            resultBody = responseEntity.getBody();
+        } else if (api.getResponseBodyType() == BodyType.ARRAY) {
+            String body = (String) responseEntity.getBody();
+            resultBody = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
+            });
+        } else if (api.getResponseBodyType() == BodyType.OBJECT) {
             String body = (String) responseEntity.getBody();
             resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
             });
-
-
         }
 
         return ResponseEntity.status(HttpStatus.OK)

@@ -237,30 +237,13 @@ public class RestApiExecutor implements ApiExecutor {
                         }
                         httpHeaders.setBearerAuth(accessToken);
                     } else if (api.getAuthInfo().contains("session")) {
-                        Cookie[] cookies = null;
+                        Cookie cookie = null;
                         try {
-                            cookies = apiCallService.getApiSession(api);
-                            Arrays.asList(cookies).stream().forEach(f -> log.trace("session cookies : {}", f));
+                            cookie = apiCallService.getApiSession(api);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-
-//                        String customCookie = "";
-//                        log.trace("#cookie : {}", cookies);
-                        String tempCookie = Arrays.stream(cookies).map(m -> m.getName() + "=" + m.getValue()).collect(joining(";"));
-                        log.trace("tempCookie {}", tempCookie);
-//                        Arrays.stream(cookies).forEach(f -> {
-//                            customCookie += f.getName() + "=" + f.getValue();
-//                            String hadersCookie = httpHeaders.get("Cookie");
-//                        httpHeaders.set("Cookie", tempCookie);
-                        httpHeaders.add("Cookie", tempCookie);
-
-//                            log.trace("cookie : {} {}",f.getName(), f.getValue());
-//                        });
-
-
-
-
+                        httpHeaders.add(cookie.getName(), cookie.getValue());
                     } else {
                         httpHeaders.set("Authorization", api.getAuthInfo());
                     }
