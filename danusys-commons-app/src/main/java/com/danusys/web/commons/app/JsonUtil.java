@@ -2,6 +2,7 @@ package com.danusys.web.commons.app;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.*;
@@ -116,6 +117,18 @@ public class JsonUtil
     }
 
     /**
+     * FuncName : jsonToListMap()
+     * FuncDesc : Json String -> ListMap 변환
+     * Param    : res : Json String
+     * Return   : List<Map<String, Object>>
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Map<String, Object>> jsonToListMap(String param) throws IOException {
+        return new ObjectMapper()
+                .readValue(param, new TypeReference<List<Map<String, Object>>>() {});
+    }
+
+    /**
 	 * Json을 HashMap 으로 변환
 	 * @param param
 	 * @return
@@ -201,5 +214,16 @@ public class JsonUtil
         return gson.toJson(map);*/
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(map) ;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static JSONObject convertMapToJson(Map<String, Object> map) throws IOException {
+        JSONObject json = new JSONObject();
+        for (Map.Entry<String, Object> entry: map.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            json.put(key, value);
+        }
+        return json;
     }
 }

@@ -7,7 +7,7 @@
                 <ul class="accordion_sub_menu">
                     <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
                     <li th:if="${municipality == '41210000'}"><a href="/pages/stats/statistics_03">스마트폴 이벤트</a></li>
-                    <li th:if="${municipality == '41210000'}"><a href="/pages/stats/statistics_04">스마트 정류장 이벤트</a></li>
+                    <li th:if="${municipality == '41210000' or municipality == '47210000'}"><a href="/pages/stats/statistics_04">스마트 정류장 이벤트</a></li>
                     <li th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics_01">스마트분전함 이벤트</a></li>
                     <li th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics_02">드론 관제 이벤트</a></li>
                     </th:block>

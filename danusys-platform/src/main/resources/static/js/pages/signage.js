@@ -4,66 +4,138 @@
 
 const signage = {
     eventHandler : () => {
-        /*$("#searchBtn").on('click', () => {
-            comm.checkAuthority("/user/check/authority", "config", "rw")
-                .then(
-                    (result) => {
-                        signage.createList(result);
-                    }
-                );
-        });*/
-        //signage.createList();
         $("#addSignageTemplateBtn").on('click', () => {
-            signage.showPopup();
+            signage.showPopup("add");
+        });
+        $("#modSignageTemplateBtn").on('click', () => {
+            signage.showPopup("mod");
         });
         $("#signagePopup .title dd, #signagePopup .bottom li:first-child").on('click', () => {
             signage.hidePopup();
         });
 
-        $("#addTemplateLayout").on('click', (e) => {
-            const tit = $("#templateTitle").val();
-            const cnt = Number($("#templateCnt").val());
-
-            signage.hidePopup();
-
-            const $target = $('#templateArea');
-            $target.empty();
-
-            for (let i = 0; i < cnt; i++){
-                let content = signage.createTemplateHtml([],i);
-                $target.append(content);
-            }
-            signage.selectHandler();
-        });
-
         signage.getList({},signage.createTemplateList);
 
-        $("#templateList dl").on('click', () => {
-            signage.selectTemplate($('#templateList').find("dl").data()[0]);
+        $("#templateList dl").on('click', (e) => {
+            e.preventDefault();
+            $(".signage_template .article_title ul li").hide();
+            $("#templateList dl dt input:checked").prop("checked", false);
+            $(e.currentTarget).find("input").prop("checked", true);
+
+            if($(e.currentTarget).find("input").prop("checked")){
+                $("#modSignageTemplateBtn").show();
+                $(".signage_layout .article_title ul").css("display", "flex");
+                signage.createTemplateLayout(JSON.parse($(e.currentTarget).data("templateContent")));
+            } else {
+                $("#addSignageTemplateBtn").show();
+            }
         });
 
-        $("#addSignage").on('click', () => {
-            const tit = $("#templateTitle").val();
-            const cnt = Number($("#templateCnt").val());
-            signage.addProc({}
-                , () => {
-                    comm.showAlert("등록되었습니다.");
-                    signage.getList({},signage.createTemplateList);
+        $("#addSignageTemplateProcBtn").on('click', () => {
+            if($("#signageTemplateForm").doValidation()) {
+                const templateObj = $("#signageTemplateForm").serializeJSON();
+                templateObj.templateContent = [];
+                for (let i = 0; i < Number(templateObj.templateRowCnt); i++) {
+                    templateObj.templateContent.push({});
                 }
-                , () => {
-                    comm.showAlert("등록에 실패했습니다.");
-                });
+                templateObj.templateContent = JSON.stringify(templateObj.templateContent);
+                delete templateObj.templateRowCnt;
+                signage.addProc(templateObj
+                    , () => {
+                        comm.showAlert("사이니지 템플릿이 등록되었습니다. <br/> 템플릿 레이아웃을 설정해 주십시오.");
+                        signage.getList({}, signage.createTemplateList);
+                        signage.hidePopup();
+                    }
+                    , () => {
+                        comm.showAlert("사이니지 템플릿 등록에 실패했습니다.");
+                    });
+            }
         });
-    }
-    , create :() => {
 
-    }
-    , createList : (pPermit) => {
+        $("#modSignageTemplateProcBtn").on('click', () => {
+            if($("#signageTemplateForm").doValidation()) {
+                const templateObj = $("#signageTemplateForm").serializeJSON();
+                const oriTemplateContent = JSON.parse($('#templateList').find("input:checked").parents('dl').data("templateContent"));
+                templateObj.templateContent = [];
 
+                for (let i = 0; i < Number(templateObj.templateRowCnt); i++) {
+                    if (oriTemplateContent.length - 1 < i) {
+                        templateObj.templateContent.push({});
+                    } else {
+                        templateObj.templateContent.push(oriTemplateContent[i]);
+                    }
+                }
+                templateObj.templateContent = JSON.stringify(templateObj.templateContent);
+                delete templateObj.templateRowCnt;
+                const templateId = $('#templateList').find("input:checked").prop("id");
+                templateObj.templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
+
+                signage.modProc(templateObj
+                    , () => {
+                        comm.showAlert("사이니지 템플릿이 수정되었습니다. <br/> 템플릿 레이아웃을 재설정해 주십시오.");
+                        signage.getList({}, signage.createTemplateList);
+                        signage.hidePopup();
+                    }
+                    , () => {
+                        comm.showAlert("사이니지 템플릿 수정에 실패했습니다.");
+                    });
+            }
+        });
+
+        $("#delSignageTemplateProcBtn").on("click", () => {
+            comm.confirm("해당 템플릿을 삭제하시겠습니까?"
+                ,{}
+            , () => signage.delProc(
+                $('#templateList').find("input:checked").parents('dl').data('templateSeq')
+                , () => {
+                    comm.showAlert("사이니지 템플릿이 삭제되었습니다.");
+                    signage.getList({}, signage.createTemplateList);
+                    signage.hidePopup();
+                }
+                , () => {comm.showAlert("사이니지 템플릿 삭제에 실패했습니다.")})
+            , () => {return false})
+        })
+
+        $("#addSignageLayoutProcBtn").on("click", () => {
+            const templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
+            const templateLayoutList = [];
+            let selectNullFlag = false;
+            $("#templateArea li select").each((idx, ele) => {
+                if($(ele).val() === null) {
+                    selectNullFlag = true;
+                }
+                const obj = {
+                    "kind" : $(ele).val()
+                    , "value" : $("input[name='"+$(ele).val()+"']").val()
+                };
+                if(typeof obj.value === "undefined") {
+                    obj.value = '';
+                }
+                templateLayoutList.push(obj);
+            });
+
+            if(!selectNullFlag) {
+                signage.addLayoutProc({templateSeq : templateSeq, templateContent : JSON.stringify(templateLayoutList)}
+                    , () => {
+                        comm.showAlert("<br/> 사이니지 레이아웃이 등록되었습니다.");
+                        signage.getList({}, signage.createTemplateList);
+                        signage.hidePopup();
+                    }
+                    , () => {
+                        comm.showAlert("사이니지 레이아웃 등록에 실패했습니다.");
+                    });
+            } else {
+                comm.showAlert("템플릿 레이아웃 종류를 선택해주십시오.");
+            }
+        });
+
+        $("#cancelSignageLayoutBtn").on("click", () => {
+            signage.hideLayout();
+        })
     }
     , getList : (param, pCallback) => {
         $.ajax({
-            url : "/facility/signageTemplate"
+            url : "/facility/signage/template"
             , type : "POST"
             , data : JSON.stringify(param)
             , contentType : "application/json; charset=utf-8"
@@ -88,48 +160,57 @@ const signage = {
                 "</dl>"
             $target.append(content);
 
-            $target.find("dl:last-child").data([templateContent]);
+            $target.find("dl:last-child").data(each);
 
         });
     }
-    , selectTemplate : obj => {
+    , createTemplateLayout : obj => {
         const $target = $('#templateArea');
         $target.empty();
 
         //html 생성
         obj.forEach((each,idx) => {
-            let content = signage.createTemplateHtml(each[idx],idx);
+            let content = signage.createTemplateHtml(each[idx], idx);
             $target.append(content);
         });
 
-        signage.selectHandler();
+        signage.selectOptionHandler();
 
         //값 부여
         obj.forEach((each,idx) => {
             $('#height_'+idx).val(each.height);
             $('#kind_'+idx).val(each.kind).trigger('change');
-            //todo. 파일일경우, url text일 경우
-            //$('#val_'+idx).val(each.value);
+            if(each.value !== "" && typeof each.value !== "undefined") {
+                $('#kind_'+idx).siblings("div").find("input").val(each.value);
+            }
         });
     }
-    , selectHandler : () => {
+    , selectOptionHandler : () => {
         $("select.contents_kind").on('change', (e) => {
             const targetValue = e.target.value;
             const targetNode = e.target.parentElement;
 
             let innerTag =
                 {
-                    'urlLink': 'input',
-                    'fileSystem': 'div'
+                    'rtspUrl': 'div',
+                    'imageFile': 'div',
+                    'videoFile': 'div',
+                    'airPollution' : 'div'
                 };
             let innerHtml =
                 {
-                    'urlLink': '<input type="text">',
-                    'fileSystem': '<div class="fileBox">\n' +
-                        '<input class="uploadName" value="첨부파일" placeholder="첨부파일">\n' +
-                        '<label for="file">파일찾기</label>\n' +
-                        '<input type="file" id="file">\n' +
-                        '</div>'
+                    'rtspUrl': '<input type="text" name="rtspUrl" placeholder="rtsp URL 작성">',
+                    'imageFile': '<div class="fileBox">' +
+                        '<input class="uploadName" name="imageFileName" placeholder="이미지 첨부파일">\n' +
+                        '<label for="imageFile">파일찾기</label>' +
+                        '<input type="file" name="imageFile" id="imageFile">' +
+                        '</div>',
+                    'videoFile': '<div class="fileBox">' +
+                        '<input class="uploadName" name="videoFileName" placeholder="동영상 첨부파일">\n' +
+                        '<label for="videoFile">파일찾기</label>' +
+                        '<input type="file" name="videoFile" id="videoFile">' +
+                        '</div>',
+                    'airPollution' : '기상청 미세먼지 정보'
                 };
 
             $(targetNode).children().not('p').not('select').remove();
@@ -137,17 +218,43 @@ const signage = {
             let tempTag = document.createElement(innerTag[targetValue]);
             tempTag.innerHTML = innerHtml[targetValue];
             targetNode.append(tempTag);
+
+            $("#imageFile").off('change');
+            $("#imageFile").on('change', (e) => {
+                const maxSize = 30 * 1024 * 1024 // 30MB
+                const fileSize = e.currentTarget.files[0].size
+                if( fileSize > maxSize){
+                    comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
+                } else {
+                    const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
+                    $(".uploadName").val(fileName);
+                }
+            });
+
+            $("#videoFile").off('change');
+            $("#videoFile").on('change', (e) => {
+                const maxSize = 2000 * 1024 * 1024 // 2GB
+                const fileSize = e.currentTarget.files[0].size
+                if( fileSize > maxSize){
+                    comm.showAlert("첨부파일의 사이즈는 2GB 이내로 등록 가능합니다.");
+                } else {
+                    const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
+                    $(".uploadName").val(fileName);
+                }
+            });
         });
     }
     , createTemplateHtml : (each, idx) => {
         let content = "";
         content =
-            "<li><p class='input_height'>높이<input type='text' id='height_"+idx+"'></p></li>" +
+            // "<li><p class='input_height'>높이<input type='text' id='height_"+idx+"'></p></li>" +
+            "<li></li>" +
             "<li>" +
             "<p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>" +
             "<select class='contents_kind' id='kind_"+idx+"'>" +
-            "<option value='urlLink'>URL 링크</option>" +
-            "<option value='fileSystem'>이미지 / 영상 선택</option>" +
+            "<option value='rtspUrl'>rtsp 영상</option>" +
+            "<option value='imageFile'>이미지 선택</option>" +
+            "<option value='videoFile'>영상 선택</option>" +
             "<option value='airPollution'>미세먼지 정보</option>" +
             "</select>" +
             "<input type='text'>" +
@@ -155,25 +262,9 @@ const signage = {
 
         return content;
     }
-
-    , createTemplateOpt : () => {
-
-    }
-    , get : () => {
-
-    }
-    , add : () => {
-
-    }
-    , mod : () => {
-
-    }
-    , del : () => {
-
-    }
     , addProc : (pObj, doneCallback, failCallback) => {
         $.ajax({
-            url : "/facility/signage"
+            url : "/facility/signage/"
             , type: "PUT"
             , data :  JSON.stringify(pObj)
             , async : false
@@ -184,12 +275,71 @@ const signage = {
             failCallback();
         });
     }
-    , showPopup : () => {
+    , modProc : (pObj, doneCallback, failCallback) => {
+        $.ajax({
+            url : "/facility/signage/template"
+            , type: "PATCH"
+            , data :  JSON.stringify(pObj)
+            , async : false
+            , contentType : "application/json; charset=utf-8",
+        }).done((result) => {
+            doneCallback(result);
+        }).fail(() => {
+            failCallback();
+        });
+    }
+    , addLayoutProc : (pObj, doneCallback, failCallback) => {
+        const formData = new FormData($("#templateLayoutForm")[0]);
+        formData.append("templateSeq", pObj.templateSeq);
+        formData.append("templateContent", pObj.templateContent);
+
+        $.ajax({
+            url : "/facility/signage/layout"
+            , type: "POST"
+            , enctype : "multipart/form-data"
+            , data :  formData
+            , async : false
+            , processData: false
+            , contentType: false
+        }).done((result) => {
+            doneCallback(result);
+        }).fail(() => {
+            failCallback();
+        });
+    }
+    , delProc : (pSeq, doneCallback, failCallback) => {
+        $.ajax({
+            url : "/facility/signage/template/"+pSeq
+            , type: "DELETE"
+            , async : false
+            , contentType : "application/json; charset=utf-8",
+        }).done((result) => {
+            doneCallback(result);
+        }).fail(() => {
+            failCallback();
+        });
+    }
+    , showPopup : (type) => {
         comm.showModal($('#signagePopup'));
         $("#signagePopup").css('display', 'flex');
+        $("#signagePopup [data-"+type+"]").show();
+        $("#signageTemplateForm").initForm();
+
+        if(type === "add") {
+            $("#signagePopup .title dt").text("사이니지 템플릿 추가");
+        } else {
+            $("#signagePopup .title dt").text("사이니지 템플릿 수정");
+            const templateData = $("#templateList dl input:checked").parents("dl").data();
+            templateData.templateRowCnt = JSON.parse(templateData.templateContent).length;
+            $("#signageTemplateForm").setItemValue(templateData);
+        }
     }
     , hidePopup : () => {
         $("#signagePopup").hide();
         comm.hideModal($('#signagePopup'));
+    }
+    , hideLayout : () => {
+        $("#templateArea").empty();
+        $("#templateList dl dt input:checked").prop("checked", false);
     }
 }

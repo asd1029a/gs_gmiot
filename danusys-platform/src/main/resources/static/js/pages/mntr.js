@@ -37,8 +37,22 @@ const mntr = {
             }
         ];
 
+        let siGunCode;
+        //현재 지자체명 반환
+        $.ajax({
+            url : "/getSiGunCode"
+            , type : "POST"
+            , data : JSON.stringify({})
+            , contentType : "application/json; charset=utf-8"
+            , async : false
+        }).done((result) => {
+            console.log(result);
+            siGunCode = result;
+            window.siGunCode = result;
+        });
+
         //지도 생성
-        let map = new mapCreater('map',0);
+        let map = new mapCreater('map',0, siGunCode);
         map.createMousePosition('mousePosition');
         map.scaleLine();
         map.createContextMenu(menuObj);
@@ -184,6 +198,50 @@ const mntr = {
             // window.map.addLayer(heat);
         });
 
+        //Route 루트 레이어 (드론)
+        // facility.getListGeoJson({},
+        //드론 sample 레이어
+        let result3 =
+            {
+                type: 'FeatureCollection',
+                name: 'droneRoute',
+                crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+                features: [
+                    { type: 'Feature', id: 'vertex23', properties: { id: 123, order: 1 }, geometry: { type: 'Point', coordinates: [ 126.71826051886136, 37.32097533885936 ] } },
+                    { type: 'Feature', id: 'vertex34', properties: { id: 234, order: 2 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
+                    { type: 'Feature', id: 'vertex45', properties: { id: 345, order: 3 }, geometry: { type: 'Point', coordinates: [ 126.74641462361204, 37.32598975729958 ] } },
+                    { type: 'Feature', id: 'vertex56', properties: { id: 456, order: 4 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+                    { type: 'Feature', id: 'vertex67', properties: { id: 567, order: 5 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] } },
+                    { type: 'Feature', id: 'vertex78', properties: { id: 678, order: 6 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
+                    { type: 'Feature', id: 'vertex89', properties: { id: 789, order: 7 }, geometry: { type: 'Point', coordinates: [ 126.71826051886136, 37.32097533885936 ] } }
+                ]
+            };
+        let routeLayer = new dataLayer('map')
+            .fromGeoJsonToRoute(result3, 'routeLayer', true, layerStyle.route(false));
+        // });
+        map.addLayer(routeLayer);
+        window.lyControl.find('routeLayer').set('selectable',false);
+        window.lyControl.off('routeLayer');
+
+        //시설물 레이어 (드론)
+        // facility.getListGeoJson({},
+        //드론 sample 레이어
+        let result2 =
+            {
+                type: 'FeatureCollection',
+                name: 'drone',
+                crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+                features: [                                                                                                        // [ 126.88014811914029, 35.8050522641782 ]
+                    { type: 'Feature', id: 'facility123', properties: { id: 123, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.71826051886136, 37.32097533885936 ] } }
+                ]
+            };
+        let facilityLayer = new dataLayer('map')
+            .fromGeoJSon(result2, 'facilityLayer', true, layerStyle.facility());
+        // });
+        map.addLayer(facilityLayer);
+        window.lyControl.find('facilityLayer').set('selectable',true);
+        window.lyControl.off('facilityLayer');
+
         //이벤트 레이어
         event.getListGeoJson({
             "eventState": ["1", "2", "3"]
@@ -210,6 +268,34 @@ const mntr = {
             lnbList.createEventPast(result);
         });
 
+        //cctv 레이어 sample
+        // cctv.getListGeoJson({}, (result) => {
+        // console.log(result);
+         let result1 =
+         {
+             type: 'FeatureCollection',
+             name: 'sample',
+             crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+             features: [
+                 { type: 'Feature', id: 'cctv123', properties: { id: 123, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
+                 { type: 'Feature', id: 'cctv234', properties: { id: 234, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
+                 { type: 'Feature', id: 'cctv345', properties: { id: 345, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+                 { type: 'Feature', id: 'cctv456', properties: { id: 456, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
+                 { type: 'Feature', id: 'cctv567', properties: { id: 567, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
+                 { type: 'Feature', id: 'cctv678', properties: { id: 678, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
+                 { type: 'Feature', id: 'cctv789', properties: { id: 789, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
+             ]
+         };
+
+         let cctvLayer = new dataLayer('map')
+             .fromGeoJSon(result1,'cctvLayer', true, layerStyle.cctv(false));
+             //.toCluster(result1,'facilityLayer', true, layerStyle.station(false));
+         map.addLayer(cctvLayer);
+         window.lyControl.find('cctvLayer').set('selectable',true);
+         window.lyControl.off('cctvLayer');
+        // });
+
+
         //축척별 레이어 반응
         map.setMapViewEventListener('propertychange' ,e => {
             //연결선 리로드
@@ -223,57 +309,35 @@ const mntr = {
                 const zoom = map.map.getView().getZoom();
                 let popup = new mapPopup('map');
                 popup.remove('mouseClickPopup');
-
+                let theme = $('.mntr_container .lnb ul li.active').attr('data-value');
                 let target = $('.mntr_container section.select .tab li.active').attr('data-value');
+
                 if(target=="station"){target = "event"}
+
                 if(zoom > 10){ //13 ~ 9.xxx
+                    if((theme != "drone")&&(theme != "addressPlace")&&(theme != "smart")) {
+                        window.lyControl.onList(['station', target]);
+                    }
                     window.lyControl.find("stationLayer").getSource().setDistance(0);
                     window.lyControl.find("eventLayer").getSource().setDistance(0);
                     window.lyControl.find("eventPastLayer").getSource().setDistance(0);
-
-                    window.lyControl.on('stationLayer');
-                    window.lyControl.on(target + "Layer");
                 } else if((10 >= zoom) && (zoom >=5)) { //10 ~ 5
+                    if((theme != "drone")&&(theme != "addressPlace")&&(theme != "smart")) {
+                        window.lyControl.onList(['station', target]);
+                    }
                     window.lyControl.find("stationLayer").getSource().setDistance(30);
                     window.lyControl.find("eventLayer").getSource().setDistance(30);
                     window.lyControl.find("eventPastLayer").getSource().setDistance(30);
-
-                    window.lyControl.on('stationLayer');
-                    window.lyControl.on(target + "Layer");
                 } else { //4.xxx ~ 0
-                    window.lyControl.off('stationLayer');
-                    window.lyControl.off('eventLayer');
-                    window.lyControl.off('eventPastLayer');
+                    if((theme != "drone")&&(theme != "addressPlace")&&(theme != "smart")){
+                        window.lyControl.offList(['station', 'event', 'eventPast']);
+                    }
                 }
             }
 
 
         });
 
-        // facility.getListGeoJson({}, (result) => {
-        //    // console.log(result);
-        //     let result1 =
-        //     {
-        //         type: 'FeatureCollection',
-        //         name: 'sample',
-        //         crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
-        //         features: [
-        //             { type: 'Feature', id: 'facility123', properties: { id: 123, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.727012512422448, 37.322852752634546 ] } },
-        //             { type: 'Feature', id: 'facility234', properties: { id: 234, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.750776389512524, 37.309517452940021 ] } },
-        //             { type: 'Feature', id: 'facility345', properties: { id: 345, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
-        //             { type: 'Feature', id: 'facility456', properties: { id: 456, nodeCnt: 2 }, geometry: { type: 'Point', coordinates: [ 126.70449023745131, 37.337370287491666 ] } },
-        //             { type: 'Feature', id: 'facility567', properties: { id: 567, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.744699931551466, 37.319431463919734 ] }},
-        //             { type: 'Feature', id: 'facility678', properties: { id: 678, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.733088989968962, 37.313668244318841 ] } },
-        //             { type: 'Feature', id: 'facility789', properties: { id: 789, nodeCnt: 1 }, geometry: { type: 'Point', coordinates: [ 126.740937197627019, 37.319332213043808 ] } }
-        //         ]
-        //     };
-        //
-        //     let facilityLayer = new dataLayer('map')
-        //         .fromGeoJSon(result1,'facilityLayer', true, layerStyle.facility(false));
-        //         //.toCluster(result1,'facilityLayer', true, layerStyle.station(false));
-        //     map.addLayer(facilityLayer);
-        //     window.lyControl.find('facilityLayer').set('selectable',true);
-        // });
 
     }
     , eventHandler : () => {
@@ -288,16 +352,43 @@ const mntr = {
             const theme = $(e.currentTarget).attr('data-value');
             $('.mntr_container .menu_fold').removeClass("select");
             $('.mntr_container .menu_fold#'+theme).addClass("select");
+            let target = $('.mntr_container section.menu_fold.select .lnb_tab_section.select').attr('data-value');
+
+            if(target == "station") {target = "event"}
+            if(theme == "drone"){
+                window.lyControl.offList(['station','event', 'eventPast']);
+                window.lyControl.onList(['facility', 'route', target]);
+            } else if(theme == "smart") {
+                window.lyControl.offList(['facility', 'station', 'event', 'eventPast', 'route']);
+            } else {
+                if(theme != "addressPlace") {
+                    window.lyControl.offList(['facility', 'route','event', 'eventPast']);
+                    window.lyControl.onList(['station', target]);
+                }
+            }
+            window.map.map.render();
+
             //ACTIVE STYLE
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
             window.map.updateSize();
+
+            const rVisivle = $('.area_right').is(':visible');
+            if(rVisivle) { $('.area_right_closer').trigger("click")}
         });
         //LNM TAB SWITCH (왼쪽창 탭별 변경)
         $('.mntr_container .menu_fold .tab li').on("click", e => {
             window.lySelect.getFeatures().clear();
-            const tab = $(e.currentTarget).attr('data-value');
-            const rVisivle = $('.area_right[data-value=event]').is(':visible');
+            let tab = $(e.currentTarget).attr('data-value');
+            const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
+
+            $(e.currentTarget).parents('section').find('.lnb_tab_section').removeClass("select");
+            $(e.currentTarget).parents('section').find('div[data-value='+tab+']').addClass("select");
+            //ACTIVE STYLE
+            $(e.currentTarget).parent().children("li").removeClass("active");
+            $(e.currentTarget).addClass("active");
+
+            if((theme == "drone")&&(tab == "station")){ tab = "facility" }
             switch(tab) {
                 case "event" :
                     window.lyControl.off('eventPastLayer');
@@ -306,20 +397,17 @@ const mntr = {
                     window.lyControl.off("eventLayer");
                     break;
                 case "station" :
+                case "facility" :
                     window.lyControl.on('eventLayer');
                     window.lyControl.off('eventPastLayer');
                     break;
                 default :
                     break;
             }
-            if(rVisivle) { $('.area_right_closer').trigger("click")}
             window.lyControl.on(tab + "Layer");
 
-            $(e.currentTarget).parents('section').find('.lnb_tab_section').removeClass("select");
-            $(e.currentTarget).parents('section').find('div[data-value='+tab+']').addClass("select");
-            //ACTIVE STYLE
-            $(e.currentTarget).parent().children("li").removeClass("active");
-            $(e.currentTarget).addClass("active");
+            const rVisivle = $('.area_right').is(':visible');
+            if(rVisivle) { $('.area_right_closer').trigger("click")}
         });
         //LNM TAB SEARCH DETAIL (왼쪽창 검색 조건 더보기)
         $('.detail_btn').on("click", e => {
@@ -373,15 +461,19 @@ const mntr = {
         $("#layerViewer").hide();
         //MAP TOOL (맵 도구)
         $('.map_options li').on("click", e => {
-            const type = $(e.currentTarget).attr('data-value');
+            const $target = $(e.currentTarget);
+            const type = $target.attr('data-value');
+            const toggleFlag = $target.hasClass('toggle');
+            //ACTIVE STYLE
+            if(toggleFlag){
+                const activeFlag = $target.hasClass('active');
+                if(activeFlag){ $target.removeClass('active'); }
+                else { $target.addClass('active'); }
+            }
+
             switch(type) {
-                case "roadView" :
-                    if(window.lyControl.find(type).getVisible()){
-                        window.lyControl.off(type);
-                    } else {
-                        window.lyControl.on(type);
-                    }
-                    break;
+                case "roadView" : window.lyControl.toggle(type); break; //로드뷰
+                case "cctv" : window.lyControl.toggle('cctvLayer'); break; //cctv 레이어 on/off
                 case "plus" : window.map.zoomInOut('plus'); break; //확대
                 case "minus" : window.map.zoomInOut('minus'); break; //축소
                 case "distance" : window.measure.initDraw('LineString'); break; //거리재기
@@ -405,8 +497,16 @@ const mntr = {
                         const layerNm = layerAry[i].getProperties().title;
                         const zIdx = window.lyControl.find(layerNm).getZIndex();
 
-                        const li = "<li data-zindex='"+ zIdx +"'>" + layerNm + "</li>";
-                        $("#layers").append(li);
+                        let addFlag = true;
+                        if(layerNm == "cctvLayer"){
+                            if((window.siGunCode != "26290") && (window.siGunCode != "41210")){
+                                addFlag = false;
+                            }
+                        }
+                        if(addFlag){
+                            const li = "<li data-zindex='"+ zIdx +"'>" + layerNm + "</li>";
+                            $("#layers").append(li);
+                        }
                     }
 
                     $("#layers").sortable({

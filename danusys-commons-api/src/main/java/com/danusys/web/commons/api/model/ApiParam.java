@@ -4,6 +4,7 @@ import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.api.types.ParamType;
 import com.danusys.web.commons.crypto.types.CryptoType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "api_param")
 public class ApiParam implements Serializable {
 
@@ -68,4 +70,8 @@ public class ApiParam implements Serializable {
 
     @Column
     private int parentSeq;
+
+    public void updateValue(String value) {
+        this.value = value;
+    }
 }

@@ -3,7 +3,7 @@
     <!-- LNM -->
         <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
         <!-- 스마트 폴 -->
-        <section th:if="${municipality == '41210000'}" id="smartPole" class="menu_fold select">
+        <section th:if="${municipality == '41210000'}" id="smartPole" class="menu_fold">
             <ul class="tab">
                 <li data-value="event" class="active"><a>실시간</a></li>
                 <li data-value="station"><a>개소</a></li>
@@ -195,7 +195,8 @@
 
         </section>
         <!-- 스마트 정류장 -->
-        <section th:if="${municipality == '41210000'}" id="smartBusStop" class="menu_fold">
+        <section th:if="${municipality == '41210000'
+                          or municipality == '47210000'}" id="smartBusStop" class="menu_fold select">
             <ul class="tab">
                 <li data-value="event" class="active"><a>실시간</a></li>
                 <li data-value="station"><a>개소</a></li>
@@ -205,66 +206,30 @@
 
             <!-- 실시간 -->
             <div data-value="event" class="lnb_tab_section select">
-                <dl class="area_title">
+                <dl class="area_title" data-value="lv1">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
                     <dd><span class="count">11</span></dd>
                 </dl>
-                <div class="search_list">
-                    <dl>
+                <div class="search_list" data-value="lv1">
+                    <!--<dl>
                         <dt>EVENT ID<span class="state">미처리</span></dt>
                         <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
                         <dd>경기 광명시 소하동 1294</dd>
                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
-                <dl class="area_title">
+                <dl class="area_title" data-value="lv2">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>주의 이벤트</dt>
                     <dd><span class="count">11</span></dd>
                 </dl>
-                <div class="search_list">
-                    <dl>
+                <div class="search_list" data-value="lv2">
+                   <!-- <dl>
                         <dt>EVENT ID<span class="state">미처리</span></dt>
                         <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
                         <dd>경기 광명시 소하동 1294</dd>
                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -317,30 +282,12 @@
                     </dd>
                 </dl>
                 <div class="search_list">
-                    <dl>
+                    <!--<dl>
                         <dt>광명 전통시장</dt>
                         <dd>유형 : 정전</dd>
                         <dd>행정구역 : 광명동</dd>
                         <dd>경기 광명시 광이로13번길 17-5</dd>
-                    </dl>
-                    <dl>
-                        <dt>광명 전통시장</dt>
-                        <dd>유형 : 정전</dd>
-                        <dd>행정구역 : 광명동</dd>
-                        <dd>경기 광명시 광이로13번길 17-5</dd>
-                    </dl>
-                    <dl>
-                        <dt>광명 전통시장</dt>
-                        <dd>유형 : 정전</dd>
-                        <dd>행정구역 : 광명동</dd>
-                        <dd>경기 광명시 광이로13번길 17-5</dd>
-                    </dl>
-                    <dl>
-                        <dt>광명 전통시장</dt>
-                        <dd>유형 : 정전</dd>
-                        <dd>행정구역 : 광명동</dd>
-                        <dd>경기 광명시 광이로13번길 17-5</dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -594,13 +541,13 @@
                     </dd>
                 </dl>
                 <div class="search_list">
-                    <dl>
+                    <!--<dl>
                         <dt>EVENT ID<span class="state">종료</span></dt>
                         <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
                         <dd>경기 광명시 소하동 1294</dd>
                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
+                    </dl>-->
+                    <!--<dl>
                         <dt>EVENT ID<span class="state">종료</span></dt>
                         <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
                         <dd>경기 광명시 소하동 1294</dd>
@@ -617,14 +564,14 @@
                         <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
                         <dd>경기 광명시 소하동 1294</dd>
                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
 
         </section>
         <!-- 스마트 분전함 -->
-        <section th:if="${municipality == '45210000'}" id="smartPower" class="menu_fold select">
+        <section th:if="${municipality == '45210000'}" id="smartPower" class="menu_fold">
             <ul class="tab">
                 <li data-value="event" class="active"><a>실시간</a></li>
                 <li data-value="station"><a>개소</a></li>
@@ -634,66 +581,30 @@
 
             <!-- 실시간 -->
             <div data-value="event" class="lnb_tab_section select">
-                <dl class="area_title">
+                <dl class="area_title" data-value="lv1">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
                     <dd><span class="count">11</span></dd>
                 </dl>
-                <div class="search_list">
-                    <dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
+                <div class="search_list" data-value="lv1">
+<!--                    <dl>-->
+<!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
-                <dl class="area_title">
+                <dl class="area_title" data-value="lv2">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>주의 이벤트</dt>
                     <dd><span class="count">11</span></dd>
                 </dl>
-                <div class="search_list">
-                    <dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
+                <div class="search_list" data-value="lv2">
+<!--                    <dl>-->
+<!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -702,7 +613,7 @@
             <div data-value="station" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>
-                    <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
+                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
                 </dl>
                 <div class="search_form"> <!-- search_form 변경 -->
                     <dl>
@@ -732,14 +643,12 @@
                         </form>
                         <ul class="button">
                             <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>
-                            <li><i><img src="/images/default/search.svg"></i>검색</li>
                         </ul>
                     </div>
                 </div>
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>Tab 1 목록<span class="count">11</span></dt>
                     <dd>
-                        <!--                            <i></i>초기화-->
                         <select>
                             <option>번호 올림차순</option>
                             <option>번호 내림차순</option>
@@ -747,30 +656,12 @@
                     </dd>
                 </dl>
                 <div class="search_list">
-                    <dl>
+                   <!--<dl>
                         <dt>광명 전통시장</dt>
                         <dd>유형 : 정전</dd>
                         <dd>행정구역 : 광명동</dd>
                         <dd>경기 광명시 광이로13번길 17-5</dd>
-                    </dl>
-                    <dl>
-                        <dt>광명 전통시장</dt>
-                        <dd>유형 : 정전</dd>
-                        <dd>행정구역 : 광명동</dd>
-                        <dd>경기 광명시 광이로13번길 17-5</dd>
-                    </dl>
-                    <dl>
-                        <dt>광명 전통시장</dt>
-                        <dd>유형 : 정전</dd>
-                        <dd>행정구역 : 광명동</dd>
-                        <dd>경기 광명시 광이로13번길 17-5</dd>
-                    </dl>
-                    <dl>
-                        <dt>광명 전통시장</dt>
-                        <dd>유형 : 정전</dd>
-                        <dd>행정구역 : 광명동</dd>
-                        <dd>경기 광명시 광이로13번길 17-5</dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -779,7 +670,7 @@
             <div data-value="eventPast" class="lnb_tab_section">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
-                    <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
+                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
                 </dl>
                 <div class="search_form"> <!-- search_form 변경 -->
                     <dl>
@@ -1003,7 +894,6 @@
                             </dl>-->
                         </form>
                         <ul class="button">
-                            <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>
                             <li><i><img src="/images/default/search.svg"></i>검색</li>
                         </ul>
                     </div>
@@ -1018,30 +908,12 @@
                     </dd>
                 </dl>
                 <div class="search_list">
-                    <dl>
+                    <!--<dl>
                         <dt>EVENT ID<span class="state">종료</span></dt>
                         <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
                         <dd>경기 광명시 소하동 1294</dd>
                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -1057,60 +929,30 @@
             <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
             <!-- lnb_tab_section * 실시간 -->
             <div data-value="event" class="lnb_tab_section select"> <!-- active 시, display: flex; -->
-                <dl class="area_title">
+                <dl class="area_title" data-value="lv1">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
                     <dd><span class="count">11</span></dd>
                 </dl>
-                <div class="search_list">
-                    <dl>
+                <div class="search_list" data-value="lv1">
+                    <!--<dl>
                         <dt>DRONE ID<span class="state">미처리</span></dt>
                         <dd class="event_level"><span class="level lv1">긴급</span>화재 감지</dd>
                         <dd>경기 광명시 소하동 1294</dd>
                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>연기 감지</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>기체 추락</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>비행금지구역 진입</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
-                <dl class="area_title">
+                <dl class="area_title" data-value="lv2">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>주의 이벤트</dt>
                     <dd><span class="count">11</span></dd>
                 </dl>
-                <div class="search_list">
-                    <dl>
+                <div class="search_list" data-value="lv2">
+                    <!--<dl>
                         <dt>DRONE ID<span class="state">미처리</span></dt>
                         <dd class="event_level"><span class="level lv2">주의</span>저전압 경보</dd>
                         <dd>경기 광명시 소하동 1294</dd>
                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>화재주의구간 비행</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">조치완료</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>저고도 비행</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -1121,24 +963,12 @@
                     <dd><span class="count">11</span></dd>
                 </dl>
                 <div class="search_list">
-                    <dl>
+                   <!--<dl>
                         <dt>DRONE ID<span class="state">비행 중</span></dt>
                         <dd>LTE 신호세기 : 양호</dd>
                         <dd>잔여비행가능시간 : 5분 (20%)</dd>
                         <dd>매주 화 14:00, 매주 목 16:00</dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">충전 중</span></dt>
-                        <dd>LTE 신호세기 : 양호</dd>
-                        <dd>잔여비행가능시간 : 5분 (20%)</dd>
-                        <dd>매주 화 14:00, 매주 목 16:00</dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">운행상태</span></dt>
-                        <dd>LTE 신호세기 : 양호</dd>
-                        <dd>잔여비행가능시간 : 5분 (20%)</dd>
-                        <dd>매주 화 14:00, 매주 목 16:00</dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
                 <dl class="area_title">
@@ -1146,18 +976,12 @@
                     <dd><span class="count">11</span></dd>
                 </dl>
                 <div class="search_list">
-                    <dl>
+                    <!--<dl>
                         <dt>광명소방서<span class="state">이상없음</span></dt>
                         <dd>LTE 신호세기 : 양호</dd>
                         <dd>현재 상태 : 비어있음</dd>
                         <dd>경기 광명시 소하동 1336</dd>
-                    </dl>
-                    <dl>
-                        <dt>광명소방서<span class="state">격납고상태</span></dt>
-                        <dd>LTE 신호세기 : 양호</dd>
-                        <dd>현재 상태 : 비어있음</dd>
-                        <dd>경기 광명시 소하동 1336</dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -1165,7 +989,7 @@
             <div data-value="eventPast" class="lnb_tab_section"> <!-- active 시, display: flex; -->
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
-                    <dd class="button"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
+                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
                 </dl>
                 <div class="search_form"> <!-- search_form 변경 -->
                     <dl>
@@ -1336,7 +1160,6 @@
                             </dl>-->
                         </form>
                         <ul class="button">
-                            <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>
                             <li><i><img src="/images/default/search.svg"></i>검색</li>
                         </ul>
                     </div>
@@ -1346,30 +1169,12 @@
                     <dd><span class="count">11</span></dd>
                 </dl>
                 <div class="search_list">
-                    <dl>
+                    <!--<dl>
                         <dt>DRONE ID<span class="state">종료</span></dt>
                         <dd class="event_level"><span class="level lv1">긴급</span>화재 감지</dd>
                         <dd>경기 광명시 소하동 1294</dd>
                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>저전압 경보</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>기체 추락</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>DRONE ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>비행금지구역 진입</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>

@@ -2,14 +2,18 @@ package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
+import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.platform.util.GisUtil;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -140,9 +144,44 @@ public class FacilityController {
     /**
      * 시설물 : 사이니지 템플릿 목록 조회
      */
-    @PostMapping(value="/signageTemplate")
+    @PostMapping(value="/signage/template")
     public ResponseEntity<EgovMap> getListSignageTemplate(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(facilityService.getListSignageTemplate(paramMap));
+    }
+
+    /**
+     * 시설물 : 사이니지 템플릿 등록
+     */
+    @PutMapping(value="/signage/template")
+    public ResponseEntity<?> addSignageTemplate(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.addSignageTemplate(paramMap));
+    }
+
+    /**
+     * 시설물 : 사이니지 템플릿 등록
+     */
+    @PatchMapping(value="/signage/template")
+    public ResponseEntity<?> modSignageTemplate(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(facilityService.modSignageTemplate(paramMap));
+    }
+
+    /**
+     * 시설물 : 사이니지 레이아웃 등록
+     */
+    @PostMapping(value="/signage/layout", produces = "multipart/form-data")
+    public ResponseEntity<?> modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile,
+            HttpServletRequest request, SignageRequestDto signageRequestDto) throws Exception {
+        facilityService.modSignageLayout(imageFile, videoFile, request, signageRequestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * 시설물 : 사이니지 템플릿 삭제
+     */
+    @DeleteMapping(value="/signage/template/{templateSeq}")
+    public ResponseEntity<?> delSignageTemplate(@PathVariable int templateSeq) throws Exception {
+        facilityService.delSignageTemplate(templateSeq);
+        return ResponseEntity.noContent().build();
     }
 
     /**

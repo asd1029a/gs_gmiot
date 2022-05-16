@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base_layout}">
+<head>
+    <title>test</title>
+</head>
+
+<th:block layout:fragment="content">
+    <input id="input"/>
+    <button id="send">send</button>
+    <pre id="messages"></pre>
+    <script>
+        let id = prompt("입력");
+        const eventSource = new EventSource(`/sse/${id}`);
+
+        eventSource.onopen = (e) => {
+            console.log(e);
+        };
+
+        eventSource.onerror = (e) => {
+            console.log(e);
+        };
+
+        eventSource.onmessage = (e) => {
+            document.querySelector("#messages").appendChild(document.createTextNode(e.data + "\n"));
+        };
+    </script>
+</th:block>
+
+</html>

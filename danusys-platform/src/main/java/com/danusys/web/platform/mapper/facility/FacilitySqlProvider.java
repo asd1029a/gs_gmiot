@@ -2,6 +2,7 @@ package com.danusys.web.platform.mapper.facility;
 
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.SqlUtil;
+import com.danusys.web.platform.dto.request.SignageRequestDto;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.ArrayList;
@@ -416,6 +417,45 @@ public class FacilitySqlProvider {
                 FROM("t_signage_template t1");
                 //WHERE("t1.template_seq::integer = " + signageTemplateSeq);
             }};
+        return sql.toString();
+    }
+
+    public String insertSignageTemplateQry(Map<String, Object> paramMap) {
+        Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
+
+        SQL sql = new SQL() {{
+            INSERT_INTO("t_signage_template");
+            VALUES(qryMap.get("columns").toString(), qryMap.get("values").toString());
+        }};
+        return sql.toString();
+    }
+
+    public String updateSignageTemplateQry(Map<String, Object> paramMap) {
+        String templateSeq = paramMap.get("templateSeq").toString();
+
+        SQL sql = new SQL() {{
+            UPDATE("t_signage_template");
+            SET(SqlUtil.getMultiSetStr(paramMap));
+            WHERE("template_seq =" + templateSeq);
+        }};
+        return sql.toString();
+    }
+
+    public String updateSignageLayoutQry(SignageRequestDto signageRequestDto) {
+
+        SQL sql = new SQL() {{
+            UPDATE("t_signage_template");
+            SET("template_content = '" + signageRequestDto.getTemplateContent() + "'");
+            WHERE("template_seq = " + signageRequestDto.getTemplateSeq());
+        }};
+        return sql.toString();
+    }
+
+    public String deleteSignageTemplateQry(int seq) {
+        SQL sql = new SQL() {{
+            DELETE_FROM("t_signage_template");
+            WHERE("template_seq =" + seq);
+        }};
         return sql.toString();
     }
 }

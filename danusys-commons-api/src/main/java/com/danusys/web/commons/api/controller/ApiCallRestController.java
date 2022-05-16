@@ -9,6 +9,7 @@ import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.service.*;
 import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
+import com.danusys.web.commons.api.util.StaticUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -167,83 +168,10 @@ public class ApiCallRestController {
         return ResponseEntity.status(HttpStatus.OK).body(resultBody);
     }
 
-
-//    @PostMapping(value = "/call2")
-//    public ResponseEntity call2(@RequestBody Map<String, Object> param) throws Exception {
-//        log.trace("param {}", param.toString());
-//
-//        Api api = getRequestApi(param);
-//
-//        //API DB 정보로 외부 API 호출
-//        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-//
-//
-//        String authInfo = StrUtils.getStr(api.getAuthInfo());
-//        if (authInfo.contains("bearer")) {
-//            String accessToken = Arrays.asList(servletRequest.getCookies()).stream().filter(f -> f.getName().equals("kuto_access_token")).collect()
-//            if(accessToken) {
-//
-//                Map<String, Object> param2 = new HashMap<>();
-//                param2.put("callUrl", "/kudo/login");
-//                param2.put()
-//                Api api = getRequestApi(param);
-//
-//                //API DB 정보로 외부 API 호출
-//                ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-//                Map<> param2 = a
-//                Api api2 = getRequestApi(param);
-//            }
-//
-//
-//
-//        }
-//
-//        String body = (String) responseEntity.getBody();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(resultBody);
-//    }
-
-//    @PostMapping(value = "/call3")
-//    public ResponseEntity call3(@RequestBody Map<String, Object> param) throws Exception {
-//        log.trace("param {}", param.toString());
-//
-//
-//        Api api = getRequestApi(param);
-//
-//        //API DB 정보로 외부 API 호출
-//        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String body = (String) responseEntity.getBody();
-//        Object resultBody = null;
-//        // TODO : List 와 Map 형태를 구분 임시 처리
-//        if (body.indexOf("[") == 0) {
-//
-//            List<Map<String, Object>> result = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>(){});
-//            resultBody = result;
-//        } else if (body.indexOf("{") == 0) {
-//            Map<String, Object> result = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-//            resultBody = result;
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(resultBody);
-//    }
-
-
     @PostMapping(value = "/call")
     public ResponseEntity call(HttpServletRequest req, @RequestBody Map<String, Object> param) throws Exception {
         log.trace("param {}", param.toString());
         Api api = apiService.getRequestApi(param);
-
-//        Cookie saveCookie = cookieService.createCookie(request, "test", "1111", 60*60);
-//        log.trace("saveCookie {} ", saveCookie.getValue());
-//        response.addCookie(saveCookie);
-//
-//        Cookie findCookie = cookieService.getCookie(request, "test");
-//        log.trace("findCookie ::: {}", findCookie);
 
         /**
          * api 요청시 인증 토큰이 필요한 경우
@@ -255,10 +183,14 @@ public class ApiCallRestController {
          */
         ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
 
-        Map<String, Object> resultBody = null;
-        if( api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
-            resultBody = (Map<String, Object>) responseEntity.getBody();
-        } else {
+        Object resultBody = null;
+        if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+            resultBody = responseEntity.getBody();
+        } else if (api.getResponseBodyType() == BodyType.ARRAY) {
+            String body = (String) responseEntity.getBody();
+            resultBody = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
+            });
+        } else if (api.getResponseBodyType() == BodyType.OBJECT) {
             String body = (String) responseEntity.getBody();
             resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
             });
@@ -268,22 +200,9 @@ public class ApiCallRestController {
                 .body(resultBody);
     }
 
-//    @Scheduled(cron = "0/10 * * * * *")
-//    public void schedulerTest() throws Exception {
-//        LocalDateTime now = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
-//        String formatNow = now.format(formatter);
-//        int iNow = Integer.parseInt(formatNow);
-//        Map<String, Object> param = new HashMap<>();
-//        param.put("callUrl","/mjvt/smart-station/people-count");
-//        param.put("cameraId","1");
-//        param.put("dateTime",iNow-1);
-//        log.info("현재 시각 : {}",iNow-1);
-//        call(param);
-//    }
-
     @PostMapping(value = "/ext/send")
     public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
+        log.info("param ?? = {}",param);
         Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
@@ -294,7 +213,7 @@ public class ApiCallRestController {
         log.trace("external send res data : {}", apiResponseParams.toString());
 
         try {
-            // Reqpuest check and set
+            // Request check and set
             Map<String, Object> map = apiRequestParams.stream()
                     .filter(f -> f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
@@ -323,13 +242,18 @@ public class ApiCallRestController {
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
 
-            // event save
-//            for(Map.Entry<String, Object> el: map.entrySet()) {
-//                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
-//                });
-//                eventService.saveAllByEeventRequestDTO(list);
-//                log.trace(list.toString());
-//            }
+            String checkExist = StaticUtil.checkExist;
+            // event transfer
+            for(Map.Entry<String, Object> el: map.entrySet()) {
+                EventReqeustDTO list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
+                });
+                if(list.getEventKind().equals("1") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("1") && checkExist.isEmpty())){
+                    //사람있음
+                }else if(list.getEventKind().equals("0") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("0") && checkExist.isEmpty())){
+                    //사람없음
+                }
+                log.trace(list.toEntity().toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             resultBody.put("code", "9999");
@@ -343,13 +267,16 @@ public class ApiCallRestController {
     }
 
 
-    @PostMapping("event")
+    @PostMapping("/event")
     public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
+        log.info("param  =  {}",param);
         Api api = apiService.getRequestApi(param);
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
         List<ApiParam> apiResponseParams = api.getApiResponseParams();
         Map<String, Object> resultBody = new HashMap<>();
+
+        AtomicReference<DataType> dataType = new AtomicReference<>();
 
         try {
             // Reqpuest check and set
@@ -357,6 +284,7 @@ public class ApiCallRestController {
                     .filter(f -> f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
                         AtomicReference<String> result = new AtomicReference<>();
+                        dataType.set(f.getDataType());
                         try {
                             result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
                         } catch (JsonProcessingException e) {
@@ -383,10 +311,16 @@ public class ApiCallRestController {
 
             // event save
             for(Map.Entry<String, Object> el: map.entrySet()) {
-                List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
-                });
-                eventService.saveAllByEeventRequestDTO(list);
-                log.trace(list.toString());
+                if (dataType.get().equals(DataType.ARRAY)) {
+                    List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
+                    });
+                    eventService.saveAllByEventRequestDTO(list);
+                    log.trace(list.toString());
+                } else if (dataType.get().equals(DataType.OBJECT)) {
+                    EventReqeustDTO eventReqeustDTO = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
+                    });
+                    eventService.saveByEventRequestDTO(eventReqeustDTO);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

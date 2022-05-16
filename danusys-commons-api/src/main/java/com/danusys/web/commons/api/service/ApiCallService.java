@@ -11,14 +11,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -133,12 +134,67 @@ public class ApiCallService {
                 /**
                  * 시간은 액세스 토큰 만료 시간 보다 작게 설정
                  */
+                log.trace("sessionId : {}", request.getSession().getId());
                 Cookie saveCookie = cookieService.createCookie(request, "access_token", accessToken, 5 * 60 );
                 response.addCookie(saveCookie);
             }
         }
 
         return result;
+    }
+
+    /**
+     * 세션 쿠키 조회 및 저장
+     * 토큰이 있으면 가져와서 리턴하고,
+     * 없으면 요청해서 저장
+     * @param api
+     * @return
+     * @throws Exception
+     */
+    public Cookie getApiSession(Api api) throws Exception {
+        String cookieNames = api.getTokens();
+        String[] names = cookieNames.split(",");
+        /**
+         * 연계할 api가 bearer 토큰 값이 필요할 경우
+         */
+        Cookie cookie = null;
+        if (api.getAuthInfo() != null && !api.getAuthInfo().isEmpty()) {
+
+            cookie = cookieService.getCookie(request, "Cookie");
+            if (cookie != null) {
+                log.trace("getApiSession session_id 조회 {} ", cookie);
+                return cookie;
+            }
+
+            if (cookie == null && api.getAuthInfo().contains("session")) {
+                String exApiCallUrl = api.getAuthInfo().split("_")[1];
+
+                Map<String, Object> subParam = new HashMap<>();
+                subParam.put("callUrl", exApiCallUrl);
+                Api subApi = getRequestApi(subParam);
+
+                ResponseEntity subResponseEntity = apiExecutorFactoryService.execute(subApi);
+                log.trace("###subResponseEntity.getBody() {}", subResponseEntity.getBody());
+
+                List<String> list = subResponseEntity.getHeaders().get(HttpHeaders.SET_COOKIE);
+
+                List<String> strArray = new ArrayList<>();
+
+                /**
+                 * 시간은 액세스 토큰 만료 시간 보다 작게 설정
+                 */
+                list.forEach(f -> {
+                    String[] temp = f.split(";");
+                    strArray.add(temp[0]);
+                });
+
+                String result = strArray.stream().collect(Collectors.joining("; "));
+
+                cookie = cookieService.createCookie(request, "Cookie", result, 5 * 60);
+            }
+        }
+
+        return cookie;
     }
 
     /**

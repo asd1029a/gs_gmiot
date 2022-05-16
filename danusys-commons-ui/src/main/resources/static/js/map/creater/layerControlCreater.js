@@ -26,6 +26,18 @@ class layerControl {
     }
 
     /**
+     * @summary 해당 레이어들 모두 보이기
+     * @param layerList : 레이어명 리스트 (***Layer제외)
+     * */
+    onList(layerList) {
+        if(layerList.length > 0){
+            for(let name of layerList){
+                this.on(name+'Layer');
+            }
+        }
+    }
+
+    /**
      * @summary 해당 레이어 숨기기
      * @param layerName : 레이어명
      * */
@@ -38,6 +50,30 @@ class layerControl {
                 popup.remove('mouseClickPopup');
             }
         });
+    }
+
+    /**
+     * @summary 해당 레이어들 모두 숨기기
+     * @param layerList : 레이어명 리스트 (***Layer제외)
+     * */
+    offList(layerList) {
+        for(let name of layerList){
+            this.off(name+'Layer');
+        }
+    }
+
+    /**
+     * @summary 해당 레이어 on off 토글
+     * 레이어가 켜져 있으면 끄기 꺼져 있으면 켜기
+     * @param layerName : 레이어명
+     * */
+    toggle(layerName) {
+        let flag = this.find(layerName).getVisible();
+        if(flag){
+            this.off(layerName);
+        } else {
+            this.on(layerName);
+        }
     }
 
     /**
@@ -113,7 +149,7 @@ class layerControl {
      * @param groupName : 그룹명
      */
     groupAllOn(groupName) {
-        const layerGroup = layerControl.find(groupName);
+        const layerGroup = this.find(groupName);
         layerGroup.getLayers().forEach( layer => layer.setVisible(true) );
         this.map.renderSync();
     }
@@ -123,7 +159,7 @@ class layerControl {
      * @param groupName : 그룹명
      */
     groupAllOff(groupName) {
-        const layerGroup = layerControl.find(groupName);
+        const layerGroup = this.find(groupName);
         layerGroup.getLayers().forEach(layer => layer.setVisible(false) );
         this.map.renderSync();
     }
@@ -133,7 +169,7 @@ class layerControl {
      * @param groupName : 그룹명
      */
     groupAllRemove(groupName) {
-        this.map.removeLayer(layerControl.find(groupName));
+        this.map.removeLayer(this.find(groupName));
         this.map.renderSync();
     }
 
@@ -143,7 +179,7 @@ class layerControl {
      * @param layerName 보여질 그룹안 레이어 이름
      */
     groupOn(groupName, layerName) {
-        const layerGroup = layerControl.find(groupName);
+        const layerGroup = this.find(groupName);
         layerGroup.getLayers().forEach( layer => {
             if(layer.get(this.check)==layerName){
                 layer.setVisible(true);
@@ -158,7 +194,7 @@ class layerControl {
      * @param layerName 숨겨질 그룹안 레이어 이름
      */
     groupOff(groupName, layerName) {
-        const layerGroup = layerControl.find(groupName);
+        const layerGroup = this.find(groupName);
         layerGroup.getLayers().forEach( layer => {
             if(layer.get(this.check)==layerName){
                 layer.setVisible(false);
@@ -173,7 +209,7 @@ class layerControl {
      * @param layer 추가할 레이어 객체
      */
     groupAdd(groupName,layer) {
-        const ary = layerControl.find(groupName).getLayers().getArray();
+        const ary = this.find(groupName).getLayers().getArray();
         ary.push(layer);
         this.map.renderSync();
     }
@@ -184,7 +220,7 @@ class layerControl {
      * @param layerName 제거할 레이어 이름
      */
     groupRemove(groupName,layerName) {
-        const ary = layerControl.find(groupName).getLayers().getArray();
+        const ary = this.find(groupName).getLayers().getArray();
         if(ary.length>0){
             for(let i=0; i<ary.length; i++){
                 if(ary[i].get(this.check)==layerName){
