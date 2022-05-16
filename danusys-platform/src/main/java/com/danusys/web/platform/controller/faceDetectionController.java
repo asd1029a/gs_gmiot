@@ -58,7 +58,10 @@ public class faceDetectionController {
      */
     @PostMapping(value = "/add",produces = "multipart/form-data")
     public ResponseEntity<?> add(MultipartFile[] file, HttpServletRequest request, FaceDetectionRequestDto faceDetectionRequestDto) throws Exception {
-        faceDetectionRequestDto.setFaceFile(FileUtil.uploadAjaxPost(file, request));
+        String fileName = FileUtil.uploadAjaxPost(file, request);
+        if (!fileName.equals("")){
+            faceDetectionRequestDto.setFaceFile(fileName);
+        }
         faceDetectionService.add(faceDetectionRequestDto);
         return ResponseEntity.noContent().build();
     }
@@ -68,7 +71,10 @@ public class faceDetectionController {
      */
     @PostMapping(value = "/mod/{faceSeq}",produces = "multipart/form-data")
     public ResponseEntity<?> mod(MultipartFile[] file, HttpServletRequest request, @PathVariable("faceSeq") int faceSeq, FaceDetectionRequestDto faceDetectionRequestDto) throws Exception {
-        faceDetectionRequestDto.setFaceFile(FileUtil.uploadAjaxPost(file, request));
+        String fileName = FileUtil.uploadAjaxPost(file, request);
+        if (!fileName.equals("")){
+            faceDetectionRequestDto.setFaceFile(fileName);
+        }
         faceDetectionService.mod(faceSeq, faceDetectionRequestDto);
         return ResponseEntity.noContent().build();
     }
