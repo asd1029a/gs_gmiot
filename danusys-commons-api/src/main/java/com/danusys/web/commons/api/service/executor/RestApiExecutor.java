@@ -28,7 +28,8 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 
 /**
@@ -118,7 +119,7 @@ public class RestApiExecutor implements ApiExecutor {
 //        if (api.getApiRequestParams() == null || api.getApiRequestParams().isEmpty())
 //            throw new IllegalArgumentException("apiRequestParams 값이 null 입니다.");
 
-        final List<ApiParam> apiRequestParams = api.getApiRequestParams().stream().sorted(Comparator.comparing((ApiParam p) -> p.getSeq())).collect(Collectors.toList());
+        final List<ApiParam> apiRequestParams = api.getApiRequestParams().stream().sorted(Comparator.comparing((ApiParam p) -> p.getSeq())).collect(toList());
         log.trace("### apiRequestParams : {}", apiRequestParams.toString());
 
         //TODO IN / OUT 로그 저장 ??
@@ -129,7 +130,7 @@ public class RestApiExecutor implements ApiExecutor {
         //요청 파라미터 값 추출
         final Map<String, Object> reqMap = apiRequestParams
                 .stream()
-                .collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+                .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
         final String targetUrl = api.getTargetUrl() + api.getTargetPath();
         Object result = "";
 
@@ -243,9 +244,23 @@ public class RestApiExecutor implements ApiExecutor {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                        Arrays.stream(cookies).forEach(f -> {
-                            httpHeaders.set(f.getName(), f.getValue());
-                        });
+
+//                        String customCookie = "";
+//                        log.trace("#cookie : {}", cookies);
+                        String tempCookie = Arrays.stream(cookies).map(m -> m.getName() + "=" + m.getValue()).collect(joining(";"));
+                        log.trace("tempCookie {}", tempCookie);
+//                        Arrays.stream(cookies).forEach(f -> {
+//                            customCookie += f.getName() + "=" + f.getValue();
+//                            String hadersCookie = httpHeaders.get("Cookie");
+//                        httpHeaders.set("Cookie", tempCookie);
+                        httpHeaders.add("Cookie", tempCookie);
+
+//                            log.trace("cookie : {} {}",f.getName(), f.getValue());
+//                        });
+
+
+
+
                     } else {
                         httpHeaders.set("Authorization", api.getAuthInfo());
                     }
@@ -359,7 +374,7 @@ public class RestApiExecutor implements ApiExecutor {
                         .stream().map(f -> {
                             return f.getKey() + "=" + f.getValue() + "";
                         })
-                        .collect(Collectors.joining("&"));
+                        .collect(joining("&"));
 
                 uri = new URI(targetUrl + "?" + queryString);
             } else if (method == HttpMethod.POST || method == HttpMethod.PUT) {
