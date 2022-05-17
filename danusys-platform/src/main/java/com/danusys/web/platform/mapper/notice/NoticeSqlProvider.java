@@ -1,4 +1,4 @@
-package com.danusys.web.platform.mapper.event.notice;
+package com.danusys.web.platform.mapper.notice;
 
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.SqlUtil;

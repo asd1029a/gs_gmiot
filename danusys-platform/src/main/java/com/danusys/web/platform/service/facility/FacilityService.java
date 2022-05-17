@@ -22,6 +22,7 @@ public interface FacilityService {
     EgovMap getLastDimmingGroupSeq() throws Exception;
     EgovMap getListLampRoadInDimmingGroup(Map<String, Object> paramMap) throws Exception;
     EgovMap getListSignageTemplate(Map<String, Object> paramMap) throws Exception;
+    EgovMap getSignageLayout(int id) throws Exception;
     int addSignageTemplate(Map<String, Object> paramMap) throws Exception;
     int modSignageTemplate(Map<String, Object> paramMap) throws Exception;
     void modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile
