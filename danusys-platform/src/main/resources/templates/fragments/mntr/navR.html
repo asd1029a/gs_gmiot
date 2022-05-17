@@ -1,6 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="navRFragment">
-
     <!-- 개소 (기본/제어) -->
     <section class="area_right" data-value="station">
         <!--[개소 번호] 개소명-->
@@ -19,8 +18,10 @@
                     <input type="checkbox" id="switch1"><label for="switch">Toggle</label>
                 </dd>
             </dl>
-            <div class="area_video">
-                <div><!-- 영상 --></div>
+            <div>
+                <div class="area_video">
+                    <div><!-- 영상 --></div>
+                </div>
             </div>
             <ul class="tab">
                 <li class="active" data-value="info"><a>기본 정보</a></li>
@@ -120,7 +121,7 @@
                             <span>AED</span>
                         </dt>
                         <dd class="ptz_toggle">
-                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                            <input type="checkbox" id="control2"><label for="control2">Toggle</label>
                         </dd>
                     </dl>
                     <dl>
@@ -129,7 +130,7 @@
                             <span>비상벨</span>
                         </dt>
                         <dd class="ptz_toggle">
-                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                            <input type="checkbox" id="control3"><label for="control3">Toggle</label>
                         </dd>
                     </dl>
                     <dl>
@@ -138,7 +139,7 @@
                             <span>금연벨</span>
                         </dt>
                         <dd class="ptz_toggle">
-                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                            <input type="checkbox" id="control4"><label for="control4">Toggle</label>
                         </dd>
                     </dl>
                     <dl>
@@ -147,7 +148,7 @@
                             <span>홍보전광판</span>
                         </dt>
                         <dd class="ptz_toggle">
-                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                            <input type="checkbox" id="control5"><label for="control5">Toggle</label>
                         </dd>
                         <dd class="filebox">
                             <input class="uploadName" value="첨부파일" placeholder="첨부파일">
@@ -161,7 +162,7 @@
                             <span>무정차 방지등</span>
                         </dt>
                         <dd class="ptz_toggle">
-                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                            <input type="checkbox" id="control6"><label for="control6">Toggle</label>
                         </dd>
                     </dl>
                     <dl>
@@ -170,7 +171,7 @@
                             <span>스마트 공기청정기</span>
                         </dt>
                         <dd class="ptz_toggle">
-                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                            <input type="checkbox" id="control7"><label for="control7">Toggle</label>
                         </dd>
                     </dl>
                     <dl>
@@ -179,7 +180,7 @@
                             <span>냉난방기</span>
                         </dt>
                         <dd class="ptz_toggle">
-                            <input type="checkbox" id="control1"><label for="control1">Toggle</label>
+                            <input type="checkbox" id="control8"><label for="control8">Toggle</label>
                         </dd>
                     </dl>
                 </div>
@@ -217,8 +218,8 @@
         </div>
     </section>
 
-    <!-- 이벤트 -->
-    <section class="area_right" data-value="event">
+    <!--  개소 이벤트 -->
+    <section class="area_right" data-target="station" data-value="event">
         <!--[EVENT ID] 이벤트 종류-->
         <h6><span class="eventTitle"></span><i class="area_right_closer"><img src="/images/default/close.svg"></i></h6>
         <div class="area_right_contents">
@@ -234,8 +235,10 @@
                     <input type="checkbox" id="switch"><label for="switch">Toggle</label>
                 </dd>
             </dl>
-            <div class="area_video">
-                <div><!-- 영상 --></div>
+            <div>
+                <div class="area_video">
+                    <div><!-- 영상 --></div>
+                </div>
             </div>
             <div class="occur_process">
                 <div class="process_contents step1">
@@ -416,11 +419,516 @@
                     </ul>
                 </div>
             </div>
-
-
-
+        </div>
+    </section>
+    <!-- 시설물(드론) 이벤트 -->
+    <section class="area_right" data-target="facility" data-value="event">
+        <h6>{드론 명}{이벤트 등급} {이벤트 종류} 발생 정보<i><img src="/images/default/close.svg"></i></h6>
+        <div class="area_right_contents">
+            <ul class="tab">
+                <li class="active" data-value="info"><a>기본 정보</a></li>
+                <li data-value="detail"><a>상세 정보</a></li>
+            </ul>
+            <!-- area_right_scroll -->
+            <div class="area_right_scroll select" data-value="info">
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon03.svg"></i>{해당 드론 명} 실시간 촬영 영상</dt>
+                </dl>
+                <div>
+                    <div class="area_video area_video_drone">
+                        <div>
+                            <!-- 영상 -->
+                            <ul class="video_type">
+                                <li class="active">실시간</li>
+                                <li>열화상</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="occur_process">
+                    <div class="process_contents step1">
+                        <dl class="on">
+                            <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
+                            <dd>이벤트 발생</dd>
+                        </dl>
+                        <dl>
+                            <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
+                            <dd>조치 완료</dd>
+                        </dl>
+                        <dl>
+                            <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
+                            <dd>대응중</dd>
+                        </dl>
+                        <dl>
+                            <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
+                            <dd>이벤트 종료</dd>
+                        </dl>
+                    </div>
+                    <div class="process_contents step2" style="display: none;">
+                        <dl class="on">
+                            <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
+                            <dd>이벤트 발생</dd>
+                        </dl>
+                        <dl class="on">
+                            <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
+                            <dd>조치 완료</dd>
+                        </dl>
+                        <dl>
+                            <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
+                            <dd>대응 중</dd>
+                        </dl>
+                        <dl>
+                            <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
+                            <dd>이벤트 종료</dd>
+                        </dl>
+                    </div>
+                    <div class="process_contents step3" style="display: none;">
+                        <dl class="on">
+                            <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
+                            <dd>이벤트 발생</dd>
+                        </dl>
+                        <dl class="on">
+                            <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
+                            <dd>조치 완료</dd>
+                        </dl>
+                        <dl class="on">
+                            <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
+                            <dd>대응 중</dd>
+                        </dl>
+                        <dl>
+                            <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
+                            <dd>이벤트 종료</dd>
+                        </dl>
+                    </div>
+                    <div class="process_contents step4" style="display: none;">
+                        <dl class="on">
+                            <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
+                            <dd>이벤트 발생</dd>
+                        </dl>
+                        <dl class="on">
+                            <dt><i><img src="/images/default/processIcon02.svg"></i></dt>
+                            <dd>조치 완료</dd>
+                        </dl>
+                        <dl class="on">
+                            <dt><i><img src="/images/default/processIcon03.svg"></i></dt>
+                            <dd>대응 중</dd>
+                        </dl>
+                        <dl>
+                            <dt><i><img src="/images/default/processIcon04.svg"></i></dt>
+                            <dd>이벤트 종료</dd>
+                        </dl>
+                    </div>
+                    <ul class="button">
+                        <li>투망 감시</li>
+                        <li>조치 완료</li>
+                        <li>이벤트 종료</li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon01.svg"></i>{이벤트 ID} 이벤트 발생 정보</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>발생 시각</span>
+                            <input type="text" placeholder="0000-00-00 00:00:00">
+                        </li>
+                        <li>
+                            <span>발생 장소명</span>
+                            <input type="text" placeholder="김제 중학교">
+                        </li>
+                        <li>
+                            <span>발생 주소</span>
+                            <input type="text" placeholder="전북 김제시 중앙로274">
+                        </li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon06.svg"></i>{해당 드론 명} 드론 촬영 정보</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>촬영 위도</span>
+                            <input type="text" placeholder="00.000000">
+                        </li>
+                        <li>
+                            <span>촬영 경도</span>
+                            <input type="text" placeholder="00.000000">
+                        </li>
+                        <li>
+                            <span>촬영 고도</span>
+                            <input type="text" placeholder="000m">
+                        </li>
+                        <li>
+                            <span>지점 최고 온도</span>
+                            <input type="text" placeholder="00°C">
+                        </li>
+                        <li>
+                            <span>지점 최저 온도</span>
+                            <input type="text" placeholder="00°C">
+                        </li>
+                        <li>
+                            <span>촬영 시 속도</span>
+                            <input type="text" placeholder="0m/s">
+                        </li>
+                        <li>
+                            <span>촬영 시 머리 방향</span>
+                            <input type="text" placeholder="00°">
+                        </li>
+                        <li>
+                            <span>이벤트 종류</span>
+                            <input type="text" placeholder="-">
+                        </li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon06.svg"></i>{해당 드론 명} 기체 상태</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>배터리 잔여율</span>
+                            <input type="text" placeholder="00%">
+                        </li>
+                        <li>
+                            <span>비행 시작 후<br>경과 시간</span>
+                            <input type="text" placeholder="00분">
+                        </li>
+                        <li>
+                            <span>잔여 비행 가능 시간</span>
+                            <input type="text" placeholder="00분">
+                        </li>
+                        <li>
+                            <span>총 비행 가능 시간</span>
+                            <input type="text" placeholder="00분">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="area_right_scroll" data-value="detail">
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon03.svg"></i>{해당 드론 명} 경로 상세 정보</dt>
+                    <dd class="button">지도에서 경로 보기</dd>
+                </dl>
+                <div class="timeline_wrap">
+                    <div>
+                        <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
+                        <ul class="timeline">
+                            <li class="event" data-date="경로1">
+                                <h3>김제시립도서관</h3>
+                                <p>통과시각 : 2022-05-13 16:20:53</p>
+                            </li>
+                            <li class="event event_on" data-date="경로2">
+                                <h3>김제시립도서관</h3>
+                                <p>통과시각 : 2022-05-13 16:20:53</p>
+                            </li>
+                            <li class="event" data-date="경로3">
+                                <h3>김제시립도서관</h3>
+                                <p>통과시각 : 2022-05-13 16:20:53</p>
+                            </li>
+                            <li class="event" data-date="경로4">
+                                <h3>김제시립도서관</h3>
+                                <p>통과시각 : 2022-05-13 16:20:53</p>
+                            </li>
+                            <li class="event" data-date="경로5">
+                                <h3>김제시립도서관</h3>
+                                <p>통과시각 : 2022-05-13 16:20:53</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon01.svg"></i>{이벤트 ID} 이벤트 발생 정보</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>발생 시각</span>
+                            <input type="text" placeholder="0000-00-00 00:00:00">
+                        </li>
+                        <li>
+                            <span>발생 장소명</span>
+                            <input type="text" placeholder="김제 중학교">
+                        </li>
+                        <li>
+                            <span>발생 주소</span>
+                            <input type="text" placeholder="전북 김제시 중앙로274">
+                        </li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon06.svg"></i>{해당 드론 명} 드론 촬영 정보</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>촬영 위도</span>
+                            <input type="text" placeholder="00.000000">
+                        </li>
+                        <li>
+                            <span>촬영 경도</span>
+                            <input type="text" placeholder="00.000000">
+                        </li>
+                        <li>
+                            <span>촬영 고도</span>
+                            <input type="text" placeholder="000m">
+                        </li>
+                        <li>
+                            <span>지점 최고 온도</span>
+                            <input type="text" placeholder="00°C">
+                        </li>
+                        <li>
+                            <span>지점 최저 온도</span>
+                            <input type="text" placeholder="00°C">
+                        </li>
+                        <li>
+                            <span>촬영 시 속도</span>
+                            <input type="text" placeholder="0m/s">
+                        </li>
+                        <li>
+                            <span>촬영 시 머리 방향</span>
+                            <input type="text" placeholder="00°">
+                        </li>
+                        <li>
+                            <span>이벤트 종류</span>
+                            <input type="text" placeholder="-">
+                        </li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon06.svg"></i>{해당 드론 명} 기체 상태</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>배터리 잔여율</span>
+                            <input type="text" placeholder="00%">
+                        </li>
+                        <li>
+                            <span>비행 시작 후<br>경과 시간</span>
+                            <input type="text" placeholder="00분">
+                        </li>
+                        <li>
+                            <span>잔여 비행 가능 시간</span>
+                            <input type="text" placeholder="00분">
+                        </li>
+                        <li>
+                            <span>총 비행 가능 시간</span>
+                            <input type="text" placeholder="00분">
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </section>
 
+    <!-- 시설물 -->
+    <section class="area_right" data-value="facility">
+        <h6>{드론 명} 기체 정보<i><img src="/images/default/close.svg"></i></h6>
+        <div class="area_right_contents">
+            <ul class="tab">
+                <li class="active" data-value="info"><a>기본 정보</a></li>
+                <li data-value="detail"><a>상세 정보</a></li>
+            </ul>
+            <div class="area_right_scroll select" data-value="info">
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon03.svg"></i>{해당 드론 명} 기체 사진</dt>
+                </dl>
+                <div>
+                    <div class="area_video area_video_drone">
+                        <div><!-- 기체 사진 --></div>
+                    </div>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon01.svg"></i>{드론 명} 기체 상세 정보</dt>
+                    <dd class="state">미처리</dd>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>드론 ID</span>
+                            <input type="text" placeholder="Drone_GJ00">
+                        </li>
+                        <li>
+                            <span>드론 명</span>
+                            <input type="text" placeholder="드론1_김제">
+                        </li>
+                        <li>
+                            <span>Serial No.</span>
+                            <input type="text" placeholder="********">
+                        </li>
+                        <li>
+                            <span>드론 모델 명</span>
+                            <input type="text" placeholder="Drone_00">
+                        </li>
+                        <li>
+                            <span>제조사</span>
+                            <input type="text" placeholder="LG">
+                        </li>
+                        <li>
+                            <span>LTE</span>
+                            <input type="text" placeholder="********">
+                        </li>
+                        <li>
+                            <span>SIM 번호</span>
+                            <input type="text" placeholder="********">
+                        </li>
+                        <li>
+                            <span>드론 Type</span>
+                            <input type="text" placeholder="드론 Type">
+                        </li>
+                        <li>
+                            <span>서비스</span>
+                            <input type="text" placeholder="촬영">
+                        </li>
+                        <li>
+                            <span>장착 H/W</span>
+                            <input type="text" placeholder="카메라">
+                        </li>
+                        <li>
+                            <span>배터리 모듈</span>
+                            <input type="text" placeholder="배터리 모듈">
+                        </li>
+                        <li>
+                            <span>배터리 셀</span>
+                            <input type="text" placeholder="배터리 셀">
+                        </li>
+                        <li>
+                            <span>배터리 용량</span>
+                            <input type="text" placeholder="배터리 용량">
+                        </li>
+                        <li>
+                            <span>배터리 최대<br>비행 시간</span>
+                            <input type="text" placeholder="00분">
+                        </li>
+                        <li>
+                            <span>평균 비행 속도</span>
+                            <input type="text" placeholder="0m/s">
+                        </li>
+                        <li>
+                            <span>긴급 복귀<br>배터리 잔여율</span>
+                            <input type="text" placeholder="00%">
+                        </li>
+                        <li>
+                            <span>최근 운행<br>종료 일시</span>
+                            <input type="text" placeholder="0000-00-00 00:00:00">
+                        </li>
+                        <li>
+                            <span>예약 비행 정보</span>
+                            <input type="text" placeholder="매주 화 14:00, 매주 목 16:00">
+                        </li>
+                    </ul>
+                </div>
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon06.svg"></i>{해당 드론 명} 기체 현황</dt>
+                </dl>
+                <div class="area_right_text">
+                    <ul>
+                        <li>
+                            <span>위도</span>
+                            <input type="text" placeholder="00.000000">
+                        </li>
+                        <li>
+                            <span>경도</span>
+                            <input type="text" placeholder="00.000000">
+                        </li>
+                        <li>
+                            <span>고도</span>
+                            <input type="text" placeholder="000m">
+                        </li>
+                        <li>
+                            <span>머리 방향</span>
+                            <input type="text" placeholder="00°">
+                        </li>
+                        <li>
+                            <span>진행 방향</span>
+                            <input type="text" placeholder="진행 방향">
+                        </li>
+                        <li>
+                            <span>비행 속도</span>
+                            <input type="text" placeholder="0m/s">
+                        </li>
+                        <li>
+                            <span>LTE 통신</span>
+                            <input type="text" placeholder="이상 없음">
+                        </li>
+                        <li>
+                            <span>GPS 수신</span>
+                            <input type="text" placeholder="이상 없음">
+                        </li>
+                        <li>
+                            <span>이륙 시간</span>
+                            <input type="text" placeholder="0000-00-00 00:00:00">
+                        </li>
+                        <li>
+                            <span>비행 시간</span>
+                            <input type="text" placeholder="00:00:00">
+                        </li>
+                        <li>
+                            <span>잔여 비행<br>가능 시간</span>
+                            <input type="text" placeholder="00분">
+                        </li>
+                        <li>
+                            <span>홈과의 거리</span>
+                            <input type="text" placeholder="00km">
+                        </li>
+                        <li>
+                            <span>배터리 잔여율</span>
+                            <input type="text" placeholder="00%">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="area_right_scroll flight_log_wrap" data-value="detail">
+                <dl class="area_title">
+                    <dt><i><img src="/images/default/titleIcon01.svg"></i>{해당 드론 명} 비행 로그</dt>
+                </dl>
+                <div class="flight_log">
+                    <h6>예약 비행1 완료</h6>
+                    <p>2022-05-16 14:00:00 ~ 2022-05-16 14:25:49</p>
+                    <p>긴급 이벤트 발생 건 수</p>
+                    <p>주의 이벤트 발생 건 수</p>
+                </div>
+                <div class="flight_log">
+                    <h6>예약 비행2 완료</h6>
+                    <p>2022-05-16 14:00:00 ~ 2022-05-16 14:25:49</p>
+                    <p>긴급 이벤트 발생 건 수</p>
+                    <p>주의 이벤트 발생 건 수</p>
+                </div>
+                <div class="flight_log">
+                    <h6>예약 비행3 완료</h6>
+                    <p>2022-05-16 14:00:00 ~ 2022-05-16 14:25:49</p>
+                    <p>긴급 이벤트 발생 건 수</p>
+                    <p>주의 이벤트 발생 건 수</p>
+                </div>
+                <div class="flight_log">
+                    <h6>예약 비행1 완료</h6>
+                    <p>2022-05-16 14:00:00 ~ 2022-05-16 14:25:49</p>
+                    <p>긴급 이벤트 발생 건 수</p>
+                    <p>주의 이벤트 발생 건 수</p>
+                </div>
+                <div class="flight_log">
+                    <h6>예약 비행1 완료</h6>
+                    <p>2022-05-16 14:00:00 ~ 2022-05-16 14:25:49</p>
+                    <p>긴급 이벤트 발생 건 수</p>
+                    <p>주의 이벤트 발생 건 수</p>
+                </div>
+                <div class="flight_log">
+                    <h6>예약 비행1 완료</h6>
+                    <p>2022-05-16 14:00:00 ~ 2022-05-16 14:25:49</p>
+                    <p>긴급 이벤트 발생 건 수</p>
+                    <p>주의 이벤트 발생 건 수</p>
+                </div>
+                <div class="flight_log">
+                    <h6>예약 비행1 완료</h6>
+                    <p>2022-05-16 14:00:00 ~ 2022-05-16 14:25:49</p>
+                    <p>긴급 이벤트 발생 건 수</p>
+                    <p>주의 이벤트 발생 건 수</p>
+                </div>
+                <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
+            </div>
+        </div>
+    </section>
 </th:block>
 </html>

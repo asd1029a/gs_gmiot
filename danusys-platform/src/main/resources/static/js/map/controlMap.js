@@ -380,6 +380,9 @@ function clickIcon(layerType, layerObj) {
         case "facility" : //시설물(드론) 클릭 이벤트
             console.log(layerObj);
             //TODO 드론 오른쪽 패널
+            $('.area_right').removeClass('select');
+            rnbList.createFacility(features);
+            window.map.updateSize();
             break;
         case "event" : //이벤트 클릭 이벤트
         case "eventPast" : //이벤트이력 클릭 이벤트
@@ -438,6 +441,9 @@ function clickIcon(layerType, layerObj) {
         } else if((layerNm == "event")||(layerNm == "eventPast")){
             rnbList.createEvent(data);
         }
+        // else if(layerNm == "facility"){
+        //     rnbList.createDrone(data);
+        // }
 
 
 

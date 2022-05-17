@@ -114,13 +114,12 @@ const mntr = {
             , contentType : "application/json; charset=utf-8"
             , async : false
         }).done((result) => {
-            console.log(result);
             siGunCode = result;
             window.siGunCode = result;
         });
 
         //지도 생성
-        let map = new mapCreater('map',0, siGunCode);
+        let map = new mapCreater('map',0);//, siGunCode);
         map.createMousePosition('mousePosition');
         map.scaleLine();
         map.createContextMenu(menuObj);
@@ -519,8 +518,8 @@ const mntr = {
         //RNM TAB SWITCH (오른쪽 창 탭 변경)
         $('.area_right .tab li').on("click", e => {
             const type = $(e.currentTarget).attr('data-value');
-            $('.area_right_scroll').removeClass("select");
-            $('.area_right_scroll[data-value='+ type +']').addClass("select");
+            $(e.currentTarget).parents('section').find('.area_right_scroll').removeClass("select");
+            $(e.currentTarget).parents('section').find('.area_right_scroll[data-value='+ type +']').addClass("select");
             //ACTIVE STYLE
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
@@ -848,7 +847,6 @@ const lnbList = {
      * obj : ajax 반환값
      * */
     , createEvent : obj => {
-        console.log(obj);
         let objAry = JSON.parse(obj);
         const $target = $('section.select .lnb_tab_section[data-value=event]');
 
@@ -1031,7 +1029,13 @@ const rnbList = {
     }
     , createEvent : obj => {
         /*TODO 데이터 오면 정보 채우기*/
-        const target = $('.area_right[data-value=event]');
+
+        //이벤트 타겟 레이어 찾기
+        let eventTarget = 'station';
+        if(window.lyControl.find('facilityLayer').getVisible()){
+            eventTarget = 'facility';
+        }
+        const target = $('.area_right[data-value=event][data-target=' + eventTarget + ']');
         const prop = obj.getProperties();
 
         target.data(obj);
@@ -1052,10 +1056,18 @@ const rnbList = {
         //다른 유형 중복선 제거
         window.lyConnect.remove('event');
         window.lyConnect.remove('station');
-        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=event]', 'event');
+        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=event][data-target=' + eventTarget + ']', 'event');
         window.map.addLayer(line);
-        console.log(obj);
         window.map.setPulse(obj.getGeometry().getCoordinates());
+    }
+    , createFacility : obj => {
+        const target = $('.area_right[data-value=facility]');
+        const prop = obj.getProperties();
+        //TODO 정보 채워두기
+        console.log(prop);
+
+        target.data(obj);
+        target.addClass('select');
     }
 }
 

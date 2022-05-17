@@ -31,7 +31,7 @@ input[type="checkbox"]:checked + label span{background: url('/images/default/che
 
 /* input : radio */
 input[type="radio"]{display: none;}
-input[type="radio"] + label{padding: 10px 10px 10px 0px; cursor: pointer;}
+input[type="radio"] + label{display: flex; align-items: center; padding: 10px 10px 10px 0px; line-height: 24px; cursor: pointer;}/*{padding: 10px 10px 10px 0px; cursor: pointer;}*/
 input[type="radio"] + label span{display: inline-block; width: 20px; height: 20px; margin: -2px 8px 0px 0px; font-size: 0; vertical-align: middle; background: url('/images/default/radioDefault.svg') no-repeat; background-size: 100% 100%; cursor: pointer;}
 input[type="radio"]:checked + label span{background: url('/images/default/radioActive.svg') no-repeat; background-size: 100% 100%;}
 
