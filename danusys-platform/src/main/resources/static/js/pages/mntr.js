@@ -4,19 +4,71 @@
 const mntr = {
     init : () => {
 
-
+        //TODO sse이벤트 수신 test
         const eventSource = new EventSource(`/sse/112`);
 
         eventSource.onopen = (e) => {
             console.log(e);
         };
-
         eventSource.onerror = (e) => {
+            console.log("=====수신실패=====")
             console.log(e);
         };
-
         eventSource.onmessage = (e) => {
-            document.querySelector("#messages").appendChild(document.createTextNode(e.data + "\n"));
+            const objJson = JSON.parse(e.data);
+            const objList = objJson['event_list'];
+
+            const eventSeqs = [];
+
+            //긴급 배너 띄우기
+            objList.forEach((e,i)=> {
+                if(e.event_grade == 20){
+                    eventSeqs.push(e.event_seq);
+                    const mainObj = {
+                        type : "error",
+                        title : e.device_id + " 디바이스 이벤트 발생",
+                        content : e.event_message
+                    };
+                    comm.toastOpen(mainObj, () => {}, {});
+                }
+            });
+            // const options = {
+            //     timeOut : "1500",
+            //     positionClass : "toast-top-full-width",
+            //     progressBar: false,
+            //     preventDuplicates : false
+            // }
+            $('.toast-top-full-width').css({
+                'left': $('.lnb').width() + $('.menu_fold').width() + $('.map_location').width() + 7,
+                    //$('#map').offset().left,
+                'top': $('#map').offset().top + 10,
+                    //$('#map').offset().top + $('.map_location').height() + 20 ,
+                'width': '40%', /*'height' : '320px'*/
+            }); //TODO 스크롤
+
+            const $targetMenu = $('.mntr_container .lnb ul li.active').attr('data-value');
+            const $targetTab = $('.mntr_container section.menu_fold.select .lnb_tab_section.select').attr('data-value');
+
+            if($targetTab == "event"){
+                let newAry;
+                event.getListGeoJson({
+                    "eventState": ["1","2","3"]
+                }, result => {
+                    //리스트 추가하기
+                    const data = JSON.parse(result);
+                    const ary = [];
+                    data.features.forEach(t => {
+                        const seq = t.properties.eventSeq;
+                        if(eventSeqs.includes(seq)){
+                            ary.push(t);
+                        }
+                    });
+                    data.features = ary;
+                    lnbList.createEvent(JSON.stringify(data));
+                    //레이어 refresh
+                    reloadCluster(JSON.parse(result), 'eventLayer');
+                });
+            }
         };
 
         $(document).contextmenu( e => {
@@ -334,6 +386,7 @@ const mntr = {
                     if((theme != "drone")&&(theme != "addressPlace")&&(theme != "smart")) {
                         window.lyControl.onList(['station', target]);
                     }
+                    if(theme == "drone"){window.lyControl.onList(['facility', 'route', target]);}
                     window.lyControl.find("stationLayer").getSource().setDistance(0);
                     window.lyControl.find("eventLayer").getSource().setDistance(0);
                     window.lyControl.find("eventPastLayer").getSource().setDistance(0);
@@ -341,13 +394,12 @@ const mntr = {
                     if((theme != "drone")&&(theme != "addressPlace")&&(theme != "smart")) {
                         window.lyControl.onList(['station', target]);
                     }
+                    if(theme == "drone"){window.lyControl.onList(['facility', 'route', target]);}
                     window.lyControl.find("stationLayer").getSource().setDistance(30);
                     window.lyControl.find("eventLayer").getSource().setDistance(30);
                     window.lyControl.find("eventPastLayer").getSource().setDistance(30);
                 } else { //4.xxx ~ 0
-                    if((theme != "drone")&&(theme != "addressPlace")&&(theme != "smart")){
-                        window.lyControl.offList(['station', 'event', 'eventPast']);
-                    }
+                    window.lyControl.offList(['station', 'event', 'eventPast', 'facility', 'route']);
                 }
             }
 
@@ -796,6 +848,7 @@ const lnbList = {
      * obj : ajax 반환값
      * */
     , createEvent : obj => {
+        console.log(obj);
         let objAry = JSON.parse(obj);
         const $target = $('section.select .lnb_tab_section[data-value=event]');
 
@@ -1085,4 +1138,5 @@ function reloadCluster(result, layer) {
 
     window.lyControl.find(layer).setSource(clusterSource);
     window.lyControl.find(layer).changed();
+    window.map.map.render();
 }
