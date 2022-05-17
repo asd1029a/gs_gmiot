@@ -19,6 +19,6 @@ public enum BodyType {
 
     STRING,
 
-    OBJECT_MAPPING
+    OBJECT_MAPPING,
 
 }

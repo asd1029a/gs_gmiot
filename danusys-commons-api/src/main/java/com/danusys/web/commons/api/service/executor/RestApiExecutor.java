@@ -22,12 +22,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 
 /**
@@ -117,7 +119,7 @@ public class RestApiExecutor implements ApiExecutor {
 //        if (api.getApiRequestParams() == null || api.getApiRequestParams().isEmpty())
 //            throw new IllegalArgumentException("apiRequestParams 값이 null 입니다.");
 
-        final List<ApiParam> apiRequestParams = api.getApiRequestParams().stream().sorted(Comparator.comparing((ApiParam p) -> p.getSeq())).collect(Collectors.toList());
+        final List<ApiParam> apiRequestParams = api.getApiRequestParams().stream().sorted(Comparator.comparing((ApiParam p) -> p.getSeq())).collect(toList());
         log.trace("### apiRequestParams : {}", apiRequestParams.toString());
 
         //TODO IN / OUT 로그 저장 ??
@@ -128,10 +130,11 @@ public class RestApiExecutor implements ApiExecutor {
         //요청 파라미터 값 추출
         final Map<String, Object> reqMap = apiRequestParams
                 .stream()
-                .collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+                .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
         final String targetUrl = api.getTargetUrl() + api.getTargetPath();
         Object result = "";
 
+        ResponseEntity<String> responseEntity;
         try {
 //            final HttpHeaders headers = new HttpHeaders();
             HttpMethod method = HttpMethod.valueOf(api.getMethodType().name());
@@ -139,7 +142,7 @@ public class RestApiExecutor implements ApiExecutor {
 
             log.trace("웹서비스 주소:{}, 메소드:{}, 미디어타입:{}, 파라미터:{}", targetUrl, method, mediaType, reqMap);
 
-            ResponseEntity<String> responseEntity = getResponseEntity(api, method, mediaType, reqMap);
+            responseEntity = getResponseEntity(api, method, mediaType, reqMap);
             final String res = responseEntity.getBody();
 
             AtomicReference<String> body = new AtomicReference(res);
@@ -152,19 +155,20 @@ public class RestApiExecutor implements ApiExecutor {
                 body.set(StringUtils.replace(body.get(), apiRes.getFieldMapNm(), apiRes.getFieldNm()));
             });
 
-            if( api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+            if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
                 log.trace("### Response 객체 리턴");
                 ObjectMapper objectMapper = new ObjectMapper();
-                Map<String, Object> objectMap = objectMapper.readValue(body.get(), new TypeReference<Map<String, Object>>(){});
+                Map<String, Object> objectMap = objectMapper.readValue(body.get(), new TypeReference<Map<String, Object>>() {
+                });
                 Map<String, Object> resultMap = new HashMap<>();
                 Map<String, Object> resultMap1 = new HashMap<>();
 
                 api.getApiResponseParams().stream().filter(f -> f.getParentSeq() == 0).forEach(apiRes0 -> {
-                    log.trace("### res apiRes0 > {}", apiRes0.getFieldNm() );
+                    log.trace("### res apiRes0 > {}", apiRes0.getFieldNm());
 
                     Map<String, Object> tempMap0 = (Map<String, Object>) objectMap.get(apiRes0.getFieldNm());
                     api.getApiResponseParams().stream().filter(f -> f.getParentSeq() == 1).forEach(apiRes1 -> {
-                        log.trace("### res apiRes1 > {}", apiRes1.getFieldNm() );
+                        log.trace("### res apiRes1 > {}", apiRes1.getFieldNm());
                         log.trace("### res apiRes1 > {}", tempMap0.get(apiRes1.getFieldNm()));
                         apiRes1.setValue((String) tempMap0.get(apiRes1.getFieldNm()));
                         resultMap1.put(apiRes1.getFieldNm(), tempMap0.get(apiRes1.getFieldNm()));
@@ -173,6 +177,9 @@ public class RestApiExecutor implements ApiExecutor {
                 });
 
                 result = resultMap;
+
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(result);
 
             } else {
                 result = body.get();
@@ -185,8 +192,7 @@ public class RestApiExecutor implements ApiExecutor {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(result);
+        return responseEntity;
     }
 
 
@@ -230,6 +236,14 @@ public class RestApiExecutor implements ApiExecutor {
                             throw new RuntimeException(e);
                         }
                         httpHeaders.setBearerAuth(accessToken);
+                    } else if (api.getAuthInfo().contains("session")) {
+                        Cookie cookie = null;
+                        try {
+                            cookie = apiCallService.getApiSession(api);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        httpHeaders.add(cookie.getName(), cookie.getValue());
                     } else {
                         httpHeaders.set("Authorization", api.getAuthInfo());
                     }
@@ -251,23 +265,24 @@ public class RestApiExecutor implements ApiExecutor {
                 URI tUri = factory.builder().queryParams(params).path(api.getTargetPath()).build();
 
                 mono = WebClient.builder()
-//                        .filter(ExchangeFilterFunction.ofRequestProcessor(
-//                                clientRequest -> {
-//                                    log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
-//                                    clientRequest.headers()
-//                                            .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
-//                                    return Mono.just(clientRequest);
-//                                }
-//                        ))
-//                        .filter(ExchangeFilterFunction.ofResponseProcessor(
-//                                clientResponse -> {
-//                                    clientResponse.headers()
-//                                            .asHttpHeaders()
-//                                            .forEach((name, values) ->
-//                                                    values.forEach(value -> log.debug("{} : {}", name, value)));
-//                                    return Mono.just(clientResponse);
-//                                }
-//                        ))
+                        .filter(ExchangeFilterFunction.ofRequestProcessor(
+                                clientRequest -> {
+                                    log.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
+                                    clientRequest.headers()
+                                            .forEach((name, values) -> values.forEach(value -> log.debug("{} : {}", name, value)));
+                                    return Mono.just(clientRequest);
+                                }
+                        ))
+                        .filter(ExchangeFilterFunction.ofResponseProcessor(
+                                clientResponse -> {
+                                    log.trace("response status code : {}", clientResponse.statusCode());
+                                    clientResponse.headers()
+                                            .asHttpHeaders()
+                                            .forEach((name, values) ->
+                                                    values.forEach(value -> log.debug("{} : {}", name, value)));
+                                    return Mono.just(clientResponse);
+                                }
+                        ))
                         .uriBuilderFactory(factory)
                         .build().method(method)
                         .uri(tUri)
@@ -342,7 +357,7 @@ public class RestApiExecutor implements ApiExecutor {
                         .stream().map(f -> {
                             return f.getKey() + "=" + f.getValue() + "";
                         })
-                        .collect(Collectors.joining("&"));
+                        .collect(joining("&"));
 
                 uri = new URI(targetUrl + "?" + queryString);
             } else if (method == HttpMethod.POST || method == HttpMethod.PUT) {

@@ -1,5 +1,6 @@
 package com.danusys.web.commons.mqtt;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.stereotype.Component;
@@ -16,19 +17,45 @@ import java.util.function.Consumer;
  */
 
 @Slf4j
-@Component
 public class DanuMqttClient implements MqttCallback {
     private MqttClient mqttClient;
     private MqttConnectOptions option;
-    private String name;
 
     // 메시지 도착 후 응답하는 함수
     private Consumer<HashMap<Object, Object>> FNC = null; // 메시지 도착 후 응답하는 함수
     private Consumer<HashMap<Object, Object>> FNC2 = null; //커넥션이 끊긴 후 응답하는 함수
     private Consumer<HashMap<Object, Object>> FNC3 = null; //커넥션이 끊긴 후 응답하는 함수
 
-    public DanuMqttClient(Consumer<HashMap<Object, Object>> fnc) {
-        this.FNC = fnc;
+    public DanuMqttClient() {
+
+        this.FNC = (arg)-> {
+            arg.forEach((key, value)->{
+                System.out.println(String.format("메시지 도착, 키 -> %s, 값 -> %s", key, value));
+            });
+        };
+
+        try {
+
+            // init
+            this.mqttClient("", "", "tcp://1.235.55.18:1883", "clientId1")
+                    .subscribe(new String[] {"#"});
+
+            this.initConnectionLost( (arg)->{  //콜백행위1, 서버와의 연결이 끊기면 동작
+                arg.forEach((key, value)->{
+                    System.out.println( String.format("커넥션 끊김~! 키 -> %s, 값 -> %s", key, value) );
+                });
+            });
+
+            this.initDeliveryComplete((arg)-> {  //콜백행위2, 메시지를 전송한 이후 동작
+                arg.forEach((key, value)->{
+                    System.out.println( String.format("메시지 전달 완료~! 키 -> %s, 값 -> %s", key, value) );
+                });
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public DanuMqttClient mqttClient(String userName, String password, String serverUri, String clientId) {
@@ -104,7 +131,7 @@ public class DanuMqttClient implements MqttCallback {
     }
 
     /**
-     * 커넥션이 끊어진 이후의 콜백행위를 등록합니다.<br>
+     * 커넥션이 끊어진 이후의 콜백행위를 등록합니다.
      * 해쉬맵 형태의 결과에 키는 result, 값은 Throwable 객체를 반환 합니다.
      * **/
     public void initConnectionLost (Consumer<HashMap<Object, Object>> fnc){
@@ -112,7 +139,7 @@ public class DanuMqttClient implements MqttCallback {
     }
 
     /**
-     * 커넥션이 끊어진 이후의 콜백행위를 등록합니다.<br>
+     * 커넥션이 끊어진 이후의 콜백행위를 등록합니다.
      * 해쉬맵 형태의 결과에 키는 result, 값은 Throwable 객체를 반환 합니다.
      * **/
     public void initDeliveryComplete (Consumer<HashMap<Object, Object>> fnc){
@@ -128,7 +155,7 @@ public class DanuMqttClient implements MqttCallback {
         return true;
     }
 
-    public void testClose(){
+    public void mqttDisconnection(){
         if(mqttClient != null){
             try {
                 boolean connected = mqttClient.isConnected();
@@ -140,50 +167,5 @@ public class DanuMqttClient implements MqttCallback {
             }
         }
     }
-
-    public static void main(String [] args) {
-        final Consumer<HashMap<Object, Object>> pdk = (arg)-> {
-            arg.forEach((key, value)->{
-                System.out.println(String.format("메시지 도착, 키 -> %s, 값 -> %s", key, value));
-            });
-        };
-
-        // pdk 전달
-        DanuMqttClient testClient = new DanuMqttClient(pdk);
-
-        try {
-
-            // init
-            testClient.mqttClient("", "", "tcp://1.235.55.18:1883", "clientId1")
-                    .subscribe(new String[] {"#"});
-
-            testClient.initConnectionLost( (arg)->{  //콜백행위1, 서버와의 연결이 끊기면 동작
-                arg.forEach((key, value)->{
-                    System.out.println( String.format("커넥션 끊김~! 키 -> %s, 값 -> %s", key, value) );
-                });
-            });
-
-            testClient.initDeliveryComplete((arg)-> {  //콜백행위2, 메시지를 전송한 이후 동작
-                arg.forEach((key, value)->{
-                    System.out.println( String.format("메시지 전달 완료~! 키 -> %s, 값 -> %s", key, value) );
-                });
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        /*new Thread( ()-> {
-            try {
-                Thread.sleep(9000);
-                testClient.sender("#", "");
-                testClient.testClose();  //종료는 이렇게!
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-*/
-    }
-
-
 
 }

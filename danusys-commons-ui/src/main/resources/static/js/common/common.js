@@ -464,7 +464,7 @@ var comm = {
         //toastr.options.onclick = callback;
         var newObj = $.extend(toastr.options, typeof(mainObj.options)=="undefined" ? {} : mainObj.options);
         toastr.options = newObj;
-        mainObj.options = {'maxToast':5};
+        mainObj.options = {'maxToast':100};
 
         if(typeof mainObj.options.maxToast != 'undefined') {
             toastr.subscribe(function(args) {

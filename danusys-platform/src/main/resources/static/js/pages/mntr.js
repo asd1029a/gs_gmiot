@@ -3,6 +3,74 @@
  */
 const mntr = {
     init : () => {
+
+        //TODO sse이벤트 수신 test
+        const eventSource = new EventSource(`/sse/112`);
+
+        eventSource.onopen = (e) => {
+            console.log(e);
+        };
+        eventSource.onerror = (e) => {
+            console.log("=====수신실패=====")
+            console.log(e);
+        };
+        eventSource.onmessage = (e) => {
+            const objJson = JSON.parse(e.data);
+            const objList = objJson['event_list'];
+
+            const eventSeqs = [];
+
+            //긴급 배너 띄우기
+            objList.forEach((e,i)=> {
+                if(e.event_grade == 20){
+                    eventSeqs.push(e.event_seq);
+                    const mainObj = {
+                        type : "error",
+                        title : e.device_id + " 디바이스 이벤트 발생",
+                        content : e.event_message
+                    };
+                    comm.toastOpen(mainObj, () => {}, {});
+                }
+            });
+            // const options = {
+            //     timeOut : "1500",
+            //     positionClass : "toast-top-full-width",
+            //     progressBar: false,
+            //     preventDuplicates : false
+            // }
+            $('.toast-top-full-width').css({
+                'left': $('.lnb').width() + $('.menu_fold').width() + $('.map_location').width() + 7,
+                    //$('#map').offset().left,
+                'top': $('#map').offset().top + 10,
+                    //$('#map').offset().top + $('.map_location').height() + 20 ,
+                'width': '40%', /*'height' : '320px'*/
+            }); //TODO 스크롤
+
+            const $targetMenu = $('.mntr_container .lnb ul li.active').attr('data-value');
+            const $targetTab = $('.mntr_container section.menu_fold.select .lnb_tab_section.select').attr('data-value');
+
+            if($targetTab == "event"){
+                let newAry;
+                event.getListGeoJson({
+                    "eventState": ["1","2","3"]
+                }, result => {
+                    //리스트 추가하기
+                    const data = JSON.parse(result);
+                    const ary = [];
+                    data.features.forEach(t => {
+                        const seq = t.properties.eventSeq;
+                        if(eventSeqs.includes(seq)){
+                            ary.push(t);
+                        }
+                    });
+                    data.features = ary;
+                    lnbList.createEvent(JSON.stringify(data));
+                    //레이어 refresh
+                    reloadCluster(JSON.parse(result), 'eventLayer');
+                });
+            }
+        };
+
         $(document).contextmenu( e => {
             e.preventDefault();
 //			if(e.target.className.indexOf('no_target')>-1){
@@ -46,13 +114,12 @@ const mntr = {
             , contentType : "application/json; charset=utf-8"
             , async : false
         }).done((result) => {
-            console.log(result);
             siGunCode = result;
             window.siGunCode = result;
         });
 
         //지도 생성
-        let map = new mapCreater('map',0, siGunCode);
+        let map = new mapCreater('map',0);//, siGunCode);
         map.createMousePosition('mousePosition');
         map.scaleLine();
         map.createContextMenu(menuObj);
@@ -318,6 +385,7 @@ const mntr = {
                     if((theme != "drone")&&(theme != "addressPlace")&&(theme != "smart")) {
                         window.lyControl.onList(['station', target]);
                     }
+                    if(theme == "drone"){window.lyControl.onList(['facility', 'route', target]);}
                     window.lyControl.find("stationLayer").getSource().setDistance(0);
                     window.lyControl.find("eventLayer").getSource().setDistance(0);
                     window.lyControl.find("eventPastLayer").getSource().setDistance(0);
@@ -325,13 +393,12 @@ const mntr = {
                     if((theme != "drone")&&(theme != "addressPlace")&&(theme != "smart")) {
                         window.lyControl.onList(['station', target]);
                     }
+                    if(theme == "drone"){window.lyControl.onList(['facility', 'route', target]);}
                     window.lyControl.find("stationLayer").getSource().setDistance(30);
                     window.lyControl.find("eventLayer").getSource().setDistance(30);
                     window.lyControl.find("eventPastLayer").getSource().setDistance(30);
                 } else { //4.xxx ~ 0
-                    if((theme != "drone")&&(theme != "addressPlace")&&(theme != "smart")){
-                        window.lyControl.offList(['station', 'event', 'eventPast']);
-                    }
+                    window.lyControl.offList(['station', 'event', 'eventPast', 'facility', 'route']);
                 }
             }
 
@@ -451,8 +518,8 @@ const mntr = {
         //RNM TAB SWITCH (오른쪽 창 탭 변경)
         $('.area_right .tab li').on("click", e => {
             const type = $(e.currentTarget).attr('data-value');
-            $('.area_right_scroll').removeClass("select");
-            $('.area_right_scroll[data-value='+ type +']').addClass("select");
+            $(e.currentTarget).parents('section').find('.area_right_scroll').removeClass("select");
+            $(e.currentTarget).parents('section').find('.area_right_scroll[data-value='+ type +']').addClass("select");
             //ACTIVE STYLE
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
@@ -962,7 +1029,13 @@ const rnbList = {
     }
     , createEvent : obj => {
         /*TODO 데이터 오면 정보 채우기*/
-        const target = $('.area_right[data-value=event]');
+
+        //이벤트 타겟 레이어 찾기
+        let eventTarget = 'station';
+        if(window.lyControl.find('facilityLayer').getVisible()){
+            eventTarget = 'facility';
+        }
+        const target = $('.area_right[data-value=event][data-target=' + eventTarget + ']');
         const prop = obj.getProperties();
 
         target.data(obj);
@@ -983,10 +1056,18 @@ const rnbList = {
         //다른 유형 중복선 제거
         window.lyConnect.remove('event');
         window.lyConnect.remove('station');
-        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=event]', 'event');
+        const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=event][data-target=' + eventTarget + ']', 'event');
         window.map.addLayer(line);
-        console.log(obj);
         window.map.setPulse(obj.getGeometry().getCoordinates());
+    }
+    , createFacility : obj => {
+        const target = $('.area_right[data-value=facility]');
+        const prop = obj.getProperties();
+        //TODO 정보 채워두기
+        console.log(prop);
+
+        target.data(obj);
+        target.addClass('select');
     }
 }
 
@@ -1069,4 +1150,5 @@ function reloadCluster(result, layer) {
 
     window.lyControl.find(layer).setSource(clusterSource);
     window.lyControl.find(layer).changed();
+    window.map.map.render();
 }

@@ -97,6 +97,12 @@
             <version>11.1.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>toastr</artifactId>
+            <version>2.1.4</version>
+        </dependency>
+
         <!-- um -->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->

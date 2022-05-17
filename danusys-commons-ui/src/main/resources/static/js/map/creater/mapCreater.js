@@ -246,8 +246,6 @@ class mapCreater {
             layer.setZIndex(idx);
         });
 
-        console.log(sigun);
-        console.log(this.center);
     }
 
     /**
@@ -443,11 +441,12 @@ class mapCreater {
             tilesId = 'satellite,hybrid';
             this.tiles = tilesId;
         }
-        for (let i = 0, max = layers.length; i < max; i++) {
+
+        for (let i = 0, max = 13; i < max; i++) {
             const title = layers[i].get('title');
-            if($('#btnImgview').hasClass('selected_btn') && title == 'roadView') {
-                continue;
-            }
+        //     if($('#btnImgview').hasClass('selected_btn') && title == 'roadView') {
+        //         continue;
+        //     }
             tilesId.indexOf(title) > -1 || layers[i] instanceof ol.layer.Vector ? layers[i].setVisible(true) : layers[i].setVisible(false);
         }
     }
