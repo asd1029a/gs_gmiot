@@ -11,6 +11,7 @@ import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.api.util.StaticUtil;
 import com.danusys.web.commons.app.StrUtils;
+import com.danusys.web.commons.mqtt.DanuMqttClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,6 +63,7 @@ public class ApiCallRestController {
     private final ForecastService forecastService;
     private final EventService eventService;
     private final FacilityOptService facilityOptService;
+    private final DanuMqttClient danuMqttClient;
 //    private final  CookieService cookieService;
     private final HttpServletRequest request;
 //    private final HttpServletResponse response;
@@ -318,8 +320,12 @@ public class ApiCallRestController {
                 });
                 if(list.getEventKind().equals("1") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("1") && checkExist.isEmpty())){
                     //사람있음
+                    StaticUtil.checkExist = "1";
+                    danuMqttClient.sender("existenceValue","1");
                 }else if(list.getEventKind().equals("0") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("0") && checkExist.isEmpty())){
                     //사람없음
+                    StaticUtil.checkExist = "0";
+                    danuMqttClient.sender("existenceValue","0");
                 }
                 log.trace(list.toEntity().toString());
             }
