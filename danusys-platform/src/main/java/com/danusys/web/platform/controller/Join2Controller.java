@@ -27,7 +27,7 @@ public class Join2Controller {
     }
 
 
-    @RequestMapping("/login/errorTest")
+    @RequestMapping("/login/error")
     public ModelAndView error() {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("view/error");

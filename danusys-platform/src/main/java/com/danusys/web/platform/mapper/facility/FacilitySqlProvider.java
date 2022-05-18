@@ -420,6 +420,17 @@ public class FacilitySqlProvider {
         return sql.toString();
     }
 
+    public String selectOneSignageLayoutQry(int tempateSeq) {
+        SQL sql = new SQL() {
+            {
+                SELECT("t1.template_content");
+                FROM("t_signage_template t1");
+                WHERE("t1.template_seq::integer = " + tempateSeq);
+            }
+        };
+        return sql.toString();
+    }
+
     public String insertSignageTemplateQry(Map<String, Object> paramMap) {
         Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
 

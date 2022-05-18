@@ -1,0 +1,52 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* wrap_signage */
+html, body{font-size: 16px;}
+.wrap_signage{width: 100%; height: 100%; color: #333; background: #35363a; display: flex; flex-direction: column;}
+.wrap_signage > div{display: flex; flex: 1;}
+
+/* wrap_atmosphere */
+.wrap_atmosphere{flex-direction: column; grid-gap: 2rem; padding: 2rem;}
+.area_title{display: flex; align-items: center; justify-content: space-between;}
+.area_title div{display: flex; grid-gap: 1.625rem;}
+.area_title h1{color: #FFF; font-size: 3rem; font-weight: bold;}
+.area_title ul.comment{position: relative; display: flex; flex-direction: column; grid-gap: 0.375rem;}
+.area_title ul.comment li{padding: 0 0 0 0.5rem; color: #bababa; font-size: 0.75rem;}
+.area_title ul.comment li::before{position: absolute; left: 0; content: ''; width: 0.25rem; height: 0.25rem; margin: 0.4rem 0; border-radius: 50%; background: #bababa;}
+
+.stepper{flex: 0.7; display: flex; padding: 1.5rem 1rem 0 0;}
+.stepper li{flex: 1; display: flex; flex-direction: column; grid-gap: 0.75rem;}
+.stepper li span.bar{position: relative; width: 100%; height: 0.625rem; background: black;}
+.stepper li:nth-last-child(1) span.bar{background: #2DCCFF;}
+.stepper li:nth-last-child(2) span.bar{background: #56F000;}
+.stepper li:nth-last-child(3) span.bar{background: #FFB302;}
+.stepper li:nth-last-child(4) span.bar{background: #FF3838;}
+.stepper li:nth-last-child(5) span.bar{background: #8B62FF;}
+.stepper li span.bar::after{position: absolute; right: 0; bottom: 0; content: ''; width: 0.0625rem; height: 1rem; background: #bababa;}
+.stepper li span.bar em{position: absolute; top: -1.5rem; right: -0.5rem; width: 1rem; color: #bababa; font-size: 0.75rem; font-weight: bold; text-align: center;}
+.stepper li span.text{color: #bababa; font-size: 0.75rem; font-weight: bold; text-align: center;}
+.stepper li:nth-child(1) span.bar{background: none;}
+
+.area_atmosphere{flex: 1; display: flex; grid-gap: 2.1875rem;}
+.area_atmosphere .box_lt{flex: 0.8; display: flex; flex-direction: column; padding: 2.5rem 1.75rem; border-radius: 1.125rem; background: #202124;}
+.area_atmosphere .box_rt{flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 1.75rem;}
+.area_atmosphere .box_value{flex: 1; display: flex; flex-direction: column; grid-gap: 1.25rem; border-radius: 1.125rem; background: #202124;}
+.area_atmosphere .box_value h6{color: #dadada; font-weight: bold; white-space: nowrap;}
+.area_atmosphere .box_rt .box_value{padding: 1.125rem;}
+.area_atmosphere .box_lt .box_value h6{font-size: 2rem;}
+.area_atmosphere .box_rt .box_value h6{font-size: 1.25rem; text-align: center;}
+.area_atmosphere .box_rt .box_value h6 sub{font-size: 1rem; vertical-align: sub;}
+.area_atmosphere .area_graph{flex: 1; width: 100%; margin: auto;}
+
+footer{display: flex; justify-content: flex-end;}
+footer ul{display: flex; grid-gap: 2rem;}
+footer ul li{position: relative; padding: 0 0 0 0.5rem; color: #bababa; font-size: 0.75rem; line-height: 1rem;}
+footer ul li::before{position: absolute; left: 0; content: ''; width: 0.25rem; height: 0.25rem; margin: 0.4rem 0; border-radius: 50%; background: #bababa;}
+/* //wrap_atmosphere */
+
+
+
+
+
+
