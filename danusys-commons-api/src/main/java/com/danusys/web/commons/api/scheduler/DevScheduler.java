@@ -33,7 +33,7 @@ public class DevScheduler {
     private final RestTemplate restTemplate;
 
 //    @Scheduled(cron = "0/30 * * * * *")
-    @Scheduled(fixedDelay = 60000)
+//    @Scheduled(fixedDelay = 60000)
     public void apiCallSchedule() throws Exception{
 //        Map<String,Object> param = new HashMap<>();
 //        param.put("callUrl","/lg/drone/drones");
