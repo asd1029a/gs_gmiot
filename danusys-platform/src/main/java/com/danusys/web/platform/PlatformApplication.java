@@ -22,15 +22,12 @@ public class PlatformApplication {
 		SpringApplication.run(PlatformApplication.class, args);
 	}
 
-	//TODO
-	//FIXME
-	// - 부산남구 버전 처리
-	/*@Bean
+	//TODO 부산남구 버전 처리
+	@Bean
 	public ApplicationRunner applicationRunner() {
 		return args -> {
-			IntellivixWebsocketEventClient intellivixWebsocketEventClient = new IntellivixWebsocketEventClient();
-			intellivixWebsocketEventClient.connect();
-
+			/*IntellivixWebsocketEventClient intellivixWebsocketEventClient = new IntellivixWebsocketEventClient();
+			intellivixWebsocketEventClient.connect();*/
 		};
-	}*/
+	}
 }

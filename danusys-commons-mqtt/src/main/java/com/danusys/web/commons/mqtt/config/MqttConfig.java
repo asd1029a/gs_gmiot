@@ -15,8 +15,8 @@ import org.springframework.context.annotation.Configuration;
 //TODO 영주 버전만 실행 해야함
 @Configuration
 public class MqttConfig {
-    /*@Bean
+    @Bean
     public DanuMqttClient danuMqttClient() {
         return new DanuMqttClient();
-    }*/
+    }
 }

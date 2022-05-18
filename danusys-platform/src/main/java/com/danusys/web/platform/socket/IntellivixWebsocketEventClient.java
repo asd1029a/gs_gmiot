@@ -2,6 +2,7 @@ package com.danusys.web.platform.socket;
 
 import com.danusys.web.commons.api.dto.ApiParamDto;
 import com.danusys.web.platform.service.intellivix.IntellivixServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -75,11 +76,29 @@ public class IntellivixWebsocketEventClient {
                 scheduledExecutorService.scheduleAtFixedRate(task, 600, 600, TimeUnit.SECONDS);
             }
 
+
+            //TODO pattr(보행자속성) 값 not null 체크완료 //face metadata 들어올때 체크 해 봐야함
             @Override
             public void onMessage(String message) {
-                System.out.println("received: " + message);
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Map<String, Object> resultMessage = objectMapper.readValue(message, new TypeReference<Map<String, Object>>(){});
+                    Map<String,Object> obj;
+                    obj = (Map<String, Object>) ((Map<String,Object>)resultMessage.get("evt")).get("obj");
+                    String pattr = "";
+                    if(!obj.containsKey("pattr")) {
+                        return;
+                    }
+                    pattr = obj.get("pattr").toString();
+                    System.out.println(pattr);
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                //System.out.println("received: " + message);
                 // 맞으면 업데이트
                 // 틀리면
+
             }
 
 

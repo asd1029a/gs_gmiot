@@ -30,7 +30,7 @@ public class DanuMqttClient implements MqttCallback {
 
         this.FNC = (arg)-> {
             arg.forEach((key, value)->{
-                System.out.println(String.format("메시지 도착, 키 -> %s, 값 -> %s", key, value));
+                //System.out.println(String.format("메시지 도착, 키 -> %s, 값 -> %s", key, value));
             });
         };
 
