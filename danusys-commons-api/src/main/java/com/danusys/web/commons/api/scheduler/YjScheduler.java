@@ -20,7 +20,7 @@ import java.util.Map;
 @Component
 @Profile(value = "yj")
 @RequiredArgsConstructor
-public class ApiScheduler {
+public class YjScheduler {
     private final ApiUtils apiUtils;
     private final ObjectMapper objectMapper;
     private final EventService eventService;
@@ -39,7 +39,7 @@ public class ApiScheduler {
 
         log.info("보려는 시간 : {}",iNow-1);
 
-        String body = apiUtils.getRestCallBody(param);
+        String body = (String) apiUtils.getRestCallBody(param);
         log.trace("scheduler people count : {}", body);
         // event save
         EventReqeustDTO eventReqeustDTO = objectMapper.readValue(body, new TypeReference<EventReqeustDTO>() {

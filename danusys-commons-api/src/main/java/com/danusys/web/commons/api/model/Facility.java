@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name = "t_facility")
 public class Facility implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long facilitySeq;
 
     @Column(nullable = false)
@@ -61,7 +61,7 @@ public class Facility implements Serializable {
     @Column
     private double longitude;
 
-    @Column(nullable = false)
+    @Column
     private Long stationSeq;
 
     @OneToMany(fetch = FetchType.EAGER)

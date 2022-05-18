@@ -65,7 +65,6 @@ public class ApiCallRestController {
     private final FacilityOptService facilityOptService;
     private final DanuMqttClient danuMqttClient;
 //    private final  CookieService cookieService;
-    private final HttpServletRequest request;
 //    private final HttpServletResponse response;
 
 
