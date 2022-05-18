@@ -5,6 +5,7 @@ import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.repository.FacilityOptRepository;
 import com.danusys.web.commons.api.repository.FacilityRepository;
 import com.danusys.web.commons.api.repository.StationRepository;
+import com.danusys.web.commons.app.StrUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -45,18 +46,50 @@ public class FacilityService {
     public void saveAll(List<Map<String, Object>> list) {
         List<Facility> facilityList = new ArrayList<Facility>();
         list.stream().forEach((d) -> {
-            String facilityId = d.get("facility_id").toString() + "DDD";
+            String facilityId = d.get("facility_id").toString();
             Facility originFacility = this.findByFacilityId(facilityId);
             Facility facility = originFacility == null ? new Facility() : originFacility;
-            Station station = stationRepository.findByStationName(d.get("station_name").toString());
-            Long codeSeq = facilityRepository.findCommonCode(d.get("facility_kind").toString());
+            Station station = stationRepository.findByStationName(StrUtils.getStr(d.get("station_name")));
+            Long codeSeq = facilityRepository.findCommonCode(StrUtils.getStr(d.get("facility_kind")));
 
-            facility.setLatitude(Double.parseDouble(d.get("latitude").toString()));
-            facility.setLongitude(Double.parseDouble(d.get("longitude").toString()));
+            facility.setLatitude(Double.parseDouble(StrUtils.getStr(d.get("latitude"))));
+            facility.setLongitude(Double.parseDouble(StrUtils.getStr(d.get("longitude"))));
             facility.setFacilityId(facilityId);
             facility.setStationSeq(station.getStationSeq());
             facility.setFacilityStatus(0);
             facility.setFacilityKind(Integer.parseInt(codeSeq.toString()));
+
+            facilityList.add(facility);
+        });
+
+        facilityRepository.saveAll(facilityList);
+    }
+
+    public void saveAll(List<Map<String, Object>> list, String facilityKind) {
+        List<Facility> facilityList = new ArrayList<Facility>();
+        list.stream().forEach((d) -> {
+            String facilityId = d.get("facility_id").toString();
+            Facility originFacility = this.findByFacilityId(facilityId);
+            Facility facility = originFacility == null ? new Facility() : originFacility;
+            Station station = stationRepository.findByStationName(StrUtils.getStr(d.get("station_name")));
+            Long codeSeq = facilityRepository.findCommonCode(facilityKind);
+
+            String latitude = StrUtils.getStr(d.get("latitude"));
+            String longitude = StrUtils.getStr(d.get("longitude"));
+
+
+            latitude = latitude.isEmpty() ? "0" : latitude;
+            longitude = longitude.isEmpty() ? "0" : longitude;
+
+            facility.setLatitude(Double.parseDouble(latitude));
+            facility.setLongitude(Double.parseDouble(longitude));
+            facility.setFacilityId(facilityId);
+            facility.setFacilityStatus(0);
+            facility.setFacilityKind(Integer.parseInt(codeSeq.toString()));
+
+            if (station != null) {
+                facility.setStationSeq(station.getStationSeq());
+            }
 
             facilityList.add(facility);
         });
