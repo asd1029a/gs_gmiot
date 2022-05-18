@@ -192,7 +192,8 @@ public class RestApiExecutor implements ApiExecutor {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
         }
 
-        return responseEntity;
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(result);
     }
 
 
