@@ -15,29 +15,33 @@ const signageDisplay = {
             if(obj1.kind === "airPollution") {
                 signageEle = signageDisplay.createAirPollutionEle();
             } else if(obj1.kind === "rtspUrl") {
-                signageEle = signageDisplay.createRtsp();
+                signageEle = signageDisplay.createRtsp(obj1);
             } else if(obj1.kind === "imageFile") {
-                signageEle = signageDisplay.createImageEle();
+                signageEle = signageDisplay.createImageEle(obj1);
             } else if(obj1.kind === "videoFile") {
-                signageEle = signageDisplay.createVideoEle();
+                signageEle = signageDisplay.createVideoEle(obj1);
             }
             $wrap.append(signageEle);
+            if(obj1.kind === "imageFile") {
+                $("#imageFile").prop("src", "/signageDisplay/getImage?imageFile=" + obj1.value);
+            } else if(obj1.kind === "videoFile") {
+                $("#videoFile").prop("src", "/signageDisplay/getVideo?videoFile=" + obj1.value);
+            }
         });
 
-        signageDisplay.getAirPollution(
+        signageDisplay.getListAirPollution(
             {}
             , (result) => {
                 signageDisplay.createAirPollutionChart(result);
             });
     }
     , createRtsp : () => {
-        let ele = '<div class="wrap_rtsp">'
-            + '<video autoplay>'
-            + '</div>'
-        return ele;
+        return '<div class="wrap_rtsp">'
+            + '<video id="rtspVideo" autoplay>'
+            + '</div>';
     }
     , createAirPollutionEle : () => {
-        let ele = '<div class="wrap_atmosphere">'
+        return '<div class="wrap_atmosphere">'
             + '<div class="area_title">'
             + '<div>'
             + ' <h1>공기질</h1>'
@@ -107,20 +111,18 @@ const signageDisplay = {
             + ' </div>'
             + ' </section>'
             + ' </div>'
-            + '</div>'
-        return ele;
+            + '</div>';
     }
-    , createImageEle : (pObj) => {
-        let ele = '<div class="wrap_image">'
-                //+ '<img src="/signageDisplay/getImage?imageFileName="'+pObj.imageFile+' alt="image">'
-                + '</div>'
-        return ele;
+    , createImageEle : () => {
+        return '<div class="wrap_image">'
+            + '<img width="100%" height="100%" id="imageFile" alt="image">'
+            + '</div>';
     }
     , createVideoEle : () => {
-        let ele = '<div class="wrap_video">'
-                + '<video autoplay>'
-                + '</div>'
-        return ele;
+        return '<div class="wrap_video">'
+            + '<video id="videoFile" width="100%" height="100%" autoplay="autoplay" loop="loop" muted="muted">'
+            + '브라우저가 영상을 지원하지 않습니다.'
+            + '</div>';
     }
     , createAirPollutionChart : (pObj) => {
         const options = {
@@ -223,9 +225,9 @@ const signageDisplay = {
             }
         })
     }
-    , getAirPollution : (param, pCallback) => {
+    , getListAirPollution : (param, pCallback) => {
         $.ajax({
-            url : "/signageDisplay/getAirPollution"
+            url : "/signageDisplay/getListAirPollution"
             , type : "POST"
             , data : JSON.stringify(param)
             , contentType : "application/json; charset=utf-8"
@@ -233,7 +235,7 @@ const signageDisplay = {
         }).done((result) => {
             pCallback(result);
         }).fail((result)=> {
-            console.log("정보수신에 실패했습니다." + result);
+            console.log("대기오염 정보수신에 실패했습니다." + result);
         });
     }
     , getImage : () => {

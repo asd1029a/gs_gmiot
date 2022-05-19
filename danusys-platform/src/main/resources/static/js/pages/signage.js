@@ -16,21 +16,6 @@ const signage = {
 
         signage.getList({},signage.createTemplateList);
 
-        $("#templateList dl").on('click', (e) => {
-            e.preventDefault();
-            $(".signage_template .article_title ul li").hide();
-            $("#templateList dl dt input:checked").prop("checked", false);
-            $(e.currentTarget).find("input").prop("checked", true);
-
-            if($(e.currentTarget).find("input").prop("checked")){
-                $("#modSignageTemplateBtn").show();
-                $(".signage_layout .article_title ul").css("display", "flex");
-                signage.createTemplateLayout(JSON.parse($(e.currentTarget).data("templateContent")));
-            } else {
-                $("#addSignageTemplateBtn").show();
-            }
-        });
-
         $("#addSignageTemplateProcBtn").on('click', () => {
             if($("#signageTemplateForm").doValidation()) {
                 const templateObj = $("#signageTemplateForm").serializeJSON();
@@ -120,6 +105,7 @@ const signage = {
                         comm.showAlert("<br/> 사이니지 레이아웃이 등록되었습니다.");
                         signage.getList({}, signage.createTemplateList);
                         signage.hidePopup();
+                        signage.hideLayout();
                     }
                     , () => {
                         comm.showAlert("사이니지 레이아웃 등록에 실패했습니다.");
@@ -163,6 +149,21 @@ const signage = {
             $target.find("dl:last-child").data(each);
 
         });
+        $("#templateList dl").off('click');
+        $("#templateList dl").on('click', (e) => {
+            e.preventDefault();
+            $(".signage_template .article_title ul li").hide();
+            $("#templateList dl dt input:checked").prop("checked", false);
+            $(e.currentTarget).find("input").prop("checked", true);
+
+            if($(e.currentTarget).find("input").prop("checked")){
+                $("#modSignageTemplateBtn").show();
+                $(".signage_layout .article_title ul").css("display", "flex");
+                signage.createTemplateLayout(JSON.parse($(e.currentTarget).data("templateContent")));
+            } else {
+                $("#addSignageTemplateBtn").show();
+            }
+        });
     }
     , createTemplateLayout : obj => {
         const $target = $('#templateArea');
@@ -178,10 +179,14 @@ const signage = {
 
         //값 부여
         obj.forEach((each,idx) => {
-            $('#height_'+idx).val(each.height);
-            $('#kind_'+idx).val(each.kind).trigger('change');
-            if(each.value !== "" && typeof each.value !== "undefined") {
-                $('#kind_'+idx).siblings("div").find("input").val(each.value);
+            if(Object.keys(each).length === 0 && each.constructor === Object) {
+                return false;
+            } else {
+                //$('#height_'+idx).val(each.height);
+                $('#kind_'+idx).val(each.kind).trigger('change');
+                if(each.value !== "" && typeof each.value !== "undefined") {
+                    $('#kind_'+idx).siblings("div").find("input[type='text']").val(each.value);
+                }
             }
         });
     }
@@ -201,23 +206,28 @@ const signage = {
                 {
                     'rtspUrl': '<input type="text" name="rtspUrl" placeholder="rtsp URL 작성">',
                     'imageFile': '<div class="fileBox">' +
-                        '<input class="uploadName" name="imageFileName" placeholder="이미지 첨부파일">\n' +
+                        '<input type="text" class="uploadName" name="imageFileName" placeholder="이미지 첨부파일" readonly>' +
                         '<label for="imageFile">파일찾기</label>' +
                         '<input type="file" name="imageFile" id="imageFile">' +
                         '</div>',
                     'videoFile': '<div class="fileBox">' +
-                        '<input class="uploadName" name="videoFileName" placeholder="동영상 첨부파일">\n' +
+                        '<input type="text" class="uploadName" name="videoFileName" placeholder="동영상 첨부파일" readonly>' +
                         '<label for="videoFile">파일찾기</label>' +
                         '<input type="file" name="videoFile" id="videoFile">' +
                         '</div>',
                     'airPollution' : '기상청 미세먼지 정보'
                 };
-
             $(targetNode).children().not('p').not('select').remove();
 
-            let tempTag = document.createElement(innerTag[targetValue]);
-            tempTag.innerHTML = innerHtml[targetValue];
-            targetNode.append(tempTag);
+            let tempTag;
+            if(targetValue !== "" && typeof targetValue !== "undefined") {
+                tempTag = document.createElement(innerTag[targetValue]);
+                tempTag.innerHTML = innerHtml[targetValue];
+            } else {
+                tempTag = '<div>종류를 선택해주십시오.</div>';
+            }
+
+            $(targetNode).append(tempTag);
 
             $("#imageFile").off('change');
             $("#imageFile").on('change', (e) => {
@@ -252,19 +262,20 @@ const signage = {
             "<li>" +
             "<p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>" +
             "<select class='contents_kind' id='kind_"+idx+"'>" +
+            "<option value=''>선택</option>" +
             "<option value='rtspUrl'>rtsp 영상</option>" +
             "<option value='imageFile'>이미지 선택</option>" +
             "<option value='videoFile'>영상 선택</option>" +
             "<option value='airPollution'>미세먼지 정보</option>" +
             "</select>" +
-            "<input type='text'>" +
+            "<div>종류를 선택해주십시오</div>" +
             "</li>";
 
         return content;
     }
     , addProc : (pObj, doneCallback, failCallback) => {
         $.ajax({
-            url : "/facility/signage/"
+            url : "/facility/signage/template"
             , type: "PUT"
             , data :  JSON.stringify(pObj)
             , async : false
@@ -340,6 +351,8 @@ const signage = {
     }
     , hideLayout : () => {
         $("#templateArea").empty();
+        $(".signage_template .article_title ul li").hide();
+        $("#addSignageTemplateBtn").show();
         $("#templateList dl dt input:checked").prop("checked", false);
     }
 }

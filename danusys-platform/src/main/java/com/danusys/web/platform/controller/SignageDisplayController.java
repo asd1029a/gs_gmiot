@@ -1,18 +1,24 @@
 package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.app.EgovMap;
+import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.platform.util.AirPollutionUtil;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.InputStreamReader;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +52,7 @@ public class SignageDisplayController {
         return mav;
     }
 
-    @PostMapping(value = "/signageDisplay/getAirPollution")
+    @PostMapping(value = "/signageDisplay/getListAirPollution")
     public Map<String, Object> getAirPollution(@RequestBody Map<String, Object> paramMap) throws Exception {
         /*TODO : 기상청 키 발급 properties 갱신 요망*/
         /*TODO : 사이니지 위치에 따른 측정소 분기 필요*/
@@ -105,5 +111,25 @@ public class SignageDisplayController {
             }
         });
         return resultMap;
+    }
+
+    @RequestMapping(value="/signageDisplay/getImage")
+    public void getImage(HttpServletResponse response, @RequestParam Map<String, Object> paramMap) throws Exception {
+        String imageFileName = paramMap.get("imageFile").toString();
+        FileUtil.getImage2("/pages/config/signage/", imageFileName, response);
+    }
+
+    @GetMapping(value="/signageDisplay/getVideo")
+    public ResponseEntity<StreamingResponseBody> getVideo(@RequestParam String videoFile) throws Exception {
+        File file = FileUtil.getVideoFile("/pages/config/signage/", videoFile);
+        if(!file.isFile()) {
+            return ResponseEntity.notFound().build();
+        }
+        StreamingResponseBody srb = outputStream -> FileCopyUtils.copy(new FileInputStream(file), outputStream);
+        final HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("Content-Type", "video/mp4");
+        responseHeaders.add("Content-Length", Long.toString(file.length()));
+
+        return ResponseEntity.ok().headers(responseHeaders).body(srb);
     }
 }
