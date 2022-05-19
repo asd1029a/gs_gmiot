@@ -3,6 +3,7 @@ package com.danusys.web.commons.mqtt.config;
 import com.danusys.web.commons.mqtt.DanuMqttClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
  * Project : danusys-webservice-parent
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
  */
 
 //TODO 영주 버전만 실행 해야함
+@Profile(value = "bsng")
 @Configuration
 public class MqttConfig {
     @Bean

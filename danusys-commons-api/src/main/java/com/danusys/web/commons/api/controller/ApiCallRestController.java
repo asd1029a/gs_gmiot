@@ -63,7 +63,7 @@ public class ApiCallRestController {
     private final ForecastService forecastService;
     private final EventService eventService;
     private final FacilityOptService facilityOptService;
-    private final DanuMqttClient danuMqttClient;
+    //private final DanuMqttClient danuMqttClient;
 //    private final  CookieService cookieService;
 //    private final HttpServletResponse response;
 
@@ -203,6 +203,7 @@ public class ApiCallRestController {
 
     @PostMapping(value = "/ext/send")
     public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
+        DanuMqttClient danuMqttClient = new DanuMqttClient();
         log.info("param ?? = {}",param);
         Api api = apiService.getRequestApi(param);
 
