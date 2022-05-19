@@ -47,66 +47,79 @@ class mapCreater {
         [
             {
                 name : 'base',
+                nameKo : '이미지',
                 prefix : 'http://map.daumcdn.net/map_2d_hd/1909dms/L',
                 surffix : '.png'
             },
             {
                 name : 'satellite',
+                nameKo : '위성',
                 prefix : 'http://map.daumcdn.net/map_skyview/L',
                 surffix : '.jpg'
             },
             {
                 name : 'hybrid',
+                nameKo : '위성라벨',
                 prefix : 'http://map.daumcdn.net/map_hybrid/1909dms/L',
                 surffix : '.png'
             },
             {
                 name : 'roadView',
+                nameKo : '로드뷰',
                 prefix : 'http://map.daumcdn.net/map_roadviewline/7.00/L',
                 surffix : '.png'
             },
             {
                 name : 'traffic',
+                nameKo : '교통상황',
                 prefix : '//r2.maps.daum-img.net/mapserver/file/realtimeroad/L',
                 surffix : '.png'
             },
             {
                 name : 'airPm10',
+                nameKo : '미세먼지',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_pm10/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airKhai',
+                nameKo : '통합대기',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_khai/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airPm25',
+                nameKo : '초미세먼지',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_pm25/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airYsnd',
+                nameKo : '황사',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_ysnd/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airO3',
+                nameKo : '오존',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_o3/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airNo2',
+                nameKo : '이산화질소',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_no2/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airCo',
+                nameKo : '일산화탄소',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_co/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airSo2',
+                nameKo : '아황산가스',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_so2/T/L',
                 surffix : '.png'
             }
@@ -114,66 +127,79 @@ class mapCreater {
         [
             {
                 name : 'base',
+                nameKo : '이미지',
                 prefix : 'http://map.daumcdn.net/map_2d_hd/1909dms/L',
                 surffix : '.png'
             },
             {
                 name : 'satellite',
+                nameKo : '위성',
                 prefix : 'http://map.daumcdn.net/map_skyview/L',
                 surffix : '.jpg'
             },
             {
                 name : 'hybrid',
+                nameKo : '위성라벨',
                 prefix : 'http://map.daumcdn.net/map_hybrid/1909dms/L',
                 surffix : '.png'
             },
             {
                 name : 'roadView',
+                nameKo : '로드뷰',
                 prefix : 'http://map.daumcdn.net/map_roadviewline/7.00/L',
                 surffix : '.png'
             },
             {
                 name : 'traffic',
+                nameKo : '교통상황',
                 prefix : '//r2.maps.daum-img.net/mapserver/file/realtimeroad/L',
                 surffix : '.png'
             },
             {
                 name : 'airPm10',
+                nameKo : '미세먼지',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_pm10/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airKhai',
+                nameKo : '통합대기',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_khai/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airPm25',
+                nameKo : '초미세먼지',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_pm25/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airYsnd',
+                nameKo : '황사',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_ysnd/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airO3',
+                nameKo : '오존',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_o3/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airNo2',
+                nameKo : '이산화질소',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_no2/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airCo',
+                nameKo : '일산화탄소',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_co/T/L',
                 surffix : '.png'
             },
             {
                 name : 'airSo2',
+                nameKo : '아황산가스',
                 prefix : '//airinfo.map.kakao.com/mapserver/file/airinfo_so2/T/L',
                 surffix : '.png'
             }
@@ -197,8 +223,20 @@ class mapCreater {
                 // prefix : '//xdworld.vworld.kr:8080/2d/Hybrid/202002/',
                 surffix : '.png'
             }
-        ],
+        ]
     ];
+
+    airLegends = {
+        'airKhai': ['좋음 0~50', '보통 51~100', '나쁨 101~250', '매우나쁨 251~', '정보없음'] //통합대기지수
+        , 'airPm10': ['좋음 0~30', '보통 31~80', '나쁨 81~150', '매우나쁨 151~', '정보없음'] //미세먼지
+        , 'airPm25': ['좋음 0~15', '보통 16~35', '나쁨 36~75', '매우나쁨 76~', '정보없음'] //초미세먼지
+        , 'airYsnd': ['좋음 0~199', '보통 200~399', '나쁨 400~799', '매우나쁨 800~', '정보없음'] //황사
+        , 'airO3': ['좋음 0~0.03', '보통 0.031~0.09', '나쁨 0.091~0.15', '매우나쁨 0.151~', '정보없음'] //오존
+        , 'airNo2': ['좋음 0~0.03', '보통 0.031~0.06', '나쁨 0.061~0.2', '매우나쁨 0.201~', '정보없음'] //이산화질소
+        , 'airCo': ['좋음 0~2', '보통 2.01~9', '나쁨 9.01~15', '매우나쁨 15.01~', '정보없음'] //일산화탄소
+        , 'airSo2': ['좋음 0~0.02', '보통 0.021~0.05', '나쁨 0.051~0.15', '매우나쁨 0.151~', '정보없음'] //아황산가스;
+    }
+
     centers = {
         '41210': [126.726054, 37.323351], //광명
         '45210': [126.880651, 35.803587], //김제
@@ -305,19 +343,20 @@ class mapCreater {
     createTileLayers() {
         const urls = this.urls[this.type];
         for (let i = 0, max = urls.length; i < max; i++) {
-            const layer = this.createTileLayer(urls[i].name, urls[i].prefix, urls[i].surffix);
+            const layer = this.createTileLayer(urls[i].name, urls[i].prefix, urls[i].surffix, urls[i]);
 
             this.map.addLayer(layer);
         }
     }
 
-    createTileLayer(type, prefix, surffix) {
+    createTileLayer(type, prefix, surffix, prop) {
         try {
             return new ol.layer.Tile({
                 title: type,
                 name: type,
                 visible: true,
                 type: type,
+                prop: prop,
                 source: new ol.source.XYZ({
                     tileSize: 256,
                     tileGrid: this.tileGrid,

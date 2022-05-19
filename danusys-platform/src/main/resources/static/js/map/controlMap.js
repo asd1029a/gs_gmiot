@@ -371,8 +371,8 @@ function clickIcon(layerType, layerObj) {
 
                 features.forEach(obj => {
                     let content = mapPopupContent.station(obj, len);
-                    $('#mouseClickPopup .multiple_list').append(content);
-                    $('#mouseClickPopup .multiple_list li').last().data(obj);
+                    $('#mouseClickPopup .multiple_list').appe.last().data(obj);nd(content);
+                    $('#mouseClickPopup .multiple_list li')
                 });
                 popup.move('mouseClickPopup', position);
             }

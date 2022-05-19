@@ -173,7 +173,7 @@
 .popup div.list_search .list_table table tbody tr{height: 50px; border-bottom: 1px solid #292c34; box-sizing: border-box; background-color: transparent;}
 .popup div.list_search .list_table table tbody tr:hover{background: #23252b;}
 .popup div.list_search .list_table table tbody td{vertical-align: middle; text-align: center; font-size: 14px; color: #dee0e4;}
-.popup_detection{}
+.popup_detection{display: none; z-index: 1;}
 .popup_detection div.popup_writing fieldset{border: none}
 .popup_detection ul.bottom{border-top: 2px solid #292c34;}
 
@@ -201,9 +201,10 @@
 #mouseClickPopupContent{width: 100%;}
 
 /*layer viewer*/
-#layerViewer{width: max-content; height: max-content; padding: 10px; border-radius: 5px; background: #23252b; z-index: 2; right: 51px; top: 178px; position: absolute;}
-#layerViewer ul li{padding: 5px; cursor: pointer; border-bottom: 1px solid #a9a9a96b;}
-#layerViewer ul li:hover{background: #53596c;}
+.map_wrap .viewer{width: max-content; height: max-content; padding: 10px; border-radius: 5px; background: #23252b; z-index: 2; right: 51px; top: 178px; position: absolute;}
+.map_wrap .viewer ul li{padding: 5px; cursor: pointer; border-bottom: 1px solid #a9a9a96b;}
+.map_wrap .viewer ul li:hover,
+.map_wrap .viewer ul li.active{background: #53596c;}
 
 .popup_mini .multiple_list{display: flex; flex-direction: column; grid-gap: 0px; max-height: 140px; overflow: auto;}
 .popup_mini .multiple_list li{display: flex; grid-gap: 6px; padding: 12px 4px; border-bottom: 1px solid #292c34;}
@@ -359,3 +360,26 @@ input[type="checkbox"]:checked + label p.checked.lv2{border-radius: 4px; backgro
 .flight_log h6{height: initial; min-height: initial; max-height: initial; margin: 0 0 4px 0; padding: 0; color: #dee0e4; font-size: 16px; font-weight: normal; line-height: 22px;}
 .flight_log p{color: #7f8491; font-size: 14px;}
 .flight_log_wrap p.button_top{position: fixed; z-index: 10; visibility: inherit;}
+
+/* 대기정보 범례 */
+.air-legend {background-color: #2b2d30; border-radius: 10px; padding: 10px 10px 10px 10px; position: absolute; bottom: 10px; right: 20em; z-index: 10; }
+.air-legend .category {margin: 0 0 5px 0;}
+.air-legend .category .inner {}
+.air-legend .category .inner ul {display: flex; width: 550px; align-items: center; justify-content: space-between; height: 30px;}
+.air-legend .category .inner ul li {padding: 8px; background-color: #36393d; border-radius: 5px;}
+.air-legend .category .inner ul li:hover {background-color: #36393d;}
+.air-legend .category .inner ul li.active {background-color: #3f87f5;}
+.air-legend .category .inner ul li a {color: #ddd; text-decoration: none; font-size: 12px;}
+.air-legend .date {margin: 2px 0 2px 0; font-size: 12px; color: #eee;}
+.air-legend ul.air-density-bar {display: flex; padding: 10px 0px 10px 0px;}
+.air-legend ul.air-density-bar li.item {width: 110px; height: 30px; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly;}
+.air-legend ul.air-density-bar li.item:first-child span.bar {border-radius: 5px 0 0 5px;}
+.air-legend ul.air-density-bar li.item:last-child span.bar {border-radius: 0 5px 5px 0;}
+.air-legend ul.air-density-bar li.item span.bar {width: 100%; text-align: center; height: 2px; padding: 2px 0 2px 0;}
+.air-legend ul.air-density-bar li.item span.unit {font-size: 12px; color: #eee;}
+.air-legend .desc {font-size: 11px; text-align: right; color: #a0a0a0;}
+span.bar.blue {background-color: #2499fd;}
+span.bar.green {background-color: #7ddc1e;}
+span.bar.orange {background-color: #ff7e00;}
+span.bar.red {background-color: #f92927;}
+span.bar.unknown {background-color: #8f8e8e;}

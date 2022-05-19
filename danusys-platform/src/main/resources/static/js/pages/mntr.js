@@ -54,7 +54,7 @@ const mntr = {
                 event.getListGeoJson({
                     "eventState": ["1","2","3"]
                 }, result => {
-                    //리스트 추가하기
+                    //리스트 추가하기 (TODO 리스트도 refresh 해야할까)
                     const data = JSON.parse(result);
                     const ary = [];
                     data.features.forEach(t => {
@@ -493,12 +493,7 @@ const mntr = {
         //LNM TAB SEARCH DROPDOWN (왼쪽창 검색 조건 리스트 보기)
         $('.search_fold .checkbox_title').on("click", e => {
             const list = $(e.currentTarget).parent().find('.checkbox_list');
-            if(list.hasClass("select")){
-                list.removeClass("select");
-            } else {
-                // $(e.currentTarget).parents('.search_fold').find('.dropdown_checkbox').removeClass("select");
-                list.addClass("select");
-            }
+            list.toggleClass('select')
         });
         //RNM CLOSER (오른쪽창 닫기)
         $('.area_right_closer').on("click", e => {
@@ -524,8 +519,41 @@ const mntr = {
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
         });
-        //LAYER ORDER LIST (레이어 순서 제어창)
-        $("#layerViewer").hide();
+        ////////////////////////////////////////////// 추후 공통소스로 구상
+        //대기 타일(맵 도구 기본)
+        const airTileAry = window.map.map.getLayers().getArray().slice(5,13);
+        for(let i in airTileAry){
+            const layerNm = airTileAry[i].getProperties().prop.nameKo;
+            const li = "<li>" + layerNm + "</li>";
+            $('#airTiles').append(li);
+            $('#airTiles li').last().data(airTileAry[i].getProperties());
+        }
+        $('#airTiles li').on('click', e => {
+            //ACTIVE STYLE
+            $(e.currentTarget).toggleClass('active');
+            const layerNm = $(e.currentTarget).data().name;
+            window.lyControl.toggle(layerNm);
+            window.map.map.render();
+            //범례조작
+            if($('#airTiles li.active').length > 0 ){
+                $('#legendLayer').show();
+                $('#airTabs li a[data-id='+layerNm+']').trigger("click");
+            } else {
+                $('#legendLayer').hide();
+            }
+        });
+        //대기 타일 범례 탭 조작
+        $('#airTabs li a').on("click", e => {
+            const id = $(e.currentTarget).attr('data-id');
+            const legendAry = window.map.airLegends[id];
+            $.each($('#airDensity .item'), function(idx, val) {
+                $(val).find('span.unit').text(legendAry[idx]);
+            });
+            //ACTIVE STYLE
+            $(e.currentTarget).parents('#airTabs').find('li').removeClass('active');
+            $(e.currentTarget).parent('li').addClass("active");
+        });
+        //////////////////////////////////////////////
         //MAP TOOL (맵 도구)
         $('.map_options li').on("click", e => {
             const $target = $(e.currentTarget);
@@ -533,9 +561,7 @@ const mntr = {
             const toggleFlag = $target.hasClass('toggle');
             //ACTIVE STYLE
             if(toggleFlag){
-                const activeFlag = $target.hasClass('active');
-                if(activeFlag){ $target.removeClass('active'); }
-                else { $target.addClass('active'); }
+                $target.toggleClass('active');
             }
 
             switch(type) {
@@ -547,9 +573,13 @@ const mntr = {
                 case "measure" : window.measure.initDraw('Polygon'); break; //면적재기
                 case "radius" : window.measure.initDraw('Circle'); break; //반경재기
                 case "eraser" : window.measure.removeMeasureTool(); break; //지우기
+                case "airTile" : //대기정보
+                    const $viewer = $("#tileViewer");
+                    $viewer.toggle('show');
+                    break;
                 case "layer" : //레이어 제어
-                    const target = $("#layerViewer");
-                    target.toggle('show');
+                    const $target = $("#layerViewer");
+                    $target.toggle('show');
                     $("#layerViewer ul").empty();
 
                     const ary = window.map.map.getLayers().getArray();
@@ -575,7 +605,7 @@ const mntr = {
                             $("#layers").append(li);
                         }
                     }
-
+                    //레이어 순서 제어
                     $("#layers").sortable({
                         start: (e, ui) => {
                             $(this).attr("prev-index", ui.item.index());
@@ -724,6 +754,18 @@ const mntr = {
             });
             //list reload
             searchList(section, "");
+        });
+        //관제 이벤트 종료 팝업
+        $('section[data-value=event] .occur_process ul li').on("click", e => {
+           const type = $(e.currentTarget).attr('data-value');
+           if(type == "eventEnd"){
+               $('#popupEventEnd').css('display','flex');
+           }
+        });
+        //팝업 closer
+        $('.popup_detection_closer, .popup_detection li[data-value=cancel]').on("click", e => {
+            const $target = $(e.currentTarget).parents('.popup_detection');
+            $target.css('display', 'none');
         });
 
     }
@@ -1023,7 +1065,6 @@ const rnbList = {
         window.lyConnect.remove('station');
         const line = window.lyConnect.create(obj.getGeometry().getCoordinates(), '.area_right[data-value=station]', 'station' );
         window.map.addLayer(line);
-        console.log(obj);
         window.map.setPulse(obj.getGeometry().getCoordinates());
 
     }

@@ -36,6 +36,7 @@
                     <li data-value="plus" title="확대"><img src="/images/default/mapPlus.svg"></li>
                     <li data-value="minus" title="축소"><img src="/images/default/mapMinus.svg"></li>
                     <li class='toggle' data-value="layer" title="레이어"><img src="/images/default/mapLayer.svg"></li>
+                    <li class='toggle' data-value="airTile" title="대기정보"><img src="/images/default/mapAirTile.svg"></li>
                     <li data-value="distance" title="거리측정"><img src="/images/default/mapDistance.svg"></li>
                     <li data-value="measure" title="면적측정"><img src="/images/default/mapMeasure.svg"></li>
                     <li data-value="radius" title="반경측정"><img src="/images/default/mapRadius.svg"></li>
@@ -53,8 +54,91 @@
             <p id="admWeather"><i><img src="/images/default/icon_weather_sunny.png"></i>맑음 12°</p>
         </div>
         <div id="mousePosition"></div>
-        <div id="layerViewer">
+        <div id="layerViewer" class="viewer" style="display: none;">
             <ul id="layers"></ul>
+        </div>
+        <div id="tileViewer" class="viewer" style="display: none;">
+            <ul id="airTiles"></ul>
+        </div>
+        <div id="legendLayer" class="air-legend" style="display: none;">
+            <div class="category">
+                <div class="inner">
+                    <ul class="tabs" id="airTabs">
+                        <li class="category active"><a href="#" id="khai" data-id="airKhai">통합대기지수</a></li>
+                        <li class="category"><a href="#" id="pm10" data-id="airPm10">미세먼지</a></li>
+                        <li class="category"><a href="#" id="pm25" data-id="airPm25">초미세먼지</a></li>
+                        <li class="category"><a href="#" id="ysnd" data-id="airYsnd">황사</a></li>
+                        <li class="category"><a href="#" id="o3" data-id="airO3">오존</a></li>
+                        <li class="category"><a href="#" id="no2" data-id="airNo2">이산화질소</a></li>
+                        <li class="category"><a href="#" id="co" data-id="airCo">일산화탄소</a></li>
+                        <li class="category"><a href="#" id="so2" data-id="airSo2">아황산가스</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="date">
+                기준 : <span data-id="airdate">매시 정각 업데이트(1시간 단위)</span>
+            </p>
+            <ul class="air-density-bar" id="airDensity">
+                <li class="item">
+                    <span class="bar blue"></span>
+                    <span class="unit">좋음 0~50</span>
+                </li>
+                <li class="item">
+                    <span class="bar green"></span>
+                    <span class="unit">보통 51~100</span>
+                </li>
+                <li class="item">
+                    <span class="bar orange"></span>
+                    <span class="unit">나쁨 101~250</span>
+                </li>
+                <li class="item">
+                    <span class="bar red"></span>
+                    <span class="unit">매우나쁨 251~</span>
+                </li>
+                <li class="item">
+                    <span class="bar unknown"></span>
+                    <span class="unit">정보없음</span>
+                </li>
+            </ul>
+            <p class="desc">
+                실시간관측자료이며, 현지 사정에 의해 오차가 발생할 수 있습니다. <span class="unit">(단위:ppm)</span>
+            </p>
+        </div>
+        <div id="popupEventEnd" class="popup popup_detection" style="width: 540px;">
+            <dl class="title">
+                <dt>{이벤트 ID} 이벤트 조치 완료</dt>
+                <dd><i class="popup_detection_closer"><img src="/images/default/close.svg"></i></dd>
+            </dl>
+            <div class="popup_writing">
+                <fieldset>
+                    <form>
+                        <dl>
+                            <dt>이벤트 ID</dt>
+                            <dd><input type="text"></dd>
+                        </dl>
+                        <dl>
+                            <dt>이벤트 종류</dt>
+                            <dd><input type="text"></dd>
+                        </dl>
+                        <dl>
+                            <dt>조치자</dt>
+                            <dd><input type="text"></dd>
+                        </dl>
+                        <dl>
+                            <dt>조치 시각</dt>
+                            <dd><input type="date"><input type="time"></dd>
+                        </dl>
+                        <dl>
+                            <dt>본문</dt>
+                            <dd><textarea placeholder="내용을 입력해 주세요." style="height: 200px;"></textarea></dd>
+                        </dl>
+                    </form>
+                </fieldset>
+            </div>
+            <ul class="bottom">
+                <li data-value="cancel">취소</li>
+                <li data-value="confirm" class="color">전송</li>
+            </ul>
         </div>
     </div>
 </th:block>
