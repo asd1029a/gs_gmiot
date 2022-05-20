@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Profile;
  */
 
 //TODO 영주 버전만 실행 해야함
-@Profile(value = "bsng")
+@Profile(value = "yj")
 @Configuration
 public class MqttConfig {
     @Bean
