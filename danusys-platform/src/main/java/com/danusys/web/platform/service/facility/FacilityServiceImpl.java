@@ -28,7 +28,8 @@ public class FacilityServiceImpl implements FacilityService{
     @Override
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
-        switch (paramMap.get("popupType").toString()) {
+        String popupType = paramMap.get("popupType").toString();
+        switch ((popupType != null) ? popupType : "") {
             case "station" :
                 resultMap.put("data", commonMapper.selectList(fsp.selectListFacilityForStationQry(paramMap)));
                 break;
