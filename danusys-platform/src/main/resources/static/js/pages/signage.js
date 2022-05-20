@@ -30,6 +30,7 @@ const signage = {
                         comm.showAlert("사이니지 템플릿이 등록되었습니다. <br/> 템플릿 레이아웃을 설정해 주십시오.");
                         signage.getList({}, signage.createTemplateList);
                         signage.hidePopup();
+                        signage.hideLayout();
                     }
                     , () => {
                         comm.showAlert("사이니지 템플릿 등록에 실패했습니다.");
@@ -60,6 +61,7 @@ const signage = {
                         comm.showAlert("사이니지 템플릿이 수정되었습니다. <br/> 템플릿 레이아웃을 재설정해 주십시오.");
                         signage.getList({}, signage.createTemplateList);
                         signage.hidePopup();
+                        signage.hideLayout();
                     }
                     , () => {
                         comm.showAlert("사이니지 템플릿 수정에 실패했습니다.");
@@ -76,6 +78,7 @@ const signage = {
                     comm.showAlert("사이니지 템플릿이 삭제되었습니다.");
                     signage.getList({}, signage.createTemplateList);
                     signage.hidePopup();
+                    signage.hideLayout();
                 }
                 , () => {comm.showAlert("사이니지 템플릿 삭제에 실패했습니다.")})
             , () => {return false})
@@ -113,6 +116,11 @@ const signage = {
             } else {
                 comm.showAlert("템플릿 레이아웃 종류를 선택해주십시오.");
             }
+        });
+
+        $("#previewSignageBtn").on("click", () => {
+            const templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
+            window.open("/pages/signageDisplay?id=" + templateSeq, '_blank').focus();
         });
 
         $("#cancelSignageLayoutBtn").on("click", () => {
@@ -333,6 +341,7 @@ const signage = {
     , showPopup : (type) => {
         comm.showModal($('#signagePopup'));
         $("#signagePopup").css('display', 'flex');
+        $("#signagePopup .bottom li").hide();
         $("#signagePopup [data-"+type+"]").show();
         $("#signageTemplateForm").initForm();
 
