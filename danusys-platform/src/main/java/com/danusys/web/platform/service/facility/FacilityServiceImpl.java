@@ -1,9 +1,6 @@
 package com.danusys.web.platform.service.facility;
 
-import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.commons.app.FileUtil;
-import com.danusys.web.commons.app.JsonUtil;
-import com.danusys.web.commons.app.PagingUtil;
+import com.danusys.web.commons.app.*;
 import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
@@ -28,8 +25,9 @@ public class FacilityServiceImpl implements FacilityService{
     @Override
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
-        String popupType = paramMap.get("popupType").toString();
-        switch ((popupType != null) ? popupType : "") {
+
+        String popupType = CommonUtil.validOneNull(paramMap, "popupType").toString();
+        switch (popupType) {
             case "station" :
                 resultMap.put("data", commonMapper.selectList(fsp.selectListFacilityForStationQry(paramMap)));
                 break;
