@@ -4,10 +4,7 @@ import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class FaceDetectionSqlProvider {
 
@@ -18,6 +15,7 @@ public class FaceDetectionSqlProvider {
             SELECT("*");
             FROM("t_face_detection");
             WHERE("face_status != 2");
+            ORDER_BY("face_seq");
         }};
         return sql.toString();
     }
@@ -48,6 +46,7 @@ public class FaceDetectionSqlProvider {
             SELECT("COUNT(*) AS count");
             FROM("t_face_detection");
             WHERE("face_name = '" + name + "'");
+            WHERE("face_status != 2");
         }};
         return sql.toString();
     }

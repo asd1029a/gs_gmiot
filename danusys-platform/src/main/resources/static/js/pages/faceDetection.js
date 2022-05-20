@@ -262,7 +262,7 @@ const faceDetection = {
             formData.append(key, fileForm.get(key))
         }
 
-        if ($('#faceDetectionForm').doValidation()) {
+        if ($('#faceDetectionForm').doValidation() && $('#imgForm').doValidation()) {
             $.ajax({
                 url: "/faceDetection/mod/" + pSeq
                 , type: "POST"
