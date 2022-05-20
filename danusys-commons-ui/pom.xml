@@ -100,7 +100,7 @@
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>toastr</artifactId>
-            <version>2.1.4</version>
+            <version>2.1.2</version>
         </dependency>
 
         <!-- um -->
