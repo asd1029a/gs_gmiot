@@ -175,6 +175,7 @@ const notice = {
             const fileSize = e.currentTarget.files[0].size
             if( fileSize > maxSize){
                 comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
+                e.currentTarget.value = null;
             } else {
                 const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
                 $("#noticeFile").val(fileName);

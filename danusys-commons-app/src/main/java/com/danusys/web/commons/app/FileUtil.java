@@ -56,7 +56,6 @@ public class FileUtil {
         String savedFileName = null;
 
         File uploadPath = new File(sPath, folderPath);
-        String filePath = null;
         log.info("upload path : " + uploadPath);
 
 
@@ -65,37 +64,38 @@ public class FileUtil {
         }
 
         for (MultipartFile multipartFile : uploadFile) {
+            if(!multipartFile.isEmpty()){
+                log.info("Upload File Name : " + multipartFile.getOriginalFilename());
+                log.info("Upload File Size : " + multipartFile.getSize());
 
-            log.info("Upload File Name : " + multipartFile.getOriginalFilename());
-            log.info("Upload File Size : " + multipartFile.getSize());
-            filePath = multipartFile.getOriginalFilename();
-            uploadFileName = multipartFile.getOriginalFilename();
-//            try {
-//                uploadFileName = new String(uploadFileName.getBytes("8859_1"), "UTF-8");
+                uploadFileName = multipartFile.getOriginalFilename();
+//                try {
+//                    uploadFileName = new String(uploadFileName.getBytes("8859_1"), "UTF-8");
 //
 //
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            }
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
 
-            uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
+                uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
 
+                log.info("only file name: " + uploadFileName);
 
-            log.info("only file name: " + uploadFileName);
+                for (String extension : staticExtensionList) {
+                    if (uploadFileName.contains(extension))
+                        return null;
+                }
 
+                savedFileName = setFileUUID() + uploadFileName;
+                File savefile = new File(uploadPath, savedFileName);
 
-            for (String extension : staticExtensionList) {
-                if (uploadFileName.contains(extension))
-                    return null;
-            }
-
-            savedFileName = setFileUUID() + uploadFileName;
-            File savefile = new File(uploadPath, savedFileName);
-
-            try {
-                multipartFile.transferTo(savefile);
-            } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    multipartFile.transferTo(savefile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                savedFileName = "";
             }
         }
         return savedFileName;
@@ -328,7 +328,7 @@ public class FileUtil {
                 if(headerList.isEmpty()){
                     data.forEach((k, valStr) -> {
                         Cell cell = row.createCell(cellNum.get());
-                        cell.setCellValue(valStr != null ? valStr.toString() : "");
+                        cell.setCellValue(CommonUtil.validNull(valStr));
                         cellNum.incrementAndGet();
                     });
                 }else{

@@ -31,6 +31,10 @@ public class CommonUtil {
 		return paramMap.get(key) != null ? paramMap.get(key).toString() : "";
 	}
 
+	public static String validNull(Object str) {
+		return str != null ? str.toString() : "";
+	}
+
 	public static void validMapNull(Map<String, Object> paramMap) {
 		paramMap.values()
 				.stream()

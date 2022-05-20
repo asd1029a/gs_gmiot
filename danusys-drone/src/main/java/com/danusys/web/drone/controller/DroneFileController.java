@@ -83,12 +83,9 @@ public class DroneFileController {
 
     @GetMapping(value = "/image/{imageName:.+}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
     public void getImage(@PathVariable("imageName") String imageName, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-
         if (!(imageName == null || imageName.isEmpty() || imageName.equals("null"))) {
             FileUtil.getImage(imageName, request, response);
         }
-
     }
 
 

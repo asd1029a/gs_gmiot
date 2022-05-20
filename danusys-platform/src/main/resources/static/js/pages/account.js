@@ -530,15 +530,13 @@ const account = {
             $('#userGroupPopup').css("display", "flex");
             $('#userGroupForm').initForm();
             $('#userGroupPopup [data-mode]').hide();
+            $('#userGroupPopup [data-mode="' + type + '"]').show();
             if (type === "add") {
                 $('#userGroupPopup .title dt').text("사용자 그룹 등록");
-                $('#userGroupPopup [data-mode="' + type + '"]').show();
             } else if (type === "mod") {
                 $('#userGroupPopup .title dt').text('사용자 그룹 수정');
-                $('#userGroupPopup [data-mode="' + type + '"]').show();
             } else if (type === "detail") {
                 $('#userGroupPopup .title dt').text("사용자 그룹 상세");
-                $('#userGroupPopup [data-mode="' + type + '"]').show();
             }
         },
         hidePopup: () => {

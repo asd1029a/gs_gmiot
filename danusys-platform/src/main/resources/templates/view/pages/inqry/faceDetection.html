@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout_inqry"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<th:block layout:fragment="content">
+    <h4>
+        <i><img src="/images/default/inquiryTitle.svg"></i>
+        <span>조회/관리</span>
+        <i><img src="/images/default/settingArrowNext.svg"></i>
+        <span>용의자 · 실종자 검출</span>
+    </h4>
+    <section class="inquiry_content">
+        <article class="search_form" id="searchForm">
+            <h6>용의자 · 실종자 검출 검색</h6>
+            <form>
+                <div>
+                    <dl class="checkbox_set">
+                        <dt>구분</dt>
+                        <dd>
+							<span>
+								<input type="checkbox" id="suspectSearch" name="faceKind" data-value="suspect"
+                                       data-init-value="checked" checked>
+								<label for="suspectSearch"><span></span>범죄용의자</label>
+							</span>
+                            <span>
+								<input type="checkbox" id="missingSearch" name="faceKind" data-value="missing"
+                                       data-init-value="checked" checked>
+								<label for="missingSearch"><span></span>실종자</label>
+							</span>
+                        </dd>
+                    </dl>
+                    <ul class="button">
+                        <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요."></li>
+                        <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
+                        <li id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</li>
+                    </ul>
+                </div>
+            </form>
+        </article>
+        <article class="search_list">
+            <div class="article_title">
+                <dl class="title">
+                    <dt>시설물 장애 이벤트 목록</dt>
+                    <dd><span class="count">123</span>건</dd>
+                </dl>
+                <div>
+                    <ul>
+                        <li id="addFaceDetectionBtn" sec:authorize="hasAnyRole('ROLE_inqry_rw')"><i><img
+                                src="/images/default/add.svg"></i>추가
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="search_table">
+                <table id="faceDetectionTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>이름</th>
+                        <th>나이</th>
+                        <th>성별</th>
+                        <th>구분</th>
+                        <th>이미지 경로</th>
+                        <th>유사도</th>
+                        <th>상태값</th>
+                        <th>얼굴 ID</th>
+                        <th>상세보기</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </article>
+        <div class="popup" id="faceDetectionPopup">
+            <dl class="title">
+                <dt>용의자 정보 상세보기</dt>
+                <dd><i><img src="/images/default/close.svg"></i></dd>
+            </dl>
+            <div class="popup_suspect">
+                <fieldset>
+                    <form id="faceDetectionForm">
+                        <dl>
+                            <dt>이름</dt>
+                            <dd><input type="text" id="faceName" name="faceName"></dd>
+                        </dl>
+                        <dl>
+                            <dt>나이</dt>
+                            <dd><input type="number" id="faceAge" name="faceAge"></dd>
+                        </dl>
+                        <dl class="checkbox">
+                            <dt>성별</dt>
+                            <dd>
+                                <span>
+                                    <input type="radio" id="F" name="faceGender" data-value="1" data-init-value="checked">
+                                    <label for="F"><span class="round"></span>여성</label>
+                                </span>
+                                <span>
+                                    <input type="radio" id="M" name="faceGender" data-value="0">
+                                    <label for="M"><span class="round"></span>남성</label>
+                                </span>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>유사도</dt>
+                            <dd><input type="number" id="faceSimilarity" name="faceSimilarity"></dd>
+                        </dl>
+                        <dl class="checkbox">
+                            <dt>상태값</dt>
+                            <dd>
+                                <span>
+                                    <input type="radio" id="use" name="faceStatus" data-value="0" data-init-value="checked" checked>
+                                    <label for="use"><span class="round"></span>검출 대상</label>
+                                </span>
+                                <span>
+                                    <input type="radio" id="hold" name="faceStatus" data-value="1">
+                                    <label for="hold"><span class="round"></span>보류</label>
+                                </span>
+                            </dd>
+                        </dl>
+                        <dl class="checkbox">
+                            <dt>구분</dt>
+                            <dd>
+                                <span>
+                                    <input type="radio" id="suspect" name="faceKind" data-value="suspect" data-init-value="checked" checked>
+                                    <label for="suspect"><span></span>범죄용의자</label>
+                                </span>
+                                    <span>
+                                    <input type="radio" id="missing" name="faceKind" data-value="missing">
+                                    <label for="missing"><span></span>실종자</label>
+                                </span>
+                            </dd>
+                        </dl>
+                    </form>
+                </fieldset>
+                <fieldset>
+                    <form class="preview_form" id="imgForm">
+                        <dl>
+                            <dt>첨부 파일</dt>
+                            <dd>
+                                <div class="fileBox">
+                                    <input class="upload_name" id="faceFile" name="faceFile" placeholder="첨부파일" readonly/>
+                                    <label for="file">파일찾기</label>
+                                    <input type="file" id="file" name="file" accept=".jpg">
+                                </div>
+                            </dd>
+                        </dl>
+                        <div class="preview" id="preview"></div>
+                    </form>
+                </fieldset>
+            </div>
+            <ul class="bottom">
+                <li id="addFaceDetectionProcBtn" data-mode="add" class="color">등록</li>
+                <li id="modFaceDetectionProcBtn" data-mode="mod" class="color">수정</li>
+                <li id="delFaceDetectionProcBtn" data-mode="mod" class="red">삭제</li>
+            </ul>
+        </div>
+
+        <!--        <div class="popup" id="eventPopup">-->
+        <!--            <dl class="title">-->
+        <!--                <dt>스마트 도시 이벤트 추가</dt>-->
+        <!--                <dd><i><img src="/images/default/close.svg"></i></dd>-->
+        <!--            </dl>-->
+        <!--            <div class="popup_writing">-->
+        <!--                <fieldset>-->
+        <!--                    <legend>이벤트 분류</legend>-->
+        <!--                    <form id="eventForm">-->
+        <!--                        <dl>-->
+        <!--                            <dt>이벤트 관리 ID</dt>-->
+        <!--                            <dd><input type="text" id="eventSeq" disabled></dd>-->
+        <!--                            <dt>이벤트 등급</dt>-->
+        <!--                            <dd><input type="text" id="eventGrade" disabled></dd>-->
+        <!--                        </dl>-->
+        <!--                        <dl>-->
+        <!--                            <dt>이벤트 종류</dt>-->
+        <!--                            <dd><input type="text" id="eventKind" disabled></dd>-->
+        <!--                            <dt>처리 상태</dt>-->
+        <!--                            <dd><input type="text" disabled></dd>-->
+        <!--                        </dl>-->
+        <!--                    </form>-->
+        <!--                </fieldset>-->
+        <!--                <fieldset>-->
+        <!--                    <legend>이벤트 발생 주소/일시</legend>-->
+        <!--                    <form>-->
+        <!--                        <dl>-->
+        <!--                            <dt>개소 관리 ID</dt>-->
+        <!--                            <dd><input type="text" id="stationSeq" disabled></dd>-->
+        <!--                        </dl>-->
+        <!--                        <dl>-->
+        <!--                            <dt>개소 종류</dt>-->
+        <!--                            <dd><input type="text" id="stationKind" disabled></dd>-->
+        <!--                            <dt>개소 이름</dt>-->
+        <!--                            <dd><input type="text" id="stationName" disabled></dd>-->
+        <!--                        </dl>-->
+        <!--                        <dl>-->
+        <!--                            <dt>행정 구역</dt>-->
+        <!--                            <dd><input type="text" id="eventDistrict" disabled></dd>-->
+        <!--                            <dt>개소 주소</dt>-->
+        <!--                            <dd><input type="text" id="eventAddress" disabled></dd>-->
+        <!--                        </dl>-->
+        <!--                        <dl>-->
+        <!--                            <dt>이벤트 발생일시</dt>-->
+        <!--                            <dd><input type="text" id="insertDt" disabled></dd>-->
+        <!--                        </dl>-->
+        <!--                    </form>-->
+        <!--                </fieldset>-->
+        <!--                <fieldset>-->
+        <!--                    <legend>이벤트 조치</legend>-->
+        <!--                    <form>-->
+        <!--                        <dl>-->
+        <!--                            <dt>조치자</dt>-->
+        <!--                            <dd><input type="text" id="eventManager" disabled></dd>-->
+        <!--                        </dl>-->
+        <!--                        <dl>-->
+        <!--                            <dt>이벤트 조치일시</dt>-->
+        <!--                            <dd><input type="text" id="eventStartDt" disabled></dd>-->
+        <!--                            <dt>이벤트 종료일시</dt>-->
+        <!--                            <dd><input type="text" id="eventEndDt" disabled></dd>-->
+        <!--                        </dl>-->
+        <!--                        <dl>-->
+        <!--                            <dt>조치 내용</dt>-->
+        <!--                            <dd><textarea id="eventMngContent" disabled></textarea></dd>-->
+        <!--                        </dl>-->
+        <!--                    </form>-->
+        <!--                </fieldset>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
+    </section>
+</th:block>
+</html>

@@ -51,8 +51,8 @@
 							</span>
                         </dd>
                     </dl>
-                    <p>인상 착의</p> <!-- th:if="${municipality == '26290000'}" -->
-                    <dl class="dropdown_checkbox" data-selectbox-type=""> <!-- th:if="${municipality == '26290000'}" -->
+                    <p th:if="${municipality == '26290000'}">인상 착의</p>
+                    <dl class="dropdown_checkbox" data-selectbox-type="pattr" th:if="${municipality == '26290000'}">
                         <dt class="checkbox_title select_title">인상착의</dt>
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>
