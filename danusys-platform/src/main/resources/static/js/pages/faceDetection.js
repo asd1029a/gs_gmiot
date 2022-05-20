@@ -90,10 +90,10 @@ const faceDetection = {
                 "render": function (data, type, row) {
                     switch (row.faceGender) {
                         case 0 :
-                            return `여성`;
+                            return `남성`;
                             break;
                         case 1 :
-                            return `남성`;
+                            return `여성`;
                             break;
                         default:
                             "";
@@ -210,7 +210,7 @@ const faceDetection = {
             formData.append(key, fileForm.get(key))
         }
 
-        if ($('#faceDetectionForm').doValidation()) {
+        if ($('#faceDetectionForm').doValidation() && $('#imgForm').doValidation()) {
             $.ajax({
                 url: "/faceDetection/checkName/" + infoForm.faceName
                 , type: "GET"
@@ -229,10 +229,27 @@ const faceDetection = {
                         comm.showAlert("정보가 등록되었습니다");
                         faceDetection.create();
                         faceDetection.hidePopup();
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        if(typeof(jqXHR.responseJSON) == "undefined") {
+                            console.log(jqXHR);
+                            comm.showAlert("저장 중 오류가 발생했습니다.");
+                        } else {
+                            var message = jqXHR.responseJSON.message;
+                            comm.showAlert(message);
+                            console.log(jqXHR.responseJSON.exception);
+                        }
                     });
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                if(typeof(jqXHR.responseJSON) == "undefined") {
+                    console.log(jqXHR);
+                    comm.showAlert("저장 중 오류가 발생했습니다.");
+                } else {
+                    var message = jqXHR.responseJSON.message;
+                    comm.showAlert(message);
+                    console.log(jqXHR.responseJSON.exception);
+                }
             });
-
         }
     },
     modProc: (pSeq) => {
@@ -257,6 +274,15 @@ const faceDetection = {
                 comm.showAlert("정보가 수정되었습니다.");
                 faceDetection.create();
                 faceDetection.hidePopup();
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                if(typeof(jqXHR.responseJSON) == "undefined") {
+                    console.log(jqXHR);
+                    comm.showAlert("저장 중 오류가 발생했습니다.");
+                } else {
+                    var message = jqXHR.responseJSON.message;
+                    comm.showAlert(message);
+                    console.log(jqXHR.responseJSON.exception);
+                }
             });
         }
     },
@@ -268,6 +294,15 @@ const faceDetection = {
             comm.showAlert("정보가 삭제되었습니다");
             faceDetection.create();
             faceDetection.hidePopup();
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            if(typeof(jqXHR.responseJSON) == "undefined") {
+                console.log(jqXHR);
+                comm.showAlert("저장 중 오류가 발생했습니다.");
+            } else {
+                var message = jqXHR.responseJSON.message;
+                comm.showAlert(message);
+                console.log(jqXHR.responseJSON.exception);
+            }
         });
     }
 }

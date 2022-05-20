@@ -82,17 +82,17 @@
                     <form id="faceDetectionForm">
                         <dl>
                             <dt>이름</dt>
-                            <dd><input type="text" id="faceName" name="faceName"></dd>
+                            <dd><input type="text" id="faceName" name="faceName" placeholder="*필수 입력" data-required="true"></dd>
                         </dl>
                         <dl>
                             <dt>나이</dt>
-                            <dd><input type="number" id="faceAge" name="faceAge"></dd>
+                            <dd><input type="number" id="faceAge" name="faceAge" placeholder="*필수 입력" data-required="true"></dd>
                         </dl>
                         <dl class="checkbox">
                             <dt>성별</dt>
                             <dd>
                                 <span>
-                                    <input type="radio" id="F" name="faceGender" data-value="1" data-init-value="checked">
+                                    <input type="radio" id="F" name="faceGender" data-value="1" data-init-value="checked" checked>
                                     <label for="F"><span class="round"></span>여성</label>
                                 </span>
                                 <span>
@@ -103,7 +103,7 @@
                         </dl>
                         <dl>
                             <dt>유사도</dt>
-                            <dd><input type="number" id="faceSimilarity" name="faceSimilarity"></dd>
+                            <dd><input type="number" id="faceSimilarity" name="faceSimilarity" placeholder="*필수 입력" data-required="true"></dd>
                         </dl>
                         <dl class="checkbox">
                             <dt>상태값</dt>
@@ -139,7 +139,7 @@
                             <dt>첨부 파일</dt>
                             <dd>
                                 <div class="fileBox">
-                                    <input class="upload_name" id="faceFile" name="faceFile" placeholder="첨부파일" readonly/>
+                                    <input class="upload_name" id="faceFile" name="faceFile" placeholder="첨부파일 *필수 입력" data-required="true" readonly/>
                                     <label for="file">파일찾기</label>
                                     <input type="file" id="file" name="file" accept=".jpg">
                                 </div>
