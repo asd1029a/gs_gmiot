@@ -1,20 +1,13 @@
 package com.danusys.web.platform.service.faceDetection;
 
 import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.commons.app.PagingUtil;
-import com.danusys.web.commons.auth.util.LoginInfoUtil;
-import com.danusys.web.platform.dto.request.FaceDetectionRequestDto;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.faceDetection.FaceDetectionSqlProvider;
 import lombok.RequiredArgsConstructor;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,24 +45,13 @@ public class FaceDetectionServiceImpl implements FaceDetectionService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int add(FaceDetectionRequestDto faceDetectionRequestDto) throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> paramMap = objectMapper.convertValue(faceDetectionRequestDto, Map.class);
-        paramMap.put("insertUserSeq", LoginInfoUtil.getUserDetails().getUserSeq());
-        paramMap.put("insertDt", Timestamp.valueOf(LocalDateTime.now()));
-
+    public int add(Map<String, Object> paramMap) throws Exception {
         return commonMapper.insert(fdsp.insertQry(paramMap));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int mod(int faceSeq, FaceDetectionRequestDto faceDetectionRequestDto) throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> paramMap = objectMapper.convertValue(faceDetectionRequestDto, Map.class);
-        paramMap.put("faceSeq", faceSeq);
-        paramMap.put("updateUserSeq", LoginInfoUtil.getUserDetails().getUserSeq());
-        paramMap.put("updateDt", Timestamp.valueOf(LocalDateTime.now()));
-
+    public int mod(Map<String, Object> paramMap) throws Exception {
         return commonMapper.update(fdsp.updateQry(paramMap));
     }
 
