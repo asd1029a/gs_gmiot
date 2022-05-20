@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -22,12 +23,12 @@ public class PlatformApplication {
 		SpringApplication.run(PlatformApplication.class, args);
 	}
 
-	//TODO 부산남구 버전 처리
+	@Profile(value = "bsng")
 	@Bean
 	public ApplicationRunner applicationRunner() {
 		return args -> {
-			/*IntellivixWebsocketEventClient intellivixWebsocketEventClient = new IntellivixWebsocketEventClient();
-			intellivixWebsocketEventClient.connect();*/
+			IntellivixWebsocketEventClient intellivixWebsocketEventClient = new IntellivixWebsocketEventClient();
+			intellivixWebsocketEventClient.connect();
 		};
 	}
 }

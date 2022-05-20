@@ -245,6 +245,17 @@ public class RestApiExecutor implements ApiExecutor {
                             throw new RuntimeException(e);
                         }
                         httpHeaders.add(cookie.getName(), cookie.getValue());
+                    } else if(api.getAuthInfo().contains("basic")) {
+                        String basicAuth = null;
+                        String username = null;
+                        String password = null;
+                        try {
+                            username = reqMap.get("Username").toString();
+                            password = reqMap.get("Password").toString();
+                        } catch (Exception e){
+                            throw new RuntimeException(e);
+                        }
+                        httpHeaders.setBasicAuth(username, password);
                     } else {
                         httpHeaders.set("Authorization", api.getAuthInfo());
                     }

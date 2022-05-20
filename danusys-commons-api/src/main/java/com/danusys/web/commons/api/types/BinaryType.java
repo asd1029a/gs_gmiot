@@ -27,6 +27,7 @@ public enum BinaryType {
         this.code = code;
         this.codeNameList = codeNameList;
     }
+
     public String getCode() {
         return this.code;
     }
@@ -48,15 +49,9 @@ public enum BinaryType {
                 });
         return result;
     }
-
-    public static boolean test(){
-
-        return true;
-    }
-
-    public static List<String> codeNameMatchResult(List<String> list) {
-
+    public static List<String> setBinaryLength(String hex) {
+        String binary = Integer.toBinaryString(Integer.decode("0x" + hex));
 
         return null;
     }
-}
+ }
