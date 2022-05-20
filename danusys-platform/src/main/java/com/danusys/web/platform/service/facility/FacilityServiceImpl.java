@@ -174,6 +174,7 @@ public class FacilityServiceImpl implements FacilityService{
         }
 
         signageRequestDto.setTemplateContent(newTemplateContentList.toString());
+        commonMapper.update(fsp.updateSignageLayoutQry(signageRequestDto));
     }
 
     @Override

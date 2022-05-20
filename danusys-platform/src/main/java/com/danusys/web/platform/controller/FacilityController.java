@@ -190,7 +190,7 @@ public class FacilityController {
     @ResponseBody
     @PostMapping(value = "/excel/download")
     public void exportNotice(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> paramMap) throws Exception {
-        Map<String, Object> dataMap = facilityService.getList((Map<String, Object>) paramMap.get("search"));
+        EgovMap dataMap = facilityService.getList((Map<String, Object>) paramMap.get("search"));
 
         paramMap.put("dataMap", dataMap.get("data"));
         Workbook wb = FileUtil.excelDownload(paramMap);

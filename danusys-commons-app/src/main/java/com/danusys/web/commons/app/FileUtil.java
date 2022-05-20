@@ -1,12 +1,13 @@
 package com.danusys.web.commons.app;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,13 +21,12 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 
 @Slf4j
 @Component
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class FileUtil {
-
 
     private static String[] staticExtensionList;
 
@@ -36,7 +36,6 @@ public class FileUtil {
     }
 
     private static String STATIC_EXTERNAL_FILE_PATH;
-
 
     @Value("${danusys.path.root}")
     public void setExternalFilePath(String EXTERNAL_FILE_PATH) {
@@ -111,31 +110,32 @@ public class FileUtil {
         return str + "_";
     }
 
+    public static void getImage2(String filePath, String imageName, HttpServletResponse response) throws IOException {
+        File imgFile = null;
+        OutputStream out = response.getOutputStream();
+        FileInputStream fis = null;
 
-    public static byte[] getImage2(String imageName, HttpServletRequest request) {
-        String folderPath = "/";
-        String folder[] = request.getHeader("REFERER").split("/");
-        for (int i = 0; i < folder.length; i++) {
-            if (i >= 3)
-                folderPath += folder[i] + "/";
-        }
-        InputStream imageStream = null;
-        byte[] imageByteArray = null;
+        imgFile = new File(STATIC_EXTERNAL_FILE_PATH + filePath + imageName);
         try {
-            imageStream = new FileInputStream(STATIC_EXTERNAL_FILE_PATH + folderPath + imageName);
-            imageByteArray = IOUtils.toByteArray(imageStream);
-        } catch (IOException e) {
+            fis = new FileInputStream(imgFile);
+            FileCopyUtils.copy(fis, out);
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                imageStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
             }
+            out.flush();
         }
-        return imageByteArray;
     }
 
+    public static File getVideoFile(String filePath, String videoName) throws IOException {
+        return new File(STATIC_EXTERNAL_FILE_PATH + filePath + videoName);
+    }
 
     public static void getImage(String imageName, HttpServletRequest request, HttpServletResponse response) {
         String folderPath = "/";
