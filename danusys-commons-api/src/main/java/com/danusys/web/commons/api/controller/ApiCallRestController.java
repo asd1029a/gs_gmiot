@@ -22,11 +22,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.yaml.snakeyaml.util.UriEncoder;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -63,33 +67,29 @@ public class ApiCallRestController {
     private final ForecastService forecastService;
     private final EventService eventService;
     private final FacilityOptService facilityOptService;
-    //private final DanuMqttClient danuMqttClient;
-//    private final  CookieService cookieService;
-//    private final HttpServletResponse response;
+
+    private final WebClient webClient;
 
 
-//    public ApiCallRestController(ObjectMapper objectMapper
-//            , ApiExecutorFactoryService apiExecutorFactoryService
-////            , ApiExecutorService apiExecutorService
-//            , ApiService apiService, FacilityService facilityService
-//            , StationService stationService
-//            , ForecastService forecastService
-//            , EventService eventService
-//            , FacilityOptService facilityOptService
-//            , CookieService cookieService
-//            , HttpServletRequest request) {
-//        this.objectMapper = objectMapper;
-//        this.apiExecutorFactoryService = apiExecutorFactoryService;
-//        this.apiService = apiService;
-////        this.apiExecutorService = apiExecutorService;
-//        this.facilityService = facilityService;
-//        this.stationService = stationService;
-//        this.forecastService = forecastService;
-//        this.eventService = eventService;
-//        this.facilityOptService = facilityOptService;
-//        this.cookieService = cookieService;
-//        this.request = request;
-//    }
+    @GetMapping(value = "/https-webclient-test")
+    public ResponseEntity httpsWebClientTest() throws Exception {
+
+        Mono<Object> mono = webClient.mutate()
+                            .baseUrl("https://jsonplaceholder.typicode.com")
+                            .build()
+                            .get()
+                            .uri("/posts/{ID}", 1)
+                            .accept(MediaType.APPLICATION_JSON)
+//                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + "accessToken")
+                            .retrieve()
+                            .bodyToMono(Object.class);
+
+
+        log.trace("mono: {}", mono.block());
+
+        return ResponseEntity.status(HttpStatus.OK).body("list");
+    }
+
 
     @PostMapping(value = "/facility")
     public ResponseEntity findAllForFacility(@RequestBody Map<String, Object> param) throws Exception {
