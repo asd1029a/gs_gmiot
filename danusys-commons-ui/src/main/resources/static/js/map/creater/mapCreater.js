@@ -264,6 +264,7 @@ class mapCreater {
             this.lon = 126.726054;
         }
 
+        this.extent = this.extents[type];
         this.center = [this.lon, this.lat];
 
         this.createTileGrid();

@@ -114,6 +114,7 @@ const layerStyle = {
     //시설물
     , facility : (selectFlag) => {
         return feature => {
+            // const selected = feature.getProperties().properties.selected;
             const text = "";//feature.getProperties().id;
             const style = new ol.style.Style({
                 image: new ol.style.Icon({
@@ -378,7 +379,6 @@ function clickIcon(layerType, layerObj) {
             }
             break;
         case "facility" : //시설물(드론) 클릭 이벤트
-            console.log(layerObj);
             //TODO 드론 오른쪽 패널
             $('.area_right').removeClass('select');
             rnbList.createFacility(features);
