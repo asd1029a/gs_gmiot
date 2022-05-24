@@ -34,9 +34,12 @@
                             <dt>템플릿 레이아웃 설정</dt>
                         </dl>
                         <ul>
+                            <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
                             <li id="cancelSignageLayoutBtn">취소</li>
-                            <li id="addSignageLayoutProcBtn">저장</li>
-                            <li id="previewSignageBtn">미리보기</li>
+                            <li th:if="${municipality == '41210000'}" id="applySignageLayoutProcBtn">적용</li>
+                            <li th:if="${municipality == '47210000'}" id="addSignageLayoutProcBtn">저장</li>
+                            <li th:if="${municipality == '47210000'}" id="previewSignageBtn">미리보기</li>
+                            </th:block>
                         </ul>
                     </div>
                     <div class="layout_field">
@@ -64,8 +67,8 @@
                                 <dd><input type="text" name="templateExplain" id="templateExplain"></dd>
                             </dl>
                             <dl>
-                                <dt>레이아웃<span>레이아웃의 줄 수를 설정해주세요.</span></dt>
-                                <dd><input type="text" name="templateRowCnt" data-required="true" id="templateRowCnt" placeholder="0">칸</dd>
+                                <dt>레이아웃</dt>
+                                <dd><input type="text" name="templateRowCnt" data-required="true" value="3" id="templateRowCnt" placeholder="3" readonly>칸</dd>
                             </dl>
                         </form>
                     </fieldset>

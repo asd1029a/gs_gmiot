@@ -6,6 +6,17 @@ const signageDisplay = {
     init : (pObj) => {
         const templateContent = JSON.parse(pObj.templateContent);
         signageDisplay.create(templateContent);
+
+        setInterval(function () {
+            if(new Date().getMinutes() === 0) {
+                signageDisplay.getListAirPollution(
+                    {}
+                    , (result) => {
+                        signageDisplay.reloadAirPollutionChart(result);
+                    }
+                );
+            }
+        }, 60000); //3600000
     }
     , create : (pObj) => {
         const $wrap = $(".wrap_signage");
@@ -22,22 +33,32 @@ const signageDisplay = {
                 signageEle = signageDisplay.createVideoEle(obj1);
             }
             $wrap.append(signageEle);
+
             if(obj1.kind === "imageFile") {
                 $("#imageFile").prop("src", "/signageDisplay/getImage?imageFile=" + obj1.value);
             } else if(obj1.kind === "videoFile") {
                 $("#videoFile").prop("src", "/signageDisplay/getVideo?videoFile=" + obj1.value);
+            } else if(obj1.kind === "airPollution") {
+                signageDisplay.getListAirPollution(
+                    {}
+                    , (result) => {
+                        signageDisplay.createAirPollutionChart(result);
+                    });
+            } else if(obj1.kind === "rtspUrl") {
+                const videoObj = {
+                    turnUrl : "172.20.14.49:3478?transport=tcp",
+                    credential : "turnadm123",
+                    username : "turnadm",
+                    mediaServerWsUrl : "ws://172.20.14.49:8888/kurento",
+                    rtspUrl : obj1.value
+                };
+                video.directVideoStart(videoObj, "rtspVideo")
             }
         });
-
-        signageDisplay.getListAirPollution(
-            {}
-            , (result) => {
-                signageDisplay.createAirPollutionChart(result);
-            });
     }
     , createRtsp : () => {
         return '<div class="wrap_rtsp">'
-            + '<video id="rtspVideo" autoplay>'
+            + '<video id="rtspVideo" width="100%" height="100%" autoplay="autoplay" muted="muted">'
             + '</div>';
     }
     , createAirPollutionEle : () => {
@@ -222,6 +243,32 @@ const signageDisplay = {
                 }
                 let chart = new ApexCharts(document.querySelector("#"+key), options);
                 chart.render();
+            }
+        })
+    }
+    , reloadAirPollutionChart : (pObj) => {
+        const typeObj = {
+            "good" : {"title" : "좋음", "color": "#2DCCFF"}
+            , "normal" : {"title" : "보통", "color": "#56F000"}
+            , "bad" : {"title" : "나쁨", "color": "#FFB302"}
+            , "tooBad" : {"title" : "매우나쁨", "color": "#FF3838"}
+            , "danger": {"title" : "매우나쁨(위험)", "color": "#8B62FF"}
+        }
+
+        $.each(pObj, (key, val) => {
+            const newOptions = {};
+            if(key.indexOf("Value") < 0) {
+                if(key === "dataTime") {
+                    $("#"+key).text("측정일시 : " + val);
+                }
+            } else {
+                newOptions.series = [];
+                newOptions.labels = [];
+                newOptions.fill = {colors : []};
+                newOptions.series.push(val.score);
+                newOptions.labels.push(typeObj[val.type].title);
+                newOptions.fill.colors.push(typeObj[val.type].color);
+                ApexCharts.exec(document.querySelector("#"+key), 'updateOptions', newOptions);
             }
         })
     }

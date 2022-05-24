@@ -3,7 +3,6 @@ package com.danusys.web.platform.service.intellivix;
 import com.danusys.web.commons.api.dto.ApiParamDto;
 import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.repository.ApiParamRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -18,7 +18,7 @@ public class SqlUtil {
         resultMap.put("values", columnMap.values().stream()
                 .map(value -> {
                     if (value instanceof String) {
-                        return "'" + value + "'";
+                        return "'" + CommonUtil.validNull(value) + "'";
                     } else if (value instanceof Integer) {
                         return String.valueOf(value);
                     } else {
@@ -41,7 +41,7 @@ public class SqlUtil {
                             }
                             setStr.append(StringUtil.camelToSnake(entry.getKey()))
                                     .append(" = '")
-                                    .append(entry.getValue().toString())
+                                    .append(CommonUtil.validNull(entry.getValue()))
                                     .append("'");
                         }
                 );

@@ -69,6 +69,9 @@ $(document).ready(() => {
         event.create($('#cabinetEventTable'), 'cabinet');
     } else if(path === "/pages/inqry/eventDron") {
         event.create($('#dronEventTable'), 'dron');
+    } else if(path === "/pages/inqry/faceDetection") {
+        faceDetection.eventHandler();
+        faceDetection.create();
     }
     // 환경설정
     else if(path === "/pages/config/dimmingSet") {

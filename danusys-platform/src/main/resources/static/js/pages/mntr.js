@@ -51,7 +51,7 @@ const mntr = {
             if($targetTab == "event"){
                 let newAry;
                 event.getListGeoJson({
-                    "eventState": ["1","2","3"]
+                    "eventState": ["45","46","47"]
                 }, result => {
                     //리스트 추가하기 (TODO 리스트도 refresh 해야할까)
                     const data = JSON.parse(result);
@@ -338,8 +338,8 @@ const mntr = {
             $(e.currentTarget).addClass("active");
 
             /// TODO theme 별로 탭의 모든 리스트 reload & 레이어 reload
-            let eventParam = {"eventState": ["1", "2", "3"]};
-            let eventPastParam = {"eventState": ["9"]};
+            let eventParam = {"eventState": ["45", "46", "47"]};
+            let eventPastParam = {"eventState": ["48"]};
             let stationParam = {};
 
             let tablType = 'station';
@@ -1213,8 +1213,8 @@ function searchList(section, keyword) {
                 //TODO 조건 form serialize
                 //리스트 ajax
                 event.getListGeoJson({
-                    "eventState": ["9"]
-                    , "eventGrade": [20]
+                    "eventState": ["48"]
+                    , "eventGrade": [30]
                     ////////// objJSON
                 }, result => {
                     // 리스트 초기화

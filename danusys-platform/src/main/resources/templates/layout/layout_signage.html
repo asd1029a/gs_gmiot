@@ -2,6 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="utf-8">
+    <link rel="shortcut icon" th:href="${@environment.getProperty('municipality.favicon')}"/>
     <title>Signage Display</title>
     <meta http-equiv="Cache-Control" content="no-cache" />
     <meta http-equiv="Pragma" content="no-cache" />
@@ -12,6 +13,11 @@
     <!-- jquery -->
     <script type="text/javascript" src="/webjars/jquery/3.6.0/dist/jquery.min.js" ></script>
     <script type="text/javascript" src="/js/pages/signageDisplay.js"></script>
+
+    <!-- video -->
+    <script type="text/javascript" src="/js/kurento/video.js"></script>
+    <script type="text/javascript" src="/js/kurento/kurento-utils.js"></script>
+    <script type="text/javascript" src="/js/kurento/kurento-client.js"></script>
 
     <!-- apexCharts-->
     <link rel="stylesheet" type="text/css" href="/css/plugin/apexCharts/apexcharts.css">
