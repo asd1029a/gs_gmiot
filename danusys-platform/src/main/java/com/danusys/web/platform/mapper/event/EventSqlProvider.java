@@ -57,7 +57,7 @@ public class EventSqlProvider {
 //                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
 //            }
             if(!keyword.equals("")) {
-                WHERE("v1.code_name LIKE '%" + keyword + "%'");
+                WHERE("v1.code_value LIKE '%" + keyword + "%'");
             }
             if(!startDt.equals("")) {
                 WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
@@ -66,10 +66,10 @@ public class EventSqlProvider {
                 WHERE("t1.insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
             }
             if(eventGrade != null && !eventGrade.isEmpty()) {
-                WHERE("v2.code_seq" + SqlUtil.getWhereInStr(eventGrade));
+                WHERE("v2.code_value" + SqlUtil.getWhereInStr(eventGrade));
             }
             if(eventState != null && !eventState.isEmpty()) {
-                WHERE("v3.code_seq" + SqlUtil.getWhereInStr(eventState));
+                WHERE("v3.code_value" + SqlUtil.getWhereInStr(eventState));
             }
 
             if (!start.equals("") && !length.equals("")) {
