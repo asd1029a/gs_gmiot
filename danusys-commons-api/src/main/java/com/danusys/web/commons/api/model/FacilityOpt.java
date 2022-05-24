@@ -40,4 +40,12 @@ public class FacilityOpt {
         this.facilityOptValue = facilityOptValue;
         this.facilityOptType = facilityOptType;
     }
+
+    public FacilityOpt setFacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType){
+        this.facilitySeq = facilitySeq;
+        this.facilityOptName = facilityOptName;
+        this.facilityOptValue = facilityOptValue;
+        this.facilityOptType = facilityOptType;
+        return this;
+    }
 }
