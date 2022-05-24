@@ -54,7 +54,7 @@ const commonCode = {
             columnDefs: [{
                 "targets": -1,
                 "data": null,
-                "defaultContent": '<span class="button detail" data-add-popup="'+Number($target.data('tableSeq'))+'">상세보기</span>'
+                "defaultContent": '<span class="button mod" data-add-popup="'+Number($target.data('tableSeq'))+'">상세보기</span>'
             }
             , {
                 targets: 2,
@@ -128,22 +128,18 @@ const commonCode = {
         comm.showModal($('#commonCodePopup'));
         $('#commonCodePopup').css("display", "flex");
         $('#commonCodeForm').initForm();
-        $('#commonCodePopup [data-add], [data-mod], [data-detail]').hide();
+        $('#commonCodePopup [data-add], [data-mod]').hide();
 
         /*/!*$('#commonCodePopup [data-popup]').hide();
         $('#commonCodePopup [data-popup] input').attr('disabled',true);*!/
         $('#commonCodePopup [data-popup="'+$targetId+'"] input').attr('disabled',false);*/
         let title = "";
         title = seq !== 0 ? $('.search_list:nth-of-type('+(seq+1)+') [data-popup-title]').text() : "";
+        $('#commonCodePopup [data-'+type+'="true"]').show();
         if(type === "add") {
             $('#commonCodePopup .title dt').text(title+"코드 등록");
-            $('#commonCodePopup [data-mode="'+type+'"]').show();
         } else if(type === "mod") {
             $('#commonCodePopup .title dt').text(title+'코드 수정');
-            $('#commonCodePopup [data-mode="'+type+'"]').show();
-        } else if(type === "detail") {
-            $('#commonCodePopup .title dt').text(title+"코드 상세");
-            $('#commonCodePopup [data-mode="'+type+'"]').show();
         }
     },
     hidePopup : () => {
