@@ -52,7 +52,7 @@ const mntr = {
             if($targetTab == "event"){
                 let newAry;
                 event.getListGeoJson({
-                    "eventState": ["1","2","3"]
+                    "eventState": ["45","46","47"]
                 }, result => {
                     //리스트 추가하기 (TODO 리스트도 refresh 해야할까)
                     const data = JSON.parse(result);
@@ -311,7 +311,7 @@ const mntr = {
 
         //이벤트 레이어
         event.getListGeoJson({
-            "eventState": ["1", "2", "3"]
+            "eventState": ["45", "46", "47"]
         }, result => {
             let eventLayer = new dataLayer('map')
                 // .fromGeoJSon(result, 'stationLayer', true, layerStyle.station(false));
@@ -324,7 +324,7 @@ const mntr = {
 
         //과거 이벤트 레이어
         event.getListGeoJson({
-            "eventState": ["9"]
+            "eventState": ["48"]
         }, result => {
             let eventPastLayer = new dataLayer('map')
                 .toCluster(result, 'eventPastLayer', true, layerStyle.event(false));
@@ -1141,8 +1141,8 @@ function searchList(section, keyword) {
                 //TODO 조건 form serialize
                 //리스트 ajax
                 event.getListGeoJson({
-                    "eventState": ["9"]
-                    , "eventGrade": [20]
+                    "eventState": ["48"]
+                    , "eventGrade": [30]
                     ////////// objJSON
                 }, result => {
                     // 리스트 초기화
