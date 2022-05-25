@@ -4,8 +4,8 @@ import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.platform.service.facility.FacilityService;
+import com.danusys.web.platform.service.station.StationService;
 import com.danusys.web.platform.util.AirPollutionUtil;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -37,17 +37,23 @@ import java.util.Map;
 @RestController
 public class SignageDisplayController {
 
-    public SignageDisplayController(FacilityService facilityService) {this.facilityService = facilityService;}
+    public SignageDisplayController(FacilityService facilityService, StationService stationService) {
+        this.facilityService = facilityService;
+        this.stationService = stationService;
+    }
 
     private final FacilityService facilityService;
+    private final StationService stationService;
 
     @Value("${airkorea.service.key}")
     private String serviceKey;
 
     @GetMapping(value = "/pages/signageDisplay")
-    public ModelAndView signagePage(@RequestParam int id) throws Exception {
+    public ModelAndView signagePage(@RequestParam(value = "id") int templateSeq, @RequestParam(value = "stationId") int stationSeq) throws Exception {
         ModelAndView mav = new ModelAndView("/view/pages/signage_display");
-        EgovMap data = facilityService.getSignageLayout(id);
+        EgovMap data = facilityService.getSignageLayout(templateSeq);
+        EgovMap stationData = stationService.getOneStationForSignage(stationSeq);
+        data.put("options", stationData);
         mav.addObject("data", data);
         return mav;
     }
@@ -55,8 +61,7 @@ public class SignageDisplayController {
     @PostMapping(value = "/signageDisplay/getListAirPollution")
     public Map<String, Object> getAirPollution(@RequestBody Map<String, Object> paramMap) throws Exception {
         /*TODO : 기상청 키 발급 properties 갱신 요망*/
-        /*TODO : 사이니지 위치에 따른 측정소 분기 필요*/
-        String measuringStationName = "영주동";
+        String measuringStationName = AirPollutionUtil.getNearByMeasuringStation(serviceKey, paramMap.get("x").toString(), paramMap.get("y").toString());
 
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=" + serviceKey); /*Service Key*/

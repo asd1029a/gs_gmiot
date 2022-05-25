@@ -34,6 +34,9 @@ public class FacilityServiceImpl implements FacilityService{
             case "dimming" :
                 resultMap.put("data", commonMapper.selectList(fsp.selectListFacilityForDimmingQry(paramMap)));
                 break;
+            case "signage" :
+                resultMap.put("data", commonMapper.selectList(fsp.selectListFacilityForSignageQry(paramMap)));
+                break;
             default : resultMap.put("data", commonMapper.selectList(fsp.selectListQry(paramMap)));
                 break;
         }

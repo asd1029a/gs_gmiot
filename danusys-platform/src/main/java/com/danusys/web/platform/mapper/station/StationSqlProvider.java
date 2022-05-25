@@ -198,4 +198,45 @@ public class StationSqlProvider {
         };
         return sql.toString();
     }
+
+    public String selectListStationForSignageQry(Map<String, Object> paramMap) {
+
+        SQL sql = new SQL() {{
+            ArrayList stationSeqList = CommonUtil.valiArrNull(paramMap,"stationSeqList");
+
+            SELECT("t1.station_seq, t1.station_name, t1.station_kind" +
+                    ", t1.latitude, t1.longitude, t2.code_name AS station_kind_name," +
+                    " t2.code_value AS station_kind_value, t3.emd_nm AS administ_zone_name");
+            FROM("t_station t1");
+            LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
+            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            WHERE("t2.code_seq = 62 " );
+            if(stationSeqList != null && !stationSeqList.isEmpty()) {
+                WHERE("t1.station_seq NOT " + SqlUtil.getWhereInStr(stationSeqList));
+            }
+            ORDER_BY("t1.station_seq");
+        }};
+        return sql.toString();
+    }
+
+    public String selectOneStationForSignageQry(int seq) {
+        SQL sql = new SQL() {
+            {
+                SELECT("t1.station_seq, t1.station_name, t1.station_kind" +
+                        ", t1.latitude, t1.longitude, t2.code_name AS station_kind_name," +
+                        " t2.code_value AS station_kind_value, t4.rtsp_url");
+                FROM("t_station t1");
+                LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
+                INNER_JOIN("(" +
+                        "SELECT * " +
+                        "FROM t_facility s1 " +
+                        "INNER JOIN v_facility_rtsp s2 on s1.facility_seq = s2.facility_seq " +
+                        "WHERE s1.facility_kind = 58 " +
+                        ") t4 ON t1.station_seq = t4.station_seq");
+                WHERE("t1.station_seq = "+ seq );
+                WHERE("t2.code_seq = 62");
+            }
+        };
+        return sql.toString();
+    }
 }

@@ -13,8 +13,11 @@ const signage = {
         $("#signagePopup .title dd, #signagePopup .bottom li:first-child").on('click', () => {
             signage.hidePopup();
         });
+        $("#signageStationPopup .title dd").on('click', () => {
+            signage.hideFacilityPopup();
+        });
 
-        signage.getList({},signage.createTemplateList);
+        signage.getList({}, signage.createTemplateList);
 
         $("#addSignageTemplateProcBtn").on('click', () => {
             if($("#signageTemplateForm").doValidation()) {
@@ -53,7 +56,6 @@ const signage = {
                 }
                 templateObj.templateContent = JSON.stringify(templateObj.templateContent);
                 delete templateObj.templateRowCnt;
-                const templateId = $('#templateList').find("input:checked").prop("id");
                 templateObj.templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
 
                 signage.modProc(templateObj
@@ -118,14 +120,60 @@ const signage = {
             }
         });
 
-        $("#previewSignageBtn").on("click", () => {
+        /* 화면 표출 */
+        $("#displaySignageBtn").on("click", () => {
             const templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
-            window.open("/pages/signageDisplay?id=" + templateSeq, '_blank').focus();
+            const templateContent = JSON.parse($('#templateList dl input:checked').parents('dl').data('templateContent'));
+            let options = {};
+
+            $.each(templateContent, (idx, obj) => {
+                if(obj.kind === "stationList") {
+                    const stationList = JSON.parse(obj.value);
+                    $.each(stationList, (idx2, stationObj) => {
+                        const stationName = stationObj.stationName.replaceAll('&amp;', '&').replace("&#40;", '(').replace("&#41;", ')').replace("\t", '');
+                        options[stationObj.stationSeq] = stationName;
+                    });
+                }
+            });
+
+            swal.fire(
+                {
+                    title: "사이니지 표출 개소를 선택해 주십시오.",
+                    input: 'select',
+                    inputOptions : options,
+                    inputPlaceholder: '개소 선택',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3a66e5',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '화면 표출',
+                    cancelButtonText: '취소',
+                    padding : '30px',
+                    heightAuto: false,
+                    inputValidator: (value) => {
+                        if (typeof value !== "undefined" && value !== "") {
+                            window.open("/pages/signageDisplay?id=" + templateSeq + "&stationId=" + value, '_blank').focus();
+                        }
+                    }
+                });
         });
 
+        /* 취소 */
         $("#cancelSignageLayoutBtn").on("click", () => {
             signage.hideLayout();
-        })
+        });
+
+        /* rtsp 영상 개소 선택 */
+        $("#addStationBtn").on("click", () => {
+            const stationList = $("#signageStationPopup").data("stationList");
+
+            if(stationList.length > 0) {
+                $("#templateLayoutForm input[name='stationList']").val(JSON.stringify(stationList));
+                comm.showAlert("사이니지 시설물이 선택되었습니다.");
+                signage.hideFacilityPopup();
+            } else {
+                comm.showAlert("사이니지 시설물을 선택해주십시오.");
+            }
+        });
     }
     , getList : (param, pCallback) => {
         $.ajax({
@@ -155,8 +203,8 @@ const signage = {
             $target.append(content);
 
             $target.find("dl:last-child").data(each);
-
         });
+
         $("#templateList dl").off('click');
         $("#templateList dl").on('click', (e) => {
             e.preventDefault();
@@ -205,21 +253,23 @@ const signage = {
 
             let innerTag =
                 {
-                    'rtspUrl': 'div',
+                    'stationList': 'div',
                     'imageFile': 'div',
                     'videoFile': 'div',
                     'airPollution' : 'div'
                 };
             let innerHtml =
                 {
-                    'rtspUrl': '<input type="text" name="rtspUrl" placeholder="rtsp URL 작성">',
-                    'imageFile': '<div class="fileBox">' +
-                        '<input type="text" class="uploadName" name="imageFileName" placeholder="이미지 첨부파일" readonly>' +
+                    'stationList': '<div class="rtsp_box">' +
+                        '<input type="hidden" name="stationList">' +
+                        '<a href="#" id="getStationBtn">개소 선택</a>',
+                    'imageFile': '<div class="file_box">' +
+                        '<input type="text" class="upload_name" name="imageFileName" placeholder="이미지 첨부파일" readonly>' +
                         '<label for="imageFile">파일찾기</label>' +
                         '<input type="file" name="imageFile" id="imageFile">' +
                         '</div>',
-                    'videoFile': '<div class="fileBox">' +
-                        '<input type="text" class="uploadName" name="videoFileName" placeholder="동영상 첨부파일" readonly>' +
+                    'videoFile': '<div class="file_box">' +
+                        '<input type="text" class="upload_name" name="videoFileName" placeholder="동영상 첨부파일" readonly>' +
                         '<label for="videoFile">파일찾기</label>' +
                         '<input type="file" name="videoFile" id="videoFile">' +
                         '</div>',
@@ -237,28 +287,47 @@ const signage = {
 
             $(targetNode).append(tempTag);
 
-            $("#imageFile").off('change');
-            $("#imageFile").on('change', (e) => {
+            const $imageFileEle = $("#imageFile");
+            const $videoFileEle = $("#videoFile");
+            const $stationBtn = $("#getStationBtn");
+
+            $imageFileEle.off('change');
+            $imageFileEle.on('change', (e) => {
                 const maxSize = 30 * 1024 * 1024 // 30MB
                 const fileSize = e.currentTarget.files[0].size
                 if( fileSize > maxSize){
                     comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
                 } else {
                     const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
-                    $(".uploadName").val(fileName);
+                    $(".upload_name").val(fileName);
                 }
             });
 
-            $("#videoFile").off('change');
-            $("#videoFile").on('change', (e) => {
+            $videoFileEle.off('change');
+            $videoFileEle.on('change', (e) => {
                 const maxSize = 2000 * 1024 * 1024 // 2GB
                 const fileSize = e.currentTarget.files[0].size
                 if( fileSize > maxSize){
                     comm.showAlert("첨부파일의 사이즈는 2GB 이내로 등록 가능합니다.");
                 } else {
                     const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
-                    $(".uploadName").val(fileName);
+                    $(".upload_name").val(fileName);
                 }
+            });
+
+            $stationBtn.off('click');
+            $stationBtn.on('click', () => {
+                signage.showFacilityPopup();
+                /* 템플릿 개소 데이터 저장 */
+                const templateContent = JSON.parse($("#templateList dl input:checked").parents("dl").data("templateContent"));
+                let stationList = [];
+                $.each(templateContent, (idx, obj)=> {
+                    if(obj.kind === "stationList") {
+                        stationList = JSON.parse(obj.value);
+                    }
+                });
+                $("#signageStationPopup").data("stationList", stationList);
+                signage.createStation();
             });
         });
     }
@@ -271,7 +340,7 @@ const signage = {
             "<p>종류<span>레이아웃에 들어갈 컨텐츠를 선택해주세요.</span></p>" +
             "<select class='contents_kind' id='kind_"+idx+"'>" +
             "<option value=''>선택</option>" +
-            "<option value='rtspUrl'>rtsp 영상</option>" +
+            "<option value='stationList'>rtsp 영상</option>" +
             "<option value='imageFile'>이미지 선택</option>" +
             "<option value='videoFile'>영상 선택</option>" +
             "<option value='airPollution'>미세먼지 정보</option>" +
@@ -338,12 +407,119 @@ const signage = {
             failCallback();
         });
     }
+    , createStation : () => {
+        const $target = $('#signageStationTable');
+        const set = new Set();
+
+        $("#templateList dl input:not(:checked)").each((idx, ele) => {
+            const templateContent = JSON.parse($(ele).parents('dl').data('templateContent'));
+            $.each(templateContent, (idx2, obj) => {
+                if(obj.kind === "stationList") {
+                    const stationList = JSON.parse(obj.value);
+                    $.each(stationList, (idx3, stationObj) => {
+                        set.add(stationObj.stationSeq);
+                    })
+                }
+            });
+        });
+        const optionObj = {
+            dom: '<"table_body"rt>',
+            destroy: true,
+            bPaginate: false,
+            bServerSide: false,
+            scrollY: "calc(100% - 150px)",
+            ajax:
+                {
+                    'url': "/station/signage",
+                    'contentType': "application/json; charset=utf-8",
+                    'type': "POST",
+                    'async': false,
+                    'data' : function () {
+                        return JSON.stringify({"stationSeqList" : [...set]});
+                    },
+                    'dataSrc' : function(result) {
+                        return result.data;
+                    }
+                }
+            ,
+            select: {
+                toggleable: false
+            }
+            , columns: [
+                {data: "stationName"},
+                {data: "administZoneName"},
+                {data: null}
+            ]
+            , columnDefs: [{
+                "targets": -1,
+                "data": null,
+                "defaultContent": '<span><input type="checkbox"/><label><span></span></label></span>'
+            }]
+            , fnCreatedRow: (nRow, aaData, iDataIndex) => {
+                const stationSeq = aaData.stationSeq;
+                const stationList = $("#signageStationPopup").data("stationList");
+
+                $(nRow).find('input').prop('id', "check" + stationSeq);
+                $(nRow).find('input').prop('value', stationSeq);
+                $(nRow).find('label').prop('for', "check" + stationSeq);
+
+                $.each(stationList, (idx, item) => {
+                    if(item.stationSeq === stationSeq) {
+                        $(nRow).find('input').prop('checked', true);
+                    }
+                });
+            }
+            , excelDownload: false
+        }
+
+        const evt = {
+            click: function (e) {
+                const rowData = $target.DataTable().row($(e.currentTarget)).data();
+                const stationList = $("#signageStationPopup").data("stationList");
+                const stationObj = {stationSeq : rowData.stationSeq , stationName : rowData.stationName};
+
+                if($(e.target).prop("checked") === true) {
+                    stationList.push(stationObj);
+                } else if($(e.target).prop("checked") === false){
+                    let index;
+                    $.each(stationList, (idx, obj) => {
+                        if(obj.stationSeq === rowData.stationSeq) {
+                            index = idx;
+                        }
+                    })
+                    stationList.splice(index, 1);
+                }
+            }
+            , keyup : function() {
+                $("#stationKeyword").off("keyup");
+                $("#stationKeyword").on("keyup", function (input) {
+                    const keyword = $(input.currentTarget).val();
+                    if(keyword === "") {
+                        $('#signageStationTable tbody tr').show();
+                    } else {
+                        $target.DataTable().rows().data().each((data, idx)=> {
+                            const rowHtml = $target.DataTable().row(idx).node();
+                            if(data.stationName.includes(keyword)) {
+                                $(rowHtml).show();
+                            } else {
+                                $(rowHtml).hide();
+                            }
+                        });
+                    }
+                });
+            }
+        }
+        comm.createTable($target, optionObj, evt);
+    }
     , showPopup : (type) => {
-        comm.showModal($('#signagePopup'));
-        $("#signagePopup").css('display', 'flex');
+        const $popup = $('#signagePopup');
+        const $form = $("#signageTemplateForm");
+
+        comm.showModal($popup);
+        $popup.css('display', 'flex');
         $("#signagePopup .bottom li").hide();
         $("#signagePopup [data-"+type+"]").show();
-        $("#signageTemplateForm").initForm();
+        $form.initForm();
 
         if(type === "add") {
             $("#signagePopup .title dt").text("사이니지 템플릿 추가");
@@ -351,12 +527,26 @@ const signage = {
             $("#signagePopup .title dt").text("사이니지 템플릿 수정");
             const templateData = $("#templateList dl input:checked").parents("dl").data();
             templateData.templateRowCnt = JSON.parse(templateData.templateContent).length;
-            $("#signageTemplateForm").setItemValue(templateData);
+            $form.setItemValue(templateData);
         }
     }
     , hidePopup : () => {
-        $("#signagePopup").hide();
-        comm.hideModal($('#signagePopup'));
+        const $popup = $("#signagePopup");
+
+        $popup.hide();
+        comm.hideModal($popup);
+    }
+    , showFacilityPopup : () => {
+        const $stationPopup = $('#signageStationPopup');
+
+        comm.showModal($stationPopup);
+        $stationPopup.css('display', 'flex');
+    }
+    , hideFacilityPopup : () => {
+        const $stationPopup = $('#signageStationPopup');
+
+        comm.hideModal($stationPopup);
+        $stationPopup.hide();
     }
     , hideLayout : () => {
         $("#templateArea").empty();

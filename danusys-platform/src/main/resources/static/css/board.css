@@ -426,10 +426,14 @@ tr.selected td {background-color: #23252b;}
 .layout_field ul li:nth-child(even) select{padding: 0px 14px; background-position: right 14px center;}
 .layout_field ul li:nth-child(even) select option{background: #1a1b1d; color: #fff; padding: 3px 0;}
 .layout_field ul li:nth-child(even) input{padding: 0px 14px;}
-.layout_field ul li:nth-child(even) .fileBox{display: flex; flex-direction: row; align-items: center; justify-content: space-between; grid-gap: 14px;}
-.layout_field ul li:nth-child(even) .fileBox .uploadName{flex: 1; height: 34px; padding: 0px 14px; color: #797d87; border: 1px solid #292c34; }
-.layout_field ul li:nth-child(even) .fileBox label{width: 84px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
-.layout_field ul li:nth-child(even) .fileBox input[type="file"]{position: absolute; overflow: hidden; width: 0; height: 0; padding: 0; border: 0;}
+.layout_field ul li:nth-child(even) .file_box{display: flex; flex-direction: row; align-items: center; justify-content: space-between; grid-gap: 14px;}
+.layout_field ul li:nth-child(even) .file_box .upload_name{flex: 1; height: 34px; padding: 0px 14px; color: #797d87; border: 1px solid #292c34; }
+.layout_field ul li:nth-child(even) .file_box label{width: 84px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
+.layout_field ul li:nth-child(even) .file_box input[type="file"]{position: absolute; overflow: hidden; width: 0; height: 0; padding: 0; border: 0;}
+.layout_field ul li:nth-child(even) .rtsp_box{display: flex; grid-gap: 14px;}
+.layout_field ul li:nth-child(even) .rtsp_box a{width: 125px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
+
+.swal2-select {width: auto;}
 
 .popup.signage_popup{ width: 420px; height: 400px;}
 .popup.signage_popup div{display: flex; justify-content: center; padding: 0px 24px; border-bottom: 1px solid #292c34;}
