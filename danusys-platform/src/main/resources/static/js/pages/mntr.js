@@ -230,6 +230,8 @@ const mntr = {
                     //클러스터 아닐때
                     targetType = target.getId().replace(/[0-9]/gi,'');
                 }
+                    // target.getProperties().properties.selected = false;
+                    // target.getProperties().properties.selected = true;
                 //*** eventPast 내부 id => event
                 clickIcon(targetType, target);
             }
@@ -246,12 +248,12 @@ const mntr = {
             .toCluster(geoJsonStr, 'eventLayer', true, layerStyle.event(false));
         let eventPastLayer = new dataLayer('map') //이벤트 과거이력
             .toCluster(geoJsonStr, 'eventPastLayer', true, layerStyle.event(false));
-        let facilityLayer = new dataLayer('map') //시설물
-            .fromGeoJSon(geoJsonStr, 'facilityLayer', true, layerStyle.facility());
         let stationLayer = new dataLayer('map') //개소
             .toCluster(geoJsonStr, 'stationLayer', true, layerStyle.station(false));
         let routeLayer = new dataLayer('map') //경로
             .fromGeoJsonToRoute(geoJsonStr, 'routeLayer', true, layerStyle.route(false));
+        let facilityLayer = new dataLayer('map') //시설물
+            .fromGeoJSon(geoJsonStr, 'facilityLayer', true, layerStyle.facility());
         let cctvLayer = new dataLayer('map') //씨씨티비
             .fromGeoJSon(geoJsonStr,'cctvLayer', true, layerStyle.cctv(false));
 
@@ -343,19 +345,27 @@ const mntr = {
             let stationParam = {};
 
             let tablType = 'station';
+            //기체 폴링 멈춤
+            dronePolling.stop();
 
             switch (theme) {
                 case "smartPole" : //스마트폴
                     //실시간
                     //개소
                     //과거이력
+                    window.lyControl.offList(['facility']);
+                    window.lyControl.onList(['station', 'event', 'eventPast']);
                     break;
                 case "smartBusStop" : //스마트 정류장
                     //실시간
                     //개소
                     //과거이력
+                    window.lyControl.offList(['facility']);
+                    window.lyControl.onList(['station', 'event', 'eventPast']);
                     break;
                 case "smartPower": //스마트 분전함
+                    // let eventParam = {"eventState": ["45", "46", "47"], "eventKind": ["63"]};
+                    // let eventPastParam = {"eventState": ["48"]};
                     //실시간
                     //개소
                     //과거이력
@@ -374,14 +384,9 @@ const mntr = {
                         reloadLayer(result, 'facilityLayer');
                         lnbList.createFacility(result);
                     });
-                    //     //TODO 끄고 켜기
-                    //     setInterval(function() {
-                    //         facility.getListGeoJson({
-                    //             "facilityKind": ["DRONE"]
-                    //         },result => {
-                    //             reloadLayer(result, 'facilityLayer');
-                    //         });
-                    //     }, 10000);
+                    //기제 폴링 시작
+                    dronePolling.start();
+
                     window.lyControl.offList(['station', 'event', 'eventPast']);
                     window.lyControl.onList(['facility', 'station' , target]);
                     break;
@@ -398,23 +403,20 @@ const mntr = {
 
             //실시간 이벤트
             event.getListGeoJson(eventParam, result => {
-                console.log(result);
                 reloadLayer(result, 'eventLayer');
+                console.log(result);
                 lnbList.createEvent(result);
             });
             //개소
             station.getListGeoJson(stationParam ,result => {
-                console.log(result);
                 reloadLayer(result, 'stationLayer');
                 lnbList.createStation(result, tablType);
             });
             //이벤트 과거이력
             event.getListGeoJson(eventPastParam, result => {
-                console.log(result);
                 reloadLayer(result, 'eventPastLayer');
                 lnbList.createEventPast(result);
             });
-
             window.map.map.render();
             window.map.updateSize();
 
@@ -1129,7 +1131,6 @@ const rnbList = {
     }
     , createEvent : obj => {
         /*TODO 데이터 오면 정보 채우기*/
-
         //이벤트 타겟 레이어 찾기
         let eventTarget = 'station';
         if(window.lyControl.find('facilityLayer').getVisible()){
@@ -1164,7 +1165,6 @@ const rnbList = {
         const $target = $('.area_right[data-value=facility]');
         const prop = obj.getProperties();
         //TODO 정보 채워두기
-
         $target.data(obj);
         $target.addClass('select');
         $target.find('.facilityTitle').text("[ " + prop.facilitySeq + " ] "  + prop.facilityKindName);
@@ -1177,9 +1177,13 @@ const rnbList = {
         propList.map(propStr => {
             $target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
         });
+        //////////
+        // video는 냅두고
+
         // //animation end
-        // window.map.removePulse();
-        // window.map.setPulse(obj.getGeometry().getCoordinates());
+        //다른 유형 중복선 제거
+        window.lyConnect.remove('event');
+        window.lyConnect.remove('station');
 
     }
 }
@@ -1291,7 +1295,11 @@ function reloadLayer(result, layer) {
                 const seq = beforeProp.getProperties().facilitySeq;
                 newFeatures.forEach(f => {
                     if(f.getProperties().facilitySeq == seq){
+                        //clickIcon('facility',f);
                         rnbList.createFacility(f);
+                        //선택 되어잇으면 선택
+                        window.lySelect.getFeatures().push(f);
+                        window.map.map.renderSync();
                     }
                 });
                 break;

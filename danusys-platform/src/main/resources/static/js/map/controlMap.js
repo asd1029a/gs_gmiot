@@ -114,17 +114,15 @@ const layerStyle = {
     //시설물
     , facility : (selectFlag) => {
         return feature => {
-            // const selected = feature.getProperties().properties.selected;
-            const text = "";//feature.getProperties().id;
+            const selected = feature.getProperties().selected;
+            let imgNm = "";
+            if(selected != undefined){
+                selectFlag = selected;
+            }
+            imgNm = selectFlag ? "drone_select" : "drone" ;
+
+            const text = feature.getProperties().facilityId;
             const style = new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor:[0.5,0.5],
-                    anchorXUnits: 'fraction',
-                    anchorYUnits: 'fraction',
-                    img: imgObj['drone'],
-                    imgSize:[50,50],
-                    scale: 1
-                }),
                 text : new ol.style.Text({
                     text: String(text),
                     offsetY: 20,
@@ -135,8 +133,16 @@ const layerStyle = {
                     font: 'Bold 10px Arial',
                     stroke: new ol.style.Stroke({
                         color: 'white',
-                        width: 13
+                        width: 2
                     })
+                }),
+                image: new ol.style.Icon({
+                    anchor:[0.5,0.5],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    img: imgObj[imgNm],
+                    imgSize:[50,50],
+                    scale: 1
                 })
             });
             return style;
@@ -381,6 +387,8 @@ function clickIcon(layerType, layerObj) {
         case "facility" : //시설물(드론) 클릭 이벤트
             //TODO 드론 오른쪽 패널
             $('.area_right').removeClass('select');
+            //TODO video 재생
+            //////////////////////////
             rnbList.createFacility(features);
             window.map.updateSize();
             break;
@@ -449,6 +457,26 @@ function clickIcon(layerType, layerObj) {
 
     });
 
+}
+
+/**
+ * 드론 레이어 polling
+ * */
+let droneTimer;
+const dronePolling = {
+    start : () => {
+        droneTimer = setInterval(dronePolling.refresh, 5000);
+    }
+    , stop : () => {
+        clearInterval(droneTimer);
+    }
+    , refresh : () => {
+        facility.getListGeoJson({
+            "facilityKind": ["DRONE"]
+        },result => {
+            reloadLayer(result, 'facilityLayer');
+        });
+    }
 }
 
 

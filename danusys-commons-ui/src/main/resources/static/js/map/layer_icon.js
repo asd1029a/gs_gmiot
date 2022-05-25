@@ -23,6 +23,7 @@ const svgToImage = {
         imgSrcObj['cctv_useCd1_select'] = rootPath + 'cctv_crime_select' + fileType;
         //관제 드론 icon
         imgSrcObj['drone'] = rootPath + 'drone_pointer' + fileType;
+        imgSrcObj['drone_select'] = rootPath + 'drone_pointer_select' + fileType;
 
         for (const [k, v] of Object.entries(imgSrcObj)) {
             imgObj[k] = svgToImage.create(k);
