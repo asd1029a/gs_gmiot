@@ -1,7 +1,9 @@
 package com.danusys.web.commons.api.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,6 +21,7 @@ import java.util.List;
  */
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "t_facility")
 public class Facility implements Serializable {
     @Id
@@ -56,6 +59,9 @@ public class Facility implements Serializable {
     private String facilityId;
 
     @Column
+    private String facilityName;
+
+    @Column
     private double latitude;
 
     @Column
@@ -68,4 +74,15 @@ public class Facility implements Serializable {
     @JoinColumn(name = "facilitySeq")
     @JsonManagedReference
     private List<FacilityOpt> facilityOpts = new ArrayList<FacilityOpt>();
+
+    @Builder
+    public Facility(String facilityId, String facilityName, int facilityStatus, double latitude, double longitude, Long facilitySeq, Long stationSeq) {
+        this.facilityId = facilityId;
+        this.facilityName = facilityName;
+        this.facilityStatus = facilityStatus;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.facilitySeq = facilitySeq;
+        this.stationSeq = stationSeq;
+    }
 }

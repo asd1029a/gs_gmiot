@@ -8,6 +8,7 @@ import com.danusys.web.commons.api.repository.StationRepository;
 import com.danusys.web.commons.app.StrUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +77,7 @@ public class FacilityService {
 
             String latitude = StrUtils.getStr(d.get("latitude"));
             String longitude = StrUtils.getStr(d.get("longitude"));
+            String facilityName = StrUtils.getStr(d.get("facility_name"));
 
 
             latitude = latitude.isEmpty() ? "0" : latitude;
@@ -86,6 +88,7 @@ public class FacilityService {
             facility.setFacilityId(facilityId);
             facility.setFacilityStatus(0);
             facility.setFacilityKind(Integer.parseInt(codeSeq.toString()));
+            facility.setFacilityName(facilityName);
 
             if (station != null) {
                 facility.setStationSeq(station.getStationSeq());
@@ -95,5 +98,17 @@ public class FacilityService {
         });
 
         facilityRepository.saveAll(facilityList);
+    }
+
+    public Facility getOne(Long id) {
+        return facilityRepository.getOne(id);
+    }
+
+    @Transactional
+    public Facility update(Facility facility) {
+        Facility d = facilityRepository.findByFacilityId(facility.getFacilityId());
+        d.setLatitude(facility.getLatitude());
+        d.setLongitude(facility.getLongitude());
+        return d;
     }
 }
