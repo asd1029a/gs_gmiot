@@ -68,29 +68,6 @@ public class ApiCallRestController {
     private final EventService eventService;
     private final FacilityOptService facilityOptService;
 
-    private final WebClient webClient;
-
-
-    @GetMapping(value = "/https-webclient-test")
-    public ResponseEntity httpsWebClientTest() throws Exception {
-
-        Mono<Object> mono = webClient.mutate()
-                            .baseUrl("https://jsonplaceholder.typicode.com")
-                            .build()
-                            .get()
-                            .uri("/posts/{ID}", 1)
-                            .accept(MediaType.APPLICATION_JSON)
-//                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + "accessToken")
-                            .retrieve()
-                            .bodyToMono(Object.class);
-
-
-        log.trace("mono: {}", mono.block());
-
-        return ResponseEntity.status(HttpStatus.OK).body("list");
-    }
-
-
     @PostMapping(value = "/facility")
     public ResponseEntity findAllForFacility(@RequestBody Map<String, Object> param) throws Exception {
         List<Facility> list = facilityService.findAll();
