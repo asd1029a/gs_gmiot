@@ -1,7 +1,9 @@
 package com.danusys.web.commons.api.dto;
 
 import com.danusys.web.commons.api.model.Event;
+import com.danusys.web.commons.api.repository.EventRepository;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -13,7 +15,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class EventReqeustDTO {
+    private final EventRepository eventRepository;
     private Long facilitySeq;
     private Long stationSeq;
     private String facilityId;
@@ -25,8 +29,8 @@ public class EventReqeustDTO {
         return Event.builder()
                 .facilitySeq(this.facilitySeq)
                 .stationSeq(this.stationSeq)
-                .eventKind(this.eventKind)
-                .eventGrade(this.eventGrade)
+                .eventKind(eventRepository.findEventKind(this.eventKind))
+                .eventGrade(eventRepository.findEventGrade(this.eventGrade))
                 .eventMessage(this.eventMessage)
                 .build();
     }

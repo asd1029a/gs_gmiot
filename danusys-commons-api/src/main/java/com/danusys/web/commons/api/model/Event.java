@@ -32,19 +32,19 @@ public class Event {
     private Long stationSeq;
 
     @Column
-    private String eventKind;
+    private Long eventKind;
 
     @Column
-    private String eventGrade;
+    private Long eventGrade;
 
     @Column
-    private String eventProcStat;
+    private Long eventProcStat;
 
 //    @Column
 //    private String eventAddress;
 
-//    @Column
-//    private Timestamp eventStartDt;
+    @Column
+    private Timestamp eventStartDt;
 //
 //    @Column
 //    private Timestamp eventEndDt;
@@ -66,11 +66,12 @@ public class Event {
     private Timestamp insertDt;
 
     @Builder
-    public Event(Long facilitySeq, Long stationSeq, String eventKind, String eventGrade, String eventMessage) {
+    public Event(Long facilitySeq, Long stationSeq, Long eventKind, Long eventGrade, String eventMessage, Timestamp eventStartDt) {
         this.facilitySeq = facilitySeq;
         this.stationSeq = stationSeq;
         this.eventKind = eventKind;
         this.eventGrade = eventGrade;
         this.eventMessage = eventMessage;
+        this.eventStartDt = eventStartDt;
     }
 }

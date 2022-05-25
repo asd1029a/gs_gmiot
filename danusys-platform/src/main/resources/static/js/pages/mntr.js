@@ -51,7 +51,7 @@ const mntr = {
             if($targetTab == "event"){
                 let newAry;
                 event.getListGeoJson({
-                    "eventState": ["45","46","47"]
+                    "eventState": ["1","2","3"]
                 }, result => {
                     //리스트 추가하기 (TODO 리스트도 refresh 해야할까)
                     const data = JSON.parse(result);
@@ -230,8 +230,6 @@ const mntr = {
                     //클러스터 아닐때
                     targetType = target.getId().replace(/[0-9]/gi,'');
                 }
-                    // target.getProperties().properties.selected = false;
-                    // target.getProperties().properties.selected = true;
                 //*** eventPast 내부 id => event
                 clickIcon(targetType, target);
             }
@@ -318,6 +316,7 @@ const mntr = {
 
         });
 
+
     }
     , eventHandler : () => {
         //LNM FOLD (왼쪽창 끄고켜기)
@@ -326,13 +325,13 @@ const mntr = {
             $('.mntr_container .lnb ul li').removeClass("active");
             window.map.updateSize();
         });
-
         //LNM SWITCH (왼쪽창 변경)
         $('.mntr_container .lnb ul li').on("click", e => {
             const theme = $(e.currentTarget).attr('data-value');
             $('.mntr_container .menu_fold').removeClass("select");
             $('.mntr_container .menu_fold#'+theme).addClass("select");
             let target = $('.mntr_container section.menu_fold.select .lnb_tab_section.select').attr('data-value');
+
             if(target == "station") {target = "event"}
 
             //ACTIVE STYLE
@@ -340,8 +339,8 @@ const mntr = {
             $(e.currentTarget).addClass("active");
 
             /// TODO theme 별로 탭의 모든 리스트 reload & 레이어 reload
-            let eventParam = {"eventState": ["45", "46", "47"]};
-            let eventPastParam = {"eventState": ["48"]};
+            let eventParam = {"eventState": ["1", "2", "3"]};
+            let eventPastParam = {"eventState": ["9"]};
             let stationParam = {};
 
             let tablType = 'station';
@@ -729,8 +728,7 @@ const mntr = {
                     }
                 }
             }
-        });
-
+        })
         //관제 검색 조건 초기화
         $('.lnb_tab_section .button.refresh').on("click", e => {
             const section = $(e.currentTarget).parents('section').attr('id');
@@ -1131,6 +1129,7 @@ const rnbList = {
     }
     , createEvent : obj => {
         /*TODO 데이터 오면 정보 채우기*/
+
         //이벤트 타겟 레이어 찾기
         let eventTarget = 'station';
         if(window.lyControl.find('facilityLayer').getVisible()){
@@ -1217,8 +1216,8 @@ function searchList(section, keyword) {
                 //TODO 조건 form serialize
                 //리스트 ajax
                 event.getListGeoJson({
-                    "eventState": ["48"]
-                    , "eventGrade": [30]
+                    "eventState": ["9"]
+                    , "eventGrade": [20]
                     ////////// objJSON
                 }, result => {
                     // 리스트 초기화

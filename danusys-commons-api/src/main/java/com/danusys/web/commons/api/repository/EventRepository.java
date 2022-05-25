@@ -13,5 +13,9 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface EventRepository extends JpaRepository<Event, Long> {
     @Query(value = "SELECT code_seq FROM v_event_kind WHERE code_id = :codeId", nativeQuery = true)
-    int findEventKind(String codeId);
+    Long findEventKind(String codeId);
+    @Query(value = "SELECT code_seq FROM v_event_grade WHERE code_id = :codeId", nativeQuery = true)
+    Long findEventGrade(String codeId);
+    @Query(value = "SELECT code_seq FROM v_event_proc_stat WHERE code_id = :codeId", nativeQuery = true)
+    Long findEventProcStat(String codeId);
 }

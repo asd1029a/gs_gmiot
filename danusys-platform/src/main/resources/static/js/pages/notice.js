@@ -47,6 +47,7 @@ const notice = {
                     },
                     'dataSrc' : function (result) {
                         $('.title dd .count').text(result.recordsTotal);
+                        console.log(result.data);
                         return result.data;
                     }
                 },
@@ -57,7 +58,7 @@ const notice = {
             columns : [
                 {data: "noticeTitle", className: "alignLeft"},
                 {data: "noticeContent", className: "alignLeft"},
-                {data: "insertUserSeq"},
+                {data: "insertUserId"},
                 {data: "insertDt"},
                 {data: "noticeFile"},
                 {data: null}

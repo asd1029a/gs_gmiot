@@ -34,7 +34,7 @@ public class DevScheduler {
 
 //    @Scheduled(cron = "0/30 * * * * *")
 //    @Scheduled(fixedDelay = 60000)
-    public void apiCallSchedule() throws Exception{
+    public void droneTest() throws Exception{
 //        Map<String,Object> param = new HashMap<>();
 //        param.put("callUrl","/lg/drone/drones");
 //
@@ -63,5 +63,37 @@ public class DevScheduler {
         List<Map<String, Object>> list = (List<Map<String, Object>>) result.get("facilityList");
 
          this.facilityService.saveAll(list, "DRONE");
+    }
+
+//    @Scheduled(cron = "0 0/2 * * * *")
+    public void stationTest() throws Exception{
+//        Map<String,Object> param = new HashMap<>();
+//        param.put("callUrl","/lg/drone/drones");
+//
+//        List<Map<String, Object>> body = (List<Map<String, Object>>) apiUtils.getRestCallBody(param);
+//        log.trace("scheduler 1 : {}", body);
+
+        Map<String,Object> param2 = new HashMap<>();
+        param2.put("callUrl", "/lg/drone/stations");
+//        Object result = apiUtils.getRestCallBody(param2);
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "http://localhost:8400/api/call",
+                HttpMethod.POST,
+                new HttpEntity<Map<String, Object>>(param2),
+                String.class);
+
+        Map<String, Object> result = objectMapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
+        });
+
+        if (result == null) {
+            return;
+        }
+
+        log.trace("scheduler 2 : {}", result);
+
+        List<Map<String, Object>> list = (List<Map<String, Object>>) result.get("facilityList");
+
+        this.facilityService.saveAll(list, "DRONE_STATION");
     }
 }

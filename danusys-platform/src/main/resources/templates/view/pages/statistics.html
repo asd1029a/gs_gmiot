@@ -10,28 +10,22 @@
         <i><img src="/images/default/arrowNext.svg"></i>
         <span>이벤트 발생 통계</span>
         <i><img src="/images/default/arrowNext.svg"></i>
-        <span>스마트폴 이벤트</span>
+        <span>스마트분전함 이벤트</span>
     </h4>
     <section class="statistics_content">
-        <article class="search_form">
-            <h6>스마트폴 이벤트 발생 통계 검색</h6>
+        <article class="search_form" id="searchForm">
+            <h6><span calss="eventType"></span> 이벤트 발생 통계 검색</h6>
             <form>
                 <div>
                     <p>이벤트 종류</p>
-                    <dl class="dropdown_checkbox">
+                    <dl class="dropdown_checkbox" data-selectbox-type="eventKind">
                         <dt class="checkbox_title select_title">이벤트 종류</dt>
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
                     <p>행정구역</p>
-                    <dl class="dropdown_checkbox">
+                    <dl class="dropdown_checkbox" data-selectbox-type="administZone">
                         <dt class="checkbox_title select_title">행정구역</dt>
-                        <dd class="checkbox_list list" style="display: none;">
-                        </dd>
-                    </dl>
-                    <p>장소유형</p>
-                    <dl class="dropdown_checkbox">
-                        <dt class="checkbox_title select_title">장소유형</dt>
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
@@ -40,21 +34,21 @@
                     <dl class="checkbox_set">
                         <dt>이벤트 등급</dt>
                         <dd>
+							<span>
+								<input type="checkbox" id="urgent" name="eventGrade" data-value="1" data-init-value="checked" checked>
+								<label for="urgent"><span></span>긴급</label>
+							</span>
                             <span>
-                                <input type="checkbox" id="urgent" name="">
-                                <label for="urgent"><span></span>긴급</label>
-                            </span>
-                            <span>
-								<input type="checkbox" id="caution" name="">
+								<input type="checkbox" id="caution" name="eventGrade" data-value="2" data-init-value="checked" checked>
 								<label for="caution"><span></span>주의</label>
-                            </span>
+							</span>
                         </dd>
                     </dl>
                     <dl class="date_set">
                         <dt>발생 기간</dt>
-                        <dd><input type="date" class="input_date"></dd>
+                        <dd><input type="text" id="startDt" placeholder="날짜를 입력하세요" name="startDt" class="input_date"></dd>
                         <span>부터</span>
-                        <dd><input type="date" class="input_date"></dd>
+                        <dd><input type="text" id="endDt" placeholder="날짜를 입력하세요" name="endDt" class="input_date"></dd>
                         <span>까지</span>
                     </dl>
                     <ul class="button">
@@ -63,6 +57,27 @@
                     </ul>
                 </div>
             </form>
+        </article>
+        <article class="search_list">
+            <div class="article_title">
+                <dl class="title">
+                    <dt><span calss="eventType"></span> 이벤트 목록</dt>
+                    <dd><span class="count">123</span>건</dd>
+                </dl>
+            </div>
+            <div class="search_table">
+                <table id="troubleEventTable">
+                    <thead>
+                        <tr>
+                            <th>이벤트 등급</th>
+                            <th>이벤트 종류</th>
+                            <th>시설물 종류</th>
+                            <th>행정구역</th>
+                            <th>이벤트 발생일시</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </article>
         <article class="search_list">
             <div class="graph_contents">
@@ -75,45 +90,27 @@
                         <span>월</span>
                     </dd>
                 </dl>
-                <div class="graph_area"></div>
+                <div class="graph_area" id="sumChart"></div>
             </div>
             <div class="graph_contents">
                 <dl class="graph_title">
                     <dt>평균 이벤트 발생 수</dt>
                     <dd>
-                        <span>시</span>
-                        <span>일</span>
-                        <span>주</span>
+                        <span>시간대</span>
+                        <span>요일</span>
+                        <span>주차</span>
                         <span>월</span>
                     </dd>
                 </dl>
-                <div class="graph_area"></div>
+                <div class="graph_area" id="avgChart"></div>
             </div>
         </article>
         <article class="search_list">
             <div class="graph_contents">
                 <dl class="graph_title">
                     <dt>행정구역 별 이벤트 발생 수</dt>
-                    <dd>
-                        <span>시</span>
-                        <span>일</span>
-                        <span>주</span>
-                        <span>월</span>
-                    </dd>
                 </dl>
-                <div class="graph_area"></div>
-            </div>
-            <div class="graph_contents">
-                <dl class="graph_title">
-                    <dt>스마트폴 별 이벤트 발생 수</dt>
-                    <dd>
-                        <span>시</span>
-                        <span>일</span>
-                        <span>주</span>
-                        <span>월</span>
-                    </dd>
-                </dl>
-                <div class="graph_area"></div>
+                <div class="graph_area" id="mapChart"></div>
             </div>
         </article>
     </section>
