@@ -46,10 +46,7 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("/pages/dashboard").setViewName("view/pages/dashboard");
 
         // 통계
-        registry.addViewController("/pages/stats/statistics_01").setViewName("view/pages/stats/statistics_01");
-        registry.addViewController("/pages/stats/statistics_02").setViewName("view/pages/stats/statistics_02");
-        registry.addViewController("/pages/stats/statistics_03").setViewName("view/pages/stats/statistics_03");
-        registry.addViewController("/pages/stats/statistics_04").setViewName("view/pages/stats/statistics_04");
+        registry.addViewController("/pages/stats/statistics").setViewName("view/pages/statistics");
 
         // 환경설정
         registry.addViewController("/pages/config/commonCode").setViewName("view/pages/config/commonCode");

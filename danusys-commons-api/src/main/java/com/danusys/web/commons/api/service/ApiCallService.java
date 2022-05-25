@@ -18,7 +18,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -197,6 +200,58 @@ public class ApiCallService {
         return cookie;
     }
 
+
+    /**
+     * soap Login Client Id
+     * @param api
+     * @return
+     * @throws Exception
+     */
+    public Integer getSoapClientId(Api api) throws Exception {
+        Integer result = null;
+        /**
+         * 연계할 api가 soplogin 후 client Id 값이 필요한 경우
+         */
+        if(api.getAuthInfo() !=null && !api.getAuthInfo().isEmpty()) {
+
+            Cookie cookie = cookieService.getCookie(request, "client_id");
+            if(cookie != null) {
+                log.trace("getSoapClientId client_id 조회 {} ", cookie.getValue());
+                result = Integer.parseInt(cookie.getValue());
+            }
+
+            if(api.getAuthInfo().contains("soplogin") && cookie == null) {
+                String exApiCallUrl = api.getAuthInfo().split("_")[1];
+
+                Map<String, Object> subParam = new HashMap<>();
+                subParam.put("callUrl", exApiCallUrl);
+                Api subApi = getRequestApi(subParam);
+
+                ResponseEntity subResponseEntity = apiExecutorFactoryService.execute(subApi);
+                log.trace( "###subResponseEntity.getBody() {}", subResponseEntity.getBody());
+
+                Map<String, Object> subBody = (Map<String, Object>) subResponseEntity.getBody();
+                log.trace( "###subBody {}", subBody);
+
+                /**
+                 * api param -> response에 설정한 값임
+                 */
+                result = Integer.parseInt(String.valueOf(new HashMap<>((Map) subBody.get("return")).get("clientId")));
+
+                log.trace("cookie clientId 저장 {}", result);
+
+
+                /**
+                 * 시간은 clientId 만료 시간 보다 작게 설정
+                 */
+                Cookie saveCookie = cookieService.createCookie(request, "client_id", String.valueOf(result), 20 * 60 );
+                response.addCookie(saveCookie);
+            }
+        }
+
+        return result;
+    }
+
     /**
      * 파라미터를 API Object에 세팅
      * @param apiParam
@@ -208,4 +263,5 @@ public class ApiCallService {
         apiParam.setValue(StrUtils.getStr(param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm()))));
         return apiParam;
     }
+
 }

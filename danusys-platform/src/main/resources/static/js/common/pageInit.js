@@ -122,4 +122,13 @@ $(document).ready(() => {
             $('.empty_area div img').attr('src','/images/sample/dashboard_' + theme + '.png');
         });
     }
+
+    //통계
+    else if(path === "/pages/stats/statistics"){
+        const url = new URL(location.href);
+        const type = url.searchParams.get("type");
+        stats.eventHandler($('#troubleEventTable'), type);
+        stats.create($('#troubleEventTable'), type);
+        stats.setChart(type);
+    }
 })

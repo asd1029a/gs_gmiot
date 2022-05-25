@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<th:block th:fragment="navLFragment">
+    <th:block th:fragment="navLFragment">
     <!-- LNM -->
-    <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
+        <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
         <!-- 스마트 폴 -->
         <section th:if="${municipality == '41210000'}" id="smartPole" class="menu_fold">
             <ul class="tab">
@@ -31,12 +31,12 @@
                     <dd><span class="count">0</span></dd>
                 </dl>
                 <div class="search_list" data-value="lv2">
-                    <!-- <dl>
-                         <dt>EVENT ID<span class="state">미처리</span></dt>
-                         <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                         <dd>경기 광명시 소하동 1294</dd>
-                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                     </dl>-->
+                   <!-- <dl>
+                        <dt>EVENT ID<span class="state">미처리</span></dt>
+                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
+                        <dd>경기 광명시 소하동 1294</dd>
+                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -62,11 +62,11 @@
                                 <dd class="checkbox_list list" style="display: none;">
                                 </dd>
                             </dl>
-                            <!--                            <dl class="dropdown_checkbox">-->
-                            <!--                                <dt class="checkbox_title select_title">장소유형</dt>-->
-                            <!--                                <dd class="checkbox_list list" style="display: none;">-->
-                            <!--                                </dd>-->
-                            <!--                            </dl>-->
+<!--                            <dl class="dropdown_checkbox">-->
+<!--                                <dt class="checkbox_title select_title">장소유형</dt>-->
+<!--                                <dd class="checkbox_list list" style="display: none;">-->
+<!--                                </dd>-->
+<!--                            </dl>-->
                             <dl class="dropdown_checkbox" data-selectbox-type="administZone">
                                 <dt class="checkbox_title select_title">행정구역</dt>
                                 <dd class="checkbox_list list" style="display: none;">
@@ -78,7 +78,7 @@
                         </ul>
                     </div>
                 </div>
-                <dl class="area_title">
+                <dl class="area_title" data-value="station">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>Tab 1 목록<span class="count">0</span></dt>
                     <dd>
                         <!--                            <i></i>초기화-->
@@ -88,7 +88,7 @@
                         </select>
                     </dd>
                 </dl>
-                <div class="search_list">
+                <div class="search_list" data-value="station">
                     <!--<dl>
                         <dt>광명 전통시장</dt>
                         <dd>유형 : 정전</dd>
@@ -127,11 +127,11 @@
                                 <dd class="checkbox_list list" style="display: none;">
                                 </dd>
                             </dl>
-                            <!--                            <dl class="dropdown_checkbox">-->
-                            <!--                                <dt class="checkbox_title select_title">장소유형</dt>-->
-                            <!--                                <dd class="checkbox_list list" style="display: none;">-->
-                            <!--                                </dd>-->
-                            <!--                            </dl>-->
+<!--                            <dl class="dropdown_checkbox">-->
+<!--                                <dt class="checkbox_title select_title">장소유형</dt>-->
+<!--                                <dd class="checkbox_list list" style="display: none;">-->
+<!--                                </dd>-->
+<!--                            </dl>-->
                             <dl class="dropdown_checkbox" data-selectbox-type="administZone">
                                 <dt class="checkbox_title select_title">행정구역</dt>
                                 <dd class="checkbox_list list" style="display: none;">
@@ -153,10 +153,10 @@
                             <dl class="checkbox_set">
                                 <dt>처리 상태</dt>
                                 <dd>
-                                    <!--							<span>-->
-                                    <!--								<input type="checkbox" id="staus00" name="eventState" data-value="0" multiple="multiple">-->
-                                    <!--								<label for="staus00"><span></span>미처리</label>-->
-                                    <!--							</span>-->
+    <!--							<span>-->
+    <!--								<input type="checkbox" id="staus00" name="eventState" data-value="0" multiple="multiple">-->
+    <!--								<label for="staus00"><span></span>미처리</label>-->
+    <!--							</span>-->
                                     <span>
                                         <input type="checkbox" id="staus01" name="eventState" data-value="1" multiple="multiple" checked>
                                         <label for="staus01"><span></span>조치완료</label>
@@ -224,12 +224,12 @@
                     <dd><span class="count">11</span></dd>
                 </dl>
                 <div class="search_list" data-value="lv2">
-                    <!-- <dl>
-                         <dt>EVENT ID<span class="state">미처리</span></dt>
-                         <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                         <dd>경기 광명시 소하동 1294</dd>
-                         <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                     </dl>-->
+                   <!-- <dl>
+                        <dt>EVENT ID<span class="state">미처리</span></dt>
+                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
+                        <dd>경기 광명시 소하동 1294</dd>
+                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -271,8 +271,8 @@
                         </ul>
                     </div>
                 </div>
-                <dl class="area_title">
-                    <dt><i><img src="/images/default/titleIcon02.svg"></i>Tab 1 목록<span class="count">11</span></dt>
+                <dl class="area_title" data-value="station">
+                    <dt><i><img src="/images/default/titleIcon02.svg"></i>Tab 1 목록<span class="count">0</span></dt>
                     <dd>
                         <!--                            <i></i>초기화-->
                         <select>
@@ -281,7 +281,7 @@
                         </select>
                     </dd>
                 </dl>
-                <div class="search_list">
+                <div class="search_list" data-value="station">
                     <!--<dl>
                         <dt>광명 전통시장</dt>
                         <dd>유형 : 정전</dd>
@@ -586,12 +586,12 @@
                     <dd><span class="count">11</span></dd>
                 </dl>
                 <div class="search_list" data-value="lv1">
-                    <!--                    <dl>-->
-                    <!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
-                    <!--                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>-->
-                    <!--                        <dd>경기 광명시 소하동 1294</dd>-->
-                    <!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
-                    <!--                    </dl>-->
+<!--                    <dl>-->
+<!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
                 <dl class="area_title" data-value="lv2">
@@ -599,12 +599,12 @@
                     <dd><span class="count">11</span></dd>
                 </dl>
                 <div class="search_list" data-value="lv2">
-                    <!--                    <dl>-->
-                    <!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
-                    <!--                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>-->
-                    <!--                        <dd>경기 광명시 소하동 1294</dd>-->
-                    <!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
-                    <!--                    </dl>-->
+<!--                    <dl>-->
+<!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -646,7 +646,7 @@
                         </ul>
                     </div>
                 </div>
-                <dl class="area_title">
+                <dl class="area_title" data-value="station">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>Tab 1 목록<span class="count">11</span></dt>
                     <dd>
                         <select>
@@ -655,13 +655,13 @@
                         </select>
                     </dd>
                 </dl>
-                <div class="search_list">
-                    <!--<dl>
-                         <dt>광명 전통시장</dt>
-                         <dd>유형 : 정전</dd>
-                         <dd>행정구역 : 광명동</dd>
-                         <dd>경기 광명시 광이로13번길 17-5</dd>
-                     </dl>-->
+                <div class="search_list" data-value="station">
+                   <!--<dl>
+                        <dt>광명 전통시장</dt>
+                        <dd>유형 : 정전</dd>
+                        <dd>행정구역 : 광명동</dd>
+                        <dd>경기 광명시 광이로13번길 17-5</dd>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
             </div>
@@ -958,24 +958,24 @@
             </div>
             <!-- lnb_tab_section * 기체/개소 -->
             <div data-value="facility" class="lnb_tab_section"> <!-- active 시, display: flex; -->
-                <dl class="area_title">
+                <dl class="area_title" data-value="facility">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>기체</dt>
-                    <dd><span class="count">11</span></dd>
+                    <dd><span class="count">0</span></dd>
                 </dl>
-                <div class="search_list">
-                    <!--<dl>
-                         <dt>DRONE ID<span class="state">비행 중</span></dt>
-                         <dd>LTE 신호세기 : 양호</dd>
-                         <dd>잔여비행가능시간 : 5분 (20%)</dd>
-                         <dd>매주 화 14:00, 매주 목 16:00</dd>
-                     </dl>-->
+                <div class="search_list" data-value="facility">
+                   <!--<dl>
+                        <dt>DRONE ID<span class="state">비행 중</span></dt>
+                        <dd>LTE 신호세기 : 양호</dd>
+                        <dd>잔여비행가능시간 : 5분 (20%)</dd>
+                        <dd>매주 화 14:00, 매주 목 16:00</dd>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
-                <dl class="area_title">
+                <dl class="area_title" data-value="station">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>격납고</dt>
-                    <dd><span class="count">11</span></dd>
+                    <dd><span class="count">0</span></dd>
                 </dl>
-                <div class="search_list">
+                <div class="search_list" data-value="station">
                     <!--<dl>
                         <dt>광명소방서<span class="state">이상없음</span></dt>
                         <dd>LTE 신호세기 : 양호</dd>
@@ -1194,18 +1194,18 @@
                     <dd><span class="count" data-value="address">0</span></dd>
                 </dl>
                 <div class="search_list" data-value="address">
-                    <!-- <dl>
-                         <dt>전북 김제시 죽산면 석산길</dt>
-                         <dd>도로명 : 석산길</dd>
-                     </dl>
-                     <dl>
-                         <dt>전북 김제시 죽산면 석산길</dt>
-                         <dd>도로명 : 석산길</dd>
-                     </dl>
-                     <dl>
-                         <dt>전북 김제시 죽산면 석산길</dt>
-                         <dd>도로명 : 석산길</dd>
-                     </dl>-->
+                   <!-- <dl>
+                        <dt>전북 김제시 죽산면 석산길</dt>
+                        <dd>도로명 : 석산길</dd>
+                    </dl>
+                    <dl>
+                        <dt>전북 김제시 죽산면 석산길</dt>
+                        <dd>도로명 : 석산길</dd>
+                    </dl>
+                    <dl>
+                        <dt>전북 김제시 죽산면 석산길</dt>
+                        <dd>도로명 : 석산길</dd>
+                    </dl>-->
                     <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
                 </div>
                 <dl class="area_title">
@@ -1232,6 +1232,6 @@
                 </div>
             </div>
         </section>
+        </th:block>
     </th:block>
-</th:block>
 </html>
