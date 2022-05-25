@@ -6,6 +6,7 @@ import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.repository.EventRepository;
 import com.danusys.web.commons.api.repository.FacilityRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -63,5 +64,17 @@ public class EventService {
 
         eventRepository.save(event);
         return event;
+    }
+
+    public Long findEventKind(String codeId) {
+        return this.eventRepository.findEventKind(codeId);
+    }
+
+    public Long findEventGrade(String codeId) {
+        return this.eventRepository.findEventGrade(codeId);
+    }
+
+    public Long findEventProcStat(String codeId) {
+        return this.eventRepository.findEventProcStat(codeId);
     }
 }
