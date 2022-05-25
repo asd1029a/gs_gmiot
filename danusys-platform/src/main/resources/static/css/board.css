@@ -385,11 +385,14 @@ tr.selected td {background-color: #23252b;}
 .statistics_content article h6{font-size: 16px; color: #dee0e4;}
 .statistics_content article.search_list{flex: 1; display: flex; flex-direction: column; overflow: hidden;}
 
-.statistics_content{overflow: hidden; flex: 1; display: grid; grid-gap: 14px; padding: 26px; grid-template-columns: 1fr 1fr; grid-template-rows: 180px 1fr;}
+.statistics_content{overflow: hidden; flex: 1; display: grid; grid-gap: 14px; padding: 26px; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 180px 1fr;}
 .statistics_content article{padding: 26px; border-radius: 10px; background: #1a1b1d;}
 .statistics_content article h6{font-size: 16px; color: #dee0e4;}
-.statistics_content article.search_form{padding: 26px; border-radius: 10px; background: #1a1b1d; grid-column: span 2;}
+.statistics_content article.search_form{padding: 26px; border-radius: 10px; background: #1a1b1d; grid-column: span 3;}
 .statistics_content article.search_list{flex: 1; display: flex; flex-direction: column; grid-gap: 18px; overflow: hidden; grid-column: span 1;}
+.statistics_content article.search_list .search_table table thead th, .search_table table thead td{padding: 10px 5px; word-break: keep-all;}
+.statistics_content article.search_list .search_table table tbody td{font-size: 0.8rem;/*word-break: keep-all;*/}
+.statistics_content article.search_list .dataTables_wrapper .dataTables_paginate{width: auto;}
 .statistics_content .graph_contents{flex: 1; display: flex; flex-direction: column; grid-gap: 10px;}
 .statistics_content .graph_contents .graph_title{display: flex; align-items: center; justify-content: space-between;}
 .statistics_content .graph_contents .graph_title dt{font-size: 16px; color: #dee0e4;}
@@ -398,7 +401,7 @@ tr.selected td {background-color: #23252b;}
 .statistics_content .graph_contents .graph_title dd span:nth-last-child(1){border: none;}
 .statistics_content .graph_contents .graph_title dd span:hover{color: #dee0e4;}
 .statistics_content .graph_contents .graph_title dd span:active{color: #dee0e4; background: #3a66e5;}
-.statistics_content .graph_contents .graph_area{flex: 1; background: #26282f;}
+.statistics_content .graph_contents .graph_area{flex: 1; background: #26282f; width: 100%; height: 100%;}
 
 /* signage */
 .signage_contents{display: flex; grid-gap: 14px; height: 100%;}

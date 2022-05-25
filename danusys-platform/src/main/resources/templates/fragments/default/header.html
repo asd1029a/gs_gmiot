@@ -17,14 +17,8 @@
                 <li sec:authorize="hasAnyRole('ROLE_inqry_rw', 'ROLE_inqry_r-')"  id="inqry">
                     <a href="/pages/inqry/event1">조회/관리</a>
                 </li>
-                <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" th:if="${municipality == '45210000'}" id="stats">
-                    <a href="/pages/stats/statistics_01">통계</a>
-                </li>
-                <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" th:if="${municipality == '41210000'}" id="stats">
-                    <a href="/pages/stats/statistics_03">통계</a>
-                </li>
-                <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" th:if="${municipality == '47210000'}" id="stats">
-                    <a href="/pages/stats/statistics_04">통계</a>
+                <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" id="stats">
+                    <a th:href="'/pages/stats/statistics?type='+${@environment.getProperty('stats.type')}">통계</a>
                 </li>
                 <li sec:authorize="hasAnyRole('ROLE_config_rw', 'ROLE_config_r-')"
                     th:if="${
