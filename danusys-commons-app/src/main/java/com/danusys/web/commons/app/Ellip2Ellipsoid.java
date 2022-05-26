@@ -1,4 +1,4 @@
-package com.danusys.web.platform.util;
+package com.danusys.web.commons.app;
 
 public class Ellip2Ellipsoid {
 	private static double degrad = Math.atan(1.0D) / 45.0D;

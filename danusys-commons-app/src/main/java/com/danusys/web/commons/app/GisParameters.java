@@ -1,4 +1,4 @@
-package com.danusys.web.platform.util;
+package com.danusys.web.commons.app;
 
 public class GisParameters {
 
