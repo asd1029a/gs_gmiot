@@ -22,12 +22,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.yaml.snakeyaml.util.UriEncoder;
 import reactor.core.publisher.Mono;
@@ -37,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +65,50 @@ public class ApiCallRestController {
     private final StationService stationService;
     private final ForecastService forecastService;
     private final EventService eventService;
-    private final ApiConvService apiConvService;
     private final FacilityOptService facilityOptService;
+
+    private final WebClient webClient;
+
+
+    @GetMapping(value = "/https-test")
+    public ResponseEntity httpsRestTemplate() {
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                HttpHeaders headers = new HttpHeaders();
+                headers.setAccept(Arrays.asList(new MediaType[]{MediaType.APPLICATION_JSON}));
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.setBasicAuth("admin", "welcome123");
+                HttpEntity<String> entity = new HttpEntity<String>("", headers);
+
+                ResponseEntity<String> responseEntity = restTemplate.exchange("https://100.200.250.251/api/v1/presence", HttpMethod.GET, entity, String.class);
+                Map<String, Object> result = objectMapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return ResponseEntity.status(HttpStatus.OK).body("");
+
+    }
+
+    @GetMapping(value = "/https-webclient-test")
+    public ResponseEntity httpsWebClientTest() throws Exception {
+
+        Mono<Object> mono = webClient.mutate()
+                            .baseUrl("https://100.200.250.251")
+                            .build()
+                            .get()
+                            .uri("/api/v1/presence")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, "Basic YWRtaW46d2VsY29tZTEyMw==")
+                            .retrieve()
+                            .bodyToMono(Object.class);
+
+
+        log.trace("mono: {}", mono.block());
+
+        return ResponseEntity.status(HttpStatus.OK).body("list");
+    }
+
 
     @PostMapping(value = "/facility")
     public ResponseEntity findAllForFacility(@RequestBody Map<String, Object> param) throws Exception {
@@ -268,12 +309,9 @@ public class ApiCallRestController {
                     .filter(f -> f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
                         AtomicReference<String> result = new AtomicReference<>();
-                        Map<Object,Object> event_list = (Map<Object,Object>)param.get(f.getFieldMapNm());
-                        String chgEvtType = apiConvService.eventConverter(f, event_list.get("eventType").toString());
-                        event_list.put("eventType",chgEvtType);
                         dataType.set(f.getDataType());
                         try {
-                            result.set(objectMapper.writeValueAsString(event_list));
+                            result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
@@ -285,7 +323,6 @@ public class ApiCallRestController {
                         f.setValue(result.get());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
-
 
             // Response check and set
             resultBody = apiResponseParams
