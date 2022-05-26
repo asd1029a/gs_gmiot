@@ -131,6 +131,19 @@ class layerControl {
     }
 
     /**
+     * @summary 클러스터 레이어 배열 거리 기준부여
+     * @param layerNames : 레이어 이름들
+     * @param distance : 거리
+     */
+    setDistances(layerNames, distance) {
+        layerNames.forEach(name => {
+            if(this.exist(name+ 'Layer')){
+                this.find(name + 'Layer').getSource().setDistance(distance);
+            }
+        });
+    }
+
+    /**
      * @summary 레이어 순서 바꾸기
      * @param 레이어명
      * @param 순서

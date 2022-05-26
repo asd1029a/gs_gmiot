@@ -96,4 +96,12 @@ public class StationController {
         wb.write(response.getOutputStream());
         wb.close();
     }
+
+    /**
+     * 개소 : 사이니지 개소 목록 조회
+     */
+    @PostMapping(value = "/signage")
+    public ResponseEntity<EgovMap> getListStationForSignage(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(stationService.getListStationForSignage(paramMap));
+    }
 }

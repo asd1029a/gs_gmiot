@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Project : danusys-webservice-parent
@@ -70,6 +71,10 @@ public class ApiParam implements Serializable {
 
     @Column
     private int parentSeq;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "apiParamSeq")
+    private List<ApiParamConv> apiParamConvList;
 
     public void updateValue(String value) {
         this.value = value;

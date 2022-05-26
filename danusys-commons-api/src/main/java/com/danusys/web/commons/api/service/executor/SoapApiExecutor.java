@@ -2,23 +2,18 @@ package com.danusys.web.commons.api.service.executor;
 
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
+import com.danusys.web.commons.api.service.ApiCallService;
+import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.app.StrUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.XML;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.NodeList;
 
 import javax.xml.soap.*;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,7 +24,9 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service("SOAP")
+@RequiredArgsConstructor
 public class SoapApiExecutor implements ApiExecutor  {
+    private final ApiCallService apiCallService;
 
     @Override
     public ResponseEntity execute(Api api) throws Exception {
@@ -43,7 +40,7 @@ public class SoapApiExecutor implements ApiExecutor  {
         final List<ApiParam> apiRequestParams = api.getApiRequestParams().stream().sorted(Comparator.comparing((ApiParam p) -> p.getSeq())).collect(Collectors.toList());
         log.trace("### apiRequestParams : {}", apiRequestParams.toString());
 
-        Map<String, Object> result = new HashMap<>();
+        Object result = "";
         //paramMap
 //        final Map<String, Object> reqMap = apiRequestParams.stream().collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
         final String targetURL = api.getTargetUrl(); //호출 URL
@@ -52,7 +49,6 @@ public class SoapApiExecutor implements ApiExecutor  {
         final String serviceName = api.getServiceNm(); //서비스명
         final SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
         SOAPConnection soapConnection = soapConnectionFactory.createConnection(); // ConnectionFactory 로 부터 Connection 생성
-
 
         try {
             MessageFactory messageFactory = MessageFactory.newInstance();// MessageFactory 생성
@@ -72,63 +68,53 @@ public class SoapApiExecutor implements ApiExecutor  {
             // 생성한 SOAPBodyElement 에 다시 ChildElement 를 추가하고 각각의 ChildElement 에 TextNode 를 추가
             apiRequestParams.forEach(apiReq -> {
                 try {
-                    if (apiReq.getDataType().equals(DataType.ARRAY)) {
-                        log.trace(apiReq.getValue());
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        List<String> values = objectMapper.readValue(apiReq.getValue(), new TypeReference<List<String>>() {});
-                        values.forEach(f -> {
-                            try {
-                                elRequest.addChildElement(apiReq.getFieldMapNm(), webServicePrefix).addTextNode(f);
-                            } catch (SOAPException e) {
-                                e.printStackTrace();
-                            }
-                        });
+                    log.trace("요청 : {} -> {} = {}", apiReq.getFieldNm(), apiReq.getFieldMapNm(), apiReq.getValue());
+                    if("clientId".equals(apiReq.getFieldNm())) {
+                        //로그인 후 client id 가져오기, 쿠키에 값이 있으면 쿠키 값 조회
+                        String clientId = String.valueOf(apiCallService.getSoapClientId(api));
+
+                        log.trace("요청 : {} -> {} = {}", apiReq.getFieldNm(), apiReq.getFieldMapNm(), clientId);
+                        elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(clientId);
+                    } else if("pointPaths".equals(apiReq.getFieldNm())) {
+                        //TODO 외부 xml 파일에서 path 정보를 가져와서 세팅
+                        String[] pointPaths = {
+                                "point:/ST1/OFa2/LPa232890199721",
+                                "point:/ST1/OFa2/LPa232890199722"
+                        };
+                        for(int i=0;i<pointPaths.length;i++) {
+                            elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(pointPaths[i]);
+                        }
                     } else {
-                        elRequest.addChildElement(apiReq.getFieldMapNm(), webServicePrefix).addTextNode(apiReq.getValue());
+                        elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(apiReq.getValue());
                     }
-                    elRequest.addChildElement(apiReq.getFieldMapNm(), webServicePrefix).addTextNode(apiReq.getValue());
-                } catch (SOAPException e) {
-//                    e.printStackTrace();
-                    log.error("파라미터 세팅 SoapApiExecutor 오류");
                 } catch (Exception e) {
                     e.printStackTrace();
+                    log.error("파라미터 세팅 SoapApiExecutor 오류");
                 }
             });
+
+            System.out.println("요청 xml");
+            soapMessage.writeTo(System.out);
+            System.out.println("\n######################################");
 
             // SOAPMessage 를 requestURL 로 전송하고 서버쪽에서 내려보낸 정보가 담긴 SOAPMessage 객체를 얻음
             SOAPMessage responseMessage = soapConnection.call(soapMessage, targetURL);
-            log.trace("soapBody : {}", soapBody.getTextContent());
-//            soapMessage.writeTo(System.out);
-//            responseMessage.writeTo(System.out);
 
-            SOAPBody resBody = responseMessage.getSOAPBody();
-            log.trace("response to json : {}", xmlToJsonStr(responseMessage));
-            Iterator resBodyChildElements = resBody.getChildElements();
-            Node rootNode = (Node) resBodyChildElements.next();
+            System.out.println("응답 xml");
+            responseMessage.writeTo(System.out);
+            System.out.println("\n######################################");
 
-            NodeList nodes = rootNode.getChildNodes();
-            int limit = nodes.getLength();
-            for (int i = 0; i < limit; i++) {
-                Node node = (Node) nodes.item(i);
-                log.trace("node to json : {}", xmlToJsonStr(node));
-            }
-//            NodeList nodes = rootNode.getChildNodes().item(0).getChildNodes();
+            SOAPBody resSoapBody = responseMessage.getSOAPBody();
+            NodeList nodes0 = (NodeList) resSoapBody.getChildElements().next();
 
-            //        final Map<String, Object> reqMap = apiRequestParams.stream().collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
-            log.trace("api.getApiResponseParams() :{}", api.getApiResponseParams().toString());
-
-            List<ApiParam> apiResponseParams = api.getApiResponseParams();
-
-            apiResponseParams.forEach(resApi -> {
-                if (resApi.getDataType().equals(DataType.ARRAY)) {
-                    List<Map<String, Object>> inner = new ArrayList<>();
-                    api.getApiResponseParams().stream().filter(f -> f.getParentSeq() == resApi.getApiId()).forEach(f -> {
-
-                    });
+            if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+                log.trace("### Response 객체 리턴 {}", BodyType.OBJECT_MAPPING);
+                Map<String, Object> rootResult = null;//new HashMap<>();
+                if( nodes0.item(0).getFirstChild() != null ) {
+                    rootResult = this.nodeToMap(0, nodes0, api);
                 }
-                log.trace("응답 : {} <- {} = {}", resApi.getFieldNm(), resApi.getFieldMapNm(), this.getNodeValue(nodes, resApi.getFieldMapNm()));
-                result.put(resApi.getFieldNm(), this.getNodeValue2(nodes, resApi.getFieldMapNm(), resApi, apiResponseParams));
-            });
+                result = rootResult;
+            }
 
             log.trace("result {} ", result.toString());
 
@@ -140,14 +126,7 @@ public class SoapApiExecutor implements ApiExecutor  {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ObjectMapper().writeValueAsString(result));
-    }
-
-    private void createRequestParamElement(List<ApiParam> apiRequestParams) {
-        apiRequestParams.stream().filter(f -> f.getDataType().equals(DataType.ARRAY)).peek(f -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            List<String> list = objectMapper.convertValue(f.getValue(), List.class);
-        });
+                .body(result);
     }
 
     /**
@@ -159,57 +138,81 @@ public class SoapApiExecutor implements ApiExecutor  {
     private Object getNodeValue(NodeList nodes, String fieldMapNm) {
         for(int i=0; i<nodes.getLength();i++) {
             if(StrUtils.getStr(nodes.item(i).getLocalName()).equals(fieldMapNm)) {
-                return StrUtils.getStr(nodes.item(i).getChildNodes().item(0).getNodeValue());
+                return StrUtils.getStr(nodes.item(i).getFirstChild().getNodeValue());
             }
         }
         return "";
     }
 
     /**
-     * 응답값 세팅
+     * soap Node를 Map으로 파싱
+     * @param seq
      * @param nodes
-     * @param fieldMapNm
+     * @param api
      * @return
      */
-    private Object getNodeValue2(NodeList nodes, String fieldMapNm, ApiParam resApi, List<ApiParam> apiResponseParams) {
-        List<Map<String, Object>> result = new ArrayList<>();
-        for(int i=0; i<nodes.getLength();i++) {
-            if (resApi.getDataType().equals(DataType.ARRAY)) {
-                NodeList l = nodes.item(i).getChildNodes();
-                for(int j = 0; j < l.getLength(); j++) {
-                    String name = l.item(j).getChildNodes().item(0).getLocalName();
-                }
-            } else {
-                if(StrUtils.getStr(nodes.item(i).getLocalName()).equals(fieldMapNm)) {
-                    return nodes.item(i).getChildNodes().item(0).getNodeValue();
+    private Map<String, Object> nodeToMap(int seq, NodeList nodes, Api api) {
+        final Map<String, Object> result = new HashMap<>();
+        final List<Map<String, Object>> lists = new ArrayList<>();
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            final String nodeName = nodes.item(i).getNodeName();
+            final String nodeValue = nodes.item(i).getFirstChild().getNodeValue();
+            final NodeList childNodes = nodes.item(i).getChildNodes();
+            if(nodes.item(i).getFirstChild() != null) {
+//                log.trace("{} {} {}", seq, nodeName , nodeValue);
+                api.getApiResponseParams().stream().filter(f -> f.getParentSeq() == seq && f.getFieldMapNm().equals(nodeName)).forEach(apiRes -> {
+                    log.trace("응답 res{} : {} <- {} = {}", seq, apiRes.getFieldNm(), apiRes.getFieldMapNm(), nodeValue);
+                    if( nodeValue != null) {
+                        result.put(apiRes.getFieldNm(), nodeValue);
+                    } else {
+                        if( apiRes.getDataType() == DataType.ARRAY ) {
+                            List<Map<String,Object>> resListData = (List<Map<String, Object>>) result.get(apiRes.getFieldNm());
+                            if(resListData != null && resListData.size() > 0) {
+                                resListData.addAll(this.nodeToList(seq + 1, childNodes, api));
+                                result.put(apiRes.getFieldNm(), resListData);
+                            } else {
+                                result.put(apiRes.getFieldNm(), this.nodeToList(seq + 1, childNodes, api));
+                            }
+                        } else {
+                            result.put(apiRes.getFieldNm(), this.nodeToMap(seq + 1, childNodes, api));
+                        }
+                    }
+                });
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * node 목록 데이터를 list로 파싱
+     * @param seq
+     * @param nodes
+     * @param api
+     * @return
+     */
+    private List<Map<String, Object>> nodeToList(int seq, NodeList nodes, Api api) {
+        final List<Map<String, Object>> result = new ArrayList<>();
+        Map<String, Object> data = new HashMap<>();
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            final String nodeName = nodes.item(i).getNodeName();
+            final String nodeValue = nodes.item(i).getFirstChild().getNodeValue();
+            if(nodes.item(i).getFirstChild() != null) {
+                for(ApiParam apiParam : api.getApiResponseParams()) {
+                    if(apiParam.getParentSeq() == seq && apiParam.getFieldMapNm().equals(nodeName)) {
+                        log.trace("응답 res{} : {} <- {} = {}", seq, apiParam.getFieldNm(), apiParam.getFieldMapNm(), nodeValue);
+                        data.put(apiParam.getFieldNm(), nodeValue);
+                    }
                 }
             }
         }
-        return "";
-    }
+        result.add(data);
 
-    private String xmlToJsonStr(SOAPMessage message) {
-        final StringWriter writer = new StringWriter();
-        try {
-            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(message.getSOAPPart()), new StreamResult(writer));
-            String xmlStr = writer.toString();
-            return XML.toJSONObject(xmlStr).toString();
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
+        log.trace("result : {}", result);
 
-    private String xmlToJsonStr(Node node) {
-        final StringWriter writer = new StringWriter();
-        try {
-            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(node), new StreamResult(writer));
-            String xmlStr = writer.toString();
-            return XML.toJSONObject(xmlStr).toString();
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
-        return "";
+        return result;
     }
 }
 

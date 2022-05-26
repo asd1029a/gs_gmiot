@@ -105,4 +105,16 @@ public class StationServiceImpl implements StationService{
         commonMapper.update(fsp.updateNullStationSeqQry(paramMap));
         commonMapper.delete(ssp.deleteQry(seq));
     }
+
+    @Override
+    public EgovMap getListStationForSignage(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(ssp.selectListStationForSignageQry(paramMap)));
+        return resultMap;
+    }
+
+    @Override
+    public EgovMap getOneStationForSignage(int seq) throws Exception {
+        return commonMapper.selectOne(ssp.selectOneStationForSignageQry(seq));
+    }
 }

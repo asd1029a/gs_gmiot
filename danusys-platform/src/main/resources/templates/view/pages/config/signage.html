@@ -38,7 +38,7 @@
                             <li id="cancelSignageLayoutBtn">취소</li>
                             <li th:if="${municipality == '41210000'}" id="applySignageLayoutProcBtn">적용</li>
                             <li th:if="${municipality == '47210000'}" id="addSignageLayoutProcBtn">저장</li>
-                            <li th:if="${municipality == '47210000'}" id="previewSignageBtn">미리보기</li>
+                            <li th:if="${municipality == '47210000'}" id="displaySignageBtn">화면표출</li>
                             </th:block>
                         </ul>
                     </div>
@@ -77,6 +77,37 @@
                     <li id="addSignageTemplateProcBtn" data-add="true" sec:authorize="hasAnyRole('ROLE_config_rw')" class="color">추가</li>
                     <li id="modSignageTemplateProcBtn" data-mod="true" sec:authorize="hasAnyRole('ROLE_config_rw')" class="color">수정</li>
                     <li id="delSignageTemplateProcBtn" data-mod="true" sec:authorize="hasAnyRole('ROLE_config_rw')">삭제</li>
+                </ul>
+            </div>
+            <!--  개소 팝업 -->
+            <div class="popup" id="signageStationPopup" style="width: 650px;">
+                <dl class="title">
+                    <dt>사이니지 개소 선택</dt>
+                    <dd><i><img src="/images/default/close.svg"></i></dd>
+                </dl>
+                <div class="popup_writing">
+                    <div class="list_search">
+                        <p class="legend">
+                            개소 리스트
+                        <span>
+                            <input id="stationKeyword" type="text" placeholder="개소 이름 검색">
+                        </span>
+                        </p>
+                        <div class="list_table">
+                            <table id="signageStationTable">
+                                <thead>
+                                <tr>
+                                    <th>개소명</th>
+                                    <th>행정구역</th>
+                                    <th>선택</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <ul class="bottom">
+                    <li sec:authorize="hasAnyRole('ROLE_inqry_rw')" class="color" data-add="true" id="addStationBtn">등록</li>
                 </ul>
             </div>
         </section>

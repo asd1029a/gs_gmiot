@@ -4,8 +4,9 @@
 
 const signageDisplay = {
     init : (pObj) => {
-        const templateContent = JSON.parse(pObj.templateContent);
-        signageDisplay.create(templateContent);
+        const templateContent = JSON.parse(pObj.data.templateContent);
+        const options = pObj.options;
+        signageDisplay.create(templateContent, options);
 
         setInterval(function () {
             if(new Date().getMinutes() === 0) {
@@ -18,14 +19,18 @@ const signageDisplay = {
             }
         }, 60000); //3600000
     }
-    , create : (pObj) => {
+    , create : (pObj, options) => {
         const $wrap = $(".wrap_signage");
+        const rtspUrl = options.rtspUrl === null || options.rtspUrl === "" ? "" : options.rtspUrl
+        const latitude = options.latitude === null ? "" : options.latitude
+        const longitude = options.longitude === null ? "" : options.longitude
+
         $.each(pObj, (idx, obj1) => {
             let signageEle = "";
 
             if(obj1.kind === "airPollution") {
                 signageEle = signageDisplay.createAirPollutionEle();
-            } else if(obj1.kind === "rtspUrl") {
+            } else if(obj1.kind === "stationList") {
                 signageEle = signageDisplay.createRtsp(obj1);
             } else if(obj1.kind === "imageFile") {
                 signageEle = signageDisplay.createImageEle(obj1);
@@ -39,18 +44,21 @@ const signageDisplay = {
             } else if(obj1.kind === "videoFile") {
                 $("#videoFile").prop("src", "/signageDisplay/getVideo?videoFile=" + obj1.value);
             } else if(obj1.kind === "airPollution") {
+                let transLonLat = transProj.lonLatToTM(longitude, latitude);
+
                 signageDisplay.getListAirPollution(
-                    {}
+                    {"x" : transLonLat.x, "y" : transLonLat.y}
                     , (result) => {
                         signageDisplay.createAirPollutionChart(result);
                     });
-            } else if(obj1.kind === "rtspUrl") {
+
+            } else if(obj1.kind === "stationList") {
                 const videoObj = {
                     turnUrl : "172.20.14.49:3478?transport=tcp",
                     credential : "turnadm123",
                     username : "turnadm",
                     mediaServerWsUrl : "ws://172.20.14.49:8888/kurento",
-                    rtspUrl : obj1.value
+                    rtspUrl : rtspUrl
                 };
                 video.directVideoStart(videoObj, "rtspVideo")
             }

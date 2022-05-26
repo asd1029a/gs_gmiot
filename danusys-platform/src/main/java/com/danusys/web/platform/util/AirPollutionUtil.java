@@ -1,6 +1,17 @@
 package com.danusys.web.platform.util;
 
+import com.danusys.web.commons.app.JsonUtil;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -16,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 2022-05-16  brighthoon94      최초 생성
  */
 public class AirPollutionUtil {
+
     public static Map<String, Object> convertAirPollutionDataToScoreMap(Double score500) throws Exception {
         double iP = score500;
                 // convertAirPollutionDataToScore500(key, value);
@@ -41,6 +53,47 @@ public class AirPollutionUtil {
             };
         });
         return resultMap;
+    }
+
+    /*
+    * 좌표 근처 측정소 반환
+    * 좌표계 5179
+    * */
+    public static String getNearByMeasuringStation(String serviceKey, String x, String y) throws IOException {
+        String measuringStationName = "";
+        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getNearbyMsrstnList"); /*URL*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=" + serviceKey); /*Service Key*/
+        urlBuilder.append("&" + URLEncoder.encode("returnType","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml 또는 json*/
+        urlBuilder.append("&" + URLEncoder.encode("tmX","UTF-8") + "=" + URLEncoder.encode(x, "UTF-8")); /* x */
+        urlBuilder.append("&" + URLEncoder.encode("tmY","UTF-8") + "=" + URLEncoder.encode(y, "UTF-8")); /* y */
+        urlBuilder.append("&" + URLEncoder.encode("ver","UTF-8") + "=" + URLEncoder.encode("1.0", "UTF-8")); /*version*/
+
+        URL url = new URL(urlBuilder.toString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-type", "application/json");
+        System.out.println("Response code: " + conn.getResponseCode());
+
+        BufferedReader rd;
+        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        }
+
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        rd.close();
+        conn.disconnect();
+
+        Map<String, Object> dataMap = JsonUtil.JsonToMap(sb.toString());
+        Map<String, Object> valueMap = ((List<HashMap>)((HashMap)((HashMap) dataMap.get("response")).get("body")).get("items")).get(0);
+        measuringStationName = valueMap.get("stationName").toString();
+
+        return measuringStationName;
     }
 
     public static Double convertAirPollutionDataToScore500(String key, Object value) throws Exception {
@@ -95,4 +148,5 @@ public class AirPollutionUtil {
         }
         return flag;
     }
+
 }

@@ -325,6 +325,22 @@ public class FacilitySqlProvider {
         return sql.toString();
     }
 
+    public String selectListFacilityForSignageQry(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+            SELECT("t1.facility_seq, t1.facility_id" +
+                    ", t1.administ_zone, t1.insert_dt" +
+                    ", t2.code_value AS facility_kind" +
+                    ", t2.code_name AS facility_kind_name" +
+                    ", t3.emd_nm AS administ_zone_name");
+            FROM("t_facility t1");
+            INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
+            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            WHERE("t1.facility_kind = 58");
+            ORDER_BY("t1.facility_seq");
+        }};
+        return sql.toString();
+    }
+
     public String selectListFacilityInStationQry(Map<String, Object> paramMap) {
 
         SQL sql = new SQL() {{
@@ -409,13 +425,11 @@ public class FacilitySqlProvider {
     }
 
     public String selectListSignageTemplateQry(Map<String, Object> paramMap) {
-        //String signageTemplateSeq = CommonUtil.validOneNull(paramMap, "templateSeq");
-
         SQL sql = new SQL() {
             {
                 SELECT("t1.template_seq, t1.template_name, t1.template_explain, t1.template_content");
                 FROM("t_signage_template t1");
-                //WHERE("t1.template_seq::integer = " + signageTemplateSeq);
+                ORDER_BY("t1.template_seq");
             }};
         return sql.toString();
     }
