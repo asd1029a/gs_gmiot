@@ -66,6 +66,7 @@ public class ApiCallRestController {
     private final StationService stationService;
     private final ForecastService forecastService;
     private final EventService eventService;
+    private final ApiConvService apiConvService;
     private final FacilityOptService facilityOptService;
 
     @PostMapping(value = "/facility")
@@ -267,9 +268,12 @@ public class ApiCallRestController {
                     .filter(f -> f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
                         AtomicReference<String> result = new AtomicReference<>();
+                        Map<Object,Object> event_list = (Map<Object,Object>)param.get(f.getFieldMapNm());
+                        String chgEvtType = apiConvService.eventConverter(f, event_list.get("eventType").toString());
+                        event_list.put("eventType",chgEvtType);
                         dataType.set(f.getDataType());
                         try {
-                            result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
+                            result.set(objectMapper.writeValueAsString(event_list));
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
@@ -281,6 +285,7 @@ public class ApiCallRestController {
                         f.setValue(result.get());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
 
             // Response check and set
             resultBody = apiResponseParams
