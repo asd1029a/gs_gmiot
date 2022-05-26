@@ -3,6 +3,7 @@ package com.danusys.web.platform.util;
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.EgovStringUtil;
+import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.platform.controller.GisRestController;
 import com.jhlabs.map.proj.Projection;
 import com.jhlabs.map.proj.ProjectionException;
@@ -91,6 +92,43 @@ public class GisUtil {
 		return json.toString();
 	}
 
+	/**
+	 * geoJson 생성
+	 * @param geoList
+	 * @return geoJson
+	 * @throws Exception
+	 */
+	public static String getGeoJsonPolygon(List<Map<String, Object>> geoList, String id) throws Exception {
+		LinkedHashMap<String,Object> geoObj = new LinkedHashMap<>();
+		geoObj.put("type","FeatureCollection");
+		//features
+		ArrayList<Map<String, Object>> ary = new ArrayList<>();
+		Integer i = 1;
+		for(Map<String,Object> map : geoList) {
+			CommonUtil.validMapNull(map);
+			LinkedHashMap<String,Object> each = new LinkedHashMap<>();
+
+			each.put("type", "Feature");
+			each.put("id", id+i);
+			i++;
+
+			Map<String,Object> prop = new HashMap<>();
+			for(String key : map.keySet()) {
+				if(!key.equals("coordinates"))
+					prop.put(key,map.get(key));
+			}
+
+			each.put("properties",prop);
+			each.put("geometry", JsonUtil.JsonToMap(CommonUtil.validOneNull(map, "coordinates")));
+
+			ary.add(each);
+		}
+		geoObj.put("features",ary);
+
+		JSONObject json = new JSONObject(geoObj);
+
+		return json.toString();
+	}
 
 	public Map<String, Object> createGeoJson(List<EgovMap> list, String lon, String lat, String featureKind) {
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
