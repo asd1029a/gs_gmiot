@@ -41,7 +41,52 @@ public class GisUtil {
 		this.projectionMap.put("EPSG:4326", new String[] { "+proj=longlat", "+ellps=WGS84", "+datum=WGS84", "+no_defs"});
 	}
 
-	/**
+	/** jsy
+	 * 도 (각 단위) -> 라디안 (각 단위)
+	 * @param degree 도
+	 * @return 라디안 값
+	 * @throws Exception
+	 */
+	private static Double degToRad(Double degree) throws Exception{
+		return (degree * Math.PI / 180.0);
+	}
+
+	/** jsy
+	 * 도 (각 단위) -> 라디안 (각 단위)
+	 * @param radian 라디안
+	 * @return 디그리 값
+	 * @throws Exception
+	 */
+	private static Double radToDeg(Double radian) throws Exception{
+		return (radian * 180 / Math.PI);
+	}
+
+	/** jsy
+	 * 위경도 두점 사이 거리 구하기
+	 * @param lat1 시작 위도
+	 * @param lon1 시작 경도
+	 * @param lat2 끝 위도
+	 * @param lon2 끝 경도
+	 * @param unit 거리 단위
+	 * @return 거리값 (해당단위) / 기본값 (m 미터)
+	 * @throws Exception
+	 */
+	public static Double getDistanceBetweenPoints(Double lat1, Double lon1, Double lat2, Double lon2, String unit) throws Exception {
+		final double latMin = 1853.159616;
+
+		double theta = lon1 - lon2;
+		double distance = Math.sin(degToRad(lat1)) * Math.sin(degToRad(lat2))
+						+ Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * Math.cos(degToRad(theta));
+		distance = radToDeg(Math.acos(distance));
+		distance = distance * latMin * 60;  //미터
+
+		if(unit == "km") {
+			distance = distance * 1.609344;
+		}
+		return distance;
+	}
+
+	/** jsy
 	 * geoJson 생성
 	 * @param geoList
 	 * @return geoJson
