@@ -34,5 +34,7 @@ public enum DataType {
 
     ARRAY,
 
-    CLOB
+    CLOB,
+
+    COOKIE
 }

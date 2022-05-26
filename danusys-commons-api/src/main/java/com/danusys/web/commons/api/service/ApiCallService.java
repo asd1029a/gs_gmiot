@@ -264,4 +264,10 @@ public class ApiCallService {
         return apiParam;
     }
 
+    public String getCookie(String cookieName) {
+        Cookie cookie = cookieService.getCookie(request, cookieName);
+        if (cookie == null) return "";
+        return cookie.getValue();
+    }
+
 }

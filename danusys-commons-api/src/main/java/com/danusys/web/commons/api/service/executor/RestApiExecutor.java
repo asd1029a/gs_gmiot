@@ -4,6 +4,7 @@ import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.types.BodyType;
+import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.crypto.service.CryptoExecutorFactoryService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -127,10 +128,13 @@ public class RestApiExecutor implements ApiExecutor {
         //TODO REST API 인증키
 
         // 암호화 모듈 테스트
-        apiRequestParams.stream().filter(f -> f.getCryptoKey() != null).forEach(d -> d.setValue(cryptoExecutorFactoryService.encrypt(d.getCryptoType(), d.getValue(), d.getCryptoKey())));
+        apiRequestParams.stream().filter(f -> f.getCryptoKey() != null)
+                .forEach(d -> d.setValue(cryptoExecutorFactoryService.encrypt(d.getCryptoType(), d.getValue(), d.getCryptoKey())));
         //요청 파라미터 값 추출
         final Map<String, Object> reqMap = apiRequestParams
-                .stream()
+                .stream().peek(f -> {
+                    if (f.getDataType().equals(DataType.COOKIE)) f.setValue(apiCallService.getCookie(f.getValue()));
+                })
                 .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
         final String targetUrl = api.getTargetUrl() + api.getTargetPath();
         Object result = "";
@@ -153,7 +157,7 @@ public class RestApiExecutor implements ApiExecutor {
              */
             api.getApiResponseParams().forEach(apiRes -> {
                 log.trace("### 응답 {} => {}", apiRes.getFieldMapNm(), apiRes.getFieldNm());
-                body.set(StringUtils.replace(body.get(), apiRes.getFieldMapNm(), apiRes.getFieldNm()));
+                body.set(StringUtils.replace(body.get(), String.format("\"%s\"", apiRes.getFieldMapNm()), String.format("\"%s\"", apiRes.getFieldNm())));
             });
 
             if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
@@ -193,7 +197,7 @@ public class RestApiExecutor implements ApiExecutor {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.OK).headers(responseEntity.getHeaders())
                 .body(result);
     }
 
