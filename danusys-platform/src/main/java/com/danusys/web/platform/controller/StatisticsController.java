@@ -2,7 +2,7 @@ package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.service.ststistics.StatisticsService;
-import com.danusys.web.platform.util.GisUtil;
+import com.danusys.web.commons.app.GisUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

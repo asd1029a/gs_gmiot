@@ -2,7 +2,7 @@
 //
 //import com.danusys.web.platform.model.BaseDao;
 //import com.danusys.web.platform.socket.WebSocketVerticle;
-//import com.danusys.web.platform.util.GisUtil;
+//import com.danusys.web.commons.app.GisUtil;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.vertx.java.core.json.JsonObject;
