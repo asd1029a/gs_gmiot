@@ -4,6 +4,7 @@ import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.types.BodyType;
+import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.crypto.service.CryptoExecutorFactoryService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,67 +50,6 @@ public class RestApiExecutor implements ApiExecutor {
     private final ApiCallService apiCallService;
 
     private final HttpServletRequest request;
-//    public RestApiExecutor(RestTemplate restTemplate
-//            , CryptoExecutorFactoryService cryptoExecutorFactoryService
-//            , CookieService cookieService) {
-//        this.restTemplate = restTemplate;
-//        this.cryptoExecutorFactoryService = cryptoExecutorFactoryService;
-//        this.cookieService = cookieService;
-//    }
-
-//    @Override
-//    public ResponseEntity execute(final Api api) throws Exception {
-//        if (api == null)
-//            throw new IllegalArgumentException("입력된 API 파라미터 값이 null 입니다.");
-//        if (api.getCallUrl() == null)
-//            throw new IllegalArgumentException("호출 URL 값이 null 입니다.");
-////        if (api.getApiRequestParams() == null || api.getApiRequestParams().isEmpty())
-////            throw new IllegalArgumentException("apiRequestParams 값이 null 입니다.");
-//
-//        final List<ApiParam> apiRequestParams = api.getApiRequestParams().stream().sorted(Comparator.comparing((ApiParam p) -> p.getSeq())).collect(Collectors.toList());
-//        log.trace("### apiRequestParams : {}", apiRequestParams.toString());
-//
-//        //TODO IN / OUT 로그 저장 ??
-//        //TODO REST API 인증키
-//
-//        // 암호화 모듈 테스트
-//        apiRequestParams.stream().filter(f -> f.getCryptoKey() != null).forEach(d -> d.setValue(cryptoExecutorFactoryService.encrypt(d.getCryptoType(), d.getValue(), d.getCryptoKey())));
-//        //요청 파라미터 값 추출
-//        final Map<String, Object> reqMap = apiRequestParams
-//                .stream()
-//                .collect(Collectors.toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
-//        final String targetUrl = api.getTargetUrl() + api.getTargetPath();
-//        String result = "";
-//
-//        try {
-////            final HttpHeaders headers = new HttpHeaders();
-//            HttpMethod method = HttpMethod.valueOf(api.getMethodType().name());
-//            MediaType mediaType = MediaType.valueOf(api.getContentType());
-//
-//            log.trace("웹서비스 주소:{}, 메소드:{}, 미디어타입:{}, 파라미터:{}", targetUrl, method, mediaType, reqMap);
-//
-//            ResponseEntity<String> responseEntity = getResponseEntity(api, method, mediaType, reqMap);
-//
-//            final String res = responseEntity.getBody();
-//
-//            AtomicReference<String> body = new AtomicReference(res);
-//            api.getApiResponseParams().forEach(apiRes -> {
-//                log.trace("### 응답 {} => {}", apiRes.getFieldMapNm(), apiRes.getFieldNm());
-//                body.set(StringUtils.replace(body.get(), apiRes.getFieldMapNm(), apiRes.getFieldNm()));
-//            });
-////            log.trace("convert body:{}", body);
-//            result = body.get();
-//
-//        } catch (RestClientResponseException rcrex) {
-//            return ResponseEntity.status(rcrex.getRawStatusCode()).body("");
-//        } catch (Exception ex) {
-//            System.out.println(ex);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(result);
-//    }
 
     @Override
     public ResponseEntity execute(final Api api) throws Exception {
@@ -127,10 +67,13 @@ public class RestApiExecutor implements ApiExecutor {
         //TODO REST API 인증키
 
         // 암호화 모듈 테스트
-        apiRequestParams.stream().filter(f -> f.getCryptoKey() != null).forEach(d -> d.setValue(cryptoExecutorFactoryService.encrypt(d.getCryptoType(), d.getValue(), d.getCryptoKey())));
+        apiRequestParams.stream().filter(f -> f.getCryptoKey() != null)
+                .forEach(d -> d.setValue(cryptoExecutorFactoryService.encrypt(d.getCryptoType(), d.getValue(), d.getCryptoKey())));
         //요청 파라미터 값 추출
         final Map<String, Object> reqMap = apiRequestParams
-                .stream()
+                .stream().peek(f -> {
+                    if (f.getDataType().equals(DataType.COOKIE)) f.setValue(apiCallService.getCookie(f.getValue()));
+                })
                 .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
         final String targetUrl = api.getTargetUrl() + api.getTargetPath();
         Object result = "";
@@ -153,7 +96,7 @@ public class RestApiExecutor implements ApiExecutor {
              */
             api.getApiResponseParams().forEach(apiRes -> {
                 log.trace("### 응답 {} => {}", apiRes.getFieldMapNm(), apiRes.getFieldNm());
-                body.set(StringUtils.replace(body.get(), apiRes.getFieldMapNm(), apiRes.getFieldNm()));
+                body.set(StringUtils.replace(body.get(), String.format("\"%s\"", apiRes.getFieldMapNm()), String.format("\"%s\"", apiRes.getFieldNm())));
             });
 
             if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
@@ -193,7 +136,7 @@ public class RestApiExecutor implements ApiExecutor {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.OK).headers(responseEntity.getHeaders())
                 .body(result);
     }
 
@@ -202,19 +145,7 @@ public class RestApiExecutor implements ApiExecutor {
             , HttpMethod method
             , MediaType mediaType
             , Map<String, Object> reqMap) {
-//        return this.getResponseEntity(api.getTargetUrl(), api.getTargetPath(), method, mediaType, reqMap, api.getAuthInfo());
-//    }
-//
-//    private ResponseEntity getResponseEntity(String targetUrl
-//            , String targetPath
-//            , HttpMethod method
-//            , MediaType mediaType
-//            , Map<String, Object> reqMap
-//            , String authInfo) {
 
-//        URI uri = null;
-
-        //HttpEntity requestEntity = null;
         ResponseEntity<String> responseEntity = null;
 
         Mono<ResponseEntity<String>> mono = null;

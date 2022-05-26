@@ -36,6 +36,10 @@ public class FacilityService {
         this.facilityOptRepository = facilityOptRepository;
     }
 
+    public Facility save(Facility facility) {
+        return this.facilityRepository.save(facility);
+    }
+
     public List<Facility> findAll() {
         return facilityRepository.findAll();
     }
@@ -44,29 +48,11 @@ public class FacilityService {
         return facilityRepository.findByFacilityId(facilityId);
     }
 
-    public void saveAll(List<Map<String, Object>> list) {
-        List<Facility> facilityList = new ArrayList<Facility>();
-        list.stream().forEach((d) -> {
-            String facilityId = d.get("facility_id").toString();
-            Facility originFacility = this.findByFacilityId(facilityId);
-            Facility facility = originFacility == null ? new Facility() : originFacility;
-            Station station = stationRepository.findByStationName(StrUtils.getStr(d.get("station_name")));
-            Long codeSeq = facilityRepository.findCommonCode(StrUtils.getStr(d.get("facility_kind")));
-
-            facility.setLatitude(Double.parseDouble(StrUtils.getStr(d.get("latitude"))));
-            facility.setLongitude(Double.parseDouble(StrUtils.getStr(d.get("longitude"))));
-            facility.setFacilityId(facilityId);
-            facility.setStationSeq(station.getStationSeq());
-            facility.setFacilityStatus(0);
-            facility.setFacilityKind(Integer.parseInt(codeSeq.toString()));
-
-            facilityList.add(facility);
-        });
-
-        facilityRepository.saveAll(facilityList);
+    public void saveAll(List<Facility> list) {
+        facilityRepository.saveAll(list);
     }
 
-    public void saveAll(List<Map<String, Object>> list, String facilityKind) {
+    public List<Facility> saveAll(List<Map<String, Object>> list, String facilityKind) {
         List<Facility> facilityList = new ArrayList<Facility>();
         list.stream().forEach((d) -> {
             String facilityId = d.get("facility_id").toString();
@@ -87,8 +73,8 @@ public class FacilityService {
             facility.setLongitude(Double.parseDouble(longitude));
             facility.setFacilityId(facilityId);
             facility.setFacilityStatus(0);
-            facility.setFacilityKind(Integer.parseInt(codeSeq.toString()));
-            facility.setFacilityName(facilityName);
+            facility.setFacilityKind(Long.parseLong(codeSeq.toString()));
+            if (!facilityName.isEmpty()) facility.setFacilityName(facilityName);
 
             if (station != null) {
                 facility.setStationSeq(station.getStationSeq());
@@ -97,7 +83,7 @@ public class FacilityService {
             facilityList.add(facility);
         });
 
-        facilityRepository.saveAll(facilityList);
+        return facilityRepository.saveAll(facilityList);
     }
 
     public Facility getOne(Long id) {
@@ -110,5 +96,9 @@ public class FacilityService {
         d.setLatitude(facility.getLatitude());
         d.setLongitude(facility.getLongitude());
         return d;
+    }
+
+    public List<Facility> findByFacilityKind(Long facilityKind) {
+        return facilityRepository.findByFacilityKind(facilityKind);
     }
 }

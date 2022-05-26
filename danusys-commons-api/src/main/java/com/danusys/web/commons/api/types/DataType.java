@@ -34,5 +34,9 @@ public enum DataType {
 
     ARRAY,
 
-    CLOB
+    CLOB,
+
+    COOKIE,
+
+    SOAP_DATA_PATH
 }

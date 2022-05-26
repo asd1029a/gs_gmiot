@@ -4,12 +4,11 @@ import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.platform.service.base.BaseService;
-import com.danusys.web.platform.util.GisUtil;
+import com.danusys.web.commons.app.GisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

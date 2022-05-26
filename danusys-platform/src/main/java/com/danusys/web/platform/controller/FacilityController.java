@@ -4,16 +4,14 @@ import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.service.facility.FacilityService;
-import com.danusys.web.platform.util.GisUtil;
+import com.danusys.web.commons.app.GisUtil;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

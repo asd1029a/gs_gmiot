@@ -5,7 +5,7 @@ import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.platform.service.station.StationService;
-import com.danusys.web.platform.util.AirPollutionUtil;
+import com.danusys.web.commons.app.AirPollutionUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

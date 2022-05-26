@@ -31,9 +31,10 @@ public class FacilityOptService {
         this.facilityOptRepository = facilityOptRepository;
     }
 
-//    public List<FacilityOpt> findByFacilitySeq(Long facilitySeq) {
-//        return this.facilityOptRepository.findByFacilitySeq(facilitySeq);
-//    }
+    public List<FacilityOpt> saveAll(List<FacilityOpt> list) {
+        return facilityOptRepository.saveAll(list);
+    }
+
     @Transactional
     public List<FacilityOpt> saveAllByFacilityDataRequestDTO(List<FacilityDataRequestDTO> list) throws Exception {
         List<FacilityOpt> facilityOptList = new ArrayList<>();
@@ -41,12 +42,16 @@ public class FacilityOptService {
         list.forEach(f -> {
             Facility facility = facilityRepository.findByFacilityId(f.getFacilityId());
             FacilityOpt facilityOpt = facilityOptRepository.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(),
-                    f.getFacilityOptName()).orElseGet(FacilityOpt::new);
+                    f.getFacilityOptName());
             facilityOpt.setFacilityOpt(facility.getFacilitySeq(),f.getFacilityOptName(),f.getFacilityOptValue(),f.getFacilityOptType());
             facilityOptList.add(facilityOpt);
             facilityOptRepository.save(facilityOpt);
         });
         return facilityOptList;
+    }
+
+    public FacilityOpt findByFacilitySeqAndFacilityOptName(Long facilitySeq, String facilityOptName) {
+        return facilityOptRepository.findByFacilitySeqAndFacilityOptName(facilitySeq, facilityOptName);
     }
 
 }

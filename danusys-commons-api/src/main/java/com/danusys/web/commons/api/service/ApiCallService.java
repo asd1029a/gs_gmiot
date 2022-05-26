@@ -214,7 +214,7 @@ public class ApiCallService {
          */
         if(api.getAuthInfo() !=null && !api.getAuthInfo().isEmpty()) {
 
-            Cookie cookie = cookieService.getCookie(request, "client_id");
+            Cookie cookie = cookieService.getCookie(request, "clientId");
             if(cookie != null) {
                 log.trace("getSoapClientId client_id 조회 {} ", cookie.getValue());
                 result = Integer.parseInt(cookie.getValue());
@@ -244,7 +244,7 @@ public class ApiCallService {
                 /**
                  * 시간은 clientId 만료 시간 보다 작게 설정
                  */
-                Cookie saveCookie = cookieService.createCookie(request, "client_id", String.valueOf(result), 20 * 60 );
+                Cookie saveCookie = cookieService.createCookie(request, "clientId", String.valueOf(result), 20 * 60 );
                 response.addCookie(saveCookie);
             }
         }
@@ -262,6 +262,19 @@ public class ApiCallService {
         log.trace("### 요청 {} => {} = {}", apiParam.getFieldNm(), apiParam.getFieldMapNm(), param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm())));
         apiParam.setValue(StrUtils.getStr(param.get(CamelUtil.convert2CamelCase(apiParam.getFieldNm()))));
         return apiParam;
+    }
+
+    /**
+     * 특정 컬럼명 값 리턴
+     * @param cookieName
+     * @return
+     */
+    public String getCookie(String cookieName) {
+        Cookie cookie = cookieService.getCookie(request, cookieName);
+        if (cookie == null) return "";
+
+        log.trace("### getCookie {} = {}", cookieName, cookie.getValue());
+        return cookie.getValue();
     }
 
 }
