@@ -65,73 +65,14 @@ public class ApiCallRestController {
     private final StationService stationService;
     private final ForecastService forecastService;
     private final EventService eventService;
+    private final ApiConvService apiConvService;
     private final FacilityOptService facilityOptService;
-
-    private final WebClient webClient;
-
-
-    @GetMapping(value = "/https-test")
-    public ResponseEntity httpsRestTemplate() {
-            try {
-                RestTemplate restTemplate = new RestTemplate();
-                HttpHeaders headers = new HttpHeaders();
-                headers.setAccept(Arrays.asList(new MediaType[]{MediaType.APPLICATION_JSON}));
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                headers.setBasicAuth("admin", "welcome123");
-                HttpEntity<String> entity = new HttpEntity<String>("", headers);
-
-                ResponseEntity<String> responseEntity = restTemplate.exchange("https://100.200.250.251/api/v1/presence", HttpMethod.GET, entity, String.class);
-                Map<String, Object> result = objectMapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return ResponseEntity.status(HttpStatus.OK).body("");
-
-    }
-
-    @GetMapping(value = "/https-webclient-test")
-    public ResponseEntity httpsWebClientTest() throws Exception {
-
-        Mono<Object> mono = webClient.mutate()
-                            .baseUrl("https://100.200.250.251")
-                            .build()
-                            .get()
-                            .uri("/api/v1/presence")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .header(HttpHeaders.AUTHORIZATION, "Basic YWRtaW46d2VsY29tZTEyMw==")
-                            .retrieve()
-                            .bodyToMono(Object.class);
-
-
-        log.trace("mono: {}", mono.block());
-
-        return ResponseEntity.status(HttpStatus.OK).body("list");
-    }
 
 
     @PostMapping(value = "/facility")
     public ResponseEntity findAllForFacility(@RequestBody Map<String, Object> param) throws Exception {
         List<Facility> list = facilityService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(list);
-    }
-
-    @PutMapping (value = "/facility")
-    public ResponseEntity apiSaveFacility(@RequestBody Map<String, Object> param) throws Exception  {
-        log.trace("param {}", param.toString());
-
-        Api api = apiService.getRequestApi(param);
-
-        //API DB 정보로 외부 API 호출
-        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        String body = (String) responseEntity.getBody();
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-
-        List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("facility_list");
-
-        this.facilityService.saveAll(list);
-
-        return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
     @PostMapping(value = "/station")
@@ -208,11 +149,11 @@ public class ApiCallRestController {
             resultBody = responseEntity.getBody();
         } else if (api.getResponseBodyType() == BodyType.ARRAY) {
             String body = (String) responseEntity.getBody();
-            resultBody = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
+            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
             });
         } else if (api.getResponseBodyType() == BodyType.OBJECT) {
             String body = (String) responseEntity.getBody();
-            resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
+            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
             });
         }
 
@@ -309,9 +250,12 @@ public class ApiCallRestController {
                     .filter(f -> f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
                         AtomicReference<String> result = new AtomicReference<>();
+                        Map<Object,Object> event_list = (Map<Object,Object>)param.get(f.getFieldMapNm());
+                        String chgEvtType = apiConvService.eventConverter(f, event_list.get("eventType").toString());
+                        event_list.put("eventType",chgEvtType);
                         dataType.set(f.getDataType());
                         try {
-                            result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
+                            result.set(objectMapper.writeValueAsString(event_list));
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
@@ -323,6 +267,7 @@ public class ApiCallRestController {
                         f.setValue(result.get());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
 
             // Response check and set
             resultBody = apiResponseParams
