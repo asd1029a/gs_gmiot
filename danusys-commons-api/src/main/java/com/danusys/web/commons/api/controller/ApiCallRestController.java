@@ -22,12 +22,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.yaml.snakeyaml.util.UriEncoder;
 import reactor.core.publisher.Mono;
@@ -37,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,28 +68,11 @@ public class ApiCallRestController {
     private final ApiConvService apiConvService;
     private final FacilityOptService facilityOptService;
 
+
     @PostMapping(value = "/facility")
     public ResponseEntity findAllForFacility(@RequestBody Map<String, Object> param) throws Exception {
         List<Facility> list = facilityService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(list);
-    }
-
-    @PutMapping (value = "/facility")
-    public ResponseEntity apiSaveFacility(@RequestBody Map<String, Object> param) throws Exception  {
-        log.trace("param {}", param.toString());
-
-        Api api = apiService.getRequestApi(param);
-
-        //API DB 정보로 외부 API 호출
-        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        String body = (String) responseEntity.getBody();
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-
-        List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("facility_list");
-
-        this.facilityService.saveAll(list);
-
-        return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
     @PostMapping(value = "/station")
@@ -167,11 +149,11 @@ public class ApiCallRestController {
             resultBody = responseEntity.getBody();
         } else if (api.getResponseBodyType() == BodyType.ARRAY) {
             String body = (String) responseEntity.getBody();
-            resultBody = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
+            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
             });
         } else if (api.getResponseBodyType() == BodyType.OBJECT) {
             String body = (String) responseEntity.getBody();
-            resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
+            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
             });
         }
 

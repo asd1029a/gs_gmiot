@@ -36,5 +36,7 @@ public enum DataType {
 
     CLOB,
 
-    COOKIE
+    COOKIE,
+
+    SOAP_DATA_PATH
 }
