@@ -29,7 +29,7 @@ public class Facility implements Serializable {
     private Long facilitySeq;
 
     @Column(nullable = false)
-    private int facilityKind;
+    private Long facilityKind;
 
     @Column(nullable = false)
     private int facilityStatus;

@@ -3,10 +3,13 @@ package com.danusys.web.commons.api.scheduler;
 import com.danusys.web.commons.api.dto.EventReqeustDTO;
 import com.danusys.web.commons.api.model.Event;
 import com.danusys.web.commons.api.model.Facility;
+import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.service.EventService;
+import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
 import com.danusys.web.commons.api.util.ApiUtils;
 import com.danusys.web.commons.app.StrUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -34,6 +38,7 @@ public class GjScheduler {
     private final ObjectMapper objectMapper;
     private final EventService eventService;
     private final FacilityService facilityService;
+    private final FacilityOptService facilityOptService;
     private final RestTemplate restTemplate;
     private List<Map<String, Double>> testList = new ArrayList<>();
     private double[] latList = {37.324622998538246, 37.325484200140124, 37.32598170009432, 37.32653137256927, 37.325884873654815,
@@ -49,7 +54,7 @@ public class GjScheduler {
 
 //    @Scheduled(cron = "0/30 * * * * *")
     @Scheduled(fixedDelay = 10000)
-    public void apiCallSchedule() throws Exception{
+    public void droneCoordinatesTest() throws Exception{
         if (testList.size() == 0) {
             setTestList();
         }
@@ -133,7 +138,6 @@ public class GjScheduler {
         try {
             Map<String,Object> param2 = new HashMap<>();
             param2.put("callUrl", "/centerEms/deivce/list");
-//        Object result = apiUtils.getRestCallBody(param2);
 
             ResponseEntity<String> responseEntity = restTemplate.exchange(
                     "http://localhost:8400/api/call",
@@ -158,18 +162,163 @@ public class GjScheduler {
         }
     }
 
-    //    @Scheduled(cron = "0/30 * * * * *")
-    @Scheduled(fixedDelay = 60000)
-    public void getDroneList() throws Exception{
-//        Map<String,Object> param = new HashMap<>();
-//        param.put("callUrl","/lg/drone/drones");
-//
-//        List<Map<String, Object>> body = (List<Map<String, Object>>) apiUtils.getRestCallBody(param);
-//        log.trace("scheduler 1 : {}", body);
+//    @Scheduled(fixedDelay = 60000)
+    public void getCenterEmsDetailList() throws Exception {
+        List<Facility> facilityList = facilityService.findByFacilityKind(43L);
 
-        Map<String,Object> param2 = new HashMap<>();
-        param2.put("callUrl", "/cudo/video/device");
+        facilityList.stream().forEach(f -> {
+
+            Map<String,Object> param = new HashMap<>();
+            param.put("callUrl", "/centerEms/device/list/detail");
+            param.put("facility_id", f.getFacilityId());
 //        Object result = apiUtils.getRestCallBody(param2);
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    "http://localhost:8400/api/call",
+                    HttpMethod.POST,
+                    new HttpEntity<Map<String, Object>>(param),
+                    String.class);
+
+            Map<String, Object> detailData = null;
+            try {
+                detailData = objectMapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
+                });
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+            if (detailData == null && detailData.isEmpty()) {
+                return;
+            }
+
+            log.trace("data 2 : {}", detailData);
+
+            List<FacilityOpt> facilityOptList = new ArrayList<>();
+            Map<String, Object> data = (Map<String, Object>) detailData.get("facilityData");
+            String facilityId = StrUtils.getStr(data.get("facility_id"));
+
+            String[] temp = {"volt", "am", "igo", "igr", "igc", "mega",
+                    "volt_r", "am_r", "volt_s", "am_s", "volt_t", "am_t", "volt_tot",
+                    "ior", "igra", "igrb", "igrc", "wat_tot", "box_heat", "amn_status", "oam_status", "am_use"};
+            List<String> addList = Arrays.asList(temp);
+
+            data.entrySet().stream().filter(ff -> addList.contains(ff.getKey())).forEach(ff -> {
+                FacilityOpt optOrigin = facilityOptService.findByFacilitySeqAndFacilityOptName(f.getFacilitySeq(), ff.getKey());
+                if (optOrigin == null) {
+                    FacilityOpt facilityOpt = FacilityOpt
+                            .builder()
+                            .facilitySeq(f.getFacilitySeq())
+                            .facilityOptName(ff.getKey())
+                            .facilityOptValue(StrUtils.getStr(ff.getValue()))
+                            .facilityOptType(53)
+                            .build();
+                    facilityOptList.add(facilityOpt);
+                } else {
+                    optOrigin.setFacilityOptValue(StrUtils.getStr(ff.getValue()));
+                    facilityOptList.add(optOrigin);
+                }
+            });
+
+            facilityOptService.saveAll(facilityOptList);
+        });
+    }
+
+    //    @Scheduled(cron = "0/30 * * * * *")
+//    @Scheduled(fixedDelay = 60000)
+    public void getDroneList() throws Exception{
+        Map<String,Object> param = new HashMap<>();
+        param.put("callUrl","/lg/drone/drones");
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "http://localhost:8400/api/call",
+                HttpMethod.POST,
+                new HttpEntity<Map<String, Object>>(param),
+                String.class);
+
+        List<Map<String, Object>> droneList = objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<Map<String, Object>>>() {
+        });
+
+        log.trace("droneList 1 : {}", droneList);
+
+        Map<String,Object> dronePram = new HashMap<>();
+        dronePram.put("callUrl", "/cudo/video/device");
+
+        ResponseEntity<String> responseEntity2 = restTemplate.exchange(
+                "http://localhost:8400/api/call",
+                HttpMethod.POST,
+                new HttpEntity<Map<String, Object>>(dronePram),
+                String.class);
+
+        if (responseEntity2.getBody() == null) {
+            return;
+        }
+
+        Map<String, Object> result = objectMapper.readValue(responseEntity2.getBody(), new TypeReference<Map<String, Object>>() {
+        });
+
+        List<Map<String, Object>> deviceList = (List<Map<String, Object>>) result.get("facilityList");
+
+        List<FacilityOpt> facilityOptList = new ArrayList<>();
+        List<Facility> l = new ArrayList<>();
+
+        droneList.stream().forEach(f -> {
+            String facilityId = StrUtils.getStr(f.get("facility_id"));
+            String facilityName = StrUtils.getStr(f.get("facility_name"));
+            Facility facility = Facility.builder().facilityId(facilityId).facilityName(facilityName).build();
+            Facility origin = facilityService.save(facility);
+            l.add(origin);
+            String[] temp = {"serial_number", "model_name", "emergency_battery_level", "manufacturer",
+                    "emergency_battery_rth", "emergency_battery_land", "battery_capacity", "battery_flight_time"};
+            List<String> addList = Arrays.asList(temp);
+            f.entrySet().stream().filter(ff -> addList.contains(ff.getKey())).forEach(ff -> {
+                FacilityOpt optOrigin = facilityOptService.findByFacilitySeqAndFacilityOptName(origin.getFacilitySeq(), ff.getKey());
+                if (optOrigin == null) {
+                    FacilityOpt facilityOpt = FacilityOpt
+                            .builder()
+                            .facilitySeq(origin.getFacilitySeq())
+                            .facilityOptName(ff.getKey())
+                            .facilityOptValue(StrUtils.getStr(ff.getValue()))
+                            .facilityOptType(53)
+                            .build();
+                    facilityOptList.add(facilityOpt);
+                } else {
+                    optOrigin.setFacilityOptValue(StrUtils.getStr(ff.getValue()));
+                    facilityOptList.add(optOrigin);
+                }
+            });
+        });
+
+        facilityOptList.stream().filter(f -> f.getFacilityOptName().equals("serial_number")).forEach(f -> {
+            droneList.stream().filter(ff -> StrUtils.getStr(ff.get("serial_number")).equals(f.getFacilityOptValue())).forEach(ff -> {
+                String[] temp = {"video_id"};
+                List<String> addList = Arrays.asList(temp);
+                ff.entrySet().stream().filter(fff -> addList.contains(fff.getKey())).forEach(fff -> {
+                    FacilityOpt origin = facilityOptService.findByFacilitySeqAndFacilityOptName(f.getFacilitySeq(), fff.getKey());
+                    if (origin == null) {
+                        FacilityOpt facilityOpt = FacilityOpt
+                                .builder()
+                                .facilitySeq(f.getFacilitySeq())
+                                .facilityOptName(fff.getKey())
+                                .facilityOptValue(StrUtils.getStr(fff.getValue()))
+                                .facilityOptType(72)
+                                .build();
+                        facilityOptList.add(facilityOpt);
+                    } else {
+                        origin.setFacilityOptValue(StrUtils.getStr(fff.getValue()));
+                        facilityOptList.add(origin);
+                    }
+                });
+            });
+        });
+
+        facilityOptService.saveAll(facilityOptList);
+    }
+
+    //    @Scheduled(cron = "0/30 * * * * *")
+//    @Scheduled(fixedDelay = 1000)
+    public void getDroneCoordinatesList() throws Exception{
+        Map<String,Object> param2 = new HashMap<>();
+        param2.put("callUrl", "/lg/drone/drones/current_position");
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "http://localhost:8400/api/call",
@@ -177,32 +326,57 @@ public class GjScheduler {
                 new HttpEntity<Map<String, Object>>(param2),
                 String.class);
 
-        Map<String, Object> result = objectMapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
+        List<Map<String, Object>> list = objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<Map<String, Object>>>() {
         });
 
-        if (result == null) {
+        if (list.size() == 0) {
             return;
         }
 
-        log.trace("scheduler 2 : {}", result);
+        log.trace("list 2 : {}", list);
 
-        List<Map<String, Object>> list = (List<Map<String, Object>>) result.get("facilityList");
+        List<FacilityOpt> facilityOptList = new ArrayList<>();
 
-        this.facilityService.saveAll(list, "DRONE");
+        list.stream().forEach(f -> {
+            String facilityId = StrUtils.getStr(f.get("facility_id"));
+            Map<String, Object> data = (Map<String, Object>) f.get("data");
+            Map<String, Object> properties = (Map<String, Object>) data.get("properties");
+            Map<String, Object> homePosition = (Map<String, Object>) data.get("home_position");
+            double homeLatitude = ((double) homePosition.get("latitude")) * 10000000;
+            double homeLongitude = ((double) homePosition.get("longitude")) * 10000000;
+            double latitude = (double) properties.get("latitude");
+            double longitude = (double) properties.get("longitude");
+            Facility origin = facilityService.findByFacilityId(facilityId);
+            origin.setLatitude(latitude);
+            origin.setLongitude(longitude);
+            facilityService.save(origin);
+            String[] temp = {"direction", "alt", "run_dist", "battery", "speed"};
+            List<String> addList = Arrays.asList(temp);
+            f.entrySet().stream().filter(ff -> addList.contains(ff.getKey())).forEach(ff -> {
+                FacilityOpt optOrigin = facilityOptService.findByFacilitySeqAndFacilityOptName(origin.getFacilitySeq(), ff.getKey());
+                if (optOrigin == null) {
+                    FacilityOpt facilityOpt = FacilityOpt
+                            .builder()
+                            .facilitySeq(origin.getFacilitySeq())
+                            .facilityOptName(ff.getKey())
+                            .facilityOptValue(StrUtils.getStr(ff.getValue()))
+                            .facilityOptType(53)
+                            .build();
+                    facilityOptList.add(facilityOpt);
+                } else {
+                    optOrigin.setFacilityOptValue(StrUtils.getStr(ff.getValue()));
+                    facilityOptList.add(optOrigin);
+                }
+            });
+        });
+
+        facilityOptService.saveAll(facilityOptList);
     }
 
     //    @Scheduled(cron = "0 0/2 * * * *")
     public void getStationList() throws Exception{
-//        Map<String,Object> param = new HashMap<>();
-//        param.put("callUrl","/lg/drone/drones");
-//
-//        List<Map<String, Object>> body = (List<Map<String, Object>>) apiUtils.getRestCallBody(param);
-//        log.trace("scheduler 1 : {}", body);
-
         Map<String,Object> param2 = new HashMap<>();
         param2.put("callUrl", "/lg/drone/stations");
-//        Object result = apiUtils.getRestCallBody(param2);
-
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "http://localhost:8400/api/call",
                 HttpMethod.POST,
