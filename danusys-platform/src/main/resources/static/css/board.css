@@ -401,6 +401,7 @@ tr.selected td {background-color: #23252b;}
 .statistics_content .graph_contents .graph_title dd span:nth-last-child(1){border: none;}
 .statistics_content .graph_contents .graph_title dd span:hover{color: #dee0e4;}
 .statistics_content .graph_contents .graph_title dd span:active{color: #dee0e4; background: #3a66e5;}
+.statistics_content .graph_contents .graph_title dd span.on{color: #dee0e4; background: #3a66e5;}
 .statistics_content .graph_contents .graph_area{flex: 1; background: #26282f; width: 100%; height: 100%;}
 
 /* signage */

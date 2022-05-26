@@ -6,7 +6,20 @@ const stats = {
         });
         $(".chartBtn span").on("click", (e) => {
             const $target = e.currentTarget;
-            $tartget.class;
+            if ($target.class !== "on"){
+                $($target).siblings().removeClass("on");
+                $target.classList.add("on");
+
+                const param = $("#searchForm form").serializeJSON();
+                // param.eventKind = '';
+                if($target.id.indexOf("sum") >= 0){
+                    // const data = stats.getSumChartData(param);
+                    stats.createSumChart();
+                }else{
+                    // const data = stats.getAvgChartData(param);
+                    stats.createAvgChart();
+                }
+            }
         });
     }
     , create: ($target, pEventType) => {
@@ -63,7 +76,7 @@ const stats = {
         stats.createAvgChart();
         stats.createMapChart();
     }, createSumChart: (data) => {
-        const option = {
+        const options = {
             chart: {
                 height: "80%",
                 type: 'line',
@@ -136,11 +149,17 @@ const stats = {
                 }
             ]
         }
-        let chart = new ApexCharts(document.querySelector("#sumChart"), option);
-        chart.render();
+
+        let charts = $("#sumChart").data("charts");
+        if(charts != undefined){
+            charts.destroy();
+        }
+        charts = new ApexCharts(document.querySelector("#sumChart"), options);
+        charts.render();
+        $("#sumChart").data("charts", charts);
     },
     createAvgChart: (data) => {
-        var options = {
+        let options = {
             chart: {
                 type: 'rangeBar',
                 height: "80%",
@@ -204,8 +223,13 @@ const stats = {
             }]
         };
 
-        var chart = new ApexCharts(document.querySelector("#avgChart"), options);
-        chart.render();
+        let charts = $("#avgChart").data("charts");
+        if(charts != undefined){
+            charts.destroy();
+        }
+        charts = new ApexCharts(document.querySelector("#avgChart"), options);
+        charts.render();
+        $("#avgChart").data("charts", charts);
     },
     createMapChart: (data) => {
         const charts = echarts.init(document.querySelector("#mapChart"), "dark", {renderer: "svg"});

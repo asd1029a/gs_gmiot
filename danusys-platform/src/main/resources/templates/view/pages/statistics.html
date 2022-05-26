@@ -18,7 +18,7 @@
             <form>
                 <div>
                     <p>이벤트 종류</p>
-                    <dl class="dropdown_checkbox" data-selectbox-type="eventKind">
+                    <dl class="dropdown_checkbox" data-selectbox-type="eventKind" th:attr="data-selectbox-sub-type=${param.type}">
                         <dt class="checkbox_title select_title">이벤트 종류</dt>
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>
