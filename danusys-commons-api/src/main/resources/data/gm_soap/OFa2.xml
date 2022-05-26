@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<logicalfolder fdid="OFa2" fdpth="/ST1/OFa2">
+  <logicalpoints>
+    <lpt id="LPa232890199721" nm="포충기" ty="33" pth="/ST1/OFa2/LPa232890199721" ref="/DDC_철산역2번출구_14128/포충기" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199722" nm="에어커튼" ty="33" pth="/ST1/OFa2/LPa232890199722" ref="/DDC_철산역2번출구_14128/에어커튼" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199723" nm="미세먼지" ty="2" pth="/ST1/OFa2/LPa232890199723" ref="/DDC_철산역2번출구_14128/미세먼지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199724" nm="심장제세동기" ty="33" pth="/ST1/OFa2/LPa232890199724" ref="/DDC_철산역2번출구_14128/심장제세동기" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199725" nm="재실감지" ty="33" pth="/ST1/OFa2/LPa232890199725" ref="/DDC_철산역2번출구_14128/재실감지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199726" nm="조명" ty="33" pth="/ST1/OFa2/LPa232890199726" ref="/DDC_철산역2번출구_14128/조명" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199727" nm="공기정화기" ty="33" pth="/ST1/OFa2/LPa232890199727" ref="/DDC_철산역2번출구_14128/공기정화기" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199728" nm="출입문외부버튼" ty="33" pth="/ST1/OFa2/LPa232890199728" ref="/DDC_철산역2번출구_14128/출입문외부버튼" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199729" nm="냉온열의자" ty="33" pth="/ST1/OFa2/LPa232890199729" ref="/DDC_철산역2번출구_14128/냉온열의자" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199730" nm="동문열림" ty="33" pth="/ST1/OFa2/LPa232890199730" ref="/DDC_철산역2번출구_14128/동문열림" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199731" nm="무정차조명" ty="33" pth="/ST1/OFa2/LPa232890199731" ref="/DDC_철산역2번출구_14128/무정차조명" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199732" nm="LED라이트패널" ty="33" pth="/ST1/OFa2/LPa232890199732" ref="/DDC_철산역2번출구_14128/LED라이트패널" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199733" nm="스노우멜팅" ty="33" pth="/ST1/OFa2/LPa232890199733" ref="/DDC_철산역2번출구_14128/스노우멜팅" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199734" nm="태양광_14128_수전 적산 유효전력량" ty="2" pth="/ST1/OFa2/LPa232890199734" ref="/DDC_철산역2번출구_14128/태양광_14128_수전 적산 유효전력량" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199735" nm="태양광_14128_송전 적산 유효전력량" ty="2" pth="/ST1/OFa2/LPa232890199735" ref="/DDC_철산역2번출구_14128/태양광_14128_송전 적산 유효전력량" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199736" nm="태양광_14128_수전 유효전력" ty="2" pth="/ST1/OFa2/LPa232890199736" ref="/DDC_철산역2번출구_14128/태양광_14128_수전 유효전력" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199737" nm="태양광_14128_송전 유효전력" ty="2" pth="/ST1/OFa2/LPa232890199737" ref="/DDC_철산역2번출구_14128/태양광_14128_송전 유효전력" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199738" nm="한전_14128_수전 적산 유효전력량" ty="2" pth="/ST1/OFa2/LPa232890199738" ref="/DDC_철산역2번출구_14128/한전_14128_수전 적산 유효전력량" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199739" nm="한전_14128_송전 적산 유효전력량" ty="2" pth="/ST1/OFa2/LPa232890199739" ref="/DDC_철산역2번출구_14128/한전_14128_송전 적산 유효전력량" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199740" nm="한전_14128_수전 유효전력" ty="2" pth="/ST1/OFa2/LPa232890199740" ref="/DDC_철산역2번출구_14128/한전_14128_수전 유효전력" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199741" nm="한전_14128_송전 유효전력" ty="2" pth="/ST1/OFa2/LPa232890199741" ref="/DDC_철산역2번출구_14128/한전_14128_송전 유효전력" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199742" nm="IDU_14128_실내온도" ty="2" pth="/ST1/OFa2/LPa232890199742" ref="/DDC_철산역2번출구_14128/IDU_14128_실내온도" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199743" nm="IDU_14128_에러코드" ty="2" pth="/ST1/OFa2/LPa232890199743" ref="/DDC_철산역2번출구_14128/IDU_14128_에러코드" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199744" nm="IDU_14128_배관입구온도" ty="2" pth="/ST1/OFa2/LPa232890199744" ref="/DDC_철산역2번출구_14128/IDU_14128_배관입구온도" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199745" nm="IDU_14128_배관출구온도" ty="2" pth="/ST1/OFa2/LPa232890199745" ref="/DDC_철산역2번출구_14128/IDU_14128_배관출구온도" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199746" nm="IDU_14128_제품타입" ty="2" pth="/ST1/OFa2/LPa232890199746" ref="/DDC_철산역2번출구_14128/IDU_14128_제품타입" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199747" nm="IDU_14128_운전모드_에어컨" ty="2" pth="/ST1/OFa2/LPa232890199747" ref="/DDC_철산역2번출구_14128/IDU_14128_운전모드_에어컨" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199748" nm="IDU_14128_설정온도" ty="2" pth="/ST1/OFa2/LPa232890199748" ref="/DDC_철산역2번출구_14128/IDU_14128_설정온도" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199749" nm="IDU_14128_바람세기" ty="2" pth="/ST1/OFa2/LPa232890199749" ref="/DDC_철산역2번출구_14128/IDU_14128_바람세기" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199750" nm="IDU_14128_외부제어기실내온도" ty="2" pth="/ST1/OFa2/LPa232890199750" ref="/DDC_철산역2번출구_14128/IDU_14128_외부제어기실내온도" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199751" nm="IDU_14128_실외기상태" ty="33" pth="/ST1/OFa2/LPa232890199751" ref="/DDC_철산역2번출구_14128/IDU_14128_실외기상태" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199752" nm="IDU_14128_기동정지" ty="33" pth="/ST1/OFa2/LPa232890199752" ref="/DDC_철산역2번출구_14128/IDU_14128_기동정지" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890199753" nm="IDU_14128_잠금" ty="33" pth="/ST1/OFa2/LPa232890199753" ref="/DDC_철산역2번출구_14128/IDU_14128_잠금" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+  </logicalpoints>
+  <groups/>
+  <zones/>
+  <devices/>
+</logicalfolder>
