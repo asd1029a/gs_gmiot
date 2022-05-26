@@ -73,33 +73,59 @@ const stats = {
                 mode: "dark"
             },
             colors:['#f04242', '#f9a825', '#f04242', '#f9a825'],
+            fill: {
+                opacity: 0.9
+            },
+            stroke: {
+                width: [0,0,3,3],
+                dashArray: 10
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '25%',
+                }
+            },
             xaxis: {
                 categories: ['일','월','화','수','목','금','토']
             },
             yaxis: [{
+                show: true,
+                seriesName: "주의"
             },{
-                opposite: true,
+                show: false,
+                seriesName: "주의"
+            },{
+                show: true,
+                seriesName: "주의 누적",
+                opposite: true
+            },{
+                show: false,
+                seriesName: "주의 누적",
             }],
+            dataLabels: {
+                enabled: true,
+                enabledOnSeries: [2, 3]
+            },
             series: [
                 {
                     name: '긴급',
                     type: 'column',
-                    data: [120, 132, 101, 134, 90, 230, 210]
+                    data: [10,10,10,10,10,10,10]
                 },
                 {
                     name: '주의',
                     type: 'column',
-                    data: [220, 182, 191, 234, 290, 330, 310]
+                    data: [10,10,10,10,10,10,10]
                 },
                 {
                     name: '긴급 누적',
                     type: 'line',
-                    data: [150, 232, 201, 154, 190, 330, 410]
+                    data: [50, 60, 70, 80, 90, 100, 110]
                 },
                 {
                     name: '주의 누적',
                     type: 'line',
-                    data: [320, 332, 301, 334, 390, 330, 320]
+                    data: [160, 170, 180, 190, 200, 210, 220]
                 }
             ]
         }
@@ -117,14 +143,23 @@ const stats = {
                 mode: "dark"
             },
             colors: ['#f04242', '#f9a825'],
-
+            fill: {
+                opacity: 1
+            },
             plotOptions: {
                 bar: {
-                    horizontal: false
+                    columnWidth: "45%"
                 }
             },
             dataLabels: {
-                enabled: true
+                enabled: true,
+                formatter: function (val, opts) {
+                    const sIdx = opts.seriesIndex;
+                    const dIdx = opts.dataPointIndex;
+                    const minVal = opts.w.globals.seriesRangeStart[sIdx][dIdx];
+                    const maxVal = opts.w.globals.seriesRangeEnd[sIdx][dIdx];
+                    return (minVal + maxVal) / 2;
+                },
             },
             series: [{
                 name: "긴급",
@@ -148,10 +183,10 @@ const stats = {
                     y: [2, 6]
                 }, {
                     x: 'Team B',
-                    y: [1, 3]
+                    y: [1, 6]
                 }, {
                     x: 'Team C',
-                    y: [7, 8]
+                    y: [2, 8]
                 }, {
                     x: 'Team D',
                     y: [5, 9]
