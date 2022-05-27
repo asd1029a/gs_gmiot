@@ -17,6 +17,7 @@ public class EventSqlProvider {
             String endDt = CommonUtil.validOneNull(paramMap, "endDt");
             ArrayList eventGrade = CommonUtil.valiArrNull(paramMap, "eventGrade");
             ArrayList eventState = CommonUtil.valiArrNull(paramMap, "eventState");
+            ArrayList eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
             //ArrayList facilityDirection = CommonUtil.valiArrNull(paramMap,"facilityDirection");
             //ArrayList facilityProblem = CommonUtil.valiArrNull(paramMap,"facilityProblem");
             boolean geoFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "geojson"));
@@ -70,6 +71,9 @@ public class EventSqlProvider {
             }
             if (eventState != null && !eventState.isEmpty()) {
                 WHERE("v3.code_value" + SqlUtil.getWhereInStr(eventState));
+            }
+            if (eventKind != null && !eventKind.isEmpty()) {
+                WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
             }
 
             if (!start.equals("") && !length.equals("")) {

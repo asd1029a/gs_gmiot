@@ -121,10 +121,10 @@ const layerStyle = {
             }
             imgNm = selectFlag ? "drone_select" : "drone" ;
 
-            const text = feature.getProperties().facilityId;
+            const prop = feature.getProperties();
             const style = new ol.style.Style({
                 text : new ol.style.Text({
-                    text: String(text),
+                    text: String(prop.facilityId),
                     offsetY: 20,
                     fill: new ol.style.Fill({
                         color:'black',
@@ -142,7 +142,8 @@ const layerStyle = {
                     anchorYUnits: 'fraction',
                     img: imgObj[imgNm],
                     imgSize:[50,50],
-                    scale: 1
+                    scale: 1,
+                    rotation: 30 + (Math.random()*20)//prop.rotate
                 })
             });
             return style;
