@@ -354,6 +354,7 @@ const mntr = {
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["gateway_trans", "device_trans", "dtctn_crmss"]};
                     //개소
+                    stationParam = {};
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
@@ -363,6 +364,7 @@ const mntr = {
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["BUSSTOP_FALL_DOWN", "BUSSTOP_FIRE"]};
                     //개소
+                    stationParam = {};
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
@@ -1178,9 +1180,13 @@ const rnbList = {
         $target.find('.facilitySubTitle').eq(2).text("[ "+ prop.facilityId +" ] 기체 현황");
 
         //prop 돌리면서 채워넣기
-        const propList = ['latitude', 'longitude', 'facilityId', 'facilitySeq'];
+        // const propList = ['latitude', 'longitude', 'facilityId', 'facilitySeq'];
+        console.log(prop);
+        const propList = Object.keys(prop);
         propList.map(propStr => {
-            $target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
+            console.log('.area_right_text li input[data-value='+propStr+']');
+            console.log(prop[propStr]);
+            //$target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
         });
         //////////
         // video는 냅두고
