@@ -27,7 +27,7 @@ public class SoapXmlDataUtil {
      * @param xml_data_path
      * @return
      */
-    public static List<String> getGmSoapPostList(String xml_data_path) {
+    public static List<LogicalfolderDTO.Logicalpoints.Lpt> getGmSoapPostList(String xml_data_path) {
         try {
             final JAXBContext jaxbContext = JAXBContext.newInstance(LogicalfolderDTO.class); // JAXB Context 생성
             final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller(); // Unmarshaller Object 생성
@@ -36,7 +36,7 @@ public class SoapXmlDataUtil {
             final LogicalfolderDTO logicalfolder = (LogicalfolderDTO) unmarshaller.unmarshal(new FileReader(resource.getFile())); // unmarshall 메소드 호출
             final LogicalfolderDTO.Logicalpoints logicalpoints = logicalfolder.getLogicalpoints();
 
-            return logicalpoints.getLpts().stream().map(m -> m.getPth()).collect(Collectors.toList());
+            return logicalpoints.getLpts();
          } catch (JAXBException | IOException e) {
             e.printStackTrace();
         };
