@@ -354,7 +354,7 @@ const mntr = {
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["gateway_trans", "device_trans", "dtctn_crmss"]};
                     //개소
-                    stationParam = {};
+                    stationParam = {"station": ["lamp_road"]};
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
@@ -364,7 +364,7 @@ const mntr = {
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["BUSSTOP_FALL_DOWN", "BUSSTOP_FIRE"]};
                     //개소
-                    stationParam = {};
+                    stationParam = {"station": ["smart_station"]};
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
@@ -994,6 +994,9 @@ const lnbList = {
         let objAry = JSON.parse(obj);
         const $target = $('section.select .lnb_tab_section[data-value='+ type +']');
 
+        // $target.find('.search_list[data-value=station]').html("");
+        // const cnt = objAry.features.length;
+
         objAry.features.forEach(each => {
             let content = "";
             const prop = each.properties;
@@ -1180,13 +1183,9 @@ const rnbList = {
         $target.find('.facilitySubTitle').eq(2).text("[ "+ prop.facilityId +" ] 기체 현황");
 
         //prop 돌리면서 채워넣기
-        // const propList = ['latitude', 'longitude', 'facilityId', 'facilitySeq'];
-        console.log(prop);
-        const propList = Object.keys(prop);
+        const propList = ['latitude', 'longitude', 'facilityId', 'facilitySeq'];
         propList.map(propStr => {
-            console.log('.area_right_text li input[data-value='+propStr+']');
-            console.log(prop[propStr]);
-            //$target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
+            $target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
         });
         //////////
         // video는 냅두고

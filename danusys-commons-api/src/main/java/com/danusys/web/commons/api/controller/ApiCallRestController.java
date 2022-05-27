@@ -22,20 +22,17 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.yaml.snakeyaml.util.UriEncoder;
-import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +55,6 @@ import static java.util.stream.Collectors.toMap;
 public class ApiCallRestController {
     private final ObjectMapper objectMapper;
     private final ApiExecutorFactoryService apiExecutorFactoryService;
-//    private ApiExecutorService apiExecutorService;
-
     private final ApiCallService apiService;
     private final FacilityService facilityService;
     private final StationService stationService;
