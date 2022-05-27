@@ -27,12 +27,12 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public List<EgovMap> getAvgChart(Map<String, Object> paramMap) throws Exception {
-        return null;
+        return commonMapper.selectList(ssp.selectAvgQry(paramMap));
     }
 
     @Override
     public List<EgovMap> getMapChart(Map<String, Object> paramMap) throws Exception {
-        return null;
+        return commonMapper.selectList(ssp.selectMapQry(paramMap));
     }
 
     @Override

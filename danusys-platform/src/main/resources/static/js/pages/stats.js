@@ -15,6 +15,7 @@ const stats = {
                 stats.setChart(chartNm);
             }
         });
+        $(".event_type").text("하...");
     }
     , create: () => {
         const $target = $('#troubleEventTable');
@@ -62,12 +63,12 @@ const stats = {
 
         if (chartNm === "sumBtn") {
             stats.getSumChartData(param, stats.createSumChart);
-        } else if(chartNm === "avgBtn") {
-            stats.getAvgChartData(param, stats.createAvgChart);
+        } else if (chartNm === "avgBtn") {
+            // stats.getAvgChartData(param, stats.createAvgChart);
         } else {
             stats.getSumChartData(param, stats.createSumChart);
-            stats.getAvgChartData(param, stats.createAvgChart);
-            stats.createMapChart();
+            // stats.getAvgChartData(param, stats.createAvgChart);
+            stats.getMapChartData(param, stats.createMapChart);
         }
     }, createSumChart: (datas) => {
         const data = stats.getColumnData(datas);
@@ -153,7 +154,7 @@ const stats = {
         charts.render();
         $("#sumChart").data("charts", charts);
     },
-    createAvgChart: (data) => {
+    createAvgChart: (datas) => {
         let options = {
             chart: {
                 type: 'rangeBar',
@@ -226,7 +227,7 @@ const stats = {
         charts.render();
         $("#avgChart").data("charts", charts);
     },
-    createMapChart: (data) => {
+    createMapChart: (datas) => {
         const charts = echarts.init(document.querySelector("#mapChart"), "dark", {renderer: "svg"});
 
         charts.showLoading();
@@ -236,47 +237,34 @@ const stats = {
         });
         const option = {
             backgroundColor: "#00000000",
-            // tooltip: {
-            //     trigger: 'item',
-            // },
+            tooltip: {
+                trigger: 'item',
+                showDelay: 0,
+                transitionDuration: 0.2
+            },
             visualMap: {
-                min: 800,
-                max: 50000,
-                text: ['High', 'Low'],
-                realtime: false,
-                calculable: true,
+                left: 'right',
                 inRange: {
-                    color: ['lightskyblue', 'yellow', 'orangered']
-                }
+                    color: ['#313695','#fee090','#a50026']
+                },
+                text: ['High', 'Low'],
+                calculable: true
             },
             series: [
                 {
                     name: '이벤트 맵',
                     type: 'map',
+                    roam: true,
                     map: 'map',
                     label: {
                         show: true
                     },
-                    data: [
-                        {name: 'Central and Western', value: 20057.34},
-                        {name: 'Eastern', value: 15477.48},
-                        {name: 'Islands', value: 31686.1},
-                        {name: 'Kowloon City', value: 6992.6},
-                        {name: 'Kwai Tsing', value: 44045.49},
-                        {name: 'Kwun Tong', value: 40689.64},
-                        {name: 'North', value: 37659.78},
-                        {name: 'Sai Kung', value: 45180.97},
-                        {name: 'Sha Tin', value: 55204.26},
-                        {name: 'Sham Shui Po', value: 21900.9},
-                        {name: 'Southern', value: 4918.26},
-                        {name: 'Tai Po', value: 5881.84},
-                        {name: 'Tsuen Wan', value: 4178.01},
-                        {name: 'Tuen Mun', value: 2227.92},
-                        {name: 'Wan Chai', value: 2180.98},
-                        {name: 'Wong Tai Sin', value: 9172.94},
-                        {name: 'Yau Tsim Mong', value: 3368},
-                        {name: 'Yuen Long', value: 806.98}
-                    ],
+                    emphasis: {
+                        label: {
+                            show: true
+                        }
+                    },
+                    data: datas
                 }
             ]
         };
