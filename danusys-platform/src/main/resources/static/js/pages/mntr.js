@@ -994,14 +994,14 @@ const lnbList = {
         let objAry = JSON.parse(obj);
         const $target = $('section.select .lnb_tab_section[data-value='+ type +']');
 
-        // $target.find('.search_list[data-value=station]').html("");
-        // const cnt = objAry.features.length;
+        $target.find('.search_list[data-value=station]').html("");
+        const cnt = objAry.features.length;
 
         objAry.features.forEach(each => {
             let content = "";
             const prop = each.properties;
 
-            let cnt = Number($target.find('.area_title[data-value=station] .count').text());
+            // let cnt = Number($target.find('.area_title[data-value=station] .count').text());
 
             content = "<dl>" +
                 "<dt>" + prop.stationName + "</dt>" +
@@ -1011,7 +1011,8 @@ const lnbList = {
 
             $target.find('.search_list[data-value=station]').append(content);
             $target.find('.search_list[data-value=station] dl').last().data(each);
-            $target.find('.area_title[data-value=station] .count').text(cnt+1);
+            // $target.find('.area_title[data-value=station] .count').text(cnt+1);
+            $target.find('.area_title[data-value=station] .count').text(cnt);
         });
         //개소 리스트 행 클릭 이벤트
         $target.find('.search_list[data-value=station] dl').on("click", e => {
@@ -1183,9 +1184,12 @@ const rnbList = {
         $target.find('.facilitySubTitle').eq(2).text("[ "+ prop.facilityId +" ] 기체 현황");
 
         //prop 돌리면서 채워넣기
-        const propList = ['latitude', 'longitude', 'facilityId', 'facilitySeq'];
+        const propList = Object.keys(prop);
         propList.map(propStr => {
-            $target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
+            const textArea = $target.find('.area_right_text li input[data-value='+propStr+']');
+            if(textArea.length > 0){
+                textArea.val(prop[propStr]);
+            }
         });
         //////////
         // video는 냅두고

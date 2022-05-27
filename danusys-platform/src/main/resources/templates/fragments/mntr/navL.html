@@ -3,7 +3,8 @@
     <!-- LNM -->
         <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
         <!-- 스마트 폴 -->
-        <section th:if="${municipality == '41210000'}" id="smartPole" class="menu_fold">
+        <section th:if="${municipality == '41210000'
+                          or municipality == '26290000'}" id="smartPole" class="menu_fold">
             <ul class="tab">
                 <li data-value="event" class="active"><a>실시간</a></li>
                 <li data-value="station"><a>개소</a></li>
