@@ -579,9 +579,11 @@ const comm = {
             this.$listLi = this.$list.find('span');
 
             const type = this.$selectBox.data("selectboxType");
+            const subType = this.$selectBox.data("selectboxSubType");
             const pObj = {
                 draw: null,
-                type: type
+                type: type,
+                subType: subType
             }
             commonCode.getList(pObj, this.setList);
         }
