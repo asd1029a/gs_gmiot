@@ -127,8 +127,8 @@ $(document).ready(() => {
     else if(path === "/pages/stats/statistics"){
         const url = new URL(location.href);
         const type = url.searchParams.get("type");
-        stats.eventHandler($('#troubleEventTable'), type);
-        stats.create($('#troubleEventTable'), type);
-        stats.setChart(type);
+        stats.eventHandler();
+        stats.create();
+        stats.setChart();
     }
 })

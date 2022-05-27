@@ -17,6 +17,7 @@ public class EventSqlProvider {
             String endDt = CommonUtil.validOneNull(paramMap, "endDt");
             ArrayList eventGrade = CommonUtil.valiArrNull(paramMap, "eventGrade");
             ArrayList eventState = CommonUtil.valiArrNull(paramMap, "eventState");
+            ArrayList eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
             //ArrayList facilityDirection = CommonUtil.valiArrNull(paramMap,"facilityDirection");
             //ArrayList facilityProblem = CommonUtil.valiArrNull(paramMap,"facilityProblem");
             boolean geoFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "geojson"));
@@ -65,6 +66,9 @@ public class EventSqlProvider {
             if (!endDt.equals("")) {
                 WHERE("t1.insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
             }
+            if (eventKind != null && !eventKind.isEmpty()) {
+                WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
+            }
             if (eventGrade != null && !eventGrade.isEmpty()) {
                 WHERE("v2.code_value" + SqlUtil.getWhereInStr(eventGrade));
             }
@@ -83,11 +87,37 @@ public class EventSqlProvider {
     public String selectCountQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
             String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+            String start = CommonUtil.validOneNull(paramMap, "start");
+            String length = CommonUtil.validOneNull(paramMap, "length");
+            String startDt = CommonUtil.validOneNull(paramMap, "startDt");
+            String endDt = CommonUtil.validOneNull(paramMap, "endDt");
+            ArrayList eventGrade = CommonUtil.valiArrNull(paramMap, "eventGrade");
+            ArrayList eventState = CommonUtil.valiArrNull(paramMap, "eventState");
+            ArrayList eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
 
             SELECT("COUNT(*) as count");
-            FROM("t_event");
-            if (keyword != null && !keyword.equals("")) {
-                WHERE("v1.code_name LIKE '%" + keyword + "%'");
+            String tables = "t_event t1 " +
+                    "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
+                    "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
+                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq ";
+            FROM(tables);
+            if (!keyword.equals("")) {
+                WHERE("v1.code_value LIKE '%" + keyword + "%'");
+            }
+            if (!startDt.equals("")) {
+                WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
+            }
+            if (!endDt.equals("")) {
+                WHERE("t1.insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
+            }
+            if (eventKind != null && !eventKind.isEmpty()) {
+                WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
+            }
+            if (eventGrade != null && !eventGrade.isEmpty()) {
+                WHERE("v2.code_value" + SqlUtil.getWhereInStr(eventGrade));
+            }
+            if (eventState != null && !eventState.isEmpty()) {
+                WHERE("v3.code_value" + SqlUtil.getWhereInStr(eventState));
             }
         }};
         return sql.toString();

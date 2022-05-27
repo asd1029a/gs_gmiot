@@ -20,15 +20,15 @@ public class StatisticsController {
     private final StatisticsService statisticsService;
 
     @PostMapping(value = "/sumChart")
-    public ResponseEntity<EgovMap> getSumChart(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<List<EgovMap>> getSumChart(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(statisticsService.getSumChart(paramMap));
     }
     @PostMapping(value = "/avgChart")
-    public ResponseEntity<EgovMap> getAvgChart(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<List<EgovMap>> getAvgChart(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(statisticsService.getAvgChart(paramMap));
     }
     @PostMapping(value = "/mapChart")
-    public ResponseEntity<EgovMap> getMapChart(@RequestBody Map<String, Object> paramMap) throws Exception {
+    public ResponseEntity<List<EgovMap>> getMapChart(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(statisticsService.getMapChart(paramMap));
     }
     @PostMapping(value = "/geoJson")

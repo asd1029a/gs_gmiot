@@ -6,8 +6,6 @@ import com.danusys.web.platform.mapper.statistics.StatisticsSqlProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,17 +21,17 @@ public class StatisticsServiceImpl implements StatisticsService {
     private String emdCode;
 
     @Override
-    public EgovMap getSumChart(Map<String, Object> paramMap) throws Exception {
+    public List<EgovMap> getSumChart(Map<String, Object> paramMap) throws Exception {
+        return commonMapper.selectList(ssp.selectSumQry(paramMap));
+    }
+
+    @Override
+    public List<EgovMap> getAvgChart(Map<String, Object> paramMap) throws Exception {
         return null;
     }
 
     @Override
-    public EgovMap getAvgChart(Map<String, Object> paramMap) throws Exception {
-        return null;
-    }
-
-    @Override
-    public EgovMap getMapChart(Map<String, Object> paramMap) throws Exception {
+    public List<EgovMap> getMapChart(Map<String, Object> paramMap) throws Exception {
         return null;
     }
 

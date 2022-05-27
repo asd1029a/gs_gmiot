@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout/layout_stats">
-<th:block layout:fragment="content">
+<th:block layout:fragment="content" th:with="type=${#request.getParameter('type')}">
     <h4>
         <i><img src="/images/default/statisticsTitle.svg"></i>
         <span>통계</span>
@@ -18,7 +18,7 @@
             <form>
                 <div>
                     <p>이벤트 종류</p>
-                    <dl class="dropdown_checkbox" data-selectbox-type="eventKind" th:attr="data-selectbox-sub-type=${param.type}">
+                    <dl class="dropdown_checkbox" data-selectbox-type="eventKind" th:attr="data-selectbox-sub-type=${type}">
                         <dt class="checkbox_title select_title">이벤트 종류</dt>
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>
@@ -31,19 +31,20 @@
                     </dl>
                 </div>
                 <div>
-                    <dl class="checkbox_set">
-                        <dt>이벤트 등급</dt>
-                        <dd>
-							<span>
-								<input type="checkbox" id="urgent" name="eventGrade" data-value="10" data-init-value="checked" checked>
-								<label for="urgent"><span></span>긴급</label>
-							</span>
-                            <span>
-								<input type="checkbox" id="caution" name="eventGrade" data-value="20" data-init-value="checked" checked>
-								<label for="caution"><span></span>주의</label>
-							</span>
-                        </dd>
-                    </dl>
+<!--                    TODO: 등급 조건으로 차트 바뀌는 건 고도화에 적용 예정 - 차트 생성 방식이 컬럼을 변경하기 힘듦-->
+<!--                    <dl class="checkbox_set">-->
+<!--                        <dt>이벤트 등급</dt>-->
+<!--                        <dd>-->
+<!--							<span>-->
+<!--								<input type="checkbox" id="urgent" name="eventGrade" data-value="10" data-init-value="checked" checked>-->
+<!--								<label for="urgent"><span></span>긴급</label>-->
+<!--							</span>-->
+<!--                            <span>-->
+<!--								<input type="checkbox" id="caution" name="eventGrade" data-value="20" data-init-value="checked" checked>-->
+<!--								<label for="caution"><span></span>주의</label>-->
+<!--							</span>-->
+<!--                        </dd>-->
+<!--                    </dl>-->
                     <dl class="date_set">
                         <dt>발생 기간</dt>
                         <dd><input type="text" id="startDt" placeholder="날짜를 입력하세요" name="startDt" class="input_date"></dd>
@@ -83,11 +84,11 @@
             <div class="graph_contents">
                 <dl class="graph_title">
                     <dt>이벤트 발생 수</dt>
-                    <dd class="chartBtn">
-                        <span id="sumHour" class="on">시</span>
-                        <span id="sumDay">일</span>
-                        <span id="sumWeek">주</span>
-                        <span id="sumMonth">월</span>
+                    <dd id="sumBtn" class="chartBtn">
+                        <span class="hour">시</span>
+                        <span class="day on">일</span>
+                        <span class="week">주</span>
+                        <span class="month">월</span>
                     </dd>
                 </dl>
                 <div class="graph_area" id="sumChart"></div>
@@ -95,11 +96,11 @@
             <div class="graph_contents">
                 <dl class="graph_title">
                     <dt>평균 이벤트 발생 수</dt>
-                    <dd class="chartBtn">
-                        <span id="avgHour" class="on">시간대</span>
-                        <span id="avgDay">요일</span>
-                        <span id="avgWeek">주차</span>
-                        <span id="avgMonth">월</span>
+                    <dd id="avgBtn" class="chartBtn">
+                        <span class="hour">시간대</span>
+                        <span class="day on">요일</span>
+                        <span class="week">주차</span>
+                        <span class="month">월</span>
                     </dd>
                 </dl>
                 <div class="graph_area" id="avgChart"></div>

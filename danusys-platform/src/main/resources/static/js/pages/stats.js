@@ -1,28 +1,24 @@
 const stats = {
-    eventHandler: ($target, pEventType) => {
+    eventHandler: () => {
         $("#searchBtn").on('click', () => {
-            stats.create($target, pEventType);
-            stats.setChart(pEventType);
+            stats.create();
+            stats.setChart();
         });
+        // todo 검색 조건은 체크 되었지만 검색 버튼을 누르지 않았을 때 해당 차트만 데이터가 상이함
+        // 전체 다 새로 고침을 하거나 이전 검색 데이터를 저장했다가 검색해야 될 듯
         $(".chartBtn span").on("click", (e) => {
             const $target = e.currentTarget;
-            if ($target.class !== "on"){
+            if (!$($target).hasClass("on")) {
                 $($target).siblings().removeClass("on");
                 $target.classList.add("on");
-
-                const param = $("#searchForm form").serializeJSON();
-                // param.eventKind = '';
-                if($target.id.indexOf("sum") >= 0){
-                    // const data = stats.getSumChartData(param);
-                    stats.createSumChart();
-                }else{
-                    // const data = stats.getAvgChartData(param);
-                    stats.createAvgChart();
-                }
+                const chartNm = $target.parentElement.id;
+                stats.setChart(chartNm);
             }
         });
     }
-    , create: ($target, pEventType) => {
+    , create: () => {
+        const $target = $('#troubleEventTable');
+
         const optionObj = {
             dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
@@ -36,7 +32,6 @@ const stats = {
                     'type': "POST",
                     'data': function (d) {
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
-                        param.pEventType = pEventType;
                         return JSON.stringify(param);
                     },
                     'dataSrc': function (result) {
@@ -62,20 +57,20 @@ const stats = {
 
         comm.createTable($target, optionObj);
     },
-    setChart: (pEventType) => {
+    setChart: (chartNm) => {
         const param = $("#searchForm form").serializeJSON();
-        // param.eventKind = '';
 
-        // const sumChartData = stats.getSumChartData(param);
-        // const avgChartData = stats.getAvgChartData(param);
-        // const mapChartData = stats.getMapChartData(param);
-        // stats.createSumChart(sumChartData);
-        // stats.createAvgChart(avgChartData);
-        // stats.createMapChart(mapChartData);
-        stats.createSumChart();
-        stats.createAvgChart();
-        stats.createMapChart();
-    }, createSumChart: (data) => {
+        if (chartNm === "sumBtn") {
+            stats.getSumChartData(param, stats.createSumChart);
+        } else if(chartNm === "avgBtn") {
+            stats.getAvgChartData(param, stats.createAvgChart);
+        } else {
+            stats.getSumChartData(param, stats.createSumChart);
+            stats.getAvgChartData(param, stats.createAvgChart);
+            stats.createMapChart();
+        }
+    }, createSumChart: (datas) => {
+        const data = stats.getColumnData(datas);
         const options = {
             chart: {
                 height: "80%",
@@ -106,7 +101,7 @@ const stats = {
                 }
             },
             xaxis: {
-                categories: ['일', '월', '화', '수', '목', '금', '토']
+                categories: data.xAxis
             },
             yaxis: [{
                 show: true,
@@ -130,28 +125,28 @@ const stats = {
                 {
                     name: '긴급',
                     type: 'column',
-                    data: [10, 10, 10, 10, 10, 10, 10]
+                    data: data.urgent
                 },
                 {
                     name: '주의',
                     type: 'column',
-                    data: [10, 10, 10, 10, 10, 10, 10]
+                    data: data.caution
                 },
                 {
                     name: '긴급 누적',
                     type: 'line',
-                    data: [50, 60, 70, 80, 90, 100, 110]
+                    data: data.accUrgent
                 },
                 {
                     name: '주의 누적',
                     type: 'line',
-                    data: [160, 170, 180, 190, 200, 210, 220]
+                    data: data.accCaution
                 }
             ]
         }
 
         let charts = $("#sumChart").data("charts");
-        if(charts != undefined){
+        if (charts != undefined) {
             charts.destroy();
         }
         charts = new ApexCharts(document.querySelector("#sumChart"), options);
@@ -173,7 +168,7 @@ const stats = {
             },
             colors: ['#f04242', '#f9a825'],
             fill: {
-                opacity: 1
+                opacity: 0.9
             },
             plotOptions: {
                 bar: {
@@ -224,7 +219,7 @@ const stats = {
         };
 
         let charts = $("#avgChart").data("charts");
-        if(charts != undefined){
+        if (charts != undefined) {
             charts.destroy();
         }
         charts = new ApexCharts(document.querySelector("#avgChart"), options);
@@ -290,8 +285,9 @@ const stats = {
         $("#mapChart").data("charts", charts);
     },
     getSumChartData: (param, pCallback) => {
+        param.unit = document.querySelector("#sumBtn span.on").classList[0];
         $.ajax({
-            url: "/event/sumChart"
+            url: "/stats/sumChart"
             , type: "POST"
             , data: JSON.stringify(param)
             , contentType: "application/json; charset=utf-8"
@@ -300,8 +296,9 @@ const stats = {
         });
     },
     getAvgChartData: (param, pCallback) => {
+        param.unit = document.querySelector("#avgBtn span.on").classList[0];
         $.ajax({
-            url: "/event/avgChart"
+            url: "/stats/avgChart"
             , type: "POST"
             , data: JSON.stringify(param)
             , contentType: "application/json; charset=utf-8"
@@ -311,7 +308,7 @@ const stats = {
     },
     getMapChartData: (param, pCallback) => {
         $.ajax({
-            url: "/event/mapChart"
+            url: "/stats/mapChart"
             , type: "POST"
             , data: JSON.stringify(param)
             , contentType: "application/json; charset=utf-8"
@@ -328,5 +325,17 @@ const stats = {
         }).done((result) => {
             pCallback(result);
         });
-    }
+    },
+    getColumnData: (data) => {
+        let result = {};
+        data.forEach(v => {
+            for (let k in v) {
+                if (Array.isArray(result[k]))
+                    result[k].push(v[k]);
+                else
+                    result[k] = Array.of(v[k]);
+            }
+        });
+        return result;
+    },
 }
