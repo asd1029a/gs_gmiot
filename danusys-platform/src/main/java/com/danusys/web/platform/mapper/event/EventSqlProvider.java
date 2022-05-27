@@ -75,6 +75,9 @@ public class EventSqlProvider {
             if (eventState != null && !eventState.isEmpty()) {
                 WHERE("v3.code_value" + SqlUtil.getWhereInStr(eventState));
             }
+            if (eventKind != null && !eventKind.isEmpty()) {
+                WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
+            }
 
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);

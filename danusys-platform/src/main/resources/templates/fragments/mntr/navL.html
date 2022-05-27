@@ -3,7 +3,8 @@
     <!-- LNM -->
         <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
         <!-- 스마트 폴 -->
-        <section th:if="${municipality == '41210000'}" id="smartPole" class="menu_fold">
+        <section th:if="${municipality == '41210000'
+                          or municipality == '26290000'}" id="smartPole" class="menu_fold">
             <ul class="tab">
                 <li data-value="event" class="active"><a>실시간</a></li>
                 <li data-value="station"><a>개소</a></li>
@@ -922,13 +923,13 @@
         <!-- 드론 관제 -->
         <section th:if="${municipality == '45210000'}" id="drone" class="menu_fold">
             <ul class="tab">
-                <li data-value="event" class="active"><a>실시간</a></li>
+<!--                <li data-value="event" class="active"><a>실시간</a></li>-->
                 <li data-value="facility"><a>기체/개소</a></li>
-                <li data-value="eventPast"><a>과거이력</a></li>
+<!--                <li data-value="eventPast"><a>과거이력</a></li>-->
             </ul>
             <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
             <!-- lnb_tab_section * 실시간 -->
-            <div data-value="event" class="lnb_tab_section select"> <!-- active 시, display: flex; -->
+            <div data-value="event" class="lnb_tab_section"> <!-- active 시, display: flex; -->
                 <dl class="area_title" data-value="lv1">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
                     <dd><span class="count">11</span></dd>
@@ -957,7 +958,7 @@
                 </div>
             </div>
             <!-- lnb_tab_section * 기체/개소 -->
-            <div data-value="facility" class="lnb_tab_section"> <!-- active 시, display: flex; -->
+            <div data-value="facility" class="lnb_tab_section select"> <!-- active 시, display: flex; -->
                 <dl class="area_title" data-value="facility">
                     <dt><i><img src="/images/default/titleIcon02.svg"></i>기체</dt>
                     <dd><span class="count">0</span></dd>

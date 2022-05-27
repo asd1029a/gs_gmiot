@@ -1,5 +1,6 @@
 package com.danusys.web.commons.api.service.executor;
 
+import com.danusys.web.commons.api.dto.LogicalfolderDTO;
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.service.ApiCallService;
@@ -75,7 +76,8 @@ public class SoapApiExecutor implements ApiExecutor  {
                         elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(apiReq.getValue());
 
                     } else if(apiReq.getDataType() == DataType.SOAP_DATA_PATH) {
-                        List<String> pointPaths = SoapXmlDataUtil.getGmSoapPostList(apiReq.getValue());
+                        List<LogicalfolderDTO.Logicalpoints.Lpt> lpts = SoapXmlDataUtil.getGmSoapPostList(apiReq.getValue());
+                        List<String> pointPaths = lpts.stream().map(m -> m.getPth()).collect(Collectors.toList());
                         for(String path : pointPaths) {
                             elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode("point:" + path);
                         }

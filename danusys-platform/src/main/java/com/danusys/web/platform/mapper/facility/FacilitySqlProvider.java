@@ -34,7 +34,7 @@ public class FacilitySqlProvider {
 //                    ", t6.code_name AS administ_zone_name");
                     ", t6.emd_nm AS administ_zone_name" +
                     ", t7.code_name AS station_kind_name" +
-                    ", t7.code_value AS station_kind_value");
+                    ", t7.code_value AS station_kind_value" + ", t8.*, t9.*");
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
             LEFT_OUTER_JOIN("t_user t3 on t1.insert_user_seq = t3.user_seq");
@@ -44,6 +44,8 @@ public class FacilitySqlProvider {
 //            LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
             LEFT_OUTER_JOIN("t_area_emd t6 on t1.administ_zone = t6.emd_cd");
             LEFT_OUTER_JOIN("v_facility_station t7 on t5.station_kind = t7.code_seq");
+            LEFT_OUTER_JOIN("v_drone_data t8 on t1.facility_seq = t8.facility_seq");
+            LEFT_OUTER_JOIN("v_ems_data t9 on t1.facility_seq = t9.facility_seq");
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));

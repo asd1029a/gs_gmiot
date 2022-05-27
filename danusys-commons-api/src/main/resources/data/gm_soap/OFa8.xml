@@ -14,26 +14,22 @@
     <lpt id="LPa232890214289" nm="무정차조명" ty="33" pth="/ST1/OFa8/LPa232890214289" ref="/DDC_광명경찰서_14117/무정차조명" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890214290" nm="LED라이트패널" ty="33" pth="/ST1/OFa8/LPa232890214290" ref="/DDC_광명경찰서_14117/LED라이트패널" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890214291" nm="스노우멜팅" ty="33" pth="/ST1/OFa8/LPa232890214291" ref="/DDC_광명경찰서_14117/스노우멜팅" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214292" nm="태양광_14128_수전 적산 유효전력량" ty="2" pth="/ST1/OFa8/LPa232890214292" ref="/DDC_광명경찰서_14117/태양광_14128_수전 적산 유효전력량" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214293" nm="태양광_14128_송전 적산 유효전력량" ty="2" pth="/ST1/OFa8/LPa232890214293" ref="/DDC_광명경찰서_14117/태양광_14128_송전 적산 유효전력량" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214294" nm="태양광_14128_수전 유효전력" ty="2" pth="/ST1/OFa8/LPa232890214294" ref="/DDC_광명경찰서_14117/태양광_14128_수전 유효전력" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214295" nm="태양광_14128_송전 유효전력" ty="2" pth="/ST1/OFa8/LPa232890214295" ref="/DDC_광명경찰서_14117/태양광_14128_송전 유효전력" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214296" nm="한전_14128_수전 적산 유효전력량" ty="2" pth="/ST1/OFa8/LPa232890214296" ref="/DDC_광명경찰서_14117/한전_14128_수전 적산 유효전력량" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214297" nm="한전_14128_송전 적산 유효전력량" ty="2" pth="/ST1/OFa8/LPa232890214297" ref="/DDC_광명경찰서_14117/한전_14128_송전 적산 유효전력량" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214298" nm="한전_14128_수전 유효전력" ty="2" pth="/ST1/OFa8/LPa232890214298" ref="/DDC_광명경찰서_14117/한전_14128_수전 유효전력" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214299" nm="한전_14128_송전 유효전력" ty="2" pth="/ST1/OFa8/LPa232890214299" ref="/DDC_광명경찰서_14117/한전_14128_송전 유효전력" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214300" nm="IDU_14128_실내온도" ty="2" pth="/ST1/OFa8/LPa232890214300" ref="/DDC_광명경찰서_14117/IDU_14128_실내온도" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214301" nm="IDU_14128_에러코드" ty="2" pth="/ST1/OFa8/LPa232890214301" ref="/DDC_광명경찰서_14117/IDU_14128_에러코드" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214302" nm="IDU_14128_배관입구온도" ty="2" pth="/ST1/OFa8/LPa232890214302" ref="/DDC_광명경찰서_14117/IDU_14128_배관입구온도" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214303" nm="IDU_14128_배관출구온도" ty="2" pth="/ST1/OFa8/LPa232890214303" ref="/DDC_광명경찰서_14117/IDU_14128_배관출구온도" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214304" nm="IDU_14128_제품타입" ty="2" pth="/ST1/OFa8/LPa232890214304" ref="/DDC_광명경찰서_14117/IDU_14128_제품타입" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214305" nm="IDU_14128_운전모드_에어컨" ty="2" pth="/ST1/OFa8/LPa232890214305" ref="/DDC_광명경찰서_14117/IDU_14128_운전모드_에어컨" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214306" nm="IDU_14128_설정온도" ty="2" pth="/ST1/OFa8/LPa232890214306" ref="/DDC_광명경찰서_14117/IDU_14128_설정온도" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214307" nm="IDU_14128_바람세기" ty="2" pth="/ST1/OFa8/LPa232890214307" ref="/DDC_광명경찰서_14117/IDU_14128_바람세기" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214308" nm="IDU_14128_외부제어기실내온도" ty="2" pth="/ST1/OFa8/LPa232890214308" ref="/DDC_광명경찰서_14117/IDU_14128_외부제어기실내온도" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214309" nm="IDU_14128_실외기상태" ty="33" pth="/ST1/OFa8/LPa232890214309" ref="/DDC_광명경찰서_14117/IDU_14128_실외기상태" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214310" nm="IDU_14128_기동정지" ty="33" pth="/ST1/OFa8/LPa232890214310" ref="/DDC_광명경찰서_14117/IDU_14128_기동정지" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890214311" nm="IDU_14128_잠금" ty="33" pth="/ST1/OFa8/LPa232890214311" ref="/DDC_광명경찰서_14117/IDU_14128_잠금" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa233586429476" nm="한전_수전 적산 유효전력량" ty="2" pth="/ST1/OFa8/LPa233586429476" ref="/DDC_광명경찰서_14117/한전_수전 적산 유효전력량" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233586429477" nm="한전_송전 적산 유효전력량" ty="2" pth="/ST1/OFa8/LPa233586429477" ref="/DDC_광명경찰서_14117/한전_송전 적산 유효전력량" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233586429478" nm="한전_수전 유효전력" ty="2" pth="/ST1/OFa8/LPa233586429478" ref="/DDC_광명경찰서_14117/한전_수전 유효전력" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233586429479" nm="한전_송전 유효전력" ty="2" pth="/ST1/OFa8/LPa233586429479" ref="/DDC_광명경찰서_14117/한전_송전 유효전력" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056311" nm="IDU_실내온도" ty="2" pth="/ST1/OFa8/LPa233589056311" ref="/DDC_광명경찰서_14117/IDU_실내온도" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056312" nm="IDU_에러코드" ty="2" pth="/ST1/OFa8/LPa233589056312" ref="/DDC_광명경찰서_14117/IDU_에러코드" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056313" nm="IDU_배관입구온도" ty="2" pth="/ST1/OFa8/LPa233589056313" ref="/DDC_광명경찰서_14117/IDU_배관입구온도" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056314" nm="IDU_배관출구온도" ty="2" pth="/ST1/OFa8/LPa233589056314" ref="/DDC_광명경찰서_14117/IDU_배관출구온도" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056315" nm="IDU_제품타입" ty="2" pth="/ST1/OFa8/LPa233589056315" ref="/DDC_광명경찰서_14117/IDU_제품타입" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056316" nm="IDU_운전모드_에어컨" ty="2" pth="/ST1/OFa8/LPa233589056316" ref="/DDC_광명경찰서_14117/IDU_운전모드_에어컨" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056317" nm="IDU_설정온도" ty="2" pth="/ST1/OFa8/LPa233589056317" ref="/DDC_광명경찰서_14117/IDU_설정온도" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056318" nm="IDU_바람세기" ty="2" pth="/ST1/OFa8/LPa233589056318" ref="/DDC_광명경찰서_14117/IDU_바람세기" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056319" nm="IDU_외부제어기실내온도" ty="2" pth="/ST1/OFa8/LPa233589056319" ref="/DDC_광명경찰서_14117/IDU_외부제어기실내온도" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056320" nm="IDU_실외기상태" ty="33" pth="/ST1/OFa8/LPa233589056320" ref="/DDC_광명경찰서_14117/IDU_실외기상태" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056321" nm="IDU_기동정지" ty="33" pth="/ST1/OFa8/LPa233589056321" ref="/DDC_광명경찰서_14117/IDU_기동정지" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056322" nm="IDU_잠금" ty="33" pth="/ST1/OFa8/LPa233589056322" ref="/DDC_광명경찰서_14117/IDU_잠금" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
   </logicalpoints>
   <groups/>
   <zones/>
