@@ -66,9 +66,6 @@ public class EventSqlProvider {
             if (!endDt.equals("")) {
                 WHERE("t1.insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
             }
-            if (eventKind != null && !eventKind.isEmpty()) {
-                WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
-            }
             if (eventGrade != null && !eventGrade.isEmpty()) {
                 WHERE("v2.code_value" + SqlUtil.getWhereInStr(eventGrade));
             }
