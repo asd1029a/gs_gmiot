@@ -64,14 +64,15 @@ const stats = {
         if (chartNm === "sumBtn") {
             stats.getSumChartData(param, stats.createSumChart);
         } else if (chartNm === "avgBtn") {
-            // stats.getAvgChartData(param, stats.createAvgChart);
+            stats.getAvgChartData(param, stats.createAvgChart);
         } else {
             stats.getSumChartData(param, stats.createSumChart);
-            // stats.getAvgChartData(param, stats.createAvgChart);
+            stats.getAvgChartData(param, stats.createAvgChart);
             stats.getMapChartData(param, stats.createMapChart);
         }
     }, createSumChart: (datas) => {
         const data = stats.getColumnData(datas);
+
         const options = {
             chart: {
                 height: "80%",
@@ -155,6 +156,26 @@ const stats = {
         $("#sumChart").data("charts", charts);
     },
     createAvgChart: (datas) => {
+
+        const data = [{
+            name: "긴급",
+            data: []
+        }, {
+            name: "주의",
+            data: []
+        }];
+
+        datas.forEach(v => {
+            data[0].data.push({
+                x: v.xAxis,
+                y: [v.minCaution, v.maxCaution]
+            });
+            data[1].data.push({
+                x: v.xAxis,
+                y: [v.minUrgent, v.maxUrgent]
+            });
+        });
+
         let options = {
             chart: {
                 type: 'rangeBar',
@@ -186,37 +207,7 @@ const stats = {
                     return (minVal + maxVal) / 2;
                 },
             },
-            series: [{
-                name: "긴급",
-                data: [{
-                    x: 'Team A',
-                    y: [1, 5]
-                }, {
-                    x: 'Team B',
-                    y: [4, 6]
-                }, {
-                    x: 'Team C',
-                    y: [5, 8]
-                }, {
-                    x: 'Team D',
-                    y: [3, 11]
-                }]
-            }, {
-                name: "주의",
-                data: [{
-                    x: 'Team A',
-                    y: [2, 6]
-                }, {
-                    x: 'Team B',
-                    y: [1, 6]
-                }, {
-                    x: 'Team C',
-                    y: [2, 8]
-                }, {
-                    x: 'Team D',
-                    y: [5, 9]
-                }]
-            }]
+            series: data
         };
 
         let charts = $("#avgChart").data("charts");
