@@ -20,20 +20,31 @@ public class FacilitySqlProvider {
         ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
         String start = CommonUtil.validOneNull(paramMap, "start");
         String length = CommonUtil.validOneNull(paramMap, "length");
+        StringBuilder builder = new StringBuilder();
 
         SQL sql = new SQL() {{
-            SELECT("t1.facility_seq, t1.facility_id" +
-                    ", t1.administ_zone, t1.facility_image" +
-                    ", t1.facility_instl_info, t1.facility_instl_dt" +
-                    ", t1.facility_status, t1.latitude" +
-                    ", t1.longitude, t1.insert_dt, t3.id AS insert_user_id" +
-                    ", t1.update_user_seq , t4.id AS update_user_id" +
-                    ", t2.code_value AS facility_kind" +
-                    ", t2.code_name AS facility_kind_name" +
-                    ", t5.station_kind, t5.station_name, t5.address" +
-                    ", t6.code_name AS administ_zone_name" +
-                    ", t7.code_name AS station_kind_name" +
-                    ", t7.code_value AS station_kind_value" + ", t8.*, t9.*");
+            builder.append("t1.facility_seq, t1.facility_id");
+            builder.append(", t1.administ_zone, t1.facility_image");
+            builder.append(", t1.facility_instl_info, t1.facility_instl_dt");
+            builder.append(", t1.facility_status, t1.latitude");
+            builder.append(", t1.longitude, t1.insert_dt, t3.id AS insert_user_id");
+            builder.append(", t1.update_user_seq , t4.id AS update_user_id");
+            builder.append(", t2.code_value AS facility_kind");
+            builder.append(", t2.code_name AS facility_kind_name");
+            builder.append(", t5.station_kind, t5.station_name, t5.address");
+            builder.append(", t6.code_name AS administ_zone_name");
+            builder.append(", t7.code_name AS station_kind_name");
+            builder.append(", t7.code_value AS station_kind_value");
+
+            if (facilityKind.contains("DRONE")) {
+                builder.append(", t8.*");
+            }
+
+            if (facilityKind.contains("EMS")) {
+                builder.append(", t9.*");
+            }
+
+            SELECT(builder.toString());
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
             LEFT_OUTER_JOIN("t_user t3 on t1.insert_user_seq = t3.user_seq");
@@ -41,8 +52,14 @@ public class FacilitySqlProvider {
             LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");
             LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
             LEFT_OUTER_JOIN("v_facility_station t7 on t5.station_kind = t7.code_seq");
-            LEFT_OUTER_JOIN("v_drone_data t8 on t1.facility_seq = t8.facility_seq");
-            LEFT_OUTER_JOIN("v_ems_data t9 on t1.facility_seq = t9.facility_seq");
+
+            if (facilityKind.contains("DRONE")) {
+                LEFT_OUTER_JOIN("v_drone_data t8 on t1.facility_seq = t8.facility_seq");
+            }
+
+            if (facilityKind.contains("EMS")) {
+                LEFT_OUTER_JOIN("v_ems_data t9 on t1.facility_seq = t9.facility_seq");
+            }
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
