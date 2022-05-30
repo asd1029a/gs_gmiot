@@ -40,7 +40,7 @@ public class EventSqlProvider {
 
             if (geoFlag) { //geojson 호출시
                 colums += ", t2.longitude, t2.latitude, t2.administ_zone, v4.code_name AS administ_zone_name ";
-                tables += "INNER JOIN t_station t2 ON t1.station_seq = t2.station_seq";
+                tables += "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq";
             }
 
             SELECT(colums);
@@ -107,13 +107,20 @@ public class EventSqlProvider {
             ArrayList eventState = CommonUtil.valiArrNull(paramMap, "eventState");
             ArrayList eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
 
+            boolean geoFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "geojson"));
+
             SELECT("COUNT(*) as count");
             String tables = "t_event t1 " +
+                    "INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq " +
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
                     "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
-                    "INNER JOIN t_station t2 ON t1.station_seq = t2.station_seq " +
                     "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value";
+
+            if (geoFlag) { //geojson 호출시
+                tables += "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq";
+            }
+
             FROM(tables);
 
             if (!keyword.equals("")) {
