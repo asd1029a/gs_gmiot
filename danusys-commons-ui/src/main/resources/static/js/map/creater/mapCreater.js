@@ -245,9 +245,6 @@ class mapCreater {
     }
 
     constructor(id, type, sigun) {
-
-        console.log("sigun : " + sigun);
-
         //맵 객체명
         this.id = id;
         //{ 0 : daum, 1 : naver, 2 : vworld }
