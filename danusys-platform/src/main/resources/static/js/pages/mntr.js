@@ -384,6 +384,7 @@ const mntr = {
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["drone_fire_detection", "drone_object_tracking"]};
                     //개소
+                    /*stationParam = {"facilityKind": ["57"]}*/
                     //기체
                     facility.getListGeoJson({
                         "facilityKind" : ["DRONE"],
@@ -1128,6 +1129,9 @@ const rnbList = {
         target.addClass('select');
         target.find('.stationTitle').text("[ " + prop.stationSeq + " ] "  + prop.stationName);
 
+        //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
+
+
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
         propList.map(propStr => {
@@ -1160,6 +1164,8 @@ const rnbList = {
         target.data(obj);
         target.addClass('select');
         target.find('.eventTitle').text("[ " + prop.eventSeq + " ] "  + prop.eventKindName);
+
+        //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
 
         //초기화
         target.find('span[data-value=eventGrade] input').prop('checked',false);
