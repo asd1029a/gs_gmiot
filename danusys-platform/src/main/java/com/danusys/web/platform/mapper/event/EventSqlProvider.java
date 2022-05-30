@@ -18,6 +18,7 @@ public class EventSqlProvider {
             ArrayList eventGrade = CommonUtil.valiArrNull(paramMap, "eventGrade");
             ArrayList eventState = CommonUtil.valiArrNull(paramMap, "eventState");
             ArrayList eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
+            ArrayList administZone = CommonUtil.valiArrNull(paramMap, "administZone");
             //ArrayList facilityDirection = CommonUtil.valiArrNull(paramMap,"facilityDirection");
             //ArrayList facilityProblem = CommonUtil.valiArrNull(paramMap,"facilityProblem");
             boolean geoFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "geojson"));
@@ -30,9 +31,11 @@ public class EventSqlProvider {
                     ", v3.code_name AS event_proc_stat_name"; //이벤트 처리상태 한글명
 
             String tables = "t_event t1 " +
+                    "INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq " +
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
-                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq ";
+                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
+                    "INNER JOIN t_area_emd v4 ON t2.administ_zone = v4.emd_cd";
 
             if (geoFlag) { //geojson 호출시
                 colums += ", t2.longitude, t2.latitude ";
@@ -76,6 +79,12 @@ public class EventSqlProvider {
                 WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
             }
 
+//            현재는 데이터가 안맞아서 주석 해놓음
+//            if (administZone != null && !administZone.isEmpty()) {
+////                WHERE("v4.code_value" + SqlUtil.getWhereInStr(administZone));
+//                WHERE("v4.emd_cd" + SqlUtil.getWhereInStr(administZone));
+//            }
+
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);
@@ -94,12 +103,15 @@ public class EventSqlProvider {
             ArrayList eventGrade = CommonUtil.valiArrNull(paramMap, "eventGrade");
             ArrayList eventState = CommonUtil.valiArrNull(paramMap, "eventState");
             ArrayList eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
+            ArrayList administZone = CommonUtil.valiArrNull(paramMap, "administZone");
 
             SELECT("COUNT(*) as count");
             String tables = "t_event t1 " +
+                    "INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq " +
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
-                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq ";
+                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
+                    "INNER JOIN t_area_emd v4 ON t2.administ_zone = v4.emd_cd";
             FROM(tables);
             if (!keyword.equals("")) {
                 WHERE("v1.code_value LIKE '%" + keyword + "%'");
@@ -119,6 +131,12 @@ public class EventSqlProvider {
             if (eventState != null && !eventState.isEmpty()) {
                 WHERE("v3.code_value" + SqlUtil.getWhereInStr(eventState));
             }
+            //            현재는 데이터가 안맞아서 주석 해놓음
+//            if (administZone != null && !administZone.isEmpty()) {
+////                WHERE("v4.code_value" + SqlUtil.getWhereInStr(administZone));
+//                WHERE("v4.emd_cd" + SqlUtil.getWhereInStr(administZone));
+//            }
+
         }};
         return sql.toString();
     }

@@ -404,6 +404,11 @@ tr.selected td {background-color: #23252b;}
 .statistics_content .graph_contents .graph_title dd span.on{color: #dee0e4; background: #3a66e5;}
 .statistics_content .graph_contents .graph_area{flex: 1; background: #26282f; width: 100%; height: 100%;}
 
+/* chart */
+.statistics_content .graph_contents .graph_area#avgChart .apexcharts-tooltip{padding: 0.5rem 1rem;}
+.statistics_content .graph_contents .graph_area#avgChart .apexcharts-tooltip> div{padding: 0.2rem 0;}
+.statistics_content .graph_contents .graph_area#avgChart .apexcharts-tooltip> div> div{padding: 0.2rem 0;}
+
 /* signage */
 .signage_contents{display: flex; grid-gap: 14px; height: 100%;}
 .signage_contents > article{overflow: hidden; padding: 0px;}

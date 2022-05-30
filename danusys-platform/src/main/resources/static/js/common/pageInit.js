@@ -127,6 +127,10 @@ $(document).ready(() => {
     else if(path === "/pages/stats/statistics"){
         const url = new URL(location.href);
         const type = url.searchParams.get("type");
+        stats.getEventKind(type, (data) => {
+            $(".event_type").text(data.codeName);
+        });
+
         stats.eventHandler();
         stats.create();
         stats.setChart();

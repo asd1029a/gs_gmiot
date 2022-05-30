@@ -4,6 +4,7 @@ import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.platform.mapper.config.ConfigSqlProvider;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -34,5 +35,10 @@ public class ConfigServiceImpl implements ConfigService {
 
     public EgovMap getOneCode(int seq) throws Exception {
         return commonMapper.selectOne(csp.selectOneCodeQry(seq));
+    }
+
+    @Override
+    public EgovMap getOneEventKind(String pKind) {
+        return commonMapper.selectOne(csp.selectOneEventKindQry(pKind));
     }
 }
