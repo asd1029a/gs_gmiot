@@ -338,7 +338,7 @@ const mntr = {
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
 
-            /// TODO theme 별로 탭의 모든 리스트 reload & 레이어 reload
+            /// TODO 데이터 확인 후 정리해서 코드 따로 빼기
             let eventParam = {"eventState": ["1", "2", "3"]};
             let eventPastParam = {"eventState": ["9"]};
             let stationParam = {};
@@ -1131,7 +1131,7 @@ const rnbList = {
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
         propList.map(propStr => {
-            const textArea = $target.find('.area_right_text li input[data-value='+propStr+']');
+            const textArea = target.find('.area_right_text li input[data-value='+propStr+']');
             if(textArea.length > 0){
                 textArea.val(prop[propStr]);
             }
@@ -1168,7 +1168,7 @@ const rnbList = {
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
         propList.map(propStr => {
-            const textArea = $target.find('.area_right_text li input[data-value='+propStr+']');
+            const textArea = target.find('.area_right_text li input[data-value='+propStr+']');
             if(textArea.length > 0){
                 textArea.val(prop[propStr]);
             }
