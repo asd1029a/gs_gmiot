@@ -39,7 +39,7 @@ public class EventSqlProvider {
                     "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value";
 
             if (geoFlag) { //geojson 호출시
-                colums += ", t2.longitude, t2.latitude, t2.administ_zone, v4.code_name AS administ_zone_name ";
+                colums += ", t3.longitude, t3.latitude, t3.administ_zone, v4.code_name AS administ_zone_name ";
                 tables += "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq";
             }
 
