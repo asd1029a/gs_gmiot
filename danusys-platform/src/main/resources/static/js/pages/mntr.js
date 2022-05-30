@@ -117,8 +117,10 @@ const mntr = {
             window.siGunCode = result;
         });
 
+        console.log("siGunCode => " + siGunCode);
+
         //지도 생성
-        let map = new mapCreater('map',0);//, siGunCode);
+        let map = new mapCreater('map',0, siGunCode);
         map.createMousePosition('mousePosition');
         map.scaleLine();
         map.createContextMenu(menuObj);
