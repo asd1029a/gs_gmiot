@@ -12,7 +12,8 @@ public class StationSqlProvider {
     public String selectListQry(Map<String, Object> paramMap) {
         String keyword = CommonUtil.validOneNull(paramMap, "keyword");
         ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
-        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
+        String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
+        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
         String start = CommonUtil.validOneNull(paramMap, "start");
         String length = CommonUtil.validOneNull(paramMap, "length");
@@ -23,12 +24,10 @@ public class StationSqlProvider {
                     ", t1.station_material, t1.latitude, t1.longitude" +
                     ", t2.code_name  AS station_kind_name" +
                     ", t2.code_value AS station_kind_value" +
-                    ", t3.emd_nm     AS administ_zone_name");
+                    ", t3.code_name AS administ_zone_name");
             FROM("t_station t1");
             LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
-//            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
-            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 SQL innerSql = new SQL() {{
@@ -63,18 +62,19 @@ public class StationSqlProvider {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(station));
             }
 
-//            현재는 데이터가 안맞아서 주석 해놓음
-//            if (administZone != null && !administZone.isEmpty()) {
-////                WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
-//                WHERE("t6.emd_cd" + SqlUtil.getWhereInStr(administZone));
-//            }
+            if(sigCode != null && !sigCode.isEmpty()){
+                //지자체 분기를 위한 시군구 구분
+                WHERE("substring(t3.code_value,0,6) = '" + sigCode + "'");
+            }
+
+            if (administZone != null && !administZone.isEmpty()) {
+                WHERE("t3.code_value" + SqlUtil.getWhereInStr(administZone));
+            }
 
             if (keyword != null && !keyword.equals("")) {
                 WHERE("(t1.station_name LIKE '%" + keyword + "%'" +
                         " OR t2.code_name LIKE '%" + keyword + "%'" +
-//                        현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//                        " OR t3.code_name LIKE '%" + keyword + "%'" +
-                        " OR t3.emd_nm LIKE '%" + keyword + "%'" +
+                        " OR t3.code_name LIKE '%" + keyword + "%'" +
                         ")");
             }
 
@@ -90,16 +90,15 @@ public class StationSqlProvider {
     public String selectCountQry(Map<String, Object> paramMap) {
         String keyword = CommonUtil.validOneNull(paramMap, "keyword");
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
-        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
+        String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
+        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
         ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
 
         SQL sql = new SQL() {{
             SELECT("COUNT(*) AS count");
             FROM("t_station t1");
             LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
-//            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
-            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 SQL innerSql = new SQL() {{
@@ -133,18 +132,18 @@ public class StationSqlProvider {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(station));
             }
 
-//            현재는 데이터가 안맞아서 주석 해놓음
-//            if (administZone != null && !administZone.isEmpty()) {
-////                WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
-//                WHERE("t6.emd_cd" + SqlUtil.getWhereInStr(administZone));
-//            }
+            if (sigCode != null && !sigCode.isEmpty()) {
+                WHERE("substring(t3.code_value,0,6) = '" + sigCode + "'");
+            }
+
+            if (administZone != null && !administZone.isEmpty()) {
+                WHERE("t3.code_value" + SqlUtil.getWhereInStr(administZone));
+            }
 
             if (keyword != null && !keyword.equals("")) {
                 WHERE("(t1.station_name LIKE '%" + keyword + "%'" +
                         " OR t2.code_name LIKE '%" + keyword + "%'" +
-//                        현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//                        " OR t3.code_name LIKE '%" + keyword + "%'" +
-                        " OR t3.emd_nm LIKE '%" + keyword + "%'" +
+                        " OR t3.code_name LIKE '%" + keyword + "%'" +
                         ")");
             }
         }};
@@ -206,10 +205,10 @@ public class StationSqlProvider {
 
             SELECT("t1.station_seq, t1.station_name, t1.station_kind" +
                     ", t1.latitude, t1.longitude, t2.code_name AS station_kind_name," +
-                    " t2.code_value AS station_kind_value, t3.emd_nm AS administ_zone_name");
+                    " t2.code_value AS station_kind_value, t3.code_name AS administ_zone_name");
             FROM("t_station t1");
             LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
-            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
             WHERE("t2.code_seq = 62 " );
             if(stationSeqList != null && !stationSeqList.isEmpty()) {
                 WHERE("t1.station_seq NOT " + SqlUtil.getWhereInStr(stationSeqList));

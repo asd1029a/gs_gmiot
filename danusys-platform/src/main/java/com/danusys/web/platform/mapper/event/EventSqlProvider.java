@@ -15,9 +15,11 @@ public class EventSqlProvider {
             String length = CommonUtil.validOneNull(paramMap, "length");
             String startDt = CommonUtil.validOneNull(paramMap, "startDt");
             String endDt = CommonUtil.validOneNull(paramMap, "endDt");
-            ArrayList eventGrade = CommonUtil.valiArrNull(paramMap, "eventGrade");
-            ArrayList eventState = CommonUtil.valiArrNull(paramMap, "eventState");
-            ArrayList eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
+            String sigCode = CommonUtil.validOneNull(paramMap, "sigCode");
+            ArrayList<String> eventGrade = CommonUtil.valiArrNull(paramMap, "eventGrade");
+            ArrayList<String> eventState = CommonUtil.valiArrNull(paramMap, "eventState");
+            ArrayList<String> eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
+            ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
             //ArrayList facilityDirection = CommonUtil.valiArrNull(paramMap,"facilityDirection");
             //ArrayList facilityProblem = CommonUtil.valiArrNull(paramMap,"facilityProblem");
             boolean geoFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "geojson"));
@@ -32,11 +34,12 @@ public class EventSqlProvider {
             String tables = "t_event t1 " +
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
-                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq ";
+                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " ;
 
             if (geoFlag) { //geojson 호출시
-                colums += ", t2.longitude, t2.latitude ";
-                tables += "INNER JOIN t_station t2 ON t1.station_seq = t2.station_seq ";
+                colums += ", t2.longitude, t2.latitude, t2.administ_zone, v4.code_name AS administ_zone_name ";
+                tables += "INNER JOIN t_station t2 ON t1.station_seq = t2.station_seq " +
+                          "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value";
             }
 
             SELECT(colums);
@@ -75,6 +78,12 @@ public class EventSqlProvider {
             if (eventKind != null && !eventKind.isEmpty()) {
                 WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
             }
+            if (sigCode != null && !sigCode.isEmpty()){
+                WHERE("SUBSTRING(v4.code_value, 0, 6) = '" + sigCode + "'");
+            }
+            if (administZone != null && !administZone.isEmpty()) {
+                WHERE( "v4.code_value" + SqlUtil.getWhereInStr(administZone));
+            }
 
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
@@ -91,6 +100,8 @@ public class EventSqlProvider {
             String length = CommonUtil.validOneNull(paramMap, "length");
             String startDt = CommonUtil.validOneNull(paramMap, "startDt");
             String endDt = CommonUtil.validOneNull(paramMap, "endDt");
+            String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
+            ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
             ArrayList eventGrade = CommonUtil.valiArrNull(paramMap, "eventGrade");
             ArrayList eventState = CommonUtil.valiArrNull(paramMap, "eventState");
             ArrayList eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
@@ -99,8 +110,11 @@ public class EventSqlProvider {
             String tables = "t_event t1 " +
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
-                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq ";
+                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
+                    "INNER JOIN t_station t2 ON t1.station_seq = t2.station_seq " +
+                    "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value";
             FROM(tables);
+
             if (!keyword.equals("")) {
                 WHERE("v1.code_value LIKE '%" + keyword + "%'");
             }
@@ -109,6 +123,12 @@ public class EventSqlProvider {
             }
             if (!endDt.equals("")) {
                 WHERE("t1.insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
+            }
+            if (sigCode != null && !sigCode.isEmpty()){
+                WHERE("SUBSTRING(v4.code_value, 0, 6) = '" + sigCode + "'");
+            }
+            if (administZone != null && !administZone.isEmpty()) {
+                WHERE( "v4.code_value" + SqlUtil.getWhereInStr(administZone));
             }
             if (eventKind != null && !eventKind.isEmpty()) {
                 WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
@@ -132,9 +152,11 @@ public class EventSqlProvider {
                     ", to_char(t1.event_mng_dt, 'YYYY-MM-DD HH24:MI:SS') event_mng_dt" +
                     ", t1.event_manager, t1.event_mng_content, to_char(t1.insert_dt, 'YYYY-MM-DD HH24:MI:SS') insert_dt" +
                     ", t2.station_name, t2.station_kind, t2.administ_zone, t2.address, t2.station_image" +
-                    ", to_char(t2.station_compet_dt, 'YYYY-MM-DD HH24:MI:SS') station_compet_dt, t2.latitude, t2.longitude");
+                    ", to_char(t2.station_compet_dt, 'YYYY-MM-DD HH24:MI:SS') station_compet_dt, t2.latitude, t2.longitude" +
+                    ", v1.code_name AS administ_zone_name");
             FROM("t_event t1" +
-                    " LEFT JOIN t_station t2 on t1.station_seq = t2.station_seq");
+                    " LEFT JOIN t_station t2 on t1.station_seq = t2.station_seq" +
+                    "INNER JOIN v_administ v1 on t2.administ_zone = v1.code_value");
             WHERE("event_seq =" + seq);
         }};
         return sql.toString();

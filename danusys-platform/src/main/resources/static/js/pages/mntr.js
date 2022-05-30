@@ -118,7 +118,7 @@ const mntr = {
         });
 
         //지도 생성
-        let map = new mapCreater('map',0);//, siGunCode);
+        let map = new mapCreater('map',0, siGunCode);
         map.createMousePosition('mousePosition');
         map.scaleLine();
         map.createContextMenu(menuObj);
@@ -373,7 +373,6 @@ const mntr = {
                     eventParam = {"eventState": ["1", "2", "3"], "eventKind": ["LKGE_ERCRT", "OVER_ERCRT"]};
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["LKGE_ERCRT", "OVER_ERCRT"]};
-
                     //개소
                     window.lyControl.offList(['facility','eventPast']);
                     window.lyControl.onList(['station', target]);
@@ -387,7 +386,8 @@ const mntr = {
                     //개소
                     //기체
                     facility.getListGeoJson({
-                        "facilityKind": ["DRONE"]
+                        "facilityKind" : ["DRONE"],
+                        "sigCode" : window.siGunCode
                     },result => {
                         reloadLayer(result, 'facilityLayer');
                         lnbList.createFacility(result);
@@ -408,6 +408,10 @@ const mntr = {
                     }
                     break;
             }
+
+            stationParam["sigCode"] = window.siGunCode//"41390"; //TODO 시흥 -> window.siGunCode
+            eventParam["sigCode"] = window.siGunCode;
+            eventPastParam["sigCode"] = window.siGunCode;
 
             //실시간 이벤트
             event.getListGeoJson(eventParam, result => {
@@ -1125,9 +1129,12 @@ const rnbList = {
         target.find('.stationTitle').text("[ " + prop.stationSeq + " ] "  + prop.stationName);
 
         //prop 돌리면서 채워넣기
-        const propList = ['stationSeq', 'administZone', 'address'];
+        const propList = Object.keys(prop);
         propList.map(propStr => {
-            target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
+            const textArea = $target.find('.area_right_text li input[data-value='+propStr+']');
+            if(textArea.length > 0){
+                textArea.val(prop[propStr]);
+            }
         });
         //animation end
         window.map.removePulse();
@@ -1159,9 +1166,12 @@ const rnbList = {
         target.find('span[data-value=eventGrade] input#lv'+prop.eventGrade.replace("0","")).prop('checked',true);
 
         //prop 돌리면서 채워넣기
-        const propList = ['eventKindName', 'stationSeq', 'insertDt'];
+        const propList = Object.keys(prop);
         propList.map(propStr => {
-            target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
+            const textArea = $target.find('.area_right_text li input[data-value='+propStr+']');
+            if(textArea.length > 0){
+                textArea.val(prop[propStr]);
+            }
         });
 
         window.map.removePulse();
