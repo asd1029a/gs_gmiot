@@ -354,7 +354,7 @@ const mntr = {
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["gateway_trans", "device_trans", "dtctn_crmss"]};
                     //개소
-                    stationParam = {"station": ["lamp_road"]};
+                    stationParam = {"stationKind": ["lamp_road"]};
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
@@ -364,7 +364,7 @@ const mntr = {
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["BUSSTOP_FALL_DOWN", "BUSSTOP_FIRE"]};
                     //개소
-                    stationParam = {"station": ["smart_station"]};
+                    stationParam = {"stationKind": ["smart_station"]};
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
@@ -374,6 +374,7 @@ const mntr = {
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["LKGE_ERCRT", "OVER_ERCRT"]};
                     //개소
+                    stationParam = {"stationKind": ["smart_power"]}
                     window.lyControl.offList(['facility','eventPast']);
                     window.lyControl.onList(['station', target]);
                     break;
@@ -384,7 +385,7 @@ const mntr = {
                     //과거이력
                     eventPastParam = {"eventState": ["9"], "eventKind": ["drone_fire_detection", "drone_object_tracking"]};
                     //개소
-                    /*stationParam = {"facilityKind": ["57"]}*/
+                    stationParam = {"stationKind": ["DRONE_STATION"]}
                     //기체
                     facility.getListGeoJson({
                         "facilityKind" : ["DRONE"],
@@ -1130,6 +1131,7 @@ const rnbList = {
         target.find('.stationTitle').text("[ " + prop.stationSeq + " ] "  + prop.stationName);
 
         //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
+        const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
 
 
         //prop 돌리면서 채워넣기

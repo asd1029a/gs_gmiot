@@ -17,7 +17,7 @@ public class FacilitySqlProvider {
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
         String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
         ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
-        ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
+        ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
         String start = CommonUtil.validOneNull(paramMap, "start");
         String length = CommonUtil.validOneNull(paramMap, "length");
         StringBuilder builder = new StringBuilder();
@@ -51,7 +51,7 @@ public class FacilitySqlProvider {
             LEFT_OUTER_JOIN("t_user t4 on t1.update_user_seq = t4.user_seq");
             LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");
             LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
-            LEFT_OUTER_JOIN("v_facility_station t7 on t5.station_kind = t7.code_seq");
+            LEFT_OUTER_JOIN("v_station_kind t7 on t5.station_kind = t7.code_seq");
 
             if (facilityKind.contains("DRONE")) {
                 LEFT_OUTER_JOIN("v_drone_data t8 on t1.facility_seq = t8.facility_seq");
@@ -70,8 +70,8 @@ public class FacilitySqlProvider {
             if(administZone != null && !administZone.isEmpty()) {
                 WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
             }
-            if (station != null && !station.isEmpty()) {
-                WHERE("t7.code_value" + SqlUtil.getWhereInStr(station));
+            if (stationKind != null && !stationKind.isEmpty()) {
+                WHERE("t7.code_value" + SqlUtil.getWhereInStr(stationKind));
             }
             if (keyword != null && !keyword.equals("")) {
                 WHERE("(t1.facility_id LIKE '%" + keyword + "%'" +
@@ -95,7 +95,7 @@ public class FacilitySqlProvider {
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
         String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
         ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
-        ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
+        ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
         String createType = CommonUtil.validOneNull(paramMap, "createType");
 
         SQL sql = new SQL() {{
@@ -107,7 +107,7 @@ public class FacilitySqlProvider {
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
             LEFT_OUTER_JOIN("t_station t3 on t1.station_seq = t3.station_seq");
             LEFT_OUTER_JOIN("v_administ t4 on t1.administ_zone = t3.code_value");
-            LEFT_OUTER_JOIN("v_facility_station t5 on t3.station_kind = t5.code_seq");
+            LEFT_OUTER_JOIN("v_station_kind t5 on t3.station_kind = t5.code_seq");
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
                 if (facilityKind.contains("lamp_road")) {
@@ -132,8 +132,8 @@ public class FacilitySqlProvider {
             if(administZone != null && !administZone.isEmpty()) {
                 WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
             }
-            if (station != null && !station.isEmpty()) {
-                WHERE("t5.code_value" + SqlUtil.getWhereInStr(station));
+            if (stationKind != null && !stationKind.isEmpty()) {
+                WHERE("t5.code_value" + SqlUtil.getWhereInStr(stationKind));
             }
             if (keyword != null && !keyword.equals("")) {
                 WHERE("(t1.facility_id LIKE '%" + keyword + "%'" +
@@ -321,10 +321,10 @@ public class FacilitySqlProvider {
                     ", t1.longitude, t1.insert_dt" +
                     ", t2.code_value AS facility_kind" +
                     ", t2.code_name AS facility_kind_name" +
-                    ", t3.emd_nm AS administ_zone_name");
+                    ", t3.code_name AS administ_zone_name");
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
-            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
             WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
             String modifyQry = "";
             if ("mod".equals(activeType)) {
@@ -347,10 +347,10 @@ public class FacilitySqlProvider {
                     ", t1.administ_zone, t1.insert_dt" +
                     ", t2.code_value AS facility_kind" +
                     ", t2.code_name AS facility_kind_name" +
-                    ", t3.emd_nm AS administ_zone_name");
+                    ", t3.code_name AS administ_zone_name");
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
-            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
             WHERE("t1.facility_kind = 58");
             ORDER_BY("t1.facility_seq");
         }};

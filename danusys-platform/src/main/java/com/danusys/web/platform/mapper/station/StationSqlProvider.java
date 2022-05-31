@@ -11,10 +11,10 @@ public class StationSqlProvider {
 
     public String selectListQry(Map<String, Object> paramMap) {
         String keyword = CommonUtil.validOneNull(paramMap, "keyword");
-        ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
         String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
         ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
+        ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
         String start = CommonUtil.validOneNull(paramMap, "start");
         String length = CommonUtil.validOneNull(paramMap, "length");
 
@@ -26,7 +26,7 @@ public class StationSqlProvider {
                     ", t2.code_value AS station_kind_value" +
                     ", t3.code_name AS administ_zone_name");
             FROM("t_station t1");
-            LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
+            LEFT_OUTER_JOIN("v_station_kind t2 on t1.station_kind = t2.code_seq");
             LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
@@ -58,8 +58,8 @@ public class StationSqlProvider {
                 WHERE("t4.station_seq IS NOT NULL");
             }
 
-            if (station != null && !station.isEmpty()) {
-                WHERE("t2.code_value" + SqlUtil.getWhereInStr(station));
+            if (stationKind != null && !stationKind.isEmpty()) {
+                WHERE("t2.code_value" + SqlUtil.getWhereInStr(stationKind));
             }
 
             if(sigCode != null && !sigCode.isEmpty()){
@@ -84,6 +84,7 @@ public class StationSqlProvider {
                 OFFSET(start);
             }
         }};
+        System.out.println(sql.toString());
         return sql.toString();
     }
 
@@ -92,12 +93,12 @@ public class StationSqlProvider {
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
         String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
         ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
-        ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
+        ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
 
         SQL sql = new SQL() {{
             SELECT("COUNT(*) AS count");
             FROM("t_station t1");
-            LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
+            LEFT_OUTER_JOIN("v_station_kind t2 on t1.station_kind = t2.code_seq");
             LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
@@ -128,8 +129,8 @@ public class StationSqlProvider {
                 WHERE("t4.station_seq IS NOT NULL");
             }
 
-            if (station != null && !station.isEmpty()) {
-                WHERE("t2.code_value" + SqlUtil.getWhereInStr(station));
+            if (stationKind != null && !stationKind.isEmpty()) {
+                WHERE("t2.code_value" + SqlUtil.getWhereInStr(stationKind));
             }
 
             if (sigCode != null && !sigCode.isEmpty()) {
@@ -207,7 +208,7 @@ public class StationSqlProvider {
                     ", t1.latitude, t1.longitude, t2.code_name AS station_kind_name," +
                     " t2.code_value AS station_kind_value, t3.code_name AS administ_zone_name");
             FROM("t_station t1");
-            LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
+            LEFT_OUTER_JOIN("v_station_kind t2 on t1.station_kind = t2.code_seq");
             LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
             WHERE("t2.code_seq = 62 " );
             if(stationSeqList != null && !stationSeqList.isEmpty()) {
@@ -225,7 +226,7 @@ public class StationSqlProvider {
                         ", t1.latitude, t1.longitude, t2.code_name AS station_kind_name," +
                         " t2.code_value AS station_kind_value, t4.rtsp_url");
                 FROM("t_station t1");
-                LEFT_OUTER_JOIN("v_facility_station t2 on t1.station_kind = t2.code_seq");
+                LEFT_OUTER_JOIN("v_station_kind t2 on t1.station_kind = t2.code_seq");
                 INNER_JOIN("(" +
                         "SELECT * " +
                         "FROM t_facility s1 " +
