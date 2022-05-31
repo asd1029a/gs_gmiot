@@ -36,7 +36,7 @@ public class EventSqlProvider {
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
                     "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
-                    "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value";
+                    "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value ";
 
             if (geoFlag) { //geojson 호출시
                 colums += ", t3.longitude, t3.latitude, t3.administ_zone, v4.code_name AS administ_zone_name ";
@@ -115,7 +115,7 @@ public class EventSqlProvider {
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
                     "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
-                    "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value";
+                    "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value ";
 
             if (geoFlag) { //geojson 호출시
                 tables += "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq";
@@ -163,8 +163,8 @@ public class EventSqlProvider {
                     ", to_char(t2.station_compet_dt, 'YYYY-MM-DD HH24:MI:SS') station_compet_dt, t2.latitude, t2.longitude" +
                     ", v1.code_name AS administ_zone_name");
             FROM("t_event t1" +
-                    " LEFT JOIN t_station t2 on t1.station_seq = t2.station_seq" +
-                    "INNER JOIN v_administ v1 on t2.administ_zone = v1.code_value");
+                    " LEFT JOIN t_station t2 on t1.station_seq = t2.station_seq " +
+                    "INNER JOIN v_administ v1 on t2.administ_zone = v1.code_value ");
             WHERE("event_seq =" + seq);
         }};
         return sql.toString();
