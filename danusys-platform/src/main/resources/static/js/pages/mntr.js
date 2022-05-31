@@ -1131,8 +1131,18 @@ const rnbList = {
         target.find('.stationTitle').text("[ " + prop.stationSeq + " ] "  + prop.stationName);
 
         //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
+        ///////////////////
         const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
-
+        console.log(prop);
+        console.log(theme);
+        if(theme=="smartPower"){
+            //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
+            //html로 지자체별 고정인게 나은가? -> 결정필요
+            ///show
+            ///hide
+            target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
+        } else { }
+        //////////////////
 
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
