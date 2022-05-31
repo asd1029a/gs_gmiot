@@ -439,6 +439,25 @@ public class ApiCallRestController {
                 .body(jsonParser.parse(result));
     }
 
+    /**
+     * 광명시 스마트 정류장 포인트 목록
+     * @return
+     * @throws ParseException
+     */
+    @PostMapping("/gmPointValues.json")
+    public ResponseEntity gmPointValues() throws ParseException {
+        final Resource resource = new ClassPathResource("data/gm_soap/res_point_values.json");
+        String result = "";
+        JSONParser jsonParser = new JSONParser();
+        try (Reader reader = new InputStreamReader(resource.getInputStream(), "UTF-8")) {
+            result = FileCopyUtils.copyToString(reader);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(jsonParser.parse(result));
+    }
 
 }
 
