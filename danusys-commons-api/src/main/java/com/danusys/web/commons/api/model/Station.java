@@ -28,7 +28,7 @@ public class Station {
     private String stationName;
 
     @Column(nullable = false)
-    private int stationKind;
+    private Long stationKind;
 
     @Column
     private String administZone;

@@ -61,19 +61,23 @@ public class FacilityService {
             Station station = stationRepository.findByStationName(StrUtils.getStr(d.get("station_name")));
             Long codeSeq = facilityRepository.findCommonCode(facilityKind);
 
-            String latitude = StrUtils.getStr(d.get("latitude"));
-            String longitude = StrUtils.getStr(d.get("longitude"));
+            String latStr = StrUtils.getStr(d.get("latitude"));
+            String lngStr = StrUtils.getStr(d.get("longitude"));
             String facilityName = StrUtils.getStr(d.get("facility_name"));
 
 
-            latitude = latitude.isEmpty() ? "0" : latitude;
-            longitude = longitude.isEmpty() ? "0" : longitude;
+            latStr = latStr.isEmpty() ? "0" : latStr;
+            lngStr = lngStr.isEmpty() ? "0" : lngStr;
 
-            facility.setLatitude(Double.parseDouble(latitude));
-            facility.setLongitude(Double.parseDouble(longitude));
+            double latitude = Double.parseDouble(latStr);
+            double longitude = Double.parseDouble(lngStr);
+
+            facility.setLatitude(latitude);
+            facility.setLongitude(longitude);
             facility.setFacilityId(facilityId);
             facility.setFacilityStatus(0);
             facility.setFacilityKind(Long.parseLong(codeSeq.toString()));
+            facility.setAdministZone(facilityRepository.getEmdCode(longitude, latitude));
             if (!facilityName.isEmpty()) facility.setFacilityName(facilityName);
 
             if (station != null) {
@@ -100,5 +104,9 @@ public class FacilityService {
 
     public List<Facility> findByFacilityKind(Long facilityKind) {
         return facilityRepository.findByFacilityKind(facilityKind);
+    }
+
+    public String getEmdCode(double longitude, double latitude) {
+        return facilityRepository.getEmdCode(longitude, latitude);
     }
 }
