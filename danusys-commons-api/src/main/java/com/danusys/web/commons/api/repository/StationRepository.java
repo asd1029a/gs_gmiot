@@ -20,4 +20,7 @@ public interface StationRepository extends JpaRepository<Station, Long> {
 
     @Query(value = "SELECT code_seq FROM v_facility_station WHERE code_id = :codeId", nativeQuery = true)
     Long findCommonCode(String codeId);
+
+    @Query(value = "SELECT fn_lonlat_to_emdcode(:longitude, :latitude)", nativeQuery = true)
+    String getEmdCode(double longitude, double latitude);
 }

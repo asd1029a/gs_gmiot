@@ -70,13 +70,19 @@ public class Facility implements Serializable {
     @Column
     private Long stationSeq;
 
+    private String administZone;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "facilitySeq")
     @JsonManagedReference
     private List<FacilityOpt> facilityOpts = new ArrayList<FacilityOpt>();
 
     @Builder
-    public Facility(String facilityId, String facilityName, int facilityStatus, double latitude, double longitude, Long facilitySeq, Long stationSeq, Long facilityKind) {
+    public Facility(String facilityId, String facilityName,
+                    int facilityStatus, double latitude,
+                    double longitude, Long facilitySeq,
+                    Long stationSeq, Long facilityKind,
+                    String administZone) {
         this.facilityId = facilityId;
         this.facilityName = facilityName;
         this.facilityStatus = facilityStatus;
@@ -85,5 +91,6 @@ public class Facility implements Serializable {
         this.facilitySeq = facilitySeq;
         this.stationSeq = stationSeq;
         this.facilityKind = facilityKind;
+        this.administZone = administZone;
     }
 }

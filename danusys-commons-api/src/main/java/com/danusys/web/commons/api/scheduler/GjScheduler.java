@@ -7,6 +7,7 @@ import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.service.EventService;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
+import com.danusys.web.commons.api.service.StationService;
 import com.danusys.web.commons.api.util.ApiUtils;
 import com.danusys.web.commons.app.GisUtil;
 import com.danusys.web.commons.app.StrUtils;
@@ -40,6 +41,7 @@ public class GjScheduler {
     private final EventService eventService;
     private final FacilityService facilityService;
     private final FacilityOptService facilityOptService;
+    private final StationService stationService;
     private final RestTemplate restTemplate;
     private List<Map<String, Double>> testList = new ArrayList<>();
     private double[] latList = {35.80405637329925, 35.80366509913489, 35.803435578829465, 35.80313827937384, 35.80293993822085,
@@ -65,14 +67,20 @@ public class GjScheduler {
         if (count >= 20) count = 0;
         Map<String, Double> param = testList.get(count);
         Facility facility = facilityService.findByFacilityId("DTEST00001");
-        facility.setLatitude(Double.parseDouble(StrUtils.getStr(param.get("latitude"))));
-        facility.setLongitude(Double.parseDouble(StrUtils.getStr(param.get("longitude"))));
+        double latitude = Double.parseDouble(StrUtils.getStr(param.get("latitude")));
+        double longitude = Double.parseDouble(StrUtils.getStr(param.get("longitude")));
+        facility.setLatitude(latitude);
+        facility.setLongitude(longitude);
+        facility.setAdministZone(facilityService.getEmdCode(longitude, latitude));
         facilityService.update(facility);
 
         Map<String, Double> param2 = ((count + 1) == testList.size()) ? testList.get(0) : testList.get(count + 1);
         Facility facility2 = facilityService.findByFacilityId("DANUSYS_CCTV53");
-        facility2.setLatitude(Double.parseDouble(StrUtils.getStr(param2.get("latitude"))));
-        facility2.setLongitude(Double.parseDouble(StrUtils.getStr(param2.get("longitude"))));
+        double latitude2 = Double.parseDouble(StrUtils.getStr(param2.get("latitude")));
+        double longitude2 = Double.parseDouble(StrUtils.getStr(param2.get("longitude")));
+        facility2.setLatitude(latitude2);
+        facility2.setLongitude(longitude2);
+        facility2.setAdministZone(facilityService.getEmdCode(longitude2, latitude2));
         facilityService.update(facility2);
         count++;
     }
@@ -384,6 +392,7 @@ public class GjScheduler {
             Facility origin = facilityService.findByFacilityId(facilityId);
             origin.setLatitude(latitude);
             origin.setLongitude(longitude);
+            origin.setAdministZone(facilityService.getEmdCode(longitude, latitude));
             facilityService.save(origin);
             int flightState = Integer.parseInt(StrUtils.getStr(properties.get("flight_state")));
             properties.put("flight_state", this.convertFlightState(flightState));
@@ -454,7 +463,8 @@ public class GjScheduler {
         return result;
     }
 
-    //    @Scheduled(cron = "0 0/2 * * * *")
+    // @Scheduled(cron = "0 0/2 * * * *")
+//     @Scheduled(fixedDelay = 1000000)
     // TODO : 드론 격납고 리스트 조회(cron 설정 추가 필요)
     public void getStationList() throws Exception{
         Map<String,Object> param2 = new HashMap<>();
@@ -465,17 +475,13 @@ public class GjScheduler {
                 new HttpEntity<Map<String, Object>>(param2),
                 String.class);
 
-        Map<String, Object> result = objectMapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
+        List<Map<String, Object>> result = objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<Map<String, Object>>>() {
         });
 
         if (result == null) {
             return;
         }
 
-        log.trace("scheduler 2 : {}", result);
-
-        List<Map<String, Object>> list = (List<Map<String, Object>>) result.get("facilityList");
-
-        this.facilityService.saveAll(list, "DRONE_STATION");
+        this.stationService.saveAll(result, "DRONE_STATION");
     }
 }
