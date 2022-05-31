@@ -80,4 +80,15 @@ public class ConfigSqlProvider {
         return sql.toString();
     }
 
+    public String selectOneEventKindQry(String kind) {
+        SQL sql = new SQL() {{
+
+            SELECT("*");
+            FROM("v_event_kind");
+            WHERE("code_value = '" + kind + "'");
+        }};
+        return sql.toString();
+    }
+
+
 }

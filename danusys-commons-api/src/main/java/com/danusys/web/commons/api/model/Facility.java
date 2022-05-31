@@ -76,7 +76,7 @@ public class Facility implements Serializable {
     private List<FacilityOpt> facilityOpts = new ArrayList<FacilityOpt>();
 
     @Builder
-    public Facility(String facilityId, String facilityName, int facilityStatus, double latitude, double longitude, Long facilitySeq, Long stationSeq) {
+    public Facility(String facilityId, String facilityName, int facilityStatus, double latitude, double longitude, Long facilitySeq, Long stationSeq, Long facilityKind) {
         this.facilityId = facilityId;
         this.facilityName = facilityName;
         this.facilityStatus = facilityStatus;
@@ -84,5 +84,6 @@ public class Facility implements Serializable {
         this.longitude = longitude;
         this.facilitySeq = facilitySeq;
         this.stationSeq = stationSeq;
+        this.facilityKind = facilityKind;
     }
 }

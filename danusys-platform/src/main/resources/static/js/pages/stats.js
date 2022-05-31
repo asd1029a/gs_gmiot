@@ -15,7 +15,6 @@ const stats = {
                 stats.setChart(chartNm);
             }
         });
-        $(".event_type").text("하...");
     }
     , create: () => {
         const $target = $('#troubleEventTable');
@@ -103,7 +102,10 @@ const stats = {
                 }
             },
             xaxis: {
-                categories: data.xAxis
+                categories: data.xAxis,
+                tooltip: {
+                    enabled: false
+                }
             },
             yaxis: [{
                 show: true,
@@ -144,7 +146,12 @@ const stats = {
                     type: 'line',
                     data: data.accCaution
                 }
-            ]
+            ],
+            noData: {
+                text: "데이터가 없습니다.",
+                align: 'center',
+                verticalAlign: 'middle',
+            }
         }
 
         let charts = $("#sumChart").data("charts");
@@ -183,7 +190,10 @@ const stats = {
                 background: "#00000000",
                 zoom: {
                     enabled: false
-                }
+                },
+                toolbar: {
+                    show: false
+                },
             },
             theme: {
                 mode: "dark"
@@ -197,17 +207,46 @@ const stats = {
                     columnWidth: "45%"
                 }
             },
+            tooltip: {
+                marker: true,
+                custom: function({series, seriesIndex, dataPointIndex, w}) {
+                    console.log({series, seriesIndex, dataPointIndex, w});
+                    const g = w.globals;
+                    const maxVal = g.seriesRangeEnd[seriesIndex][dataPointIndex];
+                    const minVal = g.seriesRangeStart[seriesIndex][dataPointIndex];
+                    const avgVal = (minVal + maxVal) / 2;
+
+                    const text = `<div><span style="color: ${g.colors[seriesIndex]}">${g.seriesNames[seriesIndex]}: ${g.categoryLabels[dataPointIndex]}</span></div>
+                            <div>
+                                <div>최대: ${maxVal}</div>
+                                <div>평균: ${avgVal}</div>
+                                <div>최소: ${minVal}</div>
+                            </div>`;
+
+                    return text;
+                }
+            },
+            xaxis: {
+                tickPlacement: "category"
+            },
+            yaxis: {
+                tickAmount: 10,
+                axisTicks: {}
+            },
             dataLabels: {
                 enabled: true,
-                formatter: function (val, opts) {
-                    const sIdx = opts.seriesIndex;
-                    const dIdx = opts.dataPointIndex;
-                    const minVal = opts.w.globals.seriesRangeStart[sIdx][dIdx];
-                    const maxVal = opts.w.globals.seriesRangeEnd[sIdx][dIdx];
+                formatter: function (val, {series, seriesIndex, dataPointIndex, w}) {
+                    const minVal = w.globals.seriesRangeStart[seriesIndex][dataPointIndex];
+                    const maxVal = w.globals.seriesRangeEnd[seriesIndex][dataPointIndex];
                     return (minVal + maxVal) / 2;
                 },
             },
-            series: data
+            series: data,
+            noData: {
+                text: "데이터가 없습니다.",
+                align: 'center',
+                verticalAlign: 'middle',
+            }
         };
 
         let charts = $("#avgChart").data("charts");
@@ -236,7 +275,7 @@ const stats = {
             visualMap: {
                 left: 'right',
                 inRange: {
-                    color: ['#313695','#fee090','#a50026']
+                    color: ['#313695', '#fee090', '#a50026']
                 },
                 text: ['High', 'Low'],
                 calculable: true
@@ -299,6 +338,16 @@ const stats = {
         $.ajax({
             url: "/stats/geoJson"
             , type: "POST"
+            , contentType: "application/json; charset=utf-8"
+            , async: false
+        }).done((result) => {
+            pCallback(result);
+        });
+    },
+    getEventKind: (pCode,pCallback) => {
+        $.ajax({
+            url: "/config/commonCode/eventKind/" + pCode
+            , type: "GET"
             , contentType: "application/json; charset=utf-8"
             , async: false
         }).done((result) => {

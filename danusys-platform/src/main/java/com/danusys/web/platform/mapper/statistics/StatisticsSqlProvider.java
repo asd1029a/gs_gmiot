@@ -18,14 +18,14 @@ public class StatisticsSqlProvider {
         timePatternMap.put("week", "YYYY/MM-W");
         timePatternMap.put("month", "YYYY/MM");
 
-        SQL sql = new SQL() {{
-            String startDt = CommonUtil.validOneNull(paramMap, "startDt");
-            String endDt = CommonUtil.validOneNull(paramMap, "endDt");
-            String unit = CommonUtil.validOneNull(paramMap, "unit");
-            String timePattern = timePatternMap.get(unit);
-            ArrayList<String> eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
-            ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
+        String startDt = CommonUtil.validOneNull(paramMap, "startDt");
+        String endDt = CommonUtil.validOneNull(paramMap, "endDt");
+        String unit = CommonUtil.validOneNull(paramMap, "unit");
+        String timePattern = timePatternMap.get(unit);
+        ArrayList<String> eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
+        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
 
+        SQL sql = new SQL() {{
             SQL subQry2 = new SQL() {{
                 SQL subQry1 = new SQL() {{
                     SELECT("to_char(t1.insert_dt, '" + timePattern + "') AS x_axis," +
@@ -37,7 +37,8 @@ public class StatisticsSqlProvider {
                             "   INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq" +
 //                          현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
 //                          "   INNER JOIN v_administ v3 on t2.administ_zone = v3.code_value");
-                            "   INNER JOIN t_area_emd v3 ON t2.administ_zone = v3.emd_cd");
+                            "   INNER JOIN t_area_emd v3 ON t2.administ_zone = v3.emd_cd" +
+                            "   INNER JOIN v_event_proc_stat v4 ON t1.event_proc_stat = v4.code_seq");
                     if (!endDt.equals("")) {
                         WHERE("t1.insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
                     }
@@ -72,31 +73,53 @@ public class StatisticsSqlProvider {
             }
             ORDER_BY("x_axis");
         }};
-        return sql.toString();
+
+        SQL dateSql = new SQL() {{
+            SELECT("date_t.t_date AS x_axis, t.caution, t.urgent, t.acc_caution, t.acc_urgent");
+            // 시간대 생성
+            String startDtT = "";
+            String endDtT = "";
+            if (startDt.equals("")) {
+                startDtT = "now()::date - interval '30 " + unit + "'";
+            } else {
+                startDtT = "'" + startDt + "'";
+            }
+
+            if (endDt.equals("")) {
+                endDtT = "now()::date";
+            } else {
+                endDtT = "'" + endDt + "'";
+            }
+            FROM("(select(to_char(generate_series(" + startDtT + ", " + endDtT + ", '1 " + unit + "'::interval), '" + timePattern + "'))::text as t_date) date_t");
+            LEFT_OUTER_JOIN("(" + sql.toString() + ") t on date_t.t_date = t.x_axis");
+            ORDER_BY("x_axis");
+        }};
+
+        return dateSql.toString();
     }
 
     public String selectAvgQry(Map<String, Object> paramMap) {
         Map<String, String> timePatternMap = new HashMap<>();
         timePatternMap.put("hour", "YYYY/MM/DD HH24");
-        timePatternMap.put("day", "YYYY/MM/DD");
+        timePatternMap.put("day", "YYYY/MM/DD D");
         timePatternMap.put("week", "YYYY/MM-W");
         timePatternMap.put("month", "YYYY/MM");
 
         Map<String, String> avgTimePatternMap = new HashMap<>();
         avgTimePatternMap.put("hour", "HH24");
-        avgTimePatternMap.put("day", "DD");
+        avgTimePatternMap.put("day", "D");
         avgTimePatternMap.put("week", "W");
         avgTimePatternMap.put("month", "MM");
 
-        SQL sql = new SQL() {{
-            String startDt = CommonUtil.validOneNull(paramMap, "startDt");
-            String endDt = CommonUtil.validOneNull(paramMap, "endDt");
-            String unit = CommonUtil.validOneNull(paramMap, "unit");
-            String timePattern = timePatternMap.get(unit);
-            String avgTimePattern = avgTimePatternMap.get(unit);
-            ArrayList<String> eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
-            ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
+        String startDt = CommonUtil.validOneNull(paramMap, "startDt");
+        String endDt = CommonUtil.validOneNull(paramMap, "endDt");
+        String unit = CommonUtil.validOneNull(paramMap, "unit");
+        String timePattern = timePatternMap.get(unit);
+        String avgTimePattern = avgTimePatternMap.get(unit);
+        ArrayList<String> eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
+        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
 
+        SQL sql = new SQL() {{
             SQL subQry1 = new SQL() {{
                 SELECT("to_char(t1.insert_dt, '" + timePattern + "') AS x_axis," +
                         "   count(case when v2.code_value = '10' then 1 end) urgent," +
@@ -107,7 +130,8 @@ public class StatisticsSqlProvider {
                         "   INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq" +
 //                          현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
 //                          "   INNER JOIN v_administ v3 on t2.administ_zone = v3.code_value");
-                        "   INNER JOIN t_area_emd v3 ON t2.administ_zone = v3.emd_cd");
+                        "   INNER JOIN t_area_emd v3 ON t2.administ_zone = v3.emd_cd" +
+                        "   INNER JOIN v_event_proc_stat v4 ON t1.event_proc_stat = v4.code_seq");
                 if (!startDt.equals("")) {
                     WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
                 }
@@ -134,9 +158,30 @@ public class StatisticsSqlProvider {
                     "     , max(caution) AS max_caution");
             FROM("(" + subQry1.toString() + ")t");
             GROUP_BY("to_char(to_timestamp(x_axis, '" + timePattern + "'), '" + avgTimePattern + "')");
-
         }};
-        return sql.toString();
+
+        SQL dateSql = new SQL() {{
+            SELECT("date_t.t_date AS x_axis, t.min_urgent, t.max_urgent, t.min_caution, t.max_caution");
+            // 시간대 생성
+            String startDtT = "";
+            String endDtT = "";
+            if (startDt.equals("")) {
+                startDtT = "now()::date - interval '30 " + unit + "'";
+            } else {
+                startDtT = "'" + startDt + "'";
+            }
+
+            if (endDt.equals("")) {
+                endDtT = "now()::date";
+            } else {
+                endDtT = "'" + endDt + "'";
+            }
+            FROM("(select(to_char(generate_series(" + startDtT + ", " + endDtT + ", '1 " + unit + "'::interval), '" + avgTimePattern + "'))::text as t_date group by t_date) date_t");
+            LEFT_OUTER_JOIN("(" + sql.toString() + ") t on date_t.t_date = t.x_axis");
+            ORDER_BY("x_axis");
+        }};
+
+        return dateSql.toString();
     }
 
     public String selectMapQry(Map<String, Object> paramMap) {
@@ -174,5 +219,4 @@ public class StatisticsSqlProvider {
         }};
         return sql.toString();
     }
-
 }
