@@ -1,6 +1,9 @@
 package com.danusys.web.platform.dto.request;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * packageName : com.danusys.web.platform.dto.request
@@ -23,7 +26,8 @@ public class SignageRequestDto {
     private String templateContent;
 
     @Builder
-    public SignageRequestDto(Integer templateSeq, String templateContent) {
+    public SignageRequestDto(Integer templateSeq
+            , String templateContent) {
         this.templateSeq = templateSeq;
         this.templateContent = templateContent;
     }

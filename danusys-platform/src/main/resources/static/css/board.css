@@ -406,7 +406,7 @@ tr.selected td {background-color: #23252b;}
 /* signage */
 .signage_contents{display: flex; grid-gap: 14px; height: 100%;}
 .signage_contents > article{overflow: hidden; padding: 0px;}
-.article_title{overflow: hidden; height: 60px; margin: 0px; padding: 0px 12px 0px 20px; box-sizing: border-box;}
+.article_title{overflow: hidden; height: 60px; margin: 0px; padding: 0px 12px 0px 20px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
 .signage_template{display: flex; flex-direction: column; width: 320px;}
 .signage_template .template_list{flex: 1; overflow: auto;}
 .signage_template .template_list dl{padding: 15px; border-bottom: 1px solid #292c34;}
@@ -417,24 +417,45 @@ tr.selected td {background-color: #23252b;}
 .signage_template .template_list dl dd span{margin: 0px 4px; color: #797d87;}
 .signage_layout{flex: 1; display: flex; flex-direction: column;}
 .signage_layout .article_title ul{display: none;}
-.layout_field{flex: 1; margin: 26px; border: 2px solid #292c34; background: #1a1b1d;}
+
+/* layout_field */
+.layout_field{flex: 1; margin: 26px; border: 2px solid #292c34; background: #292c34;}
 .layout_field form {height: 100%; width: 100%;}
 .layout_field ul{display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 2px; height: 100%; background-color: #292c34}
 .layout_field ul li{background: #1a1b1d;}
 .layout_field ul li .input_height{display: flex; align-items: center; justify-content: flex-end; white-space: nowrap; margin: 14px;}
 .layout_field ul li .input_height input{max-width: 80px; margin: 0px 10px;}
-.layout_field ul li:nth-child(even){display: flex; flex-direction: column; justify-content: center; grid-gap: 20px; padding: 0px 40px;}
-.layout_field ul li:nth-child(even) p{padding: 0px 4px; font-size: 15px; font-weight: bold;}
-.layout_field ul li:nth-child(even) p span{margin: 0px 6px; font-size: 14px; font-weight: normal; color: #797d87;}
-.layout_field ul li:nth-child(even) select{padding: 0px 14px; background-position: right 14px center;}
-.layout_field ul li:nth-child(even) select option{background: #1a1b1d; color: #fff; padding: 3px 0;}
-.layout_field ul li:nth-child(even) input{padding: 0px 14px;}
-.layout_field ul li:nth-child(even) .file_box{display: flex; flex-direction: row; align-items: center; justify-content: space-between; grid-gap: 14px;}
-.layout_field ul li:nth-child(even) .file_box .upload_name{flex: 1; height: 34px; padding: 0px 14px; color: #797d87; border: 1px solid #292c34; }
-.layout_field ul li:nth-child(even) .file_box label{width: 84px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
-.layout_field ul li:nth-child(even) .file_box input[type="file"]{position: absolute; overflow: hidden; width: 0; height: 0; padding: 0; border: 0;}
-.layout_field ul li:nth-child(even) .rtsp_box{display: flex; grid-gap: 14px;}
-.layout_field ul li:nth-child(even) .rtsp_box a{width: 125px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
+.layout_field ul li{display: flex; flex-direction: column; justify-content: center; grid-gap: 20px; padding: 0px 40px;}
+.layout_field ul li p{padding: 0px 4px; font-size: 15px; font-weight: bold;}
+.layout_field ul li p span{margin: 0px 6px; font-size: 14px; font-weight: normal; color: #797d87;}
+.layout_field ul li select{padding: 0px 14px; background-position: right 14px center;}
+.layout_field ul li select option{background: #1a1b1d; color: #fff; padding: 3px 0;}
+.layout_field ul li .date_box{display: flex; align-items: center; white-space: nowrap;}
+.layout_field ul li input{padding: 0px 14px;}
+.layout_field ul li .file_box{display: flex; flex-direction: row; align-items: center; justify-content: space-between; grid-gap: 14px;}
+.layout_field ul li .file_box .upload_name{flex: 1; height: 34px; padding: 0px 14px; color: #797d87; border: 1px solid #292c34; }
+.layout_field ul li .file_box label{width: 84px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
+.layout_field ul li .file_box input[type="file"]{position: absolute; overflow: hidden; width: 0; height: 0; padding: 0; border: 0;}
+.layout_field ul li .rtsp_box{display: flex; grid-gap: 14px;}
+.layout_field ul li .rtsp_box a{width: 125px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
+
+
+/* layout_image_field */
+.layout_image_field{overflow: hidden; flex: 1;  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; grid-gap: 2px; margin: 26px; border: 2px solid #292c34; background: #292c34;}
+.layout_image_field > div{overflow: hidden; flex: 1; display: flex; flex-direction: column; justify-content: center; grid-gap: 24px; padding: 16px 20px; background: #1a1b1d;}
+.layout_image_field > div h6{padding: 0px 4px; font-size: 15px; font-weight: bold;}
+.layout_image_field > div h6 span{margin: 0px 6px; font-size: 14px; font-weight: normal; color: #797d87;}
+.layout_image_field > div ul{display: flex; flex-direction: column; grid-gap: 20px;}
+.layout_image_field > div ul li{}
+.layout_image_field > div ul li select{padding: 0px 14px; background-position: right 14px center;}
+.layout_image_field > div ul li input{padding: 0px 14px;}
+.layout_image_field > div ul li .file_box{display: flex; flex-direction: row; align-items: center; justify-content: space-between; grid-gap: 14px;}
+.layout_image_field > div ul li .file_box .upload_name{flex: 1; height: 34px; padding: 0px 14px; color: #797d87; border: 1px solid #292c34; }
+.layout_image_field > div ul li .file_box label{width: 84px; height: 34px; line-height: 32px; font-size: 14px; text-align: center; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
+.layout_image_field > div ul li .file_box input[type="file"]{position: absolute; overflow: hidden; width: 0; height: 0; padding: 0; border: 0;}
+.layout_image_field > div ul.date li{display: flex; align-items: center; grid-gap: 14px;}
+.layout_image_field > div ul.date li input{flex: 1;}
+.layout_image_field > div ul.date li input.sec{flex: 0.2;}
 
 .swal2-select {width: auto;}
 
@@ -448,6 +469,8 @@ tr.selected td {background-color: #23252b;}
 .popup.signage_popup div fieldset dl dd{display: flex; align-items: center; justify-content: flex-start; grid-gap: 14px;}
 .popup.signage_popup div fieldset dl:nth-child(3) >  dd input{width: 80px;}
 .popup.signage_popup .bottom li{display: none;}
+
+.swal2-select {width: auto;}
 
 @keyframes fadein {
     from {

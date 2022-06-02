@@ -10,6 +10,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -176,11 +177,47 @@ public class FacilityController {
     }
 
     /**
+     * 시설물 : 사이니지 레이아웃 적용 (광명)
+     */
+    @PutMapping(value="/signage/layoutForGm")
+    public ResponseEntity<?> modSignageLayoutForGm(@RequestBody Map<String, Object> paramMap) throws Exception {
+        facilityService.modSignageLayoutForGm(paramMap);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * 시설물 : 다중 이미지 업로드
+     */
+    @ResponseBody
+    @PostMapping(value="/signage/uploadImageList")
+    public ResponseEntity<EgovMap> uploadImageList(@RequestParam("files") List<MultipartFile> fileList, HttpServletRequest request) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("imageFileNames", FileUtil.uploadMulitAjaxPost(fileList, request));
+        return ResponseEntity.ok().body(resultMap);
+    }
+
+    /**
+     * 시설물 : 광명 사이니지 단건 조회(외부업체 호출용)
+     */
+    @GetMapping(value="/signage/getData")
+    public ResponseEntity<String> getSignageData() throws Exception {
+        return ResponseEntity.ok().body(facilityService.getOneSignageData());
+    }
+
+    /**
+     * 시설물 : 광명 사이니지 이미지 다운로드
+     */
+    @GetMapping(value="/signage/downloadImage/{imageFileName:.+}") //글 리스트 페이지
+    public void fileDown(@PathVariable("imageFileName") String imageFileName, HttpServletResponse response) throws Exception {
+        FileUtil.fileDownloadWithFilePath(response, imageFileName, "/pages/config/signage/");
+    }
+
+    /**
      * 시설물 : 사이니지 템플릿 삭제
      */
-    @DeleteMapping(value="/signage/template/{templateSeq}")
-    public ResponseEntity<?> delSignageTemplate(@PathVariable int templateSeq) throws Exception {
-        facilityService.delSignageTemplate(templateSeq);
+    @DeleteMapping(value="/signage/template")
+    public ResponseEntity<?> delSignageTemplate(@RequestBody Map<String, Object> paramMap) throws Exception {
+        facilityService.delSignageTemplate(paramMap);
         return ResponseEntity.noContent().build();
     }
 
