@@ -30,12 +30,12 @@ public class DroneBaseController {
                 .body(droneBaseService.findAllDroneBase());
     }
 
-    @GetMapping("/test")
-    public void test() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("testKey","testValue");
-        sseService.send(map);
-    }
+//    @GetMapping("/test")
+//    public void test() {
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("testKey","testValue");
+//        sseService.send(map);
+//    }
 
 }
 
