@@ -16,10 +16,10 @@ import javax.persistence.*;
 public class ApiParamConv {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int conv_seq;
+    private Long convSeq;
 
-    @Column(nullable = false)
-    private int api_param_seq;
+    @Column(unique = true)
+    private Long apiParamSeq;
 
     @Column(nullable = false)
     private String key;

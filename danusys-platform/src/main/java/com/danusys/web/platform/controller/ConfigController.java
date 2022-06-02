@@ -25,4 +25,8 @@ public class ConfigController {
     public ResponseEntity<EgovMap> getCommonCode(@PathVariable("pSeq") int seq) throws Exception {
         return ResponseEntity.ok().body(commonService.getOneCode(seq));
     }
+    @GetMapping(value = "/commonCode/eventKind/{pKind}")
+    public ResponseEntity<EgovMap> getCommonCode(@PathVariable("pKind") String pKind) throws Exception {
+        return ResponseEntity.ok().body(commonService.getOneEventKind(pKind));
+    }
 }

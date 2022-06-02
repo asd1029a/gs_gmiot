@@ -1,10 +1,12 @@
 package com.danusys.web.commons.api.service.executor;
 
+import com.danusys.web.commons.api.dto.LogicalfolderDTO;
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
+import com.danusys.web.commons.api.util.SoapXmlDataUtil;
 import com.danusys.web.commons.app.StrUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,41 +70,40 @@ public class SoapApiExecutor implements ApiExecutor  {
             // 생성한 SOAPBodyElement 에 다시 ChildElement 를 추가하고 각각의 ChildElement 에 TextNode 를 추가
             apiRequestParams.forEach(apiReq -> {
                 try {
-                    log.trace("요청 : {} -> {} = {}", apiReq.getFieldNm(), apiReq.getFieldMapNm(), apiReq.getValue());
-                    if("clientId".equals(apiReq.getFieldNm())) {
-                        //로그인 후 client id 가져오기, 쿠키에 값이 있으면 쿠키 값 조회
-                        String clientId = String.valueOf(apiCallService.getSoapClientId(api));
+                    if( apiReq.getDataType().equals(DataType.COOKIE)) {
+                        String thisColValue = apiCallService.getCookie(apiReq.getValue());
+                        apiReq.setValue(thisColValue.isEmpty() ? String.valueOf(apiCallService.getSoapClientId(api)) : thisColValue);
+                        elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(apiReq.getValue());
 
-                        log.trace("요청 : {} -> {} = {}", apiReq.getFieldNm(), apiReq.getFieldMapNm(), clientId);
-                        elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(clientId);
-                    } else if("pointPaths".equals(apiReq.getFieldNm())) {
-                        //TODO 외부 xml 파일에서 path 정보를 가져와서 세팅
-                        String[] pointPaths = {
-                                "point:/ST1/OFa2/LPa232890199721",
-                                "point:/ST1/OFa2/LPa232890199722"
-                        };
-                        for(int i=0;i<pointPaths.length;i++) {
-                            elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(pointPaths[i]);
+                    } else if(apiReq.getDataType() == DataType.SOAP_DATA_PATH) {
+                        List<LogicalfolderDTO.Logicalpoints.Lpt> lpts = SoapXmlDataUtil.getGmSoapPostList(apiReq.getValue());
+                        List<String> pointPaths = lpts.stream().map(m -> m.getPth()).collect(Collectors.toList());
+                        for(String path : pointPaths) {
+                            elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode("point:" + path);
                         }
+
                     } else {
                         elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(apiReq.getValue());
                     }
+
+                    log.trace("요청 : {} -> {} = {}", apiReq.getFieldNm(), apiReq.getFieldMapNm(), apiReq.getValue());
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     log.error("파라미터 세팅 SoapApiExecutor 오류");
                 }
             });
 
-            System.out.println("요청 xml");
+            System.out.println(":::::요청 xml:::::");
             soapMessage.writeTo(System.out);
-            System.out.println("\n######################################");
+            System.out.println("\n");
 
             // SOAPMessage 를 requestURL 로 전송하고 서버쪽에서 내려보낸 정보가 담긴 SOAPMessage 객체를 얻음
             SOAPMessage responseMessage = soapConnection.call(soapMessage, targetURL);
 
-            System.out.println("응답 xml");
+            System.out.println(":::::응답 xml:::::");
             responseMessage.writeTo(System.out);
-            System.out.println("\n######################################");
+            System.out.println("\n");
 
             SOAPBody resSoapBody = responseMessage.getSOAPBody();
             NodeList nodes0 = (NodeList) resSoapBody.getChildElements().next();

@@ -1,9 +1,6 @@
 package com.danusys.web.danusysmeteringdevicelwm2m.service;
 
-import com.danusys.web.danusysmeteringdevicelwm2m.config.WebClientHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,14 +24,13 @@ public class DeviceRegisterService {
         log.info("getDeviceStatusCheck");
         //final String url, MediaType mediaType, HttpMethod method, MultiValueMap<String, Object> params, Class clazz
         String om2mUrl = "https://testbrks.onem2m.uplus.co.kr:8433/ASN_CSE-D-33da4b19b5-FSTD/10250/0/0";
-        WebClientHelper webClientHelper = new WebClientHelper();
 //        exchange(final String url, MediaType mediaType, HttpMethod method, MultiValueMap<String, Object> params, Class clazz) throws Exception {
 //
 //        }
 //final String url, MediaType mediaType, HttpMethod method, MultiValueMap<String, Object> params, Class clazz
 //        MediaType.APPLICATION_XML_VALUE
-        String result = webClientHelper.exchange(om2mUrl, MediaType.valueOf(MediaType.APPLICATION_XML_VALUE), HttpMethod.GET, String.class);
-        log.info(result);
+//        String result = webClientHelper.exchange(om2mUrl, MediaType.valueOf(MediaType.APPLICATION_XML_VALUE), HttpMethod.GET, String.class);
+//        log.info(result);
 
     }
 

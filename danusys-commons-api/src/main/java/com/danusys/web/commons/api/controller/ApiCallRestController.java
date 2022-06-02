@@ -22,15 +22,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.yaml.snakeyaml.util.UriEncoder;
-import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -59,37 +55,19 @@ import static java.util.stream.Collectors.toMap;
 public class ApiCallRestController {
     private final ObjectMapper objectMapper;
     private final ApiExecutorFactoryService apiExecutorFactoryService;
-//    private ApiExecutorService apiExecutorService;
-
     private final ApiCallService apiService;
     private final FacilityService facilityService;
     private final StationService stationService;
     private final ForecastService forecastService;
     private final EventService eventService;
+    private final ApiConvService apiConvService;
     private final FacilityOptService facilityOptService;
+
 
     @PostMapping(value = "/facility")
     public ResponseEntity findAllForFacility(@RequestBody Map<String, Object> param) throws Exception {
         List<Facility> list = facilityService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(list);
-    }
-
-    @PutMapping (value = "/facility")
-    public ResponseEntity apiSaveFacility(@RequestBody Map<String, Object> param) throws Exception  {
-        log.trace("param {}", param.toString());
-
-        Api api = apiService.getRequestApi(param);
-
-        //API DB 정보로 외부 API 호출
-        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        String body = (String) responseEntity.getBody();
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-
-        List<Map<String, Object>> list = (List<Map<String, Object>>) resultBody.get("facility_list");
-
-        this.facilityService.saveAll(list);
-
-        return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
     @PostMapping(value = "/station")
@@ -166,11 +144,11 @@ public class ApiCallRestController {
             resultBody = responseEntity.getBody();
         } else if (api.getResponseBodyType() == BodyType.ARRAY) {
             String body = (String) responseEntity.getBody();
-            resultBody = objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
+            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
             });
         } else if (api.getResponseBodyType() == BodyType.OBJECT) {
             String body = (String) responseEntity.getBody();
-            resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
+            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
             });
         }
 
@@ -267,9 +245,12 @@ public class ApiCallRestController {
                     .filter(f -> f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
                         AtomicReference<String> result = new AtomicReference<>();
+                        Map<Object,Object> event_list = (Map<Object,Object>)param.get(f.getFieldMapNm());
+                        String chgEvtType = apiConvService.eventConverter(f, event_list.get("eventType").toString());
+                        event_list.put("eventType",chgEvtType);
                         dataType.set(f.getDataType());
                         try {
-                            result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
+                            result.set(objectMapper.writeValueAsString(event_list));
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
@@ -281,6 +262,7 @@ public class ApiCallRestController {
                         f.setValue(result.get());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
+
 
             // Response check and set
             resultBody = apiResponseParams
@@ -457,6 +439,25 @@ public class ApiCallRestController {
                 .body(jsonParser.parse(result));
     }
 
+    /**
+     * 광명시 스마트 정류장 포인트 목록
+     * @return
+     * @throws ParseException
+     */
+    @PostMapping("/gmPointValues.json")
+    public ResponseEntity gmPointValues() throws ParseException {
+        final Resource resource = new ClassPathResource("data/gm_soap/res_point_values.json");
+        String result = "";
+        JSONParser jsonParser = new JSONParser();
+        try (Reader reader = new InputStreamReader(resource.getInputStream(), "UTF-8")) {
+            result = FileCopyUtils.copyToString(reader);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(jsonParser.parse(result));
+    }
 
 }
 

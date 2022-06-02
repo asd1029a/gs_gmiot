@@ -7,4 +7,5 @@ import java.util.Map;
 public interface ConfigService {
     EgovMap getListCode(Map<String, Object> paramMap) throws Exception;
     EgovMap getOneCode(int seq) throws Exception;
+    EgovMap getOneEventKind(String pKind);
 }

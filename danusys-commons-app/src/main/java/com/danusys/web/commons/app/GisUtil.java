@@ -1,9 +1,6 @@
-package com.danusys.web.platform.util;
+package com.danusys.web.commons.app;
 
-import com.danusys.web.commons.app.CommonUtil;
-import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.commons.app.EgovStringUtil;
-import com.danusys.web.platform.controller.GisRestController;
+//import com.danusys.web.platform.controller.GisRestController;
 import com.jhlabs.map.proj.Projection;
 import com.jhlabs.map.proj.ProjectionException;
 import com.jhlabs.map.proj.ProjectionFactory;
@@ -41,7 +38,52 @@ public class GisUtil {
 		this.projectionMap.put("EPSG:4326", new String[] { "+proj=longlat", "+ellps=WGS84", "+datum=WGS84", "+no_defs"});
 	}
 
-	/**
+	/** jsy
+	 * 도 (각 단위) -> 라디안 (각 단위)
+	 * @param degree 도
+	 * @return 라디안 값
+	 * @throws Exception
+	 */
+	private static Double degToRad(Double degree) throws Exception{
+		return (degree * Math.PI / 180.0);
+	}
+
+	/** jsy
+	 * 도 (각 단위) -> 라디안 (각 단위)
+	 * @param radian 라디안
+	 * @return 디그리 값
+	 * @throws Exception
+	 */
+	private static Double radToDeg(Double radian) throws Exception{
+		return (radian * 180 / Math.PI);
+	}
+
+	/** jsy
+	 * 위경도 두점 사이 거리 구하기
+	 * @param lat1 시작 위도
+	 * @param lon1 시작 경도
+	 * @param lat2 끝 위도
+	 * @param lon2 끝 경도
+	 * @param unit 거리 단위
+	 * @return 거리값 (해당단위) / 기본값 (m 미터)
+	 * @throws Exception
+	 */
+	public static Double getDistanceBetweenPoints(Double lat1, Double lon1, Double lat2, Double lon2, String unit) throws Exception {
+		final double latMin = 1853.159616;
+
+		double theta = lon1 - lon2;
+		double distance = Math.sin(degToRad(lat1)) * Math.sin(degToRad(lat2))
+						+ Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * Math.cos(degToRad(theta));
+		distance = radToDeg(Math.acos(distance));
+		distance = distance * latMin * 60;  //미터
+
+		if(unit == "km") {
+			distance = distance * 1.609344;
+		}
+		return distance;
+	}
+
+	/** jsy
 	 * geoJson 생성
 	 * @param geoList
 	 * @return geoJson
@@ -91,6 +133,43 @@ public class GisUtil {
 		return json.toString();
 	}
 
+	/**
+	 * geoJson 생성
+	 * @param geoList
+	 * @return geoJson
+	 * @throws Exception
+	 */
+	public static String getGeoJsonPolygon(List<Map<String, Object>> geoList, String id) throws Exception {
+		LinkedHashMap<String,Object> geoObj = new LinkedHashMap<>();
+		geoObj.put("type","FeatureCollection");
+		//features
+		ArrayList<Map<String, Object>> ary = new ArrayList<>();
+		Integer i = 1;
+		for(Map<String,Object> map : geoList) {
+			CommonUtil.validMapNull(map);
+			LinkedHashMap<String,Object> each = new LinkedHashMap<>();
+
+			each.put("type", "Feature");
+			each.put("id", id+i);
+			i++;
+
+			Map<String,Object> prop = new HashMap<>();
+			for(String key : map.keySet()) {
+				if(!key.equals("coordinates"))
+					prop.put(key,map.get(key));
+			}
+
+			each.put("properties",prop);
+			each.put("geometry", JsonUtil.JsonToMap(CommonUtil.validOneNull(map, "coordinates")));
+
+			ary.add(each);
+		}
+		geoObj.put("features",ary);
+
+		JSONObject json = new JSONObject(geoObj);
+
+		return json.toString();
+	}
 
 	public Map<String, Object> createGeoJson(List<EgovMap> list, String lon, String lat, String featureKind) {
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
@@ -178,27 +257,27 @@ public class GisUtil {
 	}
 	
 
-	public Point2D.Double convertByWgs84(String lon, String lat) {
-		Point2D.Double rst = new Point2D.Double();
-		try {
-			Projection by = ProjectionFactory
-					.fromPROJ4Specification((String[]) this.projectionMap.get(GisRestController.gisProjection));
-			by.transform(new Point2D.Double(Double.parseDouble(lon), Double.parseDouble(lat)), rst);
-		} catch (ProjectionException localProjectionException) {
-		}
-		return rst;
-	}
-
-	public Point2D.Double convertToWgs84(String lon, String lat) {
-		Point2D.Double rst = new Point2D.Double();
-		try {
-			Projection to = ProjectionFactory
-					.fromPROJ4Specification((String[]) this.projectionMap.get(GisRestController.gisProjection));
-			to.inverseTransform(new Point2D.Double(Double.parseDouble(lon), Double.parseDouble(lat)), rst);
-		} catch (ProjectionException localProjectionException) {
-		}
-		return rst;
-	}
+//	public Point2D.Double convertByWgs84(String lon, String lat) {
+//		Point2D.Double rst = new Point2D.Double();
+//		try {
+//			Projection by = ProjectionFactory
+//					.fromPROJ4Specification((String[]) this.projectionMap.get(GisRestController.gisProjection));
+//			by.transform(new Point2D.Double(Double.parseDouble(lon), Double.parseDouble(lat)), rst);
+//		} catch (ProjectionException localProjectionException) {
+//		}
+//		return rst;
+//	}
+//
+//	public Point2D.Double convertToWgs84(String lon, String lat) {
+//		Point2D.Double rst = new Point2D.Double();
+//		try {
+//			Projection to = ProjectionFactory
+//					.fromPROJ4Specification((String[]) this.projectionMap.get(GisRestController.gisProjection));
+//			to.inverseTransform(new Point2D.Double(Double.parseDouble(lon), Double.parseDouble(lat)), rst);
+//		} catch (ProjectionException localProjectionException) {
+//		}
+//		return rst;
+//	}
 
 	public Point2D.Double convertWGS842UTMK(String lon, String lat) {
 		String[] proj4Param = { "+proj=tmerc", "+lat_0=38N", "+lon_0=127.5E", "+ellps=GRS80", "+units=m",

@@ -579,9 +579,11 @@ const comm = {
             this.$listLi = this.$list.find('span');
 
             const type = this.$selectBox.data("selectboxType");
+            const subType = this.$selectBox.data("selectboxSubType");
             const pObj = {
                 draw: null,
-                type: type
+                type: type,
+                subType: subType
             }
             commonCode.getList(pObj, this.setList);
         }
@@ -808,9 +810,8 @@ var stringFunc = {
         return result;
     },
     camelize: function(text) {
-        return text.replace(/^([A-Z]+)|[\s-_]+(\w)/g, function(match, p1, p2, offset) {
+        return text.toLowerCase().replace(/^([A-Z]+)|[\s-_]+(\w)/g, function(match, p1, p2, offset) {
             if (p2) return p2.toUpperCase();
-            return p1.toLowerCase();
         });
     },
     /**

@@ -118,7 +118,7 @@ const mntr = {
         });
 
         //지도 생성
-        let map = new mapCreater('map',0);//, siGunCode);
+        let map = new mapCreater('map',0, siGunCode);
         map.createMousePosition('mousePosition');
         map.scaleLine();
         map.createContextMenu(menuObj);
@@ -338,7 +338,7 @@ const mntr = {
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
 
-            /// TODO theme 별로 탭의 모든 리스트 reload & 레이어 reload
+            /// TODO 데이터 확인 후 정리해서 코드 따로 빼기
             let eventParam = {"eventState": ["1", "2", "3"]};
             let eventPastParam = {"eventState": ["9"]};
             let stationParam = {};
@@ -350,35 +350,46 @@ const mntr = {
             switch (theme) {
                 case "smartPole" : //스마트폴
                     //실시간
-                    //개소
+                    eventParam = {"eventState": ["1", "2", "3"], "eventKind": ["gateway_trans", "device_trans", "dtctn_crmss"]};
                     //과거이력
+                    eventPastParam = {"eventState": ["9"], "eventKind": ["gateway_trans", "device_trans", "dtctn_crmss"]};
+                    //개소
+                    stationParam = {"stationKind": ["lamp_road"]};
                     window.lyControl.offList(['facility']);
-                    window.lyControl.onList(['station', 'event', 'eventPast']);
+                    window.lyControl.onList(['station', target]);
                     break;
                 case "smartBusStop" : //스마트 정류장
                     //실시간
-                    //개소
+                    eventParam = {"eventState": ["1", "2", "3"], "eventKind": ["BUSSTOP_FALL_DOWN", "BUSSTOP_FIRE"]};
                     //과거이력
+                    eventPastParam = {"eventState": ["9"], "eventKind": ["BUSSTOP_FALL_DOWN", "BUSSTOP_FIRE"]};
+                    //개소
+                    stationParam = {"stationKind": ["smart_station"]};
                     window.lyControl.offList(['facility']);
-                    window.lyControl.onList(['station', 'event', 'eventPast']);
+                    window.lyControl.onList(['station', target]);
                     break;
                 case "smartPower": //스마트 분전함
-                    // let eventParam = {"eventState": ["45", "46", "47"], "eventKind": ["63"]};
-                    // let eventPastParam = {"eventState": ["48"]};
                     //실시간
-                    //개소
+                    eventParam = {"eventState": ["1", "2", "3"], "eventKind": ["LKGE_ERCRT", "OVER_ERCRT"]};
                     //과거이력
-                    window.lyControl.offList(['facility']);
-                    window.lyControl.onList(['station', 'event', 'eventPast']);
+                    eventPastParam = {"eventState": ["9"], "eventKind": ["LKGE_ERCRT", "OVER_ERCRT"]};
+                    //개소
+                    stationParam = {"stationKind": ["smart_power"]}
+                    window.lyControl.offList(['facility','eventPast']);
+                    window.lyControl.onList(['station', target]);
                     break;
                 case "drone" : //드론
                     tablType = 'facility';
                     //실시간
-                    //개소
+                    eventParam = {"eventState": ["1", "2", "3"], "eventKind": ["drone_fire_detection", "drone_object_tracking"]};
                     //과거이력
+                    eventPastParam = {"eventState": ["9"], "eventKind": ["drone_fire_detection", "drone_object_tracking"]};
+                    //개소
+                    stationParam = {"stationKind": ["DRONE_STATION"]}
                     //기체
                     facility.getListGeoJson({
-                        "facilityKind": ["DRONE"]
+                        "facilityKind" : ["DRONE"],
+                        "sigCode" : window.siGunCode
                     },result => {
                         reloadLayer(result, 'facilityLayer');
                         lnbList.createFacility(result);
@@ -400,10 +411,13 @@ const mntr = {
                     break;
             }
 
+            stationParam["sigCode"] = window.siGunCode//"41390"; //TODO 시흥 -> window.siGunCode
+            eventParam["sigCode"] = window.siGunCode;
+            eventPastParam["sigCode"] = window.siGunCode;
+
             //실시간 이벤트
             event.getListGeoJson(eventParam, result => {
                 reloadLayer(result, 'eventLayer');
-                console.log(result);
                 lnbList.createEvent(result);
             });
             //개소
@@ -986,11 +1000,14 @@ const lnbList = {
         let objAry = JSON.parse(obj);
         const $target = $('section.select .lnb_tab_section[data-value='+ type +']');
 
+        $target.find('.search_list[data-value=station]').html("");
+        const cnt = objAry.features.length;
+
         objAry.features.forEach(each => {
             let content = "";
             const prop = each.properties;
 
-            let cnt = Number($target.find('.area_title[data-value=station] .count').text());
+            // let cnt = Number($target.find('.area_title[data-value=station] .count').text());
 
             content = "<dl>" +
                 "<dt>" + prop.stationName + "</dt>" +
@@ -1000,7 +1017,8 @@ const lnbList = {
 
             $target.find('.search_list[data-value=station]').append(content);
             $target.find('.search_list[data-value=station] dl').last().data(each);
-            $target.find('.area_title[data-value=station] .count').text(cnt+1);
+            // $target.find('.area_title[data-value=station] .count').text(cnt+1);
+            $target.find('.area_title[data-value=station] .count').text(cnt);
         });
         //개소 리스트 행 클릭 이벤트
         $target.find('.search_list[data-value=station] dl').on("click", e => {
@@ -1112,10 +1130,27 @@ const rnbList = {
         target.addClass('select');
         target.find('.stationTitle').text("[ " + prop.stationSeq + " ] "  + prop.stationName);
 
+        //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
+        ///////////////////
+        const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
+        console.log(prop);
+        console.log(theme);
+        if(theme=="smartPower"){
+            //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
+            //html로 지자체별 고정인게 나은가? -> 결정필요
+            ///show
+            ///hide
+            target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
+        } else { }
+        //////////////////
+
         //prop 돌리면서 채워넣기
-        const propList = ['stationSeq', 'administZone', 'address'];
+        const propList = Object.keys(prop);
         propList.map(propStr => {
-            target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
+            const textArea = target.find('.area_right_text li input[data-value='+propStr+']');
+            if(textArea.length > 0){
+                textArea.val(prop[propStr]);
+            }
         });
         //animation end
         window.map.removePulse();
@@ -1142,14 +1177,19 @@ const rnbList = {
         target.addClass('select');
         target.find('.eventTitle').text("[ " + prop.eventSeq + " ] "  + prop.eventKindName);
 
+        //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
+
         //초기화
         target.find('span[data-value=eventGrade] input').prop('checked',false);
         target.find('span[data-value=eventGrade] input#lv'+prop.eventGrade.replace("0","")).prop('checked',true);
 
         //prop 돌리면서 채워넣기
-        const propList = ['eventKindName', 'stationSeq', 'insertDt'];
+        const propList = Object.keys(prop);
         propList.map(propStr => {
-            target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
+            const textArea = target.find('.area_right_text li input[data-value='+propStr+']');
+            if(textArea.length > 0){
+                textArea.val(prop[propStr]);
+            }
         });
 
         window.map.removePulse();
@@ -1172,9 +1212,12 @@ const rnbList = {
         $target.find('.facilitySubTitle').eq(2).text("[ "+ prop.facilityId +" ] 기체 현황");
 
         //prop 돌리면서 채워넣기
-        const propList = ['latitude', 'longitude', 'facilityId', 'facilitySeq'];
+        const propList = Object.keys(prop);
         propList.map(propStr => {
-            $target.find('.area_right_text li input[data-value='+propStr+']').val(prop[propStr]);
+            const textArea = $target.find('.area_right_text li input[data-value='+propStr+']');
+            if(textArea.length > 0){
+                textArea.val(prop[propStr]);
+            }
         });
         //////////
         // video는 냅두고

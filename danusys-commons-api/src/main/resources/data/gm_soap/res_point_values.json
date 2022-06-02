@@ -1,0 +1,215 @@
+{
+  "return": {
+    "pointValues": [
+      {
+        "presentValue": "On",
+        "pointState": "NORMAL",
+        "settingValue": "On",
+        "pointPath": "point:/ST1/OFa8/LPa232890214279",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "On",
+        "pointState": "NORMAL",
+        "settingValue": "On",
+        "pointPath": "point:/ST1/OFa8/LPa232890214280",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "18.158",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa232890214281",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "Off",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa232890214282",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "Off",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa232890214283",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "Off",
+        "pointState": "NORMAL",
+        "settingValue": "Off",
+        "pointPath": "point:/ST1/OFa8/LPa232890214284",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "On",
+        "pointState": "NORMAL",
+        "settingValue": "On",
+        "pointPath": "point:/ST1/OFa8/LPa232890214285",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "On",
+        "pointState": "NORMAL",
+        "settingValue": "On",
+        "pointPath": "point:/ST1/OFa8/LPa232890214286",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "Off",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa232890214287",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "Off",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa232890214288",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "Off",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa232890214289",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "On",
+        "pointState": "NORMAL",
+        "settingValue": "On",
+        "pointPath": "point:/ST1/OFa8/LPa232890214290",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "Off",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa232890214291",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "145420",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233586429476",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "0",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233586429477",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "1019",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233586429478",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "0",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233586429479",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "21.5",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056311",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "0",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056312",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "15.2",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056313",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "14.5",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056314",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "0",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056315",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "3",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056316",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "22",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056317",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "4",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056318",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "0",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056319",
+        "ddcCorrectionValue": "0.0",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "On",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056320",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "On",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056321",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      },
+      {
+        "presentValue": "Off",
+        "pointState": "NORMAL",
+        "pointPath": "point:/ST1/OFa8/LPa233589056322",
+        "ddcCorrectionValue": "-9999.9999",
+        "ddcAlarmStatus": "0"
+      }
+    ]
+  }
+}

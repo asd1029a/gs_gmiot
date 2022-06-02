@@ -6,7 +6,6 @@ import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.repository.EventRepository;
 import com.danusys.web.commons.api.repository.FacilityRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,9 +58,10 @@ public class EventService {
         Facility facility = facilityRepository.findByFacilityId(eventReqeustDTO.getFacilityId());
         eventReqeustDTO.setFacilitySeq(facility.getFacilitySeq());
         eventReqeustDTO.setStationSeq(facility.getStationSeq());
+        Long eventKind = eventRepository.findEventKind(eventReqeustDTO.getEventKind());
+        Long eventGrade = eventRepository.findEventGrade(eventReqeustDTO.getEventGrade() == null ? "20" : eventReqeustDTO.getEventGrade());
 
-        Event event = eventReqeustDTO.toEntity();
-
+        Event event = eventReqeustDTO.toEntity(eventKind, eventGrade);
         eventRepository.save(event);
         return event;
     }

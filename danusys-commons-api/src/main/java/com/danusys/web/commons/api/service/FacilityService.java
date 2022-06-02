@@ -36,6 +36,10 @@ public class FacilityService {
         this.facilityOptRepository = facilityOptRepository;
     }
 
+    public Facility save(Facility facility) {
+        return this.facilityRepository.save(facility);
+    }
+
     public List<Facility> findAll() {
         return facilityRepository.findAll();
     }
@@ -44,29 +48,11 @@ public class FacilityService {
         return facilityRepository.findByFacilityId(facilityId);
     }
 
-    public void saveAll(List<Map<String, Object>> list) {
-        List<Facility> facilityList = new ArrayList<Facility>();
-        list.stream().forEach((d) -> {
-            String facilityId = d.get("facility_id").toString();
-            Facility originFacility = this.findByFacilityId(facilityId);
-            Facility facility = originFacility == null ? new Facility() : originFacility;
-            Station station = stationRepository.findByStationName(StrUtils.getStr(d.get("station_name")));
-            Long codeSeq = facilityRepository.findCommonCode(StrUtils.getStr(d.get("facility_kind")));
-
-            facility.setLatitude(Double.parseDouble(StrUtils.getStr(d.get("latitude"))));
-            facility.setLongitude(Double.parseDouble(StrUtils.getStr(d.get("longitude"))));
-            facility.setFacilityId(facilityId);
-            facility.setStationSeq(station.getStationSeq());
-            facility.setFacilityStatus(0);
-            facility.setFacilityKind(Integer.parseInt(codeSeq.toString()));
-
-            facilityList.add(facility);
-        });
-
-        facilityRepository.saveAll(facilityList);
+    public void saveAll(List<Facility> list) {
+        facilityRepository.saveAll(list);
     }
 
-    public void saveAll(List<Map<String, Object>> list, String facilityKind) {
+    public List<Facility> saveAll(List<Map<String, Object>> list, String facilityKind) {
         List<Facility> facilityList = new ArrayList<Facility>();
         list.stream().forEach((d) -> {
             String facilityId = d.get("facility_id").toString();
@@ -75,20 +61,24 @@ public class FacilityService {
             Station station = stationRepository.findByStationName(StrUtils.getStr(d.get("station_name")));
             Long codeSeq = facilityRepository.findCommonCode(facilityKind);
 
-            String latitude = StrUtils.getStr(d.get("latitude"));
-            String longitude = StrUtils.getStr(d.get("longitude"));
+            String latStr = StrUtils.getStr(d.get("latitude"));
+            String lngStr = StrUtils.getStr(d.get("longitude"));
             String facilityName = StrUtils.getStr(d.get("facility_name"));
 
 
-            latitude = latitude.isEmpty() ? "0" : latitude;
-            longitude = longitude.isEmpty() ? "0" : longitude;
+            latStr = latStr.isEmpty() ? "0" : latStr;
+            lngStr = lngStr.isEmpty() ? "0" : lngStr;
 
-            facility.setLatitude(Double.parseDouble(latitude));
-            facility.setLongitude(Double.parseDouble(longitude));
+            double latitude = Double.parseDouble(latStr);
+            double longitude = Double.parseDouble(lngStr);
+
+            facility.setLatitude(latitude);
+            facility.setLongitude(longitude);
             facility.setFacilityId(facilityId);
             facility.setFacilityStatus(0);
-            facility.setFacilityKind(Integer.parseInt(codeSeq.toString()));
-            facility.setFacilityName(facilityName);
+            facility.setFacilityKind(Long.parseLong(codeSeq.toString()));
+            facility.setAdministZone(facilityRepository.getEmdCode(longitude, latitude));
+            if (!facilityName.isEmpty()) facility.setFacilityName(facilityName);
 
             if (station != null) {
                 facility.setStationSeq(station.getStationSeq());
@@ -97,7 +87,7 @@ public class FacilityService {
             facilityList.add(facility);
         });
 
-        facilityRepository.saveAll(facilityList);
+        return facilityRepository.saveAll(facilityList);
     }
 
     public Facility getOne(Long id) {
@@ -110,5 +100,13 @@ public class FacilityService {
         d.setLatitude(facility.getLatitude());
         d.setLongitude(facility.getLongitude());
         return d;
+    }
+
+    public List<Facility> findByFacilityKind(Long facilityKind) {
+        return facilityRepository.findByFacilityKind(facilityKind);
+    }
+
+    public String getEmdCode(double longitude, double latitude) {
+        return facilityRepository.getEmdCode(longitude, latitude);
     }
 }

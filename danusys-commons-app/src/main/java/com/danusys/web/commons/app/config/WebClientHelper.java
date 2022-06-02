@@ -1,7 +1,6 @@
-package com.danusys.web.danusysmeteringdevicelwm2m.config;
+package com.danusys.web.commons.app.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -19,14 +18,6 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Component
 public class WebClientHelper {
-
-//    private final RestTemplate restTemplate;
-//    private final MessageSourceAccessor messageSourceAccessor;
-
-//    public WebClientHelper(RestTemplate restTemplate, MessageSourceAccessor messageSourceAccessor) {
-//        this.restTemplate = restTemplate;
-////        this.messageSourceAccessor = messageSourceAccessor;
-//    }
 
     /**
      * 파라미터 있고, 액세스토큰 없는 호출
@@ -61,7 +52,6 @@ public class WebClientHelper {
     public <T> T exchange(final String url, MediaType mediaType, HttpMethod method, String accessToken, Class clazz) throws Exception {
         return exchange(url, mediaType, method, null, accessToken, clazz);
     }
-
 
     /**
      * restTemplate call

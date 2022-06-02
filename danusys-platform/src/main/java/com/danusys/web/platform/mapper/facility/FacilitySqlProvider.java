@@ -15,54 +15,69 @@ public class FacilitySqlProvider {
     public String selectListQry(Map<String, Object> paramMap) {
         String keyword = CommonUtil.validOneNull(paramMap, "keyword");
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
-        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
-        ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
+        String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
+        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
+        ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
         String start = CommonUtil.validOneNull(paramMap, "start");
         String length = CommonUtil.validOneNull(paramMap, "length");
+        StringBuilder builder = new StringBuilder();
 
         SQL sql = new SQL() {{
-            SELECT("t1.facility_seq, t1.facility_id" +
-                    ", t1.administ_zone, t1.facility_image" +
-                    ", t1.facility_instl_info, t1.facility_instl_dt" +
-                    ", t1.facility_status, t1.latitude" +
-                    ", t1.longitude, t1.insert_dt, t3.id AS insert_user_id" +
-                    ", t1.update_user_seq , t4.id AS update_user_id" +
-                    ", t2.code_value AS facility_kind" +
-                    ", t2.code_name AS facility_kind_name" +
-                    ", t5.station_kind, t5.station_name, t5.address" +
-//                    현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//                    ", t6.code_name AS administ_zone_name");
-                    ", t6.emd_nm AS administ_zone_name" +
-                    ", t7.code_name AS station_kind_name" +
-                    ", t7.code_value AS station_kind_value");
+            builder.append("t1.facility_seq, t1.facility_id");
+            builder.append(", t1.administ_zone, t1.facility_image");
+            builder.append(", t1.facility_instl_info, t1.facility_instl_dt");
+            builder.append(", t1.facility_status, t1.latitude");
+            builder.append(", t1.longitude, t1.insert_dt, t3.id AS insert_user_id");
+            builder.append(", t1.update_user_seq , t4.id AS update_user_id");
+            builder.append(", t2.code_value AS facility_kind");
+            builder.append(", t2.code_name AS facility_kind_name");
+            builder.append(", t5.station_kind, t5.station_name, t5.address");
+            builder.append(", t6.code_name AS administ_zone_name");
+            builder.append(", t7.code_name AS station_kind_name");
+            builder.append(", t7.code_value AS station_kind_value");
+
+            if (facilityKind.contains("DRONE")) {
+                builder.append(", t8.*");
+            }
+
+            if (facilityKind.contains("EMS")) {
+                builder.append(", t9.*");
+            }
+
+            SELECT(builder.toString());
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
             LEFT_OUTER_JOIN("t_user t3 on t1.insert_user_seq = t3.user_seq");
             LEFT_OUTER_JOIN("t_user t4 on t1.update_user_seq = t4.user_seq");
             LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");
-//            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//            LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
-            LEFT_OUTER_JOIN("t_area_emd t6 on t1.administ_zone = t6.emd_cd");
-            LEFT_OUTER_JOIN("v_facility_station t7 on t5.station_kind = t7.code_seq");
+            LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
+            LEFT_OUTER_JOIN("v_station_kind t7 on t5.station_kind = t7.code_seq");
+
+            if (facilityKind.contains("DRONE")) {
+                LEFT_OUTER_JOIN("v_drone_data t8 on t1.facility_seq = t8.facility_seq");
+            }
+
+            if (facilityKind.contains("EMS")) {
+                LEFT_OUTER_JOIN("v_ems_data t9 on t1.facility_seq = t9.facility_seq");
+            }
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
             }
-//            현재는 데이터가 안맞아서 주석 해놓음
-//            if (administZone != null && !administZone.isEmpty()) {
-////                WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
-//                WHERE("t6.emd_cd" + SqlUtil.getWhereInStr(administZone));
-//            }
-            if (station != null && !station.isEmpty()) {
-                WHERE("t7.code_value" + SqlUtil.getWhereInStr(station));
+            if (sigCode != null && !sigCode.isEmpty()) {
+                WHERE("substring(t6.code_value,0,6) = '" + sigCode + "'");
+            }
+            if(administZone != null && !administZone.isEmpty()) {
+                WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
+            }
+            if (stationKind != null && !stationKind.isEmpty()) {
+                WHERE("t7.code_value" + SqlUtil.getWhereInStr(stationKind));
             }
             if (keyword != null && !keyword.equals("")) {
                 WHERE("(t1.facility_id LIKE '%" + keyword + "%'" +
                         " OR t2.code_name LIKE '%" + keyword + "%'" +
                         " OR t5.station_name LIKE '%" + keyword + "%'" +
-//                        현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//                        " OR t6.code_name LIKE '%" + keyword + "%'" +
-                        " OR t6.emd_nm LIKE '%" + keyword + "%'" +
+                        " OR t6.code_name LIKE '%" + keyword + "%'" +
                         " OR t7.code_name LIKE '%" + keyword + "%'" +
                         ")");
             }
@@ -78,8 +93,9 @@ public class FacilitySqlProvider {
     public String selectCountQry(Map<String, Object> paramMap) {
         String keyword = CommonUtil.validOneNull(paramMap, "keyword");
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
-        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
-        ArrayList<String> station = CommonUtil.valiArrNull(paramMap, "station");
+        String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
+        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
+        ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
         String createType = CommonUtil.validOneNull(paramMap, "createType");
 
         SQL sql = new SQL() {{
@@ -90,10 +106,8 @@ public class FacilitySqlProvider {
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
             LEFT_OUTER_JOIN("t_station t3 on t1.station_seq = t3.station_seq");
-//            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
-            LEFT_OUTER_JOIN("t_area_emd t4 on t1.administ_zone = t4.emd_cd");
-            LEFT_OUTER_JOIN("v_facility_station t5 on t3.station_kind = t5.code_seq");
+            LEFT_OUTER_JOIN("v_administ t4 on t1.administ_zone = t3.code_value");
+            LEFT_OUTER_JOIN("v_station_kind t5 on t3.station_kind = t5.code_seq");
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
                 if (facilityKind.contains("lamp_road")) {
@@ -109,21 +123,23 @@ public class FacilitySqlProvider {
                             ")");
                 }
             }
-//            현재는 데이터가 안맞아서 주석 해놓음
-//            if (administZone != null && !administZone.isEmpty()) {
-////                WHERE("t5.code_value" + SqlUtil.getWhereInStr(administZone));
-//                WHERE("t4.emd_cd" + SqlUtil.getWhereInStr(administZone));
-//            }
-            if (station != null && !station.isEmpty()) {
-                WHERE("t5.code_value" + SqlUtil.getWhereInStr(station));
+            if (administZone != null && !administZone.isEmpty()) {
+                WHERE("t4.code_value" + SqlUtil.getWhereInStr(administZone));
+            }
+            if (sigCode != null && !sigCode.isEmpty()) {
+                WHERE("substring(t4.code_value,0,6) = '" + sigCode + "'");
+            }
+            if(administZone != null && !administZone.isEmpty()) {
+                WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
+            }
+            if (stationKind != null && !stationKind.isEmpty()) {
+                WHERE("t5.code_value" + SqlUtil.getWhereInStr(stationKind));
             }
             if (keyword != null && !keyword.equals("")) {
                 WHERE("(t1.facility_id LIKE '%" + keyword + "%'" +
                         " OR t2.code_name LIKE '%" + keyword + "%'" +
                         " OR t3.station_name LIKE '%" + keyword + "%'" +
-//                        현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//                        " OR t6.code_name LIKE '%" + keyword + "%'" +
-                        " OR t4.emd_nm LIKE '%" + keyword + "%'" +
+                        " OR t4.code_name LIKE '%" + keyword + "%'" +
                         " OR t5.code_name LIKE '%" + keyword + "%'" +
                         ")");
             }
@@ -305,10 +321,10 @@ public class FacilitySqlProvider {
                     ", t1.longitude, t1.insert_dt" +
                     ", t2.code_value AS facility_kind" +
                     ", t2.code_name AS facility_kind_name" +
-                    ", t3.emd_nm AS administ_zone_name");
+                    ", t3.code_name AS administ_zone_name");
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
-            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
             WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
             String modifyQry = "";
             if ("mod".equals(activeType)) {
@@ -331,10 +347,10 @@ public class FacilitySqlProvider {
                     ", t1.administ_zone, t1.insert_dt" +
                     ", t2.code_value AS facility_kind" +
                     ", t2.code_name AS facility_kind_name" +
-                    ", t3.emd_nm AS administ_zone_name");
+                    ", t3.code_name AS administ_zone_name");
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
-            LEFT_OUTER_JOIN("t_area_emd t3 on t1.administ_zone = t3.emd_cd");
+            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
             WHERE("t1.facility_kind = 58");
             ORDER_BY("t1.facility_seq");
         }};

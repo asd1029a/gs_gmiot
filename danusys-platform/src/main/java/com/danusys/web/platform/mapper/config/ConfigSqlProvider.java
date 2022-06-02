@@ -1,5 +1,6 @@
 package com.danusys.web.platform.mapper.config;
 
+import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.StrUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -46,11 +47,22 @@ public class ConfigSqlProvider {
     public String selectListTypeQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
             SELECT("*");
-            switch (StrUtils.getStr(paramMap.get("type"))) {
+            switch (CommonUtil.validOneNull(paramMap, "type")) {
                 case "stationKind" : FROM("v_facility_station"); break;
                 case "district" : FROM("v_facility_district"); break;
                 case "facilityKind" : FROM("v_facility_kind"); break;
-                case "eventKind" : FROM("v_event_kind"); break;
+                case "eventKind" : {
+                    FROM("(SELECT t1.*" +
+                            "from v_event_kind t1" +
+                            ", (" +
+                            "    SELECT *" +
+                            "    FROM v_event_kind" +
+                            "    WHERE level = 1 AND code_value = '" + CommonUtil.validOneNull(paramMap, "subType") + "'" +
+                            ") t2" +
+                            " WHERE t2.code_seq = t1.parent_code_seq OR t1.level = 0" +
+                            " ORDER BY level, code_seq) t");
+                    break;
+                }
                 case "administZone" : FROM("v_administ"); break;
                 default : FROM("t_common_code"); break;
             }
@@ -67,5 +79,16 @@ public class ConfigSqlProvider {
         }};
         return sql.toString();
     }
+
+    public String selectOneEventKindQry(String kind) {
+        SQL sql = new SQL() {{
+
+            SELECT("*");
+            FROM("v_event_kind");
+            WHERE("code_value = '" + kind + "'");
+        }};
+        return sql.toString();
+    }
+
 
 }

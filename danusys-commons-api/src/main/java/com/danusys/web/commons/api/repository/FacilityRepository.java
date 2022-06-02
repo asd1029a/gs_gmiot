@@ -20,4 +20,10 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
 
     @Query(value = "SELECT code_seq FROM v_facility_kind WHERE code_id = :codeId", nativeQuery = true)
     Long findCommonCode(String codeId);
+
+    List<Facility> findByFacilityKind(Long facilityKind);
+
+    @Query(value = "SELECT fn_lonlat_to_emdcode(:longitude, :latitude)", nativeQuery = true)
+    String getEmdCode(double longitude, double latitude);
+
 }

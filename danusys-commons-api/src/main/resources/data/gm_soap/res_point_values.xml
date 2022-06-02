@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+    <S:Body>
+        <ns2:forcedLoginResponse xmlns:ns2="http://ws.bms.swc.lge.com/">
+            <return>
+                <clientId>771602452</clientId>
+                <user>
+                    <userId>danusys</userId>
+                    <prefixId>f</prefixId>
+                    <userTypeCode>Op</userTypeCode>
+                    <password>5Scy0g7fuDo=</password>
+                    <connectType>M</connectType>
+                    <realname>danusys</realname>
+                    <email></email>
+                    <description>다누시스 IOT플랫폼 접근용 계정</description>
+                    <registerDate>2022-05-20T10:24:58.527+09:00</registerDate>
+                </user>
+                <resultCode>1</resultCode>
+                <socketComPort>9998</socketComPort>
+                <language>ko</language>
+                <peakDemand>peak</peakDemand>
+                <packageOption>
+                    <BACnet>false</BACnet>
+                    <CCTV>false</CCTV>
+                    <contents>true</contents>
+                    <elevator>false</elevator>
+                    <energy>true</energy>
+                    <fire>false</fire>
+                    <graphicEditor>true</graphicEditor>
+                    <history>true</history>
+                    <ilonSs>true</ilonSs>
+                    <lns>true</lns>
+                    <logicEditor>true</logicEditor>
+                    <modbus>true</modbus>
+                    <network>true</network>
+                    <opc>false</opc>
+                    <premium>true</premium>
+                    <remoteAlarm>false</remoteAlarm>
+                    <security>false</security>
+                    <trend>true</trend>
+                    <userAction>true</userAction>
+                    <webClient>false</webClient>
+                </packageOption>
+            </return>
+        </ns2:forcedLoginResponse>
+    </S:Body>
+</S:Envelope>
