@@ -1135,13 +1135,22 @@ const rnbList = {
         const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
         console.log(prop);
         console.log(theme);
-        if(theme=="smartPower"){
+        if(theme=="smartPower") {
             //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
             //html로 지자체별 고정인게 나은가? -> 결정필요
             ///show
             ///hide
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
-        } else { }
+        } else if(theme=="smartBusStop") {
+            facility.getListGeoJson({
+                "stationSeq" : prop.stationSeq
+            },result => {
+                console.log(result)
+                // reloadLayer(result, 'facilityLayer');
+                // lnbList.createFacility(result);
+            });
+
+        } else {}
         //////////////////
 
         //prop 돌리면서 채워넣기

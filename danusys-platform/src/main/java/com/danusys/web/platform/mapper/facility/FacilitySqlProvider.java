@@ -16,6 +16,7 @@ public class FacilitySqlProvider {
         String keyword = CommonUtil.validOneNull(paramMap, "keyword");
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
         String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
+        String stationSeq = CommonUtil.validOneNull(paramMap, "stationSeq"); //개소 SEQ
         ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
         ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
         String start = CommonUtil.validOneNull(paramMap, "start");
@@ -44,6 +45,12 @@ public class FacilitySqlProvider {
                 builder.append(", t9.*");
             }
 
+            if (facilityKind.contains("smartBusStop")) {
+                //TODO 시설물 OPT 정보
+//                builder.append(", t9.*");
+            }
+
+
             SELECT(builder.toString());
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
@@ -66,6 +73,9 @@ public class FacilitySqlProvider {
             }
             if (sigCode != null && !sigCode.isEmpty()) {
                 WHERE("substring(t6.code_value,0,6) = '" + sigCode + "'");
+            }
+            if (stationSeq != null && !stationSeq.isEmpty()) {
+                WHERE("t5.station_seq = " + stationSeq);
             }
             if(administZone != null && !administZone.isEmpty()) {
                 WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
@@ -461,6 +471,17 @@ public class FacilitySqlProvider {
         return sql.toString();
     }
 
+    public String selectOneSignageLayoutUseQry() {
+        SQL sql = new SQL() {
+            {
+                SELECT("t1.template_content");
+                FROM("t_signage_template t1");
+                WHERE("t1.use_yn = 'Y'");
+            }
+        };
+        return sql.toString();
+    }
+
     public String insertSignageTemplateQry(Map<String, Object> paramMap) {
         Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
 
@@ -483,11 +504,29 @@ public class FacilitySqlProvider {
     }
 
     public String updateSignageLayoutQry(SignageRequestDto signageRequestDto) {
+        String templateContent = signageRequestDto.getTemplateContent() != null ? signageRequestDto.getTemplateContent() : "";
 
         SQL sql = new SQL() {{
             UPDATE("t_signage_template");
-            SET("template_content = '" + signageRequestDto.getTemplateContent() + "'");
+            SET("template_content = '" + templateContent + "'");
             WHERE("template_seq = " + signageRequestDto.getTemplateSeq());
+        }};
+        return sql.toString();
+    }
+
+    public String updateSignageLayoutForGmQry(Map<String, Object> paramMap) {
+        String templateContent = CommonUtil.validOneNull(paramMap, "templateContent");
+        String useYn = CommonUtil.validOneNull(paramMap, "useYn");
+
+        SQL sql = new SQL() {{
+            UPDATE("t_signage_template");
+            if(templateContent != null && !templateContent.equals("")) {
+                SET("template_content = '" + templateContent + "'");
+                SET("use_yn = '" + useYn + "'");
+                WHERE("template_seq = " + paramMap.get("templateSeq"));
+            } else {
+                SET("use_yn = '" + useYn + "'");
+            }
         }};
         return sql.toString();
     }

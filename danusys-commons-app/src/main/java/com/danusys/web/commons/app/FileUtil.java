@@ -69,14 +69,6 @@ public class FileUtil {
                 log.info("Upload File Size : " + multipartFile.getSize());
 
                 uploadFileName = multipartFile.getOriginalFilename();
-//                try {
-//                    uploadFileName = new String(uploadFileName.getBytes("8859_1"), "UTF-8");
-//
-//
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
-
                 uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
 
                 log.info("only file name: " + uploadFileName);
@@ -101,6 +93,70 @@ public class FileUtil {
         return savedFileName;
     }
 
+    public static String uploadMulitAjaxPost(List<MultipartFile> uploadFile, HttpServletRequest request) {
+        String folderPath = "";
+        String folder[] = request.getHeader("REFERER").split("/");
+        for (int i = 0; i < folder.length; i++) {
+            if (i >= 3)
+                folderPath += folder[i] + "/";
+
+        }
+        String sPath = STATIC_EXTERNAL_FILE_PATH;
+        String uploadFileName = null;
+        StringBuilder savedFileNames = new StringBuilder();
+        String savedFileName = null;
+
+        File uploadPath = new File(sPath, folderPath);
+        log.info("upload path : " + uploadPath);
+
+
+        if (uploadPath.exists() == false) {
+            uploadPath.mkdirs();
+        }
+
+        int idx = 0;
+        for (MultipartFile multipartFile : uploadFile) {
+            if(!multipartFile.isEmpty()){
+                log.info("Upload File Name : " + multipartFile.getOriginalFilename());
+                log.info("Upload File Size : " + multipartFile.getSize());
+
+                uploadFileName = multipartFile.getOriginalFilename();
+                uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
+
+                log.info("only file name: " + uploadFileName);
+
+                for (String extension : staticExtensionList) {
+                    if (uploadFileName.contains(extension))
+                        return null;
+                }
+                if(uploadFile.size() -1 == idx) {
+                    savedFileNames.append(setFileUUID()).append(uploadFileName);
+                } else {
+                    savedFileNames.append(setFileUUID()).append(uploadFileName).append(", ");
+                }
+                savedFileName = setFileUUID() + uploadFileName;
+                File savefile = new File(uploadPath, savedFileName);
+
+                try {
+                    multipartFile.transferTo(savefile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                idx++;
+            }else{
+                savedFileNames = new StringBuilder();
+            }
+        }
+        return savedFileNames.toString();
+    }
+
+    public static void deleteFile(String folderPath, String fileName) throws Exception {
+        String filePath = STATIC_EXTERNAL_FILE_PATH + folderPath + fileName;
+        File file = new File(filePath);
+        if(file.exists()) {
+            file.delete();
+        }
+    }
 
     private static String setFileUUID() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -207,6 +263,38 @@ public class FileUtil {
 
     }
 
+    public static void fileDownloadWithFilePath(HttpServletResponse response, String fileName, String folderPath) {
+
+        File file = new File(STATIC_EXTERNAL_FILE_PATH + folderPath + fileName);
+        if (file.exists()) {
+            //get the mimetype
+            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+            if (mimeType == null) {
+                //unknown mimetype so set the mimetype to application/octet-stream
+                mimeType = "application/octet-stream";
+            }
+            response.setContentType(mimeType);
+            //response.setContentType("application/download; UTF-8");
+
+//            response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+
+            String fileNameOrg = file.getName();
+            log.info("file.getName()={}", file.getName());
+            try {
+                fileNameOrg = new String(fileNameOrg.getBytes("UTF-8"), "ISO-8859-1");
+                response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + fileNameOrg + "\""));
+
+                response.setContentLength((int) file.length());
+
+                InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+                FileCopyUtils.copy(inputStream, response.getOutputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 
     public static void fileDownload(HttpServletRequest request, HttpServletResponse response,
                                     String fileName) {

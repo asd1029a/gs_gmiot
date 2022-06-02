@@ -43,7 +43,7 @@ public class Station {
     private Timestamp stationCompetDt;
 
     @Column
-    private int stationSize;
+    private Integer stationSize;
 
     @Column
     private String stationMaterial;

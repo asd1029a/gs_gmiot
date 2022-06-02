@@ -1,6 +1,7 @@
 package com.danusys.web.commons.app;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,7 +16,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class RestUtil {
+
     public static ResponseEntity exchange(String targetUrl, HttpMethod method, MediaType mediaType, Map<String, Object> reqMap) {
+        return exchange(targetUrl, method, mediaType, reqMap, String.class);
+    }
+
+    public static ResponseEntity exchange(String targetUrl, HttpMethod method, MediaType mediaType, Map<String, Object> reqMap, Class clazz) {
         RestTemplate restTemplate = new RestTemplate();
         URI uri = null;
 
@@ -43,7 +49,7 @@ public class RestUtil {
 
             log.trace("restUrl:{}, method:{}, request:{}", targetUrl, method, requestEntity);
 
-            responseEntity = restTemplate.exchange(uri, method, requestEntity, String.class);
+            responseEntity = restTemplate.exchange(uri, method, requestEntity, clazz);
         } catch (RestClientResponseException rcrex) {
             return ResponseEntity.status(rcrex.getRawStatusCode()).body("");
         } catch (Exception ex) {
