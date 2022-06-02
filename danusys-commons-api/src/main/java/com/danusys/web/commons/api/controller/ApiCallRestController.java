@@ -95,14 +95,27 @@ public class ApiCallRestController {
     }
 
     @PostMapping(value="/getCurSkyTmp")
-    public ResponseEntity getCurSkyTmp(@RequestBody Map<String, Object> param) throws Exception {
-        Api api = apiService.getRequestApi(forecastService.setReqParam(param));
-        //API DB 정보로 외부 API 호출
-        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-        String body = (String) responseEntity.getBody();
+    public ResponseEntity getCurSkyTmp(@RequestBody Map<String, Object> param) {
+        Api api = null;
+        Map<String, Object> resultMap = null;
+        try {
+            api = apiService.getRequestApi(forecastService.setReqParam(param));
+            log.trace("api : {}", api);
+            //API DB 정보로 외부 API 호출
+            ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+            String body = (String) responseEntity.getBody();
 
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
-        Map<String, Object> resultMap = forecastService.getCurSkyTmp(resultBody);
+            if(body == null || body.isEmpty()) {
+                log.trace("param : {}", param);
+                throw new RuntimeException("조회된 정보가 없습니다.");
+            }
+
+            Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>(){});
+            resultMap = forecastService.getCurSkyTmp(resultBody);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(resultMap);
     }
