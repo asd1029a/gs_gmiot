@@ -5,6 +5,7 @@ import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -151,7 +152,6 @@ public class FacilityServiceImpl implements FacilityService{
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile,
             HttpServletRequest request, SignageRequestDto signageRequestDto) throws Exception {
         String imageFileName = "";
@@ -180,7 +180,108 @@ public class FacilityServiceImpl implements FacilityService{
     }
 
     @Override
-    public void delSignageTemplate(int seq) throws Exception {
-        commonMapper.delete(fsp.deleteSignageTemplateQry(seq));
+    public String getOneSignageData() throws Exception {
+        EgovMap dataMap = commonMapper.selectOne(fsp.selectOneSignageLayoutUseQry());
+
+        String templateContentStr = dataMap.get("templateContent").toString().replaceAll("&quot;", "\"");
+        String serverIp = "danusys.asuscomm.com";
+        List<Map<String, Object>> templateContentList = JsonUtil.jsonToListMap(templateContentStr);
+
+        JSONArray newTemplateContentList = new JSONArray();
+        for (Map<String, Object> map : templateContentList) {
+            JSONObject newTemplateContent = new JSONObject();
+                for (String key : map.keySet()) {
+                    JSONArray newImageList = new JSONArray();
+                    if(key.indexOf("ImageList") > 0) {
+                        List<Map<String, Object>> imageList = (List<Map<String, Object>>) map.get(key);
+                        Map<String, Object> newMap = new HashMap<>();
+                        if(!imageList.isEmpty()) {
+                            for (Map<String, Object> imageMap : imageList) {
+                                String imageFileName = imageMap.get("imageFile").toString();
+                                String downloadFilePath = "http://" + serverIp + ":8400" + "/facility/signage/downloadImage/"+imageFileName;
+                                newMap.put("imageFile", downloadFilePath);
+                                newMap.put("startDt", imageMap.get("startDt"));
+                                newMap.put("endDt", imageMap.get("endDt"));
+                                newMap.put("delayTime", imageMap.get("delayTime"));
+                                newImageList.add(JsonUtil.convertMapToJson(newMap));
+                            }
+                        }
+                    }
+                    newTemplateContent.put(key, newImageList);
+                }
+                newTemplateContentList.add(newTemplateContent);
+        }
+        return newTemplateContentList.toString().replaceAll("\\\\", "");
+    };
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modSignageLayoutForGm(Map<String, Object> paramMap) throws Exception {
+        int templateSeq = (int) paramMap.get("templateSeq");
+        EgovMap deleteMap = commonMapper.selectOne(fsp.selectOneSignageLayoutQry(templateSeq));
+        List<Map<String, Object>> beforeTemplateContentList = JsonUtil.jsonToListMap((String) deleteMap.get("templateContent"));
+        List<String> notDeleteFileList = (List<String>) paramMap.get("notDeleteFileList");
+        Map<String, Object> noUseMap = new HashMap<>();
+        noUseMap.put("useYn", "N");
+
+        //useYn : N update
+        commonMapper.update(fsp.updateSignageLayoutForGmQry(noUseMap));
+        commonMapper.update(fsp.updateSignageLayoutForGmQry(paramMap));
+
+        // beforeIamgeFile delete
+        for (Map<String, Object> map : beforeTemplateContentList) {
+            for (String key : map.keySet()) {
+                if(key.indexOf("ImageList") > 0) {
+                    List<Map<String, Object>> imageList = (List<Map<String, Object>>) map.get(key);
+                    if(!imageList.isEmpty()) {
+                        for (Map<String, Object> imageMap : imageList) {
+                            String imageFileName = imageMap.get("imageFile").toString();
+                            boolean deleteFlag = true;
+                            // 기존 파일 과 삭제 파일 대조 검증
+                            for (String notDelFile : notDeleteFileList) {
+                                if (notDelFile.equals(imageFileName)) {
+                                    deleteFlag = false;
+                                    break;
+                                }
+                            }
+                            if(deleteFlag) {
+                                FileUtil.deleteFile("/pages/config/signage/", imageFileName);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delSignageTemplate(Map<String, Object> paramMap) throws Exception {
+        int templateSeq = (int) paramMap.get("templateSeq");
+        String templateContent = paramMap.get("templateContent").toString();
+        List<Map<String, Object>> templateContentList = JsonUtil.jsonToListMap(templateContent);
+
+        for (Map<String, Object> map : templateContentList) {
+            for (String key : map.keySet()) {
+                if(key.indexOf("ImageList") > 0) {
+                    List<Map<String, Object>> imageList = (List<Map<String, Object>>) map.get(key);
+                    if(!imageList.isEmpty()) {
+                        for (Map<String, Object> imageMap : imageList) {
+                            String imageFileName = imageMap.get("imageFile").toString();
+                            FileUtil.deleteFile("/pages/config/signage/", imageFileName);
+                        }
+                    }
+                } else if(key.indexOf("kind") > 0) {
+                    String fileName = "";
+                    if("imageFile".equals(map.get("kind"))) {
+                        fileName = map.get("value").toString();
+                    } else if("videoFile".equals(map.get("kind"))) {
+                        fileName = map.get("value").toString();
+                    }
+                    FileUtil.deleteFile("/pages/config/signage/", fileName);
+                }
+            }
+        }
+        commonMapper.delete(fsp.deleteSignageTemplateQry(templateSeq));
     }
 }

@@ -5,6 +5,7 @@ import com.danusys.web.platform.dto.request.SignageRequestDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 public interface FacilityService {
@@ -27,5 +28,8 @@ public interface FacilityService {
     int modSignageTemplate(Map<String, Object> paramMap) throws Exception;
     void modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile
             , HttpServletRequest request, SignageRequestDto signageRequestDto) throws Exception;
-    void delSignageTemplate(int seq) throws Exception;
+    void modSignageLayoutForGm(Map<String, Object> paramMap) throws Exception ;
+    String getOneSignageData() throws Exception;
+    void delSignageTemplate(Map<String, Object> paramMap) throws Exception;
+
 }

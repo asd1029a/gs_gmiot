@@ -988,11 +988,11 @@ const dateFunc = {
      * @param customObj 사용자 정의 설정 Object
      * @example   datePickerSet($("#datepicker1"), $("#datepicker2"));
      */
-    datePickerSet: function(sDate, eDate, flag, customObj) {
+    datePickerSet: function($sDate, $eDate, flag, customObj) {
         //시작 ~ 종료 2개 짜리 달력 datepicker
-        if (!stringFunc.isValidStr(sDate) && !stringFunc.isValidStr(eDate) && sDate.length > 0 && eDate.length > 0) {
-            let sDay = sDate.val();
-            let eDay = eDate.val();
+        if (!stringFunc.isValidStr($sDate) && !stringFunc.isValidStr($eDate) && $sDate.length > 0 && $eDate.length > 0) {
+            let sDay = $sDate.val();
+            let eDay = $eDate.val();
 
             let defaultObj = {
                 language: 'ko',
@@ -1000,49 +1000,48 @@ const dateFunc = {
                 timepicker: true,
                 timeFormat: "hh:ii",
                 onSelect: function() {
-                    dateFunc.datePickerSet(sDate, eDate);
+                    dateFunc.datePickerSet($sDate, $eDate);
                 }
             }
 
-            let otpObj = Object.assign(defaultObj, customObj);
-
-            if (flag && !stringFunc.isValidStr(sDay) && !stringFunc.isValidStr(eDay)) { //처음 입력 날짜 설정, update...
-                let sdp = sDate.datepicker().data("datepicker");
-                sdp.selectDate(new Date(sDay.replace(/-/g, "/"))); //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
-
-                let edp = eDate.datepicker().data("datepicker");
-                edp.selectDate(new Date(eDay.replace(/-/g, "/"))); //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
-            }
+            let optObj = Object.assign(defaultObj, customObj);
 
             //시작일자 세팅하기 날짜가 없는경우엔 제한을 걸지 않음
             if (!stringFunc.isValidStr(eDay)) {
-                sDate.datepicker({
-                    maxDate: new Date(eDay.replace(/-/g, "/"))
-                });
+                // sDate.datepicker({
+                //     maxDate: new Date(eDay.replace(/-/g, "/"))
+                // });
+                optObj.maxDate = new Date(eDay.replace(/-/g, "/"));
             }
-            sDate.datepicker(otpObj);
-
+            $sDate.datepicker(optObj);
             //종료일자 세팅하기 날짜가 없는경우엔 제한을 걸지 않음
             if (!stringFunc.isValidStr(sDay)) {
-                eDate.datepicker({
-                    minDate: new Date(sDay.replace(/-/g, "/"))
-                });
+                // eDate.datepicker({
+                //     minDate: new Date(sDay.replace(/-/g, "/"))
+                // });
+                optObj.minDate = new Date(sDay.replace(/-/g, "/"));
             }
-            eDate.datepicker(otpObj);
-        } else if (!stringFunc.isValidStr(sDate)) { //한개짜리 달력 datepicker
-            let sDay = sDate.val();
-            if (flag && !stringFunc.isValidStr(sDay)) { //처음 입력 날짜 설정, update...
-                let sdp = sDate.datepicker().data("datepicker");
-                sdp.selectDate(new Date(sDay.replace(/-/g, "/"))); //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
+            $eDate.datepicker(optObj);
+
+            if (flag && !stringFunc.isValidStr(sDay) && !stringFunc.isValidStr(eDay)) { //처음 입력 날짜 설정, update...
+                $sDate.datepicker().data("datepicker").selectDate(new Date(sDay.replace(/-/g, "/"))); //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
+                $eDate.datepicker().data("datepicker").selectDate(new Date(eDay.replace(/-/g, "/"))); //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
             }
+
+        } else if (!stringFunc.isValidStr($sDate)) { //한개짜리 달력 datepicker
+            let sDay = $sDate.val();
             let defaultObj = {
                 language: 'ko',
                 autoClose: true,
                 timepicker: true,
                 timeFormat: "hh:ii AA",
             }
-            let otpObj = Object.assign(defaultObj, customObj);
-            sDate.datepicker(defaultObj);
+            let optObj = Object.assign(defaultObj, customObj);
+            $sDate.datepicker(optObj);
+            
+            if (flag && !stringFunc.isValidStr(sDay)) { //처음 입력 날짜 설정, update...
+                $sDate.datepicker().data("datepicker").selectDate(new Date(sDay.replace(/-/g, "/"))); //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
+            }
         }
     }
 }

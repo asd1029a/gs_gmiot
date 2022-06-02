@@ -28,27 +28,40 @@
                     <div class="template_list" id="templateList">
                     </div>
                 </article>
-                <article class="signage_layout">
+                <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
+                <article th:if="${municipality == '41210000'}" data-municipality="gm" class="signage_layout">
                     <div class="article_title">
                         <dl class="title">
                             <dt>템플릿 레이아웃 설정</dt>
                         </dl>
                         <ul>
-                            <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
                             <li id="cancelSignageLayoutBtn">취소</li>
-                            <li th:if="${municipality == '41210000'}" id="applySignageLayoutProcBtn">적용</li>
-                            <li th:if="${municipality == '47210000'}" id="addSignageLayoutProcBtn">저장</li>
-                            <li th:if="${municipality == '47210000'}" id="displaySignageBtn">화면표출</li>
-                            </th:block>
+                            <li id="applySignageLayoutProcBtn">적용</li>
                         </ul>
                     </div>
-                    <div class="layout_field">
-                        <form id='templateLayoutForm'>
-                            <ul id="templateArea">
-                            </ul>
-                        </form>
+                    <div class="layout_image_field">
+
                     </div>
                 </article>
+                <article th:if="${municipality == '47210000'}" data-municipality="yj" class="signage_layout">
+                        <div class="article_title">
+                            <dl class="title">
+                                <dt>템플릿 레이아웃 설정</dt>
+                            </dl>
+                            <ul>
+                                <li id="cancelSignageLayoutBtn">취소</li>
+                                <li id="addSignageLayoutProcBtn">저장</li>
+                                <li id="displaySignageBtn">화면표출</li>
+                            </ul>
+                        </div>
+                        <div class="layout_field">
+                            <form id='templateLayoutForm'>
+                                <ul id="templateArea">
+                                </ul>
+                            </form>
+                        </div>
+                </article>
+                </th:block>
             </div>
             <div class="popup signage_popup" id="signagePopup" style="display: none;"><!-- active 시, display: flex; -->
                 <dl class="title">
@@ -64,12 +77,15 @@
                             </dl>
                             <dl>
                                 <dt>템플릿 설명<span>템플릿 설명을 입력해주세요.</span></dt>
-                                <dd><input type="text" name="templateExplain" id="templateExplain"></dd>
+                                <dd>
+                                    <input type="text" name="templateExplain" id="templateExplain">
+                                    <input type="hidden" name="templateRowCnt" data-init-value="3" id="templateRowCnt" placeholder="3" readonly>
+                                </dd>
                             </dl>
-                            <dl>
+                            <!--<dl>
                                 <dt>레이아웃</dt>
-                                <dd><input type="text" name="templateRowCnt" data-required="true" value="3" id="templateRowCnt" placeholder="3" readonly>칸</dd>
-                            </dl>
+                                <dd><input type="hidden" name="templateRowCnt" value="3" id="templateRowCnt" placeholder="3" readonly>칸</dd>
+                            </dl>-->
                         </form>
                     </fieldset>
                 </div>

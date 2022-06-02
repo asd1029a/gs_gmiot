@@ -461,6 +461,17 @@ public class FacilitySqlProvider {
         return sql.toString();
     }
 
+    public String selectOneSignageLayoutUseQry() {
+        SQL sql = new SQL() {
+            {
+                SELECT("t1.template_content");
+                FROM("t_signage_template t1");
+                WHERE("t1.use_yn = 'Y'");
+            }
+        };
+        return sql.toString();
+    }
+
     public String insertSignageTemplateQry(Map<String, Object> paramMap) {
         Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
 
@@ -483,11 +494,29 @@ public class FacilitySqlProvider {
     }
 
     public String updateSignageLayoutQry(SignageRequestDto signageRequestDto) {
+        String templateContent = signageRequestDto.getTemplateContent() != null ? signageRequestDto.getTemplateContent() : "";
 
         SQL sql = new SQL() {{
             UPDATE("t_signage_template");
-            SET("template_content = '" + signageRequestDto.getTemplateContent() + "'");
+            SET("template_content = '" + templateContent + "'");
             WHERE("template_seq = " + signageRequestDto.getTemplateSeq());
+        }};
+        return sql.toString();
+    }
+
+    public String updateSignageLayoutForGmQry(Map<String, Object> paramMap) {
+        String templateContent = CommonUtil.validOneNull(paramMap, "templateContent");
+        String useYn = CommonUtil.validOneNull(paramMap, "useYn");
+
+        SQL sql = new SQL() {{
+            UPDATE("t_signage_template");
+            if(templateContent != null && !templateContent.equals("")) {
+                SET("template_content = '" + templateContent + "'");
+                SET("use_yn = '" + useYn + "'");
+                WHERE("template_seq = " + paramMap.get("templateSeq"));
+            } else {
+                SET("use_yn = '" + useYn + "'");
+            }
         }};
         return sql.toString();
     }
