@@ -47,7 +47,7 @@ public class FacilityService {
     public Facility findByFacilityId(String facilityId) {
         return facilityRepository.findByFacilityId(facilityId);
     }
-
+    
     public void saveAll(List<Facility> list) {
         facilityRepository.saveAll(list);
     }

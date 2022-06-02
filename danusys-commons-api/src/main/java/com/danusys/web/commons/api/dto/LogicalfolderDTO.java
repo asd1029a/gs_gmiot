@@ -47,6 +47,9 @@ public class LogicalfolderDTO {
             @XmlAttribute(name = "nm")
             private String nm;
 
+            @XmlAttribute(name = "kind")
+            private String kind;
+
             @XmlAttribute(name = "ty")
             private String ty;
 
