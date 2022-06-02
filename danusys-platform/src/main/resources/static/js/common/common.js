@@ -1029,10 +1029,6 @@ const dateFunc = {
 
         } else if (!stringFunc.isValidStr($sDate)) { //한개짜리 달력 datepicker
             let sDay = $sDate.val();
-            if (flag && !stringFunc.isValidStr(sDay)) { //처음 입력 날짜 설정, update...
-                let sdp = $sDate.datepicker().data("datepicker");
-                sdp.selectDate(new Date(sDay.replace(/-/g, "/"))); //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
-            }
             let defaultObj = {
                 language: 'ko',
                 autoClose: true,
@@ -1041,6 +1037,10 @@ const dateFunc = {
             }
             let optObj = Object.assign(defaultObj, customObj);
             $sDate.datepicker(optObj);
+            
+            if (flag && !stringFunc.isValidStr(sDay)) { //처음 입력 날짜 설정, update...
+                $sDate.datepicker().data("datepicker").selectDate(new Date(sDay.replace(/-/g, "/"))); //익스에서는 그냥 new Date하면 -을 인식못함 replace필요
+            }
         }
     }
 }
