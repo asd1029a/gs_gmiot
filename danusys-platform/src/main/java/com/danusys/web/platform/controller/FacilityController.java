@@ -1,10 +1,16 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.api.model.Api;
+import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
+import com.danusys.web.commons.app.StrUtils;
 import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.commons.app.GisUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,16 +19,26 @@ import org.springframework.web.multipart.support.StandardMultipartHttpServletReq
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
+@Slf4j
 @RestController
 @RequestMapping(value="/facility")
+@RequiredArgsConstructor
 public class FacilityController {
 
-    public FacilityController(FacilityService facilityService) { this.facilityService = facilityService; }
+//    public FacilityController(FacilityService facilityService) { this.facilityService = facilityService; }
 
     private final FacilityService facilityService;
+
+    private final ApiCallService apiCallService;
+
 
     /**
      * 시설물 : 시설물 목록 조회
@@ -47,7 +63,27 @@ public class FacilityController {
     public String getListFacilityGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = facilityService.getList(paramMap);
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
-        return GisUtil.getGeoJson(list,"facility");
+
+        log.trace("list {} ", list.toString());
+
+        boolean isActiveChecked = Boolean.parseBoolean(StrUtils.getStr(paramMap.get("isActiveChecked"), "false"));
+        if(isActiveChecked) {
+            return GisUtil.getGeoJson(list.stream().peek(f ->{
+                try {
+                    Map<String, Object> param = new HashMap<>();
+                    param.put("callUrl","gmPoint");
+                    param.put("pointPath", "point:"+StrUtils.getStr(f.get("facilityId")));
+                    log.trace("api param : {}", param);
+                    Map<String, Object> exApiResult = (Map<String, Object>) new HashMap<>((Map<String, Object>)apiCallService.call(param).getBody()).get("return");
+                    f.put("facilityStatus", new ArrayList<>((List) exApiResult.get("pointValues")).get(0));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }).collect(toList()),"facility");
+        } else {
+            return GisUtil.getGeoJson(list, "facility");
+        }
     }
 
     /**

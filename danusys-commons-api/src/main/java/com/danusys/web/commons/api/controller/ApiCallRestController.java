@@ -137,34 +137,35 @@ public class ApiCallRestController {
 
     @PostMapping(value = "/call")
     public ResponseEntity call(HttpServletRequest req, @RequestBody Map<String, Object> param) throws Exception {
-        log.trace("param {}", param.toString());
-        Api api = apiService.getRequestApi(param);
-
-        /**
-         * api 요청시 인증 토큰이 필요한 경우
-         */
-//        apiService.getApiAccessToken(api, request);
-
-        /**
-         * API DB 정보로 외부 API 호출
-         */
-        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
-
-        Object resultBody = null;
-        if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
-            resultBody = responseEntity.getBody();
-        } else if (api.getResponseBodyType() == BodyType.ARRAY) {
-            String body = (String) responseEntity.getBody();
-            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
-            });
-        } else if (api.getResponseBodyType() == BodyType.OBJECT) {
-            String body = (String) responseEntity.getBody();
-            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
-            });
-        }
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(resultBody);
+//        log.trace("param {}", param.toString());
+//        Api api = apiService.getRequestApi(param);
+//
+//        /**
+//         * api 요청시 인증 토큰이 필요한 경우
+//         */
+////        apiService.getApiAccessToken(api, request);
+//
+//        /**
+//         * API DB 정보로 외부 API 호출
+//         */
+//        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+//
+//        Object resultBody = null;
+//        if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+//            resultBody = responseEntity.getBody();
+//        } else if (api.getResponseBodyType() == BodyType.ARRAY) {
+//            String body = (String) responseEntity.getBody();
+//            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
+//            });
+//        } else if (api.getResponseBodyType() == BodyType.OBJECT) {
+//            String body = (String) responseEntity.getBody();
+//            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
+//            });
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(resultBody);
+        return apiService.call(param);
     }
 
     @PostMapping(value = "/ext/send")
