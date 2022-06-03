@@ -92,6 +92,7 @@ public class EchoThread extends Thread{
                         m.put("deviceId","BSNG_S_"+faSeq);
                         m.put("name",key);
                         m.put("value",maps.get(key));
+                        m.put("type",3);
                         result.add(m);
                     }
                     resultMap.put("callUrl","/facility/facilityData");
@@ -102,7 +103,7 @@ public class EchoThread extends Thread{
                     String jsonString = om.writeValueAsString(resultMap);
 
                     //내부서버로 전송
-                    WebClient webClient = WebClient.create("http://172.20.20.107:8400/api/facilityData");
+                    WebClient webClient = WebClient.create("http://localhost:8400/api/facilityData");
                     webClient.post().contentType(MediaType.APPLICATION_JSON).bodyValue(jsonString).retrieve().bodyToMono(String.class).subscribe();
                     log.info("보내는 json {}",jsonString);
                 }else{

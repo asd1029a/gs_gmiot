@@ -2,10 +2,7 @@ package com.danusys.web.commons.api.controller;
 
 import com.danusys.web.commons.api.dto.EventReqeustDTO;
 import com.danusys.web.commons.api.dto.FacilityDataRequestDTO;
-import com.danusys.web.commons.api.model.Api;
-import com.danusys.web.commons.api.model.ApiParam;
-import com.danusys.web.commons.api.model.Facility;
-import com.danusys.web.commons.api.model.Station;
+import com.danusys.web.commons.api.model.*;
 import com.danusys.web.commons.api.service.*;
 import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
@@ -62,6 +59,7 @@ public class ApiCallRestController {
     private final EventService eventService;
     private final ApiConvService apiConvService;
     private final FacilityOptService facilityOptService;
+    private final SseService sseService;
 
 
     @PostMapping(value = "/facility")
@@ -245,6 +243,7 @@ public class ApiCallRestController {
     public ResponseEntity apiEvent(@RequestBody Map<String, Object> param) {
         log.info("param  =  {}",param);
         Api api = apiService.getRequestApi(param);
+        String sseJsonStr = "";
 
         List<ApiParam> apiRequestParams = api.getApiRequestParams();
         List<ApiParam> apiResponseParams = api.getApiResponseParams();
@@ -258,14 +257,23 @@ public class ApiCallRestController {
                     .filter(f -> f.getDataType().equals(DataType.ARRAY) || f.getDataType().equals(DataType.OBJECT))
                     .peek(f -> {
                         AtomicReference<String> result = new AtomicReference<>();
-                        Map<Object,Object> event_list = (Map<Object,Object>)param.get(f.getFieldMapNm());
-                        String chgEvtType = apiConvService.eventConverter(f, event_list.get("eventType").toString());
-                        event_list.put("eventType",chgEvtType);
+
                         dataType.set(f.getDataType());
-                        try {
-                            result.set(objectMapper.writeValueAsString(event_list));
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
+                        if (f.getDataType().equals(DataType.OBJECT)) {
+                            Map<Object,Object> eventList = (Map<Object,Object>)param.get(f.getFieldMapNm());
+                            String chgEvtType = apiConvService.eventConverter(f, eventList.get("eventType").toString());
+                            eventList.put("eventType",chgEvtType);
+                            try {
+                                result.set(objectMapper.writeValueAsString(eventList));
+                            } catch (JsonProcessingException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            try {
+                                result.set(objectMapper.writeValueAsString(param.get(f.getFieldMapNm())));
+                            } catch (JsonProcessingException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         apiRequestParams.stream().forEach(a -> {
@@ -292,19 +300,24 @@ public class ApiCallRestController {
                 if (dataType.get().equals(DataType.ARRAY)) {
                     List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
                     });
-                    eventService.saveAllByEventRequestDTO(list);
+                    List<Event> eventList = eventService.saveAllByEventRequestDTO(list);
+                    sseJsonStr = objectMapper.writeValueAsString(eventList);
                     log.trace(list.toString());
                 } else if (dataType.get().equals(DataType.OBJECT)) {
                     EventReqeustDTO eventReqeustDTO = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
                     });
-                    eventService.saveByEventRequestDTO(eventReqeustDTO);
+                    Event event = eventService.saveByEventRequestDTO(eventReqeustDTO);
+                    sseJsonStr = objectMapper.writeValueAsString(event);
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             resultBody.put("code", "9999");
             return ResponseEntity.status(HttpStatus.OK)
                     .body(resultBody);
+        } finally {
+            sseService.send(sseJsonStr);
         }
 
         resultBody.put("code", "0000");

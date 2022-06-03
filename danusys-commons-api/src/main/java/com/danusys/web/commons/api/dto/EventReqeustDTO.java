@@ -4,6 +4,7 @@ import com.danusys.web.commons.api.model.Event;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 
 /**
  * Project : danusys-webservice-parent
@@ -15,6 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@DynamicInsert
 public class EventReqeustDTO {
     private Long facilitySeq;
     private Long stationSeq;
