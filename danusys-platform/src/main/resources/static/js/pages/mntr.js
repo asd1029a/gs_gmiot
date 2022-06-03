@@ -15,22 +15,32 @@ const mntr = {
         };
         eventSource.onmessage = (e) => {
             const objJson = JSON.parse(e.data);
-            const objList = objJson['event_list'];
-
             const eventSeqs = [];
-
-            //긴급 배너 띄우기
-            objList.forEach((e,i)=> {
-                if(e.event_grade == 20){
-                    eventSeqs.push(e.event_seq);
+            if (Array.isArray(objJson)) {
+                //긴급 배너 띄우기
+                Array.from(objJson).forEach((e,i)=> {
+                    if(e.eventGrade == 30){
+                        eventSeqs.push(e.eventSeq);
+                        const mainObj = {
+                            type : "error",
+                            title : e.stationSeq + " 디바이스 이벤트 발생",
+                            content : e.eventMessage
+                        };
+                        comm.toastOpen(mainObj, () => {}, {});
+                    }
+                });
+            } else {
+                if(objJson.eventGrade == 30){
+                    eventSeqs.push(objJson.eventSeq);
+                    console.log(objJson.eventGrade);
                     const mainObj = {
                         type : "error",
-                        title : e.device_id + " 디바이스 이벤트 발생",
-                        content : e.event_message
+                        title : objJson.stationSeq + " 디바이스 이벤트 발생",
+                        content : objJson.eventMessage
                     };
                     comm.toastOpen(mainObj, () => {}, {});
                 }
-            });
+            }
             // const options = {
             //     timeOut : "1500",
             //     positionClass : "toast-top-full-width",
