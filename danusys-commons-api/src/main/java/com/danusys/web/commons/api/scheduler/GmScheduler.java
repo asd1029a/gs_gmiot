@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +37,7 @@ public class GmScheduler {
     
 
 //    @Scheduled(cron = "0/30 * * * * *")
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 6000 * 5)
     public void apiCallSchedule() {
         log.trace("---------------------gm scheduler---------------------");
         this.facilitySync();
@@ -111,7 +110,7 @@ public class GmScheduler {
      */
     private List findFacilityData(String stationId) {
         Map<String, Object> param = new HashMap<>();
-        param.put("callUrl","gmPointList");
+        param.put("callUrl","gmDataPointList");
         param.put("pointPaths","data/gm_soap/" + stationId + ".xml");
         log.info("요청 데이터 : {}", param);
 

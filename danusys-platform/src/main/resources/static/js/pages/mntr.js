@@ -1143,9 +1143,25 @@ const rnbList = {
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme=="smartBusStop") {
             facility.getListGeoJson({
-                "stationSeq" : prop.stationSeq
+                "stationSeq": prop.stationSeq,
+                "isActiveChecked": "true"
             },result => {
-                console.log(result)
+                target.find(".area_right_bus_control").html("");
+                let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
+                    '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
+                    '<input type="checkbox" id="control_{{id_index}}" checked="{{check_value}}"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
+                let objAry = JSON.parse(result);
+                for(let i = 0; i<objAry.features.length; i++) {
+                    let facilityKindName = objAry.features[i].properties.facilityKindName;
+                    let presentValue = objAry.features[i].properties.presentValue === "On" ? true : false;
+                    target.find(".area_right_bus_control").append(
+                        smartBusStoFacilityTag
+                            .replace("{{facilityKindName}}", facilityKindName)
+                            .replace("{{id_index}}", i)
+                            .replace("{{for_index}}", i)
+                            .replace("{{check_value}}", presentValue));
+                }
+
                 // reloadLayer(result, 'facilityLayer');
                 // lnbList.createFacility(result);
             });

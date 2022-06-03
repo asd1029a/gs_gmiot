@@ -2,18 +2,22 @@ package com.danusys.web.commons.api.service;
 
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.model.ApiParam;
+import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
 import com.danusys.web.commons.api.types.ParamType;
 import com.danusys.web.commons.app.CamelUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.danusys.web.commons.app.service.CookieService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +48,38 @@ public class ApiCallService {
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
+
+
+    public ResponseEntity call(Map<String, Object> param) throws Exception {
+        log.trace("param {}", param.toString());
+        Api api = this.getRequestApi(param);
+
+        /**
+         * api 요청시 인증 토큰이 필요한 경우
+         */
+//        apiService.getApiAccessToken(api, request);
+
+        /**
+         * API DB 정보로 외부 API 호출
+         */
+        ResponseEntity responseEntity = apiExecutorFactoryService.execute(api);
+
+        Object resultBody = null;
+        if (api.getResponseBodyType() == BodyType.OBJECT_MAPPING) {
+            resultBody = responseEntity.getBody();
+        } else if (api.getResponseBodyType() == BodyType.ARRAY) {
+            String body = (String) responseEntity.getBody();
+            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
+            });
+        } else if (api.getResponseBodyType() == BodyType.OBJECT) {
+            String body = (String) responseEntity.getBody();
+            resultBody = body.isEmpty() ? "" : objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
+            });
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(resultBody);
+    }
 
     public Api getRequestApi(Map<String, Object> param) {
         String callUrl = StrUtils.getStr(param.get("callUrl"));
