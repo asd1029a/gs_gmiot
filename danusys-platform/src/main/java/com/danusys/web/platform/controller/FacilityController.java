@@ -64,26 +64,7 @@ public class FacilityController {
         EgovMap resultEgov = facilityService.getList(paramMap);
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
 
-        log.trace("list {} ", list.toString());
-
-        boolean isActiveChecked = Boolean.parseBoolean(StrUtils.getStr(paramMap.get("isActiveChecked"), "false"));
-        if(isActiveChecked) {
-            return GisUtil.getGeoJson(list.stream().peek(f ->{
-                try {
-                    Map<String, Object> param = new HashMap<>();
-                    param.put("callUrl","gmPoint");
-                    param.put("pointPath", "point:"+StrUtils.getStr(f.get("facilityId")));
-                    log.trace("api param : {}", param);
-                    Map<String, Object> exApiResult = (Map<String, Object>) new HashMap<>((Map<String, Object>)apiCallService.call(param).getBody()).get("return");
-                    f.put("facilityStatus", new ArrayList<>((List) exApiResult.get("pointValues")).get(0));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            }).collect(toList()),"facility");
-        } else {
-            return GisUtil.getGeoJson(list, "facility");
-        }
+        return GisUtil.getGeoJson(list, "facility");
     }
 
     /**

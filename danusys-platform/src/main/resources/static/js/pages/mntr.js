@@ -1143,17 +1143,22 @@ const rnbList = {
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme=="smartBusStop") {
             facility.getListGeoJson({
-                "stationSeq": prop.stationSeq,
-                "isActiveChecked": "true"
+                "stationSeq": prop.stationSeq
             },result => {
+                //TODO 시설물 상태 표시 여기에 하는 것이???
                 target.find(".area_right_bus_control").html("");
                 let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
-                    '<input type="checkbox" id="control_{{id_index}}" checked="{{check_value}}"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
+                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}}><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
+                console.log(objAry)
                 for(let i = 0; i<objAry.features.length; i++) {
-                    let facilityKindName = objAry.features[i].properties.facilityKindName;
-                    let presentValue = objAry.features[i].properties.presentValue === "On" ? true : false;
+                    let pointInfo = objAry.features[i].properties;
+                    let facilityKindName = pointInfo.facilityKindName;
+                    let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
+
+                    // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+
                     target.find(".area_right_bus_control").append(
                         smartBusStoFacilityTag
                             .replace("{{facilityKindName}}", facilityKindName)

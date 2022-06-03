@@ -34,17 +34,21 @@ public class GmScheduler {
     private final StationService stationService;
     long SMART_STATION_NUM = 62L; //스마트 정류장
     long SMART_POLE_NUM = 4L; //스마트 폴
-    
-
-//    @Scheduled(cron = "0/30 * * * * *")
-    @Scheduled(fixedDelay = 6000 * 5)
-    public void apiCallSchedule() {
-        log.trace("---------------------gm scheduler---------------------");
-        this.facilitySync();
-    }
-
 
     /**
+     * 시설물 상대 동기화
+     */
+    @Scheduled(fixedDelay = 30 * 1000)
+    public void facilityStatusSync() {
+        log.trace("---------------------gm scheduler---------------------");
+
+        this.facilitySync();
+
+    }
+
+    /**
+     * TODO 서비스로 등록해서 UI에서 호출 가능하도록 변경 필요함
+     * 시설물 동기화
      * 1. 광명 개소정보 조회
      * 2.1 스마트 정류장 정보 필터
      * 2.2 스마트 폴 정보 필터
@@ -54,7 +58,7 @@ public class GmScheduler {
      * 5. 생성된 Facility를 리스트에 넣고
      * 6. 전체 리스트로 facilityService.saveAll를 호출 함.
      */
-    private void facilitySync() {
+    public void facilitySync() {
         List<Station> lists = stationService.findAll(); //전체 개소 가져오기
         
         //스마트 정류장
@@ -77,8 +81,10 @@ public class GmScheduler {
                 for(Map<String, Object> fData : facilityDatas) { //시설물 목록
                     String facilityKind = StrUtils.getStr(fData.get("facilityKind"));
                     if(!facilityKind.isEmpty()) {
-                        log.trace("facilityKind {} {} {}", station.getStationName(), station.getStationSeq(), facilityKind );
+                        int facilityStatus = "On".equals(StrUtils.getStr(fData.get("presentValue"))) ? 1 : 0;
                         String facilityId = StrUtils.getStr(fData.get("pointPathOrg"));
+                        log.trace("facility {} {} {} {}", station.getStationName(), station.getStationSeq(), facilityKind, facilityStatus );
+
                         Facility facilityOrg = facilityService.findByFacilityId(facilityId);
                         if( facilityOrg == null) {
                             facilities.add(Facility.builder()
@@ -86,11 +92,12 @@ public class GmScheduler {
                                     .facilityId(StrUtils.getStr(fData.get("pointPathOrg")))
                                     .facilityKind(Long.parseLong(facilityKind))
                                     .facilityName(StrUtils.getStr(fData.get("name")))
-                                    .facilityStatus(0)
+                                    .facilityStatus(facilityStatus)
                                     .latitude(station.getLatitude())
                                     .longitude(station.getLongitude())
                                     .build());
                         } else {
+                            facilityOrg.setFacilityStatus(facilityStatus);
                             facilities.add(facilityOrg);
                         }
                     }
