@@ -1,6 +1,8 @@
 package com.danusys.web.commons.api.controller;
 
 import com.danusys.web.commons.api.service.SseService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -22,12 +24,10 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value="/sse")
+@RequiredArgsConstructor
 public class SseController {
-    private SseService sseService;
-
-    public SseController(SseService sseService) {
-        this.sseService = sseService;
-    }
+    private final SseService sseService;
+    private final ObjectMapper objectMapper;
 
     @GetMapping(value = "/{userId}")
     public Flux<ServerSentEvent<String>> connect(@PathVariable("userId") Long userId) {
@@ -36,7 +36,11 @@ public class SseController {
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public void send(@RequestBody Map<String,Object> param) {
-        sseService.send(param);
+        try {
+            sseService.send(objectMapper.writeValueAsString(param));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }
 

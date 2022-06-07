@@ -18,4 +18,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Long findEventGrade(String codeId);
     @Query(value = "SELECT code_seq FROM v_event_proc_stat WHERE code_id = :codeId", nativeQuery = true)
     Long findEventProcStat(String codeId);
+    @Query(value = "SELECT distinct t2.code_name FROM t_event t1 INNER JOIN t_common_code t2 on " +
+            "t1.event_kind = t2.code_seq WHERE t1.event_kind = :kind",nativeQuery = true)
+    String msgConv(Long kind);
 }

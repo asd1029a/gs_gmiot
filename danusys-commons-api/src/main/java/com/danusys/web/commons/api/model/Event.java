@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @Table(name = "t_event")
+@DynamicInsert
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

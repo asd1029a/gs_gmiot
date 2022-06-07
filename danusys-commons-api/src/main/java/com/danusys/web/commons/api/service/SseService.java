@@ -6,11 +6,8 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
-import java.time.Duration;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Project : danusys-webservice-parent
@@ -32,10 +29,10 @@ public class SseService {
                 chMap.remove(userId)));
     }
 
-    public void send(Map<String, Object> param) {
+    public void send(String jsonStr) {
         //String message = "eventOccurs";
         Optional.ofNullable(chMap).ifPresent(ch -> {
-            ch.entrySet().stream().forEach(entry -> entry.getValue().send(param));
+            ch.entrySet().stream().forEach(entry -> entry.getValue().send(jsonStr));
         });
     }
 

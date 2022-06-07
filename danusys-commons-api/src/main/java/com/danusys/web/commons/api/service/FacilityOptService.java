@@ -30,6 +30,11 @@ public class FacilityOptService {
         this.facilityRepository = facilityRepository;
         this.facilityOptRepository = facilityOptRepository;
     }
+    public FacilityOpt save(FacilityDataRequestDTO facilityOpt){
+        Facility facility = facilityRepository.findByFacilityId(facilityOpt.getFacilityId());
+        FacilityOpt result = new FacilityOpt(facility.getFacilitySeq(),facility.getFacilityName(),facilityOpt.getFacilityOptValue(),facilityOpt.getFacilityOptType());
+        return facilityOptRepository.save(result);
+    }
 
     public List<FacilityOpt> saveAll(List<FacilityOpt> list) {
         return facilityOptRepository.saveAll(list);

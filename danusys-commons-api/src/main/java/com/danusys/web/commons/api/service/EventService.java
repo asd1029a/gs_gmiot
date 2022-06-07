@@ -5,6 +5,7 @@ import com.danusys.web.commons.api.model.Event;
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.repository.EventRepository;
 import com.danusys.web.commons.api.repository.FacilityRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +22,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EventService {
-    private EventRepository eventRepository;
-    private FacilityRepository facilityRepository;
-
-    public EventService(EventRepository eventRepository
-            , FacilityRepository facilityRepository) {
-        this.eventRepository = eventRepository;
-        this.facilityRepository = facilityRepository;
-    }
+    private final EventRepository eventRepository;
+    private final FacilityRepository facilityRepository;
+    private final SseService sseService;
 
     public Event save(Event event) {
         return this.eventRepository.save(event);
@@ -59,9 +56,10 @@ public class EventService {
         eventReqeustDTO.setFacilitySeq(facility.getFacilitySeq());
         eventReqeustDTO.setStationSeq(facility.getStationSeq());
         Long eventKind = eventRepository.findEventKind(eventReqeustDTO.getEventKind());
-        Long eventGrade = eventRepository.findEventGrade(eventReqeustDTO.getEventGrade() == null ? "20" : eventReqeustDTO.getEventGrade());
-
+        Long eventGrade = eventRepository.findEventGrade(eventReqeustDTO.getEventGrade() == null ? "10" : eventReqeustDTO.getEventGrade());
+        String msgConv = eventRepository.msgConv(eventKind);
         Event event = eventReqeustDTO.toEntity(eventKind, eventGrade);
+        event.setEventMessage(msgConv);
         eventRepository.save(event);
         return event;
     }

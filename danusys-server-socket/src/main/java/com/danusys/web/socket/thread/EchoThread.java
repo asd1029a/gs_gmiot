@@ -73,16 +73,16 @@ public class EchoThread extends Thread{
                     }
                     double[] ArrayData = String2List.stream().mapToDouble(value -> Integer.parseInt(value, 16)).toArray();
                     maps.put("count",(int) ArrayData[0]);
-                    maps.put("temperature",ArrayData[1]+(ArrayData[2]/10.0)+"℃");
-                    maps.put("humidity",ArrayData[3]+(ArrayData[4]/10.0)+"%");
-                    maps.put("o3",ArrayData[5]+"ppb");
-                    maps.put("co",ArrayData[6]+"ppm");
-                    maps.put("no2",ArrayData[7]+"ppb");
-                    maps.put("pm2_5",ArrayData[8]+"㎍/㎥");
-                    maps.put("pm10",ArrayData[9]+"㎍/㎥");
-                    maps.put("pm2_5t",ArrayData[10]+"㎍/㎥");
-                    maps.put("pm10t",ArrayData[11]+"㎍/㎥");
-                    maps.put("uvi",ArrayData[12]+"uvi");
+                    maps.put("temperature",ArrayData[1]+(ArrayData[2]/10.0));
+                    maps.put("humidity",ArrayData[3]+(ArrayData[4]/10.0));
+                    maps.put("o3",ArrayData[5]);
+                    maps.put("co",ArrayData[6]);
+                    maps.put("no2",ArrayData[7]);
+                    maps.put("pm2_5",ArrayData[8]);
+                    maps.put("pm10",ArrayData[9]);
+                    maps.put("pm2_5t",ArrayData[10]);
+                    maps.put("pm10t",ArrayData[11]);
+                    maps.put("uvi",ArrayData[12]);
                     maps.put("noiseAvg",ArrayData[13]);
                     maps.put("noiseMax",ArrayData[14]);
                     maps.put("windSpAvg",ArrayData[15]);
@@ -92,6 +92,7 @@ public class EchoThread extends Thread{
                         m.put("deviceId","BSNG_S_"+faSeq);
                         m.put("name",key);
                         m.put("value",maps.get(key));
+                        m.put("type",3);
                         result.add(m);
                     }
                     resultMap.put("callUrl","/facility/facilityData");
@@ -102,7 +103,7 @@ public class EchoThread extends Thread{
                     String jsonString = om.writeValueAsString(resultMap);
 
                     //내부서버로 전송
-                    WebClient webClient = WebClient.create("http://172.20.20.107:8400/api/facilityData");
+                    WebClient webClient = WebClient.create("http://localhost:8400/api/facilityData");
                     webClient.post().contentType(MediaType.APPLICATION_JSON).bodyValue(jsonString).retrieve().bodyToMono(String.class).subscribe();
                     log.info("보내는 json {}",jsonString);
                 }else{

@@ -47,13 +47,13 @@ public class Facility implements Serializable {
     private Timestamp insertDt;
 
     @Column
-    private int insertUserSeq;
+    private Integer insertUserSeq;
 
     @Column
     private Time updateDt;
 
     @Column
-    private int updateUserSeq;
+    private Integer updateUserSeq;
 
     @Column(unique = true)
     private String facilityId;

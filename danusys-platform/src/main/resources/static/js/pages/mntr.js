@@ -15,22 +15,32 @@ const mntr = {
         };
         eventSource.onmessage = (e) => {
             const objJson = JSON.parse(e.data);
-            const objList = objJson['event_list'];
-
             const eventSeqs = [];
-
-            //긴급 배너 띄우기
-            objList.forEach((e,i)=> {
-                if(e.event_grade == 20){
-                    eventSeqs.push(e.event_seq);
+            if (Array.isArray(objJson)) {
+                //긴급 배너 띄우기
+                Array.from(objJson).forEach((e,i)=> {
+                    if(e.eventGrade == 30){
+                        eventSeqs.push(e.eventSeq);
+                        const mainObj = {
+                            type : "error",
+                            title : e.stationSeq + " 디바이스 이벤트 발생",
+                            content : e.eventMessage
+                        };
+                        comm.toastOpen(mainObj, () => {}, {});
+                    }
+                });
+            } else {
+                if(objJson.eventGrade == 30){
+                    eventSeqs.push(objJson.eventSeq);
+                    console.log(objJson.eventGrade);
                     const mainObj = {
                         type : "error",
-                        title : e.device_id + " 디바이스 이벤트 발생",
-                        content : e.event_message
+                        title : objJson.stationSeq + " 디바이스 이벤트 발생",
+                        content : objJson.eventMessage
                     };
                     comm.toastOpen(mainObj, () => {}, {});
                 }
-            });
+            }
             // const options = {
             //     timeOut : "1500",
             //     positionClass : "toast-top-full-width",
@@ -1135,13 +1145,43 @@ const rnbList = {
         const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
         console.log(prop);
         console.log(theme);
-        if(theme=="smartPower"){
+        if(theme=="smartPower") {
             //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
             //html로 지자체별 고정인게 나은가? -> 결정필요
             ///show
             ///hide
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
-        } else { }
+        } else if(theme=="smartBusStop") {
+            facility.getListGeoJson({
+                "stationSeq": prop.stationSeq
+            },result => {
+                //TODO 시설물 상태 표시 여기에 하는 것이???
+                target.find(".area_right_bus_control").html("");
+                let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
+                    '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
+                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}}><label for="control_{{for_index}}">Toggle</label></dd></dl>';
+                let objAry = JSON.parse(result);
+                console.log(objAry)
+                for(let i = 0; i<objAry.features.length; i++) {
+                    let pointInfo = objAry.features[i].properties;
+                    let facilityKindName = pointInfo.facilityKindName;
+                    let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
+
+                    // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+
+                    target.find(".area_right_bus_control").append(
+                        smartBusStoFacilityTag
+                            .replace("{{facilityKindName}}", facilityKindName)
+                            .replace("{{id_index}}", i)
+                            .replace("{{for_index}}", i)
+                            .replace("{{check_value}}", presentValue));
+                }
+
+                // reloadLayer(result, 'facilityLayer');
+                // lnbList.createFacility(result);
+            });
+
+        } else {}
         //////////////////
 
         //prop 돌리면서 채워넣기

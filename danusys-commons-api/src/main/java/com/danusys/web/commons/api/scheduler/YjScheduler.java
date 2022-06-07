@@ -1,9 +1,9 @@
 package com.danusys.web.commons.api.scheduler;
 
-import com.danusys.web.commons.api.dto.EventReqeustDTO;
-import com.danusys.web.commons.api.service.EventService;
+import com.danusys.web.commons.api.dto.FacilityDataRequestDTO;
+import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.util.ApiUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class YjScheduler {
     private final ApiUtils apiUtils;
     private final ObjectMapper objectMapper;
-    private final EventService eventService;
+    private final FacilityOptService facilityOptService;
 
 //    @Scheduled(cron = "0/30 * * * * *")
     @Scheduled(fixedDelay = 60000)
@@ -39,11 +39,15 @@ public class YjScheduler {
 
         log.info("보려는 시간 : {}",iNow-1);
 
-        String body = (String) apiUtils.getRestCallBody(param);
+        Map<String, Object> body =(Map<String, Object>) apiUtils.getRestCallBody(param);
+
         log.trace("scheduler people count : {}", body);
-        // event save
-        EventReqeustDTO eventReqeustDTO = objectMapper.readValue(body, new TypeReference<EventReqeustDTO>() {
-        });
-        eventService.saveByEventRequestDTO(eventReqeustDTO);
+        // event save;
+        String json = objectMapper.writeValueAsString(body);
+
+        FacilityDataRequestDTO facilityDataRequestDTO = objectMapper.readValue(StrUtils.getStr(json), FacilityDataRequestDTO.class);
+        facilityDataRequestDTO.setFacilityOptType(1);
+        facilityOptService.save(facilityDataRequestDTO);
+
     }
 }

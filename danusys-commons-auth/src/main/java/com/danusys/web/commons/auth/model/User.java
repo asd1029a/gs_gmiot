@@ -49,10 +49,10 @@ public class User {
     private Timestamp lastLoginDt;
 
     @Column(name = "insert_user_seq")
-    private int insertUserSeq;
+    private Integer insertUserSeq;
 
     @Column(name = "update_user_seq")
-    private int updateUserSeq;
+    private Integer updateUserSeq;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     @Column(name = "insert_dt")
     private Timestamp insertDt;

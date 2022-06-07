@@ -21,7 +21,7 @@ public class StationSqlProvider {
         SQL sql = new SQL() {{
             SELECT("t1.station_seq, t1.station_name, t1.station_kind, t1.administ_zone" +
                     ", t1.station_image, t1.station_compet_dt, t1.station_size" +
-                    ", t1.station_material, t1.latitude, t1.longitude" +
+                    ", t1.station_material, t1.latitude, t1.longitude, t1.address" +
                     ", t2.code_name  AS station_kind_name" +
                     ", t2.code_value AS station_kind_value" +
                     ", t3.code_name AS administ_zone_name");
