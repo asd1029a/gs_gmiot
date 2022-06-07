@@ -246,7 +246,7 @@ var video = {
 		);
 	},
 	showSpinner : function(t) {
-		$(t).attr("poster", "images/loading.gif");
+		$(t).attr("poster", "/images/default/loading.gif");
 	},
 	hideSpinner : function(t) {
 		$(t).attr("poster", "");
