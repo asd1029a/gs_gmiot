@@ -9,7 +9,7 @@
         <ul class="gnm">
             <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
                 <li sec:authorize="hasAnyRole('ROLE_dashboard_rw', 'ROLE_dashboard_r-')" id="dashboard">
-                    <a href="/pages/dashboard">대시보드</a>
+                    <a href="/pages/dashboard/dashboard_facility">대시보드</a>
                 </li>
                 <li sec:authorize="hasAnyRole('ROLE_mntr_rw, ROLE_mntr_r-')" id="mntr">
                     <a href="/pages/mntr">관제</a>

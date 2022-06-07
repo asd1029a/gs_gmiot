@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout_dashboard">
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+
+</head>
+<th:block layout:fragment="css">
+</th:block>
+<th:block layout:fragment="content">
+    <!--<div class="test_wrap" style="">
+         <ul id="test">
+             <li>aa</li>
+             <li>bb</li>
+         </ul>
+     </div>-->
+    <div class="slider">
+        <div>I am a slide.</div>
+        <div>I am another slide.</div>
+    </div>
+
+</th:block>
+</html>

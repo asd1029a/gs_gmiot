@@ -4,14 +4,34 @@
         <!--<th:block th:insert="fragments/default/includes :: includes_head(~{::pagesLink})"></th:block>-->
         <th:block th:insert="fragments/default/default" />
         <link rel="stylesheet" type="text/css" href="/css/dashboard.css">
+
+        <th:block th:insert="view/commons/map"/>
     </head>
     <body>
         <div class="wrap">
             <th:block th:replace="fragments/default/header :: headerFragment">
             </th:block>
 
-            <th:block layout:fragment="content">
-            </th:block>
+            <div class="dashboard">
+                <dl class="dashboard_snb">
+                    <dt>통합 모니터링 대시보드</dt>
+                    <!--<dd class="dashboardType" data-value="peopleCount"><i><img src="/images/default/dashboardSnb01Default.svg"></i>유동인구 분석</dd>
+                    <dd class="dashboardType" data-value="smartPoleEvent"><i><img src="/images/default/dashboardSnb02Default.svg"></i>스마트폴 이벤트</dd>-->
+                    <dd class="dashboardType" data-value="facility">
+                        <a href="/pages/dashboard/dashboard_facility">
+                        <i><img src="/images/default/dashboardSnb02Default.svg"></i>시설물 이벤트
+                        </a>
+                    </dd>
+                    <dd class="dashboardType" data-value="drone">
+                        <a href="/pages/dashboard/dashboard_drone">
+                            <i><img src="/images/default/dashboardSnb02Default.svg"></i>드론 이벤트
+                        </a>
+                    </dd>
+                </dl>
+                <div class="dashboard_contents">
+                    <th:block layout:fragment="content" />
+                </div>
+            </div>
 
             <th:block th:insert="fragments/default/includes :: includes_footer(~{::pagesScript})">
             </th:block>
@@ -19,6 +39,7 @@
             <th:block th:replace="fragments/default/footer :: footerFragment">
             </th:block>
         </div>
+        <input id="sigunCode" type="hidden" th:value="${@environment.getProperty('danusys.area.code.sig')}"/>
     </body>
 
 </html>
