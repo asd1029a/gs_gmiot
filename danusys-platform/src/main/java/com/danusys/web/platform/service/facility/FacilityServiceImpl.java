@@ -168,8 +168,14 @@ public class FacilityServiceImpl implements FacilityService{
         JSONArray newTemplateContentList = new JSONArray();
         for (Map<String, Object> map : templateContentList) {
             if("imageFile".equals(map.get("kind"))) {
+                if("".equals(imageFileName)) {
+                    imageFileName = map.get("value").toString();
+                }
                 map.put("value", imageFileName);
             } else if("videoFile".equals(map.get("kind"))) {
+                if("".equals(videoFileName)) {
+                    videoFileName = map.get("value").toString();
+                }
                 map.put("value", videoFileName);
             }
             newTemplateContentList.add(JsonUtil.convertMapToJson(map));

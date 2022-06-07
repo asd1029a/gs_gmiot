@@ -117,22 +117,36 @@ const signage = {
         $("#addSignageLayoutProcBtn").on("click", () => {
             const templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
             const templateLayoutList = [];
-            let selectNullFlag = false;
+            let alertMsg = "";
             $("#templateArea li select").each((idx, ele) => {
-                if($(ele).val() === null) {
-                    selectNullFlag = true;
-                }
                 const obj = {
-                    "kind" : $(ele).val()
-                    , "value" : $("input[name='"+$(ele).val()+"']").val()
+                    "kind": $(ele).val()
                 };
-                if(typeof obj.value === "undefined") {
-                    obj.value = '';
+                if(obj.kind === "imageFile" || obj.kind === "videoFile") {
+                    const fileName = $("input[name='" + $(ele).val() + "Name']").val();
+                    if(fileName === "" || typeof fileName === "undefined") {
+                        alertMsg = "이미지 또는 영상파일이 선택되지 않았습니다.";
+                    } else {
+                        obj.value = fileName;
+                    }
+                } else {
+                    const value = $("input[name='" + $(ele).val() + "']").val();
+                    if(obj.kind === "stationList") {
+                        if(value === "" || typeof value === "undefined") {
+                            alertMsg = "개소가 선택되지 않았습니다";
+                        } else {
+                            obj.value = value;
+                        }
+                    } else {
+                        obj.value = value;
+                    }
                 }
+                console.log(obj);
                 templateLayoutList.push(obj);
             });
-
-            if(!selectNullFlag) {
+            console.log(templateLayoutList);
+            console.log(JSON.stringify(templateLayoutList));
+            if(alertMsg === "") {
                 signage.addLayoutProc({templateSeq : templateSeq, templateContent : JSON.stringify(templateLayoutList)}
                     , () => {
 
@@ -145,7 +159,7 @@ const signage = {
                         comm.showAlert("사이니지 레이아웃 등록에 실패했습니다.");
                     });
             } else {
-                comm.showAlert("템플릿 레이아웃 종류를 선택해주십시오.");
+                comm.showAlert(alertMsg);
             }
         });
 
@@ -157,11 +171,13 @@ const signage = {
 
             $.each(templateContent, (idx, obj) => {
                 if(obj.kind === "stationList") {
-                    const stationList = JSON.parse(obj.value);
-                    $.each(stationList, (idx2, stationObj) => {
-                        const stationName = stationObj.stationName.replaceAll('&amp;', '&').replace("&#40;", '(').replace("&#41;", ')').replace("\t", '');
-                        options[stationObj.stationSeq] = stationName;
-                    });
+                    if(obj.value !== "") {
+                        const stationList = JSON.parse(obj.value);
+                        $.each(stationList, (idx2, stationObj) => {
+                            const stationName = stationObj.stationName.replaceAll('&amp;', '&').replace("&#40;", '(').replace("&#41;", ')').replace("\t", '');
+                            options[stationObj.stationSeq] = stationName;
+                        });
+                    }
                 }
             });
 
@@ -244,7 +260,7 @@ const signage = {
             if($(e.currentTarget).find("input").prop("checked")){
                 $("#modSignageTemplateBtn").show();
                 $(".signage_layout .article_title ul").css("display", "flex");
-                const municipality = $(".signage_layout").data('municipality')
+                const municipality = $(".signage_layout").data('municipality');
                 signage.createTemplateLayout(JSON.parse($(e.currentTarget).data("templateContent")), municipality);
             } else {
                 $("#addSignageTemplateBtn").show();
@@ -298,7 +314,11 @@ const signage = {
                     //$('#height_'+idx).val(each.height);
                     $('#kind_' + idx).val(each.kind).trigger('change');
                     if (each.value !== "" && typeof each.value !== "undefined") {
-                        $('#kind_' + idx).siblings("div").find("input[type='text']").val(each.value);
+                        if(each.kind === "stationList") {
+                            $('#kind_' + idx).siblings("div").find("input[type='hidden']").val(each.value);
+                        } else {
+                            $('#kind_' + idx).siblings("div").find("input[type='text']").val(each.value);
+                        }
                     }
                 }
             });
@@ -455,7 +475,8 @@ const signage = {
                 const templateContent = JSON.parse($("#templateList dl input:checked").parents("dl").data("templateContent"));
                 let stationList = [];
                 $.each(templateContent, (idx, obj)=> {
-                    if(obj.kind === "stationList") {
+                    if(obj.kind === "stationList" && obj.value !== "" &&
+                        typeof obj.value !== "undefined") {
                         stationList = JSON.parse(obj.value);
                     }
                 });

@@ -115,6 +115,7 @@ public class SignageDisplayController {
                 e.printStackTrace();
             }
         });
+        System.out.println(resultMap.toString());
         return resultMap;
     }
 

@@ -10,14 +10,19 @@ const signageDisplay = {
 
         setInterval(function () {
             if(new Date().getMinutes() === 0) {
+                const latitude = options.latitude === null ? "" : options.latitude
+                const longitude = options.longitude === null ? "" : options.longitude
+                let transLonLat = transProj.lonLatToTM(longitude, latitude);
+
                 signageDisplay.getListAirPollution(
-                    {}
+                    {"x" : transLonLat.x, "y" : transLonLat.y}
                     , (result) => {
+                        console.log(result);
                         signageDisplay.reloadAirPollutionChart(result);
                     }
                 );
             }
-        }, 60000); //3600000
+        }, 3600000); //3600000
     }
     , create : (pObj, options) => {
         const $wrap = $(".wrap_signage");
@@ -66,7 +71,7 @@ const signageDisplay = {
     }
     , createRtsp : () => {
         return '<div class="wrap_rtsp">'
-            + '<video id="rtspVideo" width="100%" height="100%" autoplay="autoplay" muted="muted">'
+            + '<video id="rtspVideo" width="100%" height="100%" autoplay="autoplay" muted="muted" style="object-fit: contain;">'
             + '</div>';
     }
     , createAirPollutionEle : () => {
@@ -144,12 +149,12 @@ const signageDisplay = {
     }
     , createImageEle : () => {
         return '<div class="wrap_image">'
-            + '<img width="100%" height="100%" id="imageFile" alt="image">'
+            + '<img width="100%" height="100%" id="imageFile" alt="image" style="object-fit: contain;">'
             + '</div>';
     }
     , createVideoEle : () => {
         return '<div class="wrap_video">'
-            + '<video id="videoFile" width="100%" height="100%" autoplay="autoplay" loop="loop" muted="muted">'
+            + '<video id="videoFile" width="100%" height="auto" autoplay="autoplay" loop="loop" muted="muted" style="object-fit: contain;">'
             + '브라우저가 영상을 지원하지 않습니다.'
             + '</div>';
     }
@@ -229,11 +234,13 @@ const signageDisplay = {
             , "bad" : {"title" : "나쁨", "color": "#FFB302"}
             , "tooBad" : {"title" : "매우나쁨", "color": "#FF3838"}
             , "danger": {"title" : "매우나쁨(위험)", "color": "#8B62FF"}
+            , "noData": {"title" : "정보없음", "color": "#FFFFFF"}
         }
         $.each(pObj, (key, val) => {
             if(key.indexOf("Value") < 0) {
                 $("#"+key).text($("#"+key).text() + val);
             } else {
+                options.chart.id = key;
                 options.series = [];
                 options.labels = [];
                 options.fill.colors = [];
@@ -241,13 +248,13 @@ const signageDisplay = {
                 options.labels.push(typeObj[val.type].title);
                 options.fill.colors.push(typeObj[val.type].color);
                 if(key === "khaiValue") {
-                    options.chart.height = 400;
-                    options.plotOptions.radialBar.dataLabels.name.fontSize = "40px";
-                    options.plotOptions.radialBar.dataLabels.value.fontSize = "42px";
+                    options.chart.height = 450;
+                    options.plotOptions.radialBar.dataLabels.name.fontSize = "200%";
+                    options.plotOptions.radialBar.dataLabels.value.fontSize = "200%";
                 } else {
                     options.chart.height = 200;
-                    options.plotOptions.radialBar.dataLabels.name.fontSize = "20px";
-                    options.plotOptions.radialBar.dataLabels.value.fontSize = "22px";
+                    options.plotOptions.radialBar.dataLabels.name.fontSize = "120%";
+                    options.plotOptions.radialBar.dataLabels.value.fontSize = "100%";
                 }
                 let chart = new ApexCharts(document.querySelector("#"+key), options);
                 chart.render();
@@ -261,6 +268,7 @@ const signageDisplay = {
             , "bad" : {"title" : "나쁨", "color": "#FFB302"}
             , "tooBad" : {"title" : "매우나쁨", "color": "#FF3838"}
             , "danger": {"title" : "매우나쁨(위험)", "color": "#8B62FF"}
+            , "noData": {"title" : "정보없음", "color": "#FFFFFF"}
         }
 
         $.each(pObj, (key, val) => {
@@ -276,7 +284,7 @@ const signageDisplay = {
                 newOptions.series.push(val.score);
                 newOptions.labels.push(typeObj[val.type].title);
                 newOptions.fill.colors.push(typeObj[val.type].color);
-                ApexCharts.exec(document.querySelector("#"+key), 'updateOptions', newOptions);
+                ApexCharts.exec(key, 'updateOptions', newOptions);
             }
         })
     }

@@ -35,17 +35,23 @@ public class AirPollutionUtil {
         Map<String, Object> resultMap = new HashMap<>();
 
         AtomicReference<Double> resultScore = new AtomicReference<>((double) 0);
-        scoreMap.forEach((strKey, objValue) -> {
-            double iLo = (double) objValue.get(0);
-            double iHi = (double) objValue.get(1);
-            double convertLo = (double) objValue.get(2);
-            double convertHi = (double) objValue.get(3);
-            if(betweenDoubleExclusive(iP, iLo, iHi)) {
-                resultScore.set(convertLo + ((iP - iLo) * ((convertHi - convertLo) / (iHi - iLo))));
-                resultMap.put("type", strKey);
-                resultMap.put("score", resultScore.get().intValue());
-            };
-        });
+        if(iP <= 500.0) {
+            scoreMap.forEach((strKey, objValue) -> {
+                double iLo = (double) objValue.get(0);
+                double iHi = (double) objValue.get(1);
+                double convertLo = (double) objValue.get(2);
+                double convertHi = (double) objValue.get(3);
+                if (betweenDoubleExclusive(iP, iLo, iHi)) {
+                    resultScore.set(convertLo + ((iP - iLo) * ((convertHi - convertLo) / (iHi - iLo))));
+                    resultMap.put("type", strKey);
+                    resultMap.put("score", resultScore.get().intValue());
+                }
+                ;
+            });
+        } else {
+            resultMap.put("type", "noData");
+            resultMap.put("score", "0");
+        }
         return resultMap;
     }
 
@@ -91,11 +97,12 @@ public class AirPollutionUtil {
     }
 
     public static Double convertAirPollutionDataToScore500(String key, Object value) throws Exception {
+        String valueStr = value.toString();
         double iHi = 0;
         double iLo = 0;
         double bpHi = 0;
         double bpLo = 0;
-        double cP = Double.parseDouble(value.toString());
+        double cP = Double.parseDouble("-".equals(valueStr) ? "999" : valueStr);
         Double resultScore = null;
         Map<String, List<Object>> scoreMap = new HashMap<>();
 
@@ -106,29 +113,33 @@ public class AirPollutionUtil {
         scoreMap.put("pm10Value24", new ArrayList<>(Arrays.asList(0.0, 30.0, 31.0, 80.0, 81.0, 150.0, 151.0, 600.0)));
         scoreMap.put("pm25Value24", new ArrayList<>(Arrays.asList(0.0, 15.0, 16.0, 35.0, 36.0, 75.0, 76.0, 500.0)));
 
-        if(scoreMap.containsKey(key)) {
-            if (betweenDoubleExclusive(cP, Double.parseDouble(String.valueOf(scoreMap.get(key).get(0))), Double.parseDouble(String.valueOf(scoreMap.get(key).get(1))))) {
-                iHi = 50;
-                bpHi = (double) scoreMap.get(key).get(1);
-                bpLo = (double) scoreMap.get(key).get(0);
-            } else if (betweenDoubleExclusive(cP, Double.parseDouble(String.valueOf(scoreMap.get(key).get(2))), Double.parseDouble(String.valueOf(scoreMap.get(key).get(3))))) {
-                iLo = 51;
-                iHi = 100;
-                bpHi = (double) scoreMap.get(key).get(3);
-                bpLo = (double) scoreMap.get(key).get(2);
-            } else if (betweenDoubleExclusive(cP, Double.parseDouble(String.valueOf(scoreMap.get(key).get(4))), Double.parseDouble(String.valueOf(scoreMap.get(key).get(5))))) {
-                iLo = 101;
-                iHi = 250;
-                bpHi = (double) scoreMap.get(key).get(5);
-                bpLo = (double) scoreMap.get(key).get(4);
-            } else if (betweenDoubleExclusive(cP, Double.parseDouble(String.valueOf(scoreMap.get(key).get(6))), Double.parseDouble(String.valueOf(scoreMap.get(key).get(7))))) {
-                iLo = 251;
-                iHi = 500;
-                bpHi = (double) scoreMap.get(key).get(7);
-                bpLo = (double) scoreMap.get(key).get(6);
+        if(cP <= 500.0) {
+            if(scoreMap.containsKey(key)) {
+                if (betweenDoubleExclusive(cP, Double.parseDouble(String.valueOf(scoreMap.get(key).get(0))), Double.parseDouble(String.valueOf(scoreMap.get(key).get(1))))) {
+                    iHi = 50;
+                    bpHi = (double) scoreMap.get(key).get(1);
+                    bpLo = (double) scoreMap.get(key).get(0);
+                } else if (betweenDoubleExclusive(cP, Double.parseDouble(String.valueOf(scoreMap.get(key).get(2))), Double.parseDouble(String.valueOf(scoreMap.get(key).get(3))))) {
+                    iLo = 51;
+                    iHi = 100;
+                    bpHi = (double) scoreMap.get(key).get(3);
+                    bpLo = (double) scoreMap.get(key).get(2);
+                } else if (betweenDoubleExclusive(cP, Double.parseDouble(String.valueOf(scoreMap.get(key).get(4))), Double.parseDouble(String.valueOf(scoreMap.get(key).get(5))))) {
+                    iLo = 101;
+                    iHi = 250;
+                    bpHi = (double) scoreMap.get(key).get(5);
+                    bpLo = (double) scoreMap.get(key).get(4);
+                } else if (betweenDoubleExclusive(cP, Double.parseDouble(String.valueOf(scoreMap.get(key).get(6))), Double.parseDouble(String.valueOf(scoreMap.get(key).get(7))))) {
+                    iLo = 251;
+                    iHi = 500;
+                    bpHi = (double) scoreMap.get(key).get(7);
+                    bpLo = (double) scoreMap.get(key).get(6);
+                }
             }
+            resultScore = ((((iHi - iLo) / (bpHi - bpLo)) * (cP - bpLo)) + iLo);
+        } else {
+            resultScore = 999.0;
         }
-        resultScore = ((((iHi - iLo) / (bpHi - bpLo)) * (cP - bpLo)) + iLo);
         return Math.floor(resultScore);
     }
 
