@@ -1,9 +1,10 @@
 package com.danusys.web.platform.service.dashboard;
 
+import com.danusys.web.commons.app.AirPollutionUtil;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.dashboard.DashboardSqlProvider;
-import com.danusys.web.platform.util.AirPollutionUtil;
+import com.danusys.web.commons.app.AirPollutionUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
