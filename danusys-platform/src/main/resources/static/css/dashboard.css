@@ -6,10 +6,82 @@
 .dashboard{display: flex; flex-direction: column; height: calc(100% - 60px); background: #0b0b0c;}
 .dashboard_snb{display: flex; align-items: center; grid-gap: 10px; height: 64px; padding: 0px 25px; background: #1d1f23;}
 .dashboard_snb dt{margin: 0px 20px 0px 0px; color: #c8cbd1; font-size: 16px; font-weight: bold;}
-.dashboard_snb dd{display: flex; align-items: center; grid-gap: 8px; height: 36px; padding: 0px 14px; color: #c8cbd1; font-size: 14px; background: #464e5a; border-radius: 4px; cursor: pointer;}
+.dashboard_snb dd{display: flex; align-items: center; grid-gap: 8px; height: 36px; color: #c8cbd1; font-size: 14px; background: #464e5a; border-radius: 4px; cursor: pointer;}
 .dashboard_snb dd:hover,
 .dashboard_snb dd.active{font-weight: bold; background: #3a66e5;}
 .dashboard_snb dd:hover i,
 .dashboard_snb dd.active i{filter: brightness(2);}
+.dashboard_snb dd a{display: flex; align-items: center; padding: 0px 14px; height: 100%;}
+.dashboard_snb dd a i{margin-right: 10px;}
 /*TODO 대시보드 css 변경*/
 .empty_area{flex: 1; /*padding: 25px;*/ /*background: darkgreen;*/ /*임시*/overflow-x: hidden;}
+
+.dashboard_wrap{display: flex; flex-direction: column; height: calc(100% - 60px); background: #0c0c0d;}
+.dashboard_title{display: flex; align-items: center; height: 48px; margin: 0; padding: 0px 26px; font-size: 16px; background: #1f2024;}
+.dashboard_contents{flex: 1; display: flex; flex-direction: column; grid-gap: 14px; margin: 26px;}
+/* dashboard_top */
+.dashboard_top{display: flex; grid-gap: 14px; height: 100px;}
+.dashboard_top div.status_cnt{flex: 1; display: flex; align-items: center; justify-content: space-between; height: 100px; padding: 20px; box-sizing: border-box; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; background: #1a1b1d;}
+.dashboard_top div.status_cnt > div {flex: 1; display: flex; align-items: center; justify-content: space-between; max-width: 456px;}
+.dashboard_top div.status_cnt:nth-of-type(1){border-top: 8px solid #41aab1;}
+.dashboard_top div.status_cnt:nth-of-type(2){border-top: 8px solid #d29a43;}
+.dashboard_top div.status_cnt:nth-of-type(3){border-top: 8px solid #cc6565;}
+.dashboard_top div.status_cnt:nth-of-type(4){border-top: 8px solid #4aaf5f;}
+.dashboard_top div.status_cnt p.title{display: flex; flex-direction: column; color: #dee0e4; font-size: 16px; line-height: 24px;}
+.dashboard_top div.status_cnt p.title span{color: #7f8491; font-size: 14px;}
+.dashboard_top div.status_cnt p.value{display: flex; flex-direction: row; align-items: baseline; grid-gap: 6px; font-size: 26px; font-weight: bold;}
+.dashboard_top div.status_cnt:nth-of-type(1) p.value{color: #41aab1;}
+.dashboard_top div.status_cnt:nth-of-type(2) p.value{color: #d29a43;}
+.dashboard_top div.status_cnt:nth-of-type(3) p.value{color: #cc6565;}
+.dashboard_top div.status_cnt:nth-of-type(4) p.value{color: #4aaf5f;}
+.dashboard_top div.status_cnt p.value span{margin: 0px 0px 2px 0px; color: #dee0e4; font-size: 16px; font-weight: normal;}
+/* //dashboard_top */
+
+.dashboard_section{overflow: hidden; flex: 1; display: flex; grid-gap: 14px;}
+.dashboard_section .box{flex: 1; display: flex; flex-direction: column; grid-gap: 2px; max-height: 320px;}
+.dashboard_section .box h5{display: flex; align-items: center; padding: 0px 8px; height: 56px; color: #7f8491; font-size: 18px; font-weight: bold;}
+.dashboard_section .box > div{overflow: hidden; flex: 1; border-radius: 8px; background: #1a1b1d;}
+.dashboard_section .box.box_location{flex: 0.68;}
+.dashboard_section .box_status h5{display: flex; justify-content: space-between;}
+.dashboard_section .box .label{display: flex; align-items: center; justify-content: flex-end; grid-gap: 28px; margin: 20px 26px;}
+.dashboard_section .box .label dt{position: relative; color: #7f8491; font-size: 14px; font-weight: bold;}
+.dashboard_section .box .label dt:after{position: absolute; right: -14px; content: ''; width: 2px; height: 14px; background: #464e5a;}
+.dashboard_section .box .label dd{display: flex; align-items: center; grid-gap: 26px;}
+.dashboard_section .box .label dd p{display: flex; align-items: center; grid-gap: 6px; font-size: 14px; font-weight: bold;}
+.dashboard_section .box .label dd p span.status{width: 14px; height: 14px; border-radius: 50%;}
+.dashboard_section .box .label dd p span.lv1{background: #f04242;}
+.dashboard_section .box .label dd p span.lv2{background: #f9a825;}
+/*.dashboard_section .box_status div{display: flex; flex-direction: column;}*/
+
+/* 기상 정보 */
+.box_weather h5{display: flex; justify-content: space-between;}
+div.area_weather{overflow: hidden; display: flex;}
+div.area_weather .weather_left{flex: 0.8; display: flex; flex-direction: column; grid-gap: 26px; padding: 26px; border-right: 1px solid #1a1b1f;}
+div.area_weather .weather_left h6{display: flex; justify-content: space-between; color: #dee0e4; font-size: 18px; font-weight: bold;}
+.stepper{display: flex; width: 70%; padding: 20px 16px 0 0;}
+.stepper li{flex: 1; display: flex; flex-direction: column; grid-gap: 6px;}
+.stepper li span.bar{position: relative; width: 100%; height: 6px; background: black;}
+.stepper li:nth-last-child(1) span.bar{background: #2DCCFF;}
+.stepper li:nth-last-child(2) span.bar{background: #56F000;}
+.stepper li:nth-last-child(3) span.bar{background: #FFB302;}
+.stepper li:nth-last-child(4) span.bar{background: #FF3838;}
+.stepper li:nth-last-child(5) span.bar{background: #8B62FF;}
+.stepper li span.bar::after{position: absolute; right: 0; bottom: 0; content: ''; width: 1px; height: 10px; background: #bababa;}
+.stepper li span.bar em{position: absolute; top: -20px; right: -13px; width: 28px; color: #bababa; font-size: 12px; font-weight: normal; text-align: center;}
+.stepper li span.text{color: #bababa; font-size: 12px; font-weight: normal; letter-spacing: 0px; text-align: center;}
+.stepper li:nth-child(1) span.bar{background: none;}
+div.area_weather .weather_left dl{overflow: hidden; flex: 1; display: flex; align-items: center; grid-gap: 20px; padding: 14px 26px; box-sizing: border-box; border-radius: 8px; background: #131315;}
+div.area_weather .weather_left dl dt{overflow: hidden; flex: 0.6; height: 100%; max-height: 120px;}
+div.area_weather .weather_left dl dt img{width: 100%; height: 100%;}
+div.area_weather .weather_left dl dd{flex: 1; display: flex; align-items: center; grid-gap: 8px; white-space: nowrap; color: #dee0e4; font-size: 18px; font-weight: bold;}
+div.area_weather .weather_left dl dd span.bar{width: 2px; height: 14px; margin: 0px 8px; background: #464e5a;}
+div.area_weather .weather_right{flex: 1; display: flex; grid-gap: 26px; padding: 26px; border-right: 1px solid #1a1b1f;}
+div.area_weather .weather_right dl{flex: 1; display: flex; flex-direction: column; grid-gap: 26px;}
+div.area_weather .weather_right dl dt{color: #dee0e4; font-size: 18px; font-weight: bold;}
+div.area_weather .weather_right dl dd{flex: 1; /*background: gray;*/}
+
+.dashboard_section .box .apexcharts-tooltip,
+.dashboard_section .box .apexcharts-tooltip-title{
+    background: #0b0b0c;
+    color: #fff;
+}

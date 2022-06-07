@@ -17,8 +17,18 @@ $(document).ready(() => {
         $(e.currentTarget).addClass("on");
     });
 
+    $('.dashboard_snb dd.dashboardType').on("click", e => {
+        const $target = $(e.currentTarget);
+        $target.siblings('dd').removeClass('active');
+    });
+
     $(".accordion_sub_menu > li").map((i, el) => {
         if(path.indexOf(el.id) > -1) $(el).addClass("on");
+    });
+
+
+    $(".dashboard_snb dd.dashboardType").map((i, el) => {
+        if(path.indexOf(el.dataset.value) > -1) $(el).addClass("active");
     });
 
     /* 다중 셀렉트 박스 */
@@ -110,17 +120,8 @@ $(document).ready(() => {
         mntr.eventHandler();
     }
     // 대시보드 (임시)
-    else if(path === "/pages/dashboard") {
-        //임시 이벤트 핸들러 처리 -> TODO dashboard.js 생성?
-        $('.dashboard_snb dd.dashboardType').on("click", e => {
-            const $target = $(e.currentTarget);
-            const theme = $target.attr('data-value');
-            //선택 css 처리
-            $target.siblings('dd').removeClass('active');
-            $target.addClass('active');
-            //이미지 변경
-            $('.empty_area div img').attr('src','/images/sample/dashboard_' + theme + '.png');
-        });
+    else if(path === "/pages/dashboard/dashboard_facility") {
+        dashboard.init();
     }
 
     //통계
