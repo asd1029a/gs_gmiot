@@ -61,7 +61,9 @@ const mntr = {
             if($targetTab == "event"){
                 let newAry;
                 event.getListGeoJson({
-                    "eventState": ["1","2","3"]
+                    "eventState": ["1","2","3"],
+                    "eventKind": ["BUSSTOP_FALL_DOWN", "BUSSTOP_FIRE"],
+                    "sigCode": window.siGunCode
                 }, result => {
                     //리스트 추가하기 (TODO 리스트도 refresh 해야할까)
                     const data = JSON.parse(result);
@@ -73,7 +75,7 @@ const mntr = {
                         }
                     });
                     data.features = ary;
-                    lnbList.createEvent(JSON.stringify(data));
+                    lnbList.createEvent(result);
                     //레이어 refresh
                     reloadLayer(JSON.parse(result), 'eventLayer');
                 });
@@ -398,8 +400,8 @@ const mntr = {
                     stationParam = {"stationKind": ["DRONE_STATION"]}
                     //기체
                     facility.getListGeoJson({
-                        "facilityKind" : ["DRONE"],
-                        "sigCode" : window.siGunCode
+                        "facilityKind" : ["DRONE"]
+                        , "sigCode" : window.siGunCode
                     },result => {
                         reloadLayer(result, 'facilityLayer');
                         lnbList.createFacility(result);
@@ -421,7 +423,7 @@ const mntr = {
                     break;
             }
 
-            stationParam["sigCode"] = window.siGunCode//"41390"; //TODO 시흥 -> window.siGunCode
+            stationParam["sigCode"] = window.siGunCode;
             eventParam["sigCode"] = window.siGunCode;
             eventPastParam["sigCode"] = window.siGunCode;
 
@@ -909,6 +911,7 @@ const lnbList = {
      * obj : ajax 반환값
      * */
     , createEvent : obj => {
+        lnbList.removeAllList('event');
         let objAry = JSON.parse(obj);
         const $target = $('section.select .lnb_tab_section[data-value=event]');
 
@@ -957,6 +960,7 @@ const lnbList = {
      * obj : ajax 반환값
      * */
     , createEventPast : (obj) => {
+        lnbList.removeAllList('eventPast');
         let objAry = JSON.parse(obj);
         const $target = $('section.select .lnb_tab_section[data-value=eventPast]');
 
@@ -1007,6 +1011,7 @@ const lnbList = {
      * type : facility, station (for같은탭에 존재할때)
      * */
     , createStation : (obj, type) => {
+        lnbList.removeAllList('station');
         let objAry = JSON.parse(obj);
         const $target = $('section.select .lnb_tab_section[data-value='+ type +']');
 
@@ -1292,7 +1297,7 @@ function searchList(section, keyword) {
                 station.getListGeoJson({
                     /// objJSON
                 }, result => {
-                    lnbList.removeAllList(tab);
+                    // lnbList.removeAllList(tab);
                     lnbList.createStation(result);
                 });
             } else if(tab == "eventPast") {
@@ -1304,7 +1309,7 @@ function searchList(section, keyword) {
                     ////////// objJSON
                 }, result => {
                     // 리스트 초기화
-                    lnbList.removeAllList(tab);
+                    // lnbList.removeAllList(tab);
                     lnbList.createEventPast(result);
                     // 과거 이벤트 레이어 reload
                     reloadLayer(result, 'eventPastLayer');
