@@ -141,11 +141,9 @@ const signage = {
                         obj.value = value;
                     }
                 }
-                console.log(obj);
                 templateLayoutList.push(obj);
             });
-            console.log(templateLayoutList);
-            console.log(JSON.stringify(templateLayoutList));
+
             if(alertMsg === "") {
                 signage.addLayoutProc({templateSeq : templateSeq, templateContent : JSON.stringify(templateLayoutList)}
                     , () => {
@@ -312,12 +310,18 @@ const signage = {
                     return false;
                 } else {
                     //$('#height_'+idx).val(each.height);
-                    $('#kind_' + idx).val(each.kind).trigger('change');
+                    const $selectId = $('#kind_' + idx);
+                    $selectId.val(each.kind).trigger('change');
                     if (each.value !== "" && typeof each.value !== "undefined") {
-                        if(each.kind === "stationList") {
-                            $('#kind_' + idx).siblings("div").find("input[type='hidden']").val(each.value);
+                        if (each.kind === "stationList") {
+                            $selectId.siblings("div").find("input[type='hidden']").val(each.value);
+                        } else if (each.kind === "imageFile") {
+                            const $previewLi = $("#templateArea li:nth-child("+$selectId.parents("li").index()+")");
+                            $selectId.siblings("div").find("input[type='text']").val(each.value);
+                            $previewLi.css("background", "url(/signageDisplay/getImage?imageFile=" + each.value + ") no-repeat #1a1b1d");
+                            $previewLi.css("background-size", "100% 100%");
                         } else {
-                            $('#kind_' + idx).siblings("div").find("input[type='text']").val(each.value);
+                            $selectId.siblings("div").find("input[type='text']").val(each.value);
                         }
                     }
                 }
@@ -431,9 +435,17 @@ const signage = {
             $(targetNode).children().not('p').not('select').remove();
 
             let tempTag;
+            const $previewLi = $("#templateArea li:nth-child("+$(targetNode).index()+")");
             if(targetValue !== "" && typeof targetValue !== "undefined") {
+                $previewLi.css("background", "#1a1b1d");
                 tempTag = document.createElement(innerTag[targetValue]);
                 tempTag.innerHTML = innerHtml[targetValue];
+                if(targetValue === "stationList" || targetValue === "videoFile") {
+                    $previewLi.css("background", "url(../../images/default/videoEx.png) no-repeat center #1a1b1d");
+                } else if(targetValue === "airPollution") {
+                    $previewLi.css("background", "url(../../images/default/airPollutionEx.png) no-repeat center #1a1b1d");
+                }
+                $previewLi.css("background-size", "100% 100%");
             } else {
                 tempTag = '<div>종류를 선택해주십시오.</div>';
             }
@@ -453,6 +465,12 @@ const signage = {
                 } else {
                     const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
                     $(".upload_name").val(fileName);
+                    const reader = new FileReader();
+                    reader.onload = (r) => {
+                        $previewLi.css("background", "url("+r.target.result+") no-repeat #1a1b1d");
+                        $previewLi.css("background-size", "100% 100%");
+                    }
+                    reader.readAsDataURL(e.currentTarget.files[0]);
                 }
             });
 

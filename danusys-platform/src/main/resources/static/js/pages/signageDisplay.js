@@ -170,8 +170,8 @@ const signageDisplay = {
             },
             plotOptions: {
                 radialBar: {
-                    startAngle: -135,
-                    endAngle: 225,
+                    startAngle: 0,
+                    endAngle: 360,
                     hollow: {
                         margin: 0,
                         size: '60%',
@@ -190,7 +190,7 @@ const signageDisplay = {
                     },
                     track: {
                         background: '#fff',
-                        strokeWidth: '67%',
+                        strokeWidth: '70%',
                         margin: 0, // margin is in pixels
                         dropShadow: {
                             enabled: true,
@@ -248,12 +248,12 @@ const signageDisplay = {
                 options.labels.push(typeObj[val.type].title);
                 options.fill.colors.push(typeObj[val.type].color);
                 if(key === "khaiValue") {
-                    options.chart.height = 450;
+                    options.chart.height = 400;
                     options.plotOptions.radialBar.dataLabels.name.fontSize = "200%";
                     options.plotOptions.radialBar.dataLabels.value.fontSize = "200%";
                 } else {
-                    options.chart.height = 200;
-                    options.plotOptions.radialBar.dataLabels.name.fontSize = "120%";
+                    options.chart.height = 180;
+                    options.plotOptions.radialBar.dataLabels.name.fontSize = "110%";
                     options.plotOptions.radialBar.dataLabels.value.fontSize = "100%";
                 }
                 let chart = new ApexCharts(document.querySelector("#"+key), options);

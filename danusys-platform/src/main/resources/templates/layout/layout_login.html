@@ -5,6 +5,8 @@
     <link rel="stylesheet" type="text/css" href="/css/reset.css">
     <link rel="stylesheet" type="text/css" href="/css/login.css">
     <script src="/js/loginWhy.js" defer ></script>
+    <link rel="shortcut icon" th:href="${@environment.getProperty('municipality.favicon')}"/>
+    <title>Iot 플랫폼</title>
 </head>
 
 <body>
@@ -25,17 +27,11 @@
                 <li><input type="text" class="input_id" id="id" name="username" placeholder="아이디를 입력하세요." tabindex="1"></li>
                 <li><input type="password" class="input_pw" id="pwd" name="password" placeholder="비밀번호를 입력하세요." tabindex="2"></li>
                 <li class="login_button">
-                        <span>
-                            <span>
-                               <input type="checkbox" id="remember-me" name="remember-me">
-                                <label for="remember-me" tabindex="3"><span></span>Save ID</label>
-                            </span>
-                        </span>
                     <button class="login-btn">LOGIN</button>
                 </li>
             </ul>
         </form>
-    </div>
+    </h6>
 </div>
 </body>
 
