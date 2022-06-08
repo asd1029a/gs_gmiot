@@ -445,7 +445,7 @@ const dimming = {
         window.dimmMap.setCenter(baseCenter);
         window.dimmMap.setZoom(11);
         //디밍 그룹별맵 제어 ban
-        $('#dimmMap').prepend('<canvas style="position: absolute;background: #ff000000;width: 100%;height: 100%;z-index: 1;"></canvas>');
+        $('#dimmMap').prepend('<canvas class="map_mouse_ban"></canvas>');
 
         //디밍 그룹 설정맵 초기설정
         let dimmGroupMap = new mapCreater('dimmGroupMap', 0);
