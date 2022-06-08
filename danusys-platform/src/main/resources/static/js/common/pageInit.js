@@ -115,9 +115,11 @@ $(document).ready(() => {
     }
     // 관제
     else if(path === "/pages/mntr") {
+
         svgToImage.init();
         mntr.init();
         mntr.eventHandler();
+        $('.mntr_container .lnb ul li.active').trigger("click");
     }
     // 대시보드 (임시)
     else if(path === "/pages/dashboard/dashboard_facility") {

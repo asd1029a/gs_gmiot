@@ -922,7 +922,7 @@ const lnbList = {
             let cnt = Number($target.find('.area_title[data-value=lv' + level + '] .count').text());
 
             content = "<dl>" +
-                "<dt>" + prop.eventSeq + "<span class='state'>" + prop.eventProcStatName + "</span></dt>" +
+                "<dt>" + prop.administZoneName + "<span class='state'>" + prop.eventProcStatName + "</span></dt>" +
                 "<dd class='event_level'><span class='level lv" + level + "'>" + prop.eventGradeName + "</span>" + prop.eventKindName + "</dd>" +
                 "<dd>" + (prop.address ? prop.address : "-") + "</dd>" +
                 "<dd>" + prop.insertDt + "<span class='ago'>" + dateFunc.getDateText(prop.insertDt) + "</span></dd>" +
