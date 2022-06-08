@@ -1,42 +1,41 @@
-//package com.danusys.web.platform.controller;
-//
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.boot.web.servlet.error.ErrorController;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//
-//import javax.servlet.RequestDispatcher;
-//import javax.servlet.http.HttpServletRequest;
-//
-//@Controller
-//public class CustomErrorController implements ErrorController {
-//    private String VIEW_PATH = "/errors/";
-//
-//
-//    @Value("${defaultFailureUrl}")
-//    private String defaultFailureUrl;
-//
-//    @RequestMapping(value = "/error")
-//    public String handleError(HttpServletRequest request) {
-//        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-//        if (status != null) {
-//            int statusCode = Integer.valueOf(status.toString());
-//            if (statusCode == HttpStatus.NOT_FOUND.value()) {
-//              // return VIEW_PATH + "404";
-//                return "/view/login/loginErrorTest";
-//            }
-//            if (statusCode == HttpStatus.FORBIDDEN.value()) {
-//              //  return VIEW_PATH + "500";
-//                return "/view/login/loginErrorTest";
-//            }
-//        }
-//        return "error";
-//    }
-//
-//    @Override
-//    public String getErrorPath() {
-//        return null;
-//    }
-//}
-//
+package com.danusys.web.platform.controller;
+
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+
+@Controller
+public class CustomErrorController implements ErrorController {
+    private String VIEW_PATH = "/view/error";
+
+    @RequestMapping(value = "/error")
+    public String handleError(HttpServletRequest request, Model model) {
+        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        int statusCode = Integer.valueOf(status.toString());
+        HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
+
+        if(status != null) {
+            model.addAttribute("code", status.toString());
+            if(statusCode == HttpStatus.NOT_FOUND.value()) {
+                model.addAttribute("message", "페이지를 찾을 수 없습니다.");
+            } else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+                model.addAttribute("message", "서버내 처리중 에러가 발생했습니다." + httpStatus.getReasonPhrase());
+            } else {
+                model.addAttribute("message", httpStatus.getReasonPhrase());
+            }
+        }
+
+        return VIEW_PATH;
+    }
+
+    @Override
+    public String getErrorPath() {
+        return null;
+    }
+}
+
