@@ -88,15 +88,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         log.trace("# defaultFailureUrl : {} ", defaultFailureUrl);
 
-       // RequestDispatcher dispatcher = httpServletRequest.getRequestDispatcher(defaultFailureUrl);
-       // dispatcher.forward(httpServletRequest, httpServletResponse);
+       //RequestDispatcher dispatcher = httpServletRequest.getRequestDispatcher(defaultFailureUrl);
+       //dispatcher.forward(httpServletRequest, httpServletResponse);
         // httpServletRequest.getRequestDispatcher("/login/error").forward(httpServletRequest,httpServletResponse);
 
-
-
         httpServletResponse.sendRedirect(defaultFailureUrl);
-
     }
-
-
 }

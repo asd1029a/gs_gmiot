@@ -40,6 +40,15 @@ $(".login-btn").on("click", function () {
 
             }
 
+        },
+        error : (jqXHR, textStatus, errorThrown) => {
+            if(jqXHR.status === 403) {
+                comm.showAlert("아이디 혹은 비밀번호가 일치하지 않습니다.");
+            } else if(jqXHR.status === 500) {
+                comm.showAlert("서버 내 에러가 발생했습니다.");
+            } else if(jqXHR.status === 0){
+                comm.showAlert("네트워크가 연결되지 않았거나, 불안정합니다.");
+            }
         }
     });
 
