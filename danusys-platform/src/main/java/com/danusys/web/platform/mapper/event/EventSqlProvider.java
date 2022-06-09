@@ -86,6 +86,8 @@ public class EventSqlProvider {
                 WHERE( "v4.code_value" + SqlUtil.getWhereInStr(administZone));
             }
 
+            ORDER_BY("event_start_dt desc");
+
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);
