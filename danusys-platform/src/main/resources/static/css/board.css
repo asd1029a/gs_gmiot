@@ -147,8 +147,8 @@
 .search_table table tbody tr td span.status.yellow{background: #d5932a;}
 .search_table table tbody tr td span.status.green{background: #357d33;}
 .search_table table tbody tr td span.type{display: inline-block; vertical-align: middle; width: 30px; height: 30px; background: #434751; border-radius: 100%; cursor: default;}
-.search_table table tbody tr td span.type.bus{background: #344472;}
-.search_table table tbody tr td span.type.pole{background: #d78219;}
+.search_table table tbody tr td span.type.smart_station{background: #344472;}
+.search_table table tbody tr td span.type.smart_pole{background: #d78219;}
 .search_table table tbody tr td span.type i{margin: 5px auto; opacity: 0.8; cursor: default;}
 .search_table table tbody tr td span.type.bus i{width: 16px; height: 16px; margin: 7px 0px;}
 .search_table table tbody tr td span.station_type{display: block; width: 36px; height: 36px; margin: auto;}
@@ -412,7 +412,7 @@ tr.selected td {background-color: #23252b;}
 /* signage */
 .signage_contents{display: flex; grid-gap: 14px; height: 100%;}
 .signage_contents > article{overflow: hidden; padding: 0px;}
-.article_title{overflow: hidden; height: 60px; margin: 0px; padding: 0px 12px 0px 20px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
+.article_title{overflow: hidden; height: 60px; margin: 0px; padding: 0px 12px 0px 20px; box-sizing: border-box;}
 .signage_template{display: flex; flex-direction: column; width: 320px;}
 .signage_template .template_list{flex: 1; overflow: auto;}
 .signage_template .template_list dl{padding: 15px; border-bottom: 1px solid #292c34;}

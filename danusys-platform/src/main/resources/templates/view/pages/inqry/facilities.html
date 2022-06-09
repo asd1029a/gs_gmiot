@@ -29,6 +29,14 @@
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
+                    <p>행정구역</p>
+                    <dl class="dropdown_checkbox" data-selectbox-type="administZone">
+                        <dt class="checkbox_title select_title">행정구역</dt>
+                        <dd class="checkbox_list list" style="display: none;">
+                        </dd>
+                    </dl>
+                </div>
+                <div>
                     <dl class="checkbox_set">
                         <dt>시설물 상태</dt>
                         <dd>
@@ -42,14 +50,7 @@
 							</span>
                         </dd>
                     </dl>
-                </div>
-                <div>
-                    <p>행정구역</p>
-                    <dl class="dropdown_checkbox" data-selectbox-type="administZone">
-                        <dt class="checkbox_title select_title">행정구역</dt>
-                        <dd class="checkbox_list list" style="display: none;">
-                        </dd>
-                    </dl>
+                    <p>검색어 입력</p>
                     <ul class="button">
                         <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요." onkeydown="if(event.keyCode==13){facility.create();}"></li>
                         <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
@@ -85,7 +86,6 @@
                         <th>개소 종류</th>
                         <th>개소 이름</th>
                         <th>행정구역</th>
-                        <th>시설물 주소</th>
                         <th>상세보기</th>
                     </tr>
                     </thead>
