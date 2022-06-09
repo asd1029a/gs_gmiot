@@ -63,7 +63,7 @@ AND tfo.facility_opt_name = 'floating_population'
                     ", '' as total_cnt" +
                     ", '건' as unit");
             FROM("t_station ts");
-            INNER_JOIN("t_event ts ON ts.station_seq = te.station_seq");
+            INNER_JOIN("t_event te ON ts.station_seq = te.station_seq");
             WHERE("ts.administ_zone LIKE '"+codeSig+"%'");
             WHERE("te.event_kind = '65'");
         }};
