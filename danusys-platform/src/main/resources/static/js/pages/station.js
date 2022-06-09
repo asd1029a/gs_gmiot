@@ -79,6 +79,7 @@ const station = {
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
+                        console.log(result);
                         $('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
@@ -91,7 +92,6 @@ const station = {
                 {data: "stationSeq", class: "alignLeft"},
                 {data: "stationKindName"},
                 {data: "stationName"},
-                // {data: "facilityStatus"},
                 {data: "inFacilityKind"},
                 {data: "administZoneName"},
                 {data: null}
@@ -100,17 +100,6 @@ const station = {
                 "targets": -1,
                 "data": null,
                 "defaultContent": '<span class="button">수정</span>'
-            }
-            , {
-                "targets": 1,
-                "data": null,
-                "render": function ( data, type, row ) {
-                    switch (row.stationKindValue){
-                        case "lamp_road" : return `<span class="type pole"><i><img src="/images/default/icon_pole.svg"></i></span>`; break;
-                        case "bus" : return `<span class="type bus"><i><img src="/images/default/icon_bus.svg"></i></span>`; break;
-                        default: "";
-                    }
-                }
             }]
             , excelDownload : {
                 url : "/station/excel/download"

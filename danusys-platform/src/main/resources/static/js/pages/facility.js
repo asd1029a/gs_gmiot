@@ -44,7 +44,6 @@ const facility = {
                 {data: "stationKindName"},
                 {data: "stationName"},
                 {data: "administZoneName"},
-                {data: "address"},
                 {data: null}
             ],
             columnDefs: [{
@@ -64,14 +63,13 @@ const facility = {
                     }
                 }
             }
-            , {
-                "targets": 3,
-                "data": null,
-                "render": function ( data, type, row ) {
-                    switch (row.stationKindValue){
-                        case "lamp_road" : return `<span class="type pole"><i><img src="/images/default/icon_pole.svg"></i></span>`; break;
-                        case "bus" : return `<span class="type bus"><i><img src="/images/default/icon_bus.svg"></i></span>`; break;
-                        default: "";
+            ,{
+                "target" : 4,
+                "data" : null,
+                "render": function (data, type, row) {
+                    const stationName = row.stationName;
+                    if(stationName == null || stationName === "") {
+                        return "개소 없음"
                     }
                 }
             }]

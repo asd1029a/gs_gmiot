@@ -48,7 +48,7 @@ public class ConfigSqlProvider {
         SQL sql = new SQL() {{
             SELECT("*");
             switch (CommonUtil.validOneNull(paramMap, "type")) {
-                case "stationKind" : FROM("v_facility_station"); break;
+                case "stationKind" : FROM("v_station_kind"); break;
                 case "district" : FROM("v_facility_district"); break;
                 case "facilityKind" : FROM("v_facility_kind"); break;
                 case "eventKind" : {
