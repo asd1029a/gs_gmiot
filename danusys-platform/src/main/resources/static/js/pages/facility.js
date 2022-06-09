@@ -44,14 +44,15 @@ const facility = {
                 {data: "stationKindName"},
                 {data: "stationName"},
                 {data: "administZoneName"},
-                {data: null}
+                /*{data: null}*/
             ],
-            columnDefs: [{
+            columnDefs: [
+            /*{
                 "targets": -1,
                 "data": null,
                 "defaultContent": '<span class="button">상세보기</span>'
             }
-            , {
+            , */{
                 "targets": 2,
                 "data": null,
                 "render": function ( data, type, row ) {
