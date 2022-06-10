@@ -64,14 +64,10 @@ public class ConfigSqlProvider {
                     break;
                 }
                 case "administZone" : {
-                    FROM("v_administ t1");
-                    WHERE("EXISTS(" +
-                            "SELECT * " +
-                            "FROM t_area_emd t2 " +
-                            "WHERE t1.code_value = t2.emd_cd " +
-                            "AND t2.col_adm_se = '" + CommonUtil.validOneNull(paramMap, "subType") + "')");
+                    FROM("v_administ");
+                    WHERE("substr(code_value, 1, 5) = '" + CommonUtil.validOneNull(paramMap, "subType") + "'");
                     OR();
-                    WHERE("t1.level = 0");
+                    WHERE("level = 0");
                 } break;
                 default : FROM("t_common_code"); break;
             }
