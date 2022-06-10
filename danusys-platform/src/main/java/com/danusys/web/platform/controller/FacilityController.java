@@ -2,12 +2,10 @@ package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.service.ApiCallService;
-import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.commons.app.FileUtil;
-import com.danusys.web.commons.app.StrUtils;
+import com.danusys.web.commons.api.service.FacilityOptService;
+import com.danusys.web.commons.app.*;
 import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.service.facility.FacilityService;
-import com.danusys.web.commons.app.GisUtil;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +37,8 @@ public class FacilityController {
 
     private final ApiCallService apiCallService;
 
+    private final FacilityOptService facilityOptService;
+
 
     /**
      * 시설물 : 시설물 목록 조회
@@ -63,6 +63,13 @@ public class FacilityController {
     public String getListFacilityGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = facilityService.getList(paramMap);
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
+
+        if(CommonUtil.validOneNull(paramMap, "kindCodeViewName").equals("v_station_facility_info")) {
+            list.stream().peek(p -> {
+                log.trace("v_station_facility_info > {}", p.get("facilitySeq"));
+                p.put("facilityOpts", facilityOptService.findByFacilitySeq(Long.parseLong(String.valueOf(p.get("facilitySeq")))));
+            }).collect(toList());
+        }
 
         return GisUtil.getGeoJson(list, "facility");
     }

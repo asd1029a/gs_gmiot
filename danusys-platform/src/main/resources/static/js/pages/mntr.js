@@ -1125,24 +1125,43 @@ const rnbList = {
             ///show
             ///hide
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
-        } else if(theme=="smartBusStop") {
+        } else if(theme === "smartBusStop") {
+
+            //개소 현황
+            facility.getListGeoJson({
+                "stationSeq": prop.stationSeq,
+                "kindCodeViewName": "v_station_facility_info"
+            },result => {
+                let objAry = JSON.parse(result);
+                console.log(objAry)
+
+                for(let i = 0; i<objAry.features.length; i++) {
+                    let pointInfo = objAry.features[i].properties;
+                    let facilityOpts = pointInfo.facilityOpts;
+                    for (let j=0;j<facilityOpts.length;j++) {
+                        target.find(".area_right_bus_status [data-value=" + facilityOpts[j].facilityOptName + "] span").text(facilityOpts[j].facilityOptValue)
+                    }
+                }
+            });
+
+            //시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
             },result => {
-                //TODO 시설물 상태 표시 여기에 하는 것이???
                 target.find(".area_right_bus_control").html("");
                 let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}}><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
+
                 console.log(objAry)
+
                 for(let i = 0; i<objAry.features.length; i++) {
                     let pointInfo = objAry.features[i].properties;
                     let facilityKindName = pointInfo.facilityKindName;
                     let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
 
                     // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
-
                     target.find(".area_right_bus_control").append(
                         smartBusStoFacilityTag
                             .replace("{{facilityKindName}}", facilityKindName)
@@ -1154,7 +1173,6 @@ const rnbList = {
                 // reloadLayer(result, 'facilityLayer');
                 // lnbList.createFacility(result);
             });
-
         } else {}
         //////////////////
 

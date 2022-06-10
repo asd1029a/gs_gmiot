@@ -21,6 +21,9 @@ public class FacilitySqlProvider {
         ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
         String start = CommonUtil.validOneNull(paramMap, "start");
         String length = CommonUtil.validOneNull(paramMap, "length");
+        String kindCodeViewName = CommonUtil.validOneNull(paramMap, "kindCodeViewName").isEmpty() ? "v_facility_kind" : CommonUtil.validOneNull(paramMap, "kindCodeViewName");
+
+
         StringBuilder builder = new StringBuilder();
 
         SQL sql = new SQL() {{
@@ -53,7 +56,7 @@ public class FacilitySqlProvider {
 
             SELECT(builder.toString());
             FROM("t_facility t1");
-            INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
+            INNER_JOIN(kindCodeViewName + " t2 on t1.facility_kind = t2.code_seq");
             LEFT_OUTER_JOIN("t_user t3 on t1.insert_user_seq = t3.user_seq");
             LEFT_OUTER_JOIN("t_user t4 on t1.update_user_seq = t4.user_seq");
             LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");

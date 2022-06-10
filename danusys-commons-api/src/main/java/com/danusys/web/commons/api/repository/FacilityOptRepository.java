@@ -3,6 +3,7 @@ package com.danusys.web.commons.api.repository;
 import com.danusys.web.commons.api.model.FacilityOpt;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,5 +16,6 @@ import java.util.Optional;
 public interface FacilityOptRepository extends JpaRepository<FacilityOpt, Long> {
 
     FacilityOpt findByFacilitySeqAndFacilityOptName(Long facilitySeq, String facilityOptName);
+    List<FacilityOpt> findByFacilitySeq(Long facilitySeq);
 
 }

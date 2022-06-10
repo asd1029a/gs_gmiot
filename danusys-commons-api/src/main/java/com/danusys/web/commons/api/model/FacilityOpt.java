@@ -31,7 +31,7 @@ public class FacilityOpt {
     @Column(nullable = false)
     private String facilityOptValue;
 
-    private int facilityOptType;
+    private Integer facilityOptType;
 
     @Builder
     public FacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType) {
