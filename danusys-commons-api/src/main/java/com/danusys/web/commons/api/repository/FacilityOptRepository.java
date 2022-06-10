@@ -16,4 +16,5 @@ public interface FacilityOptRepository extends JpaRepository<FacilityOpt, Long> 
 
     FacilityOpt findByFacilitySeqAndFacilityOptName(Long facilitySeq, String facilityOptName);
 
+    FacilityOpt findByFacilityOptNameAndFacilityOptValue(String facilityOptName, String facilityOptValue);
 }

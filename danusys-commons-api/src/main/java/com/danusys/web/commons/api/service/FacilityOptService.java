@@ -65,4 +65,8 @@ public class FacilityOptService {
         return facilityOptRepository.findByFacilitySeqAndFacilityOptName(facilitySeq, facilityOptName);
     }
 
+    public FacilityOpt findByFacilityOptNameAndFacilityOptValue(String facilityOptName, String facilityOptValue) {
+        return facilityOptRepository.findByFacilityOptNameAndFacilityOptValue(facilityOptName, facilityOptValue);
+    }
+
 }
