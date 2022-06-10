@@ -116,7 +116,7 @@ public class FacilitySqlProvider {
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
             LEFT_OUTER_JOIN("t_station t3 on t1.station_seq = t3.station_seq");
-            LEFT_OUTER_JOIN("v_administ t4 on t1.administ_zone = t3.code_value");
+            LEFT_OUTER_JOIN("v_administ t4 on t1.administ_zone = t4.code_value");
             LEFT_OUTER_JOIN("v_station_kind t5 on t3.station_kind = t5.code_seq");
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));

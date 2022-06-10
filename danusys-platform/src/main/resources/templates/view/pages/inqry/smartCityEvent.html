@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     <p>행정구역</p>
-                    <dl class="dropdown_checkbox" data-selectbox-type="administZone">
+                    <dl class="dropdown_checkbox" data-selectbox-type="administZone" th:attr="data-selectbox-sub-type=${@environment.getProperty('danusys.area.code.sig')}">
                         <dt class="checkbox_title select_title">행정구역</dt>
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>

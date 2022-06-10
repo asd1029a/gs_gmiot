@@ -41,7 +41,7 @@
                 </div>
                 <div>
                     <p>행정구역</p>
-                    <dl class="dropdown_checkbox" data-selectbox-type="administZone">
+                    <dl class="dropdown_checkbox" data-selectbox-type="administZone" th:attr="data-selectbox-sub-type=${@environment.getProperty('danusys.area.code.sig')}">
                         <dt class="checkbox_title select_title">행정구역</dt>
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>
@@ -97,23 +97,6 @@
                         <th>상세보기</th>
                     </tr>
                     </thead>
-                    <!--<tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>FEB000001</td>
-                        <td>GW 이상</td>
-                        <td><span class="status red"></span></td>
-                        <td>BF001</td>
-                        <td>AED</td>
-                        <td><span class="type bus"><i><img src="/images/default/icon_bus.svg"></i></span></td>
-                        <td>광명 시청</td>
-                        <td>철산 3동</td>
-                        <td>경기 광명시 시청로 20 광명시청</td>
-                        <td>2021.11.25 15:49</td>
-                        <td>2021.11.25 15:49</td>
-                        <td><span class="button">상세보기</span></td>
-                    </tr>
-                    </tbody>-->
                 </table>
             </div>
         </article>

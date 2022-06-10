@@ -18,6 +18,8 @@ public interface StationRepository extends JpaRepository<Station, Long> {
 
     Station findByStationName(String stationName);
 
+    Station findByStationSeq(Long stationSeq);
+
     @Query(value = "SELECT code_seq FROM v_facility_station WHERE code_id = :codeId", nativeQuery = true)
     Long findCommonCode(String codeId);
 

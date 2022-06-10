@@ -15,6 +15,13 @@ public class DashboardSqlProvider {
                     " union all" +
                     " select '스마트가로등3' as name, '승객 카운트' as sub_name, '6' as value, '명' as unit");
 
+            /*
+select *
+from t_facility tf
+inner join t_facility_opt tfo
+on tf.facility_seq = tfo.facility_seq
+AND tfo.facility_opt_name = 'floating_population'
+            */
             //FROM("t_event");
             /*if (keyword != null && !keyword.equals("")) {
                 WHERE("v1.code_name LIKE '%" + keyword + "%'");
@@ -56,7 +63,7 @@ public class DashboardSqlProvider {
                     ", '' as total_cnt" +
                     ", '건' as unit");
             FROM("t_station ts");
-            INNER_JOIN("t_event ts ON ts.station_seq = te.station_seq");
+            INNER_JOIN("t_event te ON ts.station_seq = te.station_seq");
             WHERE("ts.administ_zone LIKE '"+codeSig+"%'");
             WHERE("te.event_kind = '65'");
         }};
@@ -94,7 +101,7 @@ public class DashboardSqlProvider {
                     ", '' as total_cnt" +
                     ", '건' as unit");
             FROM("t_station ts");
-            INNER_JOIN("t_event ts ON ts.station_seq = te.station_seq");
+            INNER_JOIN("t_event te ON ts.station_seq = te.station_seq");
             WHERE("ts.administ_zone LIKE '"+codeSig+"%'");
             WHERE("te.event_kind = '66'");
         }};
