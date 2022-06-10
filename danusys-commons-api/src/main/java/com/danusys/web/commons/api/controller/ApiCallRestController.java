@@ -295,20 +295,28 @@ public class ApiCallRestController {
                         f.setValue(apiParam.getValue());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
-
+            Map<String, Object> eventSseData = new HashMap<>();
             // event save
             for(Map.Entry<String, Object> el: map.entrySet()) {
                 if (dataType.get().equals(DataType.ARRAY)) {
                     List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
                     });
                     List<Event> eventList = eventService.saveAllByEventRequestDTO(list);
-                    sseJsonStr = objectMapper.writeValueAsString(eventList);
+                    String eventType = eventService.findParentKind(eventList.get(0).getEventKind());
+
+                    eventSseData.put("eventType", eventType);
+                    eventSseData.put("data", eventList);
+                    sseJsonStr = objectMapper.writeValueAsString(eventSseData);
                     log.trace(list.toString());
                 } else if (dataType.get().equals(DataType.OBJECT)) {
                     EventReqeustDTO eventReqeustDTO = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
                     });
                     Event event = eventService.saveByEventRequestDTO(eventReqeustDTO);
-                    sseJsonStr = objectMapper.writeValueAsString(event);
+                    String eventType = eventService.findParentKind(event.getEventKind());
+
+                    eventSseData.put("eventType", eventType);
+                    eventSseData.put("data", event);
+                    sseJsonStr = objectMapper.writeValueAsString(eventSseData);
                 }
             }
 

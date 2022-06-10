@@ -3,7 +3,7 @@ proj4.defs("EPSG:5179","+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=100000
 ol.proj.proj4.register(proj4);
 
 /**
- * 0: daum, 1: naver, 2:vworld
+ * 0: daum, 1: naver, 2: vworld
  * */
 class mapCreater {
     'use strict'

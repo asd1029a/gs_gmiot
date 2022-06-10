@@ -103,6 +103,14 @@ const event = {
             pCallback(result);
         });
     },
+    getListEventKind : (parentCodeValue, pCallback) => {
+        $.ajax({
+            url : "/event/eventKindCodeList/" + parentCodeValue
+            , type : "GET"
+        }).done((result) => {
+            pCallback(result);
+        });
+    },
     getColumns : (pEventType) => {
         let columns = [];
         columns.push({data: "eventSeq", className: "alignLeft"});   //이벤트 아이디
