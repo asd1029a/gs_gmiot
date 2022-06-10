@@ -15,4 +15,5 @@ import java.util.Optional;
 public interface FacilityOptRepository extends JpaRepository<FacilityOpt, Long> {
 
     FacilityOpt findByFacilitySeqAndFacilityOptName(Long facilitySeq, String facilityOptName);
+
 }

@@ -36,6 +36,10 @@ public class FacilityOptService {
         return facilityOptRepository.save(result);
     }
 
+    public FacilityOpt save(FacilityOpt facilityOpt){
+        return facilityOptRepository.save(facilityOpt);
+    }
+
     public List<FacilityOpt> saveAll(List<FacilityOpt> list) {
         return facilityOptRepository.saveAll(list);
     }

@@ -109,4 +109,14 @@ public class FacilityService {
     public String getEmdCode(double longitude, double latitude) {
         return facilityRepository.getEmdCode(longitude, latitude);
     }
+
+    /**
+     * 개소 seq 시설물
+     * @param stationSeq
+     * @return
+     */
+    public List<Facility> findByStationSeq(Long stationSeq) {
+        return facilityRepository.findByStationSeq(stationSeq);
+    }
+
 }

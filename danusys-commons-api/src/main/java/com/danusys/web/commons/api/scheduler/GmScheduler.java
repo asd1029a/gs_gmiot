@@ -1,10 +1,15 @@
 package com.danusys.web.commons.api.scheduler;
 
 import com.danusys.web.commons.api.dto.LogicalfolderDTO;
+import com.danusys.web.commons.api.model.CommonCode;
 import com.danusys.web.commons.api.model.Facility;
+import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.model.Station;
+import com.danusys.web.commons.api.service.CommonCodeService;
+import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
 import com.danusys.web.commons.api.service.StationService;
+import com.danusys.web.commons.api.types.FacilityGroupType;
 import com.danusys.web.commons.api.util.SoapXmlDataUtil;
 import com.danusys.web.commons.app.RestUtil;
 import com.danusys.web.commons.app.StrUtils;
@@ -31,7 +36,12 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class GmScheduler {
     private final FacilityService facilityService;
+    private final FacilityOptService facilityOptService;
     private final StationService stationService;
+    private final CommonCodeService commonCodeService;
+
+    private static List<CommonCode> dataGroup;
+    private static List<CommonCode> onOfGroup;
     long SMART_STATION_NUM = 62L; //스마트 정류장
     long SMART_POLE_NUM = 4L; //스마트 폴
 
@@ -41,7 +51,6 @@ public class GmScheduler {
     @Scheduled(fixedDelay = 30 * 1000)
     public void facilityStatusSync() {
         log.trace("---------------------gm scheduler---------------------");
-
         this.facilitySync();
 
     }
@@ -60,7 +69,10 @@ public class GmScheduler {
      */
     public void facilitySync() {
         List<Station> lists = stationService.findAll(); //전체 개소 가져오기
-        
+
+//        List<CommonCode> dataGroup = commonCodeService.findByParentCodeSeq(113L);
+//        List<CommonCode> onOfGroup = commonCodeService.findByParentCodeSeq(16L);
+
         //스마트 정류장
         List<Station> stations = lists.stream().filter(f -> f.getStationKind() == SMART_STATION_NUM).collect(toList());
 
@@ -75,39 +87,77 @@ public class GmScheduler {
                 List<Facility> facilities = new ArrayList<>();
                 String stationId = StrUtils.getStr(station.getStationName()).split("_")[1];
 
-                List<Map<String, Object>> facilityDatas = this.findFacilityData(stationId);
-                log.trace("facilityDatas : {}", facilityDatas.size());
+//                if ("14117".equals(stationId)) {
+                    List<Map<String, Object>> facilityDatas = this.findFacilityData(stationId);
+                    log.trace("facilityDatas : {}", facilityDatas.size());
 
-                for(Map<String, Object> fData : facilityDatas) { //시설물 목록
-                    String facilityKind = StrUtils.getStr(fData.get("facilityKind"));
-                    if(!facilityKind.isEmpty()) {
-                        int facilityStatus = "On".equals(StrUtils.getStr(fData.get("presentValue"))) ? 1 : 0;
-                        String facilityId = StrUtils.getStr(fData.get("pointPathOrg"));
-                        log.trace("facility {} {} {} {}", station.getStationName(), station.getStationSeq(), facilityKind, facilityStatus );
+                    /**
+                     * 시설물 목록
+                     */
+                    for (Map<String, Object> fData : facilityDatas) {
+                        String facilityKind = StrUtils.getStr(fData.get("facilityKind"));
+                        if (!facilityKind.isEmpty()) {
+                            FacilityGroupType facilityGroupType = this.facilityGroup(Long.parseLong(facilityKind));
+                            log.trace("facilityGroupType : {}", facilityGroupType);
+                            String facilityId = StrUtils.getStr(fData.get("pointPathOrg"));
+                            Facility facility = facilityService.findByFacilityId(facilityId);
 
-                        Facility facilityOrg = facilityService.findByFacilityId(facilityId);
-                        if( facilityOrg == null) {
-                            facilities.add(Facility.builder()
-                                    .stationSeq(station.getStationSeq())
-                                    .facilityId(StrUtils.getStr(fData.get("pointPathOrg")))
-                                    .facilityKind(Long.parseLong(facilityKind))
-                                    .facilityName(StrUtils.getStr(fData.get("name")))
-                                    .facilityStatus(facilityStatus)
-                                    .latitude(station.getLatitude())
-                                    .longitude(station.getLongitude())
-                                    .build());
-                        } else {
-                            facilityOrg.setFacilityStatus(facilityStatus);
-                            facilities.add(facilityOrg);
+
+                            /**
+                             * 제어 가능한 시설물
+                             */
+                            if(facilityGroupType == FacilityGroupType.CONTROL) {
+                                String facilityData = "On".equals(StrUtils.getStr(fData.get("presentValue"))) ? "1" : "0";
+                                log.trace("facility {} {} {} {}", station.getStationName(), station.getStationSeq(), facilityKind, facilityData);
+
+                                if (facility == null) { //입력
+//                                    facilities.add(
+                                    facility = Facility.builder()
+                                            .stationSeq(station.getStationSeq())
+                                            .facilityId(StrUtils.getStr(fData.get("pointPathOrg")))
+                                            .facilityKind(Long.parseLong(facilityKind))
+                                            .facilityName(StrUtils.getStr(fData.get("name")))
+                                            .facilityStatus(Integer.valueOf(facilityData))
+                                            .latitude(station.getLatitude())
+                                            .longitude(station.getLongitude())
+                                            .build();
+//                                );
+                                } else { // 수정
+                                    log.trace("facilityOrg : {}", facility);
+                                    facility.setFacilityStatus(Integer.valueOf(facilityData));
+//                                    facilities.add(facilityOrg);
+                                }
+                                facility = facilityService.save(facility);
+                            }
+
+                            /**
+                             * 데이터 적재
+                             */
+                            if(facilityGroupType == FacilityGroupType.DATA && facility != null) {
+
+                                String facilityOptName = dataGroup.stream().filter(f -> f.getCodeSeq() == Long.parseLong(facilityKind)).collect(toList()).get(0).getCodeId();
+                                String facilityOptValue = StrUtils.getStr(fData.get("presentValue"));
+
+                                log.trace(stationId + " > opt data : {}, {}, {}, {}", facilityOptName, facility.getFacilitySeq(), "stationInfo_" + facilityOptName, facilityOptValue);
+
+                                FacilityOpt facilityOpt = facilityOptService.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(), "stationInfo_" + facilityOptName);
+                                if(facilityOpt == null) {
+                                facilityOptService.save(FacilityOpt.builder()
+                                        .facilitySeq(facility.getFacilitySeq())
+                                        .facilityOptName("stationInfo_" + facilityOptName)
+                                        .facilityOptValue(facilityOptValue)
+                                        .facilityOptType(112)
+                                        .build());
+                                } else {
+                                    facilityOpt.setFacilityOptValue(facilityOptValue);
+                                    facilityOptService.save(facilityOpt);
+                                }
+                            }
                         }
                     }
                 }
-
-                log.trace("facilities : {}", facilities);
-                facilityService.saveAll(facilities);
-            }
+//            }
         });
-
     }
 
     /**
@@ -124,27 +174,27 @@ public class GmScheduler {
         /**
          * 광명 자자체용
          */
+//        ResponseEntity<Map> responseEntity = null;
+//        try {
+//            responseEntity = RestUtil.exchange("http://localhost:8400/api/call", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//        List<Map<String, Object>> result = (List) (new HashMap<>((Map) responseEntity.getBody().get("return"))).get("pointValues");
+
+        /**
+         * 내부 개발용
+         */
         ResponseEntity<Map> responseEntity = null;
         try {
-            responseEntity = RestUtil.exchange("http://localhost:8400/api/call", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
+            responseEntity = RestUtil.exchange("http://localhost:8400/api/gmPointValues.json", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
 
-
-
         List<Map<String, Object>> result = (List) (new HashMap<>((Map) responseEntity.getBody().get("return"))).get("pointValues");
-        /**
-         * 내부 개발용
-         */
-//        ResponseEntity<Map> responseEntity = null;
-//        try {
-//            responseEntity = RestUtil.exchange("http://localhost:8400/api/gmPointValues.json", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(e);
-//        }
 
         log.trace("result : {}", result.size());
         log.trace("result : {}", result);
@@ -181,4 +231,20 @@ public class GmScheduler {
         return lpt.get();
     }
 
+    /**
+     * 시설물 그룹(데이터, 제어)
+     * @param codeSeq
+     * @return
+     */
+    private FacilityGroupType facilityGroup(Long codeSeq) {
+        dataGroup = commonCodeService.findByParentCodeSeq(113L);
+//        onOfGroup = commonCodeService.findByParentCodeSeq(16L);
+
+        long dataGroupCount = dataGroup.stream().filter(f -> f.getCodeSeq() == codeSeq).count();
+        if(dataGroupCount > 0) {
+            return FacilityGroupType.DATA;
+        } else {
+            return FacilityGroupType.CONTROL;
+        }
+    }
 }

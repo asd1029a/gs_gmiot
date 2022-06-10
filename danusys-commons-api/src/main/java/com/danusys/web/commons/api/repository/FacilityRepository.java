@@ -26,4 +26,6 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
     @Query(value = "SELECT fn_lonlat_to_emdcode(:longitude, :latitude)", nativeQuery = true)
     String getEmdCode(double longitude, double latitude);
 
+    List<Facility> findByStationSeq(Long stationSeq);
+
 }
