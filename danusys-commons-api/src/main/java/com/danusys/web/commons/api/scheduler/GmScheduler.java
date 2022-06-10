@@ -10,9 +10,11 @@ import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
 import com.danusys.web.commons.api.service.StationService;
 import com.danusys.web.commons.api.types.FacilityGroupType;
+import com.danusys.web.commons.api.util.ApiUtils;
 import com.danusys.web.commons.api.util.SoapXmlDataUtil;
 import com.danusys.web.commons.app.RestUtil;
 import com.danusys.web.commons.app.StrUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -37,6 +39,8 @@ import static java.util.stream.Collectors.toList;
 public class GmScheduler {
     private final FacilityService facilityService;
     private final FacilityOptService facilityOptService;
+    private final ApiUtils apiUtils;
+    private final ObjectMapper objectMapper;
     private final StationService stationService;
     private final CommonCodeService commonCodeService;
 
@@ -247,4 +251,33 @@ public class GmScheduler {
             return FacilityGroupType.CONTROL;
         }
     }
+
+    /**
+     *  TODO param 부분 광명에 맞게 변경 필요
+     * 정류장 유동인구 저장
+     */
+//    @Scheduled(cron = "0 0 0/1 * * *")
+//    public void apiCallSchedule() throws Exception{
+//        LocalDateTime now = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
+//        String formatNow = now.format(formatter);
+//        int iNow = Integer.parseInt(formatNow);
+//        List<Facility> facilityList = facilityService.findByFacilityKind(124L);
+//        facilityList.stream().forEach(f -> {
+//            Map<String,Object> param = new HashMap<>();
+//            param.put("callUrl","/mjvt/smart-station/people-count");
+//            param.put("cameraId",f.getFacilityId());
+//            param.put("dateTime",iNow-1);
+//            try {
+//                // event save;
+//                String json = objectMapper.writeValueAsString(apiUtils.getRestCallBody(param));
+//
+//                FacilityDataRequestDTO facilityDataRequestDTO = objectMapper.readValue(StrUtils.getStr(json), FacilityDataRequestDTO.class);
+//                facilityDataRequestDTO.setFacilityOptType(109);
+//                facilityOptService.save(facilityDataRequestDTO);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+//    }
 }

@@ -28,4 +28,10 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
 
     List<Facility> findByStationSeq(Long stationSeq);
 
+    @Query(value = "SELECT code_seq FROM v_facility_kind WHERE code_value IN (:facilityKindValues)", nativeQuery = true)
+    List<Long> findFacilityKindList(List<String> facilityKindValues);
+
+    @Query(value = "SELECT * FROM t_facility WHERE administ_zone like :administZone% AND facility_kind IN (:facilityKind)", nativeQuery = true)
+    List<Facility> findByAdministZoneAndFacilityKindIn(String administZone, List<Long> facilityKind);
+
 }
