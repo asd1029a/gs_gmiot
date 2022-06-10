@@ -211,20 +211,31 @@ public class ApiCallRestController {
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
 
-            String checkExist = StaticUtil.checkExist;
+//            Map<Long, String> checkExist = StaticUtil.checkExist;
             // event transfer
             for(Map.Entry<String, Object> el: map.entrySet()) {
                 EventReqeustDTO list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
                 });
-                if(list.getEventKind().equals("1") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("1") && checkExist.isEmpty())){
-                    //사람있음
-                    StaticUtil.checkExist = "1";
-                    danuMqttClient.sender("existenceValue","1");
-                }else if(list.getEventKind().equals("0") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("0") && checkExist.isEmpty())){
-                    //사람없음
-                    StaticUtil.checkExist = "0";
-                    danuMqttClient.sender("existenceValue","0");
-                }
+                Long stationSeq = facilityService.findByFacilityId(list.getFacilityId()).getStationSeq();
+                danuMqttClient.sender(stationSeq+"",list.getEventKind());
+                // 초기화
+//                if(checkExist.get(stationSeq) == null){
+//                    checkExist.put(stationSeq,list.getEventKind());
+//                    log.info("보내기~~~~~~~~~~~~~~~~~~~~~{}",checkExist.get(stationSeq));
+//                }
+//
+//                if(list.getEventKind().equals("1") && !(checkExist.get(stationSeq).equals(list.getEventKind()))){
+//                    //사람있음
+//                    checkExist.put(stationSeq,list.getEventKind());
+//                    log.info("사람있다 {}",checkExist.get(stationSeq));
+//                    //danuMqttClient.sender("existenceValue","1");
+//                }else if(list.getEventKind().equals("0") && !(checkExist.get(stationSeq).equals(list.getEventKind()))){
+//                    //사람없음
+//                    checkExist.put(stationSeq,list.getEventKind());
+//                    log.info("사람없다 {}",checkExist.get(stationSeq));
+//                    //danuMqttClient.sender("existenceValue","0");
+//                }
+
                 log.trace(list.toEntity().toString());
             }
         } catch (Exception e) {
