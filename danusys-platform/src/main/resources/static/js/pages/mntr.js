@@ -1101,7 +1101,7 @@ const lnbList = {
  * @param id
  * @param fid
  */
-function setFacility(id, fid) {
+function setFacility(id, fid, fseq) {
     let point = $("input:checkbox[id='" + id + "']");
     let pointValue = point.is(":checked") ? "On" : "Off";
     point.prop('checked', point.is(":checked"));
@@ -1110,7 +1110,8 @@ function setFacility(id, fid) {
         "callUrl": "gmSetPointValues",
         "pointValues": "",
         "settingValue": pointValue,
-        "pointPath": fid
+        "pointPath": fid,
+        "facilitySeq": fseq
     },result => {
         console.log(result)
         // let objAry = JSON.parse(result);
@@ -1155,7 +1156,7 @@ const rnbList = {
                 target.find(".area_right_bus_control").html("");
                 let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
-                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
+                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
 
                 console.log(objAry)
@@ -1179,6 +1180,7 @@ const rnbList = {
                         let pointInfo = f.properties;
                         let facilityKindName = pointInfo.facilityKindName;
                         let facilityId = pointInfo.facilityId;
+                        let facilitySeq = pointInfo.facilitySeq;
                         let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
                         // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
                         target.find(".area_right_bus_control").append(
@@ -1187,6 +1189,7 @@ const rnbList = {
                                 .replace("{{id_index}}", i)
                                 .replace("{{onclick_index}}", i)
                                 .replace("{{facilityId}}", facilityId)
+                                .replace("{{facilitySeq}}", facilitySeq)
                                 .replace("{{for_index}}", i)
                                 .replace("{{check_value}}", presentValue));
                     }

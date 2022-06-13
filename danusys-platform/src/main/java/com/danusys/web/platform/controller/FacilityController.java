@@ -8,12 +8,14 @@ import com.danusys.web.platform.service.facility.FacilityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -249,8 +251,24 @@ public class FacilityController {
         wb.close();
     }
 
+    /**
+     * 시설물 : 개별 제어
+     * @param paramMap
+     * @return
+     * @throws Exception
+     */
     @PostMapping(value = "/control")
     public ResponseEntity control(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return apiCallService.call(paramMap);
+        ResponseEntity result = apiCallService.call(paramMap);
+
+        //시설물 상태 업데이트
+        if( result.getStatusCode() == HttpStatus.OK ) {
+            Map<String, Object> modMap = new HashMap<>();
+            modMap.put("facilitySeq", paramMap.get("facilitySeq"));
+            modMap.put("facilityStatus", String.valueOf(paramMap.get("settingValue")).equals("On") ? 1 : 0);
+            facilityService.mod(modMap);
+        }
+
+        return result;
     }
 }
