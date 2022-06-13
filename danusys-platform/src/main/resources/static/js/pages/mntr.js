@@ -1135,11 +1135,20 @@ const rnbList = {
                 let objAry = JSON.parse(result);
                 console.log(objAry)
 
-                for(let i = 0; i<objAry.features.length; i++) {
+                for(let i=0; i<objAry.features.length; i++) {
                     let pointInfo = objAry.features[i].properties;
                     let facilityOpts = pointInfo.facilityOpts;
-                    for (let j=0;j<facilityOpts.length;j++) {
-                        target.find(".area_right_bus_status [data-value=" + facilityOpts[j].facilityOptName + "] span").text(facilityOpts[j].facilityOptValue)
+
+                    for (let j=0; j<facilityOpts.length; j++) {
+                        let facilityOptValue = "";
+                        if( pointInfo.facilityKind === "air_index") {
+                            facilityOptValue = Math.round(facilityOpts[j].facilityOptValue);
+                        } else if( pointInfo.facilityKind === "wattage" || pointInfo.facilityKind === "power" ) {
+                            facilityOptValue = stringFunc.commaNumber((parseInt(facilityOpts[j].facilityOptValue)/1000).toString());
+                        } else {
+                            facilityOptValue = facilityOpts[j].facilityOptValue;
+                        }
+                        target.find(".area_right_bus_status [data-value=" + facilityOpts[j].facilityOptName + "] span").text(facilityOptValue);
                     }
                 }
             });

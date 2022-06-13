@@ -80,3 +80,20 @@ INSERT INTO public.api_param (seq, field_nm, field_map_nm, data_type, required, 
     , (6, 'pointState', 'pointState', 'STRING', true, 'RESPONSE', null, null, 49, null, null, 2)
     , (7, 'ddcAlarmStatus', 'ddcAlarmStatus', 'STRING', true, 'RESPONSE', null, null, 49, null, null, 2)
     , (8, 'ddcCorrectionValue', 'ddcCorrectionValue', 'STRING', true, 'RESPONSE', null, null, 49, null, null, 2);
+
+
+INSERT INTO public.api (call_url, method_type, request_body_type, response_body_type, api_type, target_url, target_path, content_type, service_nm, service_prefix, auth_info, tokens) VALUES
+('gmDataPointList', 'POST', 'OBJECT', 'OBJECT_MAPPING', 'SOAP', 'http://192.168.14.104:9999/bms/ws/PointService', 'http://ws.bms.swc.lge.com/', 'text/xml; charset=utf-8', 'getPointValues', 'ws', 'soplogin_gmForcedLogin', null);
+
+INSERT INTO public.api_param (seq, field_nm, field_map_nm, data_type, required, param_type, value, description, api_id, crypto_type, crypto_key, parent_seq) VALUES
+(1, 'clientId', 'arg0', 'COOKIE', true, 'REQUEST', 'clientId', 'clientId (쿠키값 가져오기)', 46, null, null, 0)
+,(2, 'stationId', 'arg1', 'NUMBER', true, 'REQUEST', 'ST1', '스테이션 코드', 46, null, null, 0)
+,(3, 'pointPaths', 'arg2', 'SOAP_DATA_PATH', true, 'REQUEST', '', 'xml 파일 값 가져오기', 46, null, null, 0)
+,(1, 'return', 'return', 'OBJECT', true, 'RESPONSE', null, '포인트 값 목록', 46, null, null, 0)
+,(2, 'pointValues', 'pointValues', 'ARRAY', true, 'RESPONSE', null, null, 46, null, null, 1)
+,(3, 'presentValue', 'presentValue', 'STRING', true, 'RESPONSE', null, null, 46, null, null, 2)
+,(4, 'settingValue', 'settingValue', 'STRING', true, 'RESPONSE', null, null, 46, null, null, 2)
+,(5, 'pointPath', 'pointPath', 'STRING', true, 'RESPONSE', null, null, 46, null, null, 2)
+,(6, 'pointState', 'pointState', 'STRING', true, 'RESPONSE', null, null, 46, null, null, 2)
+,(7, 'ddcAlarmStatus', 'ddcAlarmStatus', 'STRING', true, 'RESPONSE', null, null, 46, null, null, 2)
+,(8, 'ddcCorrectionValue', 'ddcCorrectionValue', 'STRING', true, 'RESPONSE', null, null, 46, null, null, 2);
