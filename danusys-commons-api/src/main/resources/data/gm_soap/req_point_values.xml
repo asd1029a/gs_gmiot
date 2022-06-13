@@ -36,3 +36,33 @@
         </ws:getPointValues>
     </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
+
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+    <ws:setPointValues xmlns:ws="http://ws.bms.swc.lge.com/">
+        <arg0>1740605968</arg0>
+        <arg1>ST1</arg1>
+        <arg2>
+            <pointPath>/ST1/OFa8/LPa232890214279</pointPath>
+            <settingValue>Off</settingValue>
+        </arg2>
+    </ws:setPointValues>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+    <ws:setPointValues xmlns:ws="http://ws.bms.swc.lge.com/">
+        <arg0>1495325353</arg0>
+        <arg1>ST1</arg1>
+        <arg2>
+            <arg2>/ST1/OFa8/LPa232890214279</arg2>
+            <arg2>On</arg2>
+        </arg2>
+    </ws:setPointValues>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

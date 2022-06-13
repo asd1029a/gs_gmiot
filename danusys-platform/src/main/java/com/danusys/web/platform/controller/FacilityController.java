@@ -1,5 +1,6 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.app.*;
 import com.danusys.web.platform.dto.request.SignageRequestDto;
@@ -27,6 +28,8 @@ public class FacilityController {
 //    public FacilityController(FacilityService facilityService) { this.facilityService = facilityService; }
 
     private final FacilityService facilityService;
+
+    private final ApiCallService apiCallService;
 
     private final FacilityOptService facilityOptService;
 
@@ -244,5 +247,10 @@ public class FacilityController {
         Workbook wb = FileUtil.excelDownload(paramMap);
         wb.write(response.getOutputStream());
         wb.close();
+    }
+
+    @PostMapping(value = "/control")
+    public ResponseEntity control(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return apiCallService.call(paramMap);
     }
 }

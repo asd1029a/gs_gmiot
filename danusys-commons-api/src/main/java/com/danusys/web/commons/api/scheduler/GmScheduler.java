@@ -52,7 +52,7 @@ public class GmScheduler {
     /**
      * 시설물 상대 동기화
      */
-    @Scheduled(fixedDelay = 30 * 1000)
+    @Scheduled(fixedDelay = 30 * 1000 * 60)
     public void facilityStatusSync() {
         log.trace("---------------------gm scheduler---------------------");
         this.facilitySync();
@@ -165,7 +165,7 @@ public class GmScheduler {
      */
     private List findFacilityData(String stationId) {
         Map<String, Object> param = new HashMap<>();
-        param.put("callUrl", "gmDataPointList");
+        param.put("callUrl", "gmGetPointValues");
         param.put("pointPaths", "data/gm_soap/" + stationId + ".xml");
         log.info("요청 데이터 : {}", param);
 

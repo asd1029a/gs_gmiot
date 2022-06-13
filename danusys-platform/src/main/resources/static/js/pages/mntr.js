@@ -1097,6 +1097,27 @@ const lnbList = {
 }
 
 /**
+ * 시설물 개별 컨트롤
+ * @param id
+ * @param fid
+ */
+function setFacility(id, fid) {
+    let point = $("input:checkbox[id='" + id + "']");
+    let pointValue = point.is(":checked") ? "On" : "Off";
+    point.prop('checked', point.is(":checked"));
+
+    facility.facilityControl({
+        "callUrl": "gmSetPointValues",
+        "pointValues": "",
+        "settingValue": pointValue,
+        "pointPath": fid
+    },result => {
+        console.log(result)
+        // let objAry = JSON.parse(result);
+        // console.log(objAry)
+    });
+}
+/**
  * 관제 오른쪽창 정보 생성
  * TODO 데이터 적용 후 반복코드 정리
  * */
@@ -1134,8 +1155,9 @@ const rnbList = {
                 target.find(".area_right_bus_control").html("");
                 let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
-                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}}><label for="control_{{for_index}}">Toggle</label></dd></dl>';
+                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
+
                 console.log(objAry)
 
                 objAry.features.forEach((f, i) => {
@@ -1156,13 +1178,15 @@ const rnbList = {
                     } else {
                         let pointInfo = f.properties;
                         let facilityKindName = pointInfo.facilityKindName;
+                        let facilityId = pointInfo.facilityId;
                         let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
-
                         // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
                         target.find(".area_right_bus_control").append(
                             smartBusStoFacilityTag
                                 .replace("{{facilityKindName}}", facilityKindName)
                                 .replace("{{id_index}}", i)
+                                .replace("{{onclick_index}}", i)
+                                .replace("{{facilityId}}", facilityId)
                                 .replace("{{for_index}}", i)
                                 .replace("{{check_value}}", presentValue));
                     }
