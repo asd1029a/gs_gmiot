@@ -33,8 +33,8 @@ public class FacilityOptService {
 
     public FacilityOpt save(FacilityDataRequestDTO facilityOpt){
         Facility facility = facilityRepository.findByFacilityId(facilityOpt.getFacilityId());
-        FacilityOpt result = new FacilityOpt(facility.getFacilitySeq(),facilityOpt.getFacilityOptName(),
-                facilityOpt.getFacilityOptValue(),facilityOpt.getFacilityOptType());
+        FacilityOpt result = FacilityOpt.builder().facilitySeq(facility.getFacilitySeq()).facilityOptName(facilityOpt.getFacilityOptName())
+                .facilityOptValue(facilityOpt.getFacilityOptValue()).facilityOptType(facilityOpt.getFacilityOptType()).build();
         return facilityOptRepository.save(result);
     }
 

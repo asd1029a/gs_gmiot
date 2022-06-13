@@ -3,6 +3,7 @@ package com.danusys.web.commons.api.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 

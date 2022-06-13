@@ -40,14 +40,6 @@ public class FacilitySqlProvider {
             builder.append(", t7.code_name AS station_kind_name");
             builder.append(", t7.code_value AS station_kind_value");
 
-            if (facilityKind.contains("DRONE")) {
-                builder.append(", t8.*");
-            }
-
-            if (facilityKind.contains("EMS")) {
-                builder.append(", t9.*");
-            }
-
             if (facilityKind.contains("smartBusStop")) {
                 //TODO 시설물 OPT 정보
 //                builder.append(", t9.*");
@@ -56,20 +48,12 @@ public class FacilitySqlProvider {
 
             SELECT(builder.toString());
             FROM("t_facility t1");
-            INNER_JOIN(kindCodeViewName + " t2 on t1.facility_kind = t2.code_seq");
+            INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
             LEFT_OUTER_JOIN("t_user t3 on t1.insert_user_seq = t3.user_seq");
             LEFT_OUTER_JOIN("t_user t4 on t1.update_user_seq = t4.user_seq");
             LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");
             LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
             LEFT_OUTER_JOIN("v_station_kind t7 on t5.station_kind = t7.code_seq");
-
-            if (facilityKind.contains("DRONE")) {
-                LEFT_OUTER_JOIN("v_drone_data t8 on t1.facility_seq = t8.facility_seq");
-            }
-
-            if (facilityKind.contains("EMS")) {
-                LEFT_OUTER_JOIN("v_ems_data t9 on t1.facility_seq = t9.facility_seq");
-            }
 
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));

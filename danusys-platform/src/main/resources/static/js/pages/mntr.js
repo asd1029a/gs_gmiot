@@ -1127,33 +1127,7 @@ const rnbList = {
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme === "smartBusStop") {
 
-            //개소 현황
-            facility.getListGeoJson({
-                "stationSeq": prop.stationSeq,
-                "kindCodeViewName": "v_station_facility_info"
-            },result => {
-                let objAry = JSON.parse(result);
-                console.log(objAry)
-
-                for(let i=0; i<objAry.features.length; i++) {
-                    let pointInfo = objAry.features[i].properties;
-                    let facilityOpts = pointInfo.facilityOpts;
-
-                    for (let j=0; j<facilityOpts.length; j++) {
-                        let facilityOptValue = "";
-                        if( pointInfo.facilityKind === "air_index") {
-                            facilityOptValue = Math.round(facilityOpts[j].facilityOptValue);
-                        } else if( pointInfo.facilityKind === "wattage" || pointInfo.facilityKind === "power" ) {
-                            facilityOptValue = stringFunc.commaNumber((parseInt(facilityOpts[j].facilityOptValue)/1000).toString());
-                        } else {
-                            facilityOptValue = facilityOpts[j].facilityOptValue;
-                        }
-                        target.find(".area_right_bus_status [data-value=" + facilityOpts[j].facilityOptName + "] span").text(facilityOptValue);
-                    }
-                }
-            });
-
-            //시설물 제어
+            //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
             },result => {
@@ -1162,25 +1136,37 @@ const rnbList = {
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}}><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
-
                 console.log(objAry)
 
-                for(let i = 0; i<objAry.features.length; i++) {
-                    let pointInfo = objAry.features[i].properties;
-                    let facilityKindName = pointInfo.facilityKindName;
-                    let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
+                objAry.features.forEach((f, i) => {
+                    let pointInfo = f.properties;
+                    let facilityOpts = pointInfo.facilityOpts;
+                    if (facilityOpts.length > 0) {
+                        facilityOpts.filter(ff => ff.facilityOptType === 112).forEach(ff => {
+                            let facilityOptValue = "";
+                            if( pointInfo.facilityKind === "air_index") {
+                                facilityOptValue = Math.round(ff.facilityOptValue);
+                            } else if( pointInfo.facilityKind === "wattage" || pointInfo.facilityKind === "power" ) {
+                                facilityOptValue = stringFunc.commaNumber((parseInt(ff.facilityOptValue)/1000).toString());
+                            } else {
+                                facilityOptValue = ff.facilityOptValue;
+                            }
+                            target.find(".area_right_bus_status [data-value=" + ff.facilityOptName + "] span").text(facilityOptValue);
+                        });
+                    } else {
+                        let pointInfo = f.properties;
+                        let facilityKindName = pointInfo.facilityKindName;
+                        let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
 
-                    // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
-                    target.find(".area_right_bus_control").append(
-                        smartBusStoFacilityTag
-                            .replace("{{facilityKindName}}", facilityKindName)
-                            .replace("{{id_index}}", i)
-                            .replace("{{for_index}}", i)
-                            .replace("{{check_value}}", presentValue));
-                }
-
-                // reloadLayer(result, 'facilityLayer');
-                // lnbList.createFacility(result);
+                        // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+                        target.find(".area_right_bus_control").append(
+                            smartBusStoFacilityTag
+                                .replace("{{facilityKindName}}", facilityKindName)
+                                .replace("{{id_index}}", i)
+                                .replace("{{for_index}}", i)
+                                .replace("{{check_value}}", presentValue));
+                    }
+                });
             });
         } else {}
         //////////////////
