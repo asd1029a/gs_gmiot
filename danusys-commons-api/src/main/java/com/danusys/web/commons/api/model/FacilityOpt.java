@@ -32,25 +32,19 @@ public class FacilityOpt {
     @Column(nullable = false)
     private String facilityOptValue;
 
+    @Column(insertable = false, updatable = false)
     private Integer facilityOptType;
 
-    private String facilityOptTypeName;
-
-    public void setFacilityOptTypeName(String facilityOptTypeName) {
-        this.facilityOptTypeName = facilityOptTypeName;
-    }
-
-    public String getFacilityOptTypeName() {
-        return this.facilityOptTypeName;
-    }
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "facilityOptType")
+    private CommonCode commonCode;
 
     @Builder
-    public FacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType, String facilityOptTypeName) {
+    public FacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType) {
         this.facilitySeq = facilitySeq;
         this.facilityOptName = facilityOptName;
         this.facilityOptValue = facilityOptValue;
         this.facilityOptType = facilityOptType;
-        this.facilityOptTypeName = facilityOptTypeName;
     }
 
     public FacilityOpt setFacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType){

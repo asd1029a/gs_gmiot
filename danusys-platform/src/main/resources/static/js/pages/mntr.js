@@ -1165,7 +1165,7 @@ const rnbList = {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
                     if (facilityOpts.length > 0) {
-                        facilityOpts.filter(ff => ff.facilityOptTypeName === "ACCUMULATE_DATA").forEach(ff => {
+                        facilityOpts.filter(ff => ff.commonCode.codeValue === "ACCUMULATE_DATA").forEach(ff => {
                             let facilityOptValue = "";
                             if( pointInfo.facilityKind === "air_index") {
                                 facilityOptValue = Math.round(ff.facilityOptValue);
@@ -1257,6 +1257,7 @@ const rnbList = {
     , createFacility : obj => {
         const $target = $('.area_right[data-value=facility]');
         const prop = obj.getProperties();
+
         //TODO 정보 채워두기
         $target.data(obj);
         $target.addClass('select');
