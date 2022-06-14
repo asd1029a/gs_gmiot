@@ -1166,7 +1166,7 @@ const rnbList = {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
                     if (facilityOpts.length > 0) {
-                        facilityOpts.filter(ff => ff.facilityOptTypeName === "ACCUMULATE_DATA").forEach(ff => {
+                        facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
                             let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
 
                             /*let facilityOptValue = "";
