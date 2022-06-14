@@ -30,13 +30,12 @@ const mntr = {
                     }
                 });
             } else {
-                if(objJson.eventGrade == 30){
-                    eventSeqs.push(objJson.eventSeq);
-                    console.log(objJson.eventGrade);
+                if(objJson.data.eventGrade == 30){
+                    eventSeqs.push(objJson.data.eventSeq);
                     const mainObj = {
                         type : "error",
-                        title : objJson.stationSeq + " 디바이스 이벤트 발생",
-                        content : objJson.eventMessage
+                        title : objJson.data.stationSeq + " 디바이스 이벤트 발생",
+                        content : objJson.data.eventMessage
                     };
                     comm.toastOpen(mainObj, () => {}, {});
                 }
@@ -59,13 +58,11 @@ const mntr = {
             const $targetTab = $('.mntr_container section.menu_fold.select .lnb_tab_section.select').attr('data-value');
 
             if($targetTab == "event"){
-                console.log(objJson.eventType);
                 let newAry;
+                const paramData = mntr.getInitEventParam(objJson.eventType);
                 event.getListGeoJson(
-                    //TODO 구분
-                    mntrParam.smartBusStop(window.siGunCode)
+                    paramData['event']
                     , result => {
-                    //리스트 추가하기
                     const data = JSON.parse(result);
                     const ary = [];
                     data.features.forEach(t => {
@@ -331,6 +328,21 @@ const mntr = {
 
 
     }
+    /**
+     * 메뉴별 관제 초기 데이터 구분 파라미터 요청
+     * param : smart_pole_event /smart_busstop_event /EMS_EVENT /DRONE_EVENT
+     * */
+    , getInitEventParam : (pageType) => {
+        let param = {};
+        $.ajax({
+            url : "/config/mntrPageTypeData/" + pageType
+            , type : "GET"
+            , async : false
+        }).done((result) => {
+            param = result;
+        });
+        return param;
+    }
     , eventHandler : () => {
         //LNM FOLD (왼쪽창 끄고켜기)
         $('.mntr_container .lnb_fold').on("click", e => {
@@ -358,23 +370,23 @@ const mntr = {
 
             switch (theme) {
                 case "smartPole" : //스마트폴
-                    paramObject = mntrParam.smartPole(window.siGunCode, "smart_pole_event");
+                    paramObject = mntr.getInitEventParam("smart_pole_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartBusStop" : //스마트 정류장
-                    paramObject = mntrParam.smartBusStop(window.siGunCode, "smart_busstop_event");
+                    paramObject = mntr.getInitEventParam("smart_busstop_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartPower": //스마트 분전함
-                    paramObject = mntrParam.smartPower(window.siGunCode, "EMS_EVENT");
+                    paramObject = mntr.getInitEventParam("EMS_EVENT");
                     window.lyControl.offList(['facility','eventPast']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "drone" : //드론
                     tabType = 'facility';
-                    paramObject = mntrParam.drone(window.siGunCode, "DRONE_EVENT");
+                    paramObject = mntr.getInitEventParam("DRONE_EVENT");
                     facility.getListGeoJson( paramObject['facility'],result => {
                         reloadLayer(result, 'facilityLayer');
                         lnbList.createFacility(result);
@@ -1143,7 +1155,7 @@ const rnbList = {
         console.log(theme);
         if(theme=="smartPower") {
             //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
-            //html로 지자체별 고정인게 나은가? -> 결정필요
+            //html로 지자체별 고정인게 낫나? -> 결정필요
             ///show
             ///hide
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
@@ -1166,7 +1178,7 @@ const rnbList = {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
                     if (facilityOpts.length > 0) {
-                        facilityOpts.filter(ff => ff.facilityOptTypeName === "ACCUMULATE_DATA").forEach(ff => {
+                        facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
                             let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
 
                             /*let facilityOptValue = "";

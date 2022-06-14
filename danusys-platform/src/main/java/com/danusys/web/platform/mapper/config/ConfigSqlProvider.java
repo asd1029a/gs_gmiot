@@ -101,5 +101,13 @@ public class ConfigSqlProvider {
         return sql.toString();
     }
 
-
+    public String selectListInitMntrParam(String pageTypeCodeValue) {
+        SQL sql = new SQL() {{
+            SELECT("p.code_seq, p.code_id, p.code_name, p.code_value, c.code_value AS child_value, c.code_seq AS child_seq, c.code_name AS child_name ");
+            FROM("t_common_code p ");
+            INNER_JOIN("t_common_code c on c.parent_code_seq = p.code_seq ");
+            WHERE("p.parent_code_seq = (select code_seq from t_common_code where code_id = 'mntr_page_type' and code_value = '" + pageTypeCodeValue + "')");
+        }};
+        return sql.toString();
+    }
 }

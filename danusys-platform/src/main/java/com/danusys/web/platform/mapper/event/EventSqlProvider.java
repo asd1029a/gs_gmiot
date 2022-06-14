@@ -50,28 +50,12 @@ public class EventSqlProvider {
                     "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value ";
 
             if (geoFlag) { //geojson 호출시
-                columns += ", t3.longitude, t3.latitude, t3.administ_zone, v4.code_name AS administ_zone_name ";
-                tables += "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq";
+                columns += ", t3.longitude, t3.latitude, t3.administ_zone";
             }
 
             SELECT(columns);
             FROM(tables);
 
-//            if(facilityDirection != null && !facilityDirection.isEmpty()) {
-//                FROM("t_event t1 " +
-//                        "LEFT JOIN v_facility_direction t2 on t1.event_kind = t2.code_value "
-//                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
-//                WHERE("code_seq in ('" + StringUtils.join(facilityDirection, "', '") + "')");
-//            }else if(facilityProblem != null && !facilityProblem.isEmpty()) {
-//                FROM("t_event t1 " +
-//                        "LEFT JOIN v_facility_problem t2 on t1.event_kind = t2.code_value "
-//                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
-//                WHERE("code_seq in ('" +  StringUtils.join(facilityProblem, "', '") + "')");
-//            }else{
-//                FROM("t_event t1 " +
-//                        "LEFT JOIN t_common_code t2 on t1.event_kind = t2.code_value "
-//                        + "INNER JOIN t_station t3 ON t1.station_seq  = t3.station_seq");
-//            }
             if (!keyword.equals("")) {
                 WHERE("v1.code_value LIKE '%" + keyword + "%'");
             }
@@ -133,10 +117,6 @@ public class EventSqlProvider {
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
                     "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
                     "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value ";
-
-            if (geoFlag) { //geojson 호출시
-                tables += "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq";
-            }
 
             FROM(tables);
 

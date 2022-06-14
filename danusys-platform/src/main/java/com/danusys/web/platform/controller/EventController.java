@@ -1,5 +1,6 @@
 package com.danusys.web.platform.controller;
 
+import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.service.event.EventService;
 import com.danusys.web.commons.app.GisUtil;
@@ -8,17 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/event")
 @RequiredArgsConstructor
 public class EventController {
-//    @Value("${}")
-//    private String sigCode;
 
     private final EventService eventService;
     private final com.danusys.web.commons.api.service.EventService jpaEventService;
@@ -46,30 +43,4 @@ public class EventController {
         System.out.println(seq);
         return ResponseEntity.ok().body(eventService.getOne(seq));
     }
-
-    @GetMapping(value = "/eventKindCodeList/{parentCodeValue}")
-    public ResponseEntity<List> getEventKindCodeList(@PathVariable("parentCodeValue") String parentCodeValue) throws Exception {
-        List<String> result = jpaEventService.findByParentCodeValue(parentCodeValue);
-        return ResponseEntity.ok().body(result);
-    }
-//
-//    @GetMapping(value = "/mntrPageTypeData/{pageTypeCodeValue}")
-//    public ResponseEntity<EgovMap> getMntrPageTypeData(@PathVariable("pageTypeCodeValue") String pageTypeCodeValue) throws Exception {
-//        Map<String, Object> result = new HashMap<>();
-//        List<String> pageTypeList = new ArrayList<>();
-//        pageTypeList.stream().forEach(f -> {
-//
-//        });
-//        Map<String, Object> event = new HashMap<>();
-//        // List<String> eventStates = jpaEventService.findByParentCodeValue();
-//        //        //List<>
-//        List<String> eventKinds = jpaEventService.findByParentCodeValue(parentCodeValue);
-//        event.put("eventKind", eventKinds);
-//        event.put("sigCode", sigCode);
-//
-//        result.put("event", event);
-//
-////        return ResponseEntity.ok().body(result);
-//        return null;
-//    }
 }
