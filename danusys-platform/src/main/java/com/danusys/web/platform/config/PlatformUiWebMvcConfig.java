@@ -64,13 +64,14 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
 
 
         // 조회관리
-        registry.addViewController("/pages/inqry/smartCityEvent").setViewName("view/pages/inqry/smartCityEvent");
         registry.addViewController("/pages/inqry/event2").setViewName("view/pages/inqry/event2");
         registry.addViewController("/pages/inqry/station").setViewName("view/pages/inqry/station");
         registry.addViewController("/pages/inqry/facilities").setViewName("view/pages/inqry/facilities");
-        registry.addViewController("/pages/inqry/eventCabinet").setViewName("view/pages/inqry/eventCabinet");
-        registry.addViewController("/pages/inqry/eventDron").setViewName("view/pages/inqry/eventDron");
-        registry.addViewController("/pages/inqry/faceDetection").setViewName("view/pages/inqry/faceDetection");
+        registry.addViewController("/pages/inqry/eventSmartPole").setViewName("view/pages/inqry/eventDefault");
+        registry.addViewController("/pages/inqry/eventSmartBusStop").setViewName("view/pages/inqry/eventDefault");
+        registry.addViewController("/pages/inqry/eventSmartCabinet").setViewName("view/pages/inqry/eventDefault");
+        registry.addViewController("/pages/inqry/eventSmartDrone").setViewName("view/pages/inqry/eventDefault");
+        registry.addViewController("/pages/inqry/eventFaceDetection").setViewName("view/pages/inqry/eventFaceDetection");
 
         super.addViewControllers(registry);
     }

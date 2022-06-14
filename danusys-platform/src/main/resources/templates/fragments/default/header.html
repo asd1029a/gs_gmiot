@@ -15,7 +15,7 @@
                     <a href="/pages/mntr">관제</a>
                 </li>
                 <li sec:authorize="hasAnyRole('ROLE_inqry_rw', 'ROLE_inqry_r-')" id="inqry">
-                    <a href="/pages/inqry/smartCityEvent">조회/관리</a>
+                    <a href="/pages/inqry/station">조회/관리</a>
                 </li>
                 <li sec:authorize="hasAnyRole('ROLE_stats_rw', 'ROLE_stats_r-')" id="stats">
                     <a th:href="'/pages/stats/statistics?type='+${@environment.getProperty('stats.type')}">통계</a>

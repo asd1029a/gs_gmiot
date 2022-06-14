@@ -3,31 +3,47 @@
     <aside class="accordion_menu accordion">
         <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
         <ul class="accordion">
-            <li id="one" class="multi">
-                <a href="#one">이벤트 조회<span>20</span></a>
-                <ul class="accordion_sub_menu"> <!--임시 css-->
-<!--                    TODO: 각 지자체의 개소 종류별 이벤트 조회하도록 수정 -->
-                    <li id="event1"><a href="/pages/inqry/smartCityEvent">스마트 도시 이벤트<span>0</span></a></li>
-<!--                    <li id="event2"><a href="/pages/inqry/event2">시설물 장애 이벤트<span>0</span></a></li>-->
-                    <li th:if="${municipality == '45210000'}" id="eventCabinet"><a href="/pages/inqry/eventCabinet">스마트분전함 이벤트<span>0</span></a></li>
-                    <li th:if="${municipality == '45210000'}" id="eventDron"><a href="/pages/inqry/eventDron">드론 관제 이벤트<span>0</span></a></li>
-                </ul>
-            </li>
             <li id="station">
-                <a href="/pages/inqry/station">개소 관리<span>26</span></a>
+                <a href="/pages/inqry/station">개소 관리</a>
             </li>
             <li id="facilities">
-                <a href="/pages/inqry/facilities">시설물 관리<span>58</span></a>
+                <a href="/pages/inqry/facilities">시설물 관리</a>
             </li>
-            <li th:if="${municipality == '45210000'}" id="five">
+            <!--<li th:if="${municipality == '41210000' or municipality == '26290000'}" id="smartPole" class="multi">-->
+            <li id="smartPole" class="multi">
+                <a href="#smartPole">스마트 폴</a>
+                <ul class="accordion_sub_menu">
+                    <!--<li th:if="${municipality == '41210000'}" id="eventSmartPole"><a href="/pages/inqry/eventSmartPole">스마트 폴 이벤트</a></li>
+                    <li th:if="${municipality == '26290000'}" id="eventFaceDetection"><a href="/pages/inqry/eventFaceDetection">용의자 · 실종자 검출</a></li>-->
+                    <li id="eventSmartPole"><a href="/pages/inqry/eventSmartPole">스마트 폴 이벤트</a></li>
+                    <li id="eventFaceDetection"><a href="/pages/inqry/eventFaceDetection">용의자 · 실종자 검출</a></li>
+                    <!--<li th:if="${municipality == '45210000'}" id="poleElectricity"><a href="/pages/inqry/poleElectricity">전력량 조회</a></li>-->
+                </ul>
+            </li>
+            <li th:if="${municipality == '41210000' or municipality == '47210000'}" id="smartBusStop" class="multi">
+                <a href="#smartBusStop">스마트 정류장</a>
+                <ul class="accordion_sub_menu">
+                    <li id="eventSmartBusStop"><a href="/pages/inqry/eventSmartBusStop">스마트 정류장 이벤트<span>0</span></a></li>
+                    <!--<li th:if="${municipality == '41210000'}" id="busStopElectricity"><a href="/pages/inqry/busStopElectricity">전력량 조회</a></li>-->
+                </ul>
+            </li>
+            <!--<li th:if="${municipality == '45210000'}" id="smartCabinet" class="multi">-->
+            <li id="smartCabinet" class="multi">
+                <a href="#smartCabinet">스마트 분전반</a>
+                <ul class="accordion_sub_menu">
+                    <li id="eventSmartCabinet"><a href="/pages/inqry/eventSmartCabinet">스마트 분전반 이벤트<span>0</span></a></li>
+                </ul>
+            </li>
+            <!--<li th:if="${municipality == '45210000'}" id="smartDron" class="multi">-->
+            <li id="smartDron" class="multi">
+                <a href="#smartDron">스마트 드론</a>
+                <ul class="accordion_sub_menu">
+                    <li id="eventSmartDrone"><a href="/pages/inqry/eventSmartDrone">스마트 드론 이벤트<span>0</span></a></li>
+                </ul>
+            </li>
+            <!--<li th:if="${municipality == '45210000'}" id="five">
                 <a href="#five">통신 로그 조회</a>
-            </li>
-            <li th:if="${municipality == '45210000'}" id="six">
-                <a href="#six">전력량 조회</a>
-            </li>
-            <li th:if="${municipality == '26290000'}" id="faceDetection">
-                <a href="/pages/inqry/faceDetection">용의자 · 실종자 검출</a>
-            </li>
+            </li>-->
         </ul>
         </th:block>
     </aside>

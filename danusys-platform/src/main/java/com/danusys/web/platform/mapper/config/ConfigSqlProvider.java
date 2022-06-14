@@ -46,26 +46,32 @@ public class ConfigSqlProvider {
 
     public String selectListTypeQry(Map<String, Object> paramMap) {
         SQL sql = new SQL() {{
+            String subType = CommonUtil.validOneNull(paramMap, "subType");
+            String ignoreType = CommonUtil.validOneNull(paramMap, "ignoreType");
+
             SELECT("*");
             switch (CommonUtil.validOneNull(paramMap, "type")) {
                 case "stationKind" : FROM("v_station_kind"); break;
                 case "district" : FROM("v_facility_district"); break;
                 case "facilityKind" : FROM("v_facility_kind"); break;
                 case "eventKind" : {
-                    FROM("(SELECT t1.*" +
+                    FROM("(SELECT t1.* " +
                             "from v_event_kind t1" +
                             ", (" +
                             "    SELECT *" +
                             "    FROM v_event_kind" +
-                            "    WHERE level = 1 AND code_value = '" + CommonUtil.validOneNull(paramMap, "subType") + "'" +
+                            "    WHERE level = 1 " +
+                            "    AND code_value = '" + subType + "'" +
                             ") t2" +
-                            " WHERE t2.code_seq = t1.parent_code_seq OR t1.level = 0" +
+                            " WHERE t2.code_seq = t1.parent_code_seq " +
+                            "   AND t1.code_value != '" + ignoreType + "'" +
+                            "   OR t1.level = 0" +
                             " ORDER BY level, code_seq) t");
                     break;
                 }
                 case "administZone" : {
                     FROM("v_administ");
-                    WHERE("substr(code_value, 1, 5) = '" + CommonUtil.validOneNull(paramMap, "subType") + "'");
+                    WHERE("substr(code_value, 1, 5) = '" + subType + "'");
                     OR();
                     WHERE("level = 0");
                 } break;
