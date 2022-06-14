@@ -63,6 +63,10 @@ const event = {
                     },
                     'dataSrc' : function (result) {
                         $('.title dd .count').text(result.recordsTotal);
+                        $('.status_label li .red').parent().html(`<span class="red"></span>미처리 : ${result.statusCount.red}`);
+                        $('.status_label li .yellow').parent().html(`<span class="yellow"></span>조치 완료 : ${result.statusCount.yellow}`);
+                        $('.status_label li .green').parent().html(`<span class="green"></span>이벤트 종료 : ${result.statusCount.green}`);
+                        console.log(result);
                         return result.data;
                     }
                 },
@@ -154,19 +158,8 @@ const event = {
             columns.push({data: "address"});
             columns.push({data: "eventStartDt"});
             columns.push({data: "eventEndDt"});
-        }
-        else if(pEventType === 'cabinet') {
-            columns.push({data: "eventProcStat"});
-            columns.push({data: "facilitySeq", className: "alignLeft"});
-            columns.push({data: "facilityKind"});
-            columns.push({data: "stationKind"});
-            columns.push({data: "stationName"});
-            columns.push({data: "dongShortNm"});
-            columns.push({data: "address"});
-            columns.push({data: "eventStartDt"});
-            columns.push({data: "eventEndDt"});
         } else {
-            columns.push({data: "eventGrade"});
+            columns.push({data: "eventGradeName"});
             columns.push({data: "eventProcStatName"});
             columns.push({data: "stationName"});
             columns.push({data: "facilityName"});
