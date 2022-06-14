@@ -93,4 +93,8 @@ public class Facility implements Serializable {
         this.facilityKind = facilityKind;
         this.administZone = administZone;
     }
+
+    public void updateFacility(Integer status) {
+        this.facilityStatus = status;
+    }
 }

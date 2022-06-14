@@ -3,12 +3,10 @@ package com.danusys.web.commons.api.controller;
 import com.danusys.web.commons.api.dto.EventReqeustDTO;
 import com.danusys.web.commons.api.dto.FacilityDataRequestDTO;
 import com.danusys.web.commons.api.model.*;
+import com.danusys.web.commons.api.scheduler.service.YjMqttManager;
 import com.danusys.web.commons.api.service.*;
-import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
-import com.danusys.web.commons.api.util.StaticUtil;
 import com.danusys.web.commons.app.StrUtils;
-import com.danusys.web.commons.mqtt.DanuMqttClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -170,7 +168,7 @@ public class ApiCallRestController {
 
     @PostMapping(value = "/ext/send")
     public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
-        DanuMqttClient danuMqttClient = new DanuMqttClient();
+        YjMqttManager yjMqttManager = new YjMqttManager();
         log.info("param ?? = {}",param);
         Api api = apiService.getRequestApi(param);
 
@@ -217,7 +215,7 @@ public class ApiCallRestController {
                 EventReqeustDTO list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
                 });
                 Long stationSeq = facilityService.findByFacilityId(list.getFacilityId()).getStationSeq();
-                danuMqttClient.sender(stationSeq+"",list.getEventKind());
+                yjMqttManager.sender(stationSeq+"",list.getEventKind());
                 // 초기화
 //                if(checkExist.get(stationSeq) == null){
 //                    checkExist.put(stationSeq,list.getEventKind());

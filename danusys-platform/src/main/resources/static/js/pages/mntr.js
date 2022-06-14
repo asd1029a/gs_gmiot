@@ -1154,6 +1154,7 @@ const rnbList = {
                 "stationSeq": prop.stationSeq
             },result => {
                 target.find(".area_right_bus_control").html("");
+                target.find(".area_right_bus_status dl").hide();
                 let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
@@ -1165,8 +1166,10 @@ const rnbList = {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
                     if (facilityOpts.length > 0) {
-                        facilityOpts.filter(ff => ff.commonCode.codeValue === "ACCUMULATE_DATA").forEach(ff => {
-                            let facilityOptValue = "";
+                        facilityOpts.filter(ff => ff.facilityOptTypeName === "ACCUMULATE_DATA").forEach(ff => {
+                            let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
+
+                            /*let facilityOptValue = "";
                             if( pointInfo.facilityKind === "air_index") {
                                 facilityOptValue = Math.round(ff.facilityOptValue);
                             } else if( pointInfo.facilityKind === "wattage" || pointInfo.facilityKind === "power" ) {
@@ -1174,7 +1177,9 @@ const rnbList = {
                             } else {
                                 facilityOptValue = ff.facilityOptValue;
                             }
-                            target.find(".area_right_bus_status [data-value=" + ff.facilityOptName + "] span").text(facilityOptValue);
+                            */
+                            busStatus.parents("dl").show();
+                            busStatus.text(ff.facilityOptValue);
                         });
                     } else {
                         let pointInfo = f.properties;
