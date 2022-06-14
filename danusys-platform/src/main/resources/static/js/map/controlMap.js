@@ -143,7 +143,7 @@ const layerStyle = {
                     img: imgObj[imgNm],
                     imgSize:[50,50],
                     scale: 1,
-                    rotation: 30 + (Math.random()*20)//prop.rotate
+                    rotation: 30 + (Math.random()*20)// TODO prop.rotate
                 })
             });
             return style;
