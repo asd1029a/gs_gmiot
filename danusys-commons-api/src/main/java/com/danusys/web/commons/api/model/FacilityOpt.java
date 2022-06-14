@@ -34,12 +34,23 @@ public class FacilityOpt {
 
     private Integer facilityOptType;
 
+    private String facilityOptTypeName;
+
+    public void setFacilityOptTypeName(String facilityOptTypeName) {
+        this.facilityOptTypeName = facilityOptTypeName;
+    }
+
+    public String getFacilityOptTypeName() {
+        return this.facilityOptTypeName;
+    }
+
     @Builder
-    public FacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType) {
+    public FacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType, String facilityOptTypeName) {
         this.facilitySeq = facilitySeq;
         this.facilityOptName = facilityOptName;
         this.facilityOptValue = facilityOptValue;
         this.facilityOptType = facilityOptType;
+        this.facilityOptTypeName = facilityOptTypeName;
     }
 
     public FacilityOpt setFacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType){

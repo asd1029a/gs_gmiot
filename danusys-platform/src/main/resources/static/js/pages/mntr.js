@@ -1165,7 +1165,7 @@ const rnbList = {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
                     if (facilityOpts.length > 0) {
-                        facilityOpts.filter(ff => ff.facilityOptType === 112).forEach(ff => {
+                        facilityOpts.filter(ff => ff.facilityOptTypeName === "ACCUMULATE_DATA").forEach(ff => {
                             let facilityOptValue = "";
                             if( pointInfo.facilityKind === "air_index") {
                                 facilityOptValue = Math.round(ff.facilityOptValue);

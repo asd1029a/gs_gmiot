@@ -17,6 +17,9 @@ import java.util.Optional;
 public interface FacilityOptRepository extends JpaRepository<FacilityOpt, Long> {
 
     FacilityOpt findByFacilitySeqAndFacilityOptName(Long facilitySeq, String facilityOptName);
+    @Query(value = "SELECT t1.*, v1.code_value as facility_opt_type_name FROM t_facility_opt t1 " +
+            "JOIN v_facility_opt_type v1 ON t1.facility_opt_type = v1.code_seq " +
+            "WHERE t1.facility_seq = :facilitySeq", nativeQuery = true)
     List<FacilityOpt> findByFacilitySeq(Long facilitySeq);
     FacilityOpt findByFacilityOptNameAndFacilityOptValue(String facilityOptName, String facilityOptValue);
 }
