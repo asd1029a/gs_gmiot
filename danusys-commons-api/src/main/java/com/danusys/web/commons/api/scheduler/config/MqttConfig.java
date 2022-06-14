@@ -1,6 +1,6 @@
-package com.danusys.web.commons.mqtt.config;
+package com.danusys.web.commons.api.scheduler.config;
 
-import com.danusys.web.commons.mqtt.DanuMqttClient;
+import com.danusys.web.commons.api.scheduler.service.YjMqttManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -13,12 +13,13 @@ import org.springframework.context.annotation.Profile;
  * Time : 19:40
  */
 
+
 //TODO 영주 버전만 실행 해야함
 @Profile(value = "yj")
 @Configuration
 public class MqttConfig {
     @Bean
-    public DanuMqttClient danuMqttClient() {
-        return new DanuMqttClient();
+    public YjMqttManager yjMqttManager() {
+        return new YjMqttManager();
     }
 }
