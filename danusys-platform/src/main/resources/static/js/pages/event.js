@@ -66,7 +66,6 @@ const event = {
                         $('.status_label li .red').parent().html(`<span class="red"></span>미처리 : ${result.statusCount.red}`);
                         $('.status_label li .yellow').parent().html(`<span class="yellow"></span>조치 완료 : ${result.statusCount.yellow}`);
                         $('.status_label li .green').parent().html(`<span class="green"></span>이벤트 종료 : ${result.statusCount.green}`);
-                        console.log(result);
                         return result.data;
                     }
                 },
