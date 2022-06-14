@@ -1,5 +1,6 @@
 package com.danusys.web.commons.api.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,11 +33,12 @@ public class FacilityOpt {
     @Column(nullable = false)
     private String facilityOptValue;
 
-    @Column(insertable = false, updatable = false)
+    @Column
     private Integer facilityOptType;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "facilityOptType")
+    @JoinColumn(name = "facilityOptType", referencedColumnName = "codeSeq", updatable = false, insertable = false)
+    @JsonManagedReference
     private CommonCode commonCode;
 
     @Builder
