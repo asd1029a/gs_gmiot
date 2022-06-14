@@ -106,7 +106,10 @@ public class EventSqlProvider {
 
             boolean geoFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "geojson"));
 
-            SELECT("COUNT(*) as count");
+            SELECT("COUNT(*) as count" +
+                    ", COUNT(1) FILTER ( WHERE t1.event_proc_stat = '45' ) AS red" +
+                    ", COUNT(1) FILTER ( WHERE t1.event_proc_stat = '46' ) AS yellow" +
+                    ", COUNT(1) FILTER ( WHERE t1.event_proc_stat = '48' ) AS green");
             String tables = "t_event t1 " +
                     "INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq " +
                     "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq " +

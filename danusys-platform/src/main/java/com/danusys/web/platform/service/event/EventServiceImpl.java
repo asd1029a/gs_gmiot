@@ -20,8 +20,10 @@ public class EventServiceImpl implements EventService {
     public EgovMap getList(Map<String, Object> paramMap) throws Exception {
         if(paramMap.get("draw") != null) {
             Map<String, Object> pagingMap = new HashMap<>();
+            EgovMap countMap = commonMapper.selectOne(esp.selectCountQry(paramMap));
             pagingMap.put("data", commonMapper.selectList(esp.selectListQry(paramMap)));
-            pagingMap.put("count", commonMapper.selectOne(esp.selectCountQry(paramMap)).get("count"));
+            pagingMap.put("count", countMap.get("count"));
+            pagingMap.put("statusCount", countMap);
             return PagingUtil.createPagingMap(paramMap, pagingMap);
         } else {
             EgovMap resultMap = new EgovMap();
