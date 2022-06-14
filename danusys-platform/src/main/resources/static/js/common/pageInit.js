@@ -127,7 +127,6 @@ $(document).ready(() => {
             '26290':"smartPole" //부산남구
         }
         let type = initMenu[window.siGunCode];
-        console.log(type);
         $('.mntr_container .lnb ul li[data-value='+type+']').trigger("click");
     }
     // 대시보드 (임시)

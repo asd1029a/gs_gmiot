@@ -5,6 +5,7 @@ import com.danusys.web.commons.api.model.Event;
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.repository.EventRepository;
 import com.danusys.web.commons.api.repository.FacilityRepository;
+import com.danusys.web.commons.app.EgovMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -78,9 +79,5 @@ public class EventService {
 
     public String findParentKind(Long eventKind) {
         return eventRepository.findParentKindStr(eventKind);
-    }
-
-    public List<String> findByParentCodeValue(String parentCodeValue) {
-        return eventRepository.findByParentCodeValue(parentCodeValue);
     }
 }
