@@ -3,7 +3,7 @@
   <logicalpoints>
     <lpt id="LPa232890202717" kind="94"  nm="포충기" ty="33" pth="/ST1/OFa3/LPa232890202717" ref="/DDC_철산2동행정복지_14115/포충기" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890202718" kind="97"  nm="에어커튼" ty="33" pth="/ST1/OFa3/LPa232890202718" ref="/DDC_철산2동행정복지_14115/에어커튼" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890202719" kind=""    nm="미세먼지" ty="2" pth="/ST1/OFa3/LPa232890202719" ref="/DDC_철산2동행정복지_14115/미세먼지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890202719" kind="115" nm="미세먼지" ty="2" pth="/ST1/OFa3/LPa232890202719" ref="/DDC_철산2동행정복지_14115/미세먼지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890202720" kind="102" nm="심장제세동기" ty="33" pth="/ST1/OFa3/LPa232890202720" ref="/DDC_철산2동행정복지_14115/심장제세동기" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890202721" kind="103" nm="재실감지" ty="33" pth="/ST1/OFa3/LPa232890202721" ref="/DDC_철산2동행정복지_14115/재실감지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890202722" kind="92"  nm="조명" ty="33" pth="/ST1/OFa3/LPa232890202722" ref="/DDC_철산2동행정복지_14115/조명" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
@@ -14,11 +14,11 @@
     <lpt id="LPa232890202727" kind="99"  nm="무정차조명" ty="33" pth="/ST1/OFa3/LPa232890202727" ref="/DDC_철산2동행정복지_14115/무정차조명" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890202728" kind="100" nm="LED라이트패널" ty="33" pth="/ST1/OFa3/LPa232890202728" ref="/DDC_철산2동행정복지_14115/LED라이트패널" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890202729" kind="101" nm="스노우멜팅" ty="33" pth="/ST1/OFa3/LPa232890202729" ref="/DDC_철산2동행정복지_14115/스노우멜팅" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa233589841359" kind=""    nm="한전_수전 적산 유효전력량" ty="2" pth="/ST1/OFa3/LPa233589841359" ref="/DDC_철산2동행정복지_14115/한전_수전 적산 유효전력량" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589841359" kind="117" nm="한전_수전 적산 유효전력량" ty="2" pth="/ST1/OFa3/LPa233589841359" ref="/DDC_철산2동행정복지_14115/한전_수전 적산 유효전력량" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589841360" kind=""    nm="한전_송전 적산 유효전력량" ty="2" pth="/ST1/OFa3/LPa233589841360" ref="/DDC_철산2동행정복지_14115/한전_송전 적산 유효전력량" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
-    <lpt id="LPa233589841361" kind=""    nm="한전_수전 유효전력" ty="2" pth="/ST1/OFa3/LPa233589841361" ref="/DDC_철산2동행정복지_14115/한전_수전 유효전력" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589841361" kind="116" nm="한전_수전 유효전력" ty="2" pth="/ST1/OFa3/LPa233589841361" ref="/DDC_철산2동행정복지_14115/한전_수전 유효전력" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589841362" kind=""    nm="한전_송전 유효전력" ty="2" pth="/ST1/OFa3/LPa233589841362" ref="/DDC_철산2동행정복지_14115/한전_송전 유효전력" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
-    <lpt id="LPa233589841363" kind=""    nm="IDU_실내온도" ty="2" pth="/ST1/OFa3/LPa233589841363" ref="/DDC_철산2동행정복지_14115/IDU_실내온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589841363" kind="118" nm="IDU_실내온도" ty="2" pth="/ST1/OFa3/LPa233589841363" ref="/DDC_철산2동행정복지_14115/IDU_실내온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589841364" kind=""    nm="IDU_에러코드" ty="2" pth="/ST1/OFa3/LPa233589841364" ref="/DDC_철산2동행정복지_14115/IDU_에러코드" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589841365" kind=""    nm="IDU_배관입구온도" ty="2" pth="/ST1/OFa3/LPa233589841365" ref="/DDC_철산2동행정복지_14115/IDU_배관입구온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589841366" kind=""    nm="IDU_배관출구온도" ty="2" pth="/ST1/OFa3/LPa233589841366" ref="/DDC_철산2동행정복지_14115/IDU_배관출구온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>

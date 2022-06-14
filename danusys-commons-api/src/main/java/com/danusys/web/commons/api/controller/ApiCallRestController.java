@@ -211,20 +211,31 @@ public class ApiCallRestController {
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
 
-            String checkExist = StaticUtil.checkExist;
+//            Map<Long, String> checkExist = StaticUtil.checkExist;
             // event transfer
             for(Map.Entry<String, Object> el: map.entrySet()) {
                 EventReqeustDTO list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
                 });
-                if(list.getEventKind().equals("1") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("1") && checkExist.isEmpty())){
-                    //사람있음
-                    StaticUtil.checkExist = "1";
-                    danuMqttClient.sender("existenceValue","1");
-                }else if(list.getEventKind().equals("0") && !checkExist.equals(list.getEventKind()) || (list.getEventKind().equals("0") && checkExist.isEmpty())){
-                    //사람없음
-                    StaticUtil.checkExist = "0";
-                    danuMqttClient.sender("existenceValue","0");
-                }
+                Long stationSeq = facilityService.findByFacilityId(list.getFacilityId()).getStationSeq();
+                danuMqttClient.sender(stationSeq+"",list.getEventKind());
+                // 초기화
+//                if(checkExist.get(stationSeq) == null){
+//                    checkExist.put(stationSeq,list.getEventKind());
+//                    log.info("보내기~~~~~~~~~~~~~~~~~~~~~{}",checkExist.get(stationSeq));
+//                }
+//
+//                if(list.getEventKind().equals("1") && !(checkExist.get(stationSeq).equals(list.getEventKind()))){
+//                    //사람있음
+//                    checkExist.put(stationSeq,list.getEventKind());
+//                    log.info("사람있다 {}",checkExist.get(stationSeq));
+//                    //danuMqttClient.sender("existenceValue","1");
+//                }else if(list.getEventKind().equals("0") && !(checkExist.get(stationSeq).equals(list.getEventKind()))){
+//                    //사람없음
+//                    checkExist.put(stationSeq,list.getEventKind());
+//                    log.info("사람없다 {}",checkExist.get(stationSeq));
+//                    //danuMqttClient.sender("existenceValue","0");
+//                }
+
                 log.trace(list.toEntity().toString());
             }
         } catch (Exception e) {
@@ -295,20 +306,28 @@ public class ApiCallRestController {
                         f.setValue(apiParam.getValue());
                     })
                     .collect(toMap(ApiParam::getFieldMapNm, ApiParam::getValue));
-
+            Map<String, Object> eventSseData = new HashMap<>();
             // event save
             for(Map.Entry<String, Object> el: map.entrySet()) {
                 if (dataType.get().equals(DataType.ARRAY)) {
                     List<EventReqeustDTO> list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<List<EventReqeustDTO>>() {
                     });
                     List<Event> eventList = eventService.saveAllByEventRequestDTO(list);
-                    sseJsonStr = objectMapper.writeValueAsString(eventList);
+                    String eventType = eventService.findParentKind(eventList.get(0).getEventKind());
+
+                    eventSseData.put("eventType", eventType);
+                    eventSseData.put("data", eventList);
+                    sseJsonStr = objectMapper.writeValueAsString(eventSseData);
                     log.trace(list.toString());
                 } else if (dataType.get().equals(DataType.OBJECT)) {
                     EventReqeustDTO eventReqeustDTO = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
                     });
                     Event event = eventService.saveByEventRequestDTO(eventReqeustDTO);
-                    sseJsonStr = objectMapper.writeValueAsString(event);
+                    String eventType = eventService.findParentKind(event.getEventKind());
+
+                    eventSseData.put("eventType", eventType);
+                    eventSseData.put("data", event);
+                    sseJsonStr = objectMapper.writeValueAsString(eventSseData);
                 }
             }
 

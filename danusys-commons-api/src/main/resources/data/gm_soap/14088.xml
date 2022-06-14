@@ -3,7 +3,7 @@
   <logicalpoints>
     <lpt id="LPa232890207760" kind="94"  nm="포충기" ty="33" pth="/ST1/OFa5/LPa232890207760" ref="/DDC_광명시청건너_14088/포충기" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890207761" kind="97"  nm="에어커튼" ty="33" pth="/ST1/OFa5/LPa232890207761" ref="/DDC_광명시청건너_14088/에어커튼" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890207762" kind=""    nm="미세먼지" ty="2" pth="/ST1/OFa5/LPa232890207762" ref="/DDC_광명시청건너_14088/미세먼지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890207762" kind="115" nm="미세먼지" ty="2" pth="/ST1/OFa5/LPa232890207762" ref="/DDC_광명시청건너_14088/미세먼지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890207763" kind="102" nm="심장제세동기" ty="33" pth="/ST1/OFa5/LPa232890207763" ref="/DDC_광명시청건너_14088/심장제세동기" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890207764" kind="103" nm="재실감지" ty="33" pth="/ST1/OFa5/LPa232890207764" ref="/DDC_광명시청건너_14088/재실감지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890207765" kind="92"  nm="조명" ty="33" pth="/ST1/OFa5/LPa232890207765" ref="/DDC_광명시청건너_14088/조명" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
@@ -14,11 +14,11 @@
     <lpt id="LPa232890207770" kind="99"  nm="무정차조명" ty="33" pth="/ST1/OFa5/LPa232890207770" ref="/DDC_광명시청건너_14088/무정차조명" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890207771" kind="100" nm="LED라이트패널" ty="33" pth="/ST1/OFa5/LPa232890207771" ref="/DDC_광명시청건너_14088/LED라이트패널" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890207772" kind="101" nm="스노우멜팅" ty="33" pth="/ST1/OFa5/LPa232890207772" ref="/DDC_광명시청건너_14088/스노우멜팅" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa233589833440" kind=""    nm="한전_수전 적산 유효전력량" ty="2" pth="/ST1/OFa5/LPa233589833440" ref="/DDC_광명시청건너_14088/한전_수전 적산 유효전력량" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589833440" kind="117" nm="한전_수전 적산 유효전력량" ty="2" pth="/ST1/OFa5/LPa233589833440" ref="/DDC_광명시청건너_14088/한전_수전 적산 유효전력량" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589833441" kind=""    nm="한전_송전 적산 유효전력량" ty="2" pth="/ST1/OFa5/LPa233589833441" ref="/DDC_광명시청건너_14088/한전_송전 적산 유효전력량" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
-    <lpt id="LPa233589833442" kind=""    nm="한전_수전 유효전력" ty="2" pth="/ST1/OFa5/LPa233589833442" ref="/DDC_광명시청건너_14088/한전_수전 유효전력" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589833442" kind="116" nm="한전_수전 유효전력" ty="2" pth="/ST1/OFa5/LPa233589833442" ref="/DDC_광명시청건너_14088/한전_수전 유효전력" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589833443" kind=""    nm="한전_송전 유효전력" ty="2" pth="/ST1/OFa5/LPa233589833443" ref="/DDC_광명시청건너_14088/한전_송전 유효전력" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
-    <lpt id="LPa233589833444" kind=""    nm="IDU_실내온도" ty="2" pth="/ST1/OFa5/LPa233589833444" ref="/DDC_광명시청건너_14088/IDU_실내온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589833444" kind="118" nm="IDU_실내온도" ty="2" pth="/ST1/OFa5/LPa233589833444" ref="/DDC_광명시청건너_14088/IDU_실내온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589833445" kind=""    nm="IDU_에러코드" ty="2" pth="/ST1/OFa5/LPa233589833445" ref="/DDC_광명시청건너_14088/IDU_에러코드" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589833446" kind=""    nm="IDU_배관입구온도" ty="2" pth="/ST1/OFa5/LPa233589833446" ref="/DDC_광명시청건너_14088/IDU_배관입구온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589833447" kind=""    nm="IDU_배관출구온도" ty="2" pth="/ST1/OFa5/LPa233589833447" ref="/DDC_광명시청건너_14088/IDU_배관출구온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>

@@ -129,6 +129,17 @@ const facility = {
             pCallback(result);
         });
     }
+    , facilityControl : (param, pCallback) => {
+        $.ajax({
+            url : "/facility/control"
+            , type : "POST"
+            , data : JSON.stringify(param)
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
+            pCallback(result);
+        });
+    }
+
     , addProc : () => {
         const formObj = $('#facilityForm').serializeJSON();
 

@@ -1,8 +1,11 @@
 package com.danusys.web.commons.api.repository;
 
 import com.danusys.web.commons.api.model.Event;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 /**
  * Project : danusys-webservice-parent
@@ -21,4 +24,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query(value = "SELECT distinct t2.code_name FROM t_event t1 INNER JOIN t_common_code t2 on " +
             "t1.event_kind = t2.code_seq WHERE t1.event_kind = :kind",nativeQuery = true)
     String msgConv(Long kind);
+
+    @Query(value = "SELECT a.code_value FROM v_event_kind a JOIN (SELECT parent_code_seq FROM v_event_kind WHERE code_seq = :eventKind) b ON a.code_seq = b.parent_code_seq", nativeQuery = true)
+    String findParentKindStr(Long eventKind);
+    @Query(value = "SELECT a.code_value FROM v_event_kind a JOIN (SELECT code_seq FROM v_event_kind WHERE code_value = :parentCodeValue) b ON a.parent_code_seq = b.code_seq", nativeQuery = true)
+    List<String> findByParentCodeValue(String parentCodeValue);
+
 }

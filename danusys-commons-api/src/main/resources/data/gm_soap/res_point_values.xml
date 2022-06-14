@@ -45,3 +45,12 @@
         </ns2:forcedLoginResponse>
     </S:Body>
 </S:Envelope>
+
+
+<?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+<S:Body>
+    <ns2:setPointValuesResponse xmlns:ns2="http://ws.bms.swc.lge.com/">
+        <return>1</return>
+    </ns2:setPointValuesResponse>
+</S:Body>
+</S:Envelope>

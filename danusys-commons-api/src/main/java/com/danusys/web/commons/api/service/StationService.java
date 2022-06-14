@@ -35,6 +35,10 @@ public class StationService {
         return stationRepository.findByStationName(stationName);
     }
 
+    public Station findByStationSeq(Long stationSeq) {
+        return stationRepository.findByStationSeq(stationSeq);
+    }
+
     public void saveAll(List<Map<String, Object>> list) {
         List<Station> stationList = new ArrayList<Station>();
         list.stream().forEach((d) -> {
@@ -94,5 +98,6 @@ public class StationService {
 
         stationRepository.saveAll(stationList);
     }
+
 
 }

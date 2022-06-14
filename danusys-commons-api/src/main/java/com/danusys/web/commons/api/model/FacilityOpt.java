@@ -3,6 +3,7 @@ package com.danusys.web.commons.api.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 
@@ -31,14 +32,25 @@ public class FacilityOpt {
     @Column(nullable = false)
     private String facilityOptValue;
 
-    private int facilityOptType;
+    private Integer facilityOptType;
+
+    private String facilityOptTypeName;
+
+    public void setFacilityOptTypeName(String facilityOptTypeName) {
+        this.facilityOptTypeName = facilityOptTypeName;
+    }
+
+    public String getFacilityOptTypeName() {
+        return this.facilityOptTypeName;
+    }
 
     @Builder
-    public FacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType) {
+    public FacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType, String facilityOptTypeName) {
         this.facilitySeq = facilitySeq;
         this.facilityOptName = facilityOptName;
         this.facilityOptValue = facilityOptValue;
         this.facilityOptType = facilityOptType;
+        this.facilityOptTypeName = facilityOptTypeName;
     }
 
     public FacilityOpt setFacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType){

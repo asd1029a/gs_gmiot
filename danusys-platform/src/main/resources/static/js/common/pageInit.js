@@ -117,11 +117,20 @@ $(document).ready(() => {
     }
     // 관제
     else if(path === "/pages/mntr") {
-
         svgToImage.init();
         mntr.init();
         mntr.eventHandler();
-        $('.mntr_container .lnb ul li.active').trigger("click");
+
+        //추후 properties 혹은 디비로 관리?
+        const initMenu = {
+            '41210':"smartPole", //광명
+            '47210':"smartBusStop", //영주
+            '45210':"smartPower", //김제
+            '26290':"smartPole" //부산남구
+        }
+        let type = initMenu[window.siGunCode];
+        console.log(type);
+        $('.mntr_container .lnb ul li[data-value='+type+']').trigger("click");
     }
     // 대시보드 (임시)
     else if(path === "/pages/dashboard/dashboard_facility") {

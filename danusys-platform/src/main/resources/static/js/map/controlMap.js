@@ -480,4 +480,64 @@ const dronePolling = {
     }
 }
 
-
+/*
+* 관제 대메뉴별 조회 param
+* TODO 데이터 반복되면 소스 합치기 => db로 관리 변환 예정
+* */
+const mntrParam = {
+    getEventKinds : (parentCodeValue) => {
+        let eventKind;
+        event.getListEventKind(
+            parentCodeValue,
+            result => {
+                eventKind = result;
+            }
+        );
+        return eventKind;
+    },
+    /** 드론 **/
+    drone : (sigCode, parentCodeValue) => {
+        const eventKind = mntrParam.getEventKinds(parentCodeValue);
+        let param = {
+            //실시간
+            'event': {"eventState": ["1", "2", "3"], "eventKind": eventKind, "sigCode" : sigCode}
+            //과거이력
+            , 'eventPast': {"eventState": ["9"], "eventKind": eventKind, "sigCode" : sigCode}
+            //개소
+            , 'station': {"stationKind": ["DRONE_STATION"], "sigCode" : sigCode}
+            // 기체
+            , 'facility': {"facilityKind" : ["DRONE"], "sigCode" : sigCode}
+        }
+        return param;
+    }
+    /** 스마트폴 **/
+    , smartPole : (sigCode, parentCodeValue) => {
+        const eventKind = mntrParam.getEventKinds(parentCodeValue);
+        let param = {
+            'event' : {"eventState": ["1", "2", "3"], "eventKind": eventKind, "sigCode" : sigCode}
+            , 'eventPast' : {"eventState": ["9"], "eventKind": eventKind, "sigCode" : sigCode}
+            , 'station' : {"stationKind": ["lamp_road"], "sigCode" : sigCode}
+        }
+        return param;
+    }
+    /** 스마트 정류장 **/
+    , smartBusStop : (sigCode, parentCodeValue) => {
+        const eventKind = mntrParam.getEventKinds(parentCodeValue);
+        let param = {
+            'event': {"eventState": ["1", "2", "3"], "eventKind": eventKind, "sigCode" : sigCode}
+            , 'eventPast': {"eventState": ["9"], "eventKind": eventKind, "sigCode" : sigCode}
+            , 'station': {"stationKind": ["smart_station"], "sigCode" : sigCode}
+        }
+        return param;
+    }
+    /** 스마트 분전함 **/
+    , smartPower : (sigCode, parentCodeValue) => {
+        const eventKind = mntrParam.getEventKinds(parentCodeValue);
+        let param = {
+            'event': {"eventState": ["1", "2", "3"], "eventKind": eventKind, "sigCode" : sigCode}
+            , 'eventPast': {"eventState": ["9"], "eventKind": eventKind, "sigCode" : sigCode}
+            , 'station': {"stationKind": ["smart_power"], "sigCode" : sigCode}
+        }
+        return param;
+    }
+}

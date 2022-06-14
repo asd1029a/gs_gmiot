@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.Time;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -25,6 +26,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,6 +47,11 @@ public class GjScheduler {
     private final FacilityOptService facilityOptService;
     private final StationService stationService;
     private final RestTemplate restTemplate;
+
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
+    private final HttpSession session;
+
     private List<Map<String, Double>> testList = new ArrayList<>();
     private double[] latList = {35.80405637329925, 35.80366509913489, 35.803435578829465, 35.80313827937384, 35.80293993822085,
             35.8028508811051, 35.802506370345384, 35.80213066739625, 35.80180719609306, 35.801400379319034,
@@ -309,11 +318,11 @@ public class GjScheduler {
         facilityOptService.saveAll(facilityOptList);
     }
 
-    //    @Scheduled(fixedDelay = 1000)
+    @Scheduled(cron = "0/30 * * * * *")
     // TODO : 드론 방송 목록 조회(cron 처리 추가 필요)
     public void getDroneBroadcast() throws Exception {
         Map<String,Object> param2 = new HashMap<>();
-        param2.put("callUrl", "/lg/drone/drones/current_position");
+        param2.put("callUrl", "/cudo/video/broadcast/list");
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "http://localhost:8400/api/call",
@@ -328,29 +337,50 @@ public class GjScheduler {
         Map<String, Object> result = objectMapper.readValue(responseEntity.getBody(), new TypeReference<Map<String, Object>>() {
         });
 
-        Map<String, Object> deviceGroup = (Map<String, Object>) result.get("device_group");
-        List<Map<String, Object>> broadcastList = (List<Map<String, Object>>) deviceGroup.get("broadcastList");
+        List<Map<String, Object>> deviceGroup = (List<Map<String, Object>>) result.get("device_groups");
+        deviceGroup.stream().forEach(d -> {
+            List<Map<String, Object>> deviceList = (List<Map<String, Object>>) d.get("devices");
 
-        broadcastList.stream().forEach(f -> {
-            String state = StrUtils.getStr(f.get("state"));
-            // R:방송대기, S:방송중, E:방송종료
-            switch (state) {
-                case "R" :
-                    break;
-                case "S" :
-                    List<Map<String, Object>> streamingList = (List<Map<String, Object>>) f.get("streaming");
-                    if (streamingList.size() == 0) return;
-                    Map<String, Object> stream = streamingList.get(0);
-                    String jobId = StrUtils.getStr(stream.get("job_id"));
-                    break;
-                case "E" :
-                    break;
-            }
+            deviceList.stream().forEach(f -> {
+                String videoIdStr = "video_id";
+                String videoId = (String) f.get(videoIdStr);
+                FacilityOpt videoOpt = facilityOptService.findByFacilityOptNameAndFacilityOptValue(videoIdStr, videoId);
+                if (videoOpt == null) return;
+                String jobIdStr = "job_id";
+                FacilityOpt jobIdOpt = facilityOptService.findByFacilitySeqAndFacilityOptName(videoOpt.getFacilitySeq(), jobIdStr);
+                Map<String, Object> broadcast = (Map<String, Object>) f.get("broadcast");
+                String state = StrUtils.getStr(broadcast.get("state"));
+                // R:방송대기, S:방송중, E:방송종료
+                switch (state) {
+                    case "R" :
+                        break;
+                    case "S" :
+                        List<Map<String, Object>> streamingList = (List<Map<String, Object>>) broadcast.get("streamings");
+                        if (streamingList.size() == 0) return;
+                        Map<String, Object> stream = streamingList.get(0);
+                        String jobId = StrUtils.getStr(stream.get("key"));
+                        if (jobIdOpt == null) {
+                            jobIdOpt = FacilityOpt.builder().facilitySeq(videoOpt.getFacilitySeq()).facilityOptName(jobIdStr).facilityOptType(53).facilityOptValue(jobId).build();
+                        } else {
+                            jobIdOpt.setFacilityOptValue(jobId);
+                        }
+                        facilityOptService.save(jobIdOpt);
+                        break;
+                    case "E" :
+                        if (jobIdOpt == null) {
+                            jobIdOpt = FacilityOpt.builder().facilitySeq(videoOpt.getFacilitySeq()).facilityOptName(jobIdStr).facilityOptType(53).facilityOptValue("").build();
+                        } else {
+                            jobIdOpt.setFacilityOptValue("");
+                        }
+                        facilityOptService.save(jobIdOpt);
+                        break;
+                }
+            });
         });
     }
 
     //    @Scheduled(cron = "0/30 * * * * *")
-    // @Scheduled(fixedDelay = 1000)
+     @Scheduled(fixedDelay = 1000)
     // TODO : 드론 좌표 및 실시간 데이터 업데이트 스케줄(cron 처리 추가 필요)
     public void getDroneCoordinatesList() throws Exception {
         Map<String,Object> param2 = new HashMap<>();
@@ -392,11 +422,11 @@ public class GjScheduler {
             Facility origin = facilityService.findByFacilityId(facilityId);
             origin.setLatitude(latitude);
             origin.setLongitude(longitude);
-            origin.setAdministZone(facilityService.getEmdCode(longitude, latitude));
+//            origin.setAdministZone(facilityService.getEmdCode(longitude, latitude));
             facilityService.save(origin);
             int flightState = Integer.parseInt(StrUtils.getStr(properties.get("flight_state")));
             properties.put("flight_state", this.convertFlightState(flightState));
-            String[] temp = {"direction", "alt", "run_dist", "battery", "speed", "home_dist", "flight_state"};
+            String[] temp = {"direction", "head", "alt", "run_dist", "battery", "speed", "home_dist", "flight_state"};
             List<String> addList = Arrays.asList(temp);
             properties.entrySet().stream().filter(ff -> addList.contains(ff.getKey())).forEach(ff -> {
                 FacilityOpt optOrigin = facilityOptService.findByFacilitySeqAndFacilityOptName(origin.getFacilitySeq(), ff.getKey());

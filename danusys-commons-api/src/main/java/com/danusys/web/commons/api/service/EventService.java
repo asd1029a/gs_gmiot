@@ -75,4 +75,12 @@ public class EventService {
     public Long findEventProcStat(String codeId) {
         return this.eventRepository.findEventProcStat(codeId);
     }
+
+    public String findParentKind(Long eventKind) {
+        return eventRepository.findParentKindStr(eventKind);
+    }
+
+    public List<String> findByParentCodeValue(String parentCodeValue) {
+        return eventRepository.findByParentCodeValue(parentCodeValue);
+    }
 }

@@ -59,13 +59,13 @@ const mntr = {
             const $targetTab = $('.mntr_container section.menu_fold.select .lnb_tab_section.select').attr('data-value');
 
             if($targetTab == "event"){
+                console.log(objJson.eventType);
                 let newAry;
-                event.getListGeoJson({
-                    "eventState": ["1","2","3"],
-                    "eventKind": ["BUSSTOP_FALL_DOWN", "BUSSTOP_FIRE"],
-                    "sigCode": window.siGunCode
-                }, result => {
-                    //리스트 추가하기 (TODO 리스트도 refresh 해야할까)
+                event.getListGeoJson(
+                    //TODO 구분
+                    mntrParam.smartBusStop(window.siGunCode)
+                    , result => {
+                    //리스트 추가하기
                     const data = JSON.parse(result);
                     const ary = [];
                     data.features.forEach(t => {
@@ -75,6 +75,7 @@ const mntr = {
                         }
                     });
                     data.features = ary;
+                    //리스트 refresh
                     lnbList.createEvent(result);
                     //레이어 refresh
                     reloadLayer(JSON.parse(result), 'eventLayer');
@@ -350,59 +351,31 @@ const mntr = {
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
 
-            /// TODO 데이터 확인 후 정리해서 코드 따로 빼기
-            let eventParam = {"eventState": ["1", "2", "3"]};
-            let eventPastParam = {"eventState": ["9"]};
-            let stationParam = {};
-
-            let tablType = 'station';
+            let paramObject = {}; //대메뉴별 조회 파라미터
+            let tabType = 'station';
             //기체 폴링 멈춤
             dronePolling.stop();
 
             switch (theme) {
                 case "smartPole" : //스마트폴
-                    //실시간
-                    eventParam = {"eventState": ["1", "2", "3"], "eventKind": ["gateway_trans", "device_trans", "dtctn_crmss"]};
-                    //과거이력
-                    eventPastParam = {"eventState": ["9"], "eventKind": ["gateway_trans", "device_trans", "dtctn_crmss"]};
-                    //개소
-                    stationParam = {"stationKind": ["lamp_road"]};
+                    paramObject = mntrParam.smartPole(window.siGunCode, "smart_pole_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartBusStop" : //스마트 정류장
-                    //실시간
-                    eventParam = {"eventState": ["1", "2", "3"], "eventKind": ["BUSSTOP_FALL_DOWN", "BUSSTOP_FIRE"]};
-                    //과거이력
-                    eventPastParam = {"eventState": ["9"], "eventKind": ["BUSSTOP_FALL_DOWN", "BUSSTOP_FIRE"]};
-                    //개소
-                    stationParam = {"stationKind": ["smart_station"]};
+                    paramObject = mntrParam.smartBusStop(window.siGunCode, "smart_busstop_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartPower": //스마트 분전함
-                    //실시간
-                    eventParam = {"eventState": ["1", "2", "3"], "eventKind": ["LKGE_ERCRT", "OVER_ERCRT"]};
-                    //과거이력
-                    eventPastParam = {"eventState": ["9"], "eventKind": ["LKGE_ERCRT", "OVER_ERCRT"]};
-                    //개소
-                    stationParam = {"stationKind": ["smart_power"]}
+                    paramObject = mntrParam.smartPower(window.siGunCode, "EMS_EVENT");
                     window.lyControl.offList(['facility','eventPast']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "drone" : //드론
-                    tablType = 'facility';
-                    //실시간
-                    eventParam = {"eventState": ["1", "2", "3"], "eventKind": ["drone_fire_detection", "drone_object_tracking"]};
-                    //과거이력
-                    eventPastParam = {"eventState": ["9"], "eventKind": ["drone_fire_detection", "drone_object_tracking"]};
-                    //개소
-                    stationParam = {"stationKind": ["DRONE_STATION"]}
-                    //기체
-                    facility.getListGeoJson({
-                        "facilityKind" : ["DRONE"]
-                        , "sigCode" : window.siGunCode
-                    },result => {
+                    tabType = 'facility';
+                    paramObject = mntrParam.drone(window.siGunCode, "DRONE_EVENT");
+                    facility.getListGeoJson( paramObject['facility'],result => {
                         reloadLayer(result, 'facilityLayer');
                         lnbList.createFacility(result);
                     });
@@ -423,22 +396,18 @@ const mntr = {
                     break;
             }
 
-            stationParam["sigCode"] = window.siGunCode;
-            eventParam["sigCode"] = window.siGunCode;
-            eventPastParam["sigCode"] = window.siGunCode;
-
             //실시간 이벤트
-            event.getListGeoJson(eventParam, result => {
+            event.getListGeoJson(paramObject['event'], result => {
                 reloadLayer(result, 'eventLayer');
                 lnbList.createEvent(result);
             });
             //개소
-            station.getListGeoJson(stationParam ,result => {
+            station.getListGeoJson(paramObject['station'] ,result => {
                 reloadLayer(result, 'stationLayer');
-                lnbList.createStation(result, tablType);
+                lnbList.createStation(result, tabType);
             });
             //이벤트 과거이력
-            event.getListGeoJson(eventPastParam, result => {
+            event.getListGeoJson(paramObject['eventPast'], result => {
                 reloadLayer(result, 'eventPastLayer');
                 lnbList.createEventPast(result);
             });
@@ -1128,6 +1097,28 @@ const lnbList = {
 }
 
 /**
+ * 시설물 개별 컨트롤
+ * @param id
+ * @param fid
+ */
+function setFacility(id, fid, fseq) {
+    let point = $("input:checkbox[id='" + id + "']");
+    let pointValue = point.is(":checked") ? "On" : "Off";
+    point.prop('checked', point.is(":checked"));
+
+    facility.facilityControl({
+        "callUrl": "gmSetPointValues",
+        "pointValues": "",
+        "settingValue": pointValue,
+        "pointPath": fid,
+        "facilitySeq": fseq
+    },result => {
+        console.log(result)
+        // let objAry = JSON.parse(result);
+        // console.log(objAry)
+    });
+}
+/**
  * 관제 오른쪽창 정보 생성
  * TODO 데이터 적용 후 반복코드 정리
  * */
@@ -1156,36 +1147,54 @@ const rnbList = {
             ///show
             ///hide
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
-        } else if(theme=="smartBusStop") {
+        } else if(theme === "smartBusStop") {
+
+            //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
             },result => {
-                //TODO 시설물 상태 표시 여기에 하는 것이???
                 target.find(".area_right_bus_control").html("");
                 let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
-                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}}><label for="control_{{for_index}}">Toggle</label></dd></dl>';
+                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
+
                 console.log(objAry)
-                for(let i = 0; i<objAry.features.length; i++) {
-                    let pointInfo = objAry.features[i].properties;
-                    let facilityKindName = pointInfo.facilityKindName;
-                    let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
 
-                    // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
-
-                    target.find(".area_right_bus_control").append(
-                        smartBusStoFacilityTag
-                            .replace("{{facilityKindName}}", facilityKindName)
-                            .replace("{{id_index}}", i)
-                            .replace("{{for_index}}", i)
-                            .replace("{{check_value}}", presentValue));
-                }
-
-                // reloadLayer(result, 'facilityLayer');
-                // lnbList.createFacility(result);
+                objAry.features.forEach((f, i) => {
+                    let pointInfo = f.properties;
+                    let facilityOpts = pointInfo.facilityOpts;
+                    if (facilityOpts.length > 0) {
+                        facilityOpts.filter(ff => ff.facilityOptTypeName === "ACCUMULATE_DATA").forEach(ff => {
+                            let facilityOptValue = "";
+                            if( pointInfo.facilityKind === "air_index") {
+                                facilityOptValue = Math.round(ff.facilityOptValue);
+                            } else if( pointInfo.facilityKind === "wattage" || pointInfo.facilityKind === "power" ) {
+                                facilityOptValue = stringFunc.commaNumber((parseInt(ff.facilityOptValue)/1000).toString());
+                            } else {
+                                facilityOptValue = ff.facilityOptValue;
+                            }
+                            target.find(".area_right_bus_status [data-value=" + ff.facilityOptName + "] span").text(facilityOptValue);
+                        });
+                    } else {
+                        let pointInfo = f.properties;
+                        let facilityKindName = pointInfo.facilityKindName;
+                        let facilityId = pointInfo.facilityId;
+                        let facilitySeq = pointInfo.facilitySeq;
+                        let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
+                        // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+                        target.find(".area_right_bus_control").append(
+                            smartBusStoFacilityTag
+                                .replace("{{facilityKindName}}", facilityKindName)
+                                .replace("{{id_index}}", i)
+                                .replace("{{onclick_index}}", i)
+                                .replace("{{facilityId}}", facilityId)
+                                .replace("{{facilitySeq}}", facilitySeq)
+                                .replace("{{for_index}}", i)
+                                .replace("{{check_value}}", presentValue));
+                    }
+                });
             });
-
         } else {}
         //////////////////
 

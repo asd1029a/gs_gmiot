@@ -1,29 +1,23 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.commons.api.model.Api;
 import com.danusys.web.commons.api.service.ApiCallService;
-import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.commons.app.FileUtil;
-import com.danusys.web.commons.app.StrUtils;
+import com.danusys.web.commons.api.service.FacilityOptService;
+import com.danusys.web.commons.app.*;
 import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.service.facility.FacilityService;
-import com.danusys.web.commons.app.GisUtil;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -38,6 +32,8 @@ public class FacilityController {
     private final FacilityService facilityService;
 
     private final ApiCallService apiCallService;
+
+    private final FacilityOptService facilityOptService;
 
 
     /**
@@ -63,6 +59,11 @@ public class FacilityController {
     public String getListFacilityGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = facilityService.getList(paramMap);
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
+
+        list.stream().peek(p -> {
+            log.trace("v_station_facility_info > {}", p.get("facilitySeq"));
+            p.put("facilityOpts", facilityOptService.findByFacilitySeq(Long.parseLong(String.valueOf(p.get("facilitySeq")))));
+        }).collect(toList());
 
         return GisUtil.getGeoJson(list, "facility");
     }
@@ -248,5 +249,26 @@ public class FacilityController {
         Workbook wb = FileUtil.excelDownload(paramMap);
         wb.write(response.getOutputStream());
         wb.close();
+    }
+
+    /**
+     * 시설물 : 개별 제어
+     * @param paramMap
+     * @return
+     * @throws Exception
+     */
+    @PostMapping(value = "/control")
+    public ResponseEntity control(@RequestBody Map<String, Object> paramMap) throws Exception {
+        ResponseEntity result = apiCallService.call(paramMap);
+
+        //시설물 상태 업데이트
+        if( result.getStatusCode() == HttpStatus.OK ) {
+            Map<String, Object> modMap = new HashMap<>();
+            modMap.put("facilitySeq", paramMap.get("facilitySeq"));
+            modMap.put("facilityStatus", String.valueOf(paramMap.get("settingValue")).equals("On") ? 1 : 0);
+            facilityService.mod(modMap);
+        }
+
+        return result;
     }
 }
