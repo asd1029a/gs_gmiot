@@ -66,7 +66,7 @@ INSERT INTO public.api_param (seq, field_nm, field_map_nm, data_type, required, 
 -- api 추가
 
 INSERT INTO public.api (call_url, method_type, request_body_type, response_body_type, api_type, target_url, target_path, content_type, service_nm, service_prefix, auth_info, tokens) VALUES
-    ('gmPoint', 'POST', 'OBJECT', 'OBJECT_MAPPING', 'SOAP', 'http://192.168.14.104:9999/bms/ws/PointService', 'http://ws.bms.swc.lge.com/', 'text/xml; charset=utf-8', 'getPointValues', 'ws', 'soplogin_gmForcedLogin', null)
+    ('gmDataPointList', 'POST', 'OBJECT', 'OBJECT_MAPPING', 'SOAP', 'http://192.168.14.104:9999/bms/ws/PointService', 'http://ws.bms.swc.lge.com/', 'text/xml; charset=utf-8', 'getPointValues', 'ws', 'soplogin_gmForcedLogin', null)
 
 INSERT INTO public.api_param (seq, field_nm, field_map_nm, data_type, required, param_type, value, description, api_id, crypto_type, crypto_key, parent_seq) VALUES
 (1, 'clientId', 'arg0', 'COOKIE', true, 'REQUEST', 'clientId', 'clientId (쿠키값 가져오기)', 49, null, null, 0)

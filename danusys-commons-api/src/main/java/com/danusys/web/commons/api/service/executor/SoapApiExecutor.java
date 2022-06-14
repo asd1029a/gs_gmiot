@@ -19,6 +19,8 @@ import javax.xml.soap.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 
 /**
  * @author odlodl
@@ -39,7 +41,7 @@ public class SoapApiExecutor implements ApiExecutor  {
         if (api.getApiRequestParams() == null || api.getApiRequestParams().isEmpty())
             throw new IllegalArgumentException("apiRequestParams 값이 null 입니다.");
 
-        final List<ApiParam> apiRequestParams = api.getApiRequestParams().stream().sorted(Comparator.comparing((ApiParam p) -> p.getSeq())).collect(Collectors.toList());
+        final List<ApiParam> apiRequestParams = api.getApiRequestParams().stream().sorted(Comparator.comparing((ApiParam p) -> p.getSeq())).collect(toList());
         log.trace("### apiRequestParams : {}", apiRequestParams.toString());
 
         Object result = "";
@@ -66,9 +68,10 @@ public class SoapApiExecutor implements ApiExecutor  {
             Name nameRequest = soapFactory.createName(serviceName, webServicePrefix, webServiceURI); // SOAPFactory 로 부터 Name 객체 생성 (이름, Prefix, URI)
 
             SOAPBodyElement elRequest = soapBody.addBodyElement(nameRequest); // 생성한 Name 객체를 SOAPBody 에 추가하고 BodyElement 를 얻음
+            List<ApiParam> apiRootParams = apiRequestParams.stream().filter(f -> f.getParentSeq() == 0).collect(toList());
 
             // 생성한 SOAPBodyElement 에 다시 ChildElement 를 추가하고 각각의 ChildElement 에 TextNode 를 추가
-            apiRequestParams.forEach(apiReq -> {
+            apiRootParams.forEach(apiReq -> {
                 try {
                     if( apiReq.getDataType().equals(DataType.COOKIE)) {
                         String thisColValue = apiCallService.getCookie(apiReq.getValue());
@@ -77,11 +80,18 @@ public class SoapApiExecutor implements ApiExecutor  {
 
                     } else if(apiReq.getDataType() == DataType.SOAP_DATA_PATH) {
                         List<LogicalfolderDTO.Logicalpoints.Lpt> lpts = SoapXmlDataUtil.getGmSoapPostList(apiReq.getValue());
-                        List<String> pointPaths = lpts.stream().map(m -> m.getPth()).collect(Collectors.toList());
+                        List<String> pointPaths = lpts.stream().map(m -> m.getPth()).collect(toList());
                         for(String path : pointPaths) {
                             elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode("point:" + path);
                         }
-
+                    } else if(apiReq.getDataType() == DataType.ARRAY) { //TODO 1단계 하위 데이터만 처리가능하고, 필요시에 더 하위 목록도 세팅할 수 있도록...
+                        int parentSeq = apiReq.getSeq();
+                        List<ApiParam> apiSubParams = apiRequestParams.stream().filter(f -> f.getParentSeq() == parentSeq).collect(toList());
+                        SOAPElement elSubRequest = elRequest.addChildElement(apiReq.getFieldMapNm());
+                        for(ApiParam subParam : apiSubParams) {
+                            log.trace("요청 {} sub {} => {} = {} ", apiReq.getFieldMapNm(), subParam.getFieldNm() , subParam.getFieldMapNm(), subParam.getValue());
+                            elSubRequest.addChildElement(subParam.getFieldMapNm()).addTextNode(subParam.getValue());
+                        }
                     } else {
                         elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(apiReq.getValue());
                     }

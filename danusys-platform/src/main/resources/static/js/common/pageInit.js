@@ -31,11 +31,6 @@ $(document).ready(() => {
         if(path.indexOf(el.dataset.value) > -1) $(el).addClass("active");
     });
 
-    /* 다중 셀렉트 박스 */
-    $.each($(".dropdown_checkbox"), (idx, item) => {
-        comm.createMultiSelectBox(item);
-    });
-
     /* 검색조건 초기화 버튼 */
     $("#resetFormBtn").on("click", (e) => {
         $("#searchForm form").initForm();
@@ -45,6 +40,11 @@ $(document).ready(() => {
     $("#logoutBtn").on('click', () => {
         account.user.logout();
     })
+
+    /* 다중 셀렉트 박스 */
+    $.each($(".dropdown_checkbox[data-selectbox-delay != 'true']"), (idx, item) => {
+        comm.createMultiSelectBox(item);
+    });
 
     /* date picker */
     $("input.input_date").attr("autocomplete", "off");
@@ -62,26 +62,28 @@ $(document).ready(() => {
 
     /* 페이지별 공통 기능 */
     // 조회/관리
-    if(path === "/pages/inqry/event1") {
-        event.eventHandler($('#cityEventTable'),"city");
-        event.create($('#cityEventTable'),"city");
-    } else if(path === "/pages/inqry/event2") {
-        // event.eventHandler($('#troubleEventTable'),"trouble");
-        // event.create($('#troubleEventTable'),"trouble");
-    } else if(path === "/pages/inqry/station") {
-        station.eventHandler();
-        station.create();
-    } else if(path === "/pages/inqry/facilities") {
-        facility.eventHandler();
-        facility.create();
-    } else if(path === "/pages/inqry/eventCabinet") {
-        event.eventHandler($('#cabinetEventTable'), 'cabinet');
-        event.create($('#cabinetEventTable'), 'cabinet');
-    } else if(path === "/pages/inqry/eventDron") {
-        event.create($('#dronEventTable'), 'dron');
-    } else if(path === "/pages/inqry/faceDetection") {
-        faceDetection.eventHandler();
-        faceDetection.create();
+    if(pathArr[2] === "inqry") {
+        if(path === "/pages/inqry/station") {
+            station.eventHandler();
+            station.create();
+        } else if(path === "/pages/inqry/facilities") {
+            facility.eventHandler();
+            facility.create();
+        } else if(path === "/pages/inqry/eventFaceDetection") {
+            faceDetection.eventHandler();
+            faceDetection.create();
+        } else if(path === "/pages/inqry/event2") {
+            // event.eventHandler($('#troubleEventTable'),"trouble");
+            // event.create($('#troubleEventTable'),"trouble");
+        } else {
+            const targetName = pathArr[3];
+            event.init(targetName);
+            comm.createMultiSelectBox($(".dropdown_checkbox[data-selectbox-delay = 'true']")[0]);
+
+            const $target = $('#'+targetName+'Table');
+            event.eventHandler($target, targetName);
+            event.create($target, targetName);
+        }
     }
     // 환경설정
     else if(path === "/pages/config/dimmingSet") {

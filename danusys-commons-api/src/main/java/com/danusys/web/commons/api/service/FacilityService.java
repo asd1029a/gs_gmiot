@@ -48,8 +48,8 @@ public class FacilityService {
         return facilityRepository.findByFacilityId(facilityId);
     }
     
-    public void saveAll(List<Facility> list) {
-        facilityRepository.saveAll(list);
+    public List<Facility> saveAll(List<Facility> list) {
+        return facilityRepository.saveAll(list);
     }
 
     public List<Facility> saveAll(List<Map<String, Object>> list, String facilityKind) {
@@ -87,7 +87,7 @@ public class FacilityService {
             facilityList.add(facility);
         });
 
-        return facilityRepository.saveAll(facilityList);
+        return this.saveAll(facilityList);
     }
 
     public Facility getOne(Long id) {
@@ -108,5 +108,23 @@ public class FacilityService {
 
     public String getEmdCode(double longitude, double latitude) {
         return facilityRepository.getEmdCode(longitude, latitude);
+    }
+
+    /**
+     * 개소 seq 시설물
+     * @param stationSeq
+     * @return
+     */
+    public List<Facility> findByStationSeq(Long stationSeq) {
+        return facilityRepository.findByStationSeq(stationSeq);
+    }
+
+
+    public List<Long> findFacilityKindList(List<String> facilityKindValues) {
+        return facilityRepository.findFacilityKindList(facilityKindValues);
+    }
+
+    public List<Facility> findByAdministZoneAndFacilityKindIn(String admnistZone, List<Long> facilityKind) {
+        return facilityRepository.findByAdministZoneAndFacilityKindIn(admnistZone, facilityKind);
     }
 }

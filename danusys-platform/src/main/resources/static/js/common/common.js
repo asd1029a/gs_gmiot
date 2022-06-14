@@ -580,10 +580,12 @@ const comm = {
 
             const type = this.$selectBox.data("selectboxType");
             const subType = this.$selectBox.data("selectboxSubType");
+            const ignoreType = this.$selectBox.data("selectboxIgnoreType");
             const pObj = {
                 draw: null,
                 type: type,
-                subType: subType
+                subType: subType,
+                ignoreType: ignoreType
             }
             commonCode.getList(pObj, this.setList);
         }

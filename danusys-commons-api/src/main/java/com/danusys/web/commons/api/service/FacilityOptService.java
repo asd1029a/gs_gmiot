@@ -30,10 +30,16 @@ public class FacilityOptService {
         this.facilityRepository = facilityRepository;
         this.facilityOptRepository = facilityOptRepository;
     }
+
     public FacilityOpt save(FacilityDataRequestDTO facilityOpt){
         Facility facility = facilityRepository.findByFacilityId(facilityOpt.getFacilityId());
-        FacilityOpt result = new FacilityOpt(facility.getFacilitySeq(),facility.getFacilityName(),facilityOpt.getFacilityOptValue(),facilityOpt.getFacilityOptType());
+        FacilityOpt result = FacilityOpt.builder().facilitySeq(facility.getFacilitySeq()).facilityOptName(facilityOpt.getFacilityOptName())
+                .facilityOptValue(facilityOpt.getFacilityOptValue()).facilityOptType(facilityOpt.getFacilityOptType()).build();
         return facilityOptRepository.save(result);
+    }
+
+    public FacilityOpt save(FacilityOpt facilityOpt){
+        return facilityOptRepository.save(facilityOpt);
     }
 
     public List<FacilityOpt> saveAll(List<FacilityOpt> list) {
@@ -59,4 +65,11 @@ public class FacilityOptService {
         return facilityOptRepository.findByFacilitySeqAndFacilityOptName(facilitySeq, facilityOptName);
     }
 
+    public FacilityOpt findByFacilityOptNameAndFacilityOptValue(String facilityOptName, String facilityOptValue) {
+        return facilityOptRepository.findByFacilityOptNameAndFacilityOptValue(facilityOptName, facilityOptValue);
+    }
+
+    public List<FacilityOpt> findByFacilitySeq(Long facilitySeq) {
+        return facilityOptRepository.findByFacilitySeq(facilitySeq);
+    }
 }

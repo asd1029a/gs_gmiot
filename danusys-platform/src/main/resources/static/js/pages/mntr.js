@@ -1109,6 +1109,28 @@ const lnbList = {
 }
 
 /**
+ * 시설물 개별 컨트롤
+ * @param id
+ * @param fid
+ */
+function setFacility(id, fid, fseq) {
+    let point = $("input:checkbox[id='" + id + "']");
+    let pointValue = point.is(":checked") ? "On" : "Off";
+    point.prop('checked', point.is(":checked"));
+
+    facility.facilityControl({
+        "callUrl": "gmSetPointValues",
+        "pointValues": "",
+        "settingValue": pointValue,
+        "pointPath": fid,
+        "facilitySeq": fseq
+    },result => {
+        console.log(result)
+        // let objAry = JSON.parse(result);
+        // console.log(objAry)
+    });
+}
+/**
  * 관제 오른쪽창 정보 생성
  * TODO 데이터 적용 후 반복코드 정리
  * */
@@ -1137,36 +1159,54 @@ const rnbList = {
             ///show
             ///hide
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
-        } else if(theme=="smartBusStop") {
+        } else if(theme === "smartBusStop") {
+
+            //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
             },result => {
-                //TODO 시설물 상태 표시 여기에 하는 것이???
                 target.find(".area_right_bus_control").html("");
                 let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
-                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}}><label for="control_{{for_index}}">Toggle</label></dd></dl>';
+                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
+
                 console.log(objAry)
-                for(let i = 0; i<objAry.features.length; i++) {
-                    let pointInfo = objAry.features[i].properties;
-                    let facilityKindName = pointInfo.facilityKindName;
-                    let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
 
-                    // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
-
-                    target.find(".area_right_bus_control").append(
-                        smartBusStoFacilityTag
-                            .replace("{{facilityKindName}}", facilityKindName)
-                            .replace("{{id_index}}", i)
-                            .replace("{{for_index}}", i)
-                            .replace("{{check_value}}", presentValue));
-                }
-
-                // reloadLayer(result, 'facilityLayer');
-                // lnbList.createFacility(result);
+                objAry.features.forEach((f, i) => {
+                    let pointInfo = f.properties;
+                    let facilityOpts = pointInfo.facilityOpts;
+                    if (facilityOpts.length > 0) {
+                        facilityOpts.filter(ff => ff.commonCode.codeValue === "ACCUMULATE_DATA").forEach(ff => {
+                            let facilityOptValue = "";
+                            if( pointInfo.facilityKind === "air_index") {
+                                facilityOptValue = Math.round(ff.facilityOptValue);
+                            } else if( pointInfo.facilityKind === "wattage" || pointInfo.facilityKind === "power" ) {
+                                facilityOptValue = stringFunc.commaNumber((parseInt(ff.facilityOptValue)/1000).toString());
+                            } else {
+                                facilityOptValue = ff.facilityOptValue;
+                            }
+                            target.find(".area_right_bus_status [data-value=" + ff.facilityOptName + "] span").text(facilityOptValue);
+                        });
+                    } else {
+                        let pointInfo = f.properties;
+                        let facilityKindName = pointInfo.facilityKindName;
+                        let facilityId = pointInfo.facilityId;
+                        let facilitySeq = pointInfo.facilitySeq;
+                        let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
+                        // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+                        target.find(".area_right_bus_control").append(
+                            smartBusStoFacilityTag
+                                .replace("{{facilityKindName}}", facilityKindName)
+                                .replace("{{id_index}}", i)
+                                .replace("{{onclick_index}}", i)
+                                .replace("{{facilityId}}", facilityId)
+                                .replace("{{facilitySeq}}", facilitySeq)
+                                .replace("{{for_index}}", i)
+                                .replace("{{check_value}}", presentValue));
+                    }
+                });
             });
-
         } else {}
         //////////////////
 
@@ -1229,6 +1269,7 @@ const rnbList = {
     , createFacility : obj => {
         const $target = $('.area_right[data-value=facility]');
         const prop = obj.getProperties();
+
         //TODO 정보 채워두기
         $target.data(obj);
         $target.addClass('select');

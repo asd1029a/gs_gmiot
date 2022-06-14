@@ -1,7 +1,9 @@
 package com.danusys.web.commons.api.scheduler;
 
 import com.danusys.web.commons.api.dto.FacilityDataRequestDTO;
+import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.service.FacilityOptService;
+import com.danusys.web.commons.api.service.FacilityService;
 import com.danusys.web.commons.api.util.ApiUtils;
 import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -24,30 +27,34 @@ public class YjScheduler {
     private final ApiUtils apiUtils;
     private final ObjectMapper objectMapper;
     private final FacilityOptService facilityOptService;
+    private final FacilityService facilityService;
 
-//    @Scheduled(cron = "0/30 * * * * *")
-    @Scheduled(fixedDelay = 60000)
+    /**
+     * 정류장 유동인구 저장
+     */
+//    @Scheduled(cron = "0 0 0/1 * * *")
+    @Scheduled(fixedDelay = 30000)
     public void apiCallSchedule() throws Exception{
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
         String formatNow = now.format(formatter);
         int iNow = Integer.parseInt(formatNow);
-        Map<String,Object> param = new HashMap<>();
-        param.put("callUrl","/mjvt/smart-station/people-count");
-        param.put("cameraId","1");
-        param.put("dateTime",iNow-1);
+        List<Facility> facilityList = facilityService.findByFacilityKind(124L);
+        facilityList.stream().forEach(f -> {
+            Map<String,Object> param = new HashMap<>();
+            param.put("callUrl","/mjvt/smart-station/people-count");
+            param.put("cameraId",f.getFacilityId());
+            param.put("dateTime",iNow-1);
+            try {
+                // event save;
+                String json = objectMapper.writeValueAsString(apiUtils.getRestCallBody(param));
 
-        log.info("보려는 시간 : {}",iNow-1);
-
-        Map<String, Object> body =(Map<String, Object>) apiUtils.getRestCallBody(param);
-
-        log.trace("scheduler people count : {}", body);
-        // event save;
-        String json = objectMapper.writeValueAsString(body);
-
-        FacilityDataRequestDTO facilityDataRequestDTO = objectMapper.readValue(StrUtils.getStr(json), FacilityDataRequestDTO.class);
-        facilityDataRequestDTO.setFacilityOptType(1);
-        facilityOptService.save(facilityDataRequestDTO);
-
+                FacilityDataRequestDTO facilityDataRequestDTO = objectMapper.readValue(StrUtils.getStr(json), FacilityDataRequestDTO.class);
+                facilityDataRequestDTO.setFacilityOptType(109);
+                facilityOptService.save(facilityDataRequestDTO);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

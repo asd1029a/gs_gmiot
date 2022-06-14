@@ -3,7 +3,40 @@
  */
 
 const event = {
-    eventHandler : ($target, pEventType) => {
+    init : (pTargetName) => {
+        const nameObj = {
+            "eventSmartPole" : {
+                korName : "스마트 폴"
+                , eventKind : "smart_pole_event"
+            }
+            , "eventSmartBusStop" : {
+                korName : "스마트 정류장"
+                , eventKind : "smart_busstop_event"
+            }
+            , "eventSmartCabinet" : {
+                korName : "스마트 분전반"
+                , eventKind : "EMS_EVENT"
+            }
+            , "eventSmartDrone" : {
+                korName : "스마트 드론"
+                , eventKind : "DRONE_EVENT"
+            }
+        }
+        /* 공통 이벤트 페이지 세팅 */
+        const $milestoneArr = $(".milestone span");
+        $($milestoneArr[1]).text(nameObj[pTargetName].korName);
+        $($milestoneArr[2]).text(nameObj[pTargetName].korName + " 이벤트");
+        $(".search_list .article_title dt").text(nameObj[pTargetName].korName + " 이벤트 목록");
+        $(".search_form h6").text(nameObj[pTargetName].korName + " 이벤트 검색");
+        $(".search_list .search_table table").attr("id", pTargetName + "Table");
+        $(".popup").attr("id", pTargetName + "Popup");
+        $(".dropdown_checkbox").data("selectbox-sub-type", nameObj[pTargetName].eventKind);
+        /* 멀티 셀렉트박스 제외할 종류 설정*/
+        if(pTargetName === "eventSmartPole") {
+            $(".dropdown_checkbox").data("selectbox-ignore-type", "dtctn_crmss");
+        }
+    }
+    , eventHandler : ($target, pEventType) => {
         $("#searchBtn").on('click', () => {
             event.create($target, pEventType);
         });
@@ -22,14 +55,13 @@ const event = {
                     'url' : "/event",
                     'contentType' : "application/json; charset=utf-8",
                     'type' : "POST",
+                    'async' : false,
                     'data' : function ( d ) {
-                        console.log(d);
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
-                        param.pEventType = pEventType;
+                        //param.pEventType = pEventType;
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
-                        console.log(result);
                         $('.title dd .count').text(result.recordsTotal);
                         return result.data;
                     }
@@ -39,20 +71,17 @@ const event = {
                 style: "single"
             },
             columns : event.getColumns(pEventType),
-            columnDefs: [{
+            columnDefs: [
+                /*{
                 "targets": -1,
                 "data": null,
                 "defaultContent": '<span class="button">상세보기</span>'
-            }
-                , {
-                    targets: 0,
-                    render: $.fn.dataTable.render.ellipsis( 30, true )
                 }
-                , {
+                ,*/{
                     targets: 1,
                     render: $.fn.dataTable.render.ellipsis( 50, true )
                 }]
-            , excelDownload : true
+            //, excelDownload : true
         }
 
         const evt = {
@@ -106,23 +135,13 @@ const event = {
     getColumns : (pEventType) => {
         let columns = [];
         columns.push({data: "eventSeq", className: "alignLeft"});   //이벤트 아이디
-        columns.push({data: "eventKind"});                          //이벤트 종류
-        if(pEventType === 'city') {
-            columns.push({data: "eventGrade"});
-            columns.push({data: "eventProcStat"});
-            columns.push({data: "stationSeq", className: "alignLeft"});
-            columns.push({data: "stationName"})
-            columns.push({data: "dongShortNm"});
-            columns.push({data: "address"});
-            columns.push({data: "eventStartDt"});
-            columns.push({data: "eventEndDt"});
-        }
-        else if(pEventType === 'trouble') {
+        columns.push({data: "eventKindName"});                          //이벤트 종류
+        if(pEventType === 'trouble') {
             columns.push({data: "eventProcStat"});
             columns.push({data: "facilitySeq", className: "alignLeft"});
             columns.push({data: "facilityKind"});
-            columns.push({data: "stationKind"})
-            columns.push({data: "stationName"})
+            columns.push({data: "stationKind"});
+            columns.push({data: "stationName"});
             columns.push({data: "dongShortNm"});
             columns.push({data: "address"});
             columns.push({data: "eventStartDt"});
@@ -132,25 +151,21 @@ const event = {
             columns.push({data: "eventProcStat"});
             columns.push({data: "facilitySeq", className: "alignLeft"});
             columns.push({data: "facilityKind"});
-            columns.push({data: "stationKind"})
-            columns.push({data: "stationName"})
+            columns.push({data: "stationKind"});
+            columns.push({data: "stationName"});
             columns.push({data: "dongShortNm"});
             columns.push({data: "address"});
             columns.push({data: "eventStartDt"});
             columns.push({data: "eventEndDt"});
-        }
-        else if(pEventType === 'dron') {
-            columns.push({data: "eventProcStat"});
-            columns.push({data: "facilitySeq", className: "alignLeft"});
-            columns.push({data: "facilityKind"});
-            columns.push({data: "stationKind"})
-            columns.push({data: "stationName"})
-            columns.push({data: "dongShortNm"});
-            columns.push({data: "address"});
+        } else {
+            columns.push({data: "eventGrade"});
+            columns.push({data: "eventProcStatName"});
+            columns.push({data: "stationName"});
+            columns.push({data: "facilityName"});
+            columns.push({data: "administZoneName"});
             columns.push({data: "eventStartDt"});
             columns.push({data: "eventEndDt"});
         }
-        columns.push({data: null});             //상세보기
 
         return columns;
     },
@@ -179,8 +194,8 @@ const event = {
                 , data : JSON.stringify(formObj)
             }).done((result) => {
                 comm.showAlert("등록되었습니다");
-                notice.create($target, pEventType);
-                notice.hidePopup();
+                event.create($target, pEventType);
+                event.hidePopup();
             });
         } else {
             return false;
@@ -196,8 +211,8 @@ const event = {
             },
             (result) => {
                 comm.showAlert("수정되었습니다");
-                commonCode.create($target, pEventType);
-                commonCode.hidePopup();
+                event.create($target, pEventType);
+                event.hidePopup();
             });
     },
     delProc : ($target, pEventType, pSeq) => {
@@ -208,8 +223,8 @@ const event = {
             },
             (result) => {
                 comm.showAlert("삭제되었습니다");
-                commonCode.create($target, pEventType);
-                commonCode.hidePopup();
+                event.create($target, pEventType);
+                event.hidePopup();
             });
     }
 }

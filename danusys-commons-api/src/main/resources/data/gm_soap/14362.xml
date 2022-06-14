@@ -3,7 +3,7 @@
   <logicalpoints>
     <lpt id="LPa232890209904" kind="94"  nm="포충기" ty="33" pth="/ST1/OFa6/LPa232890209904" ref="/DDC_광명종합복지관_14362/포충기" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890209905" kind="97"  nm="에어커튼" ty="33" pth="/ST1/OFa6/LPa232890209905" ref="/DDC_광명종합복지관_14362/에어커튼" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa232890209906" kind=""    nm="미세먼지" ty="2" pth="/ST1/OFa6/LPa232890209906" ref="/DDC_광명종합복지관_14362/미세먼지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
+    <lpt id="LPa232890209906" kind="115" nm="미세먼지" ty="2" pth="/ST1/OFa6/LPa232890209906" ref="/DDC_광명종합복지관_14362/미세먼지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890209907" kind="102" nm="심장제세동기" ty="33" pth="/ST1/OFa6/LPa232890209907" ref="/DDC_광명종합복지관_14362/심장제세동기" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890209908" kind="103" nm="재실감지" ty="33" pth="/ST1/OFa6/LPa232890209908" ref="/DDC_광명종합복지관_14362/재실감지" pms="RO" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890209909" kind="92"  nm="조명" ty="33" pth="/ST1/OFa6/LPa232890209909" ref="/DDC_광명종합복지관_14362/조명" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
@@ -14,11 +14,11 @@
     <lpt id="LPa232890209914" kind="99"  nm="무정차조명" ty="33" pth="/ST1/OFa6/LPa232890209914" ref="/DDC_광명종합복지관_14362/무정차조명" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890209915" kind="100" nm="LED라이트패널" ty="33" pth="/ST1/OFa6/LPa232890209915" ref="/DDC_광명종합복지관_14362/LED라이트패널" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
     <lpt id="LPa232890209916" kind="101" nm="스노우멜팅" ty="33" pth="/ST1/OFa6/LPa232890209916" ref="/DDC_광명종합복지관_14362/스노우멜팅" pms="RW" armen="N" histen="Y" schen="N" lgen="Y" acten="N" histty="poll" histintv="0001"/>
-    <lpt id="LPa233589835860" kind=""    nm="한전_수전 적산 유효전력량" ty="2" pth="/ST1/OFa6/LPa233589835860" ref="/DDC_광명종합복지관_14362/한전_수전 적산 유효전력량" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589835860" kind="117" nm="한전_수전 적산 유효전력량" ty="2" pth="/ST1/OFa6/LPa233589835860" ref="/DDC_광명종합복지관_14362/한전_수전 적산 유효전력량" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589835861" kind=""    nm="한전_송전 적산 유효전력량" ty="2" pth="/ST1/OFa6/LPa233589835861" ref="/DDC_광명종합복지관_14362/한전_송전 적산 유효전력량" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
-    <lpt id="LPa233589835862" kind=""    nm="한전_수전 유효전력" ty="2" pth="/ST1/OFa6/LPa233589835862" ref="/DDC_광명종합복지관_14362/한전_수전 유효전력" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589835862" kind="116" nm="한전_수전 유효전력" ty="2" pth="/ST1/OFa6/LPa233589835862" ref="/DDC_광명종합복지관_14362/한전_수전 유효전력" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589835863" kind=""    nm="한전_송전 유효전력" ty="2" pth="/ST1/OFa6/LPa233589835863" ref="/DDC_광명종합복지관_14362/한전_송전 유효전력" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
-    <lpt id="LPa233589835864" kind=""    nm="IDU_실내온도" ty="2" pth="/ST1/OFa6/LPa233589835864" ref="/DDC_광명종합복지관_14362/IDU_실내온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589835864" kind="118" nm="IDU_실내온도" ty="2" pth="/ST1/OFa6/LPa233589835864" ref="/DDC_광명종합복지관_14362/IDU_실내온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589835865" kind=""    nm="IDU_에러코드" ty="2" pth="/ST1/OFa6/LPa233589835865" ref="/DDC_광명종합복지관_14362/IDU_에러코드" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589835866" kind=""    nm="IDU_배관입구온도" ty="2" pth="/ST1/OFa6/LPa233589835866" ref="/DDC_광명종합복지관_14362/IDU_배관입구온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589835867" kind=""    nm="IDU_배관출구온도" ty="2" pth="/ST1/OFa6/LPa233589835867" ref="/DDC_광명종합복지관_14362/IDU_배관출구온도" pms="RO" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>

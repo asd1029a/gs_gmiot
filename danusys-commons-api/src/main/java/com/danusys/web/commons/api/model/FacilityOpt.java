@@ -3,6 +3,7 @@ package com.danusys.web.commons.api.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 
@@ -31,7 +32,12 @@ public class FacilityOpt {
     @Column(nullable = false)
     private String facilityOptValue;
 
-    private int facilityOptType;
+    @Column(insertable = false, updatable = false)
+    private Integer facilityOptType;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "facilityOptType")
+    private CommonCode commonCode;
 
     @Builder
     public FacilityOpt(Long facilitySeq, String facilityOptName, String facilityOptValue, int facilityOptType) {

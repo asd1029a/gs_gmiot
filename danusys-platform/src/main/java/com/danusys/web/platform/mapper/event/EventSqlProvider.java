@@ -24,26 +24,37 @@ public class EventSqlProvider {
             //ArrayList facilityProblem = CommonUtil.valiArrNull(paramMap,"facilityProblem");
             boolean geoFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "geojson"));
 
-            String colums =
-                    "t1.event_seq, v1.code_value as event_kind, v2.code_value as event_grade, v3.code_value as event_proc_stat, t1.event_address, t1.event_start_dt, t1.event_end_dt" +
-                    ", t1.event_manager, t1.event_mng_dt, t1.event_mng_content, t1.insert_dt, t1.station_seq, t1.facility_seq, t1.event_message" +
+            String columns =
+                    "t1.event_seq, v1.code_value as event_kind, v2.code_value as event_grade" +
+                    ", v3.code_value as event_proc_stat, v3.code_name as event_proc_stat_name, t1.event_address" +
+                    ", t1.event_manager, t1.event_mng_dt, t1.event_mng_content, t1.insert_dt, t1.station_seq" +
+                    ", t1.facility_seq, t1.event_message" +
+                    ", CASE WHEN t1.event_start_dt IS NOT NULL" +
+                    " THEN to_char(t1.event_start_dt, 'YYYY-MM-DD HH24:MI:SS')" +
+                    " ELSE '정보없음' END AS event_start_dt" +
+                    ", CASE WHEN t1.event_end_dt IS NOT NULL" +
+                    " THEN to_char(t1.event_end_dt, 'YYYY-MM-DD HH24:MI:SS')" +
+                    " ELSE '정보없음' END AS event_end_dt" +
+                    ", t2.facility_name, t3.station_name" +
                     ", v1.code_name AS event_kind_name" + //이벤트 종류 한글명
                     ", v2.code_name AS event_grade_name" + //이벤트 등급 한글명
-                    ", v3.code_name AS event_proc_stat_name"; //이벤트 처리상태 한글명
+                    ", v3.code_name AS event_proc_stat_name" + //이벤트 처리상태 한글명
+                    ", v4.code_name AS administ_zone_name"; //동 이름
 
             String tables = "t_event t1 " +
                     "INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq " +
+                    "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq " +
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
                     "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
                     "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value ";
 
             if (geoFlag) { //geojson 호출시
-                colums += ", t3.longitude, t3.latitude, t3.administ_zone, v4.code_name AS administ_zone_name ";
+                columns += ", t3.longitude, t3.latitude, t3.administ_zone, v4.code_name AS administ_zone_name ";
                 tables += "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq";
             }
 
-            SELECT(colums);
+            SELECT(columns);
             FROM(tables);
 
 //            if(facilityDirection != null && !facilityDirection.isEmpty()) {
@@ -114,6 +125,7 @@ public class EventSqlProvider {
             SELECT("COUNT(*) as count");
             String tables = "t_event t1 " +
                     "INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq " +
+                    "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq " +
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
                     "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
