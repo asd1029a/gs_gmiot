@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 /**
  * Project : danusys-webservice-parent
@@ -35,6 +36,8 @@ public class FacilityOpt {
 
     @Column
     private Integer facilityOptType;
+
+    private Timestamp insertDt;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "facilityOptType", referencedColumnName = "codeSeq", updatable = false, insertable = false)
