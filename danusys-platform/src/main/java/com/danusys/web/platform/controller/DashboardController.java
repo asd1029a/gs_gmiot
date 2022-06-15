@@ -68,4 +68,17 @@ public class DashboardController {
     public ResponseEntity<EgovMap> getAirPollution(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(dashboardService.getAirPollution(paramMap));
     }
+
+    //김제-드론&분전반 상태값
+    @PostMapping(value = "/getDronCabinetStatus")
+    public ResponseEntity<EgovMap> getDronCabinetStatus(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(dashboardService.getDronCabinetStatus(paramMap));
+    }
+
+    //김제-분전반 전력량계
+    @PostMapping(value = "/getCabinetRank")
+    public ResponseEntity<EgovMap> getCabinetRank(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(dashboardService.getCabinetRank(paramMap));
+    }
+
 }

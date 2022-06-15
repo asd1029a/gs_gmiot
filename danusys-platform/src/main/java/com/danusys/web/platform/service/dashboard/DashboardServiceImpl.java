@@ -169,4 +169,18 @@ public class DashboardServiceImpl implements DashboardService {
         resultMap.put("data", resultTempArray);
         return resultMap;
     }
+
+    @Override
+    public EgovMap getDronCabinetStatus(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(dsp.getDronCabinetStatus(paramMap)));
+        return resultMap;
+    }
+
+    @Override
+    public EgovMap getCabinetRank(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(dsp.selectCabinetRank(paramMap)));
+        return resultMap;
+    }
 }

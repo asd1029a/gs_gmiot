@@ -156,4 +156,43 @@ AND tfo.facility_opt_name = 'floating_population'
         }};
         return sql.toString();
     }
+
+    public String getDronCabinetStatus(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+            SELECT(" '' fly_cnt" +
+                    ",'' fire_cnt" +
+                    ", sum(case when tfo.facility_opt_name = 'amn_status'and tfo.facility_opt_value = '위험' then 1 else 0 end) amn_danger_cnt" +
+                    ", sum(case when tfo.facility_opt_name = 'amn_status'and tfo.facility_opt_value = '경고' then 1 else 0 end) amn_warn_cnt" +
+                    ", sum(case when tfo.facility_opt_name = 'oam_status'and tfo.facility_opt_value = '위험' then 1 else 0 end) oam_danger_cnt" +
+                    ", sum(case when tfo.facility_opt_name = 'oam_status'and tfo.facility_opt_value = '경고' then 1 else 0 end) oam_warn_cnt");
+            FROM("t_facility tf");
+            INNER_JOIN("t_facility_opt tfo ON tf.facility_seq = tfo.facility_seq");
+            WHERE("tf.administ_zone LIKE '45210%'");
+            WHERE("tf.facility_kind = '43'");
+        }};
+        return sql.toString();
+    }
+
+    public String selectCabinetRank(Map<String, Object> paramMap) {
+        SQL sql = new SQL() {{
+            SELECT("* FROM (" +
+                    "SELECT" +
+                        " min(case tfo.facility_opt_value when '위험' then 1 when '경고' then 2 when '주의' then 3 when '정상' then 4 else 9 end) rank" +
+                        ",tf.facility_seq" +
+                        ", tf.station_seq" +
+                        ", tf.facility_name" +
+                        ", max(case tfo.facility_opt_name when 'wat_tot' then tfo.facility_opt_value end ) wat_tot" +
+                        ", max(case tfo.facility_opt_name when 'amn_status' then tfo.facility_opt_value end) amn_status" +
+                        ", max(case tfo.facility_opt_name when 'oam_status' then tfo.facility_opt_value end) oam_status" +
+                        ", max(case tfo.facility_opt_name when 'am_use' then tfo.facility_opt_value end) am_use");
+                FROM("t_facility tf");
+                INNER_JOIN("t_facility_opt tfo ON tf.facility_seq = tfo.facility_seq");
+                WHERE("tf.administ_zone LIKE '45210%'");
+                WHERE("tf.facility_kind = '43'");
+                GROUP_BY("tf.facility_seq) a");
+            ORDER_BY("a.rank");
+            LIMIT(5);
+        }};
+        return sql.toString();
+    }
 }

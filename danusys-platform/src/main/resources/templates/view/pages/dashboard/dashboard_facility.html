@@ -5,8 +5,8 @@
       layout:decorate="layout/layout_dashboard">
 <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/css/plugin/dashboard/jquery.bxslider.4.2.12.css">
-    <script src="/js/plugin/dashboard/jquery.bxslider.min.4.2.12.js"></script>
+
+    <script type="text/javascript" src="/js/pages/dashboard.js"></script>
 </head>
 <th:block layout:fragment="content">
     <section class="dashboard_top">
@@ -32,18 +32,18 @@
         </dl>-->
     </section>
     <section class="dashboard_section">
-        <div class="box">
+        <div class="box box_320">
             <h5>유동인구</h5>
             <div id="floatingPopulationChart"><!-- 그래프 영역 --></div>
         </div>
-        <div class="box box_location">
-            <h5>지도 위치</h5>
+        <div class="box box_location box_320">
+            <h5>개소 위치</h5>
             <!-- 위치맵 영역 -->
             <div id="viewMap" class="map_wrap">
                 <canvas class="map_mouse_ban"></canvas>
             </div>
         </div>
-        <div class="box">
+        <div class="box box_320">
             <h5>유동인구 분포도</h5>
             <!-- 분포도 영역 -->
             <div id="heatMap" class="map_wrap">
@@ -52,7 +52,7 @@
         </div>
     </section>
     <section class="dashboard_section">
-        <div class="box box_status">
+        <div class="box box_status box_320">
             <h5>장소별 설치 현황
                 <!--<dl class="label">
                     <dt>당일 누적</dt>
@@ -64,7 +64,7 @@
             </h5>
             <div id="stationChart"><!-- 그래프 영역 --></div>
         </div>
-        <div class="box box_weather">
+        <div class="box box_weather box_320">
             <h5>대기 상태
                 <ul class="stepper">
                     <li class="remove">

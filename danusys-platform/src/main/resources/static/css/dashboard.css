@@ -27,22 +27,63 @@
 .dashboard_top div.status_cnt:nth-of-type(2){border-top: 8px solid #d29a43;}
 .dashboard_top div.status_cnt:nth-of-type(3){border-top: 8px solid #cc6565;}
 .dashboard_top div.status_cnt:nth-of-type(4){border-top: 8px solid #4aaf5f;}
-.dashboard_top div.status_cnt p.title{display: flex; flex-direction: column; color: #dee0e4; font-size: 16px; line-height: 24px;}
-.dashboard_top div.status_cnt p.title span{color: #7f8491; font-size: 14px;}
-.dashboard_top div.status_cnt p.value{display: flex; flex-direction: row; align-items: baseline; grid-gap: 6px; font-size: 26px; font-weight: bold;}
+.dashboard_top div p.title{display: flex; flex-direction: column; color: #dee0e4; font-size: 16px; line-height: 24px;}
+.dashboard_top div p.title span{color: #7f8491; font-size: 14px;}
+.dashboard_top div p.value{display: flex; flex-direction: row; align-items: baseline; grid-gap: 6px; font-size: 26px; font-weight: bold;}
+.dashboard_top div p.value span{margin: 0px 0px 2px 0px; color: #dee0e4; font-size: 16px; font-weight: normal;}
 .dashboard_top div.status_cnt:nth-of-type(1) p.value{color: #41aab1;}
 .dashboard_top div.status_cnt:nth-of-type(2) p.value{color: #d29a43;}
 .dashboard_top div.status_cnt:nth-of-type(3) p.value{color: #cc6565;}
 .dashboard_top div.status_cnt:nth-of-type(4) p.value{color: #4aaf5f;}
-.dashboard_top div.status_cnt p.value span{margin: 0px 0px 2px 0px; color: #dee0e4; font-size: 16px; font-weight: normal;}
+
 /* //dashboard_top */
+.dashboard_top.dashboard_top_gimje{/*height: initial;*/    height: 170px;}
+.dashboard_top.dashboard_top_gimje .top_gimje{max-width: 50%; flex: 1; display: flex; flex-direction: column; height: initial; padding: 0; border: none !important; border-radius: 0; background: none;}
+.dashboard_top.dashboard_top_gimje .top_gimje h6{display: flex; align-items: center; padding: 0px 8px; height: 56px; color: #7f8491; font-size: 18px; font-weight: bold;}
+.dashboard_top.dashboard_top_gimje .top_gimje > div{flex: 1; display: flex; height: 114px;}
+
+.dashboard_top > div div.top_gimje_box{
+    flex: 1;
+    display: flex; grid-gap: 14px;
+}
+.dashboard_top > div div.top_gimje_box > div{
+    height: 100%;
+    flex: 1;
+    overflow: hidden; flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    grid-gap: 14px; padding: 20px 24px;
+    border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; background: #1a1b1f;
+}
+
+
+.top_gimje_drone .top_gimje_box > div:nth-child(1){border-top: 8px solid #428cef;}
+.top_gimje_drone .top_gimje_box > div:nth-child(2){border-top: 8px solid #f04241; background: #4b1b1b;}
+.top_gimje_pole .top_gimje_box > div:nth-child(1){border-top: 8px solid #f04243;}
+.top_gimje_pole .top_gimje_box > div:nth-child(2){border-top: 8px solid #dd9201;}
+
+.dashboard_top > div div.top_gimje_box > div p.title{flex: 0.7; display: flex; flex-direction: row; align-items: center; grid-gap: 14px;}
+.dashboard_top > div div.top_gimje_box > div p img{width: 40px; height: 40px;}
+.dashboard_top > div div.top_gimje_box > div p.value{align-items: end; color: #428cef;}
+.dashboard_top > div div.top_gimje_box > div p.value:last-child{color: #fdfdfd;}
+.dashboard_top > div div.top_gimje_box > div p.value span{}
+.dashboard_top > div div.top_gimje_box > div ul.count{
+    flex: 1; display: flex; grid-gap: 14px;}
+.dashboard_top > div div.top_gimje_box > div ul.count li{flex: 1; display: flex; flex-direction: column;
+    align-items: center;
+    justify-content: center; grid-gap: 14px; padding: 0; font-size: 22px; font-weight: normal; border: none;}
+.dashboard_top > div div.top_gimje_box > div ul.count li span{display: flex; align-items: center; height: 30px; padding: 0px 14px; white-space: nowrap; font-size: 13px; border-radius: 30px; background: #292c34;}
+
 
 .dashboard_section{overflow: hidden; flex: 1; display: flex; grid-gap: 14px;}
-.dashboard_section .box{flex: 1; display: flex; flex-direction: column; grid-gap: 2px; max-height: 320px;}
+.dashboard_section .box{flex: 1; display: flex; flex-direction: column; grid-gap: 2px; /*max-height: 320px;*/}
 .dashboard_section .box h5{display: flex; align-items: center; padding: 0px 8px; height: 56px; color: #7f8491; font-size: 18px; font-weight: bold;}
-.dashboard_section .box > div{overflow: hidden; flex: 1; border-radius: 8px; background: #1a1b1d;}
+.dashboard_section .box div{overflow: hidden; flex: 1; border-radius: 8px; /*background: #1a1b1d;*/}
+.dashboard_section .box > div:not(.map_wrap){background: #1a1b1d;}
 .dashboard_section .box.box_location{flex: 0.68;}
-.dashboard_section .box_status h5{display: flex; justify-content: space-between;}
+.box_320{max-height: 320px;}
+/*.dashboard_section .box_status h5{display: flex; justify-content: space-between;}*/
 .dashboard_section .box .label{display: flex; align-items: center; justify-content: flex-end; grid-gap: 28px; margin: 20px 26px;}
 .dashboard_section .box .label dt{position: relative; color: #7f8491; font-size: 14px; font-weight: bold;}
 .dashboard_section .box .label dt:after{position: absolute; right: -14px; content: ''; width: 2px; height: 14px; background: #464e5a;}
@@ -79,6 +120,27 @@ div.area_weather .weather_right{flex: 1; display: flex; grid-gap: 26px; padding:
 div.area_weather .weather_right dl{flex: 1; display: flex; flex-direction: column; grid-gap: 26px;}
 div.area_weather .weather_right dl dt{color: #dee0e4; font-size: 18px; font-weight: bold;}
 div.area_weather .weather_right dl dd{flex: 1; /*background: gray;*/}
+
+/* 사용 전력량 */
+.box.box_amount{display: flex; flex-direction: row; grid-gap: 14px;}
+.box.box_amount div{overflow: hidden; flex: 1; display: flex; flex-direction: column; border-radius: 8px; background: none;}
+.box.box_amount div h5{display: flex; align-items: center; padding: 0px 8px; height: 56px; color: #7f8491; font-size: 18px; font-weight: bold;}
+.box.box_amount div .amount_value{flex: 1; display: flex; flex-direction: column; grid-gap: 14px; box-sizing: border-box;}
+.box.box_amount div .amount_value li{flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 20px; border-radius: 8px; background: #1a1b1d;}
+.box.box_amount div .amount_value li p{color: #dee0e4; font-size: 16px; line-height: 24px;}
+.box.box_amount div .amount_value li p.value{font-size: 26px; font-weight: bold;}
+.box.box_amount div .amount_value li p span{margin: 0px 0px 0px 10px; color: #7f8491; font-size: 14px;}
+
+/* 분전반 정보 */
+.pole_list_wrap{overflow: auto !important; flex: 1; display: flex; flex-direction: column; grid-gap: 14px; padding: 26px;}
+.pole_list{overflow: hidden; display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #24252a !important;}
+.pole_list:nth-last-child(1){margin: 0;}
+.pole_list p{font-size: 20px;}
+.pole_list .list_info{display: flex; grid-gap: 0px;}
+.pole_list .list_info li{display: flex; align-items: center; grid-gap: 4px; padding: 0px 14px 0px; font-size: 20px; border-right: 1px solid #687182;}
+.pole_list .list_info li:nth-last-child(1){border: none;}
+.pole_list .list_info li span{color: #687182;}
+.pole_list .list_info li span:nth-child(1){padding: 0px 10px 0px 0px; font-weight: bold;}
 
 .dashboard_section .box .apexcharts-tooltip,
 .dashboard_section .box .apexcharts-tooltip-title{
