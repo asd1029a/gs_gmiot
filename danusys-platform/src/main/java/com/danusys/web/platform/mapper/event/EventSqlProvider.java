@@ -57,7 +57,7 @@ public class EventSqlProvider {
             FROM(tables);
 
             if (!keyword.equals("")) {
-                WHERE("v1.code_value LIKE '%" + keyword + "%'");
+                WHERE("t3.station_name LIKE '%" + keyword + "%'");
             }
             if (!startDt.equals("")) {
                 WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
@@ -121,7 +121,7 @@ public class EventSqlProvider {
             FROM(tables);
 
             if (!keyword.equals("")) {
-                WHERE("v1.code_value LIKE '%" + keyword + "%'");
+                WHERE("t3.station_name LIKE '%" + keyword + "%'");
             }
             if (!startDt.equals("")) {
                 WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
