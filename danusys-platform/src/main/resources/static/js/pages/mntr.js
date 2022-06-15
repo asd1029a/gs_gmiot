@@ -1312,51 +1312,7 @@ const rnbList = {
  * */
 function searchList(section, keyword) {
     // if(keyword!="" && keyword!=null){
-    debugger;
     switch(section) {
-        // case "smartPole" : //스마트폴 검색
-        //     const tab = $('#'+section +" .tab li.active").attr('data-value');
-        //
-        //     let objJSON = {};
-        //     if(keyword!="" && keyword!=null){
-        //         objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
-        //         objJSON.keyword = keyword;
-        //    }
-        //     if(tab == "station") {
-        //         //리스트 ajax
-        //         station.getListGeoJson({
-        //             /// objJSON
-        //         }, result => {
-        //             // lnbList.removeAllList(tab);
-        //             lnbList.createStation(result);
-        //         });
-        //     } else if(tab == "eventPast") {
-        //         //TODO 조건 form serialize
-        //         //리스트 ajax
-        //         event.getListGeoJson({
-        //             "eventState": ["9"]
-        //             , "eventGrade": [20]
-        //             ////////// objJSON
-        //         }, result => {
-        //             // 리스트 초기화
-        //             // lnbList.removeAllList(tab);
-        //             lnbList.createEventPast(result);
-        //             // 과거 이벤트 레이어 reload
-        //             reloadLayer(result, 'eventPastLayer');
-        //             //패널 제어
-        //             const rVisivle = $('.area_right[data-value=event]').is(':visible');
-        //             if(rVisivle) { $('.area_right_closer').trigger("click")}
-        //         });
-        //     }
-        //     break;
-        // case "smartPower" : //스마트분전함 검색
-        //
-        //     break;
-        // case "smartBusStop" : //스마트버스정류장 검색
-        //
-        //     break;
-        // case "drone" : //드론 검색
-        //     break;
         case "addressPlace" : //주소장소검색
             const addressObj = kakaoApi.getAddress({query: keyword});
             const placeObj = kakaoApi.getPlace({query: keyword});
