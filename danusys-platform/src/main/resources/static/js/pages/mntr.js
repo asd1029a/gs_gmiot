@@ -59,7 +59,13 @@ const mntr = {
 
             if($targetTab == "event"){
                 let newAry;
-                const paramData = mntr.getInitEventParam(objJson.eventType);
+                const nameObj = {
+                    'DRONE_EVENT' : 'drone',
+                    'EMS_EVENT' : 'smartPower',
+                    'smart_busstop_event' : 'smartBusStop',
+                    'smart_pole_event' : 'smartPole'
+                };
+                const paramData = mntr.getInitEventParam(nameObj[objJson.eventType]);
                 event.getListGeoJson(
                     paramData['event']
                     , result => {
@@ -367,26 +373,22 @@ const mntr = {
             let tabType = 'station';
             //기체 폴링 멈춤
             dronePolling.stop();
-
+            paramObject = mntr.getInitEventParam(theme);
             switch (theme) {
                 case "smartPole" : //스마트폴
-                    paramObject = mntr.getInitEventParam("smart_pole_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartBusStop" : //스마트 정류장
-                    paramObject = mntr.getInitEventParam("smart_busstop_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartPower": //스마트 분전함
-                    paramObject = mntr.getInitEventParam("EMS_EVENT");
                     window.lyControl.offList(['facility','eventPast']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "drone" : //드론
                     tabType = 'facility';
-                    paramObject = mntr.getInitEventParam("DRONE_EVENT");
                     facility.getListGeoJson( paramObject['facility'],result => {
                         reloadLayer(result, 'facilityLayer');
                         lnbList.createFacility(result);
@@ -650,6 +652,7 @@ const mntr = {
                 const keyword = $(key.target).val();
                 const section = $(key.currentTarget).parents('section').attr('id');
                 searchList(section, keyword);
+                debugger;
             }
         });
 
