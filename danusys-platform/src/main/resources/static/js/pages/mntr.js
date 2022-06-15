@@ -652,7 +652,6 @@ const mntr = {
                 const keyword = $(key.target).val();
                 const section = $(key.currentTarget).parents('section').attr('id');
                 searchList(section, keyword);
-                debugger;
             }
         });
 
@@ -1313,49 +1312,84 @@ const rnbList = {
  * */
 function searchList(section, keyword) {
     // if(keyword!="" && keyword!=null){
+    debugger;
     switch(section) {
-        case "smartPole" : //스마트폴검색
+        // case "smartPole" : //스마트폴 검색
+        //     const tab = $('#'+section +" .tab li.active").attr('data-value');
+        //
+        //     let objJSON = {};
+        //     if(keyword!="" && keyword!=null){
+        //         objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
+        //         objJSON.keyword = keyword;
+        //    }
+        //     if(tab == "station") {
+        //         //리스트 ajax
+        //         station.getListGeoJson({
+        //             /// objJSON
+        //         }, result => {
+        //             // lnbList.removeAllList(tab);
+        //             lnbList.createStation(result);
+        //         });
+        //     } else if(tab == "eventPast") {
+        //         //TODO 조건 form serialize
+        //         //리스트 ajax
+        //         event.getListGeoJson({
+        //             "eventState": ["9"]
+        //             , "eventGrade": [20]
+        //             ////////// objJSON
+        //         }, result => {
+        //             // 리스트 초기화
+        //             // lnbList.removeAllList(tab);
+        //             lnbList.createEventPast(result);
+        //             // 과거 이벤트 레이어 reload
+        //             reloadLayer(result, 'eventPastLayer');
+        //             //패널 제어
+        //             const rVisivle = $('.area_right[data-value=event]').is(':visible');
+        //             if(rVisivle) { $('.area_right_closer').trigger("click")}
+        //         });
+        //     }
+        //     break;
+        // case "smartPower" : //스마트분전함 검색
+        //
+        //     break;
+        // case "smartBusStop" : //스마트버스정류장 검색
+        //
+        //     break;
+        // case "drone" : //드론 검색
+        //     break;
+        case "addressPlace" : //주소장소검색
+            const addressObj = kakaoApi.getAddress({query: keyword});
+            const placeObj = kakaoApi.getPlace({query: keyword});
+            lnbList.createAddressPlace('address', addressObj, keyword, true);
+            lnbList.createAddressPlace('place', placeObj, keyword, true);
+            break;
+        default : //스마트폴 / 스마트정류장 / 스마트분전함 / 드론(아직x)
             const tab = $('#'+section +" .tab li.active").attr('data-value');
-
             let objJSON = {};
+            objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
             if(keyword!="" && keyword!=null){
-                objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
                 objJSON.keyword = keyword;
            }
+            //let paramObj = mntr.getInitEventParam(section); //합칠까?
             if(tab == "station") {
-                //리스트 ajax
-                station.getListGeoJson({
-                    /// objJSON
-                }, result => {
-                    // lnbList.removeAllList(tab);
-                    lnbList.createStation(result);
+                //개소
+                station.getListGeoJson(objJSON,result => {
+                    reloadLayer(result, 'stationLayer');
+                    lnbList.createStation(result, tab);
                 });
             } else if(tab == "eventPast") {
-                //TODO 조건 form serialize
-                //리스트 ajax
-                event.getListGeoJson({
-                    "eventState": ["9"]
-                    , "eventGrade": [20]
-                    ////////// objJSON
-                }, result => {
-                    // 리스트 초기화
-                    // lnbList.removeAllList(tab);
-                    lnbList.createEventPast(result);
-                    // 과거 이벤트 레이어 reload
+                //tabType = 'facility'; 드론시 추가
+                //이벤트 과거이력
+                event.getListGeoJson(objJSON, result => {
                     reloadLayer(result, 'eventPastLayer');
-                    //패널 제어
-                    const rVisivle = $('.area_right[data-value=event]').is(':visible');
-                    if(rVisivle) { $('.area_right_closer').trigger("click")}
+                    lnbList.createEventPast(result);
                 });
             }
-            break;
-        case "addressPlace" : //주소장소검색
-                const addressObj = kakaoApi.getAddress({query: keyword});
-                const placeObj = kakaoApi.getPlace({query: keyword});
-                lnbList.createAddressPlace('address', addressObj, keyword, true);
-                lnbList.createAddressPlace('place', placeObj, keyword, true);
-            break;
-        default :
+            window.map.map.render();
+            window.map.updateSize();
+            //패널 제어
+            const rVisivle = $('.area_right[data-value=event]').is(':visible');
+            if(rVisivle) { $('.area_right_closer').trigger("click")}
             break;
     }
     // } else {
