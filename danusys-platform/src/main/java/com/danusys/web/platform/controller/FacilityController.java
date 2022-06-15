@@ -62,7 +62,7 @@ public class FacilityController {
 
         list.stream().peek(p -> {
             log.trace("v_station_facility_info > {}", p.get("facilitySeq"));
-            p.put("facilityOpts", facilityOptService.findByFacilitySeq(Long.parseLong(String.valueOf(p.get("facilitySeq")))));
+            p.put("facilityOpts", facilityOptService.findByFacilitySeqLast(Long.parseLong(String.valueOf(p.get("facilitySeq")))));
         }).collect(toList());
 
         return GisUtil.getGeoJson(list, "facility");

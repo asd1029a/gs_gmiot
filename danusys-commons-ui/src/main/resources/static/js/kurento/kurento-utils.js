@@ -171,7 +171,8 @@ function WebRtcPeer(mode, options, callback) {
     var dataChannel;
     var guid = uuidv4();
     // var configuration = recursive({ iceServers: freeice() }, options.configuration);
-    var configuration = {"iceServers":[{"credential":options.credential,"urls":["turn:" + options.turnUrl], "username": options.username}]} ;
+    // var configuration = {"iceServers": [{"credential":options.credential,"urls":["turn:" + options.turnUrl], "username": options.username}]} ;
+    var configuration = {"iceServers": options.iceServers} ;
     var onicecandidate = options.onicecandidate;
     if (onicecandidate)
         this.on('icecandidate', onicecandidate);
