@@ -222,21 +222,21 @@ tr.selected td {background-color: #23252b;}
 
 
 /* paginate */
-.dataTables_wrapper .dataTables_paginate{float:none; width:calc(100% - 480px); display:flex; align-items:center; justify-content:center; margin:0px auto; padding:0px; text-align:center; background:none;}
+.dataTables_wrapper .dataTables_paginate{float:none; /*width:calc(100% - 480px);*/ display:flex; align-items:center; justify-content:center; margin:0px auto; padding:0px; text-align:center; background:none;}
 
 /* paginate button default */
-.dataTables_wrapper .dataTables_paginate .paginate_button{box-sizing:border-box; display:inline-flex; align-items:center; justify-content:center; width:20px; min-width:20px; height:20px; margin:0px 4px; padding:18px; text-align:center; color:#6d8281 !important; border:1px solid #333f3e; border-radius:50%; background:#333f3e; text-decoration:none !important; cursor:pointer;}
+.dataTables_wrapper .dataTables_paginate .paginate_button{box-sizing:border-box; display:inline-flex; align-items:center; justify-content:center; width:20px; min-width:20px; height:20px; margin:0px 4px; padding:18px; text-align:center; color:#6d8281 !important; border:1px solid #292c34; border-radius:50%; background:#292c34; text-decoration:none !important; cursor:pointer;}
 .dataTables_wrapper .dataTables_paginate .ellipsis{color:#dee0e4;}
 
 /* paginate button hover */
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover{color:#dee0e4 !important; border:1px solid #445957; background:#445957;}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{color:#dee0e4 !important; border:1px solid #292c34; background:#292c34; font-weight: bold;}
 
 /* paginate button active */
-.dataTables_wrapper .dataTables_paginate .paginate_button:active{color:#dee0e4 !important; border:1px solid #3dbcb1; background:#3a66e5; box-shadow:none;}
+.dataTables_wrapper .dataTables_paginate .paginate_button:active{color:#dee0e4 !important; border:1px solid #3dbcb1; background:#3a66e5; box-shadow:none; font-weight: bold;}
 
 /* paginate button current */
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
-.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{color:#dee0e4 !important; background:#3a66e5; border: none;}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{color:#dee0e4 !important; background:#3a66e5; border: none; font-weight: bold;}
 
 /* paginate button arrow */
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
