@@ -1120,6 +1120,12 @@ function setFacility(id, fid, fseq) {
     let point = $("input:checkbox[id='" + id + "']");
     let pointValue = point.is(":checked") ? "On" : "Off";
     point.prop('checked', point.is(":checked"));
+    let spanId = "span_" + id.split("_")[1];
+    if(point.is(":checked")) {
+        $("#"+spanId).addClass("green");
+    } else {
+        $("#"+spanId).removeClass("green");
+    }
 
     facility.facilityControl({
         "callUrl": "gmSetPointValues",
@@ -1170,7 +1176,7 @@ const rnbList = {
             },result => {
                 target.find(".area_right_bus_control").html("");
                 target.find(".area_right_bus_status dl").hide();
-                let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
+                let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
@@ -1183,16 +1189,6 @@ const rnbList = {
                     if (facilityOpts.length > 0) {
                         facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
                             let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
-
-                            /*let facilityOptValue = "";
-                            if( pointInfo.facilityKind === "air_index") {
-                                facilityOptValue = Math.round(ff.facilityOptValue);
-                            } else if( pointInfo.facilityKind === "wattage" || pointInfo.facilityKind === "power" ) {
-                                facilityOptValue = stringFunc.commaNumber((parseInt(ff.facilityOptValue)/1000).toString());
-                            } else {
-                                facilityOptValue = ff.facilityOptValue;
-                            }
-                            */
                             busStatus.parents("dl").show();
                             busStatus.text(ff.facilityOptValue);
                         });
@@ -1202,9 +1198,13 @@ const rnbList = {
                         let facilityId = pointInfo.facilityId;
                         let facilitySeq = pointInfo.facilitySeq;
                         let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
+                        let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
                         // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+
                         target.find(".area_right_bus_control").append(
                             smartBusStoFacilityTag
+                                .replace("{{span_id}}", i)
+                                .replace("{{span_class}}", spanClass)
                                 .replace("{{facilityKindName}}", facilityKindName)
                                 .replace("{{id_index}}", i)
                                 .replace("{{onclick_index}}", i)
