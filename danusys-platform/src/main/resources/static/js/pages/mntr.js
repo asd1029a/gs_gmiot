@@ -59,7 +59,13 @@ const mntr = {
 
             if($targetTab == "event"){
                 let newAry;
-                const paramData = mntr.getInitEventParam(objJson.eventType);
+                const nameObj = {
+                    'DRONE_EVENT' : 'drone',
+                    'EMS_EVENT' : 'smartPower',
+                    'smart_busstop_event' : 'smartBusStop',
+                    'smart_pole_event' : 'smartPole'
+                };
+                const paramData = mntr.getInitEventParam(nameObj[objJson.eventType]);
                 event.getListGeoJson(
                     paramData['event']
                     , result => {
@@ -367,26 +373,22 @@ const mntr = {
             let tabType = 'station';
             //기체 폴링 멈춤
             dronePolling.stop();
-
+            paramObject = mntr.getInitEventParam(theme);
             switch (theme) {
                 case "smartPole" : //스마트폴
-                    paramObject = mntr.getInitEventParam("smart_pole_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartBusStop" : //스마트 정류장
-                    paramObject = mntr.getInitEventParam("smart_busstop_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartPower": //스마트 분전함
-                    paramObject = mntr.getInitEventParam("EMS_EVENT");
                     window.lyControl.offList(['facility','eventPast']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "drone" : //드론
                     tabType = 'facility';
-                    paramObject = mntr.getInitEventParam("DRONE_EVENT");
                     facility.getListGeoJson( paramObject['facility'],result => {
                         reloadLayer(result, 'facilityLayer');
                         lnbList.createFacility(result);
@@ -1117,6 +1119,12 @@ function setFacility(id, fid, fseq) {
     let point = $("input:checkbox[id='" + id + "']");
     let pointValue = point.is(":checked") ? "On" : "Off";
     point.prop('checked', point.is(":checked"));
+    let spanId = "span_" + id.split("_")[1];
+    if(point.is(":checked")) {
+        $("#"+spanId).addClass("green");
+    } else {
+        $("#"+spanId).removeClass("green");
+    }
 
     facility.facilityControl({
         "callUrl": "gmSetPointValues",
@@ -1155,6 +1163,16 @@ const rnbList = {
         console.log(theme);
         if(theme=="smartPower") {
             //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
+            target.find('.tab li[data-value=control]').hide(); // TODO 제어조건.. (제어에 해당하는 시설물이 없을경우)
+            const videoArea = target.find('.area_video').parent();
+            const videoTitle = videoArea.prev();
+            if(!prop.cctvVideoFlag){
+                videoArea.hide();
+                videoTitle.hide();
+            } else {
+                videoArea.show();
+                videoTitle.show();
+            }
             //html로 지자체별 고정인게 낫나? -> 결정필요
             ///show
             ///hide
@@ -1167,7 +1185,7 @@ const rnbList = {
             },result => {
                 target.find(".area_right_bus_control").html("");
                 target.find(".area_right_bus_status dl").hide();
-                let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
+                let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
                     '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
@@ -1177,39 +1195,38 @@ const rnbList = {
                 objAry.features.forEach((f, i) => {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
-                    if (facilityOpts.length > 0) {
-                        facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
-                            let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
+                    let presentValue = "";
 
-                            /*let facilityOptValue = "";
-                            if( pointInfo.facilityKind === "air_index") {
-                                facilityOptValue = Math.round(ff.facilityOptValue);
-                            } else if( pointInfo.facilityKind === "wattage" || pointInfo.facilityKind === "power" ) {
-                                facilityOptValue = stringFunc.commaNumber((parseInt(ff.facilityOptValue)/1000).toString());
-                            } else {
-                                facilityOptValue = ff.facilityOptValue;
-                            }
-                            */
-                            busStatus.parents("dl").show();
-                            busStatus.text(ff.facilityOptValue);
-                        });
-                    } else {
-                        let pointInfo = f.properties;
-                        let facilityKindName = pointInfo.facilityKindName;
-                        let facilityId = pointInfo.facilityId;
-                        let facilitySeq = pointInfo.facilitySeq;
-                        let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
-                        // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
-                        target.find(".area_right_bus_control").append(
-                            smartBusStoFacilityTag
-                                .replace("{{facilityKindName}}", facilityKindName)
-                                .replace("{{id_index}}", i)
-                                .replace("{{onclick_index}}", i)
-                                .replace("{{facilityId}}", facilityId)
-                                .replace("{{facilitySeq}}", facilitySeq)
-                                .replace("{{for_index}}", i)
-                                .replace("{{check_value}}", presentValue));
+                    facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
+                        let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
+                        busStatus.parents("dl").show();
+                        busStatus.text(ff.facilityOptValue);
+                    });
+
+                    let power = facilityOpts.find(opt => opt.commonCode.codeId === "facility_power");
+                    if(!power) {
+                        return false;
                     }
+                    presentValue = power.facilityOptValue === "true" ? "checked" : "";
+
+                    let facilityKindName = pointInfo.facilityKindName;
+                    let facilityId = pointInfo.facilityId;
+                    let facilitySeq = pointInfo.facilitySeq;
+
+                    let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
+                    // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+
+                    target.find(".area_right_bus_control").append(
+                        smartBusStoFacilityTag
+                            .replace("{{span_id}}", i)
+                            .replace("{{span_class}}", spanClass)
+                            .replace("{{facilityKindName}}", facilityKindName)
+                            .replace("{{id_index}}", i)
+                            .replace("{{onclick_index}}", i)
+                            .replace("{{facilityId}}", facilityId)
+                            .replace("{{facilitySeq}}", facilitySeq)
+                            .replace("{{for_index}}", i)
+                            .replace("{{check_value}}", presentValue));
                 });
             });
         } else {}
@@ -1311,48 +1328,39 @@ const rnbList = {
 function searchList(section, keyword) {
     // if(keyword!="" && keyword!=null){
     switch(section) {
-        case "smartPole" : //스마트폴검색
+        case "addressPlace" : //주소장소검색
+            const addressObj = kakaoApi.getAddress({query: keyword});
+            const placeObj = kakaoApi.getPlace({query: keyword});
+            lnbList.createAddressPlace('address', addressObj, keyword, true);
+            lnbList.createAddressPlace('place', placeObj, keyword, true);
+            break;
+        default : //스마트폴 / 스마트정류장 / 스마트분전함 / 드론(아직x)
             const tab = $('#'+section +" .tab li.active").attr('data-value');
-
             let objJSON = {};
+            objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
             if(keyword!="" && keyword!=null){
-                objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
                 objJSON.keyword = keyword;
            }
+            //let paramObj = mntr.getInitEventParam(section); //합칠까?
             if(tab == "station") {
-                //리스트 ajax
-                station.getListGeoJson({
-                    /// objJSON
-                }, result => {
-                    // lnbList.removeAllList(tab);
-                    lnbList.createStation(result);
+                //개소
+                station.getListGeoJson(objJSON,result => {
+                    reloadLayer(result, 'stationLayer');
+                    lnbList.createStation(result, tab);
                 });
             } else if(tab == "eventPast") {
-                //TODO 조건 form serialize
-                //리스트 ajax
-                event.getListGeoJson({
-                    "eventState": ["9"]
-                    , "eventGrade": [20]
-                    ////////// objJSON
-                }, result => {
-                    // 리스트 초기화
-                    // lnbList.removeAllList(tab);
-                    lnbList.createEventPast(result);
-                    // 과거 이벤트 레이어 reload
+                //tabType = 'facility'; 드론시 추가
+                //이벤트 과거이력
+                event.getListGeoJson(objJSON, result => {
                     reloadLayer(result, 'eventPastLayer');
-                    //패널 제어
-                    const rVisivle = $('.area_right[data-value=event]').is(':visible');
-                    if(rVisivle) { $('.area_right_closer').trigger("click")}
+                    lnbList.createEventPast(result);
                 });
             }
-            break;
-        case "addressPlace" : //주소장소검색
-                const addressObj = kakaoApi.getAddress({query: keyword});
-                const placeObj = kakaoApi.getPlace({query: keyword});
-                lnbList.createAddressPlace('address', addressObj, keyword, true);
-                lnbList.createAddressPlace('place', placeObj, keyword, true);
-            break;
-        default :
+            window.map.map.render();
+            window.map.updateSize();
+            //패널 제어
+            const rVisivle = $('.area_right[data-value=event]').is(':visible');
+            if(rVisivle) { $('.area_right_closer').trigger("click")}
             break;
     }
     // } else {
