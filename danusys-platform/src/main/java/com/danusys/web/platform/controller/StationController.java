@@ -23,9 +23,7 @@ import java.util.*;
 public class StationController {
 
     private final StationService stationService;
-    //private final com.danusys.web.commons.api.service.FacilityService jpaFacilityService;
     private final FacilityService facilityService;
-    private final FacilityController facilityController;
 
     /**
      * 개소 : 개소 목록 조회
