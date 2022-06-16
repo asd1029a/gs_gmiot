@@ -1163,6 +1163,16 @@ const rnbList = {
         console.log(theme);
         if(theme=="smartPower") {
             //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
+            target.find('.tab li[data-value=control]').hide(); // TODO 제어조건.. (제어에 해당하는 시설물이 없을경우)
+            const videoArea = target.find('.area_video').parent();
+            const videoTitle = videoArea.prev();
+            if(!prop.cctvVideoFlag){
+                videoArea.hide();
+                videoTitle.hide();
+            } else {
+                videoArea.show();
+                videoTitle.show();
+            }
             //html로 지자체별 고정인게 낫나? -> 결정필요
             ///show
             ///hide
