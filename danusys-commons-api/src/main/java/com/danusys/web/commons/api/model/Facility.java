@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
@@ -22,6 +24,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@DynamicUpdate
 @Table(name = "t_facility")
 public class Facility implements Serializable {
     @Id
@@ -94,7 +97,4 @@ public class Facility implements Serializable {
         this.administZone = administZone;
     }
 
-    public void updateFacility(Integer status) {
-        this.facilityStatus = status;
-    }
 }
