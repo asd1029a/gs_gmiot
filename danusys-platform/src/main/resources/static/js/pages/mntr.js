@@ -1186,7 +1186,7 @@ const rnbList = {
                 target.find(".area_right_bus_control").html("");
                 target.find(".area_right_bus_status dl").hide();
                 let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
-                    '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
+                    '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
 
@@ -1209,18 +1209,18 @@ const rnbList = {
                     }
                     presentValue = power.facilityOptValue === "true" ? "checked" : "";
 
-                    let facilityKindName = pointInfo.facilityKindName;
+                    let facilityName = pointInfo.facilityName;
                     let facilityId = pointInfo.facilityId;
                     let facilitySeq = pointInfo.facilitySeq;
 
                     let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
-                    // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+                    // console.log("facilityName " + facilityName + " > " + presentValue );
 
                     target.find(".area_right_bus_control").append(
                         smartBusStoFacilityTag
                             .replace("{{span_id}}", i)
                             .replace("{{span_class}}", spanClass)
-                            .replace("{{facilityKindName}}", facilityKindName)
+                            .replace("{{facilityName}}", facilityName)
                             .replace("{{id_index}}", i)
                             .replace("{{onclick_index}}", i)
                             .replace("{{facilityId}}", facilityId)

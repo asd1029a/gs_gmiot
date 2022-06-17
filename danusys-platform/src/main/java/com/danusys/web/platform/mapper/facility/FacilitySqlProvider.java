@@ -27,7 +27,7 @@ public class FacilitySqlProvider {
         StringBuilder builder = new StringBuilder();
 
         SQL sql = new SQL() {{
-            builder.append("t1.facility_seq, t1.facility_id");
+            builder.append("t1.facility_seq, t1.facility_id, t1.facility_name");
             builder.append(", t1.administ_zone, t1.facility_image");
             builder.append(", t1.facility_instl_info, t1.facility_instl_dt");
             builder.append(", t1.facility_status, t1.latitude");
