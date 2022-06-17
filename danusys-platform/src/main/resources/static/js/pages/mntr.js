@@ -400,6 +400,7 @@ const mntr = {
                     window.lyControl.onList(['facility', 'station' , target]);
                     break;
                 case "smart" : //스마트OO
+
                     window.lyControl.offList(['facility', 'station', 'event', 'eventPast', 'route']);
                     break;
                 default :
@@ -409,25 +410,25 @@ const mntr = {
                     }
                     break;
             }
-
-            //실시간 이벤트
-            event.getListGeoJson(paramObject['event'], result => {
-                reloadLayer(result, 'eventLayer');
-                lnbList.createEvent(result);
-            });
-            //개소
-            station.getListGeoJson(paramObject['station'] ,result => {
-                reloadLayer(result, 'stationLayer');
-                lnbList.createStation(result, tabType);
-            });
-            //이벤트 과거이력
-            event.getListGeoJson(paramObject['eventPast'], result => {
-                reloadLayer(result, 'eventPastLayer');
-                lnbList.createEventPast(result);
-            });
+            if(Object.keys(paramObject).length > 0){ //스마트oo 제외
+                //실시간 이벤트
+                event.getListGeoJson(paramObject['event'], result => {
+                    reloadLayer(result, 'eventLayer');
+                    lnbList.createEvent(result);
+                });
+                //개소
+                station.getListGeoJson(paramObject['station'] ,result => {
+                    reloadLayer(result, 'stationLayer');
+                    lnbList.createStation(result, tabType);
+                });
+                //이벤트 과거이력
+                event.getListGeoJson(paramObject['eventPast'], result => {
+                    reloadLayer(result, 'eventPastLayer');
+                    lnbList.createEventPast(result);
+                });
+            }
             window.map.map.render();
             window.map.updateSize();
-
             const rVisivle = $('.area_right').is(':visible');
             if(rVisivle) { $('.area_right_closer').trigger("click")}
         });

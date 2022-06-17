@@ -50,7 +50,6 @@ public class StationController {
         List<Map<String, Object>> stationList = (List<Map<String, Object>>) resultEgov.get("data");
         //해당 개소의 시설물들 정보 추가
         stationList.stream().forEach(f -> {
-            Long stationSeq = Long.valueOf(f.get("stationSeq").toString());
             Map<String, Object> facilityParam = new LinkedHashMap<>();
             facilityParam.put("stationSeq",f.get("stationSeq").toString());
             facilityParam.put("popType","station");
