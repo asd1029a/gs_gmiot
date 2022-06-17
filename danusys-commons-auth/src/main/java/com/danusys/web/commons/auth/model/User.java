@@ -75,7 +75,7 @@ public class User {
     */
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<UserInGroup> userInGroup =new ArrayList<>();
+    private List<UserInGroup> userInGroup = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "status", referencedColumnName = "code_value", updatable = false, insertable = false)
