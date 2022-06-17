@@ -175,11 +175,13 @@ const stats = {
         datas.forEach(v => {
             data[0].data.push({
                 x: v.xAxis,
-                y: [v.minCaution, v.maxCaution]
+                y: [v.minUrgent, v.maxUrgent],
+                avg: v.avgUrgent
             });
             data[1].data.push({
                 x: v.xAxis,
-                y: [v.minUrgent, v.maxUrgent]
+                y: [v.minCaution, v.maxCaution],
+                avg: v.avgCaution
             });
         });
 
@@ -209,18 +211,32 @@ const stats = {
             },
             tooltip: {
                 marker: true,
-                custom: function({series, seriesIndex, dataPointIndex, w}) {
-                    console.log({series, seriesIndex, dataPointIndex, w});
+                custom: function ({series, seriesIndex, dataPointIndex, w}) {
+                    // console.log({series, seriesIndex, dataPointIndex, w});
                     const g = w.globals;
-                    const maxVal = g.seriesRangeEnd[seriesIndex][dataPointIndex];
-                    const minVal = g.seriesRangeStart[seriesIndex][dataPointIndex];
-                    const avgVal = (minVal + maxVal) / 2;
+                    const dataUrgent = w.config.series[0].data[dataPointIndex];
+                    const dataCaution = w.config.series[1].data[dataPointIndex];
 
-                    const text = `<div><span style="color: ${g.colors[seriesIndex]}">${g.seriesNames[seriesIndex]}: ${g.categoryLabels[dataPointIndex]}</span></div>
+                    const text = `
                             <div>
-                                <div>최대: ${maxVal}</div>
-                                <div>평균: ${avgVal}</div>
-                                <div>최소: ${minVal}</div>
+                                <div>
+                                    <span style="color: ${g.colors[0]}">${g.seriesNames[0]} ${g.categoryLabels[dataPointIndex]}</span>
+                                </div>
+                                <div>
+                                    <div>최대: ${dataUrgent.y[1]}</div>
+                                    <div>평균: ${dataUrgent.avg}</div>
+                                    <div>최소: ${dataUrgent.y[0]}</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <span style="color: ${g.colors[1]}">${g.seriesNames[1]} ${g.categoryLabels[dataPointIndex]}</span>
+                                </div>
+                                <div>
+                                    <div>최대: ${dataCaution.y[1]}</div>
+                                    <div>평균: ${dataCaution.avg}</div>
+                                    <div>최소: ${dataCaution.y[0]}</div>
+                                </div>
                             </div>`;
 
                     return text;
@@ -236,9 +252,8 @@ const stats = {
             dataLabels: {
                 enabled: true,
                 formatter: function (val, {series, seriesIndex, dataPointIndex, w}) {
-                    const minVal = w.globals.seriesRangeStart[seriesIndex][dataPointIndex];
-                    const maxVal = w.globals.seriesRangeEnd[seriesIndex][dataPointIndex];
-                    return (minVal + maxVal) / 2;
+                    const label = w.config.series[seriesIndex].data[dataPointIndex].avg;
+                    return label !== null ? label : "";
                 },
             },
             series: data,
@@ -287,7 +302,7 @@ const stats = {
                     roam: true,
                     map: 'map',
                     label: {
-                        show: true
+                        // show: true
                     },
                     emphasis: {
                         label: {
@@ -344,7 +359,7 @@ const stats = {
             pCallback(result);
         });
     },
-    getEventKind: (pCode,pCallback) => {
+    getEventKind: (pCode, pCallback) => {
         $.ajax({
             url: "/config/commonCode/eventKind/" + pCode
             , type: "GET"

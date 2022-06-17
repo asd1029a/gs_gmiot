@@ -32,13 +32,12 @@ public class StatisticsSqlProvider {
                             "   count(case when v2.code_value = '10' then 1 end) urgent," +
                             "   count(case when v2.code_value = '20' then 1 end) caution");
                     FROM("t_event t1" +
-                            "   INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq" +
-                            "   INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq" +
-                            "   INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq" +
-//                          현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//                          "   INNER JOIN v_administ v3 on t2.administ_zone = v3.code_value");
-                            "   INNER JOIN t_area_emd v3 ON t2.administ_zone = v3.emd_cd" +
-                            "   INNER JOIN v_event_proc_stat v4 ON t1.event_proc_stat = v4.code_seq");
+                            "    INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq" +
+                            "    INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq" +
+                            "    INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq" +
+                            "    INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq" +
+                            "    INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq" +
+                            "    INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value");
                     if (!endDt.equals("")) {
                         WHERE("t1.insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
                     }
@@ -46,11 +45,9 @@ public class StatisticsSqlProvider {
                         WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
                     }
 
-//                    현재는 데이터가 안맞아서 주석 해놓음
-//                    if (administZone != null && !administZone.isEmpty()) {
-////                        WHERE("v3.code_value" + SqlUtil.getWhereInStr(administZone));
-//                        WHERE("v3.emd_cd" + SqlUtil.getWhereInStr(administZone));
-//                    }
+                    if (administZone != null && !administZone.isEmpty()) {
+                        WHERE("v4.code_value" + SqlUtil.getWhereInStr(administZone));
+                    }
 
                     GROUP_BY("to_char(t1.insert_dt, '" + timePattern + "')");
                 }};
@@ -125,13 +122,12 @@ public class StatisticsSqlProvider {
                         "   count(case when v2.code_value = '10' then 1 end) urgent," +
                         "   count(case when v2.code_value = '20' then 1 end) caution");
                 FROM("t_event t1" +
-                        "   INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq" +
-                        "   INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq" +
-                        "   INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq" +
-//                          현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//                          "   INNER JOIN v_administ v3 on t2.administ_zone = v3.code_value");
-                        "   INNER JOIN t_area_emd v3 ON t2.administ_zone = v3.emd_cd" +
-                        "   INNER JOIN v_event_proc_stat v4 ON t1.event_proc_stat = v4.code_seq");
+                        "    INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq" +
+                        "    INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq" +
+                        "    INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq" +
+                        "    INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq" +
+                        "    INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq" +
+                        "    INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value");
                 if (!startDt.equals("")) {
                     WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
                 }
@@ -142,11 +138,9 @@ public class StatisticsSqlProvider {
                     WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
                 }
 
-//                    현재는 데이터가 안맞아서 주석 해놓음
-//                    if (administZone != null && !administZone.isEmpty()) {
-////                        WHERE("v3.code_value" + SqlUtil.getWhereInStr(administZone));
-//                        WHERE("v3.emd_cd" + SqlUtil.getWhereInStr(administZone));
-//                    }
+                if (administZone != null && !administZone.isEmpty()) {
+                    WHERE("v4.code_value" + SqlUtil.getWhereInStr(administZone));
+                }
 
                 GROUP_BY("to_char(t1.insert_dt, '" + timePattern + "')");
             }};
@@ -155,13 +149,15 @@ public class StatisticsSqlProvider {
                     "     , min(urgent)  AS min_urgent" +
                     "     , max(urgent)  AS max_urgent" +
                     "     , min(caution) AS min_caution" +
-                    "     , max(caution) AS max_caution");
+                    "     , max(caution) AS max_caution" +
+                    "     , avg(urgent)  AS avg_urgent" +
+                    "     , avg(caution) AS avg_caution");
             FROM("(" + subQry1.toString() + ")t");
             GROUP_BY("to_char(to_timestamp(x_axis, '" + timePattern + "'), '" + avgTimePattern + "')");
         }};
 
         SQL dateSql = new SQL() {{
-            SELECT("date_t.t_date AS x_axis, t.min_urgent, t.max_urgent, t.min_caution, t.max_caution");
+            SELECT("date_t.t_date AS x_axis, t.min_urgent, t.max_urgent, t.min_caution, t.max_caution, t.avg_urgent, t.avg_caution");
             // 시간대 생성
             String startDtT = "";
             String endDtT = "";
@@ -190,12 +186,14 @@ public class StatisticsSqlProvider {
             String endDt = CommonUtil.validOneNull(paramMap, "endDt");
             ArrayList<String> eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
 
-            SELECT("v3.emd_nm AS name, count(*) AS value");
+            SELECT("v4.code_name AS name, count(*) AS value");
             FROM("t_event t1" +
-                    "   INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq" +
-                    "   INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq" +
-                    "   INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq" +
-                    "   INNER JOIN t_area_emd v3 ON t2.administ_zone = v3.emd_cd");
+                    "    INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq" +
+                    "    INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq" +
+                    "    INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq" +
+                    "    INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq" +
+                    "    INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq" +
+                    "    INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value");
 
             if (!startDt.equals("")) {
                 WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");

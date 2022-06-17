@@ -1187,7 +1187,7 @@ const rnbList = {
                 target.find(".area_right_bus_control").html("");
                 target.find(".area_right_bus_status dl").hide();
                 let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
-                    '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
+                    '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
 
@@ -1196,33 +1196,38 @@ const rnbList = {
                 objAry.features.forEach((f, i) => {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
-                    if (facilityOpts.length > 0) {
-                        facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
-                            let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
-                            busStatus.parents("dl").show();
-                            busStatus.text(ff.facilityOptValue);
-                        });
-                    } else {
-                        let pointInfo = f.properties;
-                        let facilityKindName = pointInfo.facilityKindName;
-                        let facilityId = pointInfo.facilityId;
-                        let facilitySeq = pointInfo.facilitySeq;
-                        let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
-                        let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
-                        // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+                    let presentValue = "";
 
-                        target.find(".area_right_bus_control").append(
-                            smartBusStoFacilityTag
-                                .replace("{{span_id}}", i)
-                                .replace("{{span_class}}", spanClass)
-                                .replace("{{facilityKindName}}", facilityKindName)
-                                .replace("{{id_index}}", i)
-                                .replace("{{onclick_index}}", i)
-                                .replace("{{facilityId}}", facilityId)
-                                .replace("{{facilitySeq}}", facilitySeq)
-                                .replace("{{for_index}}", i)
-                                .replace("{{check_value}}", presentValue));
+                    facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
+                        let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
+                        busStatus.parents("dl").show();
+                        busStatus.text(ff.facilityOptValue);
+                    });
+
+                    let power = facilityOpts.find(opt => opt.commonCode.codeId === "facility_power");
+                    if(!power) {
+                        return false;
                     }
+                    presentValue = power.facilityOptValue === "true" ? "checked" : "";
+
+                    let facilityName = pointInfo.facilityName;
+                    let facilityId = pointInfo.facilityId;
+                    let facilitySeq = pointInfo.facilitySeq;
+
+                    let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
+                    // console.log("facilityName " + facilityName + " > " + presentValue );
+
+                    target.find(".area_right_bus_control").append(
+                        smartBusStoFacilityTag
+                            .replace("{{span_id}}", i)
+                            .replace("{{span_class}}", spanClass)
+                            .replace("{{facilityName}}", facilityName)
+                            .replace("{{id_index}}", i)
+                            .replace("{{onclick_index}}", i)
+                            .replace("{{facilityId}}", facilityId)
+                            .replace("{{facilitySeq}}", facilitySeq)
+                            .replace("{{for_index}}", i)
+                            .replace("{{check_value}}", presentValue));
                 });
             });
         } else {}
