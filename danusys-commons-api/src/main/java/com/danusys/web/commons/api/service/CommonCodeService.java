@@ -27,8 +27,11 @@ public class CommonCodeService {
     }
 
     public List<CommonCode> findByParentCodeSeq(Long parentCodeSeq) {
-//        log.trace("parentCodeSeq : {}", parentCodeSeq);
         return commonCodeRepository.findByParentCodeSeq(parentCodeSeq);
+    }
+
+    public List<CommonCode> findAllByCodeSeqIn(List<Long> codeSeqs) {
+        return commonCodeRepository.findAllByCodeSeqIn(codeSeqs);
     }
 
 }

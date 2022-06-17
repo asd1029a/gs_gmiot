@@ -1,5 +1,6 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.app.*;
@@ -61,7 +62,7 @@ public class FacilityController {
         List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
 
         list.stream().peek(p -> {
-            log.trace("v_station_facility_info > {}", p.get("facilitySeq"));
+            log.trace("facilitySeq > {}", p.get("facilitySeq"));
             p.put("facilityOpts", facilityOptService.findByFacilitySeqLast(Long.parseLong(String.valueOf(p.get("facilitySeq")))));
         }).collect(toList());
 
@@ -267,6 +268,10 @@ public class FacilityController {
             modMap.put("facilitySeq", paramMap.get("facilitySeq"));
             modMap.put("facilityStatus", String.valueOf(paramMap.get("settingValue")).equals("On") ? 1 : 0);
             facilityService.mod(modMap);
+
+            FacilityOpt facilityOpt = facilityOptService.findByFacilitySeqAndFacilityOptName(Long.parseLong(String.valueOf(paramMap.get("facilitySeq"))), "power");
+            facilityOpt.setFacilityOptValue(String.valueOf(paramMap.get("settingValue")).equals("On") ? "true" : "false");
+            facilityOptService.save(facilityOpt);
         }
 
         return result;
