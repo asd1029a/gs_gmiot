@@ -54,10 +54,14 @@ public class FacilityOptService {
             Facility facility = facilityRepository.findByFacilityId(f.getFacilityId());
             FacilityOpt facilityOpt = facilityOptRepository.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(),
                     f.getFacilityOptName());
-            facilityOpt.setFacilityOpt(facility.getFacilitySeq(),f.getFacilityOptName(),f.getFacilityOptValue(),f.getFacilityOptType());
-            facilityOptList.add(facilityOpt);
-            facilityOptRepository.save(facilityOpt);
+            if(facilityOpt==null){
+                FacilityOpt saveFacilityOpt = FacilityOpt.builder().facilitySeq(facility.getFacilitySeq()).facilityOptName(f.getFacilityOptName()).facilityOptValue(f.getFacilityOptValue()).facilityOptType(f.getFacilityOptType()).build();
+                facilityOptList.add(saveFacilityOpt);
+            }else{
+              facilityOpt.setFacilityOpt(facility.getFacilitySeq(),f.getFacilityOptName(),f.getFacilityOptValue(),f.getFacilityOptType());
+            }
         });
+        facilityOptRepository.saveAll(facilityOptList);
         return facilityOptList;
     }
 

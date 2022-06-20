@@ -74,9 +74,11 @@ public class UserService {
         }
 
         List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
-                .map(UserResponse::new)
+                .map(UserResponse::new).peek(userResponse -> {
+                    userResponse.setUpdateUserId(userRepository.findByUserName(userResponse.getUpdateUserSeq()));
+                    userResponse.setInsertUserId(userRepository.findByUserName(userResponse.getInsertUserSeq()));
+                })
                 .collect(Collectors.toList());
-
         resultMap.put("data", userResponseList);
 
         return resultMap;
@@ -321,5 +323,4 @@ public class UserService {
 
         return flag != null ? flag.getAuthority().toString() : "none";
     }
-
 }
