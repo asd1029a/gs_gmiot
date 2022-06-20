@@ -5,6 +5,7 @@ import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.danusys.web.commons.app.StringUtil;
 import lombok.SneakyThrows;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import java.util.Map;
  * Time : 20:03
  */
 
+@Profile(value = "yj")
 @RequestMapping("/mqtt")
 @RestController
 public class MqttController {
