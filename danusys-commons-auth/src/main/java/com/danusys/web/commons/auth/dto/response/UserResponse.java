@@ -24,9 +24,11 @@ public class UserResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp insertDt;
     private int insertUserSeq;
+    private String insertUserId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp updateDt;
     private int updateUserSeq;
+    private String updateUserId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     private Timestamp lastLoginDt;
     private String checked;
