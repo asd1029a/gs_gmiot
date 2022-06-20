@@ -1,16 +1,15 @@
 package com.danusys.web.commons.api.scheduler;
 
 import com.danusys.web.commons.api.dto.LogicalfolderDTO;
-import com.danusys.web.commons.api.model.CommonCode;
-import com.danusys.web.commons.api.model.Facility;
-import com.danusys.web.commons.api.model.FacilityOpt;
-import com.danusys.web.commons.api.model.Station;
+import com.danusys.web.commons.api.model.*;
+import com.danusys.web.commons.api.repository.FacilityActiveRepository;
 import com.danusys.web.commons.api.service.CommonCodeService;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
 import com.danusys.web.commons.api.service.StationService;
 import com.danusys.web.commons.api.types.FacilityGroupType;
 import com.danusys.web.commons.api.util.XmlDataUtil;
+import com.danusys.web.commons.api.util.IpCheckedUtil;
 import com.danusys.web.commons.app.RestUtil;
 import com.danusys.web.commons.app.StrUtils;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +38,7 @@ public class GmScheduler {
     private final FacilityOptService facilityOptService;
     private final StationService stationService;
     private final CommonCodeService commonCodeService;
+    private final FacilityActiveRepository facilityActiveRepository;
     private static List<CommonCode> dataGroup;
     private static long SMART_STATION_NUM = 62L; //스마트 정류장
     private static long SMART_POLE_NUM = 4L; //스마트 폴
@@ -49,7 +49,7 @@ public class GmScheduler {
     /**
      * 시설물 상대 동기화
      */
-    @Scheduled(fixedDelay = 60 * 1000 * 60)
+    @Scheduled(fixedDelay = 30 * 1000 * 60)
     public void facilityStatusSync() {
         log.trace("---------------------gm scheduler---------------------");
         this.facilitySync();
@@ -248,6 +248,32 @@ public class GmScheduler {
             return FacilityGroupType.CONTROL;
         }
     }
+    /**
+     * TODO faSeq 부분 광명 시설물 facilitySeq에 맞게 변경 필요
+     * 시설물 장애 이벤트 ping check
+     */
+    @Scheduled(cron = "0 0 0/1 * * *")
+    public void ipPingCheck(){
+        Long faSeq = 2219L;
+        List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(faSeq);
+        List<Map<String, Object>> ipLists = new ArrayList<>();
+        List<FacilityActiveLog> facilityActiveLogList = new ArrayList<>();
+        FacilityActiveLog facilityActiveLog = new FacilityActiveLog();
+        facilityOptList.stream().filter(f -> f.getFacilityOptName().equals("ip"))
+                .forEach(facilityOpt -> {
+                    Map<String,Object> maps = new HashMap<>();
+                    maps.put(facilityOpt.getFacilityOptName(),facilityOpt.getFacilityOptValue());
+                    ipLists.add(maps);
+                });
+        IpCheckedUtil.ipCheckedList(ipLists);
+
+        ipLists.stream().forEach(f -> {
+            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq(faSeq).
+                    facilityActiveCheck((boolean) f.get("active")).facilityActiveIp((String) f.get("ip")).build();
+            facilityActiveLogList.add(build);
+        });
+        facilityActiveRepository.saveAll(facilityActiveLogList);
+    }
 
     /**
      *  TODO param 부분 광명에 맞게 변경 필요
@@ -270,7 +296,7 @@ public class GmScheduler {
 //                String json = objectMapper.writeValueAsString(apiUtils.getRestCallBody(param));
 //
 //                FacilityDataRequestDTO facilityDataRequestDTO = objectMapper.readValue(StrUtils.getStr(json), FacilityDataRequestDTO.class);
-//                facilityDataRequestDTO.setFacilityOptType(109);
+//                facilityDataRequestDTO.setFacilityOptType(112);
 //                facilityOptService.save(facilityDataRequestDTO);
 //            } catch (Exception e) {
 //                e.printStackTrace();

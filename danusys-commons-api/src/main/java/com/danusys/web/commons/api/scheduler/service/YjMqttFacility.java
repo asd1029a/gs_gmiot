@@ -58,7 +58,7 @@ public class YjMqttFacility {
             subscriber.subscribe("#", (topic, msg) -> {
                 byte[] payload = msg.getPayload();
                 log.info("topic : {}, message : {}", topic, new String(payload, StandardCharsets.UTF_8));
-                
+
                 // shetler1 .... 10
                 String facilityId = topic;
                 String shelterId = topic.split("/")[0];
@@ -72,13 +72,12 @@ public class YjMqttFacility {
                     mqttReceivedData.entrySet().forEach((entry) -> {
                         String facilityName = entry.getKey();
                         FacilityKindType facilityKindType2 = FacilityKindType.findFacilityKind(facilityName);
-                        this.saveFacilitySync(shelterId +"/"+ facilityName, shelterId, facilityKindType2, mqttReceivedData, "switch");
+                        this.saveFacilitySync(shelterId+ "/" + facilityKindCode +"/"+ facilityName, shelterId, facilityKindType2, mqttReceivedData, facilityKindCode);
                     });
                 } else {
                     this.saveFacilitySync(facilityId, shelterId, facilityKindType, mqttReceivedData, null);
                 }
             });
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,7 +103,7 @@ public class YjMqttFacility {
                     return;
                 }
 
-                // 시설물 연결 상태
+                // 시설물 연결 상태 변환
                 Integer facilityStatus = "true".equals(StrUtils.getStr(mqttReceivedData.get("status"))) ? 1 : 0;
 
                 // facility가 null 이면 새로 저장
@@ -112,6 +111,10 @@ public class YjMqttFacility {
                     if(facilityKind == -1) {
                         return;
                     }
+                    if("자동문".equals(facilityName)) {
+                        facilityName = facilityName + facilityId.charAt(facilityId.length() -1);
+                    }
+
                     facility = Facility.builder()
                             .stationSeq(Long.parseLong(stationSeq))
                             .facilityId(facilityId)
@@ -144,7 +147,7 @@ public class YjMqttFacility {
                             optType = 175;
                         }
                         if(deviceType != null) {
-                            String facilityName2 = facilityId.split("/")[1];
+                            String facilityName2 = facilityId.split("/")[2];
                             if(facilityName2.equals(receivedFaciliyOptName)) {
                                 receivedFaciliyOptName = "power";
                                 optType = 175;
@@ -173,10 +176,15 @@ public class YjMqttFacility {
                             if(entry.getKey().equals("status")) {
                                 return;
                             }
+                            
+                            // message 가 switch 일 경우 안에서 한번 더 파싱
                             if(deviceType != null) {
                                 receivedOptName = "power";
+                                if(!finalFacility1.getFacilityId().split("/")[2].equals(entry.getKey())) {
+                                    return;
+                                }
                             }
-                            if(optData.getFacilityOptName().equals(receivedOptName)) {
+                             if(optData.getFacilityOptName().equals(receivedOptName)) {
                                 optData.setFacilityOptValue(entry.getValue().toString());
                                 facilityOptService.save(optData);
                             }
