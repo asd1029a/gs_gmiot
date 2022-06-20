@@ -6,11 +6,13 @@ import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.repository.FacilityOptRepository;
 import com.danusys.web.commons.api.repository.FacilityRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Project : danusys-webservice-parent
@@ -54,12 +56,11 @@ public class FacilityOptService {
             Facility facility = facilityRepository.findByFacilityId(f.getFacilityId());
             FacilityOpt facilityOpt = facilityOptRepository.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(),
                     f.getFacilityOptName());
-            if(facilityOpt==null){
+            if(Objects.isNull(facilityOpt)){
                 FacilityOpt saveFacilityOpt = FacilityOpt.builder().facilitySeq(facility.getFacilitySeq()).facilityOptName(f.getFacilityOptName()).facilityOptValue(f.getFacilityOptValue()).facilityOptType(f.getFacilityOptType()).build();
                 facilityOptList.add(saveFacilityOpt);
-            }else{
-              facilityOpt.setFacilityOpt(facility.getFacilitySeq(),f.getFacilityOptName(),f.getFacilityOptValue(),f.getFacilityOptType());
             }
+            facilityOpt.setFacilityOpt(facility.getFacilitySeq(),f.getFacilityOptName(),f.getFacilityOptValue(),f.getFacilityOptType());
         });
         facilityOptRepository.saveAll(facilityOptList);
         return facilityOptList;
