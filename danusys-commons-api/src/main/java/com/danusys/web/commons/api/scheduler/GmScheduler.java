@@ -10,7 +10,7 @@ import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
 import com.danusys.web.commons.api.service.StationService;
 import com.danusys.web.commons.api.types.FacilityGroupType;
-import com.danusys.web.commons.api.util.SoapXmlDataUtil;
+import com.danusys.web.commons.api.util.XmlDataUtil;
 import com.danusys.web.commons.app.RestUtil;
 import com.danusys.web.commons.app.StrUtils;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class GmScheduler {
     /**
      * 시설물 상대 동기화
      */
-    @Scheduled(fixedDelay = 30 * 1000 * 60)
+    @Scheduled(fixedDelay = 60 * 1000 * 60)
     public void facilityStatusSync() {
         log.trace("---------------------gm scheduler---------------------");
         this.facilitySync();
@@ -77,7 +77,8 @@ public class GmScheduler {
         List<Station> poles = lists.stream().filter(f -> f.getStationKind() == SMART_POLE_NUM).collect(toList());
 
         //스마트 정류장
-        stations.stream().filter(f -> f.getStationName().contains("14117")).forEach(station -> { //개소 목록
+//        stations.stream().filter(f -> f.getStationName().contains("14117")).forEach(station -> { //로컬환경 개소 목록
+        stations.stream().forEach(station -> { //개소 목록
             String stationName = StrUtils.getStr(station.getStationName());
             if (stationName.contains("_")) {
                 String stationId = StrUtils.getStr(station.getStationName()).split("_")[1];
@@ -196,7 +197,7 @@ public class GmScheduler {
         log.trace("result : {}", result);
         log.trace("result : {}", param.get("pointPaths"));
 
-        final List<LogicalfolderDTO.Logicalpoints.Lpt> lpts = SoapXmlDataUtil.getGmSoapPostList(String.valueOf(param.get("pointPaths")));
+        final List<LogicalfolderDTO.Logicalpoints.Lpt> lpts = XmlDataUtil.getGmSoapPostList(String.valueOf(param.get("pointPaths")));
 
         List<Map<String, Object>> facilityData = result.stream().peek(f -> {
             LogicalfolderDTO.Logicalpoints.Lpt point = this.getXmlData(lpts, String.valueOf(f.get("pointPath")).replaceAll("point:", ""));
