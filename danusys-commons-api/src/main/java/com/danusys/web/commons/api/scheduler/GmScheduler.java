@@ -42,6 +42,8 @@ public class GmScheduler {
     private static int FACILITY_OPT_TYPE_ACCUMULATE_DATA = 112; //누적 데이터
     private static List<Long> ACCUMULATE_DATA_GROUP = Arrays.asList(114L, 115L, 116L, 117L, 118L, 119L); //누적데이터 common code
     private static int FACILITY_OPT_TYPE_POWER = 175; // power : true, false
+    private static long FACILITY_SEQ = 2219L; // 나중에 실제 ip넣을때 실제 facilitySeq으로 바꿔야함
+
 
     /**
      * 시설물 상대 동기화
@@ -251,7 +253,7 @@ public class GmScheduler {
      */
     @Scheduled(cron = "0 0 0/1 * * *")
     public void ipPingCheck(){
-        Long faSeq = 2219L;
+        Long faSeq = FACILITY_SEQ;
         List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(faSeq);
         List<Map<String, Object>> ipLists = new ArrayList<>();
         List<FacilityActiveLog> facilityActiveLogList = new ArrayList<>();
