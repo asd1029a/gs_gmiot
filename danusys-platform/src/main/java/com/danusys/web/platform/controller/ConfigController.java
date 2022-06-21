@@ -98,7 +98,9 @@ public class ConfigController {
                 sum++;
             }
             if(key.equals("turnUrl") || key.equals("mediaServerWsUrl")){
-                value = value.replaceAll(ipRegExp, videoNetInfo.get("ip").toString() + ipClassCD);
+                if(videoNetInfo != null){
+                    value = value.replaceAll(ipRegExp, videoNetInfo.get("ip").toString() + ipClassCD);
+                }
             }
             result.put(key, value);
         });
