@@ -130,9 +130,12 @@ const facility = {
         });
     }
     , facilityControl : (param, pCallback) => {
+        // comm.showLoading();
         let callUrl = "";
-        if(siGunCode === "47210") {
+        if(siGunCode === "47210") { //영주
             callUrl = "/mqtt/set";
+        } else if(siGunCode === "41210") { //광명
+            callUrl = "/facility/control";
         }
 
         $.ajax({
@@ -142,6 +145,10 @@ const facility = {
             , contentType : "application/json; charset=utf-8"
         }).done((result) => {
             pCallback(result);
+            // comm.hideLoading();
+        }).fail((result)=> {
+            console.log(result)
+            // comm.hideLoading();
         });
     }
 
