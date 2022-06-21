@@ -10,8 +10,9 @@ public interface DashboardService {
     EgovMap getStatusCnt2(Map<String, Object> paramMap) throws Exception;
     EgovMap getStatusCnt3(Map<String, Object> paramMap) throws Exception;
     EgovMap getStatusCnt4(Map<String, Object> paramMap) throws Exception;
+    EgovMap getFloatingPopulation(Map<String, Object> paramMap) throws Exception;
     EgovMap getStation(Map<String, Object> paramMap) throws Exception;
     EgovMap getAirPollution(Map<String, Object> paramMap) throws Exception;
-    EgovMap getDronCabinetStatus(Map<String, Object> paramMap) throws Exception;
+    EgovMap getDroneCabinetStatus(Map<String, Object> paramMap) throws Exception;
     EgovMap getCabinetRank(Map<String, Object> paramMap) throws Exception;
 }
