@@ -577,22 +577,43 @@ public class CommonUtil {
 		// 클라이언트 IP를 문제없이 얻어오기
 		// http헤더는 프록시 서버, L4, 캐싱서버 등 제품별로 헤더정보가 다를 수 있으므로 만약 아래에 기입되지 않은 별도의
 		// 헤더를 사용하는 제품이 있다면 헤더 정보를 추가 등록하여 문제를 피할 수 있음
-		String ip = request.getHeader("X-Forwarded-For");
+		String[] IP_HEADERS = {
+				"X-Forwarded-For",
+				"Proxy-Client-IP",
+				"WL-Proxy-Client-IP",
+				"HTTP_X_FORWARDED_FOR",
+				"HTTP_X_FORWARDED",
+				"HTTP_X_CLUSTER_CLIENT_IP",
+				"HTTP_CLIENT_IP",
+				"HTTP_FORWARDED_FOR",
+				"HTTP_FORWARDED",
+				"HTTP_VIA",
+				"REMOTE_ADDR"
+		};
 
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("WL-Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("HTTP_CLIENT_IP");
-		}
-		// 만약 모든 헤더정보들이 없다면 (웹서버 환경이 프록시 등의 환경으로 구축되지 않았다면 직접 클라이언트 IP 정보를 불러옴
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getRemoteAddr();
+		for (String header: IP_HEADERS) {
+			String value = request.getHeader(header);
+			if (value == null || value.isEmpty()) {
+				continue;
+			}
+			String[] parts = value.split("\\s*,\\s*");
+			return parts[0];
 		}
 
+		String ip = request.getRemoteAddr();
+//		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//			ip = request.getHeader("Proxy-Client-IP");
+//		}
+//		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//			ip = request.getHeader("WL-Proxy-Client-IP");
+//		}
+//		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//			ip = request.getHeader("HTTP_CLIENT_IP");
+//		}
+//		// 만약 모든 헤더정보들이 없다면 (웹서버 환경이 프록시 등의 환경으로 구축되지 않았다면 직접 클라이언트 IP 정보를 불러옴
+//		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//			ip = request.getRemoteAddr();
+//		}
 		return ip;
 	}
 

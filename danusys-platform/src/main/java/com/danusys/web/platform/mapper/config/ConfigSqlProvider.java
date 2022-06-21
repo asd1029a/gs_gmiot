@@ -110,4 +110,21 @@ public class ConfigSqlProvider {
         }};
         return sql.toString();
     }
+
+    public String selectOneVideoNetInfoQry(String ipClassAB) {
+        SQL sql = new SQL() {{
+            SELECT("net_mapping_ip, seq, ip, port, insert_date, update_date");
+            FROM("t_net_mapping_sub");
+            WHERE("seq = (select seq from t_net_mapping where ip = '" + ipClassAB + "')");
+        }};
+        return sql.toString();
+    }
+
+    public String selectOneVideoConfigQry() {
+        SQL sql = new SQL() {{
+            SELECT("config_seq, name, value, type, insert_dt, update_dt");
+            FROM("t_config");
+        }};
+        return sql.toString();
+    }
 }

@@ -5,7 +5,6 @@ import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.platform.mapper.config.ConfigSqlProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -46,5 +45,15 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public List<EgovMap> getListMntrInitParam(String pageTypeCodeValue) throws Exception {
         return commonMapper.selectList(csp.selectListInitMntrParam(pageTypeCodeValue));
+    }
+
+    @Override
+    public EgovMap getVideoNetInfo(String ipClassAB) throws Exception {
+        return commonMapper.selectOne(csp.selectOneVideoNetInfoQry(ipClassAB));
+    }
+
+    @Override
+    public List<EgovMap> getVideoConfig() throws Exception {
+        return commonMapper.selectList(csp.selectOneVideoConfigQry());
     }
 }

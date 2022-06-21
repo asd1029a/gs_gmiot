@@ -10,4 +10,6 @@ public interface ConfigService {
     EgovMap getOneCode(int seq) throws Exception;
     EgovMap getOneEventKind(String pKind);
     List<EgovMap> getListMntrInitParam(String pageTypeCodeValue) throws Exception;
+    EgovMap getVideoNetInfo(String ipClassAB) throws Exception;
+    List<EgovMap> getVideoConfig() throws Exception;
 }

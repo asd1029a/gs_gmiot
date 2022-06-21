@@ -1,16 +1,17 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.service.config.ConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping(value = "/config")
@@ -67,5 +68,41 @@ public class ConfigController {
         return ResponseEntity.ok().body(result);
     }
 
+    @GetMapping(value = "/media")
+    public ResponseEntity<Map> getVideoInfo(HttpServletRequest req) throws Exception {
+        String clientIp = CommonUtil.getClientIp(req);
+        // Inet4Address.getLocalHost().getHostAddress();
+        String ipRegExp = "(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])";
+        //"/((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})/g";
+
+        List<String> ipEachClass = new ArrayList<String>(Arrays.asList(clientIp.split("\\.")));
+        String ipClassAB = ipEachClass.get(0) + "." + ipEachClass.get(1);
+
+        EgovMap videoNetInfo = commonService.getVideoNetInfo(ipClassAB);
+        List<EgovMap> videoConfig = commonService.getVideoConfig();
+
+        Map<String, Object> result = new HashMap<>();
+        videoConfig.stream().forEach(f -> {
+            String key = f.get("name").toString();
+            String value = f.get("value").toString();
+
+            Pattern p = Pattern.compile("\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])");
+            Matcher m = p.matcher(value);
+            String ipClassCD = "";
+            int sum = 0;
+
+            while(m.find()){
+                if(sum > 0){
+                    ipClassCD += m.group();
+                }
+                sum++;
+            }
+            if(key.equals("turnUrl") || key.equals("mediaServerWsUrl")){
+                value = value.replaceAll(ipRegExp, videoNetInfo.get("ip").toString() + ipClassCD);
+            }
+            result.put(key, value);
+        });
+        return ResponseEntity.ok().body(result);
+    }
 
 }

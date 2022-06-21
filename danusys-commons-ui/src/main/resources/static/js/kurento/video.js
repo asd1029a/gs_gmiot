@@ -7,9 +7,13 @@ var video = {
 		$.ajax({
 			method: "GET",
 			contentType: "application/json",
-			url: `${location.origin}/config/media`
+			//url: `${location.origin}/config/media`
+			url: '/config/media'
 		}).done((d) => {
-			d.forEach(f => window.localStorage.setItem(f.name, f.value));
+			Object.keys(d).forEach(f => {
+				window.localStorage.setItem(f,d[f]);
+			});
+			//d.forEach(f => window.localStorage.setItem(f.name, f.value));
 		});
 		// argsObj = this.getOpts(location.search, {
 		// 	default: {
