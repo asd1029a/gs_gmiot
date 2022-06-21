@@ -130,8 +130,13 @@ const facility = {
         });
     }
     , facilityControl : (param, pCallback) => {
+        let callUrl = "";
+        if(siGunCode === "47210") {
+            callUrl = "/mqtt/set";
+        }
+
         $.ajax({
-            url : "/facility/control"
+            url : callUrl
             , type : "POST"
             , data : JSON.stringify(param)
             , contentType : "application/json; charset=utf-8"

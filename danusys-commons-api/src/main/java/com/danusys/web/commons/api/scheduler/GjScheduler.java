@@ -67,7 +67,7 @@ public class GjScheduler {
 
     // @Scheduled(cron = "0/30 * * * * *")
     // TODO : 드론 Dumy data
-    @Scheduled(fixedDelay = 10000)
+    // @Scheduled(fixedDelay = 10000)
     public void droneCoordinatesTest() throws Exception{
         if (testList.size() == 0) {
             setTestList();
@@ -129,7 +129,8 @@ public class GjScheduler {
         this.eventService.saveAll(list);
     }
 
-    // @Scheduled(fixedDelay = 999999999)
+     @Scheduled(fixedDelay = 3600000)
+    // @Scheduled(cron = "0 0/1 * * * *")
     // TODO : 스마트 분전반 목록 조회(cron 처리 추가 필요)
     public void getCenterEmsList() {
         try {
@@ -159,6 +160,7 @@ public class GjScheduler {
         }
     }
 
+    @Scheduled(cron = "0 0/1 * * * *")
     // @Scheduled(fixedDelay = 60000)
     // TODO : 스마트 분전반 상세 데이터 조회(cron 처리 추가 필요)
     public void getCenterEmsDetailList() throws Exception {
@@ -221,7 +223,7 @@ public class GjScheduler {
         });
     }
 
-    //    @Scheduled(cron = "0/30 * * * * *")
+    @Scheduled(fixedDelay = 3600000)
     // @Scheduled(fixedDelay = 60000)
     // TODO : 드론 목록 조회, 드론 디바이스 목록 조회(cron 처리 추가 필요)
     public void getDroneList() throws Exception{
@@ -318,7 +320,8 @@ public class GjScheduler {
         facilityOptService.saveAll(facilityOptList);
     }
 
-    @Scheduled(cron = "0/30 * * * * *")
+    // @Scheduled(cron = "0/30 * * * * *")
+    @Scheduled(fixedDelay = 5000)
     // TODO : 드론 방송 목록 조회(cron 처리 추가 필요)
     public void getDroneBroadcast() throws Exception {
         Map<String,Object> param2 = new HashMap<>();
@@ -494,7 +497,7 @@ public class GjScheduler {
     }
 
     // @Scheduled(cron = "0 0/2 * * * *")
-//     @Scheduled(fixedDelay = 1000000)
+    @Scheduled(fixedDelay = 3600000)
     // TODO : 드론 격납고 리스트 조회(cron 설정 추가 필요)
     public void getStationList() throws Exception{
         Map<String,Object> param2 = new HashMap<>();

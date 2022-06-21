@@ -400,6 +400,7 @@ const mntr = {
                     window.lyControl.onList(['facility', 'station' , target]);
                     break;
                 case "smart" : //스마트OO
+
                     window.lyControl.offList(['facility', 'station', 'event', 'eventPast', 'route']);
                     break;
                 default :
@@ -409,25 +410,25 @@ const mntr = {
                     }
                     break;
             }
-
-            //실시간 이벤트
-            event.getListGeoJson(paramObject['event'], result => {
-                reloadLayer(result, 'eventLayer');
-                lnbList.createEvent(result);
-            });
-            //개소
-            station.getListGeoJson(paramObject['station'] ,result => {
-                reloadLayer(result, 'stationLayer');
-                lnbList.createStation(result, tabType);
-            });
-            //이벤트 과거이력
-            event.getListGeoJson(paramObject['eventPast'], result => {
-                reloadLayer(result, 'eventPastLayer');
-                lnbList.createEventPast(result);
-            });
+            if(Object.keys(paramObject).length > 0){ //스마트oo 제외
+                //실시간 이벤트
+                event.getListGeoJson(paramObject['event'], result => {
+                    reloadLayer(result, 'eventLayer');
+                    lnbList.createEvent(result);
+                });
+                //개소
+                station.getListGeoJson(paramObject['station'] ,result => {
+                    reloadLayer(result, 'stationLayer');
+                    lnbList.createStation(result, tabType);
+                });
+                //이벤트 과거이력
+                event.getListGeoJson(paramObject['eventPast'], result => {
+                    reloadLayer(result, 'eventPastLayer');
+                    lnbList.createEventPast(result);
+                });
+            }
             window.map.map.render();
             window.map.updateSize();
-
             const rVisivle = $('.area_right').is(':visible');
             if(rVisivle) { $('.area_right_closer').trigger("click")}
         });
@@ -1163,6 +1164,16 @@ const rnbList = {
         console.log(theme);
         if(theme=="smartPower") {
             //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
+            target.find('.tab li[data-value=control]').hide(); // TODO 제어조건.. (제어에 해당하는 시설물이 없을경우)
+            const videoArea = target.find('.area_video').parent();
+            const videoTitle = videoArea.prev();
+            if(!prop.cctvVideoFlag){
+                videoArea.hide();
+                videoTitle.hide();
+            } else {
+                videoArea.show();
+                videoTitle.show();
+            }
             //html로 지자체별 고정인게 낫나? -> 결정필요
             ///show
             ///hide
@@ -1176,7 +1187,7 @@ const rnbList = {
                 target.find(".area_right_bus_control").html("");
                 target.find(".area_right_bus_status dl").hide();
                 let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
-                    '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
+                    '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
 
@@ -1185,33 +1196,38 @@ const rnbList = {
                 objAry.features.forEach((f, i) => {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
-                    if (facilityOpts.length > 0) {
-                        facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
-                            let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
-                            busStatus.parents("dl").show();
-                            busStatus.text(ff.facilityOptValue);
-                        });
-                    } else {
-                        let pointInfo = f.properties;
-                        let facilityKindName = pointInfo.facilityKindName;
-                        let facilityId = pointInfo.facilityId;
-                        let facilitySeq = pointInfo.facilitySeq;
-                        let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
-                        let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
-                        // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
+                    let presentValue = "";
 
-                        target.find(".area_right_bus_control").append(
-                            smartBusStoFacilityTag
-                                .replace("{{span_id}}", i)
-                                .replace("{{span_class}}", spanClass)
-                                .replace("{{facilityKindName}}", facilityKindName)
-                                .replace("{{id_index}}", i)
-                                .replace("{{onclick_index}}", i)
-                                .replace("{{facilityId}}", facilityId)
-                                .replace("{{facilitySeq}}", facilitySeq)
-                                .replace("{{for_index}}", i)
-                                .replace("{{check_value}}", presentValue));
+                    facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
+                        let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
+                        busStatus.parents("dl").show();
+                        busStatus.text(ff.facilityOptValue);
+                    });
+
+                    let power = facilityOpts.find(opt => opt.commonCode.codeId === "facility_power");
+                    if(!power) {
+                        return false;
                     }
+                    presentValue = power.facilityOptValue === "true" ? "checked" : "";
+
+                    let facilityName = pointInfo.facilityName;
+                    let facilityId = pointInfo.facilityId;
+                    let facilitySeq = pointInfo.facilitySeq;
+
+                    let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
+                    // console.log("facilityName " + facilityName + " > " + presentValue );
+
+                    target.find(".area_right_bus_control").append(
+                        smartBusStoFacilityTag
+                            .replace("{{span_id}}", i)
+                            .replace("{{span_class}}", spanClass)
+                            .replace("{{facilityName}}", facilityName)
+                            .replace("{{id_index}}", i)
+                            .replace("{{onclick_index}}", i)
+                            .replace("{{facilityId}}", facilityId)
+                            .replace("{{facilitySeq}}", facilitySeq)
+                            .replace("{{for_index}}", i)
+                            .replace("{{check_value}}", presentValue));
                 });
             });
         } else {}

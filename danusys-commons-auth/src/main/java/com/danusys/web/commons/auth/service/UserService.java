@@ -3,6 +3,7 @@ package com.danusys.web.commons.auth.service;
 
 import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.PagingUtil;
+import com.danusys.web.commons.auth.config.auth.CommonsUserDetails;
 import com.danusys.web.commons.auth.dto.response.UserResponse;
 import com.danusys.web.commons.auth.entity.UserSpecification;
 import com.danusys.web.commons.auth.model.User;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,9 +74,11 @@ public class UserService {
         }
 
         List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
-                .map(UserResponse::new)
+                .map(UserResponse::new).peek(userResponse -> {
+                    userResponse.setUpdateUserId(userRepository.findByUserName(userResponse.getUpdateUserSeq()));
+                    userResponse.setInsertUserId(userRepository.findByUserName(userResponse.getInsertUserSeq()));
+                })
                 .collect(Collectors.toList());
-
         resultMap.put("data", userResponseList);
 
         return resultMap;
@@ -272,6 +276,9 @@ public class UserService {
                 findUser.setDetailAddress(user.getDetailAddress());
 
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            CommonsUserDetails userDetails = (CommonsUserDetails) principal;
+            findUser.setUpdateUserSeq(userDetails.getUserSeq());
             findUser.setUpdateDt(timestamp);
             userRepository.save(findUser);
 
@@ -316,5 +323,4 @@ public class UserService {
 
         return flag != null ? flag.getAuthority().toString() : "none";
     }
-
 }

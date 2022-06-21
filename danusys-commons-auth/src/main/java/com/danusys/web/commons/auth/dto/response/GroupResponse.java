@@ -19,8 +19,10 @@ public class GroupResponse {
     private String groupDesc;
     private Timestamp insertDt;
     private int insertUserSeq;
+    private String insertUserId;
     private Timestamp updateDt;
     private int updateUserSeq;
+    private String updateUserId;
     private String inUserId = "";
 
     //private List<UserGroupPermit> userGroupPermit;

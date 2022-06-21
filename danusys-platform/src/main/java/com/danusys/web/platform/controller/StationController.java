@@ -1,26 +1,29 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
+import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
+import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.platform.service.station.StationService;
 import com.danusys.web.commons.app.GisUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/station")
+@RequiredArgsConstructor
 public class StationController {
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
-    }
 
     private final StationService stationService;
+    private final FacilityService facilityService;
 
     /**
      * 개소 : 개소 목록 조회
@@ -44,8 +47,32 @@ public class StationController {
     @PostMapping(value = "/geojson", produces = "application/json; charset=utf8")
     public String getListGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = stationService.getList(paramMap);
-        List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
-        return GisUtil.getGeoJson(list, "station");
+        List<Map<String, Object>> stationList = (List<Map<String, Object>>) resultEgov.get("data");
+        //해당 개소의 시설물들 정보 추가
+        stationList.stream().forEach(f -> {
+            Map<String, Object> facilityParam = new LinkedHashMap<>();
+            facilityParam.put("stationSeq",f.get("stationSeq").toString());
+            facilityParam.put("popType","station");
+            try {
+                EgovMap facilityMap = facilityService.getList(facilityParam);
+                List<Map<String, Object>> facilityList = new ArrayList<>();
+                facilityList = (List<Map<String, Object>>) facilityMap.get("data");
+
+                f.put("facilityList", facilityList);
+                //해당개소의 시설물중 영상재생할 cctv가 있는가
+                facilityList.stream().forEach(fclt -> {
+                    //TODO facilityKind로 들어갈 이름 적용하기
+                    if(fclt.get("facilityKind") == "CCTV") {
+                        f.put("cctvVideoFlag", true);
+                    } else {
+                        f.put("cctvVideoFlag", false);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return GisUtil.getGeoJson(stationList, "station");
     }
 
     /**

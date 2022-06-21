@@ -1,9 +1,12 @@
 package com.danusys.web.commons.api.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,6 +25,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@DynamicUpdate
 @Table(name = "t_facility")
 public class Facility implements Serializable {
     @Id
@@ -43,7 +47,8 @@ public class Facility implements Serializable {
     @Column
     private Timestamp facilityInstlDt;
 
-    @Column
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
+    @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp insertDt;
 
     @Column
@@ -94,7 +99,4 @@ public class Facility implements Serializable {
         this.administZone = administZone;
     }
 
-    public void updateFacility(Integer status) {
-        this.facilityStatus = status;
-    }
 }

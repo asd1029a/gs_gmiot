@@ -4,6 +4,7 @@ import com.danusys.web.commons.app.RestUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_6455;
@@ -37,9 +38,9 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class IntellivixWebsocketEventClient {
     private String localIp = "127.0.0.1";
-    /*@Value("${server.port}")*/
     private int serverPort = 8400;
     public void connect() throws Exception {
 
@@ -78,18 +79,21 @@ public class IntellivixWebsocketEventClient {
                     ObjectMapper objectMapper = new ObjectMapper();
                     Map<String, Object> resultMessage = objectMapper.readValue(message, new TypeReference<Map<String, Object>>(){});
                     Map<String,Object> obj;
-                    obj = (Map<String, Object>) ((Map<String,Object>)resultMessage.get("evt")).get("obj");
-                    String pattr = "";
+
+
+                    //obj = (Map<String, Object>) ((Map<String,Object>)resultMessage.get("evt")).get("obj");
+                    /*String pattr = "";
                     if(!obj.containsKey("pattr")) {
                         return;
                     }
                     pattr = obj.get("pattr").toString();
-                    System.out.println(pattr);
+                    System.out.println(pattr);*/
 
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
-                //System.out.println("received: " + message);
+
+                log.info("receiver : {}" , message);
                 // 맞으면 업데이트
                 // 틀리면
             }
@@ -130,8 +134,8 @@ public class IntellivixWebsocketEventClient {
             String apiKey = resultBody.get("apiKey").toString();
 
             putParam.put("value", apiKey);
-            RestUtil.exchange("http://"+localIp+":"+serverPort+"/intellivix/updateApiKey/130", HttpMethod.PUT, MediaType.APPLICATION_JSON,putParam);
-            url = "ws://intellivix.iptime.org:2257/vaMetadata?api-key=" + apiKey + "&evtMeta=begun,ended,evtImg&faceMeta=recogRegistered";
+            RestUtil.exchange("http://"+localIp+":"+serverPort+"/intellivix/updateApiKey/183", HttpMethod.PUT, MediaType.APPLICATION_JSON,putParam);
+            url = "ws://1.213.164.187:7681/vaMetadata?api-key=" + apiKey + "evtMeta=begun,ended,evtImg&faceMeta=recogRegistered";
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -140,7 +144,7 @@ public class IntellivixWebsocketEventClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        log.info("connected url : {}", url);
         return url;
     }
 }

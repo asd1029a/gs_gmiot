@@ -6,7 +6,7 @@ import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
-import com.danusys.web.commons.api.util.SoapXmlDataUtil;
+import com.danusys.web.commons.api.util.XmlDataUtil;
 import com.danusys.web.commons.app.StrUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,6 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.soap.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -79,7 +78,7 @@ public class SoapApiExecutor implements ApiExecutor  {
                         elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode(apiReq.getValue());
 
                     } else if(apiReq.getDataType() == DataType.SOAP_DATA_PATH) {
-                        List<LogicalfolderDTO.Logicalpoints.Lpt> lpts = SoapXmlDataUtil.getGmSoapPostList(apiReq.getValue());
+                        List<LogicalfolderDTO.Logicalpoints.Lpt> lpts = XmlDataUtil.getGmSoapPostList(apiReq.getValue());
                         List<String> pointPaths = lpts.stream().map(m -> m.getPth()).collect(toList());
                         for(String path : pointPaths) {
                             elRequest.addChildElement(apiReq.getFieldMapNm()).addTextNode("point:" + path);

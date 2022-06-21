@@ -1,5 +1,6 @@
 package com.danusys.web.commons.api.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Data;
@@ -37,6 +38,8 @@ public class FacilityOpt {
     @Column
     private Integer facilityOptType;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
+    @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp insertDt;
 
     @OneToOne(fetch = FetchType.EAGER)
