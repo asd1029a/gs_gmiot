@@ -1,9 +1,9 @@
 package com.danusys.web.commons.api.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,23 +17,24 @@ import static java.util.stream.Collectors.toList;
  * Date : 2022/06/03
  * Time : 10:51 AM
  */
+@Slf4j
 public class IpCheckedUtil {
 
-    public static void main(String[] args) {
-        List<Map<String, Object>> ips = new ArrayList<>();
-        Map<String, Object> map = null;
-
-        for(int i=0; i<3; i++) {
-            map = new HashMap<>();
-            map.put("ip", "127.0.0.1");
-            ips.add(map);
-        }
-
-        List<Map<String, Object>> result = ipCheckedList(ips);
-
-        System.out.println(result);
-
-    }
+//    public static void main(String[] args) {
+//        List<Map<String, Object>> ips = new ArrayList<>();
+//        Map<String, Object> map = null;
+//
+//        for(int i=0; i<3; i++) {
+//            map = new HashMap<>();
+//            map.put("ip", "127.0.0.1");
+//            ips.add(map);
+//        }
+//
+//        List<Map<String, Object>> result = ipCheckedList(ips);
+//
+//        System.out.println(result);
+//
+//    }
 
     private static int PING_CHECKED_TIME_OUT = 1000;
 
@@ -58,7 +59,7 @@ public class IpCheckedUtil {
         try {
             pingChecked = InetAddress.getByName(ip);
             isAlive = pingChecked.isReachable(timeout); //타임아웃 설정
-            System.out.println(ip  + " > " + isAlive);
+            log.trace(ip  + " > " + isAlive);
         } catch (IOException e) {
             e.printStackTrace();
         }
