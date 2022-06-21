@@ -3,8 +3,8 @@ const dashboardGimje = {
         dashboardGimje.create();
 
         dashboardGimje.interval(() => {
-            dashboardGimje.getDronCabinetStatus({}, (result) => {
-                dashboardGimje.createDronCabinetStatus(result);
+            dashboardGimje.getDroneCabinetStatus({}, (result) => {
+                dashboardGimje.createDroneCabinetStatus(result);
             });
 
             dashboardGimje.getCabinetRank({}, (result) => {
@@ -18,9 +18,6 @@ const dashboardGimje = {
         dashboardGimje.createMap('dashDroneStationMap');
         //});
     }
-    , isValidCnt: (value) => {
-        return value === '' || value == null || value === 0 || value === undefined ? '-' : value;
-    }
     , interval: (callback, interval) => {
         return this.setTimeoutId = setTimeout(function() {
             callback();
@@ -28,17 +25,17 @@ const dashboardGimje = {
         }, interval);
     }
     , create: () => {
-        dashboardGimje.getDronCabinetStatus({}, (result) => {
-            dashboardGimje.createDronCabinetStatus(result);
+        dashboardGimje.getDroneCabinetStatus({}, (result) => {
+            dashboardGimje.createDroneCabinetStatus(result);
         });
 
         dashboardGimje.getCabinetRank({}, (result) => {
             dashboardGimje.createCabinetRank(result);
         });
     }
-    , getDronCabinetStatus: (param, pCallback) => {
+    , getDroneCabinetStatus: (param, pCallback) => {
         $.ajax({
-            url : "/dashboard/getDronCabinetStatus"
+            url : "/dashboard/getDroneCabinetStatus"
             , type : "POST"
             , data : JSON.stringify(param)
             , contentType : "application/json; charset=utf-8"
@@ -49,16 +46,16 @@ const dashboardGimje = {
 
         });
     }
-    , createDronCabinetStatus: (pObj) => {
+    , createDroneCabinetStatus: (pObj) => {
         $.each(pObj, (idx, obj) => {
-            $('#dronStatus1 p.value').html(dashboardGimje.isValidCnt(obj.flyCnt)+'<span>개</span>');
-            $('#dronStatus2 p.value').html(dashboardGimje.isValidCnt(obj.fireCnt)+'<span>건</span>');
+            $('#dronStatus1 p.value').html(stringFunc.toString(obj.flyCnt)+'<span>개</span>');
+            $('#dronStatus2 p.value').html(stringFunc.toString(obj.fireCnt)+'<span>건</span>');
             $('#cabinetStatus1 ul.count').html(
-                '<li>'+dashboardGimje.isValidCnt(obj.oamDangerCnt)+'<span>누설전류</span></li>'
-                +'<li>'+dashboardGimje.isValidCnt(obj.amnDangerCnt)+'<span>과전류</span></li>');
+                '<li>'+stringFunc.toString(obj.oamDangerCnt)+'<span>누설전류</span></li>'
+                +'<li>'+stringFunc.toString(obj.amnDangerCnt)+'<span>과전류</span></li>');
             $('#cabinetStatus2 ul.count').html(
-                '<li>'+dashboardGimje.isValidCnt(obj.oamWarnCnt)+'<span>누설전류</span></li>'
-                +'<li>'+dashboardGimje.isValidCnt(obj.amnWarnCnt)+'<span>과전류</span></li>');
+                '<li>'+stringFunc.toString(obj.oamWarnCnt)+'<span>누설전류</span></li>'
+                +'<li>'+stringFunc.toString(obj.amnWarnCnt)+'<span>과전류</span></li>');
         });
     }
     , getCabinetRank:(param, pCallback) => {
@@ -76,7 +73,9 @@ const dashboardGimje = {
     }
     , createCabinetRank:(pObj) => {
         const $target = $("#cabinetRank");
-        $target.html("");
+        if(pObj.length===0) $target.html("<div class=pole_list'><p>정보없음</p></div>");
+        else $target.html("");
+
         let targetHtml = "";
         $.each(pObj, (idx, obj) => {
             targetHtml +=

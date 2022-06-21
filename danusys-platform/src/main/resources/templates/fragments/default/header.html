@@ -9,7 +9,8 @@
         <ul class="gnm">
             <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
                 <li sec:authorize="hasAnyRole('ROLE_dashboard_rw', 'ROLE_dashboard_r-')" id="dashboard">
-                    <a href="/pages/dashboard/dashboard_facility">대시보드</a>
+                    <a th:if="${municipality == '41210000' or municipality == '47210000' or municipality == '26290000'}" href="/pages/dashboard/dashboard_facility">대시보드</a>
+                    <a th:if="${municipality == '45210000'}" href="/pages/dashboard/dashboard_drone">대시보드</a>
                 </li>
                 <li sec:authorize="hasAnyRole('ROLE_mntr_rw, ROLE_mntr_r-')" id="mntr">
                     <a href="/pages/mntr">관제</a>

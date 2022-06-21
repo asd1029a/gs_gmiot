@@ -18,6 +18,10 @@ const dashboard = {
                 sliderId4 = dashboard.createChartStatusCnt(result,'statusCnt4', sliderId4);
             });
 
+            dashboard.getListFloatingPopulation({}, (result) => {
+                dashboard.reloadCharFloatingPopulation(result);
+            });
+
             dashboard.getListStation({}, (result) => {
                 dashboard.reloadCharStation(result);
             });
@@ -131,14 +135,18 @@ const dashboard = {
     //상단 생성
     , createChartStatusCnt : (pObj, target, sliderId) => {
         const $statusCnt = $("#"+target);
-        $statusCnt.html("");
+        if(pObj.length===0) $statusCnt.html("<div><p class='title'>정보없음</p></div>");
+        else $statusCnt.html("");
+
         let htmlStatusCnt = "";
         $.each(pObj, (idx, obj) => {
             const tempTotalCnt = obj.totalCnt>0?' '+obj.totalCnt:'';
+            const unitHtml = obj.unit==null||obj.unit===""?'':'<span class="unit">'+obj.unit+'</span>';
+            const totCntHtml = tempTotalCnt==null||tempTotalCnt===""?'':'<span>'+tempTotalCnt+'</span>';
             htmlStatusCnt +=
                 '<div>' +
-                '<p class="title">'+obj.name+'<span>'+obj.subName+'</span></p>' +
-                '<p class="value">'+obj.value+'<span>'+obj.unit+tempTotalCnt+'</span></p>' +
+                '<p class="title">'+stringFunc.changeXSSOutputValue(obj.name)+'<span>'+obj.subName+'</span></p>' +
+                '<p class="value">'+stringFunc.toString(obj.value) + unitHtml + totCntHtml +'</p>' +
                 '</div>';
         });
         $statusCnt.append(htmlStatusCnt);
@@ -153,6 +161,7 @@ const dashboard = {
                 autoControls: true,
                 stopAutoOnClick: true,
                 pager: true,
+                pause: 5000,
                 slideWidth: '456.5' //css에도 max지정 해둔 상태
             });
         }
@@ -162,13 +171,24 @@ const dashboard = {
 
     //유동인구 차트
     , getListFloatingPopulation : (param, pCallback) =>  {
-        let result = JSON.parse('{' +
+        $.ajax({
+            url : "/dashboard/getFloatingPopulation"
+            , type : "POST"
+            , data : JSON.stringify(param)
+            , contentType : "application/json; charset=utf-8"
+            , async : false
+        }).done((result) => {
+            pCallback(result.data);
+        }).fail((result)=> {
+            //console.log("대기오염 정보수신에 실패했습니다." + result);
+        });
+        /*let result = JSON.parse('{' +
             '"xData":[{"name":"스마트 가로등 1","data":[4, 5, 3, 4, 3, 6, 1, 0, 6, 8, 11, 10]}' +
             ',{"name":"스마트 가로등 2","data":[5, 1, 2, 2, 13, 8, 2, 3, 6, 1, 3, 5]}' +
             ',{"name":"스마트 가로등 3","data":[8, 5, 7, 9, 7, 3, 6, 4, 8, 5, 4, 4]}' +
             ',{"name":"스마트 가로등 4","data":[1, 7, 4, 9, 5, 8, 2, 7, 1, 6, 5, 7]}' +
             ']}');
-        pCallback(result);
+        pCallback(result);*/
     }
     , createCharFloatingPopulation : (pObj) => {
         const options = {
@@ -187,9 +207,19 @@ const dashboard = {
                 },
                 background: "#1a1b1d"
             },
+            colors: ['#00E396','#FEB019','#FF4560','#775DD0',
+                '#3F51B5','#03A9F4','#4CAF50','#F9CE1D','#FF9800',
+                '#33B2DF','#546E7A','#D4526E','#13D8AA','#A5978B',
+                '#4ECDC4','#C7F464','#81D4FA','#546E7A','#FD6A6A',
+                '#2B908F','#F9A3A4','#90EE7E','#FA4443','#69D2E7',
+                '#449DD1','#F86624','#EA3546','#662E9B','#C5D86D',
+                '#D7263D','#1B998B','#2E294E','#F46036','#E2C044',
+                '#662E9B','#F86624','#F9C80E','#EA3546','#43BCCD',
+                '#5C4742','#A5978B','#8D5B4C','#5A2A27','#C4BBAF',
+                '#A300D6','#7D02EB','#5653FE','#2983FF','#00B1F2'],
             theme: {
-                mode: "dark",
-                palette : 'palette3'
+                mode: "dark"
+                //,palette : 'palette3'
             },
             dataLabels: {
                 enabled: false
@@ -198,9 +228,14 @@ const dashboard = {
                 curve: 'straight'
             },
             legend: {
-                tooltipHoverFormatter: function(val, opts) {
-                    return val + ' : <strong>' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '</strong> 명'
-                }
+                /*formatter: function(seriesName, opts) {
+                    return [stringFunc.getCutByteLength(seriesName, 10)]
+                }*/
+                //showForZeroSeries: false
+                // ,tooltipHoverFormatter: function(val, opts) {
+                //     debugger;
+                //     return opts.w.globals.seriesNames[opts.seriesIndex] + ' : <strong>' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '</strong> 명'
+                // }
             },
             markers: {
                 size: 0,
@@ -223,12 +258,19 @@ const dashboard = {
         };
 
         options.series = [];
-        options.series = pObj.xData;
+        options.series = pObj;
+        options.chart.id = 'floatingPopulationChart';
 
-        //let chart = new ApexCharts(document.querySelector("#"+key), options);
         let chart = new ApexCharts(document.querySelector("#floatingPopulationChart"), options);
         chart.render();
     }
+    , reloadCharFloatingPopulation : (pObj) => {
+            const newOptions = {};
+            newOptions.series = [];
+            newOptions.series = pObj;
+
+            ApexCharts.exec("floatingPopulationChart", 'updateOptions', newOptions);
+        }
 
     //장소별 설치 현황 차트
     , getListStation : (param, pCallback) =>  {
@@ -282,11 +324,17 @@ const dashboard = {
                         return val + " 개소"
                     }
                 }
+            },
+            legend: {
+                markers: {
+                    radius: 12
+                }
             }
         };
 
         options.series = [];
         options.series = pObj;
+        options.chart.id = 'stationChart';
 
         let chart = new ApexCharts(document.querySelector("#stationChart"), options);
         chart.render();
@@ -296,7 +344,7 @@ const dashboard = {
         newOptions.series = [];
         newOptions.series = pObj;
 
-        ApexCharts.exec(document.querySelector("#stationChart"), 'updateOptions', newOptions);
+        ApexCharts.exec("stationChart", 'updateOptions', newOptions);
     }
 
     //환경 센서
@@ -401,10 +449,11 @@ const dashboard = {
             , "bad" : {"title" : "나쁨", "color": "#FFB302"}
             , "tooBad" : {"title" : "매우나쁨", "color": "#FF3838"}
             , "danger": {"title" : "매우나쁨(위험)", "color": "#8B62FF"}
+            , "noData": {"title" : "정보없음", "color": "#FFFFFF"}
         }
         $.each(pObj, (key, val) => {
             if(key.indexOf("Value") < 0) { //일시
-                $("#"+key).text(val);
+                $("#"+key).text(stringFunc.changeXSSOutputValue(val));
             } else {
                 options.series = [];
                 options.labels = [];
@@ -426,12 +475,13 @@ const dashboard = {
             , "bad" : {"title" : "나쁨", "color": "#FFB302"}
             , "tooBad" : {"title" : "매우나쁨", "color": "#FF3838"}
             , "danger": {"title" : "매우나쁨(위험)", "color": "#8B62FF"}
+            , "noData": {"title" : "정보없음", "color": "#FFFFFF"}
         }
 
         $.each(pObj, (key, val) => {
             const newOptions = {};
             if(key.indexOf("Value") < 0) {
-                $("#"+key).text(val);
+                $("#"+key).text(stringFunc.changeXSSOutputValue(val));
             } else {
                 newOptions.series = [];
                 newOptions.labels = [];

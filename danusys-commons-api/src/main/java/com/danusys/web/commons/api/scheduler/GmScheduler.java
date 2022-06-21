@@ -14,6 +14,7 @@ import com.danusys.web.commons.app.RestUtil;
 import com.danusys.web.commons.app.StrUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -28,7 +29,7 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Component
-@Profile(value = {"local"})
+@Profile(value = {"gm", "local"})
 @RequiredArgsConstructor
 public class GmScheduler {
     private final FacilityService facilityService;
@@ -44,11 +45,18 @@ public class GmScheduler {
     private static int FACILITY_OPT_TYPE_POWER = 175; // power : true, false
     private static long FACILITY_SEQ = 2219L; // 나중에 실제 ip넣을때 실제 facilitySeq으로 바꿔야함
 
+    @Value("${server.port}")
+    private String SERVICE_PORT;
+    @Value("${service.ip}")
+    private String SERVICE_IP;
+    @Value("${facility.xml.path}")
+    private String FACILITY_XML_PATH;
+
 
     /**
      * 시설물 상대 동기화
      */
-    @Scheduled(fixedDelay = 30 * 1000 * 60)
+    @Scheduled(fixedDelay = 30 * 1000)
     public void facilityStatusSync() {
         log.trace("---------------------gm scheduler---------------------");
         this.facilitySync();
@@ -122,10 +130,10 @@ public class GmScheduler {
                             String facilityOptName = dataGroup.stream().filter(f -> f.getCodeSeq() == Long.parseLong(facilityKind)).collect(toList()).get(0).getCodeId();
                             String facilityOptValue = StrUtils.getStr(fData.get("presentValue"));
 
-                            log.trace(stationId + "#### > opt data : {}, {}, {}, {}", facilityOptName, facility.getFacilitySeq(), "stationInfo_" + facilityOptName, facilityOptValue);
+                            log.trace(stationId + "#### > opt data : {}, {}, {}, {}", facilityOptName, facility.getFacilitySeq(), facilityOptName, facilityOptValue);
                             facilityOptService.save(FacilityOpt.builder()
                                 .facilitySeq(facility.getFacilitySeq())
-                                .facilityOptName("stationInfo_" + facilityOptName)
+                                .facilityOptName(facilityOptName)
                                 .facilityOptValue(facilityOptValue)
                                 .facilityOptType(FACILITY_OPT_TYPE_ACCUMULATE_DATA)
                                 .build());
@@ -163,34 +171,34 @@ public class GmScheduler {
     private List findFacilityData(String stationId) {
         Map<String, Object> param = new HashMap<>();
         param.put("callUrl", "gmGetPointValues");
-        param.put("pointPaths", "data/gm_soap/" + stationId + ".xml"); //TODO 서버 경로로 수정
+        param.put("pointPaths", FACILITY_XML_PATH + stationId + ".xml"); //TODO 서버 경로로 수정
         log.info("요청 데이터 : {}", param);
 
         /**
          * 광명 자자체용
          */
-//        ResponseEntity<Map> responseEntity = null;
-//        List<Map<String, Object>> result = null;
-//        try {
-//            //TODO 운영계는 서버 IP로 변경
-//            responseEntity = RestUtil.exchange("http://localhost:8400/api/call", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
-//            result = (List) (new HashMap<>((Map) responseEntity.getBody().get("return"))).get("pointValues");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        ResponseEntity<Map> responseEntity = null;
+        List<Map<String, Object>> result = null;
+        try {
+            //TODO 운영계는 서버 IP로 변경
+            responseEntity = RestUtil.exchange("http://"+ SERVICE_IP +":"+ SERVICE_PORT +"/api/call", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
+            result = (List) (new HashMap<>((Map) responseEntity.getBody().get("return"))).get("pointValues");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         /**
          * 내부 개발용
          */
-        ResponseEntity<Map> responseEntity = null;
-        try {
-            responseEntity = RestUtil.exchange("http://localhost:8400/api/gmPointValues.json", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
-        List<Map<String, Object>> result = (List) (new HashMap<>((Map) responseEntity.getBody().get("return"))).get("pointValues");
+//        ResponseEntity<Map> responseEntity = null;
+//        try {
+//            responseEntity = RestUtil.exchange("http://localhost:8400/api/gmPointValues.json", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//
+//        List<Map<String, Object>> result = (List) (new HashMap<>((Map) responseEntity.getBody().get("return"))).get("pointValues");
 
         log.trace("result : {}", result.size());
         log.trace("result : {}", result);

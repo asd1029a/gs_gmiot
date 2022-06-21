@@ -57,6 +57,12 @@ public class DashboardController {
         return ResponseEntity.ok().body(dashboardService.getStatusCnt4(paramMap));
     }
 
+    //시간별 유동인구
+    @PostMapping(value = "/getFloatingPopulation")
+    public ResponseEntity<EgovMap> getFloatingPopulation(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(dashboardService.getFloatingPopulation(paramMap));
+    }
+
     //동별 설치 개소 카운트
     @PostMapping(value = "/getStation")
     public ResponseEntity<EgovMap> getStationCnt(@RequestBody Map<String, Object> paramMap) throws Exception {
@@ -70,9 +76,9 @@ public class DashboardController {
     }
 
     //김제-드론&분전반 상태값
-    @PostMapping(value = "/getDronCabinetStatus")
-    public ResponseEntity<EgovMap> getDronCabinetStatus(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(dashboardService.getDronCabinetStatus(paramMap));
+    @PostMapping(value = "/getDroneCabinetStatus")
+    public ResponseEntity<EgovMap> getDroneCabinetStatus(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(dashboardService.getDroneCabinetStatus(paramMap));
     }
 
     //김제-분전반 전력량계

@@ -796,7 +796,7 @@ var stringFunc = {
         }
         */
         let result = "";
-        if (tStr != null && tStr != "null" && typeof(tStr) != "undefined" && typeof(tStr) != null) {
+        if (tStr != null && tStr != "null" && typeof(tStr) != "undefined" && typeof(tStr) != null && tStr != "") {
             result = tStr;
         } else {
             result = "-";
@@ -895,7 +895,7 @@ var stringFunc = {
     },
     changeXSSInputValue: (str, level) => {
         let returnStr = "";
-        if (typeof(str) === "String") {
+        if (typeof(str) === "string") {
             if (typeof level === "undefined" || level === 0) {
                 returnStr = str.replace(/&/gi, '&amp;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;').replace(/"/gi, '&quot;').replace(/'/gi, '&apos;');
             } else if (typeof level !== "undefined" && level === 1) {
@@ -909,8 +909,8 @@ var stringFunc = {
     },
     changeXSSOutputValue: (str) => {
         let returnStr = "";
-        if (typeof(str) === "String") {
-            returnStr = str.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&apos;/gi, '\'').replace(/&nbsp;/gi, ' ');
+        if (typeof(str) === "string") {
+            returnStr = str.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&apos;/gi, '\'').replace(/&nbsp;/gi, ' ').replace(/&#40;/gi, '(').replace(/&#41;/gi, ')');
         } else {
             returnStr = str;
         }
