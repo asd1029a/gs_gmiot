@@ -8,6 +8,7 @@ import org.springframework.core.io.Resource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -33,8 +34,9 @@ public class XmlDataUtil {
             final JAXBContext jaxbContext = JAXBContext.newInstance(LogicalfolderDTO.class); // JAXB Context 생성
             final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller(); // Unmarshaller Object 생성
 
-            final Resource resource = new ClassPathResource(xml_data_path);
-            final LogicalfolderDTO logicalfolder = (LogicalfolderDTO) unmarshaller.unmarshal(new FileReader(resource.getFile())); // unmarshall 메소드 호출
+//            final Resource resource = new ClassPathResource(xml_data_path);
+            final File file = new File(xml_data_path);
+            final LogicalfolderDTO logicalfolder = (LogicalfolderDTO) unmarshaller.unmarshal(new FileReader(file)); // unmarshall 메소드 호출
             final LogicalfolderDTO.Logicalpoints logicalpoints = logicalfolder.getLogicalpoints();
 
             return logicalpoints.getLpts();

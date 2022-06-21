@@ -28,7 +28,7 @@
     <lpt id="LPa233589056318" kind=""    nm="IDU_바람세기" ty="2" pth="/ST1/OFa8/LPa233589056318" ref="/DDC_광명경찰서_14117/IDU_바람세기" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589056319" kind=""    nm="IDU_외부제어기실내온도" ty="2" pth="/ST1/OFa8/LPa233589056319" ref="/DDC_광명경찰서_14117/IDU_외부제어기실내온도" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589056320" kind=""    nm="IDU_실외기상태" ty="33" pth="/ST1/OFa8/LPa233589056320" ref="/DDC_광명경찰서_14117/IDU_실외기상태" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
-    <lpt id="LPa233589056321" kind="91"  nm="IDU_기동정지" ty="33" pth="/ST1/OFa8/LPa233589056321" ref="/DDC_광명경찰서_14117/IDU_기동정지" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
+    <lpt id="LPa233589056321" kind="91"  nm="에어컨" ty="33" pth="/ST1/OFa8/LPa233589056321" ref="/DDC_광명경찰서_14117/IDU_기동정지" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
     <lpt id="LPa233589056322" kind=""    nm="IDU_잠금" ty="33" pth="/ST1/OFa8/LPa233589056322" ref="/DDC_광명경찰서_14117/IDU_잠금" pms="RW" armen="N" histen="N" schen="N" lgen="Y" acten="N" histty="poll" histintv="0005"/>
   </logicalpoints>
   <groups/>

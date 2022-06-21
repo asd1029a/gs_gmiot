@@ -103,16 +103,16 @@ public class SoapApiExecutor implements ApiExecutor  {
                 }
             });
 
-            log.trace(":::::요청 xml:::::");
-            soapMessage.writeTo(System.out);
-            System.out.println("\n");
+//            log.trace(":::::요청 xml:::::");
+//            soapMessage.writeTo(System.out);
+//            System.out.println("\n");
 
             // SOAPMessage 를 requestURL 로 전송하고 서버쪽에서 내려보낸 정보가 담긴 SOAPMessage 객체를 얻음
             SOAPMessage responseMessage = soapConnection.call(soapMessage, targetURL);
 
-            log.trace(":::::응답 xml:::::");
-            responseMessage.writeTo(System.out);
-            System.out.println("\n");
+//            log.trace(":::::응답 xml:::::");
+//            responseMessage.writeTo(System.out);
+//            System.out.println("\n");
 
             SOAPBody resSoapBody = responseMessage.getSOAPBody();
             NodeList nodes0 = (NodeList) resSoapBody.getChildElements().next();

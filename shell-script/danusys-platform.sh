@@ -28,11 +28,9 @@ APP_CLASS_NAME=PlatformApplication
 APP_JAR="${APP_HOME}/${APP_NAME}-${APP_VER}.jar"
 # java home
 APP_JAVA=${JAVA_HOME}/bin/java
-# 날짜(YYYY-MM-DD)
-TODAY=`date +%Y-%m-%d`
 # 로그 파일
 #LOG="/home/${PROJECT_NAME}/${APP_NAME}-${PORT}.log"
-LOG="${APP_HOME}/log/${APP_NAME}-${PORT}-${TODAY}.log"
+LOG="${APP_HOME}/log/${APP_NAME}-${PORT}.log"
 # lock file
 LOCK="/home/${PROJECT_NAME}/lock/subsys/${PROJECT_NAME}-${APP_NAME}-${PORT}"
 # java options
