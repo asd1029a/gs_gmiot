@@ -6,17 +6,21 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.tomcat.util.http.fileupload.FileItem;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -262,6 +266,20 @@ public class FileUtil {
 
     }
 
+//    private MultipartFile getMultipartFile(String filePath, String fileName) throws IOException {
+//        File file = new File(filePath + fileName);
+//        FileItem fileItem = new DiskFileItem("file", Files.probeContentType(file.toPath()), false, file.getName(), (int) file.length(), file.getParentFile());
+//        try {
+//            InputStream input = new FileInputStream(file);
+//            OutputStream os = fileItem.getOutputStream();
+//            IOUtils.copy(input, os);
+//        } catch (IOException ex) {
+//
+//        }
+//        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+//        return multipartFile;
+//    }
+
     public static void fileDownloadWithFilePath(HttpServletResponse response, String fileName, String folderPath) {
 
         File file = new File(STATIC_EXTERNAL_FILE_PATH + folderPath + fileName);
@@ -437,5 +455,11 @@ public class FileUtil {
             Sheet sheet = wb.createSheet("sheet 1");
             return wb;
         }
+    }
+
+    public static String multiFileToBase64(MultipartFile file) throws IOException {
+        byte[] encodeBase64 = Base64.getEncoder().encode(file.getBytes());
+        return new String(encodeBase64, "UTF-8");
+
     }
 }
