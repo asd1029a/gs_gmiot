@@ -25,5 +25,5 @@ public interface UserRepository extends JpaRepository<User,Long> , JpaSpecificat
     List<User> findAllByUserNameLike(String userName);
 
     @Query(value = "select user_name from t_user where user_seq = :updateUserSeq",nativeQuery = true)
-    String findByUserName(int updateUserSeq);
+    String findUserName(int updateUserSeq);
 }

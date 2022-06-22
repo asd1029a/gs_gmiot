@@ -77,8 +77,8 @@ public class UserGroupService {
 
         List<GroupResponse> groupResponseList = userGroupRepository.findAll(spec).stream()
                 .map(GroupResponse::new).peek(userResponse -> {
-                    userResponse.setUpdateUserId(userRepository.findByUserName(userResponse.getUpdateUserSeq()));
-                    userResponse.setInsertUserId(userRepository.findByUserName(userResponse.getInsertUserSeq()));
+                    userResponse.setUpdateUserId(userRepository.findUserName(userResponse.getUpdateUserSeq()));
+                    userResponse.setInsertUserId(userRepository.findUserName(userResponse.getInsertUserSeq()));
                 })
                 .collect(Collectors.toList());
         resultMap.put("data", groupResponseList);
