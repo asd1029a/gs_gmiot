@@ -1,6 +1,8 @@
 package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.api.model.Facility;
+import com.danusys.web.commons.api.model.FacilityOpt;
+import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
 import com.danusys.web.commons.app.StrUtils;
@@ -26,6 +28,7 @@ public class StationController {
     private final StationService stationService;
     private final FacilityService facilityService;
     private final com.danusys.web.commons.api.service.FacilityService jpaFacilityService;
+    private final FacilityOptService facilityOptService;
 
     /**
      * 개소 : 개소 목록 조회
@@ -56,11 +59,15 @@ public class StationController {
             facilityParam.put("stationSeq",f.get("stationSeq").toString());
             facilityParam.put("popType","station");
             try {
-                String stationSeq = StrUtils.getStr(f.get("stationSeq"));
-                List<Facility> facilityList = jpaFacilityService.findByStationSeq(Long.parseLong(stationSeq));
-//                EgovMap facilityMap = facilityService.getList(facilityParam);
-//                List<Map<String, Object>> facilityList = new ArrayList<>();
-//                facilityList = (List<Map<String, Object>>) facilityMap.get("data");
+                EgovMap facilityMap = facilityService.getList(facilityParam);
+                List<Map<String, Object>> facilityList = new ArrayList<>();
+                facilityList = (List<Map<String, Object>>) facilityMap.get("data");
+
+                facilityList.stream().forEach(ff -> {
+                    String facilitySeq = StrUtils.getStr(ff.get("facilitySeq"));
+                    List<FacilityOpt> facilityOpts = facilityOptService.findByFacilitySeqLast(Long.parseLong(facilitySeq));
+                    ff.put("facilityOpts", facilityOpts);
+                });
 
                 f.put("facilityList", facilityList);
                 //해당개소의 시설물중 영상재생할 cctv가 있는가
