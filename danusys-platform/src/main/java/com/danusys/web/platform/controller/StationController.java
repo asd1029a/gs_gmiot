@@ -3,6 +3,7 @@ package com.danusys.web.platform.controller;
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.FileUtil;
+import com.danusys.web.commons.app.StrUtils;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
 import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.platform.service.station.StationService;
@@ -24,6 +25,7 @@ public class StationController {
 
     private final StationService stationService;
     private final FacilityService facilityService;
+    private final com.danusys.web.commons.api.service.FacilityService jpaFacilityService;
 
     /**
      * 개소 : 개소 목록 조회
@@ -54,20 +56,22 @@ public class StationController {
             facilityParam.put("stationSeq",f.get("stationSeq").toString());
             facilityParam.put("popType","station");
             try {
-                EgovMap facilityMap = facilityService.getList(facilityParam);
-                List<Map<String, Object>> facilityList = new ArrayList<>();
-                facilityList = (List<Map<String, Object>>) facilityMap.get("data");
+                String stationSeq = StrUtils.getStr(f.get("stationSeq"));
+                List<Facility> facilityList = jpaFacilityService.findByStationSeq(Long.parseLong(stationSeq));
+//                EgovMap facilityMap = facilityService.getList(facilityParam);
+//                List<Map<String, Object>> facilityList = new ArrayList<>();
+//                facilityList = (List<Map<String, Object>>) facilityMap.get("data");
 
                 f.put("facilityList", facilityList);
                 //해당개소의 시설물중 영상재생할 cctv가 있는가
-                facilityList.stream().forEach(fclt -> {
-                    //TODO facilityKind로 들어갈 이름 적용하기
-                    if(fclt.get("facilityKind") == "CCTV") {
-                        f.put("cctvVideoFlag", true);
-                    } else {
-                        f.put("cctvVideoFlag", false);
-                    }
-                });
+//                facilityList.stream().forEach(fclt -> {
+//                    //TODO facilityKind로 들어갈 이름 적용하기
+//                    if(fclt.getFacilityKind() == "CCTV") {
+//                        f.put("cctvVideoFlag", true);
+//                    } else {
+//                        f.put("cctvVideoFlag", false);
+//                    }
+//                });
             } catch (Exception e) {
                 e.printStackTrace();
             }

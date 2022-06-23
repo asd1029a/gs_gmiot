@@ -35,6 +35,11 @@ public class Facility implements Serializable {
     @Column(nullable = false)
     private Long facilityKind;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "facilityKind", referencedColumnName = "codeSeq", updatable = false, insertable = false)
+    @JsonManagedReference
+    private CommonCode facilityKindCode;
+
     @Column(nullable = false)
     private int facilityStatus;
 
