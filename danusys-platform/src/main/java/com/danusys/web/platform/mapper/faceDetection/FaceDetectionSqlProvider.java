@@ -4,29 +4,35 @@ import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.app.SqlUtil;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class FaceDetectionSqlProvider {
 
     public String selectListQry(Map<String, Object> paramMap) {
-        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
-
+        ArrayList faceKind = CommonUtil.valiArrNull(paramMap, "faceKind");
         SQL sql = new SQL() {{
             SELECT("*");
             FROM("t_face_detection");
             WHERE("face_status != 2");
+            if (faceKind != null && !faceKind.isEmpty()){
+                WHERE("face_kind" + SqlUtil.getWhereInStr(faceKind));
+            }
             ORDER_BY("face_seq");
         }};
         return sql.toString();
     }
 
     public String selectCountQry(Map<String, Object> paramMap) {
-        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
+        ArrayList faceKind = CommonUtil.valiArrNull(paramMap, "faceKind");
 
         SQL sql = new SQL() {{
             SELECT("COUNT(*)");
             FROM("t_face_detection");
             WHERE("face_status != 2");
+            if (faceKind != null && !faceKind.isEmpty()){
+                WHERE("face_kind" + SqlUtil.getWhereInStr(faceKind));
+            }
         }};
         return sql.toString();
     }

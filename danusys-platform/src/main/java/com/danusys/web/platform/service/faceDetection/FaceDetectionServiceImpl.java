@@ -194,8 +194,7 @@ public class FaceDetectionServiceImpl implements FaceDetectionService {
             throw new Exception();
         }
         String body = responseEntity.getBody().toString();
-        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {
-        });
+        Map<String, Object> resultBody = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {});
         return CommonUtil.validOneNull(resultBody, "apiKey");
     }
 }
