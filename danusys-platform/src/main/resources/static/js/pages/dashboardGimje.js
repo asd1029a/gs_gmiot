@@ -92,7 +92,7 @@ const dashboardGimje = {
         $target.append(targetHtml);
     }
     , createMap : (type) => {
-        let map = new mapCreater(type, 0, $("#sigunCode").val());
+        let map = new mapCreater(type, 0);//, $("#sigunCode").val());
         //실제 드론 분전함 data
         let paramObj;
         $.ajax({
@@ -128,7 +128,6 @@ const dashboardGimje = {
             });
 
             const fitExtent = featureSource.getExtent();
-
             map.addLayer(layer);
             map.map.getView().fit(fitExtent, map.map.getSize());
             map.map.getView().setZoom(map.map.getView().getZoom() - 0.5);
