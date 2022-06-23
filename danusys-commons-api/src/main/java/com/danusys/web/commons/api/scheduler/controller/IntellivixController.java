@@ -1,7 +1,7 @@
-package com.danusys.web.platform.controller;
+package com.danusys.web.commons.api.scheduler.controller;
 
 import com.danusys.web.commons.api.dto.ApiParamDto;
-import com.danusys.web.platform.service.intellivix.IntellivixService;
+import com.danusys.web.commons.api.scheduler.service.IntellivixService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
