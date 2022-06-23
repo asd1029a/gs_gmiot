@@ -86,20 +86,22 @@ public class ConfigController {
             String key = f.get("name").toString();
             String value = f.get("value").toString();
 
-            Pattern p = Pattern.compile("\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])");
-            Matcher m = p.matcher(value);
-            String ipClassCD = "";
-            int sum = 0;
-
-            while(m.find()){
-                if(sum > 0){
-                    ipClassCD += m.group();
-                }
-                sum++;
-            }
+//            Pattern p = Pattern.compile("\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])");
+//            Matcher m = p.matcher(value);
+//
+//            String ipClassCD = "";
+//            int sum = 0;
+//            while(m.find()){
+//                if(sum > 0){
+//                    ipClassCD += m.group();
+//                }
+//                sum++;
+//            }
+                    System.out.println("***************");
             if(key.equals("turnUrl") || key.equals("mediaServerWsUrl")){
                 if(videoNetInfo != null){
-                    value = value.replaceAll(ipRegExp, videoNetInfo.get("ip").toString() + ipClassCD);
+//                    value = value.replaceAll(ipRegExp, videoNetInfo.get("ip").toString() + ipClassCD);
+                    value = value.replaceAll(ipRegExp, videoNetInfo.get("ip").toString());
                 }
             }
             result.put(key, value);
