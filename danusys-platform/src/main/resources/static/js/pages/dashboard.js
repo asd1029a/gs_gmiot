@@ -543,12 +543,14 @@ const dashboard = {
             });
         }
 
-        const fitExtent = featureSource.getExtent();
-
         map.addLayer(layer);
-        map.map.getView().fit(fitExtent, map.map.getSize());
-        map.map.getView().setZoom(map.map.getView().getZoom() - 0.5);
+        const featureLen = featureSource.getFeatures().length;
+        if(featureLen > 0) {
+            const fitExtent = featureSource.getExtent();
 
+            map.map.getView().fit(fitExtent, map.map.getSize());
+        }
+        map.map.getView().setZoom(map.map.getView().getZoom() - 0.5);
         window[type] = map;
     }
 }

@@ -105,6 +105,7 @@ public class FacilitySqlProvider {
             LEFT_OUTER_JOIN("t_station t3 on t1.station_seq = t3.station_seq");
             LEFT_OUTER_JOIN("v_administ t4 on t1.administ_zone = t4.code_value");
             LEFT_OUTER_JOIN("v_station_kind t5 on t3.station_kind = t5.code_seq");
+            LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
             if (facilityKind != null && !facilityKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
                 if (facilityKind.contains("lamp_road")) {
@@ -285,14 +286,14 @@ public class FacilitySqlProvider {
             SELECT("t1.facility_seq, t1.facility_id, t1.administ_zone, t1.facility_image" +
                     ", t1.facility_instl_info, t1.facility_instl_dt, t1.facility_status" +
                     ", t1.latitude, t1.longitude, t1.insert_dt, t2.code_value AS facility_kind" +
-                    ", t2.code_name AS facility_kind_name, t6.emd_nm AS administ_zone_name");
+                    ", t2.code_name AS facility_kind_name, t6.code_name AS administ_zone_name");
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq" +
                     " AND t2.code_value = '" + facilityKind + "'");
             LEFT_OUTER_JOIN("t_station t5 on t1.station_seq = t5.station_seq");
 //            현재 뷰테이블과 시설물 구역이 맞지 않아 임시로 조회
-//            LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
-            LEFT_OUTER_JOIN("t_area_emd t6 on t1.administ_zone = t6.emd_cd");
+            LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
+//            LEFT_OUTER_JOIN("t_area_emd t6 on t1.administ_zone = t6.emd_cd");
             if("mod".equals(paramMap.get("type"))) {
                 WHERE("t1.station_seq IS NULL " +
                         "OR t1.station_seq = " + paramMap.get("stationSeq"));

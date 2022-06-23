@@ -240,6 +240,9 @@
 
 .area_video{margin: auto; padding: 10px; box-sizing: border-box; border-bottom: 2px solid #292c34;}
 .area_video div{width: 412px; height: 232px; background: pink;}
+.area_video div .video_wrap{width: 100%; height: 100%;}
+.area_video div .video_wrap video{width: 100%; height: 100%; object-fit: fill;}
+
 .area_video_detection{width: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-gap: 10px;}
 .area_video_detection div{width: auto;}
 .area_video_drone{height: inherit;}

@@ -1,4 +1,4 @@
-package com.danusys.web.platform.service.intellivix;
+package com.danusys.web.commons.api.scheduler.service;
 
 import com.danusys.web.commons.api.dto.ApiParamDto;
 import com.danusys.web.commons.api.model.ApiParam;

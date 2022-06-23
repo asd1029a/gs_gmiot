@@ -321,7 +321,7 @@ public class CctvDTO {
                 @XmlElement(name = "Lon")
                 private String longitude;
 
-                @XmlElement(name = "UsePtz")
+                @XmlElement(name = "UsePTZ")
                 private String isPtz;
 
                 @XmlElement(name = "SystemGroup")

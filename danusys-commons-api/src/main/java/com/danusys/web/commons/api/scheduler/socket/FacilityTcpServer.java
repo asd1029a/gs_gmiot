@@ -8,6 +8,7 @@ import com.danusys.web.commons.app.IOUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedOutputStream;
@@ -28,6 +29,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
+@Profile(value = {"bsng", "gm"})
 public class FacilityTcpServer {
     private int threadID = 0;
     private ServerSocket server;
