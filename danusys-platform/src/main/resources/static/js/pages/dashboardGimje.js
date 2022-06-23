@@ -96,7 +96,7 @@ const dashboardGimje = {
         //실제 드론 분전함 data
         let paramObj;
         $.ajax({
-            url : "/config/mntrPageTypeData/drone"
+            url : "/config/mntrPageTypeData/smartPower"
             , type : "GET"
             , async : false
         }).done((result) => {
