@@ -206,9 +206,11 @@ var video = {
 			}
 			, audio : false
 			, iceServers : [
-				{turnUrl : window.localStorage.getItem("turnUrl")},
-				{credential : window.localStorage.getItem("credential")},
-				{username : window.localStorage.getItem("username")}
+				{
+					"urls" : [window.localStorage.getItem("turnUrl")],
+					"credential" : window.localStorage.getItem("credential"),
+					"username" : window.localStorage.getItem("username")
+				}
 			]
 		};
 

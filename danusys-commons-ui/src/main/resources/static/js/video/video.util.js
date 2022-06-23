@@ -147,13 +147,13 @@ var videoManager = {
 					bText.html('OFF');
 					bText.removeClass('on').addClass('off');
 					$(this).removeClass('active');
-					$(parent).children('.video-wrap').children('.cctv-btn-wrap').removeClass('active');
+					$(parent).children('.video_wrap').children('.cctv-btn-wrap').removeClass('active');
 					mapManager.map.removeLayer(data.directionLayer);
 				} else {
 					bText.html('ON');
 					bText.removeClass('off').addClass('on');
 					$(this).addClass('active');
-					$(parent).children('.video-wrap').children('.cctv-btn-wrap').addClass('active');
+					$(parent).children('.video_wrap').children('.cctv-btn-wrap').addClass('active');
 				}
 			},
 		});
@@ -332,11 +332,11 @@ var videoManager = {
 		// 	return false;
 		// }
 		
-		const viewId = 'video' + option.facilitySeq;
+		const viewId = 'video' + data.facilitySeq;
 		
 		option.viewId = viewId.replace(/\(/g, '').replace(/\)/g, '');
 		
-		option.player = new videoManager.player(option.kind);
+		option.player = new videoManager.player(data.kind);
 		
 		option.player.createElements(option);
 		// option.player.createPtzControls(option);
@@ -705,7 +705,7 @@ var videoManager = {
 }
 
 /**
- * Danusys Player
+ * Common Player
  * @author -
  * @version 0.0.1
  * @class commonPlayer
@@ -725,30 +725,23 @@ var commonPlayer = {
 		// data.clientSessionId = videoManager.prop.clientIp;
 		//data.mediaServerWsUrl = 'ws://200.0.30.110:8888/kurento'
 
-		const apiOption = {
-			callUrl : "/cudo/media/play-broadcast",
-			videoId : option.videoId,
-			jobId : option.jobId
-		}
-
-		$.ajax({
-			url: `${location.origin}/api/call`,
-			method: "POST",
-			contentType: "application/json",
-			data: JSON.stringify(apiOption)
-		}).done((d) => {
-			debugger;
-			//video.directVideoStart(data, viewId);
-		});
-
-		// if (isDirect) {
-		// } else if(timestamp) {
-		// 	data.sTime = moment(timestamp.sTime, 'YYYY.MM.DD.HH.mm.ss').format('YYYY.MM.DD.HH.mm.ss');
-		// 	data.eTime = moment(timestamp.eTime, 'YYYY.MM.DD.HH.mm.ss').format('YYYY.MM.DD.HH.mm.ss');
-		// 	video.singleSaveVideoStart(data, viewId);
-		// } else {
-		// 	video.singleVideoStart(data, viewId);
+		// const apiOption = {
+		// 	callUrl : "/cudo/media/play-broadcast",
+		// 	videoId : option.videoId,
+		// 	jobId : option.jobId
 		// }
+		//
+		// $.ajax({
+		// 	url: `${location.origin}/api/call`,
+		// 	method: "POST",
+		// 	contentType: "application/json",
+		// 	data: JSON.stringify(apiOption)
+		// }).done((d) => {
+		// 	debugger;
+		// 	//video.directVideoStart(data, viewId);
+		// });
+
+		video.directVideoStart(data, viewId);
 
 		$('#' + viewId).data('data', data);
 	},
@@ -773,10 +766,10 @@ var commonPlayer = {
 		const viewId = option.viewId;
 		const parent = option.parent;
 
-		const video = $('<video>').addClass('video-content').attr({'id': viewId, 'autoplay': true, 'muted': true});
-		//const video = $('<video>').addClass('video-content').attr({'id': viewId, 'title': data.fcltId});
+		const video = $('<video>').addClass('video_content').attr({'id': viewId, 'autoplay': true, 'muted': true});
+		//const video = $('<video>').addClass('video_content').attr({'id': viewId, 'title': data.fcltId});
 
-		const popupVideo = $('<div>').addClass('video-wrap').append(video);
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
 
 		parent.append(popupVideo);
 	}
@@ -858,10 +851,10 @@ var danuPlayer = {
 		const viewId = option.viewId;
 		const parent = option.parent;
 
-		const video = $('<video>').addClass('video-content').attr({'id': viewId, 'autoplay': true, 'muted': true});
-		//const video = $('<video>').addClass('video-content').attr({'id': viewId, 'title': data.fcltId});
+		const video = $('<video>').addClass('video_content').attr({'id': viewId, 'autoplay': true, 'muted': true});
+		//const video = $('<video>').addClass('video_content').attr({'id': viewId, 'title': data.fcltId});
 		
-		const popupVideo = $('<div>').addClass('video-wrap').append(video);
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
 		
 		parent.append(popupVideo);
 	},
@@ -945,7 +938,7 @@ var danuPlayer = {
 			});
 		}
 		
-		parent.children('.video-wrap').append(btnWrap);
+		parent.children('.video_wrap').append(btnWrap);
 	},
 	/**
 	 * 카메라의 현재 방향 PTZ 값을 가져오는 함수(Software 카메라 일 경우에만 동작)
@@ -1012,7 +1005,7 @@ var danuPlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video-wrap').children('.cctv-btn-wrap');
+		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
 		// var $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
@@ -1126,10 +1119,10 @@ var vurixPlayer = {
 		const viewId = option.viewId;
 		const parent = option.parent;
 
-		const video = $('<video>').addClass('video-content').attr({'id': viewId, 'autoplay': true, 'muted': true});
-		//const video = $('<video>').addClass('video-content').attr({'id': viewId, 'title': data.fcltId});
+		const video = $('<video>').addClass('video_content').attr({'id': viewId, 'autoplay': true, 'muted': true});
+		//const video = $('<video>').addClass('video_content').attr({'id': viewId, 'title': data.fcltId});
 		
-		const popupVideo = $('<div>').addClass('video-wrap').append(video);
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
 		
 		parent.append(popupVideo);
 	},
@@ -1214,7 +1207,7 @@ var vurixPlayer = {
 			});
 		}
 		
-		parent.children('.video-wrap').append(btnWrap);
+		parent.children('.video_wrap').append(btnWrap);
 	},
 	/**
 	 * 카메라의 현재 방향 PTZ 값을 가져오는 함수(Software 카메라 일 경우에만 동작)
@@ -1279,7 +1272,7 @@ var vurixPlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video-wrap').children('.cctv-btn-wrap');
+		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
 		// var $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
@@ -1398,9 +1391,9 @@ var hivePlayer = {
 		const viewId = option.viewId;
 		const parent = option.parent;
         
-		const video = $('<video>').addClass('video-content').attr({'id': viewId, 'autoplay' : true});
+		const video = $('<video>').addClass('video_content').attr({'id': viewId, 'autoplay' : true});
 		
-		const popupVideo = $('<div>').addClass('video-wrap').append(video);
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
 		
 		parent.append(popupVideo);
 	},
@@ -1485,7 +1478,7 @@ var hivePlayer = {
 			});
 		}
 		
-		parent.children('.video-wrap').append(btnWrap);
+		parent.children('.video_wrap').append(btnWrap);
 	},
 	/**
 	 * 카메라의 현재 방향 PTZ 값을 가져오는 함수(Software 카메라 일 경우에만 동작)
@@ -1545,7 +1538,7 @@ var hivePlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video-wrap').children('.cctv-btn-wrap');
+		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
 		// var $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
@@ -1649,9 +1642,9 @@ var xeusPlayer = {
 		
 		//const title = $('<div>').addClass('title').html(data.nodeId);
         
-		const video = $('<div>').addClass('video-content').attr('id', viewId);
+		const video = $('<div>').addClass('video_content').attr('id', viewId);
 		
-		const popupVideo = $('<div>').addClass('video-wrap').append(video);
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
 		
 		parent.append(popupVideo);
 	},
@@ -1734,7 +1727,7 @@ var xeusPlayer = {
 			});
 		}
 		
-		parent.children('.video-wrap').append(btnWrap);
+		parent.children('.video_wrap').append(btnWrap);
 	},
 	/**
 	 * 카메라의 현재 방향 PTZ 값을 가져오는 함수(Software 카메라 일 경우에만 동작)
@@ -1828,7 +1821,7 @@ var xeusPlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video-wrap').children('.cctv-btn-wrap');
+		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
 		// var $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))

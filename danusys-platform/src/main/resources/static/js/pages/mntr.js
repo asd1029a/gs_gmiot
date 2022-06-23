@@ -1230,8 +1230,43 @@ const rnbList = {
                             .replace("{{check_value}}", presentValue));
                 });
             });
+        } else if (theme === "smartPole") {
+            target.find('.tab li[data-value=control]').hide();
+            target.find(".area_right_scroll.select [data-group=stationState]").hide();
+            target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else {}
-        //////////////////
+
+        // TODO: CCTV 영상 재생(CCTV 리스트가 있을 경우만)
+        // 영상 재생 parent element
+        const videoArea = target.find('.area_video').children('div');
+        // 시설물 리스트 중 cctv만 목록화
+        const facilityList = prop.facilityList;
+        const cctvList = facilityList.filter(f => f.facilityKindCode.codeValue === "CCTV");
+        // CCTV가 있을 경우에만 영상 재생
+        if (cctvList.length > 0) {
+            // PTZ(회전형) 카메라 여부 확인
+            const ptzCctvList = cctvList.filter(ff =>
+                ff.facilityOpts.filter(fff => fff.facilityOptName === "is_ptz" && fff.facilityOptValue === "1"));
+            let cctv;
+            // PTZ 카메라가 없을 경우 그 외 카메라 중 한대 영상 재생
+            if (ptzCctvList.length !== 0) {
+                cctv = ptzCctvList[0];
+            } else {
+                cctv = cctvList[0];
+            }
+            const rtspOpt = cctv.facilityOpts.filter(fff => fff.facilityOptName === "rtsp_url");
+            const rtspUrl = rtspOpt[0].facilityOptValue;
+            const videoData = {
+                facilitySeq : cctv.facilitySeq,
+                rtspUrl : rtspUrl,
+                facilityKind : cctv.facilityKindCode.codeValue
+            }
+            const option = {
+                data : videoData,
+                parent : videoArea
+            }
+            videoManager.createPlayer(option);
+        }
 
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
