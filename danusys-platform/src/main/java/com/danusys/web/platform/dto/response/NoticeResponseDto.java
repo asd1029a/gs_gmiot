@@ -2,7 +2,9 @@ package com.danusys.web.platform.dto.response;
 
 import com.danusys.web.platform.entity.Notice;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.annotation.Nullable;
 import java.sql.Timestamp;
@@ -18,6 +20,8 @@ import java.sql.Timestamp;
 **/
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class NoticeResponseDto {
 
     private Long noticeSeq;

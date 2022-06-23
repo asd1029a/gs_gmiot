@@ -232,6 +232,8 @@ public class CctvDTO {
                     private String TYPE;
                     @XmlAttribute(name = "IP")
                     private String IP;
+                    @XmlAttribute(name = "ManagementCode")
+                    private String managementCode;
                 }
 
                 @XmlElement(name = "SourceInfo")
@@ -243,6 +245,9 @@ public class CctvDTO {
                 public static class SourceInfo {
                     @XmlElement(name = "SourceType")
                     private String sourceType;
+
+                    @XmlElement(name = "CameraCount")
+                    private String cameraCount;
 
                     @XmlElement(name = "ExternalSrcInfo")
                     private ExternalSrcInfo externalSrcInfo;
@@ -310,6 +315,20 @@ public class CctvDTO {
                     //FacilityData 필요한 데이터인지 확인 필요
                     //TroopID 이하 데이터 매핑 안함 확인후 추가
                 }
+                @XmlElement(name = "Lat")
+                private String latitude;
+
+                @XmlElement(name = "Lon")
+                private String longitude;
+
+                @XmlElement(name = "UsePtz")
+                private String isPtz;
+
+                @XmlElement(name = "SystemGroup")
+                private String cctvPurpose;
+
+                @XmlElement(name = "PTZPresetType")
+                private String ptzType;
             }
 
         }

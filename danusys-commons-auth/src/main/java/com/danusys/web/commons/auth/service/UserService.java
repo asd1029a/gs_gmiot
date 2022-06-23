@@ -75,8 +75,8 @@ public class UserService {
 
         List<UserResponse> userResponseList = userRepository.findAll(spec).stream()
                 .map(UserResponse::new).peek(userResponse -> {
-                    userResponse.setUpdateUserId(userRepository.findByUserName(userResponse.getUpdateUserSeq()));
-                    userResponse.setInsertUserId(userRepository.findByUserName(userResponse.getInsertUserSeq()));
+                    userResponse.setUpdateUserId(userRepository.findUserName(userResponse.getUpdateUserSeq()));
+                    userResponse.setInsertUserId(userRepository.findUserName(userResponse.getInsertUserSeq()));
                 })
                 .collect(Collectors.toList());
         resultMap.put("data", userResponseList);
