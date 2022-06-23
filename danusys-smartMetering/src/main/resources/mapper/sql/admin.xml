@@ -85,6 +85,7 @@
 						   , EMAIL
 						   , INSERT_DT
 						   , INSERT_USER_SEQ
+						   , UPDATE_USER_SEQ
 						   , USE_FLAG
 						   , TEL
 						   , BIRTH
@@ -98,6 +99,7 @@
 				 , #{userName}
 				 , #{email}
 				 , NOW()
+				 , #{sessionAdminSeq}
 				 , #{sessionAdminSeq}
 				 , 0
 				 , REPLACE(#{tel}, '-', '')
