@@ -165,11 +165,6 @@ public class RestApiExecutor implements ApiExecutor {
                 httpHeaders.setContentType(mediaType);
                 httpHeaders.setAccept(Collections.singletonList(mediaType));
 
-                api.getApiHeaderParams().forEach(apiHea -> {
-                    log.trace("### 헤더 {} => {}", apiHea.getFieldNm(), apiHea.getFieldMapNm());
-                    httpHeaders.add(apiHea.getFieldMapNm(), apiHea.getValue());
-                });
-
                 if (api.getAuthInfo() != null && !api.getAuthInfo().isEmpty()) {
                     if(api.getAuthInfo().contains("bearer") ) {
                         String accessToken = null;
