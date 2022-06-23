@@ -1266,6 +1266,8 @@ const rnbList = {
                 parent : videoArea
             }
             videoManager.createPlayer(option);
+        } else {
+            // $("#cctvListSelect");
         }
 
         //prop 돌리면서 채워넣기
