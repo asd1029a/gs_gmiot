@@ -1,18 +1,23 @@
 package com.danusys.web.commons.api.scheduler.socket;
 
 import com.danusys.web.commons.api.dto.CctvDTO;
-import com.danusys.web.commons.api.dto.LogicalfolderDTO;
+import com.danusys.web.commons.api.model.Facility;
+import com.danusys.web.commons.api.scheduler.service.FacilityTcpService;
 import com.danusys.web.commons.api.util.XmlDataUtil;
 import com.danusys.web.commons.app.IOUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
-import java.util.List;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Project : danusys-webservice-parent
@@ -22,12 +27,15 @@ import java.util.List;
  * Time : 5:56 PM
  */
 @Slf4j
+@Component
 public class FacilityTcpServer {
     private int threadID = 0;
     private ServerSocket server;
     private int port = 8040;
     private static boolean isClosed = false;
     private static String dest = "";
+    private Map<String, String> vmsServerData;
+    private FacilityTcpService facilityTcpService;
 
     class ServiceProcessor extends Thread {
         private String dest_;
@@ -91,12 +99,65 @@ public class FacilityTcpServer {
                         && "03".equals(hexCode[hexCode.length - 1])) {
                     log.info(" ===== data : {}", "AllCenterList");
 
-                    log.info("subData {} ", subData);
+                    log.info("---------------------------- AllCenterList Start ----------------------------");
+
+//                    log.info("subData {} ", subData);
 
 //					this.agentController_.allCenterList(subData);
                     final CctvDTO cctvDTO = XmlDataUtil.getCctvInfo(subData);
+                    String vmsSvrIp = cctvDTO.getGetAllCenterListRsp().getVMS_SVR_IP();
+                    String vmsSvrNo = vmsServerData.get(vmsSvrIp);
 
-                    log.info("###cctvDTO : {}", cctvDTO);
+                    cctvDTO.getGetAllCenterListRsp().getStreamNodeList().getStreamNodeInfo().stream().forEach(f -> {
+                        CctvDTO.GetAllCenterListRsp.StreamNodeList.StreamNodeInfo.StreamNodeBaseInfo streamNodeBaseInfo = f.getBaseInfo();
+                        CctvDTO.GetAllCenterListRsp.StreamNodeList.StreamNodeInfo.SourceInfo sourceInfo = f.getSourceInfo();
+                        CctvDTO.GetAllCenterListRsp.StreamNodeList.StreamNodeInfo.SourceInfo.ExternalSrcInfo externalSrcInfo = sourceInfo.getExternalSrcInfo();
+                        CctvDTO.GetAllCenterListRsp.StreamNodeList.StreamNodeInfo.SourceInfo.ExternalSrcInfo.WebService webService = externalSrcInfo.getWebService();
+                        String modelName = externalSrcInfo.getModelName();
+                        String sourceType = sourceInfo.getSourceType();
+                        String nodeId = streamNodeBaseInfo.getID();
+                        String facilityName = streamNodeBaseInfo.getName();
+                        String ip = streamNodeBaseInfo.getIP();
+                        String port = streamNodeBaseInfo.getPORT();
+                        String connected = streamNodeBaseInfo.getConnected();
+//                        String id = webService.getID();
+//                        String password = webService.getPassword();
+                        String id = "admin";
+                        String password = "1234";
+                        String rtspUrl = MessageFormat.format("rtsp://{0}:{1}@{2}:8554/site{3}/video", id, password, ip, nodeId);
+                        String isPtz = f.getIsPtz();
+                        String ptzType = f.getPtzType();
+                        String cctvPurpose = f.getCctvPurpose();
+                        String managementCode = streamNodeBaseInfo.getManagementCode();
+                        double latitude = f.getLatitude().isEmpty() ? 0 : Double.parseDouble(f.getLatitude());
+                        double longitude = (f.getLongitude().isEmpty() ? 0 : Double.parseDouble(f.getLongitude()));
+
+                        Map<String, Object> optData = new HashMap<>();
+
+                        optData.put("rtsp_url", rtspUrl);
+                        optData.put("node_id", nodeId);
+                        optData.put("is_ptz", isPtz);
+                        optData.put("ptz_type", ptzType);
+                        optData.put("cctv_purpose", cctvPurpose);
+                        optData.put("management_code", managementCode);
+
+                        Facility facility;
+                        if (sourceType.equals("5")) {
+                            String cameraCount = sourceInfo.getCameraCount();
+                            int count = cameraCount.isEmpty() ? 0 : Integer.parseInt(cameraCount);
+                            facilityTcpService.addGroupCctv(count, nodeId, facilityName, latitude, longitude, vmsSvrNo, optData);
+                        } else if (modelName.equals("Guardian")) {
+                            String cameraCount = sourceInfo.getExternalSrcInfo().getCameraCount();
+                            int count = cameraCount.isEmpty() ? 0 : Integer.parseInt(cameraCount);
+                            facilityTcpService.addGuardianCctv(count, nodeId, facilityName, latitude, longitude, vmsSvrNo, optData);
+                        } else {
+                            facilityTcpService.addCctv(nodeId, facilityName, latitude, longitude, vmsSvrNo, optData);
+                        }
+                        // String facilityId = nodeId + "_" +
+                        // Facility facility = Facility.builder().facilityId()
+                    });
+
+                    log.info("---------------------------- AllCenterList End ----------------------------");
 
 
                 }
@@ -111,23 +172,42 @@ public class FacilityTcpServer {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                shutDownServer();
+                // shutDownServer();
             }
         }
     }
 
-    public FacilityTcpServer() {
-        log.debug(" ===== FacilityTcpServer Begin ===== ");
-    }
+//    public FacilityTcpServer() {
+//        log.debug(" ===== FacilityTcpServer Begin ===== ");
+//    }
+//
+//    public static void main(String[] args) throws IOException {
+//        try {
+//            FacilityTcpServer server = new FacilityTcpServer();
+//            server.startServer();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            log.error(" ===== TCPServerException : {}", e.getMessage());
+//        }
+//    }
 
-    public static void main(String[] args) throws IOException {
-        try {
-            FacilityTcpServer server = new FacilityTcpServer();
-            server.startServer();
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(" ===== TCPServerException : {}", e.getMessage());
-        }
+
+    public FacilityTcpServer(@Value("#{${vms.server.map}}") Map<String, String> vmsServerData,
+                             FacilityTcpService facilityTcpService) {
+        this.vmsServerData = vmsServerData;
+        this.facilityTcpService = facilityTcpService;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    startServer();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    log.error(" ===== TCPServerException : {}", e.getMessage());
+                }
+            }
+        }).start();
     }
 
     public void startServer() throws Exception {
