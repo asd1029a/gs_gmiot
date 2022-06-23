@@ -65,24 +65,24 @@ public class FaceDetectionServiceImpl implements FaceDetectionService {
     public int add(MultipartFile[] file, HttpServletRequest request, FaceDetectionRequestDto faceDetectionRequestDto) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> paramMap = objectMapper.convertValue(faceDetectionRequestDto, Map.class);
+        paramMap.put("faceUid", CommonUtil.getUniqueID());
 
         try {
             Map<String, Object> apiParam = new HashMap<>();
-            apiParam.put("callUrl", "/intellivix/faceMod");
+            apiParam.put("callUrl", "/intellivix/faceAdd");
             apiParam.put("imgNum", 1);
 
             MultipartFile faceImg = file[0];
             if (!faceImg.isEmpty()) {
-
                 apiParam.put("imgLen", faceImg.getSize());
                 apiParam.put("img", FileUtil.multiFileToBase64(faceImg));
                 apiParam.put("imgSub", new ArrayList<>());
 
                 String fileName = FileUtil.uploadAjaxPost(file, request);
                 paramMap.put("faceFile", fileName);
+            }else{
+                throw new Exception();
             }
-
-            paramMap.put("faceUid", CommonUtil.getUniqueID());
 
             apiParam.putAll(paramMap);
 
@@ -119,11 +119,11 @@ public class FaceDetectionServiceImpl implements FaceDetectionService {
         try {
             Map<String, Object> apiParam = new HashMap<>();
             apiParam.put("callUrl", "/intellivix/faceMod");
-            apiParam.put("imgNum", 1);
+            apiParam.put("imgNum", 0);
 
             MultipartFile faceImg = file[0];
             if (!faceImg.isEmpty()) {
-
+                apiParam.put("imgNum", 1);
                 apiParam.put("imgLen", faceImg.getSize());
                 apiParam.put("img", FileUtil.multiFileToBase64(faceImg));
                 apiParam.put("imgSub", new ArrayList<>());
