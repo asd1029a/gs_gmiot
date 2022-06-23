@@ -352,7 +352,7 @@ var videoManager = {
 		
 		// videoManager.insertCctvViewLog(option);
 		
-		videoManager.playList.set(option.facilitySeq, viewId);
+		videoManager.playList.set(data.facilitySeq, viewId);
 		
 		parent.bind({
 			'remove' : function(e) {
@@ -753,7 +753,7 @@ var commonPlayer = {
 	stop : function(option) {
 		const viewId = option.viewId;
 
-		video.singleVideoStop(viewId);
+		video.directVideoStop(viewId);
 		//webrtcserver.disconnect();
 	},
 	/**

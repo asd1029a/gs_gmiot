@@ -1241,7 +1241,7 @@ const rnbList = {
         const videoArea = target.find('.area_video').children('div');
         // 시설물 리스트 중 cctv만 목록화
         const facilityList = prop.facilityList;
-        const cctvList = facilityList.filter(f => f.facilityKindCode.codeValue === "CCTV");
+        const cctvList = facilityList.filter(f => f.facilityKind === "CCTV");
         // CCTV가 있을 경우에만 영상 재생
         if (cctvList.length > 0) {
             // PTZ(회전형) 카메라 여부 확인
@@ -1259,7 +1259,7 @@ const rnbList = {
             const videoData = {
                 facilitySeq : cctv.facilitySeq,
                 rtspUrl : rtspUrl,
-                facilityKind : cctv.facilityKindCode.codeValue
+                facilityKind : cctv.facilityKind
             }
             const option = {
                 data : videoData,
