@@ -17,8 +17,23 @@ const commonCode = {
         $("#commonCodePopup .title dd").on('click', () => {
             commonCode.hidePopup();
         });
+
+        $("#commonCodePopup #addProcBtn").on('click', () => {
+            const depth = $('#commonCodeForm').data('depth');
+            commonCode.addProc(depth);
+        });
+
+        $("#commonCodePopup #modProcBtn").on('click', () => {
+            const depth = $('#commonCodeForm').data('depth');
+            commonCode.modProc(depth);
+        });
+
+        $("#commonCodePopup #delProcBtn").on('click', () => {
+            const depth = $('#commonCodeForm').data('depth');
+            commonCode.delProc(depth);
+        });
     },
-    create : ($target, pParentCode) => {
+    create : ($target, pParentCodeSeq) => {
         const optionObj = {
             dom: '<"table_body"rt><"table_bottom"p>',
             destroy: true,
@@ -31,8 +46,8 @@ const commonCode = {
                     'type' : "POST",
                     'data' : function ( d ) {
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
-                        pParentCode!==0?param.keyword='':'';
-                        param.pParentCode = pParentCode;
+                        pParentCodeSeq!==0?param.keyword='':'';
+                        param.parentCodeSeq = pParentCodeSeq;
                         return JSON.stringify( param );
                     },
                     'dataSrc' : function (result) {
@@ -46,7 +61,7 @@ const commonCode = {
                 style: "single"
             },
             columns : [
-                {data: "codeSeq", className: "alignLeft"},
+                {data: "codeId", className: "alignLeft"},
                 {data: "codeName"},
                 {data: "useKind"},
                 {data: null}
@@ -54,7 +69,7 @@ const commonCode = {
             columnDefs: [{
                 "targets": -1,
                 "data": null,
-                "defaultContent": '<span class="button mod" data-add-popup="'+Number($target.data('tableSeq'))+'">상세보기</span>'
+                "defaultContent": '<span class="button mod" data-add-popup="'+Number($target.data('tableSeq'))+'">상세</span>'
             }
             , {
                 targets: 2,
@@ -69,7 +84,6 @@ const commonCode = {
             }]
             , excelDownload : false
         }
-
         const evt = {
             click : function(e) {
                 const targetSeq = Number($target.data('tableSeq'));
@@ -77,13 +91,16 @@ const commonCode = {
                 const rowData = $target.DataTable().row($(e.currentTarget)).data();
                 if($(e.target).hasClass('button')) {
                     const buttonType = $(e.target).attr("class").split(' ')[1];
-                    commonCode.showPopup(buttonType,$(e.target).data('addPopup'));
+                    commonCode.showPopup(buttonType, $(e.target).data('addPopup'));
                     commonCode.get(rowData.codeSeq ,(result) => {
                         $form.data("codeSeq", rowData.codeSeq);
+                        if(targetSeq !== 0) {
+                            $form.data("parentCodeSeq", rowData.parentCodeSeq);
+                        }
                         $form.setItemValue(result);
                     });
                 }
-                else if(targetSeq !== 2) {
+                if(targetSeq !== 2) {
                     $(".search_list:nth-of-type("+(targetSeq+2)+") .title dt span").text("["+rowData.codeName+"]");
                     commonCode.create($("[data-table-seq='"+(targetSeq+1)+"']"),rowData.codeSeq);
                     $("[data-add-popup='"+(targetSeq+1)+"']").show();
@@ -123,20 +140,25 @@ const commonCode = {
             pCallback(result);
         });
     },
-    showPopup : (type, seq) => {
-        //$('#commonCodePopup .popupContents').scrollTop(0);
+    showPopup : (type, pDepth) => {
         comm.showModal($('#commonCodePopup'));
         $('#commonCodePopup').css("display", "flex");
         $('#commonCodeForm').initForm();
         $('#commonCodePopup [data-add], [data-mod]').hide();
+        $('#commonCodePopup').data("depth", pDepth);
 
-        /*/!*$('#commonCodePopup [data-popup]').hide();
-        $('#commonCodePopup [data-popup] input').attr('disabled',true);*!/
-        $('#commonCodePopup [data-popup="'+$targetId+'"] input').attr('disabled',false);*/
         let title = "";
-        title = seq !== 0 ? $('.search_list:nth-of-type('+(seq+1)+') [data-popup-title]').text() : "";
+        title = pDepth !== 0 ? $('.search_list:nth-of-type('+(pDepth+1)+') [data-popup-title]').text() : "";
         $('#commonCodePopup [data-'+type+'="true"]').show();
+        $('#commonCodeForm').data('depth', pDepth);
         if(type === "add") {
+            $('#commonCodeForm').data('codeSeq', '');
+            if(pDepth === 0) {
+                $('#commonCodeForm').data('parentCodeSeq', 0);
+            } else {
+                const parentData = $(".search_table [data-table-seq="+Number(pDepth-1)+"]").DataTable().row(".selected").data();
+                $('#commonCodeForm').data('parentCodeSeq', parentData.codeSeq);
+            }
             $('#commonCodePopup .title dt').text(title+"코드 등록");
         } else if(type === "mod") {
             $('#commonCodePopup .title dt').text(title+'코드 수정');
@@ -147,44 +169,92 @@ const commonCode = {
         comm.hideModal($('#commonCodePopup'));
         $('#commonCodePopup').hide();
     },
-    addProc : () => {
-        const formObj = $('#commonCodeForm').serializeJSON();
+    addProc : (pDepth) => {
+        const $form = $('#commonCodeForm');
+        const formObj = $form.serializeJSON();
+        let parentCodeSeq = $form.data('parentCodeSeq');
+        formObj.parentCodeSeq = parentCodeSeq;
 
-        comm.ajaxPost({
-                url : "/common/addCommonCodeProc"
+        if($form.doValidation()) {
+            $.ajax({
+                url : "/config/commonCode"
                 , type : "PUT"
-                , data : formObj
-            },
-            (result) => {
-                comm.showAlert("등록되었습니다");
-                commonCode.create($('#parentCodeTable'));
+                , data : JSON.stringify(formObj)
+                , contentType : "application/json; charset=utf-8",
+            }).done(() => {
+                comm.showAlert("코드가 등록되었습니다");
+                commonCode.clearDepthTable();
+                if(pDepth === 0) {
+                    parentCodeSeq = 0;
+                }
+                commonCode.create($(".search_table [data-table-seq="+Number(pDepth)+"]"), parentCodeSeq);
                 commonCode.hidePopup();
+            }).fail(() => {
+                comm.showAlert("코드 등록에 실패했습니다.");
             });
+        } else {
+            return false;
+        }
     },
-    modProc : () => {
-        const formObj = $('#commonCodeForm').serializeJSON();
+    modProc : (pDepth) => {
+        const $form = $('#commonCodeForm');
+        const formObj = $form.serializeJSON();
+        let parentCodeSeq = $form.data('parentCodeSeq');
+        formObj.codeSeq = $form.data('codeSeq');
 
-        comm.ajaxPost({
-                url : "/common/modCommonCodeProc"
+        if($form.doValidation()) {
+            $.ajax({
+                url : "/config/commonCode"
                 , type : "PATCH"
-                , data : formObj
-            },
-            (result) => {
-                comm.showAlert("수정되었습니다");
-                commonCode.create($('#parentCodeTable'));
+                , data : JSON.stringify(formObj)
+                , contentType : "application/json; charset=utf-8",
+            }).done(() => {
+                comm.showAlert("코드가 수정되었습니다");
+                commonCode.clearDepthTable();
+                if(pDepth === 0) {
+                    parentCodeSeq = 0;
+                }
+                commonCode.create($(".search_table [data-table-seq="+Number(pDepth)+"]"), parentCodeSeq);
                 commonCode.hidePopup();
+            }).fail(() => {
+                comm.showAlert("코드 수정에 실패했습니다.");
             });
+        } else {
+            return false;
+        }
     },
-    delProc : (pSeq) => {
-        comm.ajaxPost({
-                url : "/common/delCommonCodeProc"
+    delProc : (pDepth) => {
+        const $form = $('#commonCodeForm');
+        const codeSeq = $form.data('codeSeq');
+        let parentCodeSeq = $form.data('parentCodeSeq');
+
+        $.ajax({
+                url : "/config/commonCode/" + codeSeq
                 , type : "DELETE"
-                , data : {commonCodeSeq : pSeq}
-            },
-            (result) => {
-                comm.showAlert("삭제되었습니다");
-                commonCode.create($('#parentCodeTable'));
+            }).done(() => {
+                comm.showAlert("코드가 삭제되었습니다");
+                commonCode.clearDepthTable();
+                if(pDepth === 0) {
+                    parentCodeSeq = 0;
+                }
+                commonCode.create($(".search_table [data-table-seq="+Number(pDepth)+"]"), parentCodeSeq);
                 commonCode.hidePopup();
-            });
+            }).fail(() => {
+            comm.showAlert("코드 삭제에 실패했습니다.");
+        });
+    },
+    clearDepthTable : () => {
+        const $secondCodeTable = $("#secondCodeTable");
+        const $thirdCodeTable = $("#thirdCodeTable");
+        $(".search_list:nth-child(2) .article_title [data-popup-title=true]").text("");
+        $(".search_list:nth-child(3) .article_title [data-popup-title=true]").text("");
+        $(".search_list:nth-child(2) .article_title .count").text("0");
+        $(".search_list:nth-child(3) .article_title .count").text("0");
+        $(".search_list:nth-child(2) .article_title ul li").hide();
+        $(".search_list:nth-child(3) .article_title ul li").hide();
+        $secondCodeTable.DataTable().destroy();
+        $secondCodeTable.find("tbody").empty()
+        $thirdCodeTable.DataTable().destroy();
+        $thirdCodeTable.find("tbody").empty();
     }
 }

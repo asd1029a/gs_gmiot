@@ -34,6 +34,22 @@ public class ConfigController {
         return ResponseEntity.ok().body(commonService.getOneCode(seq));
     }
 
+    @PutMapping(value = "/commonCode")
+    public ResponseEntity<?> addCommonCode(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(commonService.addCode(paramMap));
+    }
+
+    @PatchMapping(value = "/commonCode")
+    public ResponseEntity<?> modCommonCode(@RequestBody Map<String, Object> paramMap) throws Exception {
+        return ResponseEntity.ok().body(commonService.modCode(paramMap));
+    }
+
+    @DeleteMapping(value = "/commonCode/{pSeq}")
+    public ResponseEntity<?> delCommonCode(@PathVariable("pSeq") int seq) throws Exception {
+        commonService.delCode(seq);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping(value = "/commonCode/eventKind/{pKind}")
     public ResponseEntity<EgovMap> getCommonCode(@PathVariable("pKind") String pKind) throws Exception {
         return ResponseEntity.ok().body(commonService.getOneEventKind(pKind));

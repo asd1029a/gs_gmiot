@@ -68,7 +68,7 @@
   color: #fff;
   background: rgba(30, 30, 30, 0.8);
 }
-#floatingPopulationChart .apexcharts-tooltip.apexcharts-theme-dark{/*height: 100%;*/}
+#floatingPopulationChart .apexcharts-tooltip.apexcharts-theme-dark{max-height: 100%;}
 
 .apexcharts-tooltip * {
   font-family: inherit;
