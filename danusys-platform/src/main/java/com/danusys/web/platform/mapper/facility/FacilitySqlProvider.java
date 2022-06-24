@@ -88,59 +88,13 @@ public class FacilitySqlProvider {
     }
 
     public String selectCountQry(Map<String, Object> paramMap) {
-        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
-        ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
-        String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
-        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
-        ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
-        String createType = CommonUtil.validOneNull(paramMap, "createType");
-
-        SQL sql = new SQL() {{
-            SELECT("COUNT(*) AS count" +
-                    ", count(case when t1.facility_status = 0 then 1 end) AS not_use_count" +
-                    ", count(case when t1.facility_status = 1 then 1 end) AS normal_count" +
-                    ", count(case when t1.facility_status = 2 then 1 end) AS error_count");
-            FROM("t_facility t1");
-            INNER_JOIN("v_facility_kind t2 on t1.facility_kind = t2.code_seq");
-            LEFT_OUTER_JOIN("t_station t3 on t1.station_seq = t3.station_seq");
-            LEFT_OUTER_JOIN("v_administ t4 on t1.administ_zone = t4.code_value");
-            LEFT_OUTER_JOIN("v_station_kind t5 on t3.station_kind = t5.code_seq");
-            LEFT_OUTER_JOIN("v_administ t6 on t1.administ_zone = t6.code_value");
-            if (facilityKind != null && !facilityKind.isEmpty()) {
-                WHERE("t2.code_value" + SqlUtil.getWhereInStr(facilityKind));
-                if (facilityKind.contains("lamp_road")) {
-                    String modifyQry = "";
-                    if ("mod".equals(createType)) {
-                        modifyQry = "AND v1.dimming_group_seq::integer != " + paramMap.get("dimmingGroupSeq");
-                    }
-                    WHERE("NOT EXISTS (" +
-                            "SELECT * " +
-                            "FROM v_dimming_group v1 " +
-                            "WHERE v1.facility_seq = t1.facility_seq " +
-                            modifyQry +
-                            ")");
-                }
-            }
-            if (administZone != null && !administZone.isEmpty()) {
-                WHERE("t4.code_value" + SqlUtil.getWhereInStr(administZone));
-            }
-            if (sigCode != null && !sigCode.isEmpty()) {
-                WHERE("substring(t4.code_value,0,6) = '" + sigCode + "'");
-            }
-            if(administZone != null && !administZone.isEmpty()) {
-                WHERE("t6.code_value" + SqlUtil.getWhereInStr(administZone));
-            }
-            if (stationKind != null && !stationKind.isEmpty()) {
-                WHERE("t5.code_value" + SqlUtil.getWhereInStr(stationKind));
-            }
-            if (keyword != null && !keyword.equals("")) {
-                WHERE("(t1.facility_id LIKE '%" + keyword + "%'" +
-                        " OR t2.code_name LIKE '%" + keyword + "%'" +
-                        " OR t3.station_name LIKE '%" + keyword + "%'" +
-                        " OR t4.code_name LIKE '%" + keyword + "%'" +
-                        " OR t5.code_name LIKE '%" + keyword + "%'" +
-                        ")");
-            }
+        paramMap.remove("start");
+        SQL sql = new SQL(){{
+            SELECT("COUNT(c1.*) count" +
+                    ", count(case when c1.facility_status = 0 then 1 end) AS not_use_count" +
+                    ", count(case when c1.facility_status = 1 then 1 end) AS normal_count" +
+                    ", count(case when c1.facility_status = 2 then 1 end) AS error_count");
+            FROM("(" + selectListQry(paramMap) + ") AS c1");
         }};
         return sql.toString();
     }

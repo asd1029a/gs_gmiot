@@ -92,58 +92,13 @@ public class EventSqlProvider {
     }
 
     public String selectCountQry(Map<String, Object> paramMap) {
-        SQL sql = new SQL() {{
-            String keyword = CommonUtil.validOneNull(paramMap, "keyword");
-            String start = CommonUtil.validOneNull(paramMap, "start");
-            String length = CommonUtil.validOneNull(paramMap, "length");
-            String startDt = CommonUtil.validOneNull(paramMap, "startDt");
-            String endDt = CommonUtil.validOneNull(paramMap, "endDt");
-            String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
-            ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
-            ArrayList eventGrade = CommonUtil.valiArrNull(paramMap, "eventGrade");
-            ArrayList eventState = CommonUtil.valiArrNull(paramMap, "eventState");
-            ArrayList eventKind = CommonUtil.valiArrNull(paramMap, "eventKind");
-
-            boolean geoFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "geojson"));
-
-            SELECT("COUNT(*) as count" +
-                    ", COUNT(1) FILTER ( WHERE t1.event_proc_stat = '45' ) AS red" +
-                    ", COUNT(1) FILTER ( WHERE t1.event_proc_stat = '46' ) AS yellow" +
-                    ", COUNT(1) FILTER ( WHERE t1.event_proc_stat = '48' ) AS green");
-            String tables = "t_event t1 " +
-                    "INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq " +
-                    "INNER JOIN t_station t3 ON t1.station_seq = t3.station_seq " +
-                    "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
-                    "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
-                    "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
-                    "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value ";
-
-            FROM(tables);
-
-            if (!keyword.equals("")) {
-                WHERE("t3.station_name LIKE '%" + keyword + "%'");
-            }
-            if (!startDt.equals("")) {
-                WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
-            }
-            if (!endDt.equals("")) {
-                WHERE("t1.insert_dt <= to_timestamp('" + endDt + "', 'YYYY-MM-DD HH24:MI:SS')");
-            }
-            if (sigCode != null && !sigCode.isEmpty()){
-                WHERE("SUBSTRING(v4.code_value, 0, 6) = '" + sigCode + "'");
-            }
-            if (administZone != null && !administZone.isEmpty()) {
-                WHERE( "v4.code_value" + SqlUtil.getWhereInStr(administZone));
-            }
-            if (eventKind != null && !eventKind.isEmpty()) {
-                WHERE("v1.code_value" + SqlUtil.getWhereInStr(eventKind));
-            }
-            if (eventGrade != null && !eventGrade.isEmpty()) {
-                WHERE("v2.code_value" + SqlUtil.getWhereInStr(eventGrade));
-            }
-            if (eventState != null && !eventState.isEmpty()) {
-                WHERE("v3.code_value" + SqlUtil.getWhereInStr(eventState));
-            }
+        paramMap.remove("start");
+        SQL sql = new SQL(){{
+            SELECT("COUNT(c1.*) count" +
+                    ", COUNT(case when c1.event_proc_stat = '1' then 1 end) AS red" +
+                    ", COUNT(case when c1.event_proc_stat = '3' then 1 end) AS yellow" +
+                    ", COUNT(case when c1.event_proc_stat = '9' then 1 end) AS green");
+            FROM("(" + selectListQry(paramMap) + ") AS c1");
         }};
         return sql.toString();
     }
