@@ -8,8 +8,12 @@ import java.util.Map;
 public interface ConfigService {
     EgovMap getListCode(Map<String, Object> paramMap) throws Exception;
     EgovMap getOneCode(int seq) throws Exception;
+    int addCode(Map<String, Object> paramMap) throws Exception;
+    int modCode(Map<String, Object> paramMap) throws Exception;
+    void delCode(int seq) throws Exception;
     EgovMap getOneEventKind(String pKind);
     List<EgovMap> getListMntrInitParam(String pageTypeCodeValue) throws Exception;
     EgovMap getVideoNetInfo(String ipClassAB) throws Exception;
     List<EgovMap> getVideoConfig() throws Exception;
+
 }

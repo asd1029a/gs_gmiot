@@ -1,6 +1,7 @@
 package com.danusys.web.platform.mapper.config;
 
 import com.danusys.web.commons.app.CommonUtil;
+import com.danusys.web.commons.app.SqlUtil;
 import com.danusys.web.commons.app.StrUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -11,12 +12,15 @@ public class ConfigSqlProvider {
         String keyword = paramMap.get("keyword").toString();
         String start = paramMap.get("start").toString();
         String length = paramMap.get("length").toString();
-        int pParentCode = (int) paramMap.get("pParentCode");
+        int parentCodeSeq = (int) paramMap.get("parentCodeSeq");
 
         SQL sql = new SQL() {{
-            SELECT("*");
+            SELECT("code_seq, code_id, code_name, code_value" +
+                    ", parent_code_seq, use_kind, insert_user_seq, update_user_seq" +
+                    ", to_char(insert_dt, 'YYYY-MM-DD HH24:MI:SS') AS insert_dt" +
+                    ", to_char(update_dt, 'YYYY-MM-DD HH24:MI:SS') AS update_dt");
             FROM("t_common_code");
-            WHERE("parent_code_seq = "+pParentCode);
+            WHERE("parent_code_seq = " + parentCodeSeq);
             WHERE("use_kind != 'D'");
             if(keyword != null && !keyword.equals("")) {
                 WHERE("code_name LIKE '%" + keyword + "%'");
@@ -31,15 +35,47 @@ public class ConfigSqlProvider {
 
     public String selectCountCodeQry(Map<String, Object> paramMap) {
         String keyword = paramMap.get("keyword").toString();
-        int pParentCode = (int) paramMap.get("pParentCode");
+        int parentCodeSeq = (int) paramMap.get("parentCodeSeq");
 
         SQL sql = new SQL() {{
             SELECT("COUNT(*) AS count");
             FROM("t_common_code");
-            WHERE("parent_code_seq = "+pParentCode);
+            WHERE("parent_code_seq = " + parentCodeSeq);
+            WHERE("use_kind != 'D'");
             if(keyword != null && !keyword.equals("")) {
                 WHERE("code_name LIKE '%" + keyword + "%'");
             }
+        }};
+        return sql.toString();
+    }
+
+    public String insertCodeQry(Map<String, Object> paramMap) {
+        Map<String, Object> qryMap = SqlUtil.getInsertValuesStr(paramMap);
+
+        SQL sql = new SQL() {{
+            INSERT_INTO("t_common_code");
+            VALUES(qryMap.get("columns").toString(), qryMap.get("values").toString());
+        }};
+        return sql.toString();
+    }
+
+    public String updateCodeQry(Map<String, Object> paramMap) {
+        String codeSeq = CommonUtil.validOneNull(paramMap, "codeSeq");
+
+        SQL sql = new SQL() {{
+            UPDATE("t_common_code");
+            SET(SqlUtil.getMultiSetStr(paramMap));
+            WHERE("code_seq =" + codeSeq);
+        }};
+        return sql.toString();
+    }
+
+    public String deleteCodeQry(int codeSeq) {
+        SQL sql = new SQL() {{
+            DELETE_FROM("t_common_code");
+            WHERE("code_seq =" + codeSeq);
+            OR();
+            WHERE("parent_code_seq = " + codeSeq);
         }};
         return sql.toString();
     }
