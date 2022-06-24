@@ -29,7 +29,7 @@ public class StationSqlProvider {
             LEFT_OUTER_JOIN("v_station_kind t2 on t1.station_kind = t2.code_seq");
             LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
 
-            if (facilityKind != null && !facilityKind.isEmpty()) {
+//            if (facilityKind != null && !facilityKind.isEmpty()) {
                 SQL innerSql = new SQL() {{
                     SELECT("station_seq" +
                             ", CASE WHEN cnt = 1 THEN in_facility_kind_name" +
@@ -56,7 +56,7 @@ public class StationSqlProvider {
                 SELECT("t4.in_facility_kind");
                 LEFT_OUTER_JOIN("(" + innerSql.toString() + ") t4 on t1.station_seq = t4.station_seq");
                 WHERE("t4.station_seq IS NOT NULL");
-            }
+//            }
 
             if (stationKind != null && !stationKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(stationKind));
@@ -101,7 +101,7 @@ public class StationSqlProvider {
             LEFT_OUTER_JOIN("v_station_kind t2 on t1.station_kind = t2.code_seq");
             LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
 
-            if (facilityKind != null && !facilityKind.isEmpty()) {
+//            if (facilityKind != null && !facilityKind.isEmpty()) {
                 SQL innerSql = new SQL() {{
                     SELECT("station_seq" +
                             ", CASE WHEN cnt = 1 THEN in_facility_kind_name" +
@@ -127,7 +127,7 @@ public class StationSqlProvider {
 
                 LEFT_OUTER_JOIN("(" + innerSql.toString() + ") t4 on t1.station_seq = t4.station_seq");
                 WHERE("t4.station_seq IS NOT NULL");
-            }
+//            }
 
             if (stationKind != null && !stationKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(stationKind));
