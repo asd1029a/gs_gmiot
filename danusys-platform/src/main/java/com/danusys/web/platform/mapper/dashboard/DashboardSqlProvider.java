@@ -12,7 +12,7 @@ public class DashboardSqlProvider {
         SQL sql = new SQL() {{
             SELECT("ts.station_seq" +
                     ", ts.station_name as name" +
-                    ", '승객 카운트' as sub_name" +
+                    ", '승객 카운트(1시간내)' as sub_name" +
                     ", coalesce(SUM(tfo.facility_opt_value::integer),0) as value" +
                     ", '명' as unit");
             FROM("t_station ts");
@@ -132,6 +132,7 @@ public class DashboardSqlProvider {
             INNER_JOIN("t_facility_opt tfo ON tf.facility_seq = tfo.facility_seq");
             WHERE("ts.administ_zone LIKE '"+codeSig+"%'");
             WHERE("tfo.facility_opt_name = 'floating_population'");
+            WHERE("to_char(tfo.insert_dt,'YYYYMMDDHH24') BETWEEN to_char(now() - interval '12 hour','YYYYMMDDHH24') AND to_char(now() - interval '1 hour','YYYYMMDDHH24')");
             GROUP_BY("ts.station_seq");
         }};
         return sql.toString();

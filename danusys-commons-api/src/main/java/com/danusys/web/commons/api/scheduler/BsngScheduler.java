@@ -1,8 +1,8 @@
 package com.danusys.web.commons.api.scheduler;
 
-import com.danusys.web.commons.api.dto.FloatingPopulationDTO;
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.FacilityOpt;
+import com.danusys.web.commons.api.scheduler.dto.FloatingPopulationDTO;
 import com.danusys.web.commons.api.service.EventService;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
@@ -39,6 +39,8 @@ public class BsngScheduler {
         //log.trace("---------------------bsng scheduler---------------------");
     }
 
+    // 부산남구 ap 유동인구 연계
+//    @Scheduled(fixedDelay = 60000)
     @Scheduled(cron = "0 0 0/1 * * *")
     public void floatingPopulationCnt() {
         try {

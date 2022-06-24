@@ -1,4 +1,4 @@
-package com.danusys.web.commons.api.dto;
+package com.danusys.web.commons.api.scheduler.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,6 +22,7 @@ import java.util.List;
 public class FloatingPopulationDTO {
 
     @Getter
+    @Setter
     public static class RequestDto {
         private final List<PresenceResult> presenceResultList;
 
@@ -32,16 +33,18 @@ public class FloatingPopulationDTO {
     }
 
     @Getter
+    @Setter
     public static class PresenceResult {
         private final Msg msg;
 
         @JsonCreator
-        public PresenceResult(@JsonProperty Msg msg) {
+        public PresenceResult(@JsonProperty("msg") Msg msg) {
             this.msg = msg;
         }
     }
 
     @Getter
+    @Setter
     public static class Msg {
         private final String apName;
         private final StaEthMac staEthMac;
@@ -54,6 +57,7 @@ public class FloatingPopulationDTO {
     }
 
     @Getter
+    @Setter
     public static class StaEthMac {
         private final String addr;
 

@@ -233,6 +233,7 @@ public class UserService {
         }
 
         user.setInsertUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
+        user.setUpdateUserSeq(LoginInfoUtil.getUserDetails().getUserSeq());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         user.setInsertDt(timestamp);
 

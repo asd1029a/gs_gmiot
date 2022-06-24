@@ -1,13 +1,12 @@
 package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.api.model.Facility;
-import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.commons.app.FileUtil;
-import com.danusys.web.commons.app.StrUtils;
+import com.danusys.web.commons.api.model.FacilityOpt;
+import com.danusys.web.commons.api.service.FacilityOptService;
+import com.danusys.web.commons.app.*;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
 import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.platform.service.station.StationService;
-import com.danusys.web.commons.app.GisUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(value = "/station")
@@ -26,6 +27,7 @@ public class StationController {
     private final StationService stationService;
     private final FacilityService facilityService;
     private final com.danusys.web.commons.api.service.FacilityService jpaFacilityService;
+    private final FacilityOptService facilityOptService;
 
     /**
      * 개소 : 개소 목록 조회
@@ -48,6 +50,9 @@ public class StationController {
      */
     @PostMapping(value = "/geojson", produces = "application/json; charset=utf8")
     public String getListGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
+        String paramOpt = CommonUtil.validOneNull(paramMap, "option");
+        List<Map<String, Object>> heatList = new ArrayList<>(); //인구 분포도 추가리스트
+
         EgovMap resultEgov = stationService.getList(paramMap);
         List<Map<String, Object>> stationList = (List<Map<String, Object>>) resultEgov.get("data");
         //해당 개소의 시설물들 정보 추가
@@ -56,11 +61,29 @@ public class StationController {
             facilityParam.put("stationSeq",f.get("stationSeq").toString());
             facilityParam.put("popType","station");
             try {
-                String stationSeq = StrUtils.getStr(f.get("stationSeq"));
-                List<Facility> facilityList = jpaFacilityService.findByStationSeq(Long.parseLong(stationSeq));
-//                EgovMap facilityMap = facilityService.getList(facilityParam);
-//                List<Map<String, Object>> facilityList = new ArrayList<>();
-//                facilityList = (List<Map<String, Object>>) facilityMap.get("data");
+                EgovMap facilityMap = facilityService.getList(facilityParam);
+                List<Map<String, Object>> facilityList = new ArrayList<>();
+                facilityList = (List<Map<String, Object>>) facilityMap.get("data");
+
+                facilityList.stream().forEach(ff -> {
+                    String facilitySeq = StrUtils.getStr(ff.get("facilitySeq"));
+                    List<FacilityOpt> facilityOpts = facilityOptService.findByFacilitySeqLast(Long.parseLong(facilitySeq));
+
+                    if(paramOpt.equals("heatMap")) { //인구 분포도 활용한다면
+                        String fcltId = CommonUtil.validOneNull(ff, "facilityId");
+                        if(fcltId.startsWith("AP")) { //인구 COUNT 시설물
+                            facilityOpts.stream().forEach(fo -> {
+                                if (fo.getFacilityOptType() == 112) { //인구 OPT
+                                    Integer popCnt = Integer.parseInt(fo.getFacilityOptValue()); //인구 COUNT
+                                    for (int i = 0; i < popCnt; i++) {
+                                        heatList.add(f);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    ff.put("facilityOpts", facilityOpts);
+                });
 
                 f.put("facilityList", facilityList);
                 //해당개소의 시설물중 영상재생할 cctv가 있는가
@@ -76,6 +99,10 @@ public class StationController {
                 e.printStackTrace();
             }
         });
+        //인구 분포도 추가리스트
+        if(paramOpt.equals("heatMap")){
+            stationList = Stream.concat(stationList.stream(), heatList.stream()).collect(Collectors.toList());
+        }
         return GisUtil.getGeoJson(stationList, "station");
     }
 

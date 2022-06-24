@@ -9,17 +9,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,31 +71,27 @@ public class FaceDetectionServiceImpl implements FaceDetectionService {
 
         try {
             Map<String, Object> apiParam = new HashMap<>();
-            apiParam.put("callUrl", "/intellivix/faceAdd");
-            apiParam.put("imgNum", 1);
+            apiParam.put("id", CommonUtil.validOneNull(paramMap, "faceUid"));
+            apiParam.put("name", CommonUtil.validOneNull(paramMap, "faceName"));
+            apiParam.put("age", Integer.parseInt(CommonUtil.validOneNull(paramMap, "faceAge")));
+            apiParam.put("gender", Integer.parseInt(CommonUtil.validOneNull(paramMap, "faceGender")));
+            apiParam.put("imgNum", 0);
 
             MultipartFile faceImg = file[0];
             if (!faceImg.isEmpty()) {
+                apiParam.put("imgNum", 1);
                 apiParam.put("imgLen", faceImg.getSize());
                 apiParam.put("img", FileUtil.multiFileToBase64(faceImg));
-                apiParam.put("imgSub", new ArrayList<>());
+                apiParam.put("subImg", new ArrayList<>());
 
                 String fileName = FileUtil.uploadAjaxPost(file, request);
                 paramMap.put("faceFile", fileName);
-            }else{
-                throw new Exception();
             }
 
-            apiParam.putAll(paramMap);
-
-
-            // TODO: header param mapping
-            String apiKey = this.getIntellivixApiKey();
             Map<String, Object> headerMap = new HashMap<>();
-            headerMap.put("api-key", apiKey);
+            headerMap.put("api-key", this.getIntellivixApiKey());
 
-
-            ResponseEntity responseEntity = RestUtil.exchange("http://" + localIp + ":" + serverPort + "/api/call", HttpMethod.POST, MediaType.APPLICATION_JSON, apiParam, headerMap);
+            ResponseEntity responseEntity = RestUtil.exchange("http://1.213.164.187:5204/faces", HttpMethod.POST, MediaType.APPLICATION_JSON, apiParam, headerMap);
 
             if (responseEntity.getStatusCodeValue() != 200) {
                 log.debug("error face register");
@@ -118,7 +116,10 @@ public class FaceDetectionServiceImpl implements FaceDetectionService {
 
         try {
             Map<String, Object> apiParam = new HashMap<>();
-            apiParam.put("callUrl", "/intellivix/faceMod");
+            apiParam.put("id", CommonUtil.validOneNull(paramMap, "faceUid"));
+            apiParam.put("name", CommonUtil.validOneNull(paramMap, "faceName"));
+            apiParam.put("age", Integer.parseInt(CommonUtil.validOneNull(paramMap, "faceAge")));
+            apiParam.put("gender", Integer.parseInt(CommonUtil.validOneNull(paramMap, "faceGender")));
             apiParam.put("imgNum", 0);
 
             MultipartFile faceImg = file[0];
@@ -126,22 +127,16 @@ public class FaceDetectionServiceImpl implements FaceDetectionService {
                 apiParam.put("imgNum", 1);
                 apiParam.put("imgLen", faceImg.getSize());
                 apiParam.put("img", FileUtil.multiFileToBase64(faceImg));
-                apiParam.put("imgSub", new ArrayList<>());
+                apiParam.put("subImg", new ArrayList<>());
 
                 String fileName = FileUtil.uploadAjaxPost(file, request);
                 paramMap.put("faceFile", fileName);
             }
 
-            apiParam.putAll(paramMap);
-
-
-            // TODO: header param mapping
-            String apiKey = this.getIntellivixApiKey();
             Map<String, Object> headerMap = new HashMap<>();
-            headerMap.put("api-key", apiKey);
+            headerMap.put("api-key", this.getIntellivixApiKey());
 
-
-            ResponseEntity responseEntity = RestUtil.exchange("http://" + localIp + ":" + serverPort + "/api/call", HttpMethod.POST, MediaType.APPLICATION_JSON, apiParam, headerMap);
+            ResponseEntity responseEntity = RestUtil.exchange("http://1.213.164.187:5204/faces", HttpMethod.PUT, MediaType.APPLICATION_JSON, apiParam, headerMap);
 
             if (responseEntity.getStatusCodeValue() != 200) {
                 log.debug("error face register");
@@ -162,26 +157,44 @@ public class FaceDetectionServiceImpl implements FaceDetectionService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void del(int seq) throws Exception {
-        // TODO: header param mapping
-        String apiKey = this.getIntellivixApiKey();
-        Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put("api-key", apiKey);
 
         Map<String, Object> faceData = this.getOne(seq);
 
         Map<String, Object> param = new HashMap<>();
-        param.put("callUrl", "/intellivix/faceDel");
-        param.put("faceName", CommonUtil.validOneNull(faceData, "faceName"));
-        param.put("faceUid", CommonUtil.validOneNull(faceData, "faceUid"));
+        param.put("name", CommonUtil.validOneNull(faceData, "faceName"));
+        param.put("id", CommonUtil.validOneNull(faceData, "faceUid"));
 
-        ResponseEntity responseEntity = RestUtil.exchange("http://" + localIp + ":" + serverPort + "/api/call", HttpMethod.POST, MediaType.APPLICATION_JSON, param, headerMap);
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String apiKey = this.getIntellivixApiKey();
 
-        if (responseEntity.getStatusCodeValue() != 200) {
+            final HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            headers.add("api-key", apiKey);
+
+            final String json = new ObjectMapper().writeValueAsString(param);
+            URI uri = new URI("http://1.213.164.187:5204/faces");
+            HttpEntity requestEntity = new HttpEntity(json, headers);
+
+            log.trace("restUrl:{}, method:{}, request:{}", "http://1.213.164.187:5204/faces", HttpMethod.DELETE, requestEntity);
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.DELETE, requestEntity, String.class);
+            if (responseEntity.getStatusCodeValue() != 200) {
+                log.debug("error face register");
+                throw new Exception();
+            }
+
+            commonMapper.delete(fdsp.delete(seq));
+        } catch (RestClientResponseException rcrex) {
+            ResponseEntity.status(rcrex.getRawStatusCode()).body("");
+            log.debug("error face register");
+            throw new Exception();
+        } catch (Exception ex) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
             log.debug("error face register");
             throw new Exception();
         }
-
-        commonMapper.delete(fdsp.delete(seq));
     }
 
     private String getIntellivixApiKey() throws Exception {

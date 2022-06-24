@@ -5,6 +5,7 @@ import com.danusys.web.commons.api.model.ApiParam;
 import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.types.BodyType;
 import com.danusys.web.commons.api.types.DataType;
+import com.danusys.web.commons.app.CommonUtil;
 import com.danusys.web.commons.crypto.service.CryptoExecutorFactoryService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -87,6 +88,10 @@ public class RestApiExecutor implements ApiExecutor {
             log.trace("웹서비스 주소:{}, 메소드:{}, 미디어타입:{}, 파라미터:{}", targetUrl, method, mediaType, reqMap);
 
             responseEntity = getResponseEntity(api, method, mediaType, reqMap);
+            if(responseEntity.getStatusCodeValue() != 200){
+                log.debug("error face register");
+                throw new Exception();
+            }
             final String res = responseEntity.getBody();
 
             AtomicReference<String> body = new AtomicReference(res);

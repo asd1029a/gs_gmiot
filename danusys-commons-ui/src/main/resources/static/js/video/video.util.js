@@ -331,6 +331,9 @@ var videoManager = {
 		// if(!this.checkPermission(type)) {
 		// 	return false;
 		// }
+
+		// 이전 플레이 영상 삭제
+		videoArea.children('.video_wrap').remove();
 		
 		const viewId = 'video' + data.facilitySeq;
 		
@@ -352,9 +355,9 @@ var videoManager = {
 		
 		// videoManager.insertCctvViewLog(option);
 		
-		videoManager.playList.set(option.facilitySeq, viewId);
+		videoManager.playList.set(data.facilitySeq, viewId);
 		
-		parent.bind({
+		parent.children(".video_wrap").bind({
 			'remove' : function(e) {
 				if(typeof option.removeBtns === 'function') option.removeBtns();
 				videoManager.playList.delete(option.facilitySeq);
@@ -753,7 +756,7 @@ var commonPlayer = {
 	stop : function(option) {
 		const viewId = option.viewId;
 
-		video.singleVideoStop(viewId);
+		video.directVideoStop(viewId);
 		//webrtcserver.disconnect();
 	},
 	/**
