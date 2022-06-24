@@ -80,7 +80,7 @@ public class IntellivixManager {
 
             @Override
             public void onMessage(String message) {
-                log.info(message);
+                //log.info(message);
 
             }
 
