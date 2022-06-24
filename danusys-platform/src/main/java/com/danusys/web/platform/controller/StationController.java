@@ -3,13 +3,10 @@ package com.danusys.web.platform.controller;
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.service.FacilityOptService;
-import com.danusys.web.commons.app.EgovMap;
-import com.danusys.web.commons.app.FileUtil;
-import com.danusys.web.commons.app.StrUtils;
+import com.danusys.web.commons.app.*;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
 import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.platform.service.station.StationService;
-import com.danusys.web.commons.app.GisUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(value = "/station")
@@ -51,6 +50,9 @@ public class StationController {
      */
     @PostMapping(value = "/geojson", produces = "application/json; charset=utf8")
     public String getListGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
+        String paramOpt = CommonUtil.validOneNull(paramMap, "option");
+        List<Map<String, Object>> heatList = new ArrayList<>(); //인구 분포도 추가리스트
+
         EgovMap resultEgov = stationService.getList(paramMap);
         List<Map<String, Object>> stationList = (List<Map<String, Object>>) resultEgov.get("data");
         //해당 개소의 시설물들 정보 추가
@@ -66,6 +68,20 @@ public class StationController {
                 facilityList.stream().forEach(ff -> {
                     String facilitySeq = StrUtils.getStr(ff.get("facilitySeq"));
                     List<FacilityOpt> facilityOpts = facilityOptService.findByFacilitySeqLast(Long.parseLong(facilitySeq));
+
+                    if(paramOpt.equals("heatMap")) { //인구 분포도 활용한다면
+                        String fcltId = CommonUtil.validOneNull(ff, "facilityId");
+                        if(fcltId.startsWith("AP")) { //인구 COUNT 시설물
+                            facilityOpts.stream().forEach(fo -> {
+                                if (fo.getFacilityOptType() == 112) { //인구 OPT
+                                    Integer popCnt = Integer.parseInt(fo.getFacilityOptValue()); //인구 COUNT
+                                    for (int i = 0; i < popCnt; i++) {
+                                        heatList.add(f);
+                                    }
+                                }
+                            });
+                        }
+                    }
                     ff.put("facilityOpts", facilityOpts);
                 });
 
@@ -83,6 +99,10 @@ public class StationController {
                 e.printStackTrace();
             }
         });
+        //인구 분포도 추가리스트
+        if(paramOpt.equals("heatMap")){
+            stationList = Stream.concat(stationList.stream(), heatList.stream()).collect(Collectors.toList());
+        }
         return GisUtil.getGeoJson(stationList, "station");
     }
 

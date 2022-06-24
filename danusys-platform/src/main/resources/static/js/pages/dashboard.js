@@ -500,11 +500,9 @@ const dashboard = {
      * param type : dashFacilityStationMap(위치지도), dashFacilityHeatMap(분포도)
      * */
     , createMap : (type) => {
-
         const map = new mapCreater(type, 0, $("#sigunCode").val());
-
         let paramObj;
-
+        let geoJsonStr = "";
         $.ajax({
             url : "/config/mntrPageTypeData/smartPole"
             , type : "GET"
@@ -512,85 +510,59 @@ const dashboard = {
         }).done((d) => {
             paramObj = d['station'];
         });
-        station.getListGeoJson( paramObj ,d2 => {
-            if(type=="dashFacilityHeatMap"){
-                let resultObj = JSON.parse(d2);
-                const fcltList = JSON.parse(d2);
-                fcltList.features.forEach(f => {
-                    f.properties.facilityList.forEach(f2 => {
-                        if(f2.facilityId != undefined){
-                           if(f2.facilityId.startsWith("AP")){
-                               f2.facilityOpts.forEach(f3 => {
-                                   if(f3.facilityOptType == '112'){ //"floating_population"
-                                       const popCnt = Number(f3.facilityOptValue);
-                                       const newId = f.id;
-                                       for(let i=0; i<popCnt; i++){
-                                           const newFeature = Object.assign({}, f);
-                                           newFeature.id = newId  + "_" + i;
-                                           resultObj.features.push(newFeature);
-                                       }
-                                   }
-                               });
-                           }
-                        }
-                    });
-                });
-                console.log(resultObj);
-                const featureSource = new ol.source.Vector ({
-                    features: new ol.format.GeoJSON().readFeatures(JSON.stringify(resultObj), {
-                        dataProjection: "EPSG:4326"
-                        , featureProjection: "EPSG:5181"
-                    })
-                });
-                const layer = new ol.layer.Heatmap({
-                    source: featureSource,
-                    blur: 15,
-                    radius: 8,
-                    weight: function (feature) {
-                        return 0.4;
-                    },
-                });
-                map.addLayer(layer);
-                const featureLen = featureSource.getFeatures().length;
-                if(featureLen > 0) {
-                    const fitExtent = featureSource.getExtent();
 
-                    map.map.getView().fit(fitExtent, map.map.getSize());
-                }
-                map.map.getView().setZoom(map.map.getView().getZoom() - 0.5);
-            } else if(type=="dashFacilityStationMap") {
-                const featureSource = new ol.source.Vector ({
-                    features: new ol.format.GeoJSON().readFeatures(d2, {
-                        dataProjection: "EPSG:4326"
-                        , featureProjection: "EPSG:5181"
-                    })
-                });
-                const layer = new ol.layer.Vector({
-                    title : 'positionLayer',
-                    source: featureSource,
-                    style:  new ol.style.Style({
-                        image: new ol.style.Circle({
-                            radius:10,
-                            stroke: new ol.style.Stroke({
-                                color: 'white',
-                                width: 2,
-                            }),
-                            fill: new ol.style.Fill({
-                                color: '#CC6565'
-                            })
+        if(type == "dashFacilityHeatMap"){
+            paramObj['option'] = 'heatMap';
+        }
+
+        station.getListGeoJson( paramObj ,result => {
+            geoJsonStr = result;
+        });
+
+        const featureSource = new ol.source.Vector ({
+            features: new ol.format.GeoJSON().readFeatures(geoJsonStr, {
+                dataProjection: "EPSG:4326"
+                , featureProjection: "EPSG:5181"
+            })
+        });
+
+        let layer;
+
+        if(type == "dashFacilityHeatMap"){
+            layer = new ol.layer.Heatmap({
+                source: featureSource,
+                blur: 15,
+                radius: 8,
+                weight: function (feature) {
+                    return 0.4;
+                },
+            });
+        } else if(type=="dashFacilityStationMap") {
+            layer = new ol.layer.Vector({
+                title : 'positionLayer',
+                source: featureSource,
+                style:  new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius:10,
+                        stroke: new ol.style.Stroke({
+                            color: 'white',
+                            width: 2,
+                        }),
+                        fill: new ol.style.Fill({
+                            color: '#CC6565'
                         })
                     })
-                });
-                map.addLayer(layer);
-                const featureLen = featureSource.getFeatures().length;
-                if(featureLen > 0) {
-                    const fitExtent = featureSource.getExtent();
+                })
+            });
+        }
+        map.addLayer(layer);
+        const featureLen = featureSource.getFeatures().length;
+        if(featureLen > 0) {
+            const fitExtent = featureSource.getExtent();
 
-                    map.map.getView().fit(fitExtent, map.map.getSize());
-                }
-                map.map.getView().setZoom(map.map.getView().getZoom() - 0.5);
-            }
-        });
+            map.map.getView().fit(fitExtent, map.map.getSize());
+        }
+        map.map.getView().setZoom(map.map.getView().getZoom() - 0.5);
         window[type] = map;
     }
 }
