@@ -8,6 +8,9 @@
         <link rel="stylesheet" href="/css/plugin/dashboard/jquery.bxslider.4.2.12.css">
         <script src="/js/plugin/dashboard/jquery.bxslider.min.4.2.12.js"></script>
 
+        <script type="text/javascript" src="/js/map/controlMap.js"></script>
+        <script type="text/javascript" src="/js/pages/mntr.js"></script>
+
         <th:block th:insert="view/commons/map"/>
     </head>
     <body>
@@ -36,6 +39,7 @@
                     <th:block layout:fragment="content" />
                 </div>
             </div>
+            </th:block>
 
             <th:block th:insert="fragments/default/includes :: includes_footer(~{::pagesScript})">
             </th:block>

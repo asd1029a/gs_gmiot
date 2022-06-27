@@ -65,7 +65,7 @@ const mntr = {
                     'smart_busstop_event' : 'smartBusStop',
                     'smart_pole_event' : 'smartPole'
                 };
-                const paramData = mntr.getInitEventParam(nameObj[objJson.eventType]);
+                const paramData = mntr.getInitParam(nameObj[objJson.eventType]);
                 event.getListGeoJson(
                     paramData['event']
                     , result => {
@@ -336,9 +336,9 @@ const mntr = {
     }
     /**
      * 메뉴별 관제 초기 데이터 구분 파라미터 요청
-     * param : smart_pole_event /smart_busstop_event /EMS_EVENT /DRONE_EVENT
+     * param :
      * */
-    , getInitEventParam : (pageType) => {
+    , getInitParam : (pageType) => {
         let param = {};
         $.ajax({
             url : "/config/mntrPageTypeData/" + pageType
@@ -373,7 +373,7 @@ const mntr = {
             let tabType = 'station';
             //기체 폴링 멈춤
             dronePolling.stop();
-            paramObject = mntr.getInitEventParam(theme);
+            paramObject = mntr.getInitParam(theme);
             switch (theme) {
                 case "smartPole" : //스마트폴
                     window.lyControl.offList(['facility']);
@@ -1236,7 +1236,7 @@ const rnbList = {
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else {}
 
-        // TODO: CCTV 영상 재생(CCTV 리스트가 있을 경우만)
+        // TODO: CCTV 영상 재생(CCTV 리스트가 있을 경우만) ///////////////
         // 영상 재생 parent element
         const videoArea = target.find('.area_video').children('div');
         // 시설물 리스트 중 cctv만 목록화
@@ -1379,7 +1379,7 @@ function searchList(section, keyword) {
             if(keyword!="" && keyword!=null){
                 objJSON.keyword = keyword;
            }
-            //let paramObj = mntr.getInitEventParam(section); //합칠까?
+            //let paramObj = mntr.getInitParam(section); //합칠까?
             if(tab == "station") {
                 //개소
                 station.getListGeoJson(objJSON,result => {
