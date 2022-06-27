@@ -5,11 +5,9 @@ import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.danusys.web.commons.app.StringUtil;
 import lombok.SneakyThrows;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,16 +48,16 @@ public class MqttController {
 
             if("switch".equals(facilityId)) {
                 if("On".equals(setValue)) {
-                    message.put(facilityInfo.split("/")[2], "true");
+                    message.put(facilityInfo.split("/")[2], true);
                 } else {
-                    message.put(facilityInfo.split("/")[2], "false");
+                    message.put(facilityInfo.split("/")[2], false);
                 }
 
             } else {
                 if("On".equals(setValue)) {
-                    message.put("power", "true");
+                    message.put("power", true);
                 } else {
-                    message.put("power", "false");
+                    message.put("power", false);
                 }
 
             }
