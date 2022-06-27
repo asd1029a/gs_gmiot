@@ -1,21 +1,19 @@
 package com.danusys.web.platform.controller;
 
-import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.app.*;
-import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
 import com.danusys.web.platform.service.facility.FacilityService;
 import com.danusys.web.platform.service.station.StationService;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,6 +50,7 @@ public class StationController {
     public String getListGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
         String paramOpt = CommonUtil.validOneNull(paramMap, "option");
         List<Map<String, Object>> heatList = new ArrayList<>(); //인구 분포도 추가리스트
+//        AtomicInteger sumCount = new AtomicInteger();
 
         EgovMap resultEgov = stationService.getList(paramMap);
         List<Map<String, Object>> stationList = (List<Map<String, Object>>) resultEgov.get("data");
@@ -74,7 +73,9 @@ public class StationController {
                         if(fcltId.startsWith("AP")) { //인구 COUNT 시설물
                             facilityOpts.stream().forEach(fo -> {
                                 if (fo.getFacilityOptType() == 112) { //인구 OPT
-                                    Integer popCnt = Integer.parseInt(fo.getFacilityOptValue()); //인구 COUNT
+                                    int popCnt = Integer.parseInt(fo.getFacilityOptValue()); //인구 COUNT
+                                    f.put("fcltPopCount",popCnt);
+//                                    sumCount.getAndAdd(popCnt);
                                     for (int i = 0; i < popCnt; i++) {
                                         heatList.add(f);
                                     }
@@ -102,6 +103,9 @@ public class StationController {
         //인구 분포도 추가리스트
         if(paramOpt.equals("heatMap")){
             stationList = Stream.concat(stationList.stream(), heatList.stream()).collect(Collectors.toList());
+//            stationList.stream().forEach(f -> {
+//                f.put("fcltPopCountSum",sumCount.toString());
+//            });
         }
         return GisUtil.getGeoJson(stationList, "station");
     }

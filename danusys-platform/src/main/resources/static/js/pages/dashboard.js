@@ -534,7 +534,13 @@ const dashboard = {
                 blur: 15,
                 radius: 8,
                 weight: function (feature) {
-                    return 0.4;
+                    let wei = 0.4; //0;
+                    // const popCnt = Number(feature.getProperties().fcltPopCount);
+                    // const sumCnt = Number(feature.getProperties().fcltPopCountSum);
+                    // if(!isNaN(popCnt)){
+                    //     wei = (popCnt/sumCnt); //* 100;
+                    // }
+                    return wei;
                 },
             });
         } else if(type=="dashFacilityStationMap") {
