@@ -773,6 +773,13 @@ const mntr = {
             $target.css('display', 'none');
         });
 
+        //영상 선택
+        $('.area_right').find('.area_video').parent().prev().find('select').on("change", e => {
+            const rpanel = $(e.currentTarget).parents('.area_right');
+            let cctv = rpanel.find('option:selected').data();
+            rnbList.playVideo(rpanel, cctv);
+        });///영상 재생 func
+
     }
 }
 
@@ -1160,26 +1167,11 @@ const rnbList = {
         //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
         ///////////////////
         const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
-        console.log(prop);
-        console.log(theme);
         if(theme=="smartPower") {
             //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
-            target.find('.tab li[data-value=control]').hide(); // TODO 제어조건.. (제어에 해당하는 시설물이 없을경우)
-            const videoArea = target.find('.area_video').parent();
-            const videoTitle = videoArea.prev();
-            if(!prop.cctvVideoFlag){
-                videoArea.hide();
-                videoTitle.hide();
-            } else {
-                videoArea.show();
-                videoTitle.show();
-            }
-            //html로 지자체별 고정인게 낫나? -> 결정필요
-            ///show
-            ///hide
+            target.find('.tab li[data-value=control]').hide();
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme === "smartBusStop") {
-
             //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
@@ -1236,39 +1228,8 @@ const rnbList = {
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else {}
 
-        // TODO: CCTV 영상 재생(CCTV 리스트가 있을 경우만) ///////////////
-        // 영상 재생 parent element
-        const videoArea = target.find('.area_video').children('div');
-        // 시설물 리스트 중 cctv만 목록화
-        const facilityList = prop.facilityList;
-        const cctvList = facilityList.filter(f => f.facilityKind === "CCTV");
-        // CCTV가 있을 경우에만 영상 재생
-        if (cctvList.length > 0) {
-            // PTZ(회전형) 카메라 여부 확인
-            const ptzCctvList = cctvList.filter(ff =>
-                ff.facilityOpts.filter(fff => fff.facilityOptName === "is_ptz" && fff.facilityOptValue === "1"));
-            let cctv;
-            // PTZ 카메라가 없을 경우 그 외 카메라 중 한대 영상 재생
-            if (ptzCctvList.length !== 0) {
-                cctv = ptzCctvList[0];
-            } else {
-                cctv = cctvList[0];
-            }
-            const rtspOpt = cctv.facilityOpts.filter(fff => fff.facilityOptName === "rtsp_url");
-            const rtspUrl = rtspOpt[0].facilityOptValue;
-            const videoData = {
-                facilitySeq : cctv.facilitySeq,
-                rtspUrl : rtspUrl,
-                facilityKind : cctv.facilityKind
-            }
-            const option = {
-                data : videoData,
-                parent : videoArea
-            }
-            videoManager.createPlayer(option);
-        } else {
-            // $("#cctvListSelect");
-        }
+        //영상 제어
+        rnbList.videoUIControl(target, prop);
 
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
@@ -1304,6 +1265,8 @@ const rnbList = {
         target.find('.eventTitle').text("[ " + prop.eventSeq + " ] "  + prop.eventKindName);
 
         //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
+        //영상 제어
+        rnbList.videoUIControl(target, prop);
 
         //초기화
         target.find('span[data-value=eventGrade] input').prop('checked',false);
@@ -1338,6 +1301,9 @@ const rnbList = {
         $target.find('.facilitySubTitle').eq(1).text("[ "+ prop.facilityId +" ] 기체 상세 정보");
         $target.find('.facilitySubTitle').eq(2).text("[ "+ prop.facilityId +" ] 기체 현황");
 
+        //영상 제어
+        rnbList.videoUIControl(target, prop);
+
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
         propList.map(propStr => {
@@ -1346,14 +1312,89 @@ const rnbList = {
                 textArea.val(prop[propStr]);
             }
         });
-        //////////
-        // video는 냅두고
-
         // //animation end
         //다른 유형 중복선 제거
         window.lyConnect.remove('event');
         window.lyConnect.remove('station');
 
+    },
+    /**
+     * 오른쪽 패널 비디오 영역 show/hide
+     * @param rpanel : 해당 오른쪽 패널 div
+     * @param prop : 해당 오른쪽 패널에 해당하는 개소 feature 정보
+     * */
+    videoUIControl: (rpanel, prop) => {
+        const videoArea = rpanel.find('.area_video').parent();
+        const videoTitle = videoArea.prev();
+        // TODO: CCTV 영상 재생(CCTV 리스트가 있을 경우만) ///////////////
+        // 시설물 리스트 중 cctv만 목록화
+        const facilityList = prop.facilityList;
+        // 개소일때
+        if(facilityList){
+            const cctvList = facilityList.filter(f => f.facilityKind === "CCTV");
+            let isRealTime = false;
+            // CCTV가 있을 경우에만
+            if (cctvList.length > 0) {
+                //실시간인가 저장인가
+                const tab = $('.mntr_container .menu_fold.select .tab li.active').attr('data-value');
+                switch (tab) {
+                    case "station":
+                    case "facility":
+                    case "event":
+                        isRealTime = true;
+                        break;
+                    //case eventPast
+                    default: break;
+                }
+                videoArea.show();
+                videoTitle.show();
+                let selectList = videoArea.prev().find('select');
+                selectList.empty();
+                cctvList.forEach(f => { //select list
+                    let selectElem = "<option>" + f.facilityId + "</option>";
+                    f.isRealTime = isRealTime;
+                    selectList.append(selectElem);
+                    selectList.find('option').last().data(f);
+                });
+                //초기영상 띄우기 - 첫번째 그냥 띄우기
+                rnbList.playVideo(rpanel, cctvList[0]);
+            } else {
+                videoArea.hide();
+                videoTitle.hide();
+            }
+        } else {
+            //이벤트일때
+            //TODO 이벤트 정보에서 개소 - 개소해당 시설물 리스트 어떻게 가져올것인지.
+            debugger;
+        }
+
+    },
+    /**
+     * 오른쪽 패널 영상 재생
+     * @param rpanel : 해당 오른쪽 패널 div
+     * @param cctv : 해당 cctv prop
+     * */
+    playVideo: (rpanel, cctv) => {
+        const rtspOpt = cctv.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+        if(rtspOpt.length > 0){
+            const rtspUrl = rtspOpt[0].facilityOptValue;
+            const videoData = {
+                facilitySeq : cctv.facilitySeq,
+                rtspUrl : rtspUrl,
+                facilityKind : cctv.facilityKind
+            }
+            const videoArea = rpanel.find(".area_right_contents").find('.area_video');
+            const option = {
+                data : videoData,
+                parent : videoArea,
+                isEvent : false
+            }
+            if(cctv.isRealTime){ //실시간이면
+                option.isEvent = true;
+            }
+            videoArea.empty();
+            videoManager.createPlayer(option);
+        }
     }
 }
 
