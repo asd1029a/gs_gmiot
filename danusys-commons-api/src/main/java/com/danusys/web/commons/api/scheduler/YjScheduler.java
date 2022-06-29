@@ -50,6 +50,7 @@ public class YjScheduler {
 
                 FacilityDataRequestDTO facilityDataRequestDTO = objectMapper.readValue(StrUtils.getStr(json), FacilityDataRequestDTO.class);
                 facilityDataRequestDTO.setFacilityOptType(112);
+                facilityDataRequestDTO.setFacilityOptName("floating_population");
                 facilityOptService.save(facilityDataRequestDTO);
             } catch (Exception e) {
                 e.printStackTrace();
