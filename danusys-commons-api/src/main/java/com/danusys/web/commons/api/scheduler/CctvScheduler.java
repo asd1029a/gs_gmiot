@@ -18,34 +18,36 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@Profile(value = {"local", "bsng"})
+@Profile(value = {"local", "bsng", "gm"})
 @RequiredArgsConstructor
 public class CctvScheduler {
     @Value("#{${vms.server.map}}")
     private Map<String, String> vmsServerData;
+    @Value("${vms.midsvr.url}")
+    private String midsvrUrl;
     /**
      * 시설물 상대 동기화
      */
-    @Scheduled(fixedDelay = 60 * 1000 * 60)
+    @Scheduled(fixedDelay = 60 * 1000 * 120)
     public void cctvScheduler() throws InterruptedException {
         log.trace("---------------------cctv scheduler---------------------");
-        ResponseEntity<Map> responseEntity = null;
         List<Map<String, Object>> result = null;
         Map<String, Object> param = new HashMap<>();
-        param.put("svr_ip","10.8.50.31");
-        param.put("code","3200");
-        param.put("send_kind","1");
-        param.put("client","1");
+        vmsServerData.entrySet().stream().forEach(f -> {
+            param.put("svr_ip", f.getKey());
+            param.put("code", "3200");
+            param.put("send_kind", "1");
+            param.put("client", "1");
 
-        try {
+            try {
+                ResponseEntity<Map> responseEntity = RestUtil.exchange(midsvrUrl, HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
+                log.trace("# status >>> {}", responseEntity.getHeaders());
+                log.trace("# status >>> {}", responseEntity.getStatusCode());
+                log.trace("# status >>> {}", responseEntity.getBody());
 
-            responseEntity = RestUtil.exchange("http://10.8.50.12:10003/api/athena/midsvr", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
-            log.trace("# status >>> {}", responseEntity.getHeaders());
-            log.trace("# status >>> {}", responseEntity.getStatusCode());
-            log.trace("# status >>> {}", responseEntity.getBody());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

@@ -85,10 +85,6 @@ public class FacilityTcpServer {
                     subData = new String(copy, "UTF-8");
                 }
 
-
-//				String socketAddress = new InetSocketAddress(this.connectedSocket.getInetAddress(), this.connectedSocket.getPort()).toString();
-//				String remoteIp = socketAddress.substring(1).split(":")[0];
-
                 String rMsg = "SUCCESS";
 
                 if ("12".equals(hexCode[1]) && "02".equals(hexCode[0]) && "03".equals(hexCode[hexCode.length - 1])) {
@@ -131,8 +127,16 @@ public class FacilityTcpServer {
                         String ptzType = f.getPtzType();
                         String cctvPurpose = f.getCctvPurpose();
                         String managementCode = streamNodeBaseInfo.getManagementCode();
-                        double latitude = f.getLatitude().isEmpty() ? 0 : Double.parseDouble(f.getLatitude());
-                        double longitude = (f.getLongitude().isEmpty() ? 0 : Double.parseDouble(f.getLongitude()));
+                        double latitude = 0;
+                        double longitude = 0;
+
+                        try {
+                            log.info("nodeId : {}, latitude : {}, longitude : {}, rtsp_url : {}", nodeId, f.getLatitude(), f.getLongitude(), rtspUrl);
+                            latitude = f.getLatitude().isEmpty() ? 0 : Double.parseDouble(f.getLatitude());
+                            longitude = (f.getLongitude().isEmpty() ? 0 : Double.parseDouble(f.getLongitude()));
+                        } catch (Exception e) {
+                            log.error("cctv coordinates error : {}", e.getMessage());
+                        }
 
                         Map<String, Object> optData = new HashMap<>();
 
@@ -155,15 +159,10 @@ public class FacilityTcpServer {
                         } else {
                             facilityTcpService.addCctv(nodeId, facilityName, latitude, longitude, vmsSvrNo, optData);
                         }
-                        // String facilityId = nodeId + "_" +
-                        // Facility facility = Facility.builder().facilityId()
                     });
 
                     log.info("---------------------------- AllCenterList End ----------------------------");
-
-
                 }
-
 
                 bos.write(rMsg.getBytes("utf-8"));
                 bos.flush();
@@ -178,21 +177,6 @@ public class FacilityTcpServer {
             }
         }
     }
-
-//    public FacilityTcpServer() {
-//        log.debug(" ===== FacilityTcpServer Begin ===== ");
-//    }
-//
-//    public static void main(String[] args) throws IOException {
-//        try {
-//            FacilityTcpServer server = new FacilityTcpServer();
-//            server.startServer();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            log.error(" ===== TCPServerException : {}", e.getMessage());
-//        }
-//    }
-
 
     public FacilityTcpServer(@Value("#{${vms.server.map}}") Map<String, String> vmsServerData,
                              FacilityTcpService facilityTcpService) {
