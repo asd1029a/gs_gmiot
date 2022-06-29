@@ -217,10 +217,10 @@ public class ApiCallRestController {
                 });
                 String topic = "shelter"+list.getFacilityId()+"/set/bus_stop";
                 Map<String,Object> keySet = new HashMap<>();
-                boolean powerCheck = list.getEventKind().equals("1") ? true : false;
+                Boolean powerCheck = list.getEventKind().equals("1") ? true : false;
                 keySet.put("power",powerCheck);
                 String result = JsonUtil.MapToJson(keySet);
-
+                log.info("사람 유무 체크 :{}",powerCheck);
                 yjMqttManager.sender(topic,result);
                 // 초기화
 //                if(checkExist.get(stationSeq) == null){
