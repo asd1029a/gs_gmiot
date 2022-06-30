@@ -32,7 +32,7 @@ public class DashboardSqlProvider {
         SQL sql = new SQL() {{
             SELECT("(select code_name from v_facility_kind where code_seq = tf.facility_kind)||' 통신장애' as name" +
                     ", sum(case when to_char(tfa.insert_dt,'YYYYMMDDHH24') > to_char(now() - interval '1 hour','YYYYMMDDHH24') then 1 else 0 end) as value" +
-                    ", count(tfa.*) as total_cnt" +
+                    ", count(1) as total_cnt" +
                     ", '/' as unit" +
                     ", '(1시간내/누적)' as sub_name");
             FROM("t_station ts");
@@ -45,78 +45,22 @@ public class DashboardSqlProvider {
         }};
         return sql.toString();
     }
-    /*public String selectTroublePole(Map<String, Object> paramMap) {
-        SQL sql = new SQL() {{
-            SELECT("'스마트폴 통신장애' as name" +
-                    ", '' as sub_name" +
-                    ", '3' as value" +
-                    ", '11' as total_cnt" +
-                    ", '/' as unit");
-        }};
-        return sql.toString();
-    }*/
 
-    public String selectEventDropAttack(Map<String, Object> paramMap) {
+    public String selectEventCount(Map<String, Object> paramMap) {
         String codeSig = CommonUtil.validOneNull(paramMap, "codeSig");
+        String eventKind = CommonUtil.validOneNull(paramMap, "eventKind");
+        String name = CommonUtil.validOneNull(paramMap, "name");
+        String subName = CommonUtil.validOneNull(paramMap, "subName");
         SQL sql = new SQL() {{
-            SELECT("'유동인구 이벤트' as name" +
-                    ", '쓰러짐 감지(1시간내/누적)' as sub_name" +
+            SELECT("'"+name+"' as name" +
+                    ", '"+subName+"' as sub_name" +
                     ", sum(case when to_char(te.event_start_dt,'YYYYMMDDHH24') > to_char(now() - interval '1 hour','YYYYMMDDHH24') then 1 else 0 end) as value" +
-                    ", count(te.*) as total_cnt" +
+                    ", count(1) as total_cnt" +
                     ", '/' as unit");
             FROM("t_station ts");
             INNER_JOIN("t_event te ON ts.station_seq = te.station_seq");
             WHERE("ts.administ_zone LIKE '"+codeSig+"%'");
-            WHERE("te.event_kind = '65'");
-        }};
-        return sql.toString();
-    }
-
-    public String selectEventSuspectDetection(Map<String, Object> paramMap) {
-        SQL sql = new SQL() {{
-            SELECT("'지능형 카메라 이벤트' as name" +
-                    ", '용의자 검출' as sub_name" +
-                    ", '1' as value" +
-                    //", '10' as total_cnt" +
-                    ", '건' as unit");
-        }};
-        return sql.toString();
-    }
-
-    public String selectEventPole(Map<String, Object> paramMap) {
-        SQL sql = new SQL() {{
-            SELECT("'스마트폴 이벤트' as name" +
-                    ", '전원이상' as sub_name" +
-                    ", '3' as value" +
-                    ", '' as total_cnt" +
-                    ", '건' as unit");   //kW
-        }};
-        return sql.toString();
-    }
-
-    public String selectEventFire(Map<String, Object> paramMap) {
-        String codeSig = CommonUtil.validOneNull(paramMap, "codeSig");
-        SQL sql = new SQL() {{
-            SELECT("'유동인구 이벤트' as name" +
-                    ", '화재 감지(1시간내/누적)' as sub_name" +
-                    ", sum(case when to_char(te.event_start_dt,'YYYYMMDDHH24') > to_char(now() - interval '1 hour','YYYYMMDDHH24') then 1 else 0 end) as value" +
-                    ", count(te.*) as total_cnt" +
-                    ", '/' as unit");
-            FROM("t_station ts");
-            INNER_JOIN("t_event te ON ts.station_seq = te.station_seq");
-            WHERE("ts.administ_zone LIKE '"+codeSig+"%'");
-            WHERE("te.event_kind = '66'");
-        }};
-        return sql.toString();
-    }
-
-    public String selectEventMissingPerson(Map<String, Object> paramMap) {
-        SQL sql = new SQL() {{
-            SELECT("'지능형 카메라 이벤트' as name" +
-                    ", '실종자 검출' as sub_name" +
-                    ", '2' as value" +
-                    ", '10' as total_cnt" +
-                    ", '/' as unit");   //kW
+            WHERE("te.event_kind = '"+eventKind+"'");
         }};
         return sql.toString();
     }

@@ -220,7 +220,7 @@ public class ApiCallRestController {
                 Boolean powerCheck = list.getEventKind().equals("1") ? true : false;
                 keySet.put("power",powerCheck);
                 String result = JsonUtil.MapToJson(keySet);
-                log.info("사람 유무 체크 :{}",powerCheck);
+                log.info("bus station :{} people:{}","shelter"+list.getFacilityId(),powerCheck);
                 yjMqttManager.sender(topic,result);
                 // 초기화
 //                if(checkExist.get(stationSeq) == null){

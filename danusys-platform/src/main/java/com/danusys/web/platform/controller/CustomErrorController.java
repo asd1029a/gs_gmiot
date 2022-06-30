@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class CustomErrorController implements ErrorController {
-    private String VIEW_PATH = "/view/error";
+    private String VIEW_PATH = "view/error";
 
     @RequestMapping(value = "/error")
     public String handleError(HttpServletRequest request, Model model) {
