@@ -1157,7 +1157,6 @@ const rnbList = {
      * */
     createStation : obj => {
         /*TODO 데이터 오면 정보 채우기*/
-        obj = stringFunc.changeXSSOutputValue(obj);
         const target = $('.area_right[data-value=station]');
         const prop = obj.getProperties();
 
@@ -1363,12 +1362,7 @@ const rnbList = {
                 videoArea.hide();
                 videoTitle.hide();
             }
-        } else {
-            //이벤트일때
-            //TODO 이벤트 정보에서 개소 - 개소해당 시설물 리스트 어떻게 가져올것인지.
-            debugger;
         }
-
     },
     /**
      * 오른쪽 패널 영상 재생
