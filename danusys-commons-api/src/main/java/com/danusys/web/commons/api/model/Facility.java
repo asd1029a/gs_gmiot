@@ -59,8 +59,9 @@ public class Facility implements Serializable {
     @Column
     private Integer insertUserSeq;
 
-    @Column
-    private Time updateDt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
+    @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp updateDt;
 
     @Column
     private Integer updateUserSeq;
