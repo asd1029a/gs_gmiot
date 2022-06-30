@@ -1387,10 +1387,7 @@ const rnbList = {
             const option = {
                 data : videoData,
                 parent : videoArea,
-                isEvent : false
-            }
-            if(cctv.isRealTime){ //실시간이면
-                option.isEvent = true;
+                isEvent : cctv.isRealTime
             }
             videoArea.empty();
             videoManager.createPlayer(option);

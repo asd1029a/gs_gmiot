@@ -125,7 +125,7 @@
 
 /* map_location */
 .map_location{position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; align-items: center; justify-content: space-around; width: max-content; height: 40px; box-sizing: border-box; background: #1e1f23; border-radius: 4px;}
-.map_location ul{display: flex; align-items: center; justify-content: center; flex: 1; grid-gap: 4px; height: 100%; padding: 0px 14px; text-align: center; border-right: 1px solid #292c34; box-sizing: border-box;}
+.map_location ul{display: flex; align-items: center; justify-content: center; flex: 1; grid-gap: 4px; height: 100%; padding: 0px 14px; text-align: center; border-right: 0px solid #292c34; box-sizing: border-box;}
 .map_location ul li{flex: 1; display: flex; justify-content: flex-start; grid-gap: 8px; font-size: 14px; color: #7f8491;}
 .map_location ul li:nth-last-child(1){flex: initial;}
 .map_location i{width: 16px; height: 16px; margin: 0px;}

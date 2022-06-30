@@ -259,7 +259,7 @@ const station = {
             , contentType : "application/json; charset=utf-8"
             , async : false
         }).done((result) => {
-            pCallback(result);
+            pCallback(stringFunc.changeXSSOutputValue(result));
         });
     },
     addProc : () => {
