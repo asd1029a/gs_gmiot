@@ -151,4 +151,4 @@ $(document).ready(() => {
         stats.create();
         stats.setChart();
     }
-})
+});

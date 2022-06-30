@@ -333,7 +333,7 @@ var videoManager = {
 		// }
 
 		// 이전 플레이 영상 삭제
-		videoArea.children('.video_wrap').remove();
+		parent.children('.video_wrap').remove();
 		
 		const viewId = 'video' + data.facilitySeq;
 		

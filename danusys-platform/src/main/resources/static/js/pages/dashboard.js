@@ -32,10 +32,11 @@ const dashboard = {
 
         }, 60000); //60000
 
+        let mapData = dashboard.mapData();
         //대시보드 맵
         $.each($('.dashboard_section .map_wrap'), (i,v) => {
             const id = $(v).attr('id');
-            dashboard.createMap(id);
+            dashboard.createMap(id, mapData);
         });
     }
     , interval: (callback, interval) => {
@@ -499,28 +500,22 @@ const dashboard = {
      * 대시보드 맵 생성
      * param type : dashFacilityStationMap(위치지도), dashFacilityHeatMap(분포도)
      * */
-    , createMap : (type) => {
+    , createMap : (type, data) => {
         const map = new mapCreater(type, 0, $("#sigunCode").val());
-        let paramObj;
-        let geoJsonStr = "";
-        $.ajax({
-            url : "/config/mntrPageTypeData/smartPole"
-            , type : "GET"
-            , async : false
-        }).done((d) => {
-            paramObj = d['station'];
-        });
 
-        if(type == "dashFacilityHeatMap"){
-            paramObj['option'] = 'heatMap';
+        let dataJson = JSON.parse(data);
+        if(type=="dashFacilityHeatMap"){
+            let dataFeatures = dataJson.features.filter(f => {
+                if(f.properties.fcltPopCount){
+                    return true;
+                }
+                return false;
+            });
+            dataJson.features = dataFeatures;
         }
 
-        station.getListGeoJson( paramObj ,result => {
-            geoJsonStr = result;
-        });
-
         const featureSource = new ol.source.Vector ({
-            features: new ol.format.GeoJSON().readFeatures(geoJsonStr, {
+            features: new ol.format.GeoJSON().readFeatures(JSON.stringify(dataJson), {
                 dataProjection: "EPSG:4326"
                 , featureProjection: "EPSG:5181"
             })
@@ -570,5 +565,15 @@ const dashboard = {
         }
         map.map.getView().setZoom(map.map.getView().getZoom() - 0.5);
         window[type] = map;
+    }
+    , mapData : () => {
+        let param = mntr.getInitParam('smartPole')['station'];
+        param['option'] = 'heatMap';
+
+        let data;
+        station.getListGeoJson( param ,result => {
+            data = result;
+        });
+        return data;
     }
 }

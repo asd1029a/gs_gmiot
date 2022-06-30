@@ -10,11 +10,15 @@ import java.util.Map;
 public class FaceDetectionSqlProvider {
 
     public String selectListQry(Map<String, Object> paramMap) {
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
         ArrayList faceKind = CommonUtil.valiArrNull(paramMap, "faceKind");
         SQL sql = new SQL() {{
             SELECT("*");
             FROM("t_face_detection");
             WHERE("face_status != 2");
+            if (keyword != null && !keyword.equals("")){
+                WHERE("face_name LIKE '%" + keyword + "%'");
+            }
             if (faceKind != null && !faceKind.isEmpty()){
                 WHERE("face_kind" + SqlUtil.getWhereInStr(faceKind));
             }
@@ -24,12 +28,16 @@ public class FaceDetectionSqlProvider {
     }
 
     public String selectCountQry(Map<String, Object> paramMap) {
+        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
         ArrayList faceKind = CommonUtil.valiArrNull(paramMap, "faceKind");
 
         SQL sql = new SQL() {{
             SELECT("COUNT(*)");
             FROM("t_face_detection");
             WHERE("face_status != 2");
+            if (keyword != null && !keyword.equals("")){
+                WHERE("face_name LIKE '%" + keyword + "%'");
+            }
             if (faceKind != null && !faceKind.isEmpty()){
                 WHERE("face_kind" + SqlUtil.getWhereInStr(faceKind));
             }
