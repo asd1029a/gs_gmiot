@@ -1157,6 +1157,7 @@ const rnbList = {
      * */
     createStation : obj => {
         /*TODO 데이터 오면 정보 채우기*/
+        obj = stringFunc.changeXSSOutputValue(obj);
         const target = $('.area_right[data-value=station]');
         const prop = obj.getProperties();
 

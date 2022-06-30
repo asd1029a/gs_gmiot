@@ -198,6 +198,9 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public EgovMap getAirPollution(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
+
+        paramMap.put("codeSig",codeSig);
+
         List<EgovMap> airDataList = commonMapper.selectList(dsp.selectAirPollution(paramMap));
         ArrayList<Map<String,Object>> resultTempArray = new ArrayList<>();
 
