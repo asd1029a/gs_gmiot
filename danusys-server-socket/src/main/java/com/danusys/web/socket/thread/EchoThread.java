@@ -92,7 +92,7 @@ public class EchoThread extends Thread{
                         m.put("deviceId","BSNG_S_"+faSeq);
                         m.put("name",key);
                         m.put("value",maps.get(key));
-                        m.put("type",50);
+                        m.put("type",53);
                         result.add(m);
                     }
                     resultMap.put("callUrl","/facility/facilityData");

@@ -6,13 +6,11 @@ import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.repository.FacilityOptRepository;
 import com.danusys.web.commons.api.repository.FacilityRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Project : danusys-webservice-parent
@@ -35,8 +33,12 @@ public class FacilityOptService {
 
     public FacilityOpt save(FacilityDataRequestDTO facilityOpt){
         Facility facility = facilityRepository.findByFacilityId(facilityOpt.getFacilityId());
-        FacilityOpt result = FacilityOpt.builder().facilitySeq(facility.getFacilitySeq()).facilityOptName(facilityOpt.getFacilityOptName())
-                .facilityOptValue(facilityOpt.getFacilityOptValue()).facilityOptType(facilityOpt.getFacilityOptType()).build();
+        FacilityOpt result = FacilityOpt.builder()
+                                .facilitySeq(facility.getFacilitySeq())
+                                .facilityOptName(facilityOpt.getFacilityOptName())
+                                .facilityOptValue(facilityOpt.getFacilityOptValue())
+                                .facilityOptType(facilityOpt.getFacilityOptType())
+                                .build();
         return facilityOptRepository.save(result);
     }
 
@@ -51,16 +53,21 @@ public class FacilityOptService {
     @Transactional
     public List<FacilityOpt> saveAllByFacilityDataRequestDTO(List<FacilityDataRequestDTO> list) throws Exception {
         List<FacilityOpt> facilityOptList = new ArrayList<>();
-
         list.forEach(f -> {
+            Boolean cumulativeData = (f.getFacilityOptType()!=53);
             Facility facility = facilityRepository.findByFacilityId(f.getFacilityId());
-            FacilityOpt facilityOpt = facilityOptRepository.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(),
-                    f.getFacilityOptName());
-            if(Objects.isNull(facilityOpt)){
-                FacilityOpt saveFacilityOpt = FacilityOpt.builder().facilitySeq(facility.getFacilitySeq()).facilityOptName(f.getFacilityOptName()).facilityOptValue(f.getFacilityOptValue()).facilityOptType(f.getFacilityOptType()).build();
+            List<FacilityOpt> facilityOpt = facilityOptRepository.findAllByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(),f.getFacilityOptName());
+            if((facilityOpt.size()!= 0) && !(cumulativeData)){
+                facilityOpt.get(0).setFacilityOpt(facility.getFacilitySeq(),f.getFacilityOptName(),f.getFacilityOptValue(),f.getFacilityOptType());
+            }else{
+                FacilityOpt saveFacilityOpt = FacilityOpt.builder()
+                        .facilitySeq(facility.getFacilitySeq())
+                        .facilityOptName(f.getFacilityOptName())
+                        .facilityOptValue(f.getFacilityOptValue())
+                        .facilityOptType(f.getFacilityOptType())
+                        .build();
                 facilityOptList.add(saveFacilityOpt);
             }
-            facilityOpt.setFacilityOpt(facility.getFacilitySeq(),f.getFacilityOptName(),f.getFacilityOptValue(),f.getFacilityOptType());
         });
         facilityOptRepository.saveAll(facilityOptList);
         return facilityOptList;
