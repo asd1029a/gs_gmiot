@@ -217,8 +217,10 @@ public class FacilityController {
      * 시설물 : 광명 사이니지 단건 조회(외부업체 호출용)
      */
     @GetMapping(value="/signage/getData")
-    public ResponseEntity<String> getSignageData() throws Exception {
-        return ResponseEntity.ok().body(facilityService.getOneSignageData());
+    public ResponseEntity<String> getSignageData(HttpServletRequest request) throws Exception {
+        String serverName = request.getServerName();
+        String serverPort = StrUtils.getStr(request.getServerPort());
+        return ResponseEntity.ok().body(facilityService.getOneSignageData(serverName, serverPort));
     }
 
     /**

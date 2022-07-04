@@ -1,9 +1,7 @@
 package com.danusys.web.commons.api.dto;
 
-import com.danusys.web.commons.api.model.Event;
 import com.danusys.web.commons.api.model.FacilityOpt;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Project : danusys-webservice-parent
@@ -14,6 +12,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FacilityDataRequestDTO {
     private String facilityId;
     private Long facilitySeq;

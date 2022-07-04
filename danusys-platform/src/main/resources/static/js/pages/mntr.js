@@ -1362,12 +1362,7 @@ const rnbList = {
                 videoArea.hide();
                 videoTitle.hide();
             }
-        } else {
-            //이벤트일때
-            //TODO 이벤트 정보에서 개소 - 개소해당 시설물 리스트 어떻게 가져올것인지.
-            debugger;
         }
-
     },
     /**
      * 오른쪽 패널 영상 재생
@@ -1387,10 +1382,7 @@ const rnbList = {
             const option = {
                 data : videoData,
                 parent : videoArea,
-                isEvent : false
-            }
-            if(cctv.isRealTime){ //실시간이면
-                option.isEvent = true;
+                isEvent : cctv.isRealTime
             }
             videoArea.empty();
             videoManager.createPlayer(option);
