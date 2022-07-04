@@ -225,8 +225,8 @@
             <dl class="area_title">
                 <dt><i><img src="/images/default/titleIcon03.svg"></i>CCTV
                     <select>
-                        <option selected>회전형</option>
-                        <option>고정형</option>
+                        <!--<option selected>회전형</option>
+                        <option>고정형</option>-->
                     </select>
                 </dt>
                 <dd class="ptz_toggle">
@@ -303,30 +303,38 @@
                         <dt><i><img src="/images/default/busStationState01.svg"></i>현재인원</dt>
                         <dd><span class="value">-</span>명</dd>
                     </dl>
-                    <dl data-value="stationInfo_air_index">
-                        <dt><i><img src="/images/default/busStationState05.svg"></i>대기지수</dt>
-                        &lt;!&ndash; blue : 좋음 / green : 보통 / yellow : 나쁨 / red : 매우나쁨 &ndash;&gt;
-                        <dd class="green"><span class="value">-</span>보통</dd>
-                    </dl>
-                    <dl data-value="stationInfo_power">
+<!--                    <dl data-value="PM10">-->
+<!--                        <dt><i><img src="/images/default/busStationState05.svg"></i>미세먼지</dt>-->
+<!--                        &lt;!&ndash; blue : 좋음 / green : 보통 / yellow : 나쁨 / red : 매우나쁨 &ndash;&gt;-->
+<!--                        <dd class="green"><span class="value">-</span>보통</dd>-->
+<!--                    </dl>-->
+                    <dl data-value="power">
                         <dt><i><img src="/images/default/busStationState02.svg"></i>전력</dt>
-                            <dd><span class="value">-</span>kWh</dd>
+                            <dd><span class="value">-</span>Wh</dd>
                     </dl>
-                    <dl data-value="stationInfo_wattage">
+                    <dl data-value="wattage">
                         <dt><i><img src="/images/default/busStationState02.svg"></i>전력량</dt>
-                        <dd><span class="value">-</span>kWh</dd>
+                        <dd><span class="value">-</span>Wh</dd>
                     </dl>
-                    <dl data-value="stationInfo_temperature">
+                    <dl data-value="temperature">
                         <dt><i><img src="/images/default/busStationState04.svg"></i>기온</dt>
                         <dd><span class="value">-</span>&#186;&#1057;</dd>
                     </dl>
-                    <dl data-value="yj_room_temp">
-                        <dt><i><img src="/images/default/busStationState04.svg"></i>실내기온</dt>
-                        <dd><span class="value">-</span>&#186;&#1057;</dd>
+                    <dl data-value="PM10">
+                        <dt><i><img src="/images/default/busStationState05.svg"></i>미세먼지</dt>
+                        <dd><span class="value">-</span>㎍/㎥</dd>
                     </dl>
-                    <dl data-value="yj_temp">
-                        <dt><i><img src="/images/default/busStationState04.svg"></i>기온</dt>
-                        <dd><span class="value">-</span>&#186;&#1057;</dd>
+                    <dl data-value="PM2.5">
+                        <dt><i><img src="/images/default/busStationState05.svg"></i>초미세먼지</dt>
+                        <dd><span class="value">-</span>㎍/㎥</dd>
+                    </dl>
+                    <dl data-value="humidity">
+                        <dt><i><img src="/images/default/busStationState04.svg"></i>습도</dt>
+                        <dd><span class="value">-</span>%RH</dd>
+                    </dl>
+                    <dl data-value="CO2">
+                        <dt><i><img src="/images/default/busStationState04.svg"></i>CO2</dt>
+                        <dd><span class="value">-</span>ppm</dd>
                     </dl>
                 </div>
             </div>
@@ -414,6 +422,7 @@
 <!--                    </dl>-->
 <!--                </div>-->
             </div>
+        </div>
         </div>
     </section>
 

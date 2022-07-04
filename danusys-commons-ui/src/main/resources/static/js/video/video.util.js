@@ -19,8 +19,6 @@ var videoManager = {
 		reqServerPort : '8000',
 		midServerIp : '10.1.105.14',
 		midServerPort : '10003',
-		clientIp : '',
-		sessionId : 'test',
 		systemType : 'danu',
 		mediaAuthority : 'N'
 	},
@@ -44,7 +42,7 @@ var videoManager = {
 	},
 	setMidServerIp : function(midServerIp) {
 	    const jsonObj = {};
-	    jsonObj.searchIp = midServerIp.substr(0, midServerIp.lastIndexOf('.') - 1);
+	    jsonObj.searchIp = midServerIp.substring(0, midServerIp.lastIndexOf('.') - 1);
 	    jsonObj.port = videoManager.prop.midServerPort;
 
 	    $.ajax({
@@ -149,13 +147,13 @@ var videoManager = {
 					bText.html('OFF');
 					bText.removeClass('on').addClass('off');
 					$(this).removeClass('active');
-					$(parent).children('.video-wrap').children('.cctv-btn-wrap').removeClass('active');
+					$(parent).children('.video_wrap').children('.cctv-btn-wrap').removeClass('active');
 					mapManager.map.removeLayer(data.directionLayer);
 				} else {
 					bText.html('ON');
 					bText.removeClass('off').addClass('on');
 					$(this).addClass('active');
-					$(parent).children('.video-wrap').children('.cctv-btn-wrap').addClass('active');
+					$(parent).children('.video_wrap').children('.cctv-btn-wrap').addClass('active');
 				}
 			},
 		});
@@ -322,44 +320,47 @@ var videoManager = {
 	createPlayer : function(option) {
 		const parent = option.parent;
 		const data = option.data;
-		const isEvent = option.isEvent === undefined ? false : option.isEvent;
-		const isSite = option.isSite === undefined ? false : option.isSite;
-		const isDetail = option.isDetail === undefined ? true : option.isDetail;
-		const isButton = option.isButton === undefined ? true : option.isButton;
-		const type = this.getVideoType(isEvent);
+		// const isEvent = option.isEvent === undefined ? false : option.isEvent;
+		// const isSite = option.isSite === undefined ? false : option.isSite;
+		// const isDetail = option.isDetail === undefined ? true : option.isDetail;
+		// const isButton = option.isButton === undefined ? true : option.isButton;
+		// const type = this.getVideoType(isEvent);
 		
-		option.type = type;
+		// option.type = type;
 		
-		if(!this.checkPermission(type)) {
-			return false;
-		}
+		// if(!this.checkPermission(type)) {
+		// 	return false;
+		// }
+
+		// 이전 플레이 영상 삭제
+		parent.children('.video_wrap').remove();
 		
-		const viewId = 'video' + data.fcltId;
+		const viewId = 'video' + data.facilitySeq;
 		
 		option.viewId = viewId.replace(/\(/g, '').replace(/\)/g, '');
 		
-		option.player = new videoManager.player(option);
+		option.player = new videoManager.player(data.kind);
 		
 		option.player.createElements(option);
-		option.player.createPtzControls(option);
+		// option.player.createPtzControls(option);
 		option.player.play(option);
 		
-		if(isDetail) {
-			videoManager.createDetailView(data, parent);
-		}
+		// if(isDetail) {
+		// 	videoManager.createDetailView(data, parent);
+		// }
 		
-		if(isButton) {
-			videoManager.createButton(option);
-		}
+		// if(isButton) {
+		// 	videoManager.createButton(option);
+		// }
 		
-		videoManager.insertCctvViewLog(option);
+		// videoManager.insertCctvViewLog(option);
 		
-		videoManager.playList.set(data.fcltId, viewId);
+		videoManager.playList.set(data.facilitySeq, viewId);
 		
-		parent.bind({
+		parent.children(".video_wrap").bind({
 			'remove' : function(e) {
 				if(typeof option.removeBtns === 'function') option.removeBtns();
-				videoManager.playList.delete(data.fcltId);
+				videoManager.playList.delete(option.facilitySeq);
 				option.player.stop(option);
 			},
 			'resize transitionend' : function(e) {
@@ -707,6 +708,77 @@ var videoManager = {
 }
 
 /**
+ * Common Player
+ * @author -
+ * @version 0.0.1
+ * @class commonPlayer
+ * */
+var commonPlayer = {
+	/**
+	 * 영상 재생 함수.
+	 * @function danuPlayer.play
+	 * @param {object} option - option 데이터
+	 * */
+	play : function(option) {
+		const data = option.data;
+		const viewId = option.viewId;
+
+		// data.ip = videoManager.prop.midServerIp;
+		// data.port = videoManager.prop.midServerPort;
+		// data.clientSessionId = videoManager.prop.clientIp;
+		//data.mediaServerWsUrl = 'ws://200.0.30.110:8888/kurento'
+
+		// const apiOption = {
+		// 	callUrl : "/cudo/media/play-broadcast",
+		// 	videoId : option.videoId,
+		// 	jobId : option.jobId
+		// }
+		//
+		// $.ajax({
+		// 	url: `${location.origin}/api/call`,
+		// 	method: "POST",
+		// 	contentType: "application/json",
+		// 	data: JSON.stringify(apiOption)
+		// }).done((d) => {
+		// 	debugger;
+		// 	//video.directVideoStart(data, viewId);
+		// });
+
+		video.directVideoStart(data, viewId);
+
+		$('#' + viewId).data('data', data);
+	},
+	/**
+	 * 영상 종료 함수.
+	 * @function danuPlayer.stop
+	 * @param {object} option - option 데이터
+	 * */
+	stop : function(option) {
+		const viewId = option.viewId;
+
+		video.directVideoStop(viewId);
+		//webrtcserver.disconnect();
+	},
+	/**
+	 * 영상 재생 영역 생성 함수.
+	 * @function danuPlayer.createElements
+	 * @param {object} option - option 데이터
+	 * */
+	createElements : function(option) {
+		const data = option.data;
+		const viewId = option.viewId;
+		const parent = option.parent;
+
+		const video = $('<video>').addClass('video_content').attr({'id': viewId, 'autoplay': true, 'muted': true});
+		//const video = $('<video>').addClass('video_content').attr({'id': viewId, 'title': data.fcltId});
+
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
+
+		parent.append(popupVideo);
+	}
+}
+
+/**
  * Danusys Player
  * @author - 
  * @version 0.0.1
@@ -718,10 +790,14 @@ var danuPlayer = {
 	 * @function danuPlayer.play
 	 * @param {object} option - option 데이터
 	 * */
+	directPlay : function(option) {
+
+	},
 	play : function(option) {
 		const data = option.data;
 		const timestamp = option.timestamp;
 		const viewId = option.viewId;
+		const isDirect = option.isDirect;
 		
 		data.ip = videoManager.prop.midServerIp;
 		data.port = videoManager.prop.midServerPort;
@@ -745,7 +821,9 @@ var danuPlayer = {
 		
 		option.webrtcserver = webrtcserver;*/
 		
-		if(timestamp) {
+		if (isDirect) {
+			video.directVideoStart(data, viewId);
+		} else if(timestamp) {
 			data.sTime = moment(timestamp.sTime, 'YYYY.MM.DD.HH.mm.ss').format('YYYY.MM.DD.HH.mm.ss');
 			data.eTime = moment(timestamp.eTime, 'YYYY.MM.DD.HH.mm.ss').format('YYYY.MM.DD.HH.mm.ss');
 			video.singleSaveVideoStart(data, viewId);
@@ -776,10 +854,10 @@ var danuPlayer = {
 		const viewId = option.viewId;
 		const parent = option.parent;
 
-		const video = $('<video>').addClass('video-content').attr({'id': viewId, 'autoplay': true, 'muted': true});
-		//const video = $('<video>').addClass('video-content').attr({'id': viewId, 'title': data.fcltId});
+		const video = $('<video>').addClass('video_content').attr({'id': viewId, 'autoplay': true, 'muted': true});
+		//const video = $('<video>').addClass('video_content').attr({'id': viewId, 'title': data.fcltId});
 		
-		const popupVideo = $('<div>').addClass('video-wrap').append(video);
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
 		
 		parent.append(popupVideo);
 	},
@@ -863,7 +941,7 @@ var danuPlayer = {
 			});
 		}
 		
-		parent.children('.video-wrap').append(btnWrap);
+		parent.children('.video_wrap').append(btnWrap);
 	},
 	/**
 	 * 카메라의 현재 방향 PTZ 값을 가져오는 함수(Software 카메라 일 경우에만 동작)
@@ -930,7 +1008,7 @@ var danuPlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video-wrap').children('.cctv-btn-wrap');
+		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
 		// var $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
@@ -1044,10 +1122,10 @@ var vurixPlayer = {
 		const viewId = option.viewId;
 		const parent = option.parent;
 
-		const video = $('<video>').addClass('video-content').attr({'id': viewId, 'autoplay': true, 'muted': true});
-		//const video = $('<video>').addClass('video-content').attr({'id': viewId, 'title': data.fcltId});
+		const video = $('<video>').addClass('video_content').attr({'id': viewId, 'autoplay': true, 'muted': true});
+		//const video = $('<video>').addClass('video_content').attr({'id': viewId, 'title': data.fcltId});
 		
-		const popupVideo = $('<div>').addClass('video-wrap').append(video);
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
 		
 		parent.append(popupVideo);
 	},
@@ -1132,7 +1210,7 @@ var vurixPlayer = {
 			});
 		}
 		
-		parent.children('.video-wrap').append(btnWrap);
+		parent.children('.video_wrap').append(btnWrap);
 	},
 	/**
 	 * 카메라의 현재 방향 PTZ 값을 가져오는 함수(Software 카메라 일 경우에만 동작)
@@ -1197,7 +1275,7 @@ var vurixPlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video-wrap').children('.cctv-btn-wrap');
+		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
 		// var $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
@@ -1316,9 +1394,9 @@ var hivePlayer = {
 		const viewId = option.viewId;
 		const parent = option.parent;
         
-		const video = $('<video>').addClass('video-content').attr({'id': viewId, 'autoplay' : true});
+		const video = $('<video>').addClass('video_content').attr({'id': viewId, 'autoplay' : true});
 		
-		const popupVideo = $('<div>').addClass('video-wrap').append(video);
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
 		
 		parent.append(popupVideo);
 	},
@@ -1403,7 +1481,7 @@ var hivePlayer = {
 			});
 		}
 		
-		parent.children('.video-wrap').append(btnWrap);
+		parent.children('.video_wrap').append(btnWrap);
 	},
 	/**
 	 * 카메라의 현재 방향 PTZ 값을 가져오는 함수(Software 카메라 일 경우에만 동작)
@@ -1463,7 +1541,7 @@ var hivePlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video-wrap').children('.cctv-btn-wrap');
+		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
 		// var $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
@@ -1567,9 +1645,9 @@ var xeusPlayer = {
 		
 		//const title = $('<div>').addClass('title').html(data.nodeId);
         
-		const video = $('<div>').addClass('video-content').attr('id', viewId);
+		const video = $('<div>').addClass('video_content').attr('id', viewId);
 		
-		const popupVideo = $('<div>').addClass('video-wrap').append(video);
+		const popupVideo = $('<div>').addClass('video_wrap').append(video);
 		
 		parent.append(popupVideo);
 	},
@@ -1652,7 +1730,7 @@ var xeusPlayer = {
 			});
 		}
 		
-		parent.children('.video-wrap').append(btnWrap);
+		parent.children('.video_wrap').append(btnWrap);
 	},
 	/**
 	 * 카메라의 현재 방향 PTZ 값을 가져오는 함수(Software 카메라 일 경우에만 동작)
@@ -1746,7 +1824,7 @@ var xeusPlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video-wrap').children('.cctv-btn-wrap');
+		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
 		// var $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
@@ -1794,14 +1872,17 @@ var xeusPlayer = {
  * @see {@link xeusPlayer} - xeus player
  * @see {@link hivePlayer} - hive player
  * */
-videoManager.player = function() {
+videoManager.player = function(kind) {
 	/**
 	 * player 생성자
 	 * @function player.player
-	 * @param {object} option - option data
 	 * */
-	let player = function (option) {
-		if(videoManager.prop.systemType === 'danu') {
+	let player = function () {
+		if (kind !== 'CCTV') {
+			this.play = commonPlayer.play;
+			this.stop = commonPlayer.stop;
+			this.createElements = commonPlayer.createElements;
+		} else if (videoManager.prop.systemType === 'danu') {
 			this.play = danuPlayer.play;
 			this.stop = danuPlayer.stop;
 			this.createElements = danuPlayer.createElements;
@@ -1809,7 +1890,7 @@ videoManager.player = function() {
 			this.getPtzPosition = danuPlayer.getPtzPosition;
 			this.onPopupVideoResize = danuPlayer.onPopupVideoResize;
 			this.ptzCtrl = danuPlayer.ptzCtrl;
-		} else if(videoManager.prop.systemType === 'vurix') {
+		} else if (videoManager.prop.systemType === 'vurix') {
 			this.play = vurixPlayer.play;
 			this.stop = vurixPlayer.stop;
 			this.createElements = vurixPlayer.createElements;
@@ -1817,7 +1898,7 @@ videoManager.player = function() {
 			this.getPtzPosition = vurixPlayer.getPtzPosition;
 			this.onPopupVideoResize = xeusPlayer.onPopupVideoResize;
 			this.ptzCtrl = vurixPlayer.ptzCtrl;
-		}  else if(videoManager.prop.systemType === 'xeus') {
+		}  else if (videoManager.prop.systemType === 'xeus') {
 			this.play = xeusPlayer.play;
 			this.stop = xeusPlayer.stop;
 			this.createElements = xeusPlayer.createElements;
@@ -1825,7 +1906,7 @@ videoManager.player = function() {
 			this.getPtzPosition = xeusPlayer.getPtzPosition;
 			this.onPopupVideoResize = xeusPlayer.onPopupVideoResize;
 			this.ptzCtrl = xeusPlayer.ptzCtrl;
-		} else if(videoManager.prop.systemType === 'hive') {
+		} else if (videoManager.prop.systemType === 'hive') {
 			this.play = hivePlayer.play;
 			this.stop = hivePlayer.stop;
 			this.createElements = hivePlayer.createElements;

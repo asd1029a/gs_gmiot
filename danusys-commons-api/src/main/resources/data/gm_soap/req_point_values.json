@@ -2,10 +2,3 @@
   "callUrl":"gmGetPointValues",
   "pointPaths":"data/gm_soap/OFa8.xml"
 }
-
-{
-  "callUrl": "gmSetPointValues",
-  "pointValues":"",
-  "settingValue":"On",
-  "pointPath":"/ST1/OFa8/LPa232890214279"
-}

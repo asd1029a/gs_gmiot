@@ -88,7 +88,7 @@
                         </ul>
                     </div>
                     <div class="search_table">
-                        <table id="" data-table-seq="2">
+                        <table id="thirdCodeTable" data-table-seq="2">
                             <thead>
                             <tr>
                                 <th>세부 코드</th>
@@ -102,7 +102,7 @@
                 </article>
             </section>
 
-            <div class="popup" id="commonCodePopup">
+            <div class="popup" id="commonCodePopup" style="width: 550px;">
                 <dl class="title">
                     <dt></dt>
                     <dd><i><img src="/images/default/close.svg"></i></dd>
@@ -111,12 +111,16 @@
                     <fieldset>
                         <form id="commonCodeForm">
                             <dl>
-                                <dt>코드</dt>
-                                <dd><input id="codeSeq" data-required="true" placeholder="코드를 입력해 주세요." name="codeSeq" type="text" /></dd>
+                                <dt>코드 ID</dt>
+                                <dd><input id="codeId" data-required="true" placeholder="코드 ID를 입력해 주세요." name="codeId" type="text" /></dd>
                             </dl>
                             <dl>
                                 <dt>코드명</dt>
                                 <dd><input id="codeName" data-required="true" placeholder="코드명을 입력해 주세요." name="codeName" type="text" /></dd>
+                            </dl>
+                            <dl>
+                                <dt>코드 값</dt>
+                                <dd><input id="codeValue" data-required="true" placeholder="코드 값을 입력해 주세요." name="codeValue" type="text" /></dd>
                             </dl>
                             <dl class="checkbox">
                                 <dt>사용여부</dt>
@@ -131,10 +135,6 @@
                                     </span>
                                 </dd>
                             </dl>
-                            <dl>
-                                <dt>설명</dt>
-                                <dd><textarea id="codeContent" name="codeContent" placeholder="내용을 입력해 주세요." style="height: 120px;"></textarea></dd>
-                            </dl>
                             <dl data-mod="true" data-detail="true">
                                 <dt>최초등록일</dt>
                                 <dd><input type="text" id="insertDt" readonly /></dd>
@@ -144,6 +144,7 @@
                 </div>
                 <ul class="bottom">
                     <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mod="true" id="modProcBtn">정보 수정</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mod="true" id="delProcBtn">삭제</li>
                     <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-add="true" id="addProcBtn">등록</li>
                 </ul>
             </div>

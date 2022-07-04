@@ -59,7 +59,13 @@ const mntr = {
 
             if($targetTab == "event"){
                 let newAry;
-                const paramData = mntr.getInitEventParam(objJson.eventType);
+                const nameObj = {
+                    'DRONE_EVENT' : 'drone',
+                    'EMS_EVENT' : 'smartPower',
+                    'smart_busstop_event' : 'smartBusStop',
+                    'smart_pole_event' : 'smartPole'
+                };
+                const paramData = mntr.getInitParam(nameObj[objJson.eventType]);
                 event.getListGeoJson(
                     paramData['event']
                     , result => {
@@ -330,9 +336,9 @@ const mntr = {
     }
     /**
      * 메뉴별 관제 초기 데이터 구분 파라미터 요청
-     * param : smart_pole_event /smart_busstop_event /EMS_EVENT /DRONE_EVENT
+     * param :
      * */
-    , getInitEventParam : (pageType) => {
+    , getInitParam : (pageType) => {
         let param = {};
         $.ajax({
             url : "/config/mntrPageTypeData/" + pageType
@@ -367,26 +373,22 @@ const mntr = {
             let tabType = 'station';
             //기체 폴링 멈춤
             dronePolling.stop();
-
+            paramObject = mntr.getInitParam(theme);
             switch (theme) {
                 case "smartPole" : //스마트폴
-                    paramObject = mntr.getInitEventParam("smart_pole_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartBusStop" : //스마트 정류장
-                    paramObject = mntr.getInitEventParam("smart_busstop_event");
                     window.lyControl.offList(['facility']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "smartPower": //스마트 분전함
-                    paramObject = mntr.getInitEventParam("EMS_EVENT");
                     window.lyControl.offList(['facility','eventPast']);
                     window.lyControl.onList(['station', target]);
                     break;
                 case "drone" : //드론
                     tabType = 'facility';
-                    paramObject = mntr.getInitEventParam("DRONE_EVENT");
                     facility.getListGeoJson( paramObject['facility'],result => {
                         reloadLayer(result, 'facilityLayer');
                         lnbList.createFacility(result);
@@ -398,6 +400,7 @@ const mntr = {
                     window.lyControl.onList(['facility', 'station' , target]);
                     break;
                 case "smart" : //스마트OO
+
                     window.lyControl.offList(['facility', 'station', 'event', 'eventPast', 'route']);
                     break;
                 default :
@@ -407,25 +410,25 @@ const mntr = {
                     }
                     break;
             }
-
-            //실시간 이벤트
-            event.getListGeoJson(paramObject['event'], result => {
-                reloadLayer(result, 'eventLayer');
-                lnbList.createEvent(result);
-            });
-            //개소
-            station.getListGeoJson(paramObject['station'] ,result => {
-                reloadLayer(result, 'stationLayer');
-                lnbList.createStation(result, tabType);
-            });
-            //이벤트 과거이력
-            event.getListGeoJson(paramObject['eventPast'], result => {
-                reloadLayer(result, 'eventPastLayer');
-                lnbList.createEventPast(result);
-            });
+            if(Object.keys(paramObject).length > 0){ //스마트oo 제외
+                //실시간 이벤트
+                event.getListGeoJson(paramObject['event'], result => {
+                    reloadLayer(result, 'eventLayer');
+                    lnbList.createEvent(result);
+                });
+                //개소
+                station.getListGeoJson(paramObject['station'] ,result => {
+                    reloadLayer(result, 'stationLayer');
+                    lnbList.createStation(result, tabType);
+                });
+                //이벤트 과거이력
+                event.getListGeoJson(paramObject['eventPast'], result => {
+                    reloadLayer(result, 'eventPastLayer');
+                    lnbList.createEventPast(result);
+                });
+            }
             window.map.map.render();
             window.map.updateSize();
-
             const rVisivle = $('.area_right').is(':visible');
             if(rVisivle) { $('.area_right_closer').trigger("click")}
         });
@@ -769,6 +772,13 @@ const mntr = {
             const $target = $(e.currentTarget).parents('.popup_detection');
             $target.css('display', 'none');
         });
+
+        //영상 선택
+        $('.area_right').find('.area_video').parent().prev().find('select').on("change", e => {
+            const rpanel = $(e.currentTarget).parents('.area_right');
+            let cctv = rpanel.find('option:selected').data();
+            rnbList.playVideo(rpanel, cctv);
+        });///영상 재생 func
 
     }
 }
@@ -1117,6 +1127,12 @@ function setFacility(id, fid, fseq) {
     let point = $("input:checkbox[id='" + id + "']");
     let pointValue = point.is(":checked") ? "On" : "Off";
     point.prop('checked', point.is(":checked"));
+    let spanId = "span_" + id.split("_")[1];
+    if(point.is(":checked")) {
+        $("#"+spanId).addClass("green");
+    } else {
+        $("#"+spanId).removeClass("green");
+    }
 
     facility.facilityControl({
         "callUrl": "gmSetPointValues",
@@ -1151,24 +1167,19 @@ const rnbList = {
         //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
         ///////////////////
         const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
-        console.log(prop);
-        console.log(theme);
         if(theme=="smartPower") {
             //TODO 패널항목으로 봐야하는거 켜고 없어야하는거 숨기고 (navR.html의 data-group으로 판단)
-            //html로 지자체별 고정인게 낫나? -> 결정필요
-            ///show
-            ///hide
+            target.find('.tab li[data-value=control]').hide();
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme === "smartBusStop") {
-
             //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
             },result => {
                 target.find(".area_right_bus_control").html("");
                 target.find(".area_right_bus_status dl").hide();
-                let smartBusStoFacilityTag = '<dl><dt><span class="circle green"></span>' +
-                    '<span>{{facilityKindName}}</span></dt><dd class="ptz_toggle">' +
+                let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
+                    '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
                 let objAry = JSON.parse(result);
 
@@ -1177,43 +1188,48 @@ const rnbList = {
                 objAry.features.forEach((f, i) => {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
-                    if (facilityOpts.length > 0) {
-                        facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
-                            let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
+                    let presentValue = "";
 
-                            /*let facilityOptValue = "";
-                            if( pointInfo.facilityKind === "air_index") {
-                                facilityOptValue = Math.round(ff.facilityOptValue);
-                            } else if( pointInfo.facilityKind === "wattage" || pointInfo.facilityKind === "power" ) {
-                                facilityOptValue = stringFunc.commaNumber((parseInt(ff.facilityOptValue)/1000).toString());
-                            } else {
-                                facilityOptValue = ff.facilityOptValue;
-                            }
-                            */
-                            busStatus.parents("dl").show();
-                            busStatus.text(ff.facilityOptValue);
-                        });
-                    } else {
-                        let pointInfo = f.properties;
-                        let facilityKindName = pointInfo.facilityKindName;
-                        let facilityId = pointInfo.facilityId;
-                        let facilitySeq = pointInfo.facilitySeq;
-                        let presentValue = pointInfo.facilityStatus === 1 ? "checked" : "";
-                        // console.log("facilityKindName " + facilityKindName + " > " + presentValue );
-                        target.find(".area_right_bus_control").append(
-                            smartBusStoFacilityTag
-                                .replace("{{facilityKindName}}", facilityKindName)
-                                .replace("{{id_index}}", i)
-                                .replace("{{onclick_index}}", i)
-                                .replace("{{facilityId}}", facilityId)
-                                .replace("{{facilitySeq}}", facilitySeq)
-                                .replace("{{for_index}}", i)
-                                .replace("{{check_value}}", presentValue));
+                    facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
+                        let busStatus = target.find(`.area_right_bus_status [data-value="${ff.facilityOptName}"] span`);
+                        busStatus.parents("dl").show();
+                        busStatus.text(ff.facilityOptValue);
+                    });
+
+                    let power = facilityOpts.find(opt => opt.commonCode.codeId === "facility_power");
+                    if(!power) {
+                        return false;
                     }
+                    presentValue = power.facilityOptValue === "true" ? "checked" : "";
+
+                    let facilityName = pointInfo.facilityName;
+                    let facilityId = pointInfo.facilityId;
+                    let facilitySeq = pointInfo.facilitySeq;
+
+                    let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
+                    // console.log("facilityName " + facilityName + " > " + presentValue );
+
+                    target.find(".area_right_bus_control").append(
+                        smartBusStoFacilityTag
+                            .replace("{{span_id}}", i)
+                            .replace("{{span_class}}", spanClass)
+                            .replace("{{facilityName}}", facilityName)
+                            .replace("{{id_index}}", i)
+                            .replace("{{onclick_index}}", i)
+                            .replace("{{facilityId}}", facilityId)
+                            .replace("{{facilitySeq}}", facilitySeq)
+                            .replace("{{for_index}}", i)
+                            .replace("{{check_value}}", presentValue));
                 });
             });
+        } else if (theme === "smartPole") {
+            target.find('.tab li[data-value=control]').hide();
+            target.find(".area_right_scroll.select [data-group=stationState]").hide();
+            target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else {}
-        //////////////////
+
+        //영상 제어
+        rnbList.videoUIControl(target, prop);
 
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
@@ -1249,6 +1265,8 @@ const rnbList = {
         target.find('.eventTitle').text("[ " + prop.eventSeq + " ] "  + prop.eventKindName);
 
         //TODO 대메뉴 타입 가져와서 패널 UI(공통)에서 제거 + 추가
+        //영상 제어
+        rnbList.videoUIControl(target, prop);
 
         //초기화
         target.find('span[data-value=eventGrade] input').prop('checked',false);
@@ -1283,6 +1301,9 @@ const rnbList = {
         $target.find('.facilitySubTitle').eq(1).text("[ "+ prop.facilityId +" ] 기체 상세 정보");
         $target.find('.facilitySubTitle').eq(2).text("[ "+ prop.facilityId +" ] 기체 현황");
 
+        //영상 제어
+        rnbList.videoUIControl(target, prop);
+
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
         propList.map(propStr => {
@@ -1291,14 +1312,81 @@ const rnbList = {
                 textArea.val(prop[propStr]);
             }
         });
-        //////////
-        // video는 냅두고
-
         // //animation end
         //다른 유형 중복선 제거
         window.lyConnect.remove('event');
         window.lyConnect.remove('station');
 
+    },
+    /**
+     * 오른쪽 패널 비디오 영역 show/hide
+     * @param rpanel : 해당 오른쪽 패널 div
+     * @param prop : 해당 오른쪽 패널에 해당하는 개소 feature 정보
+     * */
+    videoUIControl: (rpanel, prop) => {
+        const videoArea = rpanel.find('.area_video').parent();
+        const videoTitle = videoArea.prev();
+        // TODO: CCTV 영상 재생(CCTV 리스트가 있을 경우만) ///////////////
+        // 시설물 리스트 중 cctv만 목록화
+        const facilityList = prop.facilityList;
+        // 개소일때
+        if(facilityList){
+            const cctvList = facilityList.filter(f => f.facilityKind === "CCTV");
+            let isRealTime = false;
+            // CCTV가 있을 경우에만
+            if (cctvList.length > 0) {
+                //실시간인가 저장인가
+                const tab = $('.mntr_container .menu_fold.select .tab li.active').attr('data-value');
+                switch (tab) {
+                    case "station":
+                    case "facility":
+                    case "event":
+                        isRealTime = true;
+                        break;
+                    //case eventPast
+                    default: break;
+                }
+                videoArea.show();
+                videoTitle.show();
+                let selectList = videoArea.prev().find('select');
+                selectList.empty();
+                cctvList.forEach(f => { //select list
+                    let selectElem = "<option>" + f.facilityId + "</option>";
+                    f.isRealTime = isRealTime;
+                    selectList.append(selectElem);
+                    selectList.find('option').last().data(f);
+                });
+                //초기영상 띄우기 - 첫번째 그냥 띄우기
+                rnbList.playVideo(rpanel, cctvList[0]);
+            } else {
+                videoArea.hide();
+                videoTitle.hide();
+            }
+        }
+    },
+    /**
+     * 오른쪽 패널 영상 재생
+     * @param rpanel : 해당 오른쪽 패널 div
+     * @param cctv : 해당 cctv prop
+     * */
+    playVideo: (rpanel, cctv) => {
+        const rtspOpt = cctv.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+        if(rtspOpt.length > 0){
+            const rtspUrl = rtspOpt[0].facilityOptValue;
+            const videoData = {
+                facilitySeq : cctv.facilitySeq,
+                rtspUrl : rtspUrl,
+                facilityKind : cctv.facilityKind
+            }
+            const videoArea = rpanel.find(".area_right_contents").find('.area_video');
+            const option = {
+                data : videoData,
+                parent : videoArea,
+                isEvent : cctv.isRealTime
+            }
+            videoArea.empty();
+            videoManager.createPlayer(option);
+        }
     }
 }
 
@@ -1311,48 +1399,39 @@ const rnbList = {
 function searchList(section, keyword) {
     // if(keyword!="" && keyword!=null){
     switch(section) {
-        case "smartPole" : //스마트폴검색
+        case "addressPlace" : //주소장소검색
+            const addressObj = kakaoApi.getAddress({query: keyword});
+            const placeObj = kakaoApi.getPlace({query: keyword});
+            lnbList.createAddressPlace('address', addressObj, keyword, true);
+            lnbList.createAddressPlace('place', placeObj, keyword, true);
+            break;
+        default : //스마트폴 / 스마트정류장 / 스마트분전함 / 드론(아직x)
             const tab = $('#'+section +" .tab li.active").attr('data-value');
-
             let objJSON = {};
+            objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
             if(keyword!="" && keyword!=null){
-                objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
                 objJSON.keyword = keyword;
            }
+            //let paramObj = mntr.getInitParam(section); //합칠까?
             if(tab == "station") {
-                //리스트 ajax
-                station.getListGeoJson({
-                    /// objJSON
-                }, result => {
-                    // lnbList.removeAllList(tab);
-                    lnbList.createStation(result);
+                //개소
+                station.getListGeoJson(objJSON,result => {
+                    reloadLayer(result, 'stationLayer');
+                    lnbList.createStation(result, tab);
                 });
             } else if(tab == "eventPast") {
-                //TODO 조건 form serialize
-                //리스트 ajax
-                event.getListGeoJson({
-                    "eventState": ["9"]
-                    , "eventGrade": [20]
-                    ////////// objJSON
-                }, result => {
-                    // 리스트 초기화
-                    // lnbList.removeAllList(tab);
-                    lnbList.createEventPast(result);
-                    // 과거 이벤트 레이어 reload
+                //tabType = 'facility'; 드론시 추가
+                //이벤트 과거이력
+                event.getListGeoJson(objJSON, result => {
                     reloadLayer(result, 'eventPastLayer');
-                    //패널 제어
-                    const rVisivle = $('.area_right[data-value=event]').is(':visible');
-                    if(rVisivle) { $('.area_right_closer').trigger("click")}
+                    lnbList.createEventPast(result);
                 });
             }
-            break;
-        case "addressPlace" : //주소장소검색
-                const addressObj = kakaoApi.getAddress({query: keyword});
-                const placeObj = kakaoApi.getPlace({query: keyword});
-                lnbList.createAddressPlace('address', addressObj, keyword, true);
-                lnbList.createAddressPlace('place', placeObj, keyword, true);
-            break;
-        default :
+            window.map.map.render();
+            window.map.updateSize();
+            //패널 제어
+            const rVisivle = $('.area_right[data-value=event]').is(':visible');
+            if(rVisivle) { $('.area_right_closer').trigger("click")}
             break;
     }
     // } else {

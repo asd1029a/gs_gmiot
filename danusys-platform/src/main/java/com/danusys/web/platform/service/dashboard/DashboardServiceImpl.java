@@ -30,6 +30,8 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public EgovMap getStatusCnt1(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
+
+        paramMap.put("codeSig",codeSig);
         resultMap.put("data", commonMapper.selectList(dsp.selectStatusCnt1(paramMap)));
         return resultMap;
     }
@@ -43,13 +45,17 @@ public class DashboardServiceImpl implements DashboardService {
     public EgovMap getStatusCnt2(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
         List<EgovMap> resultList = new ArrayList<EgovMap>();
+
+        paramMap.put("codeSig",codeSig);
         switch (codeSig) {
             case "41210":
             case "47210":
-                resultList = commonMapper.selectList(dsp.selectTroubleBus(paramMap));
+                paramMap.put("stationKind",62);
+                resultList = commonMapper.selectList(dsp.selectTroubleFacility(paramMap));
                 break;
             case "26290":
-                resultList = commonMapper.selectList(dsp.selectTroublePole(paramMap));
+                paramMap.put("stationKind",104);
+                resultList = commonMapper.selectList(dsp.selectTroubleFacility(paramMap));
                 break;
         }
         resultMap.put("data",resultList);
@@ -65,15 +71,24 @@ public class DashboardServiceImpl implements DashboardService {
     public EgovMap getStatusCnt3(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
         List<EgovMap> resultList = new ArrayList<EgovMap>();
+
+        paramMap.put("codeSig",codeSig);
         switch (codeSig) {
             case "41210":
-                resultList = commonMapper.selectList(dsp.selectTroublePole(paramMap));
+                paramMap.put("stationKind",104);
+                resultList = commonMapper.selectList(dsp.selectTroubleFacility(paramMap));
                 break;
             case "47210":
-                resultList = commonMapper.selectList(dsp.selectEventDropAttack(paramMap));
+                paramMap.put("eventKind",65);   //유동인구-쓰러짐감지
+                paramMap.put("name","유동인구 이벤트");
+                paramMap.put("subName","쓰러짐 감지(1시간내/누적)");
+                resultList = commonMapper.selectList(dsp.selectEventCount(paramMap));
                 break;
             case "26290":
-                resultList = commonMapper.selectList(dsp.selectEventSuspectDetection(paramMap));
+                paramMap.put("eventKind",55);   //지능형-용의자검출
+                paramMap.put("name","지능형 카메라 이벤트");
+                paramMap.put("subName","용의자 검출(1시간내/누적)");
+                resultList = commonMapper.selectList(dsp.selectEventCount(paramMap));
                 break;
         }
         resultMap.put("data",resultList);
@@ -90,15 +105,26 @@ public class DashboardServiceImpl implements DashboardService {
     public EgovMap getStatusCnt4(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
         List<EgovMap> resultList = new ArrayList<EgovMap>();
+
+        paramMap.put("codeSig",codeSig);
         switch (codeSig) {
             case "41210":
-                resultList = commonMapper.selectList(dsp.selectEventPole(paramMap));
+                paramMap.put("eventKind",187);   //스마트폴-전원이상
+                paramMap.put("name","스마트폴 이벤트");
+                paramMap.put("subName","전원이상(1시간내/누적)");
+                resultList = commonMapper.selectList(dsp.selectEventCount(paramMap));
                 break;
             case "47210":
-                resultList = commonMapper.selectList(dsp.selectEventFire(paramMap));
+                paramMap.put("eventKind",66);   //유동인구-화재감지
+                paramMap.put("name","유동인구 이벤트");
+                paramMap.put("subName","화재 감지(1시간내/누적)");
+                resultList = commonMapper.selectList(dsp.selectEventCount(paramMap));
                 break;
             case "26290":
-                resultList = commonMapper.selectList(dsp.selectEventMissingPerson(paramMap));
+                paramMap.put("eventKind",188);   //지능형-실종자검출
+                paramMap.put("name","지능형 카메라 이벤트");
+                paramMap.put("subName","실종자 검출(1시간내/누적)");
+                resultList = commonMapper.selectList(dsp.selectEventCount(paramMap));
                 break;
         }
         resultMap.put("data",resultList);
@@ -107,15 +133,47 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public EgovMap getStation(Map<String, Object> paramMap) throws Exception {
+    public EgovMap getFloatingPopulation(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
-
-        List<EgovMap> stationList = new ArrayList<EgovMap>();
         ArrayList<Map<String,Object>> resultTempArray = new ArrayList<>();
+        List<EgovMap> stationList = new ArrayList<EgovMap>();
 
         paramMap.put("codeSig",codeSig);
-        stationList = commonMapper.selectList(dsp.selectStationList(paramMap));  //지자체별 개소목록
+
+        stationList = commonMapper.selectList(dsp.selectStationByPeopleCntList(paramMap));  //지자체별 개소목록
         for(EgovMap tempMap : stationList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("name", tempMap.get("stationName"));   //개소이름
+
+            List<EgovMap> peopleCntByStationList = new ArrayList<EgovMap>();
+
+            ArrayList<Map<String,Object>> dataTempArray = new ArrayList<>();
+
+            paramMap.put("stationSeq", tempMap.get("stationSeq"));
+            peopleCntByStationList = commonMapper.selectList(dsp.selectPeopleCntByStationList(paramMap));  //동별 개소목록
+
+            List<Object> tempTimeCntArray = new ArrayList<>();
+            for(EgovMap tempMap2 : peopleCntByStationList) {
+                tempTimeCntArray.add(tempMap2.get("timeCnt"));
+            }
+            map.put("data",tempTimeCntArray);    //동별 개수 카운트
+            resultTempArray.add(map);
+        }
+        resultMap.put("data", resultTempArray);
+        return resultMap;
+    }
+
+
+    @Override
+    public EgovMap getStation(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        ArrayList<Map<String,Object>> resultTempArray = new ArrayList<>();
+        List<EgovMap> stationKindList = new ArrayList<EgovMap>();
+
+        paramMap.put("codeSig",codeSig);
+
+        stationKindList = commonMapper.selectList(dsp.selectStationKindList(paramMap));  //지자체별 개소종류목록
+        for(EgovMap tempMap : stationKindList) {
             Map<String, Object> map = new HashMap<>();
             map.put("name", tempMap.get("codeName"));   //개소이름
 
@@ -140,15 +198,22 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public EgovMap getAirPollution(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
+
+        paramMap.put("codeSig",codeSig);
+
         List<EgovMap> airDataList = commonMapper.selectList(dsp.selectAirPollution(paramMap));
         ArrayList<Map<String,Object>> resultTempArray = new ArrayList<>();
+
+        paramMap.put("codeSig",codeSig);
 
         for(EgovMap tempMap : airDataList) {
             Map<String, Object> tempResultMap = new HashMap<>();
             for (Object o : tempMap.keySet()) {
 
                 String strKey = o.toString();
-                String objValue = tempMap.get(strKey).toString();
+                String objValue = "";
+                if(tempMap.get(strKey) == null)  objValue = "-";
+                else objValue = tempMap.get(strKey).toString();
 
                 Map<String, Object> result = null;
                 Double result500 = null;
@@ -167,6 +232,20 @@ public class DashboardServiceImpl implements DashboardService {
             resultTempArray.add(tempResultMap);
         }
         resultMap.put("data", resultTempArray);
+        return resultMap;
+    }
+
+    @Override
+    public EgovMap getDroneCabinetStatus(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(dsp.getDroneCabinetStatus(paramMap)));
+        return resultMap;
+    }
+
+    @Override
+    public EgovMap getCabinetRank(Map<String, Object> paramMap) throws Exception {
+        EgovMap resultMap = new EgovMap();
+        resultMap.put("data", commonMapper.selectList(dsp.selectCabinetRank(paramMap)));
         return resultMap;
     }
 }

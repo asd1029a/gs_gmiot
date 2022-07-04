@@ -19,14 +19,15 @@ public class FaceDetectionRequestDto {
     private Integer faceAge;
     private Integer faceGender;
     private float faceSimilarity;
-    private String faceStatus;
+    private Integer faceStatus;
     private String faceKind;
     private String faceFile;
+    private String faceUid;
 
     @Builder
     public FaceDetectionRequestDto(
             String faceName, Integer faceAge, Integer faceGender,
-            float faceSimilarity, String faceStatus, String faceKind, String faceFile
+            float faceSimilarity, Integer faceStatus, String faceKind, String faceFile, String faceUid
     ) {
         this.faceName = faceName;
         this.faceAge = faceAge;
@@ -35,5 +36,6 @@ public class FaceDetectionRequestDto {
         this.faceStatus = faceStatus;
         this.faceKind = faceKind;
         this.faceFile = faceFile;
+        this.faceUid = faceUid;
     }
 }

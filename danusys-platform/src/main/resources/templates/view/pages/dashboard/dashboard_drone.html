@@ -5,23 +5,66 @@
       layout:decorate="layout/layout_dashboard">
 <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
-    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
 
+    <script type="text/javascript" src="/js/pages/dashboardGimje.js"></script>
 </head>
 <th:block layout:fragment="css">
 </th:block>
 <th:block layout:fragment="content">
-    <!--<div class="test_wrap" style="">
-         <ul id="test">
-             <li>aa</li>
-             <li>bb</li>
-         </ul>
-     </div>-->
-    <div class="slider">
-        <div>I am a slide.</div>
-        <div>I am another slide.</div>
-    </div>
-
+    <section class="dashboard_top dashboard_top_gimje">
+        <div class="top_gimje top_gimje_drone">
+            <h6>드론 관제 이벤트 처리 현황(누적)</h6>
+            <div class="top_gimje_box">
+                <div id="dronStatus1">
+                    <p class="title">비행 중 드론 카운트</p>
+                    <p class="value"><!--12<span>개</span>--></p>
+                </div>
+                <div id="dronStatus2">
+                    <p class="title"><img src="/images/dashboard/point_danger.svg">화재 감지</p>
+                    <p class="value"><!--1<span>건</span>--></p>
+                </div>
+            </div>
+        </div>
+        <div class="top_gimje top_gimje_pole">
+            <h6>스마트분전반 이벤트 등급별 발생 현황</h6>
+            <div class="top_gimje_box">
+                <div id="cabinetStatus1">
+                    <p class="title"><img src="/images/dashboard/point_danger.svg">위험</p>
+                    <ul class="count">
+                        <!--<li>-<span>당일 누적</span></li>
+                        <li>17<span>당월 누적</span></li>-->
+                    </ul>
+                </div>
+                <div id="cabinetStatus2">
+                    <p class="title"><img src="/images/dashboard/point_warning.svg">경고</p>
+                    <ul class="count">
+                        <!--<li>13<span>당일 누적</span></li>
+                        <li>146<span>당월 누적</span></li>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="dashboard_section">
+        <div class="box">
+            <h5>분전반 위치 지도</h5>
+            <div id="dashDroneStationMap" class="map_wrap">
+                <canvas class="map_mouse_ban"></canvas>
+            </div>
+        </div>
+        <div class="box">
+            <h5>분전반 정보</h5>
+            <div class="pole_list_wrap" id="cabinetRank">
+                <!--<div class="pole_list">
+                    <p>1. 분전반 1</p>
+                    <ul class="list_info">
+                        <li><span>전력량</span>5,900<span>kWh</span></li>
+                        <li><span>온도</span>30<span>°C</span></li>
+                        <li><span>누설량</span>30<span>Pa m3 / s</span></li>
+                    </ul>
+                </div>-->
+            </div>
+        </div>
+    </section>
 </th:block>
 </html>

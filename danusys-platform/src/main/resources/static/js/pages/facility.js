@@ -118,7 +118,7 @@ const facility = {
             , data : JSON.stringify(param)
             , contentType : "application/json; charset=utf-8"
         }).done((result) => {
-            pCallback(result);
+            pCallback(stringFunc.changeXSSOutputValue(result));
         });
     }
     , get : (pSeq, pCallback) => {
@@ -130,13 +130,25 @@ const facility = {
         });
     }
     , facilityControl : (param, pCallback) => {
+        // comm.showLoading();
+        let callUrl = "";
+        if(siGunCode === "47210") { //영주
+            callUrl = "/mqtt/set";
+        } else if(siGunCode === "41210") { //광명
+            callUrl = "/facility/control";
+        }
+
         $.ajax({
-            url : "/facility/control"
+            url : callUrl
             , type : "POST"
             , data : JSON.stringify(param)
             , contentType : "application/json; charset=utf-8"
         }).done((result) => {
             pCallback(result);
+            // comm.hideLoading();
+        }).fail((result)=> {
+            console.log(result)
+            // comm.hideLoading();
         });
     }
 

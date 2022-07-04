@@ -14,6 +14,7 @@ import java.security.cert.X509Certificate;
  * Date : 2022/05/25
  * Time : 17:28
  */
+//TODO - ssl 우회 해서 접근
 @Profile("bsng")
 @Configuration
 public class SslConfig {

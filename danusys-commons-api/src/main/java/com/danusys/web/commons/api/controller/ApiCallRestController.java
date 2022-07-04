@@ -6,6 +6,7 @@ import com.danusys.web.commons.api.model.*;
 import com.danusys.web.commons.api.scheduler.service.YjMqttManager;
 import com.danusys.web.commons.api.service.*;
 import com.danusys.web.commons.api.types.DataType;
+import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -214,8 +215,13 @@ public class ApiCallRestController {
             for(Map.Entry<String, Object> el: map.entrySet()) {
                 EventReqeustDTO list = objectMapper.readValue(StrUtils.getStr(el.getValue()), new TypeReference<EventReqeustDTO>() {
                 });
-                Long stationSeq = facilityService.findByFacilityId(list.getFacilityId()).getStationSeq();
-                yjMqttManager.sender(stationSeq+"",list.getEventKind());
+                String topic = "shelter"+list.getFacilityId()+"/set/bus_stop";
+                Map<String,Object> keySet = new HashMap<>();
+                Boolean powerCheck = list.getEventKind().equals("1") ? true : false;
+                keySet.put("power",powerCheck);
+                String result = JsonUtil.MapToJson(keySet);
+                log.info("bus station :{} people:{}","shelter"+list.getFacilityId(),powerCheck);
+                yjMqttManager.sender(topic,result);
                 // 초기화
 //                if(checkExist.get(stationSeq) == null){
 //                    checkExist.put(stationSeq,list.getEventKind());

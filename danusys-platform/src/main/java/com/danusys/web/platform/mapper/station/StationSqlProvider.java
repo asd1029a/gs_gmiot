@@ -24,41 +24,23 @@ public class StationSqlProvider {
                     ", t1.station_material, t1.latitude, t1.longitude, t1.address" +
                     ", t2.code_name  AS station_kind_name" +
                     ", t2.code_value AS station_kind_value" +
-                    ", t3.code_name AS administ_zone_name");
+                    ", t3.code_name AS administ_zone_name" +
+                    ", CASE COUNT(t4.*)" +
+                    "   WHEN 0 THEN '데이터 없음'" +
+                    "   WHEN 1 THEN MIN(t4.code_name)" +
+                    "  ELSE CONCAT(MIN(t4.code_name), ' 외 ', CAST(COUNT(*) - 1 AS VARCHAR(20)), ' 종 ') END in_facility_kind");
             FROM("t_station t1");
             LEFT_OUTER_JOIN("v_station_kind t2 on t1.station_kind = t2.code_seq");
             LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
-
-            if (facilityKind != null && !facilityKind.isEmpty()) {
-                SQL innerSql = new SQL() {{
-                    SELECT("station_seq" +
-                            ", CASE WHEN cnt = 1 THEN in_facility_kind_name" +
-                            " ELSE CONCAT(in_facility_kind_name, ' 외 ', CAST(cnt - 1 AS VARCHAR(20)), '종')" +
-                            " END AS in_facility_kind");
-                    FROM("(" +
-                            "    SELECT t.station_seq" +
-                            "      , MIN(t.facility_kind_name) AS in_facility_kind_name" +
-                            "      , COUNT(*)                  AS cnt" +
-                            "    FROM (" +
-                            "      SELECT t1.station_seq" +
-                            "           , t1.facility_kind" +
-                            "           , t2.code_name  AS facility_kind_name" +
-                            "           , t2.code_value AS facility_kind_value" +
-                            "      FROM t_facility t1" +
-                            "           LEFT OUTER JOIN v_facility_kind t2 on t1.facility_kind = t2.code_seq" +
-                            "      WHERE t2.code_value" + SqlUtil.getWhereInStr(facilityKind) +
-                            "    ) t" +
-                            "    WHERE t.station_seq IS NOT NULL" +
-                            "    GROUP BY t.station_seq" +
-                            ") t");
-                }};
-
-                SELECT("t4.in_facility_kind");
-                LEFT_OUTER_JOIN("(" + innerSql.toString() + ") t4 on t1.station_seq = t4.station_seq");
-                WHERE("t4.station_seq IS NOT NULL");
+            LEFT_OUTER_JOIN("(SELECT t4.station_seq, v1.code_name, v1.code_value " +
+                    "FROM v_facility_kind v1 " +
+                    "INNER JOIN t_facility t4 on t4.facility_kind = v1.code_seq)" +
+                    " t4 on t1.station_seq = t4.station_seq");
+            if (!facilityKind.isEmpty()) {
+                WHERE("t4.code_value" + SqlUtil.getWhereInStr(facilityKind));
             }
 
-            if (stationKind != null && !stationKind.isEmpty()) {
+            if (!stationKind.isEmpty()) {
                 WHERE("t2.code_value" + SqlUtil.getWhereInStr(stationKind));
             }
 
@@ -67,7 +49,7 @@ public class StationSqlProvider {
                 WHERE("substring(t3.code_value,0,6) = '" + sigCode + "'");
             }
 
-            if (administZone != null && !administZone.isEmpty()) {
+            if (!administZone.isEmpty()) {
                 WHERE("t3.code_value" + SqlUtil.getWhereInStr(administZone));
             }
 
@@ -77,78 +59,22 @@ public class StationSqlProvider {
                         " OR t3.code_name LIKE '%" + keyword + "%'" +
                         ")");
             }
-
+            GROUP_BY("t1.station_seq, t2.code_name, t2.code_value, t3.code_name");
             ORDER_BY("t1.station_seq");
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
                 OFFSET(start);
             }
         }};
-        System.out.println(sql.toString());
         return sql.toString();
     }
 
     public String selectCountQry(Map<String, Object> paramMap) {
-        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
-        ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
-        String sigCode = CommonUtil.validOneNull(paramMap, "sigCode"); //지자체 구분용
-        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
-        ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
-
-        SQL sql = new SQL() {{
-            SELECT("COUNT(*) AS count");
-            FROM("t_station t1");
-            LEFT_OUTER_JOIN("v_station_kind t2 on t1.station_kind = t2.code_seq");
-            LEFT_OUTER_JOIN("v_administ t3 on t1.administ_zone = t3.code_value");
-
-            if (facilityKind != null && !facilityKind.isEmpty()) {
-                SQL innerSql = new SQL() {{
-                    SELECT("station_seq" +
-                            ", CASE WHEN cnt = 1 THEN in_facility_kind_name" +
-                            " ELSE CONCAT(in_facility_kind_name, ' 외 ', CAST(cnt - 1 AS VARCHAR(20)), '종')" +
-                            " END AS in_facility_kind");
-                    FROM("(" +
-                            "    SELECT t.station_seq" +
-                            "      , MIN(t.facility_kind_name) AS in_facility_kind_name" +
-                            "      , COUNT(*)                  AS cnt" +
-                            "    FROM (" +
-                            "      SELECT t1.station_seq" +
-                            "           , t1.facility_kind" +
-                            "           , t2.code_name  AS facility_kind_name" +
-                            "           , t2.code_value AS facility_kind_value" +
-                            "      FROM t_facility t1" +
-                            "           LEFT OUTER JOIN v_facility_kind t2 on t1.facility_kind = t2.code_seq" +
-                            "      WHERE t2.code_value" + SqlUtil.getWhereInStr(facilityKind) +
-                            "    ) t" +
-                            "    WHERE t.station_seq IS NOT NULL" +
-                            "    GROUP BY t.station_seq" +
-                            ") t");
-                }};
-
-                LEFT_OUTER_JOIN("(" + innerSql.toString() + ") t4 on t1.station_seq = t4.station_seq");
-                WHERE("t4.station_seq IS NOT NULL");
-            }
-
-            if (stationKind != null && !stationKind.isEmpty()) {
-                WHERE("t2.code_value" + SqlUtil.getWhereInStr(stationKind));
-            }
-
-            if (sigCode != null && !sigCode.isEmpty()) {
-                WHERE("substring(t3.code_value,0,6) = '" + sigCode + "'");
-            }
-
-            if (administZone != null && !administZone.isEmpty()) {
-                WHERE("t3.code_value" + SqlUtil.getWhereInStr(administZone));
-            }
-
-            if (keyword != null && !keyword.equals("")) {
-                WHERE("(t1.station_name LIKE '%" + keyword + "%'" +
-                        " OR t2.code_name LIKE '%" + keyword + "%'" +
-                        " OR t3.code_name LIKE '%" + keyword + "%'" +
-                        ")");
-            }
+        paramMap.remove("start");
+        SQL sql = new SQL(){{
+           SELECT("COUNT(c1.*) count");
+           FROM("(" + selectListQry(paramMap) + ") AS c1");
         }};
-
         return sql.toString();
     }
 

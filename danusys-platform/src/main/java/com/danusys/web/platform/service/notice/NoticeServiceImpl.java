@@ -1,20 +1,19 @@
 package com.danusys.web.platform.service.notice;
 
+import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.commons.app.PagingUtil;
 import com.danusys.web.commons.app.StringUtil;
 import com.danusys.web.commons.auth.model.User;
 import com.danusys.web.commons.auth.service.repository.UserRepository;
 import com.danusys.web.commons.auth.util.LoginInfoUtil;
-import com.danusys.web.commons.app.EgovMap;
 import com.danusys.web.platform.dto.request.NoticeRequestDto;
 import com.danusys.web.platform.dto.response.NoticeResponseDto;
 import com.danusys.web.platform.entity.Notice;
-import com.danusys.web.platform.entity.NoticeSpecification;
 import com.danusys.web.platform.entity.NoticeRepository;
+import com.danusys.web.platform.entity.NoticeSpecification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -82,11 +81,11 @@ public class NoticeServiceImpl implements NoticeService {
                                 .filter(user -> notice.getInsertUserSeq() == user.getUserSeq())
                                 .findFirst()
                                 .orElse(null)
-                                .getUserId();
+                                .getUserName();
                         AtomicReference<String> updateUserId = new AtomicReference<>(null);
                         userList.forEach(user -> {
                             if(notice.getUpdateUserSeq() != null && notice.getUpdateUserSeq() == user.getUserSeq()) {
-                                updateUserId.set(user.getUserId());
+                                updateUserId.set(user.getUserName());
                             }
                             }
                         );
@@ -111,11 +110,11 @@ public class NoticeServiceImpl implements NoticeService {
                                 .filter(user -> notice.getInsertUserSeq() == user.getUserSeq())
                                 .findFirst()
                                 .orElse(null)
-                                .getUserId();
+                                .getUserName();
                         AtomicReference<String> updateUserId = new AtomicReference<>(null);
                         userList.forEach(user -> {
                                     if(notice.getUpdateUserSeq() != null && notice.getUpdateUserSeq() == user.getUserSeq()) {
-                                        updateUserId.set(user.getUserId());
+                                        updateUserId.set(user.getUserName());
                                     }
                                 }
                         );
@@ -126,8 +125,8 @@ public class NoticeServiceImpl implements NoticeService {
                         Map<String, Object> dataList = objectMapper.convertValue(noticeResponseDto, Map.class);
 
                         return dataList;
-                    })
-                    .collect(Collectors.toList());
+                    }).collect(Collectors.toList());
+
             responseData.put("data", data);
         }
         return responseData;

@@ -75,14 +75,14 @@ public class EchoThread extends Thread{
                     maps.put("count",(int) ArrayData[0]);
                     maps.put("temperature",ArrayData[1]+(ArrayData[2]/10.0));
                     maps.put("humidity",ArrayData[3]+(ArrayData[4]/10.0));
-                    maps.put("o3",ArrayData[5]);
-                    maps.put("co",ArrayData[6]);
-                    maps.put("no2",ArrayData[7]);
-                    maps.put("pm2_5",ArrayData[8]);
-                    maps.put("pm10",ArrayData[9]);
-                    maps.put("pm2_5t",ArrayData[10]);
-                    maps.put("pm10t",ArrayData[11]);
-                    maps.put("uvi",ArrayData[12]);
+                    maps.put("O3",ArrayData[5]);
+                    maps.put("CO",ArrayData[6]);
+                    maps.put("NO2",ArrayData[7]);
+                    maps.put("PM2.5",ArrayData[8]);
+                    maps.put("PM10",ArrayData[9]);
+                    maps.put("PM2_5t",ArrayData[10]);
+                    maps.put("PM10t",ArrayData[11]);
+                    maps.put("UVI",ArrayData[12]);
                     maps.put("noiseAvg",ArrayData[13]);
                     maps.put("noiseMax",ArrayData[14]);
                     maps.put("windSpAvg",ArrayData[15]);
@@ -92,7 +92,7 @@ public class EchoThread extends Thread{
                         m.put("deviceId","BSNG_S_"+faSeq);
                         m.put("name",key);
                         m.put("value",maps.get(key));
-                        m.put("type",50);
+                        m.put("type",53);
                         result.add(m);
                     }
                     resultMap.put("callUrl","/facility/facilityData");
@@ -103,9 +103,8 @@ public class EchoThread extends Thread{
                     String jsonString = om.writeValueAsString(resultMap);
 
                     //내부서버로 전송
-                    WebClient webClient = WebClient.create("http://localhost:8400/api/facilityData");
+                    WebClient webClient = WebClient.create("http://10.8.50.52:8400/api/facilityData");
                     webClient.post().contentType(MediaType.APPLICATION_JSON).bodyValue(jsonString).retrieve().bodyToMono(String.class).subscribe();
-                    log.info("보내는 json {}",jsonString);
                 }else{
                     log.info("데이터 오류");
                     break;

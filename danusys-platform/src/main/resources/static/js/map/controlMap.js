@@ -365,6 +365,7 @@ function clickIcon(layerType, layerObj) {
         }
         position = layerObj.getGeometry().getCoordinates();
     }
+    //features[0].set('layerName', layerType) //레이어구분
 
     switch (layerType)  {
         case "station": ///개소 클릭 이벤트

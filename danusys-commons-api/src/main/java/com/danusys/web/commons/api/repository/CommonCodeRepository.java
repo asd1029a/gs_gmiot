@@ -19,4 +19,6 @@ public interface CommonCodeRepository extends JpaRepository<CommonCode, Long> {
 
     List<CommonCode> findByParentCodeSeq(Long parentCodeSeq);
 
+    List<CommonCode> findAllByCodeSeqIn(List<Long> codeSeqs);
+
 }

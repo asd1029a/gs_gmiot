@@ -1,6 +1,5 @@
 package com.danusys.web.platform;
 
-import com.danusys.web.platform.socket.IntellivixWebsocketEventClient;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,14 +20,5 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class PlatformApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PlatformApplication.class, args);
-	}
-
-	@Profile(value = "bsng")
-	@Bean
-	public ApplicationRunner applicationRunner() {
-		return args -> {
-			IntellivixWebsocketEventClient intellivixWebsocketEventClient = new IntellivixWebsocketEventClient();
-			intellivixWebsocketEventClient.connect();
-		};
 	}
 }

@@ -7,7 +7,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -263,6 +262,20 @@ public class FileUtil {
 
     }
 
+//    private MultipartFile getMultipartFile(String filePath, String fileName) throws IOException {
+//        File file = new File(filePath + fileName);
+//        FileItem fileItem = new DiskFileItem("file", Files.probeContentType(file.toPath()), false, file.getName(), (int) file.length(), file.getParentFile());
+//        try {
+//            InputStream input = new FileInputStream(file);
+//            OutputStream os = fileItem.getOutputStream();
+//            IOUtils.copy(input, os);
+//        } catch (IOException ex) {
+//
+//        }
+//        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+//        return multipartFile;
+//    }
+
     public static void fileDownloadWithFilePath(HttpServletResponse response, String fileName, String folderPath) {
 
         File file = new File(STATIC_EXTERNAL_FILE_PATH + folderPath + fileName);
@@ -370,6 +383,7 @@ public class FileUtil {
             List<String> headerKo = new ArrayList<>();
 
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"));
             List<?> paramData = (List<?>) paramMap.get("dataMap");
             Set<String> notContKey = objectMapper.convertValue(paramData.get(0), Map.class).keySet();
 
@@ -437,5 +451,11 @@ public class FileUtil {
             Sheet sheet = wb.createSheet("sheet 1");
             return wb;
         }
+    }
+
+    public static String multiFileToBase64(MultipartFile file) throws IOException {
+        byte[] encodeBase64 = Base64.getEncoder().encode(file.getBytes());
+        return new String(encodeBase64, "UTF-8");
+
     }
 }

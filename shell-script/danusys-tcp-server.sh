@@ -8,13 +8,13 @@
 [ -z "$JAVA_HOME" -a -x /etc/profile.d/java.sh ] && . /etc/profile.d/java.sh
 
 #프로파일
-PROFILE=dev
+PROFILE=bsng
 #서비스 포트
-PORT=8500
+PORT=8100
 #프로젝트 이름
 PROJECT_NAME=danusys
 #어플리케이션 이름
-#APP_NAME=danusys-tcp-server
+APP_NAME=danusys-tcp-server
 # 서비스 실행 사용자
 SERVICE_USER=danusys
 # jar 파일이 설치된 디렉토리
@@ -23,7 +23,7 @@ export APP_HOME
 # 어플리케이션 버전
 APP_VER="$2"
 # 어플리케이션 CLASS 이름
-APP_CLASS_NAME=TcpApplication
+#APP_CLASS_NAME=DanusysServerSocketApplication
 # jar 파일
 APP_JAR="${APP_HOME}/${APP_NAME}-${APP_VER}.jar"
 # java home

@@ -32,8 +32,7 @@ public class YjScheduler {
     /**
      * 정류장 유동인구 저장
      */
-//    @Scheduled(cron = "0 0 0/1 * * *")
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(cron = "0 0 0/1 * * *")
     public void apiCallSchedule() throws Exception{
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
@@ -50,7 +49,8 @@ public class YjScheduler {
                 String json = objectMapper.writeValueAsString(apiUtils.getRestCallBody(param));
 
                 FacilityDataRequestDTO facilityDataRequestDTO = objectMapper.readValue(StrUtils.getStr(json), FacilityDataRequestDTO.class);
-                facilityDataRequestDTO.setFacilityOptType(109);
+                facilityDataRequestDTO.setFacilityOptType(112);
+                facilityDataRequestDTO.setFacilityOptName("floating_population");
                 facilityOptService.save(facilityDataRequestDTO);
             } catch (Exception e) {
                 e.printStackTrace();
