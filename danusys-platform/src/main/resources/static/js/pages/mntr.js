@@ -1332,16 +1332,21 @@ const rnbList = {
         // 개소일때
         if(facilityList){
             const cctvList = facilityList.filter(f => f.facilityKind === "CCTV");
-            let isRealTime = false;
+
+            let isRealTime = false; //실시간인가 저장인가
+            let saveStartTime = null; //저장 영상 시작시간(== 이벤트 시작시간)
+            let saveEndTime = null; //저장 영상 종료시간(== 이벤트 종료시간)
+
             // CCTV가 있을 경우에만
             if (cctvList.length > 0) {
-                //실시간인가 저장인가
                 const tab = $('.mntr_container .menu_fold.select .tab li.active').attr('data-value');
                 switch (tab) {
                     case "station":
                     case "facility":
                     case "event":
                         isRealTime = true;
+                        saveStartTime = prop.eventStartDt;
+                        saveEndTime = prop.eventEndDt;
                         break;
                     //case eventPast
                     default: break;
@@ -1352,7 +1357,11 @@ const rnbList = {
                 selectList.empty();
                 cctvList.forEach(f => { //select list
                     let selectElem = "<option>" + f.facilityId + "</option>";
+
                     f.isRealTime = isRealTime;
+                    f.saveStartTime = saveStartTime;
+                    f.saveEndTime = saveEndTime;
+
                     selectList.append(selectElem);
                     selectList.find('option').last().data(f);
                 });
@@ -1382,7 +1391,9 @@ const rnbList = {
             const option = {
                 data : videoData,
                 parent : videoArea,
-                isEvent : cctv.isRealTime
+                isEvent : cctv.isRealTime,
+                startTime : cctv.saveStartTime,
+                endTime : cctv.saveEndTime
             }
             videoArea.empty();
             videoManager.createPlayer(option);
