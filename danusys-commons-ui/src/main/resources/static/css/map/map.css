@@ -23,12 +23,20 @@
 #mouseOverPopup #mouseOverPopupContent{
     padding: 7px;
     background: #1e1f239e;
-    box-shadow: 0px 0px 20px rgb(0 0 0 / 20%);
+    box-shadow: 0px 0px 20px rgba(204, 143, 143, 0.2);
     border-radius: 10px;
 }
 
 #mouseOverPopup .my-ol-popup-closer{
     display:none;
+}
+
+#mouseClickPopup{
+    width: 280px;
+}
+
+#mouseClickPopupContent{
+    width: 100%;
 }
 
 #mousePosition{
