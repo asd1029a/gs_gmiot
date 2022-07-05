@@ -186,19 +186,19 @@
 .popup_mini dl dt span.lv10{background: #f04242;}
 .popup_mini dl dt span.lv20{background: #dd9200;}
 /*.popup_mini dl dt i{width: 16px; height: 16px; margin: 0px 0px 0px 20px; cursor: pointer;}*/
-.popup_mini dl dd{display: flex; align-items: center; justify-content: space-between; grid-gap: 20px; line-height: 1.268rem;  color: #797d87; font-size: 14px;}
-.popup_mini dl dd span.state{width:82px; height:26px; line-height:22px; color:#797d87; font-size:13px; font-weight:normal; text-align:center; border:2px solid #797d87; border-radius:26px;}
+.popup_mini dl dd{display: flex; align-items: center; justify-content: space-between; grid-gap: 20px; line-height: 1.268rem;  color: #dee0e4; font-size: 14px;}
+.popup_mini dl dd span.state{width:82px; height:26px; line-height:22px; color:#dee0e4; font-size:13px; font-weight:normal; text-align:center; border:2px solid #797d87; border-radius:26px;}
 .popup_mini dl dd span.state.state1{color:#ff4f4f; border:2px solid #f04242;}
 .popup_mini dl dd span.state.state2{color:#f99b22; border:2px solid #f99b22;}
-.popup_mini dl dd span.state.state3{color:#7a8094; border:2px solid #4e5466;}
+.popup_mini dl dd span.state.state3{color:#dee0e4; border:2px solid #4e5466;}
 
 /* map tooltip */
-#mouseOverPopup #mouseOverPopupContent{padding: 10px; background: #1e1f23; transform: translate(-50%, -18%); box-shadow: 0px 0px 20px rgb(0 0 0 / 20%);}
-#mouseOverPopupContent::after{color: #1e1f23; transform: translate(-50%, 15px); font-size: 22px;}
-#mouseOverPopup .my-ol-popup-closer{display:none;}
+/*#mouseOverPopup #mouseOverPopupContent{padding: 10px; background: #1e1f23; transform: translate(-50%, -18%); box-shadow: 0px 0px 20px rgb(0 0 0 / 20%);}*/
+/*#mouseOverPopupContent::after{color: #1e1f23; transform: translate(-50%, 15px); font-size: 22px;}*/
+/*#mouseOverPopup .my-ol-popup-closer{display:none;}*/
 
-#mouseClickPopup{width: 280px;}
-#mouseClickPopupContent{width: 100%;}
+/*#mouseClickPopup{width: 280px;}*/
+/*#mouseClickPopupContent{width: 100%;}*/
 
 /*layer viewer*/
 .map_wrap .viewer{width: max-content; height: max-content; padding: 10px; border-radius: 5px; background: #23252b; z-index: 2; right: 51px; top: 178px; position: absolute;}
