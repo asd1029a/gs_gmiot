@@ -90,6 +90,43 @@ public class FacilityService {
         return this.saveAll(facilityList);
     }
 
+    public List<Facility> saveAllByList(List<Map<String, Object>> list) {
+        List<Facility> facilityList = new ArrayList<Facility>();
+        list.stream().forEach((d) -> {
+            String facilityId = d.get("facility_id").toString();
+            Facility originFacility = this.findByFacilityId(facilityId);
+            Facility facility = originFacility == null ? new Facility() : originFacility;
+            Station station = stationRepository.findByStationName(StrUtils.getStr(d.get("station_name")));
+            Long codeSeq = facilityRepository.findCommonCode(d.get("facility_kind").toString());
+
+            String latStr = StrUtils.getStr(d.get("latitude"));
+            String lngStr = StrUtils.getStr(d.get("longitude"));
+            String facilityName = facilityRepository.findCommonCodeName(codeSeq);
+
+
+            latStr = latStr.isEmpty() ? "0" : latStr;
+            lngStr = lngStr.isEmpty() ? "0" : lngStr;
+
+            double latitude = Double.parseDouble(latStr);
+            double longitude = Double.parseDouble(lngStr);
+
+            facility.setLatitude(latitude);
+            facility.setLongitude(longitude);
+            facility.setFacilityId(facilityId);
+            facility.setFacilityStatus(0);
+            facility.setFacilityKind(Long.parseLong(codeSeq.toString()));
+            facility.setAdministZone(facilityRepository.getEmdCode(longitude, latitude));
+            if (!facilityName.isEmpty()) facility.setFacilityName(facilityName);
+
+            if (station != null) {
+                facility.setStationSeq(station.getStationSeq());
+            }
+
+            facilityList.add(facility);
+        });
+        return this.saveAll(facilityList);
+    }
+
     public Facility getOne(Long id) {
         return facilityRepository.getOne(id);
     }

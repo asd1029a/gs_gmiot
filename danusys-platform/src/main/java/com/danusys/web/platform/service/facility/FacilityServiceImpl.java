@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,11 +187,10 @@ public class FacilityServiceImpl implements FacilityService{
     }
 
     @Override
-    public String getOneSignageData() throws Exception {
+    public String getOneSignageData(String serverName, String serverPort) throws Exception {
         EgovMap dataMap = commonMapper.selectOne(fsp.selectOneSignageLayoutUseQry());
 
         String templateContentStr = dataMap.get("templateContent").toString().replaceAll("&quot;", "\"");
-        String serverIp = "danusys.asuscomm.com";
         List<Map<String, Object>> templateContentList = JsonUtil.jsonToListMap(templateContentStr);
 
         JSONArray newTemplateContentList = new JSONArray();
@@ -204,7 +204,10 @@ public class FacilityServiceImpl implements FacilityService{
                         if(!imageList.isEmpty()) {
                             for (Map<String, Object> imageMap : imageList) {
                                 String imageFileName = imageMap.get("imageFile").toString();
-                                String downloadFilePath = "http://" + serverIp + ":8400" + "/facility/signage/downloadImage/"+imageFileName;
+                                String downloadFilePath =
+                                        MessageFormat.format(
+                                                "http://{0}:{1}/facility/signage/downloadImage/{2}",
+                                                serverName, serverPort, imageFileName);
                                 newMap.put("imageFile", downloadFilePath);
                                 newMap.put("startDt", imageMap.get("startDt"));
                                 newMap.put("endDt", imageMap.get("endDt"));

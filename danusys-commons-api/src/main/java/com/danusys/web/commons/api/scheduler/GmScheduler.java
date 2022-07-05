@@ -1,17 +1,20 @@
 package com.danusys.web.commons.api.scheduler;
 
+import com.danusys.web.commons.api.dto.FacilityDataRequestDTO;
 import com.danusys.web.commons.api.dto.LogicalfolderDTO;
-import com.danusys.web.commons.api.model.*;
+import com.danusys.web.commons.api.model.CommonCode;
+import com.danusys.web.commons.api.model.Facility;
+import com.danusys.web.commons.api.model.FacilityOpt;
+import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.repository.FacilityActiveRepository;
-import com.danusys.web.commons.api.service.CommonCodeService;
-import com.danusys.web.commons.api.service.FacilityOptService;
-import com.danusys.web.commons.api.service.FacilityService;
-import com.danusys.web.commons.api.service.StationService;
+import com.danusys.web.commons.api.service.*;
+import com.danusys.web.commons.api.service.executor.RestApiExecutor;
 import com.danusys.web.commons.api.types.FacilityGroupType;
+import com.danusys.web.commons.api.util.ApiUtils;
 import com.danusys.web.commons.api.util.XmlDataUtil;
-import com.danusys.web.commons.api.util.IpCheckedUtil;
 import com.danusys.web.commons.app.RestUtil;
 import com.danusys.web.commons.app.StrUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +24,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,11 +38,17 @@ import static java.util.stream.Collectors.toList;
 @Profile(value = {"gm", "local"})
 @RequiredArgsConstructor
 public class GmScheduler {
+    private final ObjectMapper objectMapper;
     private final FacilityService facilityService;
+    private final ApiUtils apiUtils;
     private final FacilityOptService facilityOptService;
     private final StationService stationService;
     private final CommonCodeService commonCodeService;
     private final FacilityActiveRepository facilityActiveRepository;
+    private final ApiExecutorFactoryService apiExecutorFactoryService;
+    private final RestApiExecutor restApiExecutor;
+    private final ApiCallService apiService;
+    private final RestTemplate restTemplate;
     private static List<CommonCode> dataGroup;
     private static long SMART_STATION_NUM = 62L; //스마트 정류장
     private static long SMART_POLE_NUM = 4L; //스마트 폴
@@ -255,35 +267,35 @@ public class GmScheduler {
             return FacilityGroupType.CONTROL;
         }
     }
-    /**
-     * TODO faSeq 부분 광명 시설물 facilitySeq에 맞게 변경 필요
-     * 시설물 장애 이벤트 ping check
-     */
-    @Scheduled(cron = "0 0 0/1 * * *")
-    public void ipPingCheck(){
-        Long faSeq = FACILITY_SEQ;
-        List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(faSeq);
-        List<Map<String, Object>> ipLists = new ArrayList<>();
-        List<FacilityActiveLog> facilityActiveLogList = new ArrayList<>();
-        FacilityActiveLog facilityActiveLog = new FacilityActiveLog();
-        facilityOptList.stream().filter(f -> f.getFacilityOptName().equals("ip"))
-                .forEach(facilityOpt -> {
-                    Map<String,Object> maps = new HashMap<>();
-                    maps.put(facilityOpt.getFacilityOptName(),facilityOpt.getFacilityOptValue());
-                    ipLists.add(maps);
-                });
-        IpCheckedUtil.ipCheckedList(ipLists);
+//    /**
+//     * TODO faSeq 부분 광명 시설물 facilitySeq에 맞게 변경 필요
+//     * 시설물 장애 이벤트 ping check
+//     */
+//    @Scheduled(cron = "0 0 0/1 * * *")
+//    public void ipPingCheck(){
+//        Long faSeq = FACILITY_SEQ;
+//        List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(faSeq);
+//        List<Map<String, Object>> ipLists = new ArrayList<>();
+//        List<FacilityActiveLog> facilityActiveLogList = new ArrayList<>();
+//        FacilityActiveLog facilityActiveLog = new FacilityActiveLog();
+//        facilityOptList.stream().filter(f -> f.getFacilityOptName().equals("ip"))
+//                .forEach(facilityOpt -> {
+//                    Map<String,Object> maps = new HashMap<>();
+//                    maps.put(facilityOpt.getFacilityOptName(),facilityOpt.getFacilityOptValue());
+//                    ipLists.add(maps);
+//                });
+//        IpCheckedUtil.ipCheckedList(ipLists);
+//
+//        ipLists.stream().forEach(f -> {
+//            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq(faSeq).
+//                    facilityActiveCheck((boolean) f.get("active")).facilityActiveIp((String) f.get("ip")).build();
+//            facilityActiveLogList.add(build);
+//        });
+//        facilityActiveRepository.saveAll(facilityActiveLogList);
+//    }
 
-        ipLists.stream().forEach(f -> {
-            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq(faSeq).
-                    facilityActiveCheck((boolean) f.get("active")).facilityActiveIp((String) f.get("ip")).build();
-            facilityActiveLogList.add(build);
-        });
-        facilityActiveRepository.saveAll(facilityActiveLogList);
-    }
-
     /**
-     *  TODO param 부분 광명에 맞게 변경 필요
+     *  TODO 광명에 맞게 변경 필요
      * 정류장 유동인구 저장
      */
 //    @Scheduled(cron = "0 0 0/1 * * *")
@@ -310,4 +322,38 @@ public class GmScheduler {
 //            }
 //        });
 //    }
+    @Scheduled(cron = "0 0 0/1 * * *")
+    public void findDeviceList() throws Exception {
+        Map<String,Object> param = new HashMap<>();
+        param.put("callUrl","/aepel/findDeviceList");
+        Map<String, Object> body = (Map<String, Object>) apiUtils.getRestCallBody(param);
+        List<Map<String,Object>> facilityList =(List<Map<String,Object>>) body.get("facility_list");
+        facilityService.saveAllByList(facilityList);
+    }
+
+    @Scheduled(cron = "0 0 0/1 * * *")
+    public void WattHourSchedule() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
+        String formatNow = now.format(formatter);
+        int iNow = Integer.parseInt(formatNow);
+        List<FacilityDataRequestDTO> list = new ArrayList<>();
+
+        Map<String,Object> param = new HashMap<>();
+        param.put("callUrl","/aepel/whInfoByDevice");
+        param.put("searchTime",Integer.toString(iNow-1).substring(0,8));
+         param.put("time",Integer.parseInt(formatNow.substring(formatNow.length() - 2))-1);
+        Map<String, Object> body = (Map<String, Object>) apiUtils.getRestCallBody(param);
+        List<Map<String,Object>> bodyList =(List<Map<String,Object>>) body.get("facility_list");
+        bodyList.stream().forEach(b ->{
+            FacilityDataRequestDTO facilityDataRequestDTO = FacilityDataRequestDTO.builder()
+                                                            .facilityId(b.get("facility_id").toString())
+                                                            .facilityOptName(b.get("facility_kind").toString())
+                                                            .facilityOptValue(b.get("facility_opt_value").toString())
+                                                            .facilityOptType(112)
+                                                            .build();
+            list.add(facilityDataRequestDTO);
+        });
+        facilityOptService.saveAllByFacilityDataRequestDTO(list);
+    }
 }

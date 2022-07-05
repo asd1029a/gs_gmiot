@@ -29,7 +29,7 @@ public interface FacilityService {
     void modSignageLayout(MultipartFile[] imageFile, MultipartFile[] videoFile
             , HttpServletRequest request, SignageRequestDto signageRequestDto) throws Exception;
     void modSignageLayoutForGm(Map<String, Object> paramMap) throws Exception ;
-    String getOneSignageData() throws Exception;
+    String getOneSignageData(String serverName, String serverPort) throws Exception;
     void delSignageTemplate(Map<String, Object> paramMap) throws Exception;
 
 }
