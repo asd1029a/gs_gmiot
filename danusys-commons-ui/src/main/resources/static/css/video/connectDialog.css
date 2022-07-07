@@ -56,64 +56,64 @@
 	position: relative;
 }
 
-.dialog > .site-video-wrap > .video-wrap {
+.dialog > .site-video-wrap > .video_wrap {
 	background-color: #36393d;
 	float: left;
 	position: relative;
 }
 
-.dialog > .site-video-wrap > .video-wrap:only-child {
+.dialog > .site-video-wrap > .video_wrap:only-child {
 	width: 100%;
 	height: 100%;
 }
 
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(2),
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(2)+.video-wrap {
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(2),
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(2)+.video_wrap {
 	width: 100%;
 	height: 50%;
 }
 
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(3):first-child {
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(3):first-child {
 	width: 100%;
 	height: 50%;
 }
 
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(3),
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(3)~.video-wrap {
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(3),
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(3)~.video_wrap {
 	width: 50%;
 	height: 50%;
 }
 
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(4),
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(4)~.video-wrap {
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(4),
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(4)~.video_wrap {
 	width: 50%;
 	height: 50%;
 }
 
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(5):first-child {
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(5):first-child {
 	width: 100%;
 	height: 45%;
 }
 
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(5),
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(5)~.video-wrap {
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(5),
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(5)~.video_wrap {
 	width: 50%;
 	height: 27.5%;
 }
 
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(6),
-.dialog > .site-video-wrap > .video-wrap:nth-last-child(6)~.video-wrap {
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(6),
+.dialog > .site-video-wrap > .video_wrap:nth-last-child(6)~.video_wrap {
 	width: 50%;
 	height: 33.3333333%;
 }
 
-.dialog > .video-wrap {
+.dialog > .video_wrap {
 	width: 100%;
 	height: calc(100% - 40px);
 	position: relative;
 }
 
-.dialog > .video-wrap > .spinner {
+.dialog > .video_wrap > .spinner {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -125,11 +125,11 @@
 	z-index: 2;
 }
 
-.dialog > .video-wrap > .spinner > img {
+.dialog > .video_wrap > .spinner > img {
 	width: 100%;
 }
 
-.dialog > .video-wrap > .error-view {
+.dialog > .video_wrap > .error-view {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -141,13 +141,13 @@
 	z-index: 2;
 }
 
-.dialog > .video-wrap > .error-view > img {
+.dialog > .video_wrap > .error-view > img {
 	width: 40%;
 }
 
-.dialog > .video-wrap > video,
-.dialog > .video-wrap > .video-content,
-.dialog > .video-wrap > .video-content > video {
+.dialog > .video_wrap > video,
+.dialog > .video_wrap > .video_content,
+.dialog > .video_wrap > .video_content > video {
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -155,7 +155,7 @@
 	object-fit: fill;
 }
 
-.video-wrap.active {
+.video_wrap.active {
 	height: calc(100% - 56px);
 }
 
