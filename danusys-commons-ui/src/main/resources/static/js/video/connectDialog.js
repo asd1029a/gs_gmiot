@@ -132,7 +132,7 @@ var dialogManager = {
 	 * @param {number} top - top value
 	 * */
 	setLineFeatureGeom : function(data, lineFeature, left, top) {
-		const fPoint = ol.proj.transform([data.lon, data.lat], this.mapManager.realProjection[this.mapManager.type], this.mapManager.projection);
+		const fPoint = ol.proj.transform([data.lon, data.lat], this.mapManager.baseProjection, this.mapManager.projection);
 		const elPoint = this.mapManager.map
 			.getCoordinateFromPixel([ left, top ]);
 
@@ -155,7 +155,7 @@ var dialogManager = {
 
 		const listObj = {};
 
-		const fPoint = ol.proj.transform([data.lon, data.lat], this.mapManager.realProjection[this.mapManager.properties.type], this.mapManager.projection);
+		const fPoint = ol.proj.transform([data.lon, data.lat], this.mapManager.baseProjection, this.mapManager.projection);
 		const fPixel = this.mapManager.map.getPixelFromCoordinate(fPoint);
 
 		const left = fPixel[0];
