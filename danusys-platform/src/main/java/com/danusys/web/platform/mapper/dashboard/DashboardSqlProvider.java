@@ -161,6 +161,7 @@ public class DashboardSqlProvider {
             INNER_JOIN("t_facility_opt tfo ON tf.facility_seq = tfo.facility_seq");
             WHERE("ts.administ_zone LIKE '"+codeSig+"%'");
             WHERE("tfo.facility_opt_name IN ('PM10','PM2.5','temperature','humidity')");
+            WHERE("tfo.facility_opt_value != ''");
             GROUP_BY("ts.station_seq");
         }};
         return sql.toString();
