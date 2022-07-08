@@ -110,8 +110,8 @@ public class FacilityTcpServer {
                         CctvDTO.GetAllCenterListRsp.StreamNodeList.StreamNodeInfo.StreamNodeBaseInfo streamNodeBaseInfo = f.getBaseInfo();
                         CctvDTO.GetAllCenterListRsp.StreamNodeList.StreamNodeInfo.SourceInfo sourceInfo = f.getSourceInfo();
                         CctvDTO.GetAllCenterListRsp.StreamNodeList.StreamNodeInfo.SourceInfo.ExternalSrcInfo externalSrcInfo = sourceInfo.getExternalSrcInfo();
-                        CctvDTO.GetAllCenterListRsp.StreamNodeList.StreamNodeInfo.SourceInfo.ExternalSrcInfo.WebService webService = externalSrcInfo.getWebService();
-                        String modelName = externalSrcInfo.getModelName();
+//                        CctvDTO.GetAllCenterListRsp.StreamNodeList.StreamNodeInfo.SourceInfo.ExternalSrcInfo.WebService webService = externalSrcInfo.getWebService();
+                        String modelName = externalSrcInfo != null ? externalSrcInfo.getModelName() : null;
                         String sourceType = sourceInfo.getSourceType();
                         String nodeId = streamNodeBaseInfo.getID();
                         String facilityName = streamNodeBaseInfo.getName();
