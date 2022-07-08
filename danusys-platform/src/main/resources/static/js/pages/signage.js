@@ -3,6 +3,9 @@
 */
 
 const signage = {
+    /**
+     * 사이니지 통합 이벤트 핸들러
+     */
     eventHandler : () => {
         $("#addSignageTemplateBtn").on('click', () => {
             signage.showPopup("add");
@@ -14,11 +17,12 @@ const signage = {
             signage.hidePopup();
         });
         $("#signageStationPopup .title dd").on('click', () => {
-            signage.hideFacilityPopup();
+            signage.hideStationPopup();
         });
 
         signage.getList({}, signage.createTemplateList);
-
+        
+        // 템플릿 등록 버튼
         $("#addSignageTemplateProcBtn").on('click', () => {
             if($("#signageTemplateForm").doValidation()) {
                 const templateObj = $("#signageTemplateForm").serializeJSON();
@@ -40,8 +44,11 @@ const signage = {
                     });
             }
         });
-
+        
+        // 템플릿 수정 버튼
         $("#modSignageTemplateProcBtn").on('click', () => {
+            const municipality = $(".signage_layout").data('municipality');
+
             if($("#signageTemplateForm").doValidation()) {
                 const templateObj = $("#signageTemplateForm").serializeJSON();
                 const oriTemplateContent = JSON.parse($('#templateList').find("input:checked").parents('dl').data("templateContent"));
@@ -58,9 +65,15 @@ const signage = {
                 delete templateObj.templateRowCnt;
                 templateObj.templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
 
+                let alertMsg = "";
+                if(municipality === "gm") {
+                    alertMsg = "사이니지 템플릿이 수정되었습니다.";
+                } else {
+                    alertMsg = "사이니지 템플릿이 수정되었습니다. <br/> 템플릿 레이아웃을 재설정해 주십시오.";
+                }
                 signage.modProc(templateObj
                     , () => {
-                        comm.showAlert("사이니지 템플릿이 수정되었습니다. <br/> 템플릿 레이아웃을 재설정해 주십시오.");
+                        comm.showAlert(alertMsg);
                         signage.getList({}, signage.createTemplateList);
                         signage.hidePopup();
                         signage.hideLayout();
@@ -70,7 +83,8 @@ const signage = {
                     });
             }
         });
-
+        
+        // 템플릿 삭제 버튼
         $("#delSignageTemplateProcBtn").on("click", () => {
             comm.confirm("해당 템플릿을 삭제하시겠습니까?"
                 ,{}
@@ -85,16 +99,17 @@ const signage = {
                 , () => {comm.showAlert("사이니지 템플릿 삭제에 실패했습니다.")})
             , () => {return false})
         })
-
+        
+        // 사이니지 레이아웃 적용 (광명)
         $("#applySignageLayoutProcBtn").on("click", () => {
             const templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
             let templateContent;
             signage.getTemplateContentJson(
                 result => templateContent = result
             , msg => comm.showAlert(msg));
-
             const templateContentJson = templateContent.templateContentList;
             const notDeleteFileList = templateContent.notDeleteFileList;
+            console.log(templateContentJson);
             if(templateSeq === "" || typeof templateSeq === "undefined") {
                 comm.showAlert("템플릿을 선택 후 적용해주세요.");
             } else {
@@ -114,6 +129,7 @@ const signage = {
             }
         });
 
+        // 사이니지 레이아웃 등록 (영주)
         $("#addSignageLayoutProcBtn").on("click", () => {
             const templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
             const templateLayoutList = [];
@@ -161,7 +177,7 @@ const signage = {
             }
         });
 
-        /* 화면 표출 */
+        // 사이니지 화면 표출 (영주)
         $("#displaySignageBtn").on("click", () => {
             const templateSeq = $('#templateList').find("input:checked").parents('dl').data('templateSeq');
             const templateContent = JSON.parse($('#templateList dl input:checked').parents('dl').data('templateContent'));
@@ -200,24 +216,30 @@ const signage = {
                 });
         });
 
-        /* 취소 */
+        // 사이니지 레이아웃 취소 => 레이아웃 닫기
         $("#cancelSignageLayoutBtn").on("click", (e) => {
             signage.hideLayout();
         });
 
-        /* rtsp 영상 개소 선택 */
+        // 사이니지 표출 시 개소 선택 (영주)
         $("#addStationBtn").on("click", () => {
             const stationList = $("#signageStationPopup").data("stationList");
 
             if(stationList.length > 0) {
                 $("#templateLayoutForm input[name='stationList']").val(JSON.stringify(stationList));
                 comm.showAlert("사이니지 시설물이 선택되었습니다.");
-                signage.hideFacilityPopup();
+                signage.hideStationPopup();
             } else {
                 comm.showAlert("사이니지 시설물을 선택해주십시오.");
             }
         });
     }
+    /**
+     * 사이니지 템플릿 리스트 조회
+     * @param1 : 검색조건
+     * @param2 : 조회후 실행 func
+     * @result : 조회 데이터 리스트
+     */
     , getList : (param, pCallback) => {
         $.ajax({
             url : "/facility/signage/template"
@@ -229,6 +251,10 @@ const signage = {
             pCallback(result.data);
         });
     }
+    /**
+     * 사이니지 템플릿 리스트 조회
+     * @param1 : 템플릿 리스트 데이터
+     */
     , createTemplateList : (result) => {
         const $target = $('#templateList');
         $target.empty();
@@ -248,6 +274,8 @@ const signage = {
             $target.find("dl:last-child").data(each);
         });
 
+        $(".signage_template .article_title .count").text(result.length);
+
         $("#templateList dl").off('click');
         $("#templateList dl").on('click', (e) => {
             e.preventDefault();
@@ -265,24 +293,37 @@ const signage = {
             }
         });
     }
+    /**
+     * 사이니지 템플릿 레이아웃 UI 생성
+     * @param1 : 템플릿의 레이아웃 Obj
+     * @param2 : 지자체 구분자 ex) gm, yj...
+     */
     , createTemplateLayout: (pObj, pMunicipality) => {
-        //html 생성
+        // 광명 레이아웃 html 생성
         if (pMunicipality === "gm") {
             $('.layout_image_field').empty();
 
             pObj.forEach((each, idx) => {
-                let content = signage.createTemplateHtml(each[idx], idx, pMunicipality);
+                let content = signage.createLayoutHtml(each[idx], idx, pMunicipality);
                 $('.layout_image_field').append(content);
-                const imageListName = Object.keys(each)[0];
-                const imageList = each[imageListName]
-                if(typeof imageList !== "undefined" && imageList.length > 0) {
-                    const target = imageListName.substring(0, imageListName.indexOf("List"));
-                    $.each(imageList, (idx2, obj) => {
-                        $.each(Object.keys(obj), (idx3, key) => {
+                const fileListName = Object.keys(each)[0];
+                const fileList = each[fileListName]
+                if(typeof fileList !== "undefined" && fileList.length > 0) {
+                    const target = fileListName.substring(0, fileListName.indexOf("List"));
+                    let imageFileNameList = [];
+                    $.each(fileList, (idx2, obj) => {               // fileList for
+                        $.each(Object.keys(obj), (idx3, key) => {   // fileObject key for
                             if(key === "imageFile") {
-                                $("." + target + (idx2 + 1) + " .upload_name").val(obj[key]);
+                                if(fileList.length === (idx2+1)) {
+                                    imageFileNameList.push(obj[key]);
+                                    $("." + target + " .upload_name").val(imageFileNameList.join(", "));
+                                } else {
+                                    imageFileNameList.push(obj[key]);
+                                }
+                            } else if(key === "videoFile") {
+                                $("." + target + " .upload_name").val(obj[key]);
                             } else {
-                                $("." + target + (idx2 + 1) + " input[name="+ key +"]").val(obj[key]);
+                                $("." + target + " input[name="+ key +"]").val(obj[key]);
                             }
                         });
                     })
@@ -296,11 +337,12 @@ const signage = {
                     "position" : "top right"
                 });
             });
-            signage.imageHandler();
+            signage.fileHandler();
+        // 영주시 레이아웃 html 생성
         } else {
             $('#templateArea').empty();
             pObj.forEach((each, idx) => {
-                let content = signage.createTemplateHtml(each[idx], idx, pMunicipality);
+                let content = signage.createLayoutHtml(each[idx], idx, pMunicipality);
                 $('#templateArea').append(content);
             });
             signage.selectOptionHandler();
@@ -328,81 +370,116 @@ const signage = {
             });
         }
     }
-    /* 광명시 전용 JSON 형식 */
+    /**
+     * 광명시 전용 JSON 형식 생성
+     * @param1 : 완료 후 func
+     * @param2 : 실패 후 func
+     * @result : 레이아웃 데이터 JSON (광명API 형식에 따름)
+     */
     , getTemplateContentJson : (pDoneCallback, pFailCallback) => {
         const templateContentList = []; // 수정 JSON
         const notDeleteFileList = []; // 수정시 삭제하면 안되는 파일이름
         let completeFlag = true;
         let returnMsg = "";
         $(".layout_image_field > div:nth-child(odd)").each((idx1, divEle) => { // 좌측 element for
-            let rowIdx = 1;
             const templateContent = {}
             const imageListName = $(divEle).prop("class");
             templateContent[imageListName] = [];
             const rowClassName = imageListName.substring(0, imageListName.indexOf("List"));
             $("li[class *="+ rowClassName + "] input[type='file']").each((idx2, inputEle) => { // div - file input for
-                const imageObj = {};
-                const sibling = $("."+ rowClassName + rowIdx);
+                const sibling = $("."+ rowClassName);
                 const startDt = sibling.find("input[name='startDt']").val();
                 const endDt = sibling.find("input[name='endDt']").val();
                 const delayTime = sibling.find("input[name='delayTime']").val();
                 if(startDt === "" || endDt === "" || delayTime === "") {
-                    returnMsg = "기간이 설정되지 않았습니다.";
+                    returnMsg = "기간 또는 순환 시간이 설정되지 않았습니다.";
                     completeFlag = false;
                     return false;
                 }
-                if(inputEle.files.length === 0) {
+                if(inputEle.files.length === 0) { // input file empty
+                    const fileObj = {};
                     if($(inputEle).siblings(".upload_name").val() !== "") {
-                        imageObj.imageFile = $(inputEle).siblings(".upload_name").val();
-                        notDeleteFileList.push($(inputEle).siblings(".upload_name").val());
+                        const fileNameAry = $(inputEle).siblings(".upload_name").val().split(", ");
+                        $.each(fileNameAry, (idx4, fileName) => { // fileName split list create JSON for
+                            if(rowClassName === "topVideo") {
+                                fileObj.videoFile = fileName;
+                            } else {
+                                fileObj.imageFile = fileName;
+                            }
+                            fileObj.startDt =  startDt;
+                            fileObj.endDt =  endDt;
+                            fileObj.delayTime =  delayTime;
+                            templateContent[imageListName].push(fileObj);
+                            notDeleteFileList.push(fileName);
+                        });
                     } else {
                         completeFlag = false;
                         return false;
                     }
-                } else if(inputEle.files.length > 0) {
+                } else if(inputEle.files.length > 0) { // input file not empty
                     const formData = new FormData();
-                    let imageName = "";
-                    formData.append("files", inputEle.files[0]);
+                    let fileNameAry;
+                    $.each(inputEle.files, (idx3, file) => { // file list append for
+                        formData.append("files", file);
+                    });
                     signage.uploadImageList(formData
                         , (result) => {
-                            imageName = result.imageFileNames;
+                            fileNameAry = result.fileNames.split(", ");
                         }
                         ,() => {
-                            returnMsg = "사진업로드에 실패했습니다.";
+                            returnMsg = "사진/동영상 업로드에 실패했습니다.";
                             completeFlag = false;
                             return false;
                         });
-                    imageObj.imageFile = imageName;
+                    $.each(fileNameAry, (idx4, fileName) => { // file list create JSON for
+                        const newFileObj = {};
+                        if(rowClassName === "topVideo") {
+                            newFileObj.videoFile = fileName;
+                        } else {
+                            newFileObj.imageFile = fileName;
+                        }
+                        newFileObj.startDt =  startDt;
+                        newFileObj.endDt =  endDt;
+                        newFileObj.delayTime =  delayTime;
+                        templateContent[imageListName].push(newFileObj);
+                    });
                 }
-                imageObj.startDt =  startDt;
-                imageObj.endDt =  endDt;
-                imageObj.delayTime =  delayTime;
-                templateContent[imageListName].push(imageObj);
-                rowIdx++;
             });
             templateContentList.push(templateContent);
         });
         if(completeFlag) {
+            console.log(JSON.stringify(templateContentList));
             pDoneCallback({"templateContentList" : JSON.stringify(templateContentList), "notDeleteFileList" : notDeleteFileList});
         } else {
             pFailCallback(returnMsg);
         }
     }
-    , imageHandler : () => {
+    /**
+     * 레이아웃 input file handler (광명)
+     */
+    , fileHandler : () => {
         const $imageFileEle = $(".layout_image_field input[type='file']");
 
         $imageFileEle.off('change');
         $imageFileEle.on('change', (e) => {
             const maxSize = 30 * 1024 * 1024 // 30MB
-            const fileSize = e.currentTarget.files[0].size
-            if( fileSize > maxSize){
-                comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
-            } else {
-                const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
-                $(e.currentTarget).siblings(".upload_name").val(fileName);
-            }
+            const nameAry = [];
+
+            $.each(e.currentTarget.files, (idx, file) => {
+                const fileSize = e.currentTarget.files[idx].size
+                if( fileSize > maxSize){
+                    comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
+                } else {
+                    const fileName = file.name;
+                    nameAry.push(fileName);
+                }
+            });
+            $(e.currentTarget).siblings(".upload_name").val(nameAry.join(", "));
         });
     }
+    /**
+     * 레이아웃 selectbox handler (영주)
+     */
     , selectOptionHandler : () => {
         $("select.contents_kind").on('change', (e) => {
             const targetValue = e.target.value;
@@ -421,12 +498,12 @@ const signage = {
                         '<input type="hidden" name="stationList">' +
                         '<a href="#" id="getStationBtn">개소 선택</a>',
                     'imageFile': '<div class="file_box">' +
-                        '<input type="text" class="upload_name" name="imageFileName" placeholder="이미지 첨부파일" readonly>' +
+                        '<input type="text" class="upload_name" name="imageFileName" accept="image/*" placeholder="이미지 첨부파일" readonly>' +
                         '<label for="imageFile">파일찾기</label>' +
                         '<input type="file" name="imageFile" id="imageFile">' +
                         '</div>',
                     'videoFile': '<div class="file_box">' +
-                        '<input type="text" class="upload_name" name="videoFileName" placeholder="동영상 첨부파일" readonly>' +
+                        '<input type="text" class="upload_name" name="videoFileName" accept="video/*" placeholder="동영상 첨부파일" readonly>' +
                         '<label for="videoFile">파일찾기</label>' +
                         '<input type="file" name="videoFile" id="videoFile">' +
                         '</div>',
@@ -488,7 +565,7 @@ const signage = {
 
             $stationBtn.off('click');
             $stationBtn.on('click', () => {
-                signage.showFacilityPopup();
+                signage.showStationPopup();
                 /* 템플릿 개소 데이터 저장 */
                 const templateContent = JSON.parse($("#templateList dl input:checked").parents("dl").data("templateContent"));
                 let stationList = [];
@@ -503,7 +580,14 @@ const signage = {
             });
         });
     }
-    , createTemplateHtml : (each, idx, pMunicipality) => {
+    /**
+     * 사이니지 레이아웃 UI 생성
+     * @param1 : 레이아웃 칸 별 데이터 
+     * @param2 : 레이아웃 칸 별 인덱스
+     * @param3 : 지자체 이니셜 ex) gm, yj...
+     * @result : 레이아웃 html
+     */
+    , createLayoutHtml : (each, idx, pMunicipality) => {
         let content = "";
         if(pMunicipality === "gm") {
             const htmlObj = {
@@ -520,48 +604,54 @@ const signage = {
                     , "value" : "하단2"
                 }
             }
-            let fileBoxContent = "";
-            let dateContent = "";
 
-            if(idx === 0) {
-                fileBoxContent +=
+            if(idx === 0) { // input video 타입
+                content =
+                    "<div class='"+ htmlObj[idx].name + "VideoList'>" +
+                    "<h6>종류<span>" + htmlObj[idx].value + " 동영상를 설정해주세요.</span></h6>" +
+                    "<ul>" +
                     "<li class='"+ htmlObj[idx].name + "Video'>" +
                     "<div class='file_box'>" +
                     "<input type='text' class='upload_name' name='topVideoFileName' placeholder='동영상 첨부파일' readonly>" +
                     "<label for='topVideoFile'>파일찾기</label>" +
-                    "<input type='file' name='topVideoFile' id='videoFile'>" +
+                    "<input type='file' name='videoFile' accept='video/*' id='topVideoFile'>" +
                     "</div>" +
-                    "</li>";
-            } else {
-                fileBoxContent +=
-                    "<li class='"+ htmlObj[idx].name + "Image" + idx+ "'>" +
+                    "</li>" +
+                    "</ul>" +
+                    "</div>" +
+                    "<div>" +
+                    "<h6>기간<span>동영상 표출 기간을 설정해주세요.</span></h6>" +
+                    "<ul class='date'>" +
+                    "<li class='"+ htmlObj[idx].name + "Video'>" +
+                    "<input type='text' placeholder='날짜를 입력하세요' name='startDt' class='input_date'>" +
+                    "<input type='text' placeholder='날짜를 입력하세요' name='endDt' class='input_date'>" +
+                    "</li>" +
+                    "</div>";
+            } else { // input image 타입
+                content =
+                    "<div class='"+ htmlObj[idx].name + "ImageList'>" +
+                    "<h6>종류<span>" + htmlObj[idx].value + " 이미지를 설정해주세요.</span></h6>" +
+                    "<ul>" +
+                    "<li class='"+ htmlObj[idx].name + "Image'>" +
                     "<div class='file_box'>" +
                     "<input type='text' class='upload_name' name='"+ htmlObj[idx].name + "ImageFileName' placeholder='이미지 첨부파일' readonly>" +
                     "<label for='"+ htmlObj[idx].name + "ImageFile'>파일찾기</label>" +
-                    "<input type='file' name='imageFile' id='"+ htmlObj[idx].name + "ImageFile' multiple>" +
+                    "<input type='file' name='imageFile' accept='image/*' id='"+ htmlObj[idx].name + "ImageFile' multiple>" +
                     "</div>" +
-                    "</li>";
+                    "</li>" +
+                    "</ul>" +
+                    "</div>" +
+                    "<div>" +
+                    "<h6>기간<span>이미지 표출 기간과 순환 시간을 설정해주세요.</span></h6>" +
+                    "<ul class='date'>" +
+                    "<li class='"+ htmlObj[idx].name + "Image'>" +
+                    "<input type='text' placeholder='날짜를 입력하세요' name='startDt' class='input_date'>" +
+                    "<input type='text' placeholder='날짜를 입력하세요' name='endDt' class='input_date'>" +
+                    "<span>순환 시간</span>" +
+                    "<input type='number' class='sec' name='delayTime' value='30' placeholder='30'><span>초</span>" +
+                    "</li>" +
+                    "</div>";
             }
-            dateContent +=
-                "<li class='"+ htmlObj[idx].name + "Image'>" +
-                "<input type='text' placeholder='날짜를 입력하세요' name='startDt' class='input_date'>" +
-                "<input type='text' placeholder='날짜를 입력하세요' name='endDt' class='input_date'>" +
-                "<span>순환 시간</span>" +
-                "<input type='number' class='sec' name='delayTime' value='30' placeholder='30'><span>초</span>" +
-                "</li>";
-
-            content =
-                "<div class='"+ htmlObj[idx].name + "ImageList'>" +
-                "<h6>종류<span>" + htmlObj[idx].value + " 이미지를 설정해주세요. (최대 3장)</span></h6>" +
-                "<ul>" +
-                fileBoxContent +
-                "</ul>" +
-                "</div>" +
-                "<div>" +
-                "<h6>기간<span>이미지 표출 기간과 순환 시간을 설정해주세요.</span></h6>" +
-                "<ul class='date'>" +
-                dateContent +
-                "</div>";
         } else {
             content =
                 // "<li><p class='input_height'>높이<input type='text' id='height_"+idx+"'></p></li>" +
@@ -580,6 +670,11 @@ const signage = {
         }
         return content;
     }
+    /**
+     * @param1 : 템플릿 추가 데이터
+     * @param2 : 추가 후 func
+     * @param3 : 추가 실패 후 func
+     */
     , addProc : (pObj, doneCallback, failCallback) => {
         $.ajax({
             url : "/facility/signage/template"
@@ -593,6 +688,11 @@ const signage = {
             failCallback();
         });
     }
+    /**
+     * @param1 : 템플릿 수정 데이터
+     * @param2 : 수정 후 func
+     * @param3 : 수정 실패 후 func
+     */
     , modProc : (pObj, doneCallback, failCallback) => {
         $.ajax({
             url : "/facility/signage/template"
@@ -606,6 +706,11 @@ const signage = {
             failCallback();
         });
     }
+    /**
+     * @param1 : 레이아웃 추가 데이터
+     * @param2 : 추가 후 func
+     * @param3 : 추가 실패 후 func
+     */
     , addLayoutProc : (pObj, doneCallback, failCallback) => {
         const formData = new FormData($("#templateLayoutForm")[0]);
         formData.append("templateSeq", pObj.templateSeq);
@@ -625,6 +730,11 @@ const signage = {
             failCallback();
         });
     }
+    /**
+     * @param1 : 레이아웃 추가 데이터(광명)
+     * @param2 : 추가 후 func
+     * @param3 : 추가 실패 후 func
+     */
     , addLayoutForGmProc : (pObj, doneCallback, failCallback) => {
         $.ajax({
             url : "/facility/signage/layoutForGm"
@@ -638,6 +748,11 @@ const signage = {
             failCallback();
         });
     }
+    /**
+     * @param1 : FormData 형식 미디어 Obj
+     * @param2 : 추가 후 func
+     * @param3 : 추가 실패 후 func
+     */
     , uploadImageList : (pFormData, doneCallback, failCallback) => {
         $.ajax({
             url : "/facility/signage/uploadImageList"
@@ -653,6 +768,11 @@ const signage = {
             failCallback();
         });
     }
+    /**
+     * @param1 : 템플릿 삭제 데이터
+     * @param2 : 추가 후 func
+     * @param3 : 추가 실패 후 func
+     */
     , delProc : (pObj, doneCallback, failCallback) => {
         $.ajax({
             url : "/facility/signage/template"
@@ -666,6 +786,9 @@ const signage = {
             failCallback();
         });
     }
+    /**
+     * 개소 선택 팝업 내 개소 테이블 생성(영주)
+     */
     , createStation : () => {
         const $target = $('#signageStationTable');
         const set = new Set();
@@ -770,6 +893,10 @@ const signage = {
         }
         comm.createTable($target, optionObj, evt);
     }
+    /**
+    * 템플릿 팝업 show
+    * @param1 : 팝업 종류 ex) add, mod...
+    */
     , showPopup : (type) => {
         const $popup = $('#signagePopup');
         const $form = $("#signageTemplateForm");
@@ -789,24 +916,36 @@ const signage = {
             $form.setItemValue(templateData);
         }
     }
+    /**
+     * 템플릿 팝업 hide
+     */
     , hidePopup : () => {
         const $popup = $("#signagePopup");
 
         $popup.hide();
         comm.hideModal($popup);
     }
-    , showFacilityPopup : () => {
+    /**
+     * 개소 선택 팝업 show
+     */
+    , showStationPopup : () => {
         const $stationPopup = $('#signageStationPopup');
 
         comm.showModal($stationPopup);
         $stationPopup.css('display', 'flex');
     }
-    , hideFacilityPopup : () => {
+    /**
+     * 개소 선택 팝업 hide
+     */
+    , hideStationPopup : () => {
         const $stationPopup = $('#signageStationPopup');
 
         comm.hideModal($stationPopup);
         $stationPopup.hide();
     }
+    /**
+     * 레이아웃 초기화
+     */
     , hideLayout : () => {
         const municipality = $(".signage_layout").data("municipality");
         $(".signage_template .article_title ul li").hide();

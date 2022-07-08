@@ -104,9 +104,10 @@ const station = {
                 url : "/station/excel/download"
                 , fileName : "개소 목록_"+ dateFunc.getCurrentDateYyyyMmDd(0, '') +".xlsx"
                 , search : $("#searchForm form").serializeJSON()
-                , headerList : ["고유번호|stationSeq"
-                    , "이름|stationName"
-                    , "종류|stationKindName"
+                , headerList : ["고유 번호|stationSeq"
+                    , "개소 종류|stationKindName"
+                    , "개소 이름|stationName"
+                    , "시설물 종류|inFacilityKind"
                     , "행정구역|administZoneName"]
             }
         }
