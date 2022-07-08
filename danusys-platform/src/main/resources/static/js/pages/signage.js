@@ -447,7 +447,6 @@ const signage = {
             templateContentList.push(templateContent);
         });
         if(completeFlag) {
-            console.log(JSON.stringify(templateContentList));
             pDoneCallback({"templateContentList" : JSON.stringify(templateContentList), "notDeleteFileList" : notDeleteFileList});
         } else {
             pFailCallback(returnMsg);
