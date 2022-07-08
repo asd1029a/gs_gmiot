@@ -109,7 +109,7 @@ const signage = {
             , msg => comm.showAlert(msg));
             const templateContentJson = templateContent.templateContentList;
             const notDeleteFileList = templateContent.notDeleteFileList;
-            console.log(templateContentJson);
+
             if(templateSeq === "" || typeof templateSeq === "undefined") {
                 comm.showAlert("템플릿을 선택 후 적용해주세요.");
             } else {
@@ -310,18 +310,17 @@ const signage = {
                 const fileList = each[fileListName]
                 if(typeof fileList !== "undefined" && fileList.length > 0) {
                     const target = fileListName.substring(0, fileListName.indexOf("List"));
-                    let imageFileNameList = [];
+                    let fileNameList = [];
                     $.each(fileList, (idx2, obj) => {               // fileList for
                         $.each(Object.keys(obj), (idx3, key) => {   // fileObject key for
-                            if(key === "imageFile") {
+                            if(key === "imageFile" || key === "videoFile") {
                                 if(fileList.length === (idx2+1)) {
-                                    imageFileNameList.push(obj[key]);
-                                    $("." + target + " .upload_name").val(imageFileNameList.join(", "));
+                                    fileNameList.push(obj[key]);
+                                    const fileNameListString = stringFunc.changeXSSOutputValue(fileNameList.join(", "));
+                                    $("." + target + " .upload_name").val(fileNameListString);
                                 } else {
-                                    imageFileNameList.push(obj[key]);
+                                    fileNameList.push(obj[key]);
                                 }
-                            } else if(key === "videoFile") {
-                                $("." + target + " .upload_name").val(obj[key]);
                             } else {
                                 $("." + target + " input[name="+ key +"]").val(obj[key]);
                             }
@@ -614,7 +613,7 @@ const signage = {
                     "<div class='file_box'>" +
                     "<input type='text' class='upload_name' name='topVideoFileName' placeholder='동영상 첨부파일' readonly>" +
                     "<label for='topVideoFile'>파일찾기</label>" +
-                    "<input type='file' name='videoFile' accept='video/*' id='topVideoFile'>" +
+                    "<input type='file' name='videoFile' accept='video/*' id='topVideoFile' multiple>" +
                     "</div>" +
                     "</li>" +
                     "</ul>" +
