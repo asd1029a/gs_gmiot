@@ -117,6 +117,27 @@ const mntr = {
 
                     window.popup = popup;
                 }
+            },
+            {
+                text: '투망감시',
+                classname: 'context-style net',
+                callback: e => {
+                    const coordinate = new ol.proj.transform(e.coordinate, window.map.realProjection[window.map.type] ,'EPSG:4326');
+                    //TODO 투망 요청
+                    const prop = $('.context-style.net').data()[0];
+                    facility.getListCctvGeoJson({
+                        'longitude' : prop.longitude,
+                        'latitude' : prop.latitude,
+                        'type' : 'head', //헤더(!고정)
+                        'view' : 'net' //투망(!개소)
+                    }, result => {
+                        console.log(JSON.parse(result));
+                         // result.features.forEach(f => {
+                         //     //투망캠 요청
+                         // });
+
+                    });
+                }
             }
         ];
 
@@ -155,6 +176,28 @@ const mntr = {
             centerVilageInfo(e);
         });
 
+        //맵 오른쪽 클릭 (오른쪽 메뉴)
+        map.setMapEventListener('contextmenu', e => {
+            e.preventDefault();
+            let cctvAry = new Array();
+            const pixel = window.map.map.getEventPixel(e.originalEvent);
+            const hit = window.map.map.forEachFeatureAtPixel(pixel, (feature, layer) => true);
+            if(hit){
+                window.map.map.forEachFeatureAtPixel(pixel,(feature,layer) => {
+                    if(layer.get("title") && layer.get("title")=="cctvLayer") {
+                        cctvAry.push(feature);
+                    }
+                });
+            }
+            let target = $('.context-style.net');
+            if(cctvAry.length > 0){
+                target.css('display','list-item');
+                target.data(cctvAry);
+            } else {
+                target.css('display','none');
+            }
+        });
+
         //레이어 마우스오버 이벤트
         let target = map.map.getTarget();
         let jTarget = typeof target === "string" ? $("#" + target) : $(target);
@@ -165,44 +208,80 @@ const mntr = {
             const cTarget = $(e.target);
             let popup = new mapPopup('map');
 
+            let cctvAry = new Array();
+
             if (hit) {
                 if(cTarget[0].tagName=="CANVAS"){
                     jTarget.css("cursor", "pointer");
                     //마우스 온 프리셋
                     map.map.forEachFeatureAtPixel(pixel,(feature,layer) => {
                         if(layer){
-                            if(layer.get("title")){
+                            if(layer.get("title")) {
                                 const layerName = layer.get("title");
                                 //클러스터 인가
-                                if(feature.getProperties().features){
+                                if (feature.getProperties().features) {
                                     const len = feature.getProperties().features.length;
-                                    if(len == 1){
+                                    if (len == 1) {
                                         let position = feature.getGeometry().getCoordinates();
                                         let content = "";
                                         //개소
-                                        if(layerName == "stationLayer"){
+                                        if (layerName == "stationLayer") {
                                             content = mapPopupContent.station(feature, len);
-                                        //이벤트
-                                        } else if((layerName == "eventLayer")||(layerName == "eventPastLayer")){
+                                            //이벤트
+                                        } else if ((layerName == "eventLayer") || (layerName == "eventPastLayer")) {
                                             content = mapPopupContent.event(feature, len);
                                             let point = window.map.map.getPixelFromCoordinate(position);
                                             position = window.map.map.getCoordinateFromPixel([point[0], point[1] - 50]); //아이콘 높이만큼
                                         }
-                                        if(content!=""){
+                                        if (content != "") {
                                             popup.create('mouseOverPopup');
                                             popup.content('mouseOverPopup', content);
                                             popup.move('mouseOverPopup', position);
                                         }
                                     }
-                                }// end cluster?
+                                } else {
+                                    //cctv
+                                    if(layerName == "cctvLayer"){
+                                        cctvAry.push(feature);
+                                    }
+                                } // end cluster?
                             }// end layer title
                         } // end layer
                     }); // end mouseon
                 } // end hit canvas
+                if(cctvAry.length > 0){
+                    const overlay = window.map.getOverlay('cctv');
+                    if(!overlay) {
+                        const position = cctvAry[0].getGeometry().getCoordinates();
+                        //console.log(cctvAry);
+                        //TODO 해당 카메라 좌표와 같은 회전형, 고정형 모든 카메라 조회 -> DB
+                        const prop= cctvAry[0].getProperties();
+                        facility.getListCctvGeoJson({
+                            'longitude' : prop.longitude,
+                            'latitude' : prop.latitude
+                        }, result => {
+                            const data = JSON.parse(result).features;
+                            const content = createFcltSlideContent(data); // data는 그냥 array? geojson?
+                            console.log(content);
+
+                            const option = {
+                                id : 'cctv',
+                                position : position,
+                                element : content,
+                                offset : [ 0, 0 ],
+                                positioning : 'center-center',
+                                stopEvent : true,
+                                insertFirst : true
+                            }
+                            window.map.setOverlay(option);
+                        });
+                    }
+                }
                 map.map.renderSync();
             } else {
                 jTarget.css("cursor", "all-scroll");
                 popup.remove('mouseOverPopup');
+                cctvAry.splice(0); //빈배열
             }
         });
 
@@ -275,24 +354,11 @@ const mntr = {
            window.map.addLayer(ly);
            ly.set('selectable', true);
         });
-        //     // //열지도 test
-        //     // const heat = new ol.layer.Heatmap({
-        //     //     source: new ol.source.Vector({
-        //     //         features: new ol.format.GeoJSON().readFeatures(result, {
-        //     //             dataProjection: "EPSG:4326"
-        //     //             , featureProjection: "EPSG:5181"
-        //     //         })
-        //     //     }),
-        //     //     blur: 15,
-        //     //     radius: 8,
-        //     //     weight: function (feature) {
-        //     //         //var magnitude = parseFloat(feature.get('magnitude'));
-        //     //         //return magnitude - 5;
-        //     //         return 0.4;
-        //     //     },
-        //     // });
-        //     //
-        //     // window.map.addLayer(heat);
+
+        facility.getListCctvGeoJson({"type":"head"}, result => {
+            reloadLayer(result, 'cctvLayer');
+            //window.lyControl.off('cctvLayer');
+        });
 
         //축척별 레이어 반응
         map.setMapViewEventListener('propertychange' ,e => {

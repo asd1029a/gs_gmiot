@@ -12,7 +12,7 @@
  * @property {String} prop.systemType - 플레이어를 제공하는 시스템 타입
  * @property {Class} player - 시스템 별 플레이어 동작 방식을 결정하는 Class 
  * */
-var videoManager = {
+let videoManager = {
 	playList : new Map(),
 	prop : {
 		reqServerIp : '121.170.199.216',
@@ -125,7 +125,7 @@ var videoManager = {
 		
 		let btnList = $('<div>').addClass('btn_wrap btn_area_center');
 		const siteList = parent.data('siteList');
-		
+
 		if(!isSite) {
 			let a = $('<a>').attr('href', '#').addClass('btn site_btn').html('개소감시').bind('click', function(e) {
 				siteMntr(data);
@@ -138,41 +138,41 @@ var videoManager = {
 
 		let bSpan = $('<span>').addClass('slider round');
 		let bText = $('<span>').addClass('switch-text off').html('OFF');
-		let bInput = $('<input>').attr('type', 'checkbox').bind({
-			'click': function(e) {
-				if($(this).hasClass('active') && $(c).hasClass('active')) {
-					$(c).click();
-				}
-				if($(this).hasClass('active')) {
-					bText.html('OFF');
-					bText.removeClass('on').addClass('off');
-					$(this).removeClass('active');
-					$(parent).children('.video_wrap').children('.cctv-btn-wrap').removeClass('active');
-					mapManager.map.removeLayer(data.directionLayer);
-				} else {
-					bText.html('ON');
-					bText.removeClass('off').addClass('on');
-					$(this).addClass('active');
-					$(parent).children('.video_wrap').children('.cctv-btn-wrap').addClass('active');
-				}
-			},
-		});
+		// let bInput = $('<input>').attr('type', 'checkbox').bind({
+		// 	'click': function(e) {
+		// 		if($(this).hasClass('active') && $(c).hasClass('active')) {
+		// 			$(c).click();
+		// 		}
+		// 		if($(this).hasClass('active')) {
+		// 			bText.html('OFF');
+		// 			bText.removeClass('on').addClass('off');
+		// 			$(this).removeClass('active');
+		// 			$(parent).children('.video_wrap').children('.cctv-btn-wrap').removeClass('active');
+		// 			mapManager.map.removeLayer(data.directionLayer);
+		// 		} else {
+		// 			bText.html('ON');
+		// 			bText.removeClass('off').addClass('on');
+		// 			$(this).addClass('active');
+		// 			$(parent).children('.video_wrap').children('.cctv-btn-wrap').addClass('active');
+		// 		}
+		// 	},
+		// });
 		
-		let b = $('<label>').addClass('switch position_left').append(bInput, bSpan, bText);
-		
-		btnList.append(b);
-		
-		let d = $('<a>').attr('href', '#').addClass('btn').html('상세정보').bind('click', function(e) {
-			if($(this).hasClass('active')) {
-				$(this).removeClass('active');
-				$(parent).children('.detail-wrap').slideUp();
-			} else {
-				$(this).addClass('active');
-				$(parent).children('.detail-wrap').slideDown();
-			}
-		});
-		
-		btnList.append(d);
+		// let b = $('<label>').addClass('switch position_left').append(bInput, bSpan, bText);
+		//
+		// btnList.append(b);
+		//
+		// let d = $('<a>').attr('href', '#').addClass('btn').html('상세정보').bind('click', function(e) {
+		// 	if($(this).hasClass('active')) {
+		// 		$(this).removeClass('active');
+		// 		$(parent).children('.detail-wrap').slideUp();
+		// 	} else {
+		// 		$(this).addClass('active');
+		// 		$(parent).children('.detail-wrap').slideDown();
+		// 	}
+		// });
+		//
+		// btnList.append(d);
 
 		if(type == 's' && data.cctvAgYn == '1') {
 			option.overlayList = [];
@@ -198,7 +198,7 @@ var videoManager = {
 			})
 			
 			function removeBtns() {
-				for(var i = 0, max = option.overlayList.length; i < max; i++) {
+				for(let i = 0, max = option.overlayList.length; i < max; i++) {
 					mapManager.map.removeOverlay(option.overlayList[i]);
 				}
 			}
@@ -207,7 +207,7 @@ var videoManager = {
 			
 			btnList.append(c);
 		} else if(type == 's' && data.cctvAgYn == '0') {
-			var directionOverlay = undefined;
+			let directionOverlay = undefined;
 			c.html('방향 설정');
 			
 			const directionLayer = new ol.layer.Vector({
@@ -323,7 +323,7 @@ var videoManager = {
 		// const isEvent = option.isEvent === undefined ? false : option.isEvent;
 		// const isSite = option.isSite === undefined ? false : option.isSite;
 		// const isDetail = option.isDetail === undefined ? true : option.isDetail;
-		// const isButton = option.isButton === undefined ? true : option.isButton;
+		const isButton = option.isButton === undefined ? true : option.isButton;
 		// const type = this.getVideoType(isEvent);
 		
 		// option.type = type;
@@ -349,9 +349,9 @@ var videoManager = {
 		// 	videoManager.createDetailView(data, parent);
 		// }
 		
-		// if(isButton) {
-		// 	videoManager.createButton(option);
-		// }
+		if(isButton) {
+			videoManager.createButton(option);
+		}
 		
 		// videoManager.insertCctvViewLog(option);
 		
@@ -566,7 +566,7 @@ var videoManager = {
 	 * @function 
 	 */
 	switchPtzValue : function (cmd) {
-		var ptzCtrlMode;
+		let ptzCtrlMode;
 		
 		if(cmd=='stop') ptzCtrlMode = 9;
 		else if(cmd=='left') ptzCtrlMode = 1;
@@ -587,7 +587,7 @@ var videoManager = {
 	 * @function 
 	 */
 	switchPtzValueForVurix : function (cmd) {
-		var ptzCtrlMode;
+		let ptzCtrlMode;
 		
 		if(cmd=='stop') ptzCtrlMode = 14;
 		else if(cmd=='left') ptzCtrlMode = 4;
@@ -628,14 +628,14 @@ var videoManager = {
 				alert('로그인 시간이 만료되었습니다.');
 				closeWindow();
 			}
-			var resultData = rows[0];
+			let resultData = rows[0];
 			
 			if (!resultData) {
 				return;
 			}
-			var cctvAgYn = data.cctvAgYn;
-			var fcltPurposeCd = 0;
-			var imageSrc = '../../images/icons/cctv/cctv_'+cctvAgYn+'_'+ fcltPurposeCd+'_'+ presetNo+'.png';
+			let cctvAgYn = data.cctvAgYn;
+			let fcltPurposeCd = 0;
+			let imageSrc = '../../images/icons/cctv/cctv_'+cctvAgYn+'_'+ fcltPurposeCd+'_'+ presetNo+'.png';
 			// setMarkerImage(facilityMarkers[ch], imageSrc);
 			
 			videoManager.insertCctvCtrlLog(resultData.cctvId, '1', resultData.presetNo);
@@ -713,7 +713,7 @@ var videoManager = {
  * @version 0.0.1
  * @class commonPlayer
  * */
-var commonPlayer = {
+let commonPlayer = {
 	/**
 	 * 영상 재생 함수.
 	 * @function danuPlayer.play
@@ -784,7 +784,7 @@ var commonPlayer = {
  * @version 0.0.1
  * @class danuPlayer
  * */
-var danuPlayer = {
+let danuPlayer = {
 	/**
 	 * 영상 재생 함수.
 	 * @function danuPlayer.play
@@ -871,18 +871,18 @@ var danuPlayer = {
 		const data = option.data;
 		const type = option.type;
 		const timestamp = option.timestamp;
-		var width = parent.width();
-		var height = parent.height();
-		var hOffset = width / 2;
-		var vOffset = height / 2;
+		let width = parent.width();
+		let height = parent.height();
+		let hOffset = width / 2;
+		let vOffset = height / 2;
 		
-		var left = 5;
-		var center = hOffset - 13.5;
-		var right = 5;
+		let left = 5;
+		let center = hOffset - 13.5;
+		let right = 5;
 		
-		var top = 5;
-		var middle = vOffset - 13.5;
-		var bottom = 5;
+		let top = 5;
+		let middle = vOffset - 13.5;
+		let bottom = 5;
 		
 		let btnWrap = $('<div>').addClass('cctv-btn-wrap');
 		if(!timestamp){
@@ -910,9 +910,9 @@ var danuPlayer = {
 			
 			btnWrap.children('a').bind({
 				mousedown:function(e){
-					var cmd = e.target.className;
+					let cmd = e.target.className;
 					if (cmd.indexOf('preset') != -1) {
-						var presetNo = cmd.split('_')[1];
+						let presetNo = cmd.split('_')[1];
 						videoManager.presetCtrl(data, presetNo);
 					} else {
 						videoManager.insertCctvCtrlLog(data.fcltId, '0', cmd);
@@ -926,7 +926,7 @@ var danuPlayer = {
 			    	return false;
 				},
 				mouseup:function(e){
-					var cmd = e.target.className;
+					let cmd = e.target.className;
 					if (cmd.indexOf('preset') == -1) {
 						videoManager.insertCctvCtrlLog(data.fcltId, '0', 'stop');
 						try {
@@ -1008,25 +1008,25 @@ var danuPlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
-		// var $viewArea = $btnView.parent();
+		let $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
+		// let $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
 		// $viewArea.removeClass("fullscreen");
 		// else $viewArea.addClass("fullscreen");
 		
-		var width = $btnArea.width();
-		var height = $btnArea.height();
-		var hOffset = width / 2;
-		var vOffset = height / 2;
+		let width = $btnArea.width();
+		let height = $btnArea.height();
+		let hOffset = width / 2;
+		let vOffset = height / 2;
 		
-		var left = 5;
-		var center = hOffset - 13.5;
-		var right = 5;
+		let left = 5;
+		let center = hOffset - 13.5;
+		let right = 5;
 		
-		var top = 5;
-		var middle = vOffset - 13.5;
-		var bottom = 5;
+		let top = 5;
+		let middle = vOffset - 13.5;
+		let bottom = 5;
 
 		$btnArea.children('.left').css({left: (center-26)+"px", top: (middle)+"px"});
 		$btnArea.children('.right').css({left: (center+26)+"px", top: (middle)+"px"});
@@ -1076,7 +1076,7 @@ var danuPlayer = {
  * @version 0.0.1
  * @class vurixPlayer
  * */
-var vurixPlayer = {
+let vurixPlayer = {
 	/**
 	 * 영상 재생 함수.
 	 * @function vurixPlayer.play
@@ -1139,18 +1139,18 @@ var vurixPlayer = {
 		const data = option.data;
 		const type = option.type;
 		const timestamp = option.timestamp;
-		var width = parent.width();
-		var height = parent.height();
-		var hOffset = width / 2;
-		var vOffset = height / 2;
+		let width = parent.width();
+		let height = parent.height();
+		let hOffset = width / 2;
+		let vOffset = height / 2;
 		
-		var left = 5;
-		var center = hOffset - 13.5;
-		var right = 5;
+		let left = 5;
+		let center = hOffset - 13.5;
+		let right = 5;
 		
-		var top = 5;
-		var middle = vOffset - 13.5;
-		var bottom = 5;
+		let top = 5;
+		let middle = vOffset - 13.5;
+		let bottom = 5;
 		
 		let btnWrap = $('<div>').addClass('cctv-btn-wrap');
 		if(!timestamp){
@@ -1179,9 +1179,9 @@ var vurixPlayer = {
 			
 			btnWrap.children('a').bind({
 				mousedown:function(e){
-					var cmd = e.target.className;
+					let cmd = e.target.className;
 					if (cmd.indexOf('preset') != -1) {
-						var presetNo = cmd.split('_')[1];
+						let presetNo = cmd.split('_')[1];
 						videoManager.presetCtrl(data, presetNo);
 					} else {
 						videoManager.insertCctvCtrlLog(data.fcltId, '0', cmd);
@@ -1195,7 +1195,7 @@ var vurixPlayer = {
 			    	return false;
 				},
 				mouseup:function(e){
-					var cmd = e.target.className;
+					let cmd = e.target.className;
 					if (cmd.indexOf('preset') == -1) {
 						videoManager.insertCctvCtrlLog(data.fcltId, '0', 'stop');
 						try {
@@ -1275,25 +1275,25 @@ var vurixPlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
-		// var $viewArea = $btnView.parent();
+		let $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
+		// let $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
 		// $viewArea.removeClass("fullscreen");
 		// else $viewArea.addClass("fullscreen");
 		
-		var width = $btnArea.width();
-		var height = $btnArea.height();
-		var hOffset = width / 2;
-		var vOffset = height / 2;
+		let width = $btnArea.width();
+		let height = $btnArea.height();
+		let hOffset = width / 2;
+		let vOffset = height / 2;
 		
-		var left = 5;
-		var center = hOffset - 13.5;
-		var right = 5;
+		let left = 5;
+		let center = hOffset - 13.5;
+		let right = 5;
 		
-		var top = 5;
-		var middle = vOffset - 13.5;
-		var bottom = 5;
+		let top = 5;
+		let middle = vOffset - 13.5;
+		let bottom = 5;
 
 		$btnArea.children('.left').css({left: (center-26)+"px", top: (middle)+"px"});
 		$btnArea.children('.right').css({left: (center+26)+"px", top: (middle)+"px"});
@@ -1343,7 +1343,7 @@ var vurixPlayer = {
  * @version 0.0.1
  * @class hivePlayer
  * */
-var hivePlayer = {
+let hivePlayer = {
 	/**
 	 * 영상 재생 함수.
 	 * @function hivePlayer.play
@@ -1410,18 +1410,18 @@ var hivePlayer = {
 		const data = option.data;
 		const type = option.type;
 		const timestamp = option.timestamp;
-		var width = parent.width();
-		var height = parent.height();
-		var hOffset = width / 2;
-		var vOffset = height / 2;
+		let width = parent.width();
+		let height = parent.height();
+		let hOffset = width / 2;
+		let vOffset = height / 2;
 		
-		var left = 5;
-		var center = hOffset - 13.5;
-		var right = 5;
+		let left = 5;
+		let center = hOffset - 13.5;
+		let right = 5;
 		
-		var top = 5;
-		var middle = vOffset - 13.5;
-		var bottom = 5;
+		let top = 5;
+		let middle = vOffset - 13.5;
+		let bottom = 5;
 		
 		let btnWrap = $('<div>').addClass('cctv-btn-wrap');
 		if(!timestamp){
@@ -1449,9 +1449,9 @@ var hivePlayer = {
 			
 			btnWrap.children('a').bind({
 				mousedown:function(e){
-					var cmd = e.target.className;
+					let cmd = e.target.className;
 					if (cmd.indexOf('preset') != -1) {
-						var presetNo = cmd.split('_')[1];
+						let presetNo = cmd.split('_')[1];
 						videoManager.popupPresetCtrl(data, presetNo);
 					} else {
 						videoManager.insertCctvCtrlLog(data.fcltId, '0', cmd);
@@ -1466,7 +1466,7 @@ var hivePlayer = {
 			    	return false;
 				},
 				mouseup:function(e){
-					var cmd = e.target.className;
+					let cmd = e.target.className;
 					if (cmd.indexOf('preset') == -1) {
 						videoManager.insertCctvCtrlLog(data.fcltId, '0', 'stop');
 						try {
@@ -1541,25 +1541,25 @@ var hivePlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
-		// var $viewArea = $btnView.parent();
+		let $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
+		// let $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
 		// $viewArea.removeClass("fullscreen");
 		// else $viewArea.addClass("fullscreen");
 		
-		var width = $btnArea.width();
-		var height = $btnArea.height();
-		var hOffset = width / 2;
-		var vOffset = height / 2;
+		let width = $btnArea.width();
+		let height = $btnArea.height();
+		let hOffset = width / 2;
+		let vOffset = height / 2;
 		
-		var left = 5;
-		var center = hOffset - 13.5;
-		var right = 5;
+		let left = 5;
+		let center = hOffset - 13.5;
+		let right = 5;
 		
-		var top = 5;
-		var middle = vOffset - 13.5;
-		var bottom = 5;
+		let top = 5;
+		let middle = vOffset - 13.5;
+		let bottom = 5;
 
 		$btnArea.children('.left').css({left: (center-26)+"px", top: (middle)+"px"});
 		$btnArea.children('.right').css({left: (center+26)+"px", top: (middle)+"px"});
@@ -1584,7 +1584,7 @@ var hivePlayer = {
  * @version 0.0.1
  * @class xeusPlayer
  * */
-var xeusPlayer = {
+let xeusPlayer = {
 	/**
 	 * 영상 재생 함수.
 	 * @function xeusPlayer.play
@@ -1595,8 +1595,8 @@ var xeusPlayer = {
 		const timestamp = option.timestamp;
 		const viewId = option.viewId;
 
-		var time = '10';
-		var speed = '10';
+		let time = '10';
+		let speed = '10';
 		
 		const playerOption = {
             playerId : viewId,
@@ -1612,7 +1612,7 @@ var xeusPlayer = {
             debug : false
         }
 		
-		var player = new XeusGate.Player(playerOption);
+		let player = new XeusGate.Player(playerOption);
 		
 		data.player = player;
 		
@@ -1661,18 +1661,18 @@ var xeusPlayer = {
 		const data = option.data;
 		const type = option.type;
 		const timestamp = option.timestamp;
-		var width = parent.width();
-		var height = parent.height();
-		var hOffset = width / 2;
-		var vOffset = height / 2;
+		let width = parent.width();
+		let height = parent.height();
+		let hOffset = width / 2;
+		let vOffset = height / 2;
 		
-		var left = 5;
-		var center = hOffset - 13.5;
-		var right = 5;
+		let left = 5;
+		let center = hOffset - 13.5;
+		let right = 5;
 		
-		var top = 5;
-		var middle = vOffset - 13.5;
-		var bottom = 5;
+		let top = 5;
+		let middle = vOffset - 13.5;
+		let bottom = 5;
 		
 		let btnWrap = $('<div>').addClass('cctv-btn-wrap');
 		if(!timestamp){
@@ -1698,9 +1698,9 @@ var xeusPlayer = {
 			
 			btnWrap.children('a').bind({
 				mousedown:function(e){
-					var cmd = e.target.className;
+					let cmd = e.target.className;
 					if (cmd.indexOf('preset') != -1) {
-						var presetNo = cmd.split('_')[1];
+						let presetNo = cmd.split('_')[1];
 						videoManager.popupPresetCtrl(data, presetNo);
 					} else {
 						videoManager.insertCctvCtrlLog(data.fcltId, '0', cmd);
@@ -1715,7 +1715,7 @@ var xeusPlayer = {
 			    	return false;
 				},
 				mouseup:function(e){
-					var cmd = e.target.className;
+					let cmd = e.target.className;
 					if (cmd.indexOf('preset') == -1) {
 						videoManager.insertCctvCtrlLog(data.fcltId, '0', 'stop');
 						try {
@@ -1824,25 +1824,25 @@ var xeusPlayer = {
 	 * @deprecated connectDialog로 이전 예정
 	 */
 	onPopupVideoResize : function(dialog) {
-		var $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
-		// var $viewArea = $btnView.parent();
+		let $btnArea = $(dialog).children('.video_wrap').children('.cctv-btn-wrap');
+		// let $viewArea = $btnView.parent();
 		
 		// if ($viewArea.hasClass("fullscreen"))
 		// $viewArea.removeClass("fullscreen");
 		// else $viewArea.addClass("fullscreen");
 		
-		var width = $btnArea.width();
-		var height = $btnArea.height();
-		var hOffset = width / 2;
-		var vOffset = height / 2;
+		let width = $btnArea.width();
+		let height = $btnArea.height();
+		let hOffset = width / 2;
+		let vOffset = height / 2;
 		
-		var left = 5;
-		var center = hOffset - 13.5;
-		var right = 5;
+		let left = 5;
+		let center = hOffset - 13.5;
+		let right = 5;
 		
-		var top = 5;
-		var middle = vOffset - 13.5;
-		var bottom = 5;
+		let top = 5;
+		let middle = vOffset - 13.5;
+		let bottom = 5;
 
 		$btnArea.children('.Left').css({left: (center-26)+"px", top: (middle)+"px"});
 		$btnArea.children('.Right').css({left: (center+26)+"px", top: (middle)+"px"});

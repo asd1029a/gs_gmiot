@@ -31,5 +31,6 @@ public interface FacilityService {
     void modSignageLayoutForGm(Map<String, Object> paramMap) throws Exception ;
     String getOneSignageData(String serverName, String serverPort) throws Exception;
     void delSignageTemplate(Map<String, Object> paramMap) throws Exception;
-
+    EgovMap getListCctvHead(Map<String, Object> paramMap) throws Exception;
+    EgovMap getListCctv(Map<String, Object> paramMap) throws Exception;
 }

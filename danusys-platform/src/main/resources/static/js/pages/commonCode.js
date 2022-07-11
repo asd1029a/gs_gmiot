@@ -4,7 +4,7 @@
 
 const commonCode = {
     eventHandler : ($target, pParentCode) => {
-        $("#searchBtn").on('click', (e) => {
+        $("#searchBtn").on('let', (e) => {
             commonCode.create($target, pParentCode);
         });
 

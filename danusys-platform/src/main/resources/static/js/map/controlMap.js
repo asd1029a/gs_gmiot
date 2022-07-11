@@ -200,7 +200,7 @@ const layerStyle = {
     //cctv
     , cctv : (selectFlag) => {
         return feature => {
-            const text = feature.getProperties().id;
+            const text = feature.getProperties().facilityName; //facilityId
 
             let keys = 'cctv_useCd1';
             keys = selectFlag ?  keys +'_select' : keys;
@@ -419,6 +419,45 @@ function clickIcon(layerType, layerObj) {
         case "cctv" : //cctv 클릭 이벤트
             //TODO 영상 재생 연결
             console.log(layerObj);
+            console.log(layerObj.getProperties().facilitySeq);
+
+            let prop = layerObj.getProperties();
+
+            const rtspOpt = prop.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+            if(rtspOpt.length > 0){
+                const rtspUrl = rtspOpt[0].facilityOptValue;
+                const videoData = {
+                    facilitySeq : prop.facilitySeq,
+                    rtspUrl : rtspUrl,
+                    facilityKind : prop.facilityKind,
+                    lon : prop.longitude,
+                    lat : prop.latitude
+                }
+
+                const dialogOption = {
+                    draggable: true,
+                    clickable: true,
+                    data: videoData,
+                    css: {
+                        width: '400px',
+                        height: '340px'
+                    }
+                }
+
+                const dialog = $.connectDialog(dialogOption);
+
+                const videoOption = {};
+                videoOption.data = videoData;
+                videoOption.parent = dialog;
+                videoOption.btnFlag = false;
+                videoOption.isSite = false;
+                videoOption.site_video_wrap = true;
+
+                if(!videoManager.createPlayer(videoOption)) {
+                    dialogManager.close(dialog);
+                };
+            }
+
             break;
         default :
             break;
@@ -480,3 +519,206 @@ const dronePolling = {
         });
     }
 }
+
+/** fcltid -> facilityid
+ * 시설물 팝업생성
+ * @function evtMain.createFcltSlideContent
+ * @param {Array} data - 시설물 데이터 Array
+ */
+function createFcltSlideContent(data){
+    let content = document.createElement('div');
+    content.classList.add('slide-popup');
+    content.style.width = data.length > 5 ? 50 + (5 * 25) + 'px' : 50 + (data.length * 25) + 'px';
+
+    let leftBtn = document.createElement('a');
+
+    leftBtn.setAttribute('href', '#');
+    leftBtn.classList.add('img-box');
+    leftBtn.classList.add('left-zero');
+
+    let leftImg = document.createElement('img');
+    leftImg.src = '/images/default/arrowPrev.svg';
+    leftImg.style.width = '25px';
+
+    leftBtn.appendChild(leftImg);
+
+    let divWrap = document.createElement('div');
+
+    divWrap.classList.add('menu-wrap');
+
+    let ul = document.createElement('ul');
+
+    ul.id = 'cctvSlide';
+
+    for(let i = 0; i < data.length; i++) {
+        let obj = data[i];
+
+        let li = document.createElement('li');
+        let a = document.createElement('a');
+        let img = document.createElement('img');
+        li.style.width = '25px';
+
+        a.setAttribute('href', '#');
+        a.classList.add('img-box');
+
+        const directionLayer = new ol.layer.Vector({
+            source: new ol.source.Vector()
+        });
+
+        const directionFeature = new ol.Feature({});
+        obj.directionLayer = directionLayer;
+        obj.directionFeature = directionFeature;
+        directionLayer.getSource().addFeature(directionFeature);
+
+        $(a).bind({
+            'click': function(e) {
+                if($('.circlr_container').length > 0 && !$('#setCirclr').is(':visible')) {
+                    alert('순환감시 추가, 수정 시에만 영상이 재생됩니다.');
+                    return;
+                }
+
+                if(!videoManager.isPlaying(obj.facilityId)) {
+                    return;
+                }
+
+                const dialogOption = {
+                    draggable: true,
+                    clickable: true,
+                    data: obj,
+                    css: {
+                        width: '400px',
+                        height: '340px'
+                    }
+                }
+
+                const dialog = $.connectDialog(dialogOption);
+                dialog.data('siteList', data);
+
+                const option = {};
+                option.data = obj;
+                option.parent = dialog;
+
+                if(!videoManager.createPlayer(option)) {
+                    dialogManager.close(dialog);
+                };
+            },
+            'mouseenter': function(e) {
+                window.map.map.addLayer(directionLayer);
+                getPresetPoint(obj, obj.presetNo, directionFeature, createPresetDirection);
+            },
+            'mouseout': function(e) {
+                window.map.map.removeLayer(directionLayer);
+
+            }
+        });
+
+        img.src = getCctvMarkerImage(obj);
+
+        a.appendChild(img);
+        li.appendChild(a);
+        ul.appendChild(li)
+    }
+
+    divWrap.appendChild(ul);
+
+    let rightBtn = document.createElement('a');
+
+    rightBtn.setAttribute('href', '#');
+    rightBtn.classList.add('img-box');
+    rightBtn.classList.add('right-zero');
+
+    let rightImg = document.createElement('img');
+    rightImg.src = '/images/default/arrowNext.svg';
+    rightImg.style.width = '25px';
+
+    rightBtn.appendChild(rightImg);
+
+    content.appendChild(leftBtn);
+    content.appendChild(divWrap);
+    content.appendChild(rightBtn);
+
+    let cctvSlide = slideMenu.init();
+    cctvSlide.init(ul, data.length > 5 ? 5 : data.length, 'h');
+
+    leftBtn.addEventListener('click', function() {
+        cctvSlide.move.left();
+    });
+
+    rightBtn.addEventListener('click', function() {
+        cctvSlide.move.right();
+    });
+
+    let overFlag = false;
+
+    content.addEventListener('mouseover', function() {
+        overFlag = true;
+        clearTimeout(closeOverlay);
+    });
+
+    content.addEventListener('mouseleave', function() {
+        overFlag = false;
+        window.map.removeOverlayById('cctv');
+    });
+
+    let closeOverlay = setTimeout(function() {
+        if(!overFlag) {
+            window.map.removeOverlayById('cctv');
+        }
+    }, 500);
+
+    $('.ol-overlaycontainer-stopevent').on('pointermove', function(e){
+        e.stopPropagation();
+    });
+
+    return content;
+}
+
+/**
+ * 시설물데이터 마커 삽입 기능
+ * @param {object} data -마커데이터
+ * @function map.getCctvMarkerImage
+ */
+function getCctvMarkerImage(data) {
+    const fcltPurposeCd = 0;
+    const cctvAgYn = data.cctvAgYn;
+    const presetNo = data.presetNo;
+    const stateCd = data.stateCd;
+    let imageSrc = '/images/mapicon/cctv_crime.svg';
+
+    // if(stateCd == '1') {
+    //     imageSrc = '/images/icons/cctv/cctv_state_0.png'; // 마커이미지의 주소입니다
+    // } else if(cctvAgYn == '0') {
+    //     imageSrc = '/images/icons/cctv/cctv_'+cctvAgYn+'_'+fcltPurposeCd+'_0.png'; // 마커이미지의 주소입니다
+    // } else {
+    //     imageSrc = '/images/icons/cctv/cctv_'+cctvAgYn+'_'+fcltPurposeCd+'_0.png'; // 마커이미지의 주소입니다
+    // }
+
+    return imageSrc;
+}
+
+/**
+ * 같은위치에 있는 cctv 리스트를 가져오는 기능    ????????????????
+ * @param {object} feature - feature 데이터
+ * @param {function} callback - callback function
+ * @function map.getSiteList
+ */
+function getSiteList(feature, callback){
+    const jsonObj = {};
+    jsonObj.sameLat = feature.getProperties().lat;
+    jsonObj.sameLon = feature.getProperties().lon;
+    jsonObj.sameCctv = true;
+    jsonObj.recordCountPerPage = '-1';
+    jsonObj.pageKind = 'manage';
+    $.ajax({
+        type      : "POST",
+        url         : "/select/facility.selectSiteCctvList/action.do",
+        dataType   : "json",
+        data      : {
+            "param"   : JSON.stringify(jsonObj)
+        },
+        async      : false
+    }).done(function(result){
+        if(typeof callback == 'function') callback(feature, rows);
+    })
+}
+

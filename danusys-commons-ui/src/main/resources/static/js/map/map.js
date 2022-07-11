@@ -458,23 +458,23 @@ function cctvLayerStyle(feature) {
  * @param {object} data -마커데이터 
  * @function map.getCctvMarkerImage
  */
-function getCctvMarkerImage(data) {
-	const fcltPurposeCd = 0;
-	const cctvAgYn = data.cctvAgYn;
-	const presetNo = data.presetNo;
-	const stateCd = data.stateCd;
-	var imageSrc = '';
-	
-	if(stateCd == '1') {
-		imageSrc = '../../images/icons/cctv/cctv_state_0.png'; // 마커이미지의 주소입니다
-	} else if(cctvAgYn == '0') {
-		imageSrc = '../../images/icons/cctv/cctv_'+cctvAgYn+'_'+fcltPurposeCd+'_0.png'; // 마커이미지의 주소입니다
-	} else {
-		imageSrc = '../../images/icons/cctv/cctv_'+cctvAgYn+'_'+fcltPurposeCd+'_0.png'; // 마커이미지의 주소입니다
-	}
-	
-	return imageSrc;
-}
+// function getCctvMarkerImage(data) {
+// 	const fcltPurposeCd = 0;
+// 	const cctvAgYn = data.cctvAgYn;
+// 	const presetNo = data.presetNo;
+// 	const stateCd = data.stateCd;
+// 	var imageSrc = '';
+//
+// 	if(stateCd == '1') {
+// 		imageSrc = '../../images/icons/cctv/cctv_state_0.png'; // 마커이미지의 주소입니다
+// 	} else if(cctvAgYn == '0') {
+// 		imageSrc = '../../images/icons/cctv/cctv_'+cctvAgYn+'_'+fcltPurposeCd+'_0.png'; // 마커이미지의 주소입니다
+// 	} else {
+// 		imageSrc = '../../images/icons/cctv/cctv_'+cctvAgYn+'_'+fcltPurposeCd+'_0.png'; // 마커이미지의 주소입니다
+// 	}
+//
+// 	return imageSrc;
+// }
 
 /**
  * event 종료

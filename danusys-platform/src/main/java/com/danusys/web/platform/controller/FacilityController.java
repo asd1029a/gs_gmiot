@@ -9,6 +9,7 @@ import com.danusys.web.platform.service.facility.FacilityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,8 @@ public class FacilityController {
 
     private final FacilityOptService facilityOptService;
 
+    @Value("${danusys.area.code.sig}")
+    private String sigCode;
 
     /**
      * 시설물 : 시설물 목록 조회
@@ -68,6 +71,38 @@ public class FacilityController {
 
         return GisUtil.getGeoJson(list, "facility");
     }
+
+    /**
+     * CCTV : CCTV GEOJSON 목록 조회
+     */
+    @PostMapping(value="/cctv/geojson")
+    public String getListCctvGeoJson(@RequestBody Map<String, Object> paramMap) throws Exception {
+        EgovMap resultEgov = new EgovMap();
+
+        paramMap.put("administZone", sigCode);
+
+        String type = CommonUtil.validOneNull(paramMap, "type");
+
+        System.out.println("&&&&&&&&&&&&&&&&&");
+        System.out.println(paramMap);
+
+        if(type.equals("head")) {
+            //레이어 //투망감시
+            resultEgov = facilityService.getListCctvHead(paramMap);
+        } else {
+            //개소감시
+            resultEgov = facilityService.getListCctv(paramMap);
+        }
+        List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
+
+        list.stream().peek(p -> {
+            log.trace("facilitySeq > {}", p.get("facilitySeq"));
+            p.put("facilityOpts", facilityOptService.findByFacilitySeqLast(Long.parseLong(String.valueOf(p.get("facilitySeq")))));
+        }).collect(toList());
+
+        return GisUtil.getGeoJson(list, "cctv");
+    }
+
 
     /**
      * 시설물 : 시설물 단건 조회
