@@ -90,3 +90,55 @@
     margin-left: -7px;
     left: 50%;
 }
+
+/* map cctv slide menu */
+.ol-overlay-container .slide-popup {
+    display: flex;
+    position: relative;
+    background-color: #2b2d30;
+    border-radius: 13px 13px 13px 13px;
+    justify-content: center;
+    border: 1px solid #ccc;
+}
+
+.ol-overlay-container .slide-popup .menu-wrap {
+    margin: 0 8%;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.ol-overlay-container .slide-popup .menu-wrap ul {
+    list-style-type: none;
+    align-items: center;
+    position: relative;
+    top: 0;
+    left: 0;
+    transition: left .5s, right .5s;
+    justify-content: space-between;
+    display: flex;
+}
+
+.ol-overlay-container .slide-popup > a.img-box {
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    display: flex;
+    top: 0;
+    bottom: 0;
+    width: 25px;
+}
+
+.ol-overlay-container .slide-popup .left-zero {
+    left: 0;
+}
+
+.ol-overlay-container .slide-popup .right-zero {
+    right: 0;
+}
+
+.ol-overlay-container .slide-popup .img-box img {
+    width: 25px;
+}

@@ -538,7 +538,7 @@ function createFcltSlideContent(data){
 
     let leftImg = document.createElement('img');
     leftImg.src = '/images/default/arrowPrev.svg';
-    leftImg.style.width = '25px';
+    leftImg.style.width = '10px';
 
     leftBtn.appendChild(leftImg);
 
@@ -629,7 +629,7 @@ function createFcltSlideContent(data){
 
     let rightImg = document.createElement('img');
     rightImg.src = '/images/default/arrowNext.svg';
-    rightImg.style.width = '25px';
+    rightImg.style.width = '10px';
 
     rightBtn.appendChild(rightImg);
 
