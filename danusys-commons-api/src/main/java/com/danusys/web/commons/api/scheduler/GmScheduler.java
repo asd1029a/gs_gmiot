@@ -68,7 +68,7 @@ public class GmScheduler {
     /**
      * 시설물 상대 동기화
      */
-    @Scheduled(fixedDelay = 30 * 1000)
+    @Scheduled(fixedDelay = 5 * 60 * 1000)
     public void facilityStatusSync() {
         log.trace("---------------------gm scheduler---------------------");
         this.facilitySync();

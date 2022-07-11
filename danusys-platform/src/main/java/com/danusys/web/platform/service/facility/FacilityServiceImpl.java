@@ -212,26 +212,34 @@ public class FacilityServiceImpl implements FacilityService{
         for (Map<String, Object> map : templateContentList) {
             JSONObject newTemplateContent = new JSONObject();
                 for (String key : map.keySet()) {
-                    JSONArray newImageList = new JSONArray();
-                    if(key.indexOf("ImageList") > 0) {
-                        List<Map<String, Object>> imageList = (List<Map<String, Object>>) map.get(key);
+                    JSONArray newFileList = new JSONArray();
+                    if(key.indexOf("List") > 0) {
+                        List<Map<String, Object>> fileList = (List<Map<String, Object>>) map.get(key);
                         Map<String, Object> newMap = new HashMap<>();
-                        if(!imageList.isEmpty()) {
-                            for (Map<String, Object> imageMap : imageList) {
-                                String imageFileName = imageMap.get("imageFile").toString();
+                        if(!fileList.isEmpty()) {
+                            for (Map<String, Object> fileMap : fileList) {
+                                String fileName = "";
+                                String fileKey = "";
+                                if(fileMap.get("videoFile") != null) {
+                                    fileName = fileMap.get("videoFile").toString();
+                                    fileKey = "videoFile";
+                                } else {
+                                    fileName = fileMap.get("imageFile").toString();
+                                    fileKey = "imageFile";
+                                }
                                 String downloadFilePath =
                                         MessageFormat.format(
                                                 "http://{0}:{1}/facility/signage/downloadImage/{2}",
-                                                serverName, serverPort, imageFileName);
-                                newMap.put("imageFile", downloadFilePath);
-                                newMap.put("startDt", imageMap.get("startDt"));
-                                newMap.put("endDt", imageMap.get("endDt"));
-                                newMap.put("delayTime", imageMap.get("delayTime"));
-                                newImageList.add(JsonUtil.convertMapToJson(newMap));
+                                                serverName, serverPort, fileName);
+                                newMap.put(fileKey, downloadFilePath);
+                                newMap.put("startDt", fileMap.get("startDt"));
+                                newMap.put("endDt", fileMap.get("endDt"));
+                                newMap.put("delayTime", fileMap.get("delayTime"));
+                                newFileList.add(JsonUtil.convertMapToJson(newMap));
                             }
                         }
                     }
-                    newTemplateContent.put(key, newImageList);
+                    newTemplateContent.put(key, newFileList);
                 }
                 newTemplateContentList.add(newTemplateContent);
         }
@@ -252,24 +260,29 @@ public class FacilityServiceImpl implements FacilityService{
         commonMapper.update(fsp.updateSignageLayoutForGmQry(noUseMap));
         commonMapper.update(fsp.updateSignageLayoutForGmQry(paramMap));
 
-        // beforeIamgeFile delete
+        // beforeMediaFile delete
         for (Map<String, Object> map : beforeTemplateContentList) {
             for (String key : map.keySet()) {
-                if(key.indexOf("ImageList") > 0) {
-                    List<Map<String, Object>> imageList = (List<Map<String, Object>>) map.get(key);
-                    if(!imageList.isEmpty()) {
-                        for (Map<String, Object> imageMap : imageList) {
-                            String imageFileName = imageMap.get("imageFile").toString();
+                if(key.indexOf("List") > 0) {
+                    List<Map<String, Object>> fileList = (List<Map<String, Object>>) map.get(key);
+                    if(!fileList.isEmpty()) {
+                        for (Map<String, Object> fileMap : fileList) {
+                            String fileName = "";
+                            if(fileMap.get("videoFile") != null) {
+                                fileName = fileMap.get("videoFile").toString();
+                            } else {
+                                fileName = fileMap.get("imageFile").toString();
+                            }
                             boolean deleteFlag = true;
                             // 기존 파일 과 삭제 파일 대조 검증
                             for (String notDelFile : notDeleteFileList) {
-                                if (notDelFile.equals(imageFileName)) {
+                                if (notDelFile.equals(fileName)) {
                                     deleteFlag = false;
                                     break;
                                 }
                             }
                             if(deleteFlag) {
-                                FileUtil.deleteFile("/pages/config/signage/", imageFileName);
+                                FileUtil.deleteFile("/pages/config/signage/", fileName);
                             }
                         }
                     }
@@ -287,12 +300,17 @@ public class FacilityServiceImpl implements FacilityService{
 
         for (Map<String, Object> map : templateContentList) {
             for (String key : map.keySet()) {
-                if(key.indexOf("ImageList") > 0) {
-                    List<Map<String, Object>> imageList = (List<Map<String, Object>>) map.get(key);
-                    if(!imageList.isEmpty()) {
-                        for (Map<String, Object> imageMap : imageList) {
-                            String imageFileName = imageMap.get("imageFile").toString();
-                            FileUtil.deleteFile("/pages/config/signage/", imageFileName);
+                if(key.indexOf("List") > 0) {
+                    List<Map<String, Object>> fileList = (List<Map<String, Object>>) map.get(key);
+                    if(!fileList.isEmpty()) {
+                        for (Map<String, Object> fileMap : fileList) {
+                            String fileName = "";
+                            if(fileMap.get("videoFile") != null) {
+                                fileName = fileMap.get("videoFile").toString();
+                            } else {
+                                fileName = fileMap.get("imageFile").toString();
+                            }
+                            FileUtil.deleteFile("/pages/config/signage/", fileName);
                         }
                     }
                 } else if(key.indexOf("kind") > 0) {

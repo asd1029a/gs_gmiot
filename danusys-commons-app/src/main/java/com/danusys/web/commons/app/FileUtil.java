@@ -42,6 +42,7 @@ public class FileUtil {
     }
 
 
+    /* 단일 미디어 파일 업로드 */
     public static String uploadAjaxPost(MultipartFile[] uploadFile, HttpServletRequest request) {
         String folderPath = "";
         String folder[] = request.getHeader("REFERER").split("/");
@@ -92,6 +93,7 @@ public class FileUtil {
         return savedFileName;
     }
 
+    /* 다중 미디어 파일 업로드 */
     public static String uploadMulitAjaxPost(List<MultipartFile> uploadFile, HttpServletRequest request) {
         String folderPath = "";
         String folder[] = request.getHeader("REFERER").split("/");
@@ -149,6 +151,7 @@ public class FileUtil {
         return savedFileNames.toString();
     }
 
+    /* 파일 삭제 */
     public static void deleteFile(String folderPath, String fileName) throws Exception {
         String filePath = STATIC_EXTERNAL_FILE_PATH + folderPath + fileName;
         File file = new File(filePath);
@@ -157,6 +160,7 @@ public class FileUtil {
         }
     }
 
+    /* 고유 ID 생성 */
     private static String setFileUUID() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         Date date = new Date();
@@ -165,6 +169,7 @@ public class FileUtil {
         return str + "_";
     }
 
+    /* 이미지 불러오기 */
     public static void getImage2(String filePath, String imageName, HttpServletResponse response) throws IOException {
         File imgFile = null;
         OutputStream out = response.getOutputStream();
@@ -188,6 +193,7 @@ public class FileUtil {
         }
     }
 
+    /* 비디오 불러오기 */
     public static File getVideoFile(String filePath, String videoName) throws IOException {
         return new File(STATIC_EXTERNAL_FILE_PATH + filePath + videoName);
     }
@@ -276,6 +282,7 @@ public class FileUtil {
 //        return multipartFile;
 //    }
 
+    /* 파일 다운로드 (파일경로 필요) */
     public static void fileDownloadWithFilePath(HttpServletResponse response, String fileName, String folderPath) {
 
         File file = new File(STATIC_EXTERNAL_FILE_PATH + folderPath + fileName);
@@ -309,6 +316,7 @@ public class FileUtil {
 
     }
 
+    /* 파일다운로드 */
     public static void fileDownload(HttpServletRequest request, HttpServletResponse response,
                                     String fileName) {
         String folderPath = "/";
@@ -452,7 +460,8 @@ public class FileUtil {
             return wb;
         }
     }
-
+    
+    /* 파일 base64 인코딩 */
     public static String multiFileToBase64(MultipartFile file) throws IOException {
         byte[] encodeBase64 = Base64.getEncoder().encode(file.getBytes());
         return new String(encodeBase64, "UTF-8");

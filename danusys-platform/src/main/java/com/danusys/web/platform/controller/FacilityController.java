@@ -29,8 +29,6 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class FacilityController {
 
-//    public FacilityController(FacilityService facilityService) { this.facilityService = facilityService; }
-
     private final FacilityService facilityService;
 
     private final ApiCallService apiCallService;
@@ -244,7 +242,7 @@ public class FacilityController {
     @PostMapping(value="/signage/uploadImageList")
     public ResponseEntity<EgovMap> uploadImageList(@RequestParam("files") List<MultipartFile> fileList, HttpServletRequest request) throws Exception {
         EgovMap resultMap = new EgovMap();
-        resultMap.put("imageFileNames", FileUtil.uploadMulitAjaxPost(fileList, request));
+        resultMap.put("fileNames", FileUtil.uploadMulitAjaxPost(fileList, request));
         return ResponseEntity.ok().body(resultMap);
     }
 
