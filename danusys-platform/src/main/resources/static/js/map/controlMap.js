@@ -431,7 +431,8 @@ function clickIcon(layerType, layerObj) {
                     rtspUrl : rtspUrl,
                     facilityKind : prop.facilityKind,
                     lon : prop.longitude,
-                    lat : prop.latitude
+                    lat : prop.latitude,
+                    facilityId : prop.facilityId
                 }
 
                 const dialogOption = {
@@ -604,7 +605,7 @@ function createFcltSlideContent(data){
             },
             'mouseenter': function(e) {
                 window.map.map.addLayer(directionLayer);
-                getPresetPoint(obj, obj.presetNo, directionFeature, createPresetDirection);
+                //getPresetPoint(obj, obj.presetNo, directionFeature, createPresetDirection);
             },
             'mouseout': function(e) {
                 window.map.map.removeLayer(directionLayer);
@@ -722,3 +723,64 @@ function getSiteList(feature, callback){
     })
 }
 
+/**
+ * @description 개소감시
+ * @param {object} data - 카메라 데이터
+ * @function map.siteMntr
+ */
+function siteMntr(data){
+    let jsonObj = {};
+    jsonObj = {
+        'longitude' : data.lon,
+        'latitude' : data.lat,
+        'headFlag' : false, //헤더 + 고정
+        'view' : 'group' //개소감시
+        // , flctId :
+    };
+
+    facility.getListCctvGeoJson(jsonObj,result => {
+        const datas = JSON.parse(result).features;
+
+        dialogManager.closeAll();
+
+        for(let i = 0, max = datas.length; i < max; i++) {
+            let prop = datas[i].properties;
+            const rtspOpt = prop.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+
+            if(rtspOpt.length > 0){
+                const rtspUrl = rtspOpt[0].facilityOptValue;
+                const videoData = {
+                    facilitySeq : prop.facilitySeq,
+                    rtspUrl : rtspUrl,
+                    facilityKind : prop.facilityKind,
+                    lon : prop.longitude,
+                    lat : prop.latitude,
+                    facilityId : prop.facilityId
+                }
+
+                const dialogOption = {
+                    draggable: true,
+                    clickable: true,
+                    data: videoData,
+                    css: {
+                        width: '400px',
+                        height: '340px'
+                    }
+                }
+
+                const dialog = $.connectDialog(dialogOption);
+
+                const videoOption = {};
+                videoOption.data = videoData;
+                videoOption.parent = dialog;
+                videoOption.btnFlag = true;
+                videoOption.isSite = true;
+
+                if(!videoManager.createPlayer(videoOption)) {
+                    dialogManager.close(dialog);
+                };
+            }
+        }
+        dialogManager.sortDialog();
+    });
+}

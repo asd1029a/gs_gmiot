@@ -489,13 +489,14 @@ public class FacilitySqlProvider {
         String latitude = CommonUtil.validOneNull(paramMap, "latitude");
         String view = CommonUtil.validOneNull(paramMap, "view");
 
-        SQL sql = new SQL() {{
+        SQL sql = new SQL() {{ //레이어용
             SELECT("t1.*");
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind v1 on t1.facility_kind = v1.code_seq");
             INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
             WHERE( "v1.code_value = 'CCTV' " +
                     "and (t2.facility_opt_name = 'cctv_head' and t2.facility_opt_value = '1') " +
+                    "and t1.station_seq is null " +
                     "and administ_zone like '" + administZone + "%' ");
             if(facilitySeq != ""){
                 WHERE("t1.facility_seq = " + facilitySeq );
@@ -506,27 +507,32 @@ public class FacilitySqlProvider {
 //            }
         }};
 
-        if(view.equals("net")){ //투망감시
+        if(view.equals("net")) { //투망감시
+            SQL baseSql = new SQL() {{
+                SELECT("t1.*," +
+                        "ST_DISTANCE(" +
+                            "(select st_geomfromtext(concat('point(', t1.longitude, ' ', t1.latitude, ')'),4326))::geography," +
+                            "(select st_geomfromtext(concat('point(" + longitude + " " + latitude + ")'), 4326))::geography" +
+                        ") as distance");
+                FROM("t_facility t1");
+                INNER_JOIN("v_facility_kind v1 on t1.facility_kind = v1.code_seq");
+                INNER_JOIN("t_facility_opt tp on t1.facility_seq = tp.facility_seq");
+                WHERE("v1.code_value = 'CCTV' " +
+                        "and (tp.facility_opt_name = 'cctv_head' and tp.facility_opt_value = '1') " +
+                        "and t1.station_seq is null " +
+                        "and administ_zone like '" + administZone + "%' ");
+            }};
+            SQL rankSql = new SQL() {{
+                SELECT("t2.*, row_number() over (order by t2.distance asc) as rnum");
+                FROM(" ( " + baseSql.toString() + " ) t2 ");
+                WHERE("0 < t2.distance and t2.distance < 500");
+            }};
             sql = new SQL() {{
-//                select
-//                    t2.*,
-//                    row_number() over (order by t2.distance asc) as rnum
-//                from (
-//                    select
-//                        t1.*,
-//                        ST_DISTANCE(geomme, geom) as distance
-//                    from (
-//                        select
-//                            *,
-//                            (select st_geomfromtext(concat('point(',longitude,' ',latitude,')'),4326))::geography as geomme,
-//                            (select st_geomfromtext(concat('point(126.894937 37.443776)'),4326))::geography as geom
-//                        from t_facility
-//                    ) t1
-//                ) t2
-//                where distance < 500;
+                SELECT("t3.*");
+                FROM(" ( " + rankSql.toString() + " ) t3 ");
+                WHERE("t3.rnum < 6");
             }};
         }
-
         return sql.toString();
     }
 
@@ -535,22 +541,29 @@ public class FacilitySqlProvider {
         String facilitySeq = CommonUtil.validOneNull(paramMap, "facilitySeq");
         String longitude = CommonUtil.validOneNull(paramMap, "longitude");
         String latitude = CommonUtil.validOneNull(paramMap, "latitude");
+        String view = CommonUtil.validOneNull(paramMap, "view");
 
         SQL sql = new SQL() {{
             SELECT("t1.*");
             FROM("t_facility t1");
             INNER_JOIN("v_facility_kind v1 on t1.facility_kind = v1.code_seq");
-            INNER_JOIN("t_facility_opt t2 on t1.facility_seq = t2.facility_seq");
             WHERE("v1.code_value = 'CCTV' " +
+                    "and t1.station_seq is null " +
                     "and administ_zone like '" + administZone + "%'");
-            if((latitude != "") && (longitude != "")){
-                WHERE("latitude = '" + latitude + "'" +
-                        " and longitude = '" + longitude + "'");
-            }
 //            if(facilitySeq != ""){
 //                WHERE("t1.facility_seq = " + facilitySeq );
 //            }
+            if(view.equals("group")) { //개소감시
+                if((latitude != "") && (longitude != "")){
+                    WHERE("latitude = '" + latitude + "'" +
+                            " and longitude = '" + longitude + "'");
+                }
+            }
+
+
+
         }};
+        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         System.out.println(sql.toString());
         return sql.toString();
     }

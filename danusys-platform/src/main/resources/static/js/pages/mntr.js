@@ -120,23 +120,81 @@ const mntr = {
             },
             {
                 text: '투망감시',
-                classname: 'context-style net',
+                classname: 'context-style',
                 callback: e => {
                     const coordinate = new ol.proj.transform(e.coordinate, window.map.realProjection[window.map.type] ,'EPSG:4326');
                     //TODO 투망 요청
-                    const prop = $('.context-style.net').data()[0];
+                    //const prop = $('.context-style.net').data()[0].getProperties();
                     facility.getListCctvGeoJson({
-                        'longitude' : prop.longitude,
-                        'latitude' : prop.latitude,
-                        'type' : 'head', //헤더(!고정)
-                        'view' : 'net' //투망(!개소)
+                        'longitude' : coordinate[0],//prop.longitude,
+                        'latitude' : coordinate[1],//prop.latitude,
+                        'headFlag' : true, //헤더(<->고정 :false)
+                        'view' : 'net' //투망(<->개소 :group)
                     }, result => {
-                        console.log(JSON.parse(result));
-                         // result.features.forEach(f => {
-                         //     //투망캠 요청
-                         // });
+
+                        dialogManager.closeAll();
+
+                        const datas = JSON.parse(result).features;
+                        if(datas.length > 0){ //반경 안 투망 카메라 존재
+                            for(let i = 0, max = datas.length; i < max; i++) {
+                                let prop = datas[i].properties;
+                                const rtspOpt = prop.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+
+                                if(rtspOpt.length > 0){
+                                    const rtspUrl = rtspOpt[0].facilityOptValue;
+                                    const videoData = {
+                                        facilitySeq : prop.facilitySeq,
+                                        rtspUrl : rtspUrl,
+                                        facilityKind : prop.facilityKind,
+                                        lon : prop.longitude,
+                                        lat : prop.latitude,
+                                        facilityId : prop.facilityId
+                                    }
+
+                                    const dialogOption = {
+                                        draggable: true,
+                                        clickable: true,
+                                        data: videoData,
+                                        css: {
+                                            width: '400px',
+                                            height: '340px'
+                                        }
+                                    }
+
+                                    const dialog = $.connectDialog(dialogOption);
+
+                                    const videoOption = {};
+                                    videoOption.data = videoData;
+                                    videoOption.parent = dialog;
+                                    videoOption.btnFlag = false;
+                                    videoOption.isSite = false;
+                                    videoOption.site_video_wrap = true;
+
+                                    if(!videoManager.createPlayer(videoOption)) {
+                                        dialogManager.close(dialog);
+                                    };
+                                }
+                            }
+                            dialogManager.sortDialog();
+                        } else { //반경 안 투망 카메라 없음
+                            comm.showAlert('해당 위치 500m 반경 안 카메라가 없습니다.',{})
+                        }
 
                     });
+                }
+            },
+            {
+                text: '영상 창 전체 끄기',
+                classname: 'context-style',
+                callback: e => {
+                    dialogManager.closeAll();
+                }
+            },
+            {
+                text: '영상 창 정렬',
+                classname: 'context-style',
+                callback: e => {
+                    dialogManager.sortDialog();
                 }
             }
         ];
@@ -174,28 +232,6 @@ const mntr = {
         map.setMapEventListener('moveend',e => {
             //동네 날씨 기능
             centerVilageInfo(e);
-        });
-
-        //맵 오른쪽 클릭 (오른쪽 메뉴)
-        map.setMapEventListener('contextmenu', e => {
-            e.preventDefault();
-            let cctvAry = new Array();
-            const pixel = window.map.map.getEventPixel(e.originalEvent);
-            const hit = window.map.map.forEachFeatureAtPixel(pixel, (feature, layer) => true);
-            if(hit){
-                window.map.map.forEachFeatureAtPixel(pixel,(feature,layer) => {
-                    if(layer.get("title") && layer.get("title")=="cctvLayer") {
-                        cctvAry.push(feature);
-                    }
-                });
-            }
-            let target = $('.context-style.net');
-            if(cctvAry.length > 0){
-                target.css('display','list-item');
-                target.data(cctvAry);
-            } else {
-                target.css('display','none');
-            }
         });
 
         //레이어 마우스오버 이벤트
@@ -251,18 +287,20 @@ const mntr = {
                 } // end hit canvas
                 if(cctvAry.length > 0){
                     const overlay = window.map.getOverlay('cctv');
+                    console.log(!overlay);
                     if(!overlay) {
                         const position = cctvAry[0].getGeometry().getCoordinates();
-                        //console.log(cctvAry);
-                        //TODO 해당 카메라 좌표와 같은 회전형, 고정형 모든 카메라 조회 -> DB
                         const prop= cctvAry[0].getProperties();
+
                         facility.getListCctvGeoJson({
                             'longitude' : prop.longitude,
-                            'latitude' : prop.latitude
+                            'latitude' : prop.latitude,
+                            'headFlag' : false, //헤더 + 고정
+                            'view' : 'group' //개소감시
+
                         }, result => {
                             const data = JSON.parse(result).features;
                             const content = createFcltSlideContent(data); // data는 그냥 array? geojson?
-                            console.log(content);
 
                             const option = {
                                 id : 'cctv',
@@ -355,7 +393,7 @@ const mntr = {
            ly.set('selectable', true);
         });
 
-        facility.getListCctvGeoJson({"type":"head"}, result => {
+        facility.getListCctvGeoJson({"headFlag": true}, result => {
             reloadLayer(result, 'cctvLayer');
             //window.lyControl.off('cctvLayer');
         });
@@ -364,8 +402,10 @@ const mntr = {
         map.setMapViewEventListener('propertychange' ,e => {
             //연결선 리로드
             window.map.map.getLayers().getArray().map(ly => {
-                if(ly.get('title').includes('lineLayer')){
-                    window.lyConnect.reload(ly.getProperties().type);
+                if(ly.get('title')){
+                    if(ly.get('title').includes('lineLayer')){
+                        window.lyConnect.reload(ly.getProperties().type);
+                    }
                 }
             });
 

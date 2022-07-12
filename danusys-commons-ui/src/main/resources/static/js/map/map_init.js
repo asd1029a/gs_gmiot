@@ -693,63 +693,63 @@ function clearDraw() {
 	}
 	mapManager.drawElement.tooltip = [];
 }
-
-/**
- * @description 개소감시
- * @param {object} data - 카메라 데이터
- * @function map.siteMntr
- */
-function siteMntr(data){
-	const jsonObj = {};
-
-	let purposeSpace = getLayerPurpose();
-
-	jsonObj.sameLat = data.lat;
-	jsonObj.sameLon = data.lon;
-	jsonObj.purposeSpace = purposeSpace;
-
-	$.ajax({
-		contentType : "application/json; charset=utf-8",
-		type      : "POST",
-		url         : "/select/facility.selectSiteCctvList/action",
-		dataType   : "json",
-		data      : JSON.stringify(jsonObj),
-		async      : true
-	}).done(function(result){
-		const datas = result.rows;
-		if(datas=='sessionOut'){
-			alert('로그인 시간이 만료되었습니다.');
-			closeWindow();
-		}
-
-		dialogManager.closeAll();
-
-		for(var i = 0, max = datas.length; i < max; i++) {
-
-			const dialogOption = {
-				draggable: true,
-				clickable: true,
-				data: datas[i],
-				css: {
-					width: '400px',
-					height: '340px'
-				}
-			}
-
-			const dialog = $.connectDialog(dialogOption);
-
-			const videoOption = {};
-			videoOption.data = datas[i];
-			videoOption.parent = dialog;
-			videoOption.btnFlag = true;
-			videoOption.isSite = true;
-
-			if(!videoManager.createPlayer(videoOption)) {
-				dialogManager.close(dialog);
-			}
-		}
-
-		dialogManager.sortDialog();
-	})
-}
+//
+// /**
+//  * @description 개소감시
+//  * @param {object} data - 카메라 데이터
+//  * @function map.siteMntr
+//  */
+// function siteMntr(data){
+// 	const jsonObj = {};
+//
+// 	let purposeSpace = getLayerPurpose();
+//
+// 	jsonObj.sameLat = data.lat;
+// 	jsonObj.sameLon = data.lon;
+// 	jsonObj.purposeSpace = purposeSpace;
+//
+// 	$.ajax({
+// 		contentType : "application/json; charset=utf-8",
+// 		type      : "POST",
+// 		url         : "/select/facility.selectSiteCctvList/action",
+// 		dataType   : "json",
+// 		data      : JSON.stringify(jsonObj),
+// 		async      : true
+// 	}).done(function(result){
+// 		const datas = result.rows;
+// 		if(datas=='sessionOut'){
+// 			alert('로그인 시간이 만료되었습니다.');
+// 			closeWindow();
+// 		}
+//
+// 		dialogManager.closeAll();
+//
+// 		for(var i = 0, max = datas.length; i < max; i++) {
+//
+// 			const dialogOption = {
+// 				draggable: true,
+// 				clickable: true,
+// 				data: datas[i],
+// 				css: {
+// 					width: '400px',
+// 					height: '340px'
+// 				}
+// 			}
+//
+// 			const dialog = $.connectDialog(dialogOption);
+//
+// 			const videoOption = {};
+// 			videoOption.data = datas[i];
+// 			videoOption.parent = dialog;
+// 			videoOption.btnFlag = true;
+// 			videoOption.isSite = true;
+//
+// 			if(!videoManager.createPlayer(videoOption)) {
+// 				dialogManager.close(dialog);
+// 			}
+// 		}
+//
+// 		dialogManager.sortDialog();
+// 	})
+// }
 //mapManager.init('map', 'minimap', 0);
