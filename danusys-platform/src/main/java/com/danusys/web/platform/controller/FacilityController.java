@@ -76,20 +76,16 @@ public class FacilityController {
     @PostMapping(value="/cctv/geojson")
     public String let(@RequestBody Map<String, Object> paramMap) throws Exception {
         EgovMap resultEgov = new EgovMap();
-
         paramMap.put("administZone", sigCode);
-
         boolean headerFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "headFlag"));
 
         if(headerFlag) {
-            //레이어 //투망감시
-            resultEgov = facilityService.getListCctvHead(paramMap);
+            resultEgov = facilityService.getListCctvHead(paramMap); //레이어 //투망감시
         } else {
-            //개소감시
-            resultEgov = facilityService.getListCctv(paramMap);
+            resultEgov = facilityService.getListCctv(paramMap); //개소감시
         }
-        List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
 
+        List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
         list.stream().peek(p -> {
             log.trace("facilitySeq > {}", p.get("facilitySeq"));
             p.put("facilityOpts", facilityOptService.findByFacilitySeqLast(Long.parseLong(String.valueOf(p.get("facilitySeq")))));

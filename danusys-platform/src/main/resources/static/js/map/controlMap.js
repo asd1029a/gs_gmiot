@@ -416,50 +416,8 @@ function clickIcon(layerType, layerObj) {
                 popup.move('mouseClickPopup', position);
             }
             break;
-        case "cctv" : //cctv 클릭 이벤트
-            //TODO 영상 재생 연결
-            console.log(layerObj);
-            console.log(layerObj.getProperties().facilitySeq);
-
-            let prop = layerObj.getProperties();
-
-            const rtspOpt = prop.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
-            if(rtspOpt.length > 0){
-                const rtspUrl = rtspOpt[0].facilityOptValue;
-                const videoData = {
-                    facilitySeq : prop.facilitySeq,
-                    rtspUrl : rtspUrl,
-                    facilityKind : prop.facilityKind,
-                    lon : prop.longitude,
-                    lat : prop.latitude,
-                    facilityId : prop.facilityId
-                }
-
-                const dialogOption = {
-                    draggable: true,
-                    clickable: true,
-                    data: videoData,
-                    css: {
-                        width: '400px',
-                        height: '340px'
-                    }
-                }
-
-                const dialog = $.connectDialog(dialogOption);
-
-                const videoOption = {};
-                videoOption.data = videoData;
-                videoOption.parent = dialog;
-                videoOption.btnFlag = false;
-                videoOption.isSite = false;
-                videoOption.site_video_wrap = true;
-
-                if(!videoManager.createPlayer(videoOption)) {
-                    dialogManager.close(dialog);
-                };
-            }
-
-            break;
+        // case "cctv" : //cctv 클릭 이벤트
+        //     break;
         default :
             break;
     } //switch end
@@ -553,7 +511,7 @@ function createFcltSlideContent(data){
     ul.id = 'cctvSlide';
 
     for(let i = 0; i < data.length; i++) {
-        let obj = data[i];
+        let obj = data[i].properties;
 
         let li = document.createElement('li');
         let a = document.createElement('a');
@@ -579,30 +537,43 @@ function createFcltSlideContent(data){
                     return;
                 }
 
-                if(!videoManager.isPlaying(obj.facilityId)) {
+                if(!videoManager.isPlaying(obj.facilitySeq)) {
                     return;
                 }
 
-                const dialogOption = {
-                    draggable: true,
-                    clickable: true,
-                    data: obj,
-                    css: {
-                        width: '400px',
-                        height: '340px'
+                const rtspOpt = obj.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+
+                if(rtspOpt.length > 0){
+                    const rtspUrl = rtspOpt[0].facilityOptValue;
+                    const videoData = {
+                        facilitySeq : obj.facilitySeq,
+                        rtspUrl : rtspUrl,
+                        facilityKind : obj.facilityKind,
+                        lon : obj.longitude,
+                        lat : obj.latitude,
+                        facilityId : obj.facilityId
                     }
+                    const dialogOption = {
+                        draggable: true,
+                        clickable: true,
+                        data: videoData,
+                        css: {
+                            width: '400px',
+                            height: '340px'
+                        }
+                    }
+
+                    const dialog = $.connectDialog(dialogOption);
+                    dialog.data('siteList', data);
+
+                    const option = {};
+                    option.data = videoData;
+                    option.parent = dialog;
+
+                    if(!videoManager.createPlayer(option)) {
+                        dialogManager.close(dialog);
+                    };
                 }
-
-                const dialog = $.connectDialog(dialogOption);
-                dialog.data('siteList', data);
-
-                const option = {};
-                option.data = obj;
-                option.parent = dialog;
-
-                if(!videoManager.createPlayer(option)) {
-                    dialogManager.close(dialog);
-                };
             },
             'mouseenter': function(e) {
                 window.map.map.addLayer(directionLayer);
@@ -733,58 +704,64 @@ function getSiteList(feature, callback){
  * @function map.siteMntr
  */
 function siteMntr(data){
-    let jsonObj = {};
-    jsonObj = {
+    facility.getListCctvGeoJson({
         'longitude' : data.lon,
         'latitude' : data.lat,
         'headFlag' : false, //헤더 + 고정
         'view' : 'group' //개소감시
-        // , flctId :
-    };
-
-    facility.getListCctvGeoJson(jsonObj,result => {
-        const datas = JSON.parse(result).features;
-
+    },result => {
         dialogManager.closeAll();
 
+        const datas = JSON.parse(result).features;
         for(let i = 0, max = datas.length; i < max; i++) {
-            let prop = datas[i].properties;
-            const rtspOpt = prop.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+            const videoData = fcltOptData(datas[i]);
 
-            if(rtspOpt.length > 0){
-                const rtspUrl = rtspOpt[0].facilityOptValue;
-                const videoData = {
-                    facilitySeq : prop.facilitySeq,
-                    rtspUrl : rtspUrl,
-                    facilityKind : prop.facilityKind,
-                    lon : prop.longitude,
-                    lat : prop.latitude,
-                    facilityId : prop.facilityId
+            const dialogOption = {
+                draggable: true,
+                clickable: true,
+                data: videoData,
+                css: {
+                    width: '400px',
+                    height: '340px'
                 }
-
-                const dialogOption = {
-                    draggable: true,
-                    clickable: true,
-                    data: videoData,
-                    css: {
-                        width: '400px',
-                        height: '340px'
-                    }
-                }
-
-                const dialog = $.connectDialog(dialogOption);
-
-                const videoOption = {};
-                videoOption.data = videoData;
-                videoOption.parent = dialog;
-                videoOption.btnFlag = true;
-                videoOption.isSite = true;
-
-                if(!videoManager.createPlayer(videoOption)) {
-                    dialogManager.close(dialog);
-                };
             }
+
+            const dialog = $.connectDialog(dialogOption);
+            const videoOption = {};
+            videoOption.data = videoData;
+            videoOption.parent = dialog;
+            videoOption.btnFlag = true;
+            videoOption.isSite = true;
+
+            if(!videoManager.createPlayer(videoOption)) {
+                dialogManager.close(dialog);
+            };
         }
         dialogManager.sortDialog();
     });
+}
+
+/**
+ * @description facility_opt 비디오 정보 반환
+ * @param {object} data - 카메라 데이터
+ * @return videoOpt
+ * @function map.fcltOptData
+ */
+function fcltOptData(data){
+    let prop = data.properties;
+    let videoData;
+
+    const rtspOpt = prop.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+    if(rtspOpt.length > 0) {
+        const rtspUrl = rtspOpt[0].facilityOptValue;
+        videoData = {
+            facilitySeq: prop.facilitySeq,
+            rtspUrl: rtspUrl,
+            facilityKind: prop.facilityKind,
+            lon: prop.longitude,
+            lat: prop.latitude,
+            facilityId: prop.facilityId
+        };
+    }
+    return videoData;
 }

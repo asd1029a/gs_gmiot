@@ -123,61 +123,45 @@ const mntr = {
                 classname: 'context-style',
                 callback: e => {
                     const coordinate = new ol.proj.transform(e.coordinate, window.map.realProjection[window.map.type] ,'EPSG:4326');
-                    //TODO 투망 요청
-                    //const prop = $('.context-style.net').data()[0].getProperties();
+
                     facility.getListCctvGeoJson({
-                        'longitude' : coordinate[0],//prop.longitude,
-                        'latitude' : coordinate[1],//prop.latitude,
+                        'longitude' : coordinate[0],
+                        'latitude' : coordinate[1],
                         'headFlag' : true, //헤더(<->고정 :false)
                         'view' : 'net' //투망(<->개소 :group)
                     }, result => {
-
                         dialogManager.closeAll();
 
                         const datas = JSON.parse(result).features;
                         if(datas.length > 0){ //반경 안 투망 카메라 존재
                             for(let i = 0, max = datas.length; i < max; i++) {
-                                let prop = datas[i].properties;
-                                const rtspOpt = prop.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+                                const videoData = fcltOptData(datas[i]);
 
-                                if(rtspOpt.length > 0){
-                                    const rtspUrl = rtspOpt[0].facilityOptValue;
-                                    const videoData = {
-                                        facilitySeq : prop.facilitySeq,
-                                        rtspUrl : rtspUrl,
-                                        facilityKind : prop.facilityKind,
-                                        lon : prop.longitude,
-                                        lat : prop.latitude,
-                                        facilityId : prop.facilityId
+                                const dialogOption = {
+                                    draggable: true,
+                                    clickable: true,
+                                    data: videoData,
+                                    css: {
+                                        width: '400px',
+                                        height: '340px'
                                     }
-
-                                    const dialogOption = {
-                                        draggable: true,
-                                        clickable: true,
-                                        data: videoData,
-                                        css: {
-                                            width: '400px',
-                                            height: '340px'
-                                        }
-                                    }
-
-                                    const dialog = $.connectDialog(dialogOption);
-
-                                    const videoOption = {};
-                                    videoOption.data = videoData;
-                                    videoOption.parent = dialog;
-                                    videoOption.btnFlag = false;
-                                    videoOption.isSite = false;
-                                    videoOption.site_video_wrap = true;
-
-                                    if(!videoManager.createPlayer(videoOption)) {
-                                        dialogManager.close(dialog);
-                                    };
                                 }
+
+                                const dialog = $.connectDialog(dialogOption);
+                                const videoOption = {};
+                                videoOption.data = videoData;
+                                videoOption.parent = dialog;
+                                videoOption.btnFlag = false;
+                                videoOption.isSite = false;
+                                videoOption.site_video_wrap = true;
+
+                                if(!videoManager.createPlayer(videoOption)) {
+                                    dialogManager.close(dialog);
+                                };
                             }
                             dialogManager.sortDialog();
                         } else { //반경 안 투망 카메라 없음
-                            comm.showAlert('해당 위치 500m 반경 안 카메라가 없습니다.',{})
+                            comm.showAlert('해당 위치 근처 카메라가 없습니다.',{})
                         }
 
                     });
@@ -1357,7 +1341,6 @@ const rnbList = {
 
     }
     , createEvent : obj => {
-        /*TODO 데이터 오면 정보 채우기*/
 
         //이벤트 타겟 레이어 찾기
         let eventTarget = 'station';

@@ -506,7 +506,6 @@ public class FacilitySqlProvider {
 //                        " and longitude = '" + longitude + "'");
 //            }
         }};
-
         if(view.equals("net")) { //투망감시
             SQL baseSql = new SQL() {{
                 SELECT("t1.*," +
@@ -559,12 +558,7 @@ public class FacilitySqlProvider {
                             " and longitude = '" + longitude + "'");
                 }
             }
-
-
-
         }};
-        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-        System.out.println(sql.toString());
         return sql.toString();
     }
 }
