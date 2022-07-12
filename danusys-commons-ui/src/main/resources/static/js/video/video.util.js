@@ -63,22 +63,22 @@ let videoManager = {
 	    });
 	},
 	/**
-	 * fcltId와 동일한 아이디로 재생중인 카메라 데이터를 return 하는 함수.
+	 * facilitySeq와 동일한 아이디로 재생중인 카메라 데이터를 return 하는 함수.
 	 * @function videoManager.getVideoData
-	 * @param {string} fcltId - 시설물 아이디
+	 * @param {string} facilitySeq - 시설물 아이디
 	 * @returns {object} - 카메라 데이터 
 	 */
-	getVideoData : function(fcltId) {
-		return $('#' + this.playList.get(fcltId)).data('data');
+	getVideoData : function(facilitySeq) {
+		return $('#' + this.playList.get(facilitySeq)).data('data');
 	},
 	/**
-	 * fcltId와 동일한 아이디로 재생중인 영상이 있는지 확인하는 함수.
+	 * facilitySeq와 동일한 아이디로 재생중인 영상이 있는지 확인하는 함수.
 	 * @function videoManager.isPlaying
-	 * @param {string} fcltId - 시설물 아이디
+	 * @param {string} facilitySeq - 시설물 아이디
 	 * @returns {boolean} - true : 재생 가능, false : 재생 불가
 	 */
-	isPlaying : function(fcltId) {
-		if(this.playList.has(fcltId)) {
+	isPlaying : function(facilitySeq) {
+		if(this.playList.has(facilitySeq)) {
 			commonLog.error('이미 재생중인 영상입니다.', {isAutoClose: true});
 			return false;
 		}
@@ -382,7 +382,7 @@ let videoManager = {
 		const timestamp = option.timestamp;
 		
 		const jsonObj = {};
-		jsonObj.fcltId = data.fcltId;
+		jsonObj.facilitySeq = data.facilitySeq;
 		jsonObj.fcltNm = data.fcltNm;
 		jsonObj.userId = opener.document.getElementById('loginId').value;
 		jsonObj.sessionId = this.prop.sessionId;
@@ -406,15 +406,15 @@ let videoManager = {
 	/**
 	 * 영상 control 로그 저장 함수
 	 * @function videoManager.insertCctvCtrlLog
-	 * @param {string} fcltId - 카메라 아이디
+	 * @param {string} facilitySeq - 카메라 아이디
 	 * @param {string} type - 영상 타입 (실시간, 저장영상)
 	 * @param {string} kinds - PTZ 또는 preset 번호
 	 */
-	insertCctvCtrlLog : function(fcltId, type, kinds) {
+	insertCctvCtrlLog : function(facilitySeq, type, kinds) {
 		const jsonObj = {};
 		jsonObj.type = type;
 		jsonObj.kinds = kinds;
-		jsonObj.fcltId = fcltId;
+		jsonObj.facilitySeq = facilitySeq;
 		jsonObj.userId = opener.document.getElementById('loginId').value;
 		
 		$.ajax({
@@ -915,7 +915,7 @@ let danuPlayer = {
 						let presetNo = cmd.split('_')[1];
 						videoManager.presetCtrl(data, presetNo);
 					} else {
-						videoManager.insertCctvCtrlLog(data.fcltId, '0', cmd);
+						videoManager.insertCctvCtrlLog(data.facilitySeq, '0', cmd);
 						try {
 							console.log('===== ptz >>>> cmd : ', cmd);
 							option.player.ptzCtrl(data,cmd,'60');
@@ -928,7 +928,7 @@ let danuPlayer = {
 				mouseup:function(e){
 					let cmd = e.target.className;
 					if (cmd.indexOf('preset') == -1) {
-						videoManager.insertCctvCtrlLog(data.fcltId, '0', 'stop');
+						videoManager.insertCctvCtrlLog(data.facilitySeq, '0', 'stop');
 						try {
 							console.log('===== ptz >>>> cmd : stop');
 							option.player.ptzCtrl(data,'stop','60');
@@ -1184,7 +1184,7 @@ let vurixPlayer = {
 						let presetNo = cmd.split('_')[1];
 						videoManager.presetCtrl(data, presetNo);
 					} else {
-						videoManager.insertCctvCtrlLog(data.fcltId, '0', cmd);
+						videoManager.insertCctvCtrlLog(data.facilitySeq, '0', cmd);
 						try {
 							console.log('===== ptz >>>> cmd : ', cmd);
 							option.player.ptzCtrl(data,cmd,'5');
@@ -1197,7 +1197,7 @@ let vurixPlayer = {
 				mouseup:function(e){
 					let cmd = e.target.className;
 					if (cmd.indexOf('preset') == -1) {
-						videoManager.insertCctvCtrlLog(data.fcltId, '0', 'stop');
+						videoManager.insertCctvCtrlLog(data.facilitySeq, '0', 'stop');
 						try {
 							console.log('===== ptz >>>> cmd : stop');
 							option.player.ptzCtrl(data,'stop','5');
@@ -1454,7 +1454,7 @@ let hivePlayer = {
 						let presetNo = cmd.split('_')[1];
 						videoManager.popupPresetCtrl(data, presetNo);
 					} else {
-						videoManager.insertCctvCtrlLog(data.fcltId, '0', cmd);
+						videoManager.insertCctvCtrlLog(data.facilitySeq, '0', cmd);
 						try {
 							console.log('===== ptz >>>> cmd : ', cmd);
 							const actionCd = 'Start';
@@ -1468,7 +1468,7 @@ let hivePlayer = {
 				mouseup:function(e){
 					let cmd = e.target.className;
 					if (cmd.indexOf('preset') == -1) {
-						videoManager.insertCctvCtrlLog(data.fcltId, '0', 'stop');
+						videoManager.insertCctvCtrlLog(data.facilitySeq, '0', 'stop');
 						try {
 							const actionCd = 'Stop';
 							option.player.ptzCtrl(data,cmd,actionCd);
@@ -1703,7 +1703,7 @@ let xeusPlayer = {
 						let presetNo = cmd.split('_')[1];
 						videoManager.popupPresetCtrl(data, presetNo);
 					} else {
-						videoManager.insertCctvCtrlLog(data.fcltId, '0', cmd);
+						videoManager.insertCctvCtrlLog(data.facilitySeq, '0', cmd);
 						try {
 							console.log('===== ptz >>>> cmd : ', cmd);
 							const actionCd = 'Start';
@@ -1717,7 +1717,7 @@ let xeusPlayer = {
 				mouseup:function(e){
 					let cmd = e.target.className;
 					if (cmd.indexOf('preset') == -1) {
-						videoManager.insertCctvCtrlLog(data.fcltId, '0', 'stop');
+						videoManager.insertCctvCtrlLog(data.facilitySeq, '0', 'stop');
 						try {
 							const actionCd = 'Stop';
 							option.player.ptzCtrl(data,'Stop',actionCd);
