@@ -119,14 +119,12 @@ var video = {
 		});
 	},
 	directVideoStart : function(paramObj, targetId) {
-		//this.singleVideoStop(targetId);
 		video.showSpinner("#"+targetId);
 		
 		$("#"+targetId).data("videoInfo", paramObj);
 		$("#"+targetId).data("playCnt", 1);
 		
 		video.createWebRtcPeer(paramObj, targetId);
-		video.reloadVideoStart(paramObj, targetId);
 	},
 	directVideoStop : function(targetId, isClosed) {
 		this.hideSpinner("#"+targetId);
