@@ -655,47 +655,8 @@ function createFcltSlideContent(data){
  * @function map.getCctvMarkerImage
  */
 function getCctvMarkerImage(data) {
-    const fcltPurposeCd = 0;
-    const cctvAgYn = data.cctvAgYn;
-    const presetNo = data.presetNo;
-    const stateCd = data.stateCd;
     let imageSrc = '/images/mapicon/cctv_crime.svg';
-
-    // if(stateCd == '1') {
-    //     imageSrc = '/images/icons/cctv/cctv_state_0.png'; // 마커이미지의 주소입니다
-    // } else if(cctvAgYn == '0') {
-    //     imageSrc = '/images/icons/cctv/cctv_'+cctvAgYn+'_'+fcltPurposeCd+'_0.png'; // 마커이미지의 주소입니다
-    // } else {
-    //     imageSrc = '/images/icons/cctv/cctv_'+cctvAgYn+'_'+fcltPurposeCd+'_0.png'; // 마커이미지의 주소입니다
-    // }
-
     return imageSrc;
-}
-
-/**
- * 같은위치에 있는 cctv 리스트를 가져오는 기능    ????????????????
- * @param {object} feature - feature 데이터
- * @param {function} callback - callback function
- * @function map.getSiteList
- */
-function getSiteList(feature, callback){
-    const jsonObj = {};
-    jsonObj.sameLat = feature.getProperties().lat;
-    jsonObj.sameLon = feature.getProperties().lon;
-    jsonObj.sameCctv = true;
-    jsonObj.recordCountPerPage = '-1';
-    jsonObj.pageKind = 'manage';
-    $.ajax({
-        type      : "POST",
-        url         : "/select/facility.selectSiteCctvList/action.do",
-        dataType   : "json",
-        data      : {
-            "param"   : JSON.stringify(jsonObj)
-        },
-        async      : false
-    }).done(function(result){
-        if(typeof callback == 'function') callback(feature, rows);
-    })
 }
 
 /**
