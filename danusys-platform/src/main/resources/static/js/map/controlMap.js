@@ -529,7 +529,7 @@ const dronePolling = {
 function createFcltSlideContent(data){
     let content = document.createElement('div');
     content.classList.add('slide-popup');
-    content.style.width = data.length > 5 ? 50 + (5 * 25) + 'px' : 50 + (data.length * 25) + 'px';
+    content.style.width = data.length > 5 ? 50 + (5 * 35) + 'px' : 50 + (data.length * 35) + 'px';
 
     let leftBtn = document.createElement('a');
 
@@ -539,7 +539,8 @@ function createFcltSlideContent(data){
 
     let leftImg = document.createElement('img');
     leftImg.src = '/images/default/arrowPrev.svg';
-    leftImg.style.width = '10px';
+    leftImg.style.width = '15px';
+    leftImg.style.filter = 'brightness(2.5)';
 
     leftBtn.appendChild(leftImg);
 
@@ -557,7 +558,7 @@ function createFcltSlideContent(data){
         let li = document.createElement('li');
         let a = document.createElement('a');
         let img = document.createElement('img');
-        li.style.width = '25px';
+        li.style.width = '35px';
 
         a.setAttribute('href', '#');
         a.classList.add('img-box');
@@ -630,7 +631,8 @@ function createFcltSlideContent(data){
 
     let rightImg = document.createElement('img');
     rightImg.src = '/images/default/arrowNext.svg';
-    rightImg.style.width = '10px';
+    rightImg.style.width = '15px';
+    rightImg.style.filter = 'brightness(2.5)';
 
     rightBtn.appendChild(rightImg);
 
@@ -659,11 +661,13 @@ function createFcltSlideContent(data){
     content.addEventListener('mouseleave', function() {
         overFlag = false;
         window.map.removeOverlayById('cctv');
+        window.isOverlay = false;
     });
 
     let closeOverlay = setTimeout(function() {
         if(!overFlag) {
             window.map.removeOverlayById('cctv');
+            window.isOverlay = false;
         }
     }, 500);
 

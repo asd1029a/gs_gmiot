@@ -285,10 +285,11 @@ const mntr = {
                         } // end layer
                     }); // end mouseon
                 } // end hit canvas
-                if(cctvAry.length > 0){
+                if(cctvAry.length > 0 && !window.isOverlay){
                     const overlay = window.map.getOverlay('cctv');
                     console.log(!overlay);
-                    if(!overlay) {
+                    if(!window.isOverlay) {
+                        window.isOverlay = true;
                         const position = cctvAry[0].getGeometry().getCoordinates();
                         const prop= cctvAry[0].getProperties();
 
