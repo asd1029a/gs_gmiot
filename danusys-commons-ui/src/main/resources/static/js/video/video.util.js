@@ -79,7 +79,8 @@ let videoManager = {
 	 */
 	isPlaying : function(facilitySeq) {
 		if(this.playList.has(facilitySeq)) {
-			commonLog.error('이미 재생중인 영상입니다.', {isAutoClose: true});
+			//commonLog.error('이미 재생중인 영상입니다.', {isAutoClose: true});
+			comm.showAlert('이미 재생중인 영상입니다');
 			return false;
 		}
 		return true;
@@ -103,7 +104,8 @@ let videoManager = {
 	 * */
 	checkPermission : function(type) {
 		if(type === 'x') {
-			commonLog.error('영상 재생 권한이 없습니다. 관리자에게 권한 요청을 하십시오.', {isAutoClose: true});
+			//commonLog.error('영상 재생 권한이 없습니다. 관리자에게 권한 요청을 하십시오.', {isAutoClose: true});
+			comm.showAlert('영상 재생 권한이 없습니다. 관리자에게 권한 요청을 하십시오.');
 			return false;
 		}
 		return true;
