@@ -362,7 +362,7 @@ let videoManager = {
 		parent.children(".video_wrap").bind({
 			'remove' : function(e) {
 				if(typeof option.removeBtns === 'function') option.removeBtns();
-				videoManager.playList.delete(option.facilitySeq);
+				videoManager.playList.delete(data.facilitySeq);
 				option.player.stop(option);
 			},
 			'resize transitionend' : function(e) {
