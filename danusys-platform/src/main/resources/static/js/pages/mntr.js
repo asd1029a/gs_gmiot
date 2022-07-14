@@ -380,7 +380,7 @@ const mntr = {
 
         facility.getListCctvGeoJson({"headFlag": true}, result => {
             reloadLayer(result, 'cctvLayer');
-            //window.lyControl.off('cctvLayer');
+            window.lyControl.off('cctvLayer');
         });
 
         //축척별 레이어 반응
@@ -1475,13 +1475,14 @@ const rnbList = {
             const videoData = {
                 facilitySeq : cctv.facilitySeq,
                 rtspUrl : rtspUrl,
-                facilityKind : cctv.facilityKind
+                facilityKind : cctv.facilityKindc
             }
             const videoArea = rpanel.find(".area_right_contents").find('.area_video');
             const option = {
                 data : videoData,
                 parent : videoArea,
                 isEvent : cctv.isRealTime,
+                isButton : false,
                 startTime : cctv.saveStartTime,
                 endTime : cctv.saveEndTime
             }
