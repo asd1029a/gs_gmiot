@@ -503,6 +503,33 @@ class mapCreater {
         this.map.un(name, listener);
     }
 
+    getOverlay(type) {
+        return this.map.getOverlayById(type);
+    }
+
+    setOverlay(option) {
+        this.removeOverlayById(option.id);
+
+        const overlay = new ol.Overlay(option);
+
+        this.map.addOverlay(overlay);
+
+        return overlay;
+    }
+
+    removeOverlayById(id) {
+        const overlay = this.map.getOverlayById(id);
+        if(overlay) this.map.removeOverlay(overlay);
+    }
+
+    removeOverlay(overlay) {
+        if(overlay) this.map.removeOverlay(overlay);
+    }
+
+    removeOverlays() {
+        this.map.getOverlays().clear();
+    }
+
     getCenter() {
         return this.view.getCenter();
     }

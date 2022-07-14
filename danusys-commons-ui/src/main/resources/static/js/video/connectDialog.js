@@ -9,7 +9,7 @@
  * // $.connectDialog(header, body, draggable, clickable, option)
  * const dialog = $.connectDialog(undefined, popupVideo, true, true, dialogOption);
  * */
-var dialogManager = {
+let dialogManager = {
 	list : new Map(),
 	layer : undefined,
 	mapManager : undefined,
@@ -72,15 +72,15 @@ var dialogManager = {
 	sortDialog : function() {
 		if(this.list.length <= 0) return;
 
-		var leftCount = 0;
-		var rightCount = 0;
+		let leftCount = 0;
+		let rightCount = 0;
 		const center = this.mapManager.map.getView().getCenter();
-		var count = 0;
+		let count = 0;
 		this.list.forEach(function(val, key, map) {
 			const dialog = val;
 			const width = 404;
 			const height = 326;
-			var elTop = 0, elLeft = 0, top = 0, left = 0;
+			let elTop = 0, elLeft = 0, top = 0, left = 0;
 			const rest = count % 2;
 			const quotient = Math.trunc(count / 2);
 			dialog.width('400px');
@@ -265,7 +265,8 @@ var dialogManager = {
 	 * @param {object} - dialog object
 	 * */
 	addCloseBtn : function(dialog) {
-		const img = $('<img>').attr('src', '/images/icons/icon_closed.png');
+		const img = $('<img>').attr('src', '/images/default/close.svg');
+		img.css({'width' : '20px', 'filter' : 'brightness(1.5)'});
 
 		const closeBtn = $('<a>').addClass('close').bind('click' ,function() {
 			dialogManager.close(dialog);
@@ -378,7 +379,7 @@ var dialogManager = {
 		wrap.classList.add('dialog-selected-overlay');
 
 		let img = document.createElement('img');
-		img.src = '/images/icons/dialog_selected.gif';
+		//img.src = '/images/icons/dialog_selected.gif';
 
 		wrap.appendChild(img);
 

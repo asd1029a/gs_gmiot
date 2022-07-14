@@ -218,7 +218,7 @@ public class ApiCallRestController {
                 String topic = "shelter"+list.getFacilityId()+"/set/bus_stop";
                 Map<String,Object> keySet = new HashMap<>();
                 Boolean powerCheck = list.getEventKind().equals("1") ? true : false;
-                keySet.put("power",powerCheck);
+                keySet.put("bus_stop",powerCheck);
                 String result = JsonUtil.MapToJson(keySet);
                 log.info("bus station :{} people:{}","shelter"+list.getFacilityId(),powerCheck);
                 yjMqttManager.sender(topic,result);

@@ -164,4 +164,10 @@ public class FacilityService {
     public List<Facility> findByAdministZoneAndFacilityKindIn(String admnistZone, List<Long> facilityKind) {
         return facilityRepository.findByAdministZoneAndFacilityKindIn(admnistZone, facilityKind);
     }
+
+    public List<Facility> findByFacilityKindAndLatitudeAndLongitude(Long facilityKind, double latitude, double longitude) {
+        return facilityRepository.findByFacilityKindAndLatitudeAndLongitude(facilityKind, latitude, longitude);
+    }
+
+
 }

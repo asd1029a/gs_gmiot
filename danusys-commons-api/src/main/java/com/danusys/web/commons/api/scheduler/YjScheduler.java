@@ -47,7 +47,7 @@ public class YjScheduler {
             try {
                 // event save;
                 String json = objectMapper.writeValueAsString(apiUtils.getRestCallBody(param));
-
+                log.info("event json =  {}",json);
                 FacilityDataRequestDTO facilityDataRequestDTO = objectMapper.readValue(StrUtils.getStr(json), FacilityDataRequestDTO.class);
                 facilityDataRequestDTO.setFacilityOptType(112);
                 facilityDataRequestDTO.setFacilityOptName("floating_population");

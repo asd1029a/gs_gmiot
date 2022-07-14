@@ -37,4 +37,6 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
     @Query(value = "SELECT * FROM t_facility WHERE administ_zone like :administZone% AND facility_kind IN (:facilityKind)", nativeQuery = true)
     List<Facility> findByAdministZoneAndFacilityKindIn(String administZone, List<Long> facilityKind);
 
+    List<Facility> findByFacilityKindAndLatitudeAndLongitude(Long facilityKind, double latitude, double longitude);
+
 }

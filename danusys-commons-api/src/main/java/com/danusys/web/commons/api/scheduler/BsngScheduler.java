@@ -1,12 +1,15 @@
 package com.danusys.web.commons.api.scheduler;
 
 import com.danusys.web.commons.api.model.Facility;
+import com.danusys.web.commons.api.model.FacilityActiveLog;
 import com.danusys.web.commons.api.model.FacilityOpt;
+import com.danusys.web.commons.api.repository.FacilityActiveRepository;
 import com.danusys.web.commons.api.scheduler.dto.FloatingPopulationDTO;
 import com.danusys.web.commons.api.service.EventService;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
 import com.danusys.web.commons.api.util.ApiUtils;
+import com.danusys.web.commons.api.util.IpCheckedUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +20,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,6 +34,8 @@ public class BsngScheduler {
     private final RestTemplate restTemplate;
     private final FacilityService facilityService;
     private final FacilityOptService facilityOptService;
+    private final FacilityActiveRepository facilityActiveRepository;
+    private static long FACILITY_SEQ = 9721L;
 
 //    @Scheduled(cron = "0/30 * * * * *")
     @Scheduled(fixedDelay = 60000)
@@ -65,6 +69,33 @@ public class BsngScheduler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     *
+     * 시설물 장애 이벤트 ping check
+     */
+    @Scheduled(cron = "0 0 0/1 * * *")
+    public void ipPingCheck(){
+        Long faSeq = FACILITY_SEQ;
+        List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(faSeq);
+        List<Map<String, Object>> ipLists = new ArrayList<>();
+        List<FacilityActiveLog> facilityActiveLogList = new ArrayList<>();
+        FacilityActiveLog facilityActiveLog = new FacilityActiveLog();
+        facilityOptList.stream().filter(f -> f.getFacilityOptName().equals("ip"))
+                .forEach(facilityOpt -> {
+                    Map<String,Object> maps = new HashMap<>();
+                    maps.put(facilityOpt.getFacilityOptName(),facilityOpt.getFacilityOptValue());
+                    ipLists.add(maps);
+                });
+        IpCheckedUtil.ipCheckedList(ipLists);
+
+        ipLists.stream().forEach(f -> {
+            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq(faSeq).
+                    facilityActiveCheck((boolean) f.get("active")).facilityActiveIp((String) f.get("ip")).build();
+            facilityActiveLogList.add(build);
+        });
+        facilityActiveRepository.saveAll(facilityActiveLogList);
     }
 
 }

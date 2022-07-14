@@ -1,14 +1,18 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.app.*;
 import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.service.facility.FacilityService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +38,12 @@ public class FacilityController {
 
     private final FacilityOptService facilityOptService;
 
+    private final com.danusys.web.commons.api.service.FacilityService jpaFacilityService;
+
+    private final ObjectMapper objectMapper;
+
+    @Value("${danusys.area.code.sig}")
+    private String sigCode;
 
     /**
      * 시설물 : 시설물 목록 조회
@@ -66,6 +76,37 @@ public class FacilityController {
 
         return GisUtil.getGeoJson(list, "facility");
     }
+
+    /**
+     * CCTV : CCTV GEOJSON 목록 조회
+     */
+    @PostMapping(value="/cctv/geojson")
+    public String let(@RequestBody Map<String, Object> paramMap) throws Exception {
+        EgovMap resultEgov = new EgovMap();
+        paramMap.put("administZone", sigCode);
+        boolean headerFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "headFlag"));
+        List<Facility> facilityList = null;
+
+        if(headerFlag) {
+            facilityList = jpaFacilityService.findByFacilityKind(75L);
+            facilityList = facilityList.stream().filter(f ->
+                    f.getFacilityOpts().stream().filter(ff ->
+                            ff.getFacilityOptName().equals("cctv_head")
+                                    && ff.getFacilityOptValue().equals("1")).collect(toList()).size() == 1).collect(toList());
+//            resultEgov = facilityService.getListCctvHead(paramMap); //레이어 //투망감시
+        } else {
+            double latitude = Double.parseDouble(StrUtils.getStr(paramMap.get("latitude")));
+            double longitude = Double.parseDouble(StrUtils.getStr(paramMap.get("longitude")));
+            facilityList = jpaFacilityService.findByFacilityKindAndLatitudeAndLongitude(75L, latitude, longitude);
+//            resultEgov = facilityService.getListCctv(paramMap); //개소감시
+        }
+
+        List<Map<String, Object>> list = objectMapper.convertValue(facilityList, new TypeReference<List<Map<String, Object>>>() {
+        });
+
+        return GisUtil.getGeoJson(list, "cctv");
+    }
+
 
     /**
      * 시설물 : 시설물 단건 조회

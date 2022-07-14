@@ -121,6 +121,16 @@ const facility = {
             pCallback(stringFunc.changeXSSOutputValue(result));
         });
     }
+    , getListCctvGeoJson : (param, pCallback) => {
+        $.ajax({
+            url : "/facility/cctv/geojson"
+            , type : "POST"
+            , data : JSON.stringify(param)
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
+            pCallback(stringFunc.changeXSSOutputValue(result));
+        });
+    }
     , get : (pSeq, pCallback) => {
         $.ajax({
             url : "/facility/" + pSeq

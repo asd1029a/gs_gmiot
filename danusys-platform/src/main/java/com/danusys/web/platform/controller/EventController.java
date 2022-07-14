@@ -28,6 +28,8 @@ public class EventController {
     private final FacilityOptService facilityOptService;
     //private final com.danusys.web.commons.api.service.EventService jpaEventService;
 
+    private final com.danusys.web.commons.api.service.EventService jpaEventService;
+
     /*
     * 조회/관리 > 이벤트관리 > 스마트 도시 이벤트 목록 조희
     * */

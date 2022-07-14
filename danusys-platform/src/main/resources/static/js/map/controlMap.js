@@ -200,7 +200,7 @@ const layerStyle = {
     //cctv
     , cctv : (selectFlag) => {
         return feature => {
-            const text = feature.getProperties().id;
+            const text = feature.getProperties().facilityName; //facilityId
 
             let keys = 'cctv_useCd1';
             keys = selectFlag ?  keys +'_select' : keys;
@@ -416,10 +416,8 @@ function clickIcon(layerType, layerObj) {
                 popup.move('mouseClickPopup', position);
             }
             break;
-        case "cctv" : //cctv 클릭 이벤트
-            //TODO 영상 재생 연결
-            console.log(layerObj);
-            break;
+        // case "cctv" : //cctv 클릭 이벤트
+        //     break;
         default :
             break;
     } //switch end
@@ -479,4 +477,252 @@ const dronePolling = {
             reloadLayer(result, 'facilityLayer');
         });
     }
+}
+
+/** fcltid -> facilityid
+ * 시설물 팝업생성
+ * @function evtMain.createFcltSlideContent
+ * @param {Array} data - 시설물 데이터 Array
+ */
+function createFcltSlideContent(data){
+    let content = document.createElement('div');
+    content.classList.add('slide-popup');
+    content.style.width = data.length > 5 ? 50 + (5 * 35) + 'px' : 50 + (data.length * 35) + 'px';
+
+    let leftBtn = document.createElement('a');
+
+    leftBtn.setAttribute('href', '#');
+    leftBtn.classList.add('img-box');
+    leftBtn.classList.add('left-zero');
+
+    let leftImg = document.createElement('img');
+    leftImg.src = '/images/default/arrowPrev.svg';
+    leftImg.style.width = '15px';
+    leftImg.style.filter = 'brightness(2.5)';
+
+    leftBtn.appendChild(leftImg);
+
+    let divWrap = document.createElement('div');
+
+    divWrap.classList.add('menu-wrap');
+
+    let ul = document.createElement('ul');
+
+    ul.id = 'cctvSlide';
+
+    for(let i = 0; i < data.length; i++) {
+        let obj = data[i].properties;
+
+        let li = document.createElement('li');
+        let a = document.createElement('a');
+        let img = document.createElement('img');
+        li.style.width = '35px';
+
+        a.setAttribute('href', '#');
+        a.classList.add('img-box');
+
+        const directionLayer = new ol.layer.Vector({
+            source: new ol.source.Vector()
+        });
+
+        const directionFeature = new ol.Feature({});
+        obj.directionLayer = directionLayer;
+        obj.directionFeature = directionFeature;
+        directionLayer.getSource().addFeature(directionFeature);
+
+        $(a).bind({
+            'click': function(e) {
+                if($('.circlr_container').length > 0 && !$('#setCirclr').is(':visible')) {
+                    alert('순환감시 추가, 수정 시에만 영상이 재생됩니다.');
+                    return;
+                }
+
+                if(!videoManager.isPlaying(obj.facilitySeq)) {
+                    return;
+                }
+
+                const rtspOpt = obj.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+
+                if(rtspOpt.length > 0){
+                    const rtspUrl = rtspOpt[0].facilityOptValue;
+                    const videoData = {
+                        facilitySeq : obj.facilitySeq,
+                        rtspUrl : rtspUrl,
+                        facilityKind : obj.facilityKind,
+                        lon : obj.longitude,
+                        lat : obj.latitude,
+                        facilityId : obj.facilityId
+                    }
+                    const dialogOption = {
+                        draggable: true,
+                        clickable: true,
+                        data: videoData,
+                        css: {
+                            width: '400px',
+                            height: '340px'
+                        }
+                    }
+
+                    const dialog = $.connectDialog(dialogOption);
+                    dialog.data('siteList', data);
+
+                    const option = {};
+                    option.data = videoData;
+                    option.parent = dialog;
+
+                    if(!videoManager.createPlayer(option)) {
+                        dialogManager.close(dialog);
+                    };
+                }
+            },
+            'mouseenter': function(e) {
+                window.map.map.addLayer(directionLayer);
+                //getPresetPoint(obj, obj.presetNo, directionFeature, createPresetDirection);
+            },
+            'mouseout': function(e) {
+                window.map.map.removeLayer(directionLayer);
+
+            }
+        });
+
+        img.src = getCctvMarkerImage(obj);
+
+        a.appendChild(img);
+        li.appendChild(a);
+        ul.appendChild(li)
+    }
+
+    divWrap.appendChild(ul);
+
+    let rightBtn = document.createElement('a');
+
+    rightBtn.setAttribute('href', '#');
+    rightBtn.classList.add('img-box');
+    rightBtn.classList.add('right-zero');
+
+    let rightImg = document.createElement('img');
+    rightImg.src = '/images/default/arrowNext.svg';
+    rightImg.style.width = '15px';
+    rightImg.style.filter = 'brightness(2.5)';
+
+    rightBtn.appendChild(rightImg);
+
+    content.appendChild(leftBtn);
+    content.appendChild(divWrap);
+    content.appendChild(rightBtn);
+
+    let cctvSlide = slideMenu.init();
+    cctvSlide.init(ul, data.length > 5 ? 5 : data.length, 'h');
+
+    leftBtn.addEventListener('click', function() {
+        cctvSlide.move.left();
+    });
+
+    rightBtn.addEventListener('click', function() {
+        cctvSlide.move.right();
+    });
+
+    let overFlag = false;
+
+    content.addEventListener('mouseover', function() {
+        overFlag = true;
+        clearTimeout(closeOverlay);
+    });
+
+    content.addEventListener('mouseleave', function() {
+        overFlag = false;
+        window.map.removeOverlayById('cctv');
+        window.isOverlay = false;
+    });
+
+    let closeOverlay = setTimeout(function() {
+        if(!overFlag) {
+            window.map.removeOverlayById('cctv');
+            window.isOverlay = false;
+        }
+    }, 500);
+
+    $('.ol-overlaycontainer-stopevent').on('pointermove', function(e){
+        e.stopPropagation();
+    });
+
+    return content;
+}
+
+/**
+ * 시설물데이터 마커 삽입 기능
+ * @param {object} data -마커데이터
+ * @function map.getCctvMarkerImage
+ */
+function getCctvMarkerImage(data) {
+    let imageSrc = '/images/mapicon/cctv_crime.svg';
+    return imageSrc;
+}
+
+/**
+ * @description 개소감시
+ * @param {object} data - 카메라 데이터
+ * @function map.siteMntr
+ */
+function siteMntr(data){
+    facility.getListCctvGeoJson({
+        'longitude' : data.lon,
+        'latitude' : data.lat,
+        'headFlag' : false, //헤더 + 고정
+        'view' : 'group' //개소감시
+    },result => {
+        dialogManager.closeAll();
+
+        const datas = JSON.parse(result).features;
+        for(let i = 0, max = datas.length; i < max; i++) {
+            const videoData = fcltOptData(datas[i]);
+
+            const dialogOption = {
+                draggable: true,
+                clickable: true,
+                data: videoData,
+                css: {
+                    width: '400px',
+                    height: '340px'
+                }
+            }
+
+            const dialog = $.connectDialog(dialogOption);
+            const videoOption = {};
+            videoOption.data = videoData;
+            videoOption.parent = dialog;
+            videoOption.btnFlag = true;
+            videoOption.isSite = true;
+
+            if(!videoManager.createPlayer(videoOption)) {
+                dialogManager.close(dialog);
+            };
+        }
+        dialogManager.sortDialog();
+    });
+}
+
+/**
+ * @description facility_opt 비디오 정보 반환
+ * @param {object} data - 카메라 데이터
+ * @return videoOpt
+ * @function map.fcltOptData
+ */
+function fcltOptData(data){
+    let prop = data.properties;
+    let videoData;
+
+    const rtspOpt = prop.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
+    if(rtspOpt.length > 0) {
+        const rtspUrl = rtspOpt[0].facilityOptValue;
+        videoData = {
+            facilitySeq: prop.facilitySeq,
+            rtspUrl: rtspUrl,
+            facilityKind: prop.facilityKind,
+            lon: prop.longitude,
+            lat: prop.latitude,
+            facilityId: prop.facilityId
+        };
+    }
+    return videoData;
 }
