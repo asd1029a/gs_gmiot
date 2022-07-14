@@ -1,11 +1,14 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.service.ApiCallService;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.app.*;
 import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.service.facility.FacilityService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,6 +37,10 @@ public class FacilityController {
     private final ApiCallService apiCallService;
 
     private final FacilityOptService facilityOptService;
+
+    private final com.danusys.web.commons.api.service.FacilityService jpaFacilityService;
+
+    private final ObjectMapper objectMapper;
 
     @Value("${danusys.area.code.sig}")
     private String sigCode;
@@ -78,18 +85,24 @@ public class FacilityController {
         EgovMap resultEgov = new EgovMap();
         paramMap.put("administZone", sigCode);
         boolean headerFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "headFlag"));
+        List<Facility> facilityList = null;
 
         if(headerFlag) {
-            resultEgov = facilityService.getListCctvHead(paramMap); //레이어 //투망감시
+            facilityList = jpaFacilityService.findByFacilityKind(75L);
+            facilityList = facilityList.stream().filter(f ->
+                    f.getFacilityOpts().stream().filter(ff ->
+                            ff.getFacilityOptName().equals("cctv_head")
+                                    && ff.getFacilityOptValue().equals("1")).collect(toList()).size() == 1).collect(toList());
+//            resultEgov = facilityService.getListCctvHead(paramMap); //레이어 //투망감시
         } else {
-            resultEgov = facilityService.getListCctv(paramMap); //개소감시
+            double latitude = Double.parseDouble(StrUtils.getStr(paramMap.get("latitude")));
+            double longitude = Double.parseDouble(StrUtils.getStr(paramMap.get("longitude")));
+            facilityList = jpaFacilityService.findByFacilityKindAndLatitudeAndLongitude(75L, latitude, longitude);
+//            resultEgov = facilityService.getListCctv(paramMap); //개소감시
         }
 
-        List<Map<String, Object>> list = (List<Map<String, Object>>) resultEgov.get("data");
-        list.stream().peek(p -> {
-            log.trace("facilitySeq > {}", p.get("facilitySeq"));
-            p.put("facilityOpts", facilityOptService.findByFacilitySeqLast(Long.parseLong(String.valueOf(p.get("facilitySeq")))));
-        }).collect(toList());
+        List<Map<String, Object>> list = objectMapper.convertValue(facilityList, new TypeReference<List<Map<String, Object>>>() {
+        });
 
         return GisUtil.getGeoJson(list, "cctv");
     }
