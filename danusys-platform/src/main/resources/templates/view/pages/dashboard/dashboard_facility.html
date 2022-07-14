@@ -4,8 +4,6 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout/layout_dashboard">
 <head>
-    <title>Dashboard</title>
-
     <script type="text/javascript" src="/js/pages/dashboard.js"></script>
 </head>
 <th:block layout:fragment="content">
@@ -36,7 +34,7 @@
             <h5>유동인구</h5>
             <div id="floatingPopulationChart"><!-- 그래프 영역 --></div>
         </div>
-        <div class="box box_location box_320">
+        <div class="box box_location box_320" th:attr="data-municipality=${@environment.getProperty('municipality.name')}">
             <h5>개소 위치</h5>
             <!-- 위치맵 영역 -->
             <div id="dashFacilityStationMap" class="map_wrap">

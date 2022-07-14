@@ -328,8 +328,14 @@ const station = {
         $("#stationPopup").data("facilitySeqList", []);
 
         $("#stationForm select[data-type]").each((idx1, selectEle) => {
-            const type = $(selectEle).data("type");
-            commonCode.getList({type: type}, (result) => {
+            const obj = {
+                type : $(selectEle).data("type")
+            }
+            const subType = $(selectEle).data("subType");
+            if(typeof subType !== "undefined") {
+                obj.subType = subType;
+            }
+            commonCode.getList(obj, (result) => {
                 station.createSelectOption($(selectEle), result);
             });
         });

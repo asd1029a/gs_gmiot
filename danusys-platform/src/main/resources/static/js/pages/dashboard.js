@@ -567,7 +567,14 @@ const dashboard = {
         window[type] = map;
     }
     , mapData : () => {
-        let param = mntr.getInitParam('smartPole')['station'];
+        const municipality = $("#dashFacilityStationMap").parent().data('municipality');
+        let pageType = "";
+        if(municipality === 47210000) {
+            pageType = "smartBusStop"
+        } else {
+            pageType = "smartPole"
+        }
+        let param = mntr.getInitParam(pageType)['station'];
         param['option'] = 'heatMap';
 
         let data;

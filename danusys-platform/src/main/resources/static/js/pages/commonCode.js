@@ -97,6 +97,11 @@ const commonCode = {
                         if(targetSeq !== 0) {
                             $form.data("parentCodeSeq", rowData.parentCodeSeq);
                         }
+                        if(typeof result.insertDt !== "undefined" || typeof result.updateDt !== "undefined") {
+
+                            result.insertDt = dateFunc.getUnixToDateYyyyMmDd(new Date(result.insertDt), "-");
+                            result.updateDt = dateFunc.getUnixToDateYyyyMmDd(new Date(result.updateDt), "-");
+                        }
                         $form.setItemValue(result);
                     });
                 }
