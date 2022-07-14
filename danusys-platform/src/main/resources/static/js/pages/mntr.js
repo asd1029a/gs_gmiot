@@ -380,7 +380,7 @@ const mntr = {
 
         facility.getListCctvGeoJson({"headFlag": true}, result => {
             reloadLayer(result, 'cctvLayer');
-            //window.lyControl.off('cctvLayer');
+            window.lyControl.off('cctvLayer');
         });
 
         //축척별 레이어 반응
