@@ -87,6 +87,7 @@ public class EchoThread extends Thread{
                     maps.put("noiseMax",ArrayData[14]);
                     maps.put("windSpAvg",ArrayData[15]);
                     maps.put("windDiAvg",ArrayData[16]);
+                    log.info("deviceId = {}","BSNG_S_"+faSeq);
                     for(String key : maps.keySet()){
                         Map<String,Object> m = new HashMap<>();
                         m.put("deviceId","BSNG_S_"+faSeq);

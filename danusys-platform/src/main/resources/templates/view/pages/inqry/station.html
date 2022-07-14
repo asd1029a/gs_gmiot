@@ -103,7 +103,7 @@
                         <dl>
                             <dt>행정구역</dt>
                             <dd>
-                                <select id="administZone" data-required="true" name="administZone" data-type="administZone">
+                                <select id="administZone" data-required="true" name="administZone" data-type="administZone" th:attr="data-sub-type=${@environment.getProperty('danusys.area.code.sig')}">
                                 </select>
                             </dd>
                         </dl>

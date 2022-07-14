@@ -156,11 +156,50 @@
 .popup div.popup_writing fieldset form dl dd .fileBox .uploadName{width: 78%; height: 40px; padding: 0px 10px; vertical-align: middle; border: 1px solid #292c34; color: #999999;}
 .popup div.popup_writing fieldset form dl dd .fileBox label{height: 40px; line-height: 38px; padding: 0px 14px; background: #2b2f3a; border-radius: 4px; cursor: pointer;}
 .popup div.popup_writing fieldset form dl dd .fileBox input[type="file"]{position: absolute; overflow: hidden; width: 0; height: 0; padding: 0; border: 0;}
-.popup .bottom {display: flex; align-items: center; justify-content: center; grid-gap: 8px; padding: 14px 10px;}
+
+/* 220708 예약시간 설정 */
+.popup_controls{background: #1e1f23;}
+.popup_controls div.popup_writing{overflow: auto; max-height: 574px; margin: 0px 0px; padding: 20px;}
+.popup_controls div.popup_writing fieldset{margin: 0px; padding: 0px; border-bottom: 2px solid #292c34;}
+.popup_controls div.popup_writing fieldset p.sub_title{display: flex; align-items: center; height: 24px; margin: 0px 0px 10px 0px; font-weight: bold;}
+.popup_controls div.popup_writing fieldset ul{display: flex; grid-gap: 20px; flex-wrap: wrap; white-space: nowrap; margin: 0px 0px 20px 0px;}
+.popup_controls div.popup_writing fieldset ul li{flex: 1; display: flex; align-items: center;}
+.popup_controls div.popup_writing fieldset ul.setting_type1{display: flex; flex-wrap: inherit;}
+.popup_controls div.popup_writing fieldset ul.setting_type1 li{flex: 1;}
+.popup_controls div.popup_writing fieldset ul.setting_type3{display: flex; justify-content: space-between;}
+.popup_controls div.popup_writing fieldset ul.setting_type3 li{flex: initial;}
+.popup_controls div.popup_writing fieldset ul li.date{grid-gap: 10px;}
+.popup_controls div.popup_writing fieldset ul li p{margin: 0px 20px 0px 0px; color: #7b8294;}
+.popup_controls div.popup_writing fieldset ul li span{}
+.popup_controls div.popup_writing fieldset ul li.tab_button{display: flex; align-items: center;}
+.popup_controls div.popup_writing fieldset ul li.add{display: flex; flex: initial; padding: 0px 20px; color: #7b8294; border-radius: 4px; background: #292c34; cursor: pointer;}
+.popup_controls div.popup_writing fieldset ul li.add:active,
+.popup_controls div.popup_writing fieldset ul li.add:hover{color: #dee0e4; background: #4369e4;}
+.popup_controls div.popup_writing fieldset ul li.tab_button span{overflow: hidden; display: flex; align-items: center; height: 34px; padding: 0px 12px; color: #7b8294; border-left: 1px solid #1e1f23; background: #292c34; cursor: pointer;}
+/*.popup_controls div.popup_writing fieldset ul li.tab_button span.active,*/
+/*.popup_controls div.popup_writing fieldset ul li.tab_button span:active,*/
+.popup_controls div.popup_writing fieldset ul li.tab_button span:hover{color: #dee0e4; background: #4369e4;}
+.popup_controls div.popup_writing fieldset ul li.tab_button span:nth-child(2){border-top-left-radius: 4px; border-bottom-left-radius: 4px;}
+.popup_controls div.popup_writing fieldset ul li.tab_button span:nth-last-child(1){border-top-right-radius: 4px; border-bottom-right-radius: 4px;}
+.popup_controls div.popup_writing fieldset ul li.tab_button p.number{display: flex; align-items: center;}
+.popup_controls div.popup_writing fieldset ul li.tab_button p.number input{width: 80px; margin: 0px 8px 0px 0px;}
+.popup_controls div.popup_writing fieldset ul li.tab_button p.number span{width: auto; margin: 0px 1px; padding: 0px; text-align: center; background: none;}
+.popup_controls div.popup_writing fieldset ul li.tab_button span.unit{width: 20px; margin: 0px; padding: 0px 14px; background: none;}
+.popup_controls div.popup_writing .controls_list{flex: 0.4; overflow: auto; margin: 20px 0px 0px 0px;}
+.popup_controls div.popup_writing .controls_list table{overflow: auto;}
+.popup_controls div.popup_writing .controls_list table tr{border-bottom: 1px solid #232428;}
+.popup_controls div.popup_writing .controls_list table tr th{height: 28px; color: #7B8294; vertical-align: middle; background: #232429;}
+.popup_controls div.popup_writing .controls_list table tr td{padding: 14px 10px; text-align: center;}
+.popup_controls div.popup_writing .controls_list table tr td span.button{height: 28px; color: #7b8294; border-radius: 4px; background: #292C34; cursor: pointer;}
+.popup_controls div.popup_writing .controls_list table tr td span.button:hover{color: #dee0e4;}
+/* //220708 예약시간 설정 */
+
+.popup .bottom {display: flex; align-items: center; justify-content: center; grid-gap: 8px; padding: 14px 10px; border-top: 1px solid #292c34;}
 .popup .bottom li{height: 34px; line-height: 32px; padding: 0px 18px; font-size: 14px; color: #7f8491; border-radius: 4px; background: #292c34; cursor: pointer;}
 .popup .bottom li:hover{color: #dee0e4;}
 .popup .bottom li.color{color: #b1bcdc; background: #2e53bc;}
 .popup .bottom li.color:hover{color: #dee0e4; background: #3a66e5;}
+
 .popup div.list_search{margin: 0px 20px; padding: 20px 10px; border-bottom: 2px solid #292c34;}
 .popup div.list_search .search_form{display: flex; align-items: center; justify-content: center; grid-gap: 20px; margin: 10px 0px 20px;}
 .popup div.list_search .search_form dt{}
@@ -175,7 +214,7 @@
 .popup div.list_search .list_table table tbody td{vertical-align: middle; text-align: center; font-size: 14px; color: #dee0e4;}
 .popup_detection{display: none; z-index: 1;}
 .popup_detection div.popup_writing fieldset{border: none}
-.popup_detection ul.bottom{border-top: 2px solid #292c34;}
+.popup_detection ul.bottom{border-top: 2px solid #292c34;} /* 220621 추가 */
 
 /* popup_mini */
 .popup_mini{overflow: inherit; position: relative; top: 50%; left: 50%; transform: translate(-50%, -5%); display: flex; flex-direction: column; width: max-content;  padding: 14px 36px 14px 14px; border-radius: 10px; box-shadow: 0px 0px 20px rgba(0,0,0,0.5); background: #1e1f23; cursor: auto;}
@@ -229,12 +268,12 @@
 
 .area_right .area_title{height: 50px; min-height: 50px;}
 .area_right .ptz_toggle{ display: flex; align-items: center;}
-.area_right .ptz_toggle span{margin: 0px 8px 0px 0px; font-size: 16px; color: #7f8491;}
+.area_right .ptz_toggle span{margin: 0px; font-size: 16px; color: #7f8491; cursor: pointer;}
 
 .ptz_toggle input[type=checkbox]{visibility: hidden; width: 0; height: 0;}
-.ptz_toggle label{cursor: pointer; text-indent: -9999px; width: 50px; height: 28px; background: #3b3f4a; display: block; border-radius: 100px; position: relative;}
+.ptz_toggle label{position: relative; display: block; width: 60px; height: 28px; text-indent: 28px; color: #7f8491 !important; background: #3b3f4a; border-radius: 100px; cursor: pointer;}
 .ptz_toggle label:after{content: ''; position: absolute; top: 4px; left: 5px; width: 20px; height: 20px; background: #dee0e4; border-radius: 90px; transition: 0.3s;}
-.ptz_toggle input:checked + label{background: #3a66e5; box-sizing: border-box;}
+.ptz_toggle input:checked + label{text-indent: 8px; color: #dee0e4 !important; background: #3a66e5; box-sizing: border-box; transition: 0.3s;}
 .ptz_toggle input:checked + label:after{left: calc(100% - 5px); transform: translateX(-100%); background: #dee0e4;}
 .ptz_toggle label:active:after{width: 20px;}
 

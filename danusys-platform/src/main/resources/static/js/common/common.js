@@ -956,6 +956,12 @@ const dateFunc = {
         ];
         return dateArr.join(sep);
     },
+    getUnixToDateYyyyMmDd: function (date, sep) {
+        const dateArr = [
+            date.getFullYear(), this.getZeroString(date.getMonth() + 1), this.getZeroString(date.getDate())
+        ];
+        return dateArr.join(sep);
+    },
     /**
      * 날짜에 따른 한글 텍스트 출력
      * @param 날짜
