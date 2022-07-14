@@ -67,10 +67,10 @@ public class Event {
     @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp insertDt;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "stationSeq")
-    @JsonManagedReference
-    private Station station;
+//    @OneToOne(fetch = FetchType)
+//    @JoinColumn(name = "stationSeq")
+//    @JsonManagedReference
+//    private Station station;
 
     @Builder
     public Event(Long facilitySeq, Long stationSeq, Long eventKind, Long eventGrade, String eventMessage, Timestamp eventStartDt) {
