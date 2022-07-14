@@ -100,8 +100,8 @@ const mntr = {
                 classname: 'context-style',
                 callback: e => {
                     const coordinate = new ol.proj.transform(e.coordinate, window.map.realProjection[window.map.type] ,'EPSG:4326');
-					window.open("/ui/roadView?lon="+coordinate[0]+"&lat="+coordinate[1],'road','');
-					//contextmenu.clear();
+                    window.open("/ui/roadView?lon="+coordinate[0]+"&lat="+coordinate[1],'road','');
+                    //contextmenu.clear();
                 }
             },
             {
@@ -374,8 +374,8 @@ const mntr = {
             .fromGeoJSon(geoJsonStr,'cctvLayer', true, layerStyle.cctv(false));
 
         [eventLayer, eventPastLayer, facilityLayer, stationLayer, cctvLayer].forEach(ly => {
-           window.map.addLayer(ly);
-           ly.set('selectable', true);
+            window.map.addLayer(ly);
+            ly.set('selectable', true);
         });
 
         facility.getListCctvGeoJson({"headFlag": true}, result => {
@@ -702,9 +702,9 @@ const mntr = {
                             // let oldOrd = Number($(this).attr("prev-index"));
                             // let targetLayer = ui.item.text();
                             //console.log(targetLayer + " : " + oldOrd + " => " + newOrd);
-                           const totalLen = window.map.map.getLayers().getArray().length;
-                           const liLen = $("#layers li").length;
-                           const startIdx = totalLen - liLen;
+                            const totalLen = window.map.map.getLayers().getArray().length;
+                            const liLen = $("#layers li").length;
+                            const startIdx = totalLen - liLen;
 
                             //LAYER SHIFT
                             $.each($("#layers li"), (i,v)=> {
@@ -852,10 +852,10 @@ const mntr = {
 
         //관제 이벤트 종료 팝업
         $('section[data-value=event] .occur_process ul li').on("click", e => {
-           const type = $(e.currentTarget).attr('data-value');
-           if(type == "eventEnd"){
-               $('#popupEventEnd').css('display','flex');
-           }
+            const type = $(e.currentTarget).attr('data-value');
+            if(type == "eventEnd"){
+                $('#popupEventEnd').css('display','flex');
+            }
         });
 
         //팝업 closer
@@ -1154,12 +1154,12 @@ const lnbList = {
             const prop = each.properties;
             let cnt = Number($target.find('.area_title[data-value=facility] .count').text());
 
-             /*<dl>
-                <dt>DRONE ID<span class="state">비행 중</span></dt>
-                <dd>LTE 신호세기 : 양호</dd>
-                <dd>잔여비행가능시간 : 5분 (20%)</dd>
-                <dd>매주 화 14:00, 매주 목 16:00</dd>
-            </dl>*/
+            /*<dl>
+               <dt>DRONE ID<span class="state">비행 중</span></dt>
+               <dd>LTE 신호세기 : 양호</dd>
+               <dd>잔여비행가능시간 : 5분 (20%)</dd>
+               <dd>매주 화 14:00, 매주 목 16:00</dd>
+           </dl>*/
             content = "<dl>" +
                 "<dt>" + prop.facilityId + " " + prop.facilityStatus + "</dt>" +
                 "<dd>LTE 신호세기  : " + prop.facilityKindName + "</dd>" +
@@ -1513,7 +1513,7 @@ function searchList(section, keyword) {
             objJSON = $('#'+section +'.select .lnb_tab_section.select').find('.search_form .search_fold form').serializeJSON();
             if(keyword!="" && keyword!=null){
                 objJSON.keyword = keyword;
-           }
+            }
             //let paramObj = mntr.getInitParam(section); //합칠까?
             if(tab == "station") {
                 //개소
