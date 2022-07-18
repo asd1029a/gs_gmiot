@@ -169,5 +169,7 @@ public class FacilityService {
         return facilityRepository.findByFacilityKindAndLatitudeAndLongitude(facilityKind, latitude, longitude);
     }
 
-
+    public List<Facility> findByGeomSql(double latitude, double longitude) {
+        return facilityRepository.findByGeomSql(latitude,longitude);
+    }
 }

@@ -85,15 +85,29 @@ public class FacilityController {
         EgovMap resultEgov = new EgovMap();
         paramMap.put("administZone", sigCode);
         boolean headerFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "headFlag"));
+        String view = CommonUtil.validOneNull(paramMap, "view");
         List<Facility> facilityList = null;
 
         if(headerFlag) {
-            facilityList = jpaFacilityService.findByFacilityKind(75L);
-            facilityList = facilityList.stream().filter(f ->
-                    f.getFacilityOpts().stream().filter(ff ->
-                            ff.getFacilityOptName().equals("cctv_head")
-                                    && ff.getFacilityOptValue().equals("1")).collect(toList()).size() == 1).collect(toList());
-//            resultEgov = facilityService.getListCctvHead(paramMap); //레이어 //투망감시
+            if(view.equals("net")){
+                double latitude = Double.parseDouble(StrUtils.getStr(paramMap.get("latitude")));
+                double longitude = Double.parseDouble(StrUtils.getStr(paramMap.get("longitude")));
+                facilityList = jpaFacilityService.findByGeomSql(latitude, longitude);
+
+//                resultEgov = facilityService.getListCctvHead(paramMap); //레이어 //투망감시
+//                facilityList = (List<Facility>) resultEgov.get("data");
+//                System.out.println(facilityList);
+//                facilityList.stream().peek(p -> {
+//                    log.trace("facilitySeq > {}", p.get("facilitySeq"));
+//                    p.put("facilityOpts", facilityOptService.findByFacilitySeqLast(Long.parseLong(String.valueOf(p.get("facilitySeq")))));
+//                }).collect(toList());
+            } else {
+                facilityList = jpaFacilityService.findByFacilityKind(75L);
+                facilityList = facilityList.stream().filter(f ->
+                        f.getFacilityOpts().stream().filter(ff ->
+                                ff.getFacilityOptName().equals("cctv_head")
+                                        && ff.getFacilityOptValue().equals("1")).collect(toList()).size() == 1).collect(toList());
+            }
         } else {
             double latitude = Double.parseDouble(StrUtils.getStr(paramMap.get("latitude")));
             double longitude = Double.parseDouble(StrUtils.getStr(paramMap.get("longitude")));

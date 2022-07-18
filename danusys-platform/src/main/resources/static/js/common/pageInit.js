@@ -12,7 +12,7 @@ $(document).ready(() => {
         ? $("#"+pathArr[3]).parents("li").addClass("on")
         : $("#"+pathArr[3]).addClass("on");
 
-    $(".multi").on("let", (e)=> {
+    $(".multi").on("click", (e)=> {
         $(".accordion > li").removeClass("on");
         $(e.currentTarget).addClass("on");
     });

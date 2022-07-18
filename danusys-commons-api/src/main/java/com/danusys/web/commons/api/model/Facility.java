@@ -81,6 +81,7 @@ public class Facility implements Serializable {
     @Column
     private Long stationSeq;
 
+    @Column
     private String administZone;
 
     @OneToMany(fetch = FetchType.EAGER)
