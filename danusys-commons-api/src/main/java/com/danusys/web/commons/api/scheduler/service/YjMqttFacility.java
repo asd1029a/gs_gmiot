@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -132,10 +133,11 @@ public class YjMqttFacility {
 
                 // 저장 되어 있다면!!
                 // opt 동기화 시작
-               List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(facility.getFacilitySeq());
+                List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(facility.getFacilitySeq());
 
                 // insert
                 if(facilityOptList.isEmpty()) {
+                    List<FacilityOpt> optList = new ArrayList<>();
                     Facility finalFacility = facility;
                     mqttReceivedData.entrySet().forEach((entry) -> {
                         String receivedFaciliyOptName = entry.getKey();
@@ -155,18 +157,21 @@ public class YjMqttFacility {
                                 return;
                             }
                         }
-                        facilityOptService.save(FacilityOpt.builder()
+
+                        FacilityOpt optData = FacilityOpt.builder()
                                 .facilitySeq(finalFacility.getFacilitySeq())
                                 .facilityOptName(receivedFaciliyOptName)
                                 .facilityOptType(optType)
                                 .facilityOptValue(receivedFacilityOptValue)
-                                .build());
+                                .build();
+                        optList.add(optData);
                     });
                     return;
                 }
 
                 // update
                 Facility finalFacility1 = facility;
+                List<FacilityOpt> optList = new ArrayList<>();
                 facilityOptList.stream().forEach(optData -> {
                     if(optData.getFacilitySeq().equals(finalFacility1.getFacilitySeq())) {
 
@@ -186,11 +191,13 @@ public class YjMqttFacility {
                             }
                              if(optData.getFacilityOptName().equals(receivedOptName)) {
                                 optData.setFacilityOptValue(entry.getValue().toString());
-                                facilityOptService.save(optData);
+//                                facilityOptService.save(optData);
+                                 optList.add(optData);
                             }
                         });
                     }
                 });
+                facilityOptService.saveAll(optList);
 
             });
         } catch(Exception e) {
