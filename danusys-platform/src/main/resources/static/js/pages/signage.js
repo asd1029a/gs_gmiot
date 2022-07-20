@@ -460,13 +460,13 @@ const signage = {
 
         $imageFileEle.off('change');
         $imageFileEle.on('change', (e) => {
-            const maxSize = 30 * 1024 * 1024 // 30MB
+            const maxSize = 1000 * 1024 * 1024 // 30MB
             const nameAry = [];
 
             $.each(e.currentTarget.files, (idx, file) => {
                 const fileSize = e.currentTarget.files[idx].size
                 if( fileSize > maxSize){
-                    comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
+                    comm.showAlert("첨부파일의 사이즈는 1GB 이내로 등록 가능합니다.");
                 } else {
                     const fileName = file.name;
                     nameAry.push(fileName);
@@ -536,7 +536,7 @@ const signage = {
                 const maxSize = 30 * 1024 * 1024 // 30MB
                 const fileSize = e.currentTarget.files[0].size
                 if( fileSize > maxSize){
-                    comm.showAlert("첨부파일의 사이즈는 10MB 이내로 등록 가능합니다.");
+                    comm.showAlert("첨부파일의 사이즈는 30MB 이내로 등록 가능합니다.");
                 } else {
                     const fileName = $(e.currentTarget).val().split("\\")[$(e.currentTarget).val().split("\\").length-1];
                     $(".upload_name").val(fileName);
@@ -606,7 +606,7 @@ const signage = {
             if(idx === 0) { // input video 타입
                 content =
                     "<div class='"+ htmlObj[idx].name + "VideoList'>" +
-                    "<h6>종류<span>" + htmlObj[idx].value + " 동영상를 설정해주세요.</span></h6>" +
+                    "<h6>종류<span>" + htmlObj[idx].value + " 동영상를 설정해주세요. (영문명 파일만 가능)</span></h6>" +
                     "<ul>" +
                     "<li class='"+ htmlObj[idx].name + "Video'>" +
                     "<div class='file_box'>" +
@@ -628,13 +628,13 @@ const signage = {
             } else { // input image 타입
                 content =
                     "<div class='"+ htmlObj[idx].name + "ImageList'>" +
-                    "<h6>종류<span>" + htmlObj[idx].value + " 이미지를 설정해주세요.</span></h6>" +
+                    "<h6>종류<span>" + htmlObj[idx].value + " 이미지를 설정해주세요. (영문명 파일만 가능)</span></h6>" +
                     "<ul>" +
                     "<li class='"+ htmlObj[idx].name + "Image'>" +
                     "<div class='file_box'>" +
                     "<input type='text' class='upload_name' name='"+ htmlObj[idx].name + "ImageFileName' placeholder='이미지 첨부파일' readonly>" +
                     "<label for='"+ htmlObj[idx].name + "ImageFile'>파일찾기</label>" +
-                    "<input type='file' name='imageFile' accept='image/*' id='"+ htmlObj[idx].name + "ImageFile' multiple>" +
+                    "<input type='file' name='imageFile' accept='image/*, .pdf' id='"+ htmlObj[idx].name + "ImageFile' multiple>" +
                     "</div>" +
                     "</li>" +
                     "</ul>" +
