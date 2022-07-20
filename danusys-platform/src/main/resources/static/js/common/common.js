@@ -1019,7 +1019,7 @@ const dateFunc = {
                 // sDate.datepicker({
                 //     maxDate: new Date(eDay.replace(/-/g, "/"))
                 // });
-                optObj.maxDate = new Date(eDay.replace(/-/g, "/"));
+                //optObj.maxDate = new Date(eDay.replace(/-/g, "/"));
             }
             $sDate.datepicker(optObj);
             //종료일자 세팅하기 날짜가 없는경우엔 제한을 걸지 않음
