@@ -30,7 +30,7 @@ public class FacilitySettingService {
         facilitySettingRepository.saveAll(facilitySettingList);
     }
 
-    public List<SettingDTO> findAll(Long facilitySeq){
+    public List<SettingDTO> findAllByFacilitySeq(Long facilitySeq){
         List<SettingDTO> settingDTOList = new ArrayList<>();
         List<FacilitySetting> facilitySettingList = facilitySettingRepository.findAllByFacilitySeqOrderByFacilitySettingTime(facilitySeq);
         facilitySettingList.stream().forEach(f -> {

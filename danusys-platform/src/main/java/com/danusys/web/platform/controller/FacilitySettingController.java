@@ -22,7 +22,7 @@ public class FacilitySettingController {
 
     @PostMapping("/{facilitySeq}")
     public List<SettingDTO> getAllList(@PathVariable Long facilitySeq) throws Exception {
-        return  facilitySettingService.findAll(facilitySeq);
+        return  facilitySettingService.findAllByFacilitySeq(facilitySeq);
     }
 
     @PostMapping("/weekday/{facilitySeq}")
