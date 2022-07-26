@@ -2,11 +2,11 @@ package com.danusys.web.commons.api.service;
 
 import com.danusys.web.commons.api.dto.SettingDTO;
 import com.danusys.web.commons.api.model.FacilitySetting;
-import com.danusys.web.commons.api.repository.FacilityRepository;
 import com.danusys.web.commons.api.repository.FacilitySettingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,14 +19,15 @@ import java.util.Map;
 public class FacilitySettingService {
 
     private final FacilitySettingRepository facilitySettingRepository;
-//    private static Map<SettingDTO, Integer> map = new HashMap<>();
 
+    @Transactional
     public void save(List<SettingDTO> settingDTOList) {
         List<FacilitySetting> facilitySettingList = new ArrayList<>();
-        settingDTOList.stream().forEach(f ->{
-            FacilitySetting facilitySetting = new FacilitySetting(f);
+        settingDTOList.stream().forEach(settingDTO ->{
+            FacilitySetting facilitySetting = new FacilitySetting(settingDTO);
             facilitySettingList.add(facilitySetting);
         });
+        facilitySettingRepository.deleteAllByFacilitySeq(facilitySettingList.get(0).getFacilitySeq());
         facilitySettingRepository.saveAll(facilitySettingList);
     }
 
@@ -38,6 +39,11 @@ public class FacilitySettingService {
             settingDTOList.add(settingDTO);
         });
         return settingDTOList;
+    }
+
+    @Transactional
+    public void deleteAllByFacilitySeq(Long facilitySeq){
+        facilitySettingRepository.deleteAllByFacilitySeq(facilitySeq);
     }
 
     public List<List<SettingDTO>> findWeekdayList(Long facilitySeq){
