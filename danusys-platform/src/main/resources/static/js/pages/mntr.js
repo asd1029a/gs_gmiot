@@ -870,6 +870,7 @@ const mntr = {
             let cctv = rpanel.find('option:selected').data();
             rnbList.playVideo(rpanel, cctv);
         });///영상 재생 func
+        $(".popup_controls .popup_writing .tab_button span").removeClass("active");
 
     }
 }
@@ -1221,8 +1222,10 @@ function setFacility(id, fid, fseq) {
     let spanId = "span_" + id.split("_")[1];
     if(point.is(":checked")) {
         $("#"+spanId).addClass("green");
+        $("label[for='"+id+"']").text("ON");
     } else {
         $("#"+spanId).removeClass("green");
+        $("label[for='"+id+"']").text("OFF");
     }
 
     facility.facilityControl({
@@ -1271,9 +1274,10 @@ const rnbList = {
                 target.find(".area_right_bus_status dl").hide();
                 let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
                     '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
-                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
+                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}"></label>' +
+                    '<span onclick="setSetting.eventHandler(\'{{facilitySeq}}\'); setFacilityAppoint(\'{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\',\'{{facilityName}}\');"><img src="/images/default/icon_setting.svg"></span>' +
+                    '</dd></dl>';
                 let objAry = JSON.parse(result);
-
                 console.log(objAry)
 
                 objAry.features.forEach((f, i) => {
@@ -1296,7 +1300,6 @@ const rnbList = {
                     let facilityName = pointInfo.facilityName;
                     let facilityId = pointInfo.facilityId;
                     let facilitySeq = pointInfo.facilitySeq;
-
                     let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
                     // console.log("facilityName " + facilityName + " > " + presentValue );
 
@@ -1305,12 +1308,19 @@ const rnbList = {
                             .replace("{{span_id}}", i)
                             .replace("{{span_class}}", spanClass)
                             .replace("{{facilityName}}", facilityName)
-                            .replace("{{id_index}}", i)
-                            .replace("{{onclick_index}}", i)
-                            .replace("{{facilityId}}", facilityId)
-                            .replace("{{facilitySeq}}", facilitySeq)
+                            .replaceAll("{{id_index}}", i)
+                            .replaceAll("{{onclick_index}}", i)
+                            .replaceAll("{{facilityId}}", facilityId)
+                            .replaceAll("{{facilitySeq}}", facilitySeq)
                             .replace("{{for_index}}", i)
-                            .replace("{{check_value}}", presentValue));
+                            .replace("{{check_value}}", presentValue)
+                    );
+                    let point = $("input:checkbox[id='control_"+i+"']");
+                    if(point.is(":checked")) {
+                        $("label[for='control_"+i+"']").text("ON");
+                    } else {
+                        $("label[for='control_"+i+"']").text("OFF");
+                    }
                 });
             });
         } else if (theme === "smartPole") {
