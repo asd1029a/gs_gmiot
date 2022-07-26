@@ -188,8 +188,7 @@ const signage = {
                     if(obj.value !== "") {
                         const stationList = JSON.parse(obj.value);
                         $.each(stationList, (idx2, stationObj) => {
-                            const stationName = stationObj.stationName.replaceAll('&amp;', '&').replace("&#40;", '(').replace("&#41;", ')').replace("\t", '');
-                            options[stationObj.stationSeq] = stationName;
+                            options[stationObj.stationSeq] = stringFunc.changeXSSOutputValue(stationObj.stationName);
                         });
                     }
                 }

@@ -910,7 +910,7 @@ var stringFunc = {
     changeXSSOutputValue: (str) => {
         let returnStr = "";
         if (typeof(str) === "string") {
-            returnStr = str.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&apos;/gi, '\'').replace(/&nbsp;/gi, ' ').replace(/&#40;/gi, '(').replace(/&#41;/gi, ')');
+            returnStr = str.replace(/&amp;/gi, '&').replaceAll(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&apos;/gi, '\'').replace(/&nbsp;/gi, ' ').replace(/&#40;/gi, '(').replace(/&#41;/gi, ')');
         } else {
             returnStr = str;
         }
