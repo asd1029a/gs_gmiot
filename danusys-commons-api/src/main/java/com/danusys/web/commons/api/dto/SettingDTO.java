@@ -2,10 +2,13 @@ package com.danusys.web.commons.api.dto;
 
 
 import com.danusys.web.commons.api.model.FacilitySetting;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SettingDTO {
 
     private Long facilitySeq;
@@ -15,7 +18,6 @@ public class SettingDTO {
     private Integer facilitySettingType;
     private String facilitySettingDay;
 
-    @Builder
     public SettingDTO(FacilitySetting facilitySetting){
         this.facilitySeq = facilitySetting.getFacilitySeq();
         this.facilitySettingName = facilitySetting.getFacilitySettingName();
