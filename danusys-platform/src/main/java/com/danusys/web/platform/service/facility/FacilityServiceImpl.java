@@ -64,8 +64,8 @@ public class FacilityServiceImpl implements FacilityService{
     @Override
     public EgovMap getListPaging(Map<String, Object> paramMap) throws Exception {
         Map<String, Object> pagingMap = new HashMap<>();
-        EgovMap count = commonMapper.selectOne(fsp.selectCountQry(paramMap));
         pagingMap.put("data", commonMapper.selectList(fsp.selectListQry(paramMap)));
+        EgovMap count = commonMapper.selectOne(fsp.selectCountQry(paramMap));
         pagingMap.put("count", count.get("count"));
         pagingMap.put("statusCount", count);
         return PagingUtil.createPagingMap(paramMap, pagingMap);
