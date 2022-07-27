@@ -14,8 +14,14 @@ const mntr = {
             console.log(e);
         };
         eventSource.onmessage = (e) => {
-            const objJson = JSON.parse(e.data);
+            let objJson;
             const eventSeqs = [];
+            if(typeof e.data === "undefined" || e.data === "" || e.data === null) {
+                objJson = JSON.parse("{}");
+                console.log("이벤트 데이터가 존재하지않습니다.");
+            } else {
+                objJson = JSON.parse(e.data);
+            }
             if (Array.isArray(objJson)) {
                 //긴급 배너 띄우기
                 Array.from(objJson).forEach((e,i)=> {
@@ -1266,7 +1272,7 @@ const rnbList = {
             target.find('.tab li[data-value=control]').hide();
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme === "smartBusStop") {
-            // target.find('.tab li[data-value=control]').show();
+            target.find('.tab li[data-value=control]').show();
             //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq

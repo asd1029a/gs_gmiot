@@ -20,7 +20,7 @@ const setSetting = {
                 $("#fan").val($(this).text());
             }else{
                 $("#fan").val("");
-                alert("설정 변경을 눌러야 가능한 기능입니다.");
+                comm.showAlert("설정 변경을 눌러야 가능한 기능입니다.");
                 return false;
             }
 
@@ -32,7 +32,7 @@ const setSetting = {
                 $("#mode").val($(this).text());
             }else{
                 $("#mode").val("");
-                alert("설정 변경을 눌러야 가능한 기능입니다.");
+                comm.showAlert("설정 변경을 눌러야 가능한 기능입니다.");
                 return false;
             }
         });
@@ -66,16 +66,19 @@ const setSetting = {
 
 
         $(".setting_close").off("click").on("click",()=>{
-            if(confirm("취소하시겠습니까?")){
-                $(".popup_controls").hide();
-                $(".insert_data").remove();
-                setting_list = [];
-                weekday_list = [];
-                weekend_list = [];
-            }else{
-                return false;
-            }
-        })
+            comm.confirm("취소하시겠습니까?"
+                , {}
+                , () => {
+                    $(".popup_controls").hide();
+                    $(".insert_data").remove();
+                    setting_list = [];
+                    weekday_list = [];
+                    weekend_list = [];
+                }
+                , () => {
+                    return false;
+                });
+        });
 
         $('.start_time').timepicker({
             timeFormat : 'H:i',
@@ -110,30 +113,35 @@ function cancelChecks(){
 
 function deleteControl(obj,idx,airChk){
     let chk = obj.className;
-    if(confirm('삭제 하시겠습니까?')) {
-        if(chk.includes("weekday")) {
-            let set_filter = setting_list.filter(f => f.facilitySettingTime !== weekday_list[idx].start_time && f.facilitySettingDay !== weekday_list[idx].cycle_day);
-            setting_list = set_filter;
-            let day_filter = weekday_list.filter(f => f !== weekday_list[idx]);
-            weekday_list = day_filter;
-            weekday_list = startTimeSort(weekday_list);
-            let day_tr = $(obj).parent().parent();
-            day_tr.remove();
-        }else if(chk.includes("weekend")) {
-            let set_filter = setting_list.filter(f => f.facilitySettingTime !== weekend_list[idx].start_time && f.facilitySettingDay !== weekend_list[idx].cycle_day);
-            setting_list = set_filter;
-            let end_filter = weekend_list.filter(f => f !== weekend_list[idx]);
-            weekend_list = end_filter;
-            weekend_list = startTimeSort(weekend_list);
-            let end_tr = $(obj).parent().parent();
-            end_tr.remove();
+    comm.confirm("삭제하시겠습니까?", {}
+        , ()=> {
+            if(chk.includes("weekday")) {
+                let set_filter = setting_list.filter(f => f.facilitySettingTime !== weekday_list[idx].start_time && f.facilitySettingDay !== weekday_list[idx].cycle_day);
+                let day_filter = weekday_list.filter(f => f !== weekday_list[idx]);
+                let day_tr = $(obj).parent().parent();
 
+                setting_list = set_filter;
+                weekday_list = day_filter;
+                weekday_list = startTimeSort(weekday_list);
+
+                day_tr.remove();
+            }else if(chk.includes("weekend")) {
+                let set_filter = setting_list.filter(f => f.facilitySettingTime !== weekend_list[idx].start_time && f.facilitySettingDay !== weekend_list[idx].cycle_day);
+                let end_filter = weekend_list.filter(f => f !== weekend_list[idx]);
+                let end_tr = $(obj).parent().parent();
+
+                setting_list = set_filter;
+                weekend_list = end_filter;
+                weekend_list = startTimeSort(weekend_list);
+
+                end_tr.remove();
+            }
+            $(".insert_data").remove();
+            createControlAllV2(airChk);
         }
-        $(".insert_data").remove();
-        createControlAllV2(airChk);
-    }else{
-        return false;
-    }
+        , () => {
+            return false;
+    });
 }
 
 function startTimeSort(ary){
@@ -175,7 +183,7 @@ function arrayDuplicateCheck(seq,ary,data){
     let chk = true;
     for(let i=0; i<ary.length; i++){
         if(ary[i].facilitySettingTime === data.start_time && changeToFormStyle("cycle_day",ary[i].facilitySettingDay) === data.cycle_day){
-            alert("중복된 시간은 입력할 수 없습니다.");
+            comm.showAlert("중복된 시간은 입력할 수 없습니다.");
             chk = false;
             break;
         }
@@ -200,33 +208,33 @@ async function settingAdd(type,seq){
 
     if($(".power").val() === "change"){
         if ($('.cycle_day').val() == "") {
-            alert("주기를 선택하세요");
+            comm.showAlert("주기를 선택하세요");
             return false;
         } else if ($('.power').val() == "") {
-            alert("ON/OFF를 선택하세요");
+            comm.showAlert("ON/OFF를 선택하세요");
             return false;
         } else if ($('.start_time').val() == "") {
-            alert("작동 시간을 선택하세요");
+            comm.showAlert("작동 시간을 선택하세요");
             return false;
         } else if ($('#mode').val() == "") {
-            alert("운전모드를 선택하세요");
+            comm.showAlert("운전모드를 선택하세요");
             return false;
         } else if ($('#temp').val() == "") {
-            alert("온도를 선택하세요");
+            comm.showAlert("온도를 선택하세요");
             return false;
         } else if ($('#fan').val() == "") {
-            alert("바람세기를 선택하세요");
+            comm.showAlert("바람세기를 선택하세요");
             return false;
         }
     }else{
         if ($('.cycle_day').val() == "") {
-            alert("주기를 선택하세요");
+            comm.showAlert("주기를 선택하세요");
             return false;
         } else if ($('.power').val() == "") {
-            alert("켜짐/꺼짐을 선택하세요");
+            comm.showAlert("켜짐/꺼짐을 선택하세요");
             return false;
         } else if ($('.start_time').val() == "") {
-            alert("작동 시간을 선택하세요");
+            comm.showAlert("작동 시간을 선택하세요");
             return false;
         }
     }
@@ -444,7 +452,7 @@ function createControlAllV2(type){
                     "</tr>"
 
             }else{
-                tag +=  "<tr class='insert_data'>"+
+                tag += "<tr class='insert_data'>"+
                     "<td>"+weekend_list[i].cycle_day+"</td>"+
                     "<td>"+weekend_list[i].power+"</td>"+
                     "<td>"+weekend_list[i].start_time+" ~ 설정 전까지</td>" +
