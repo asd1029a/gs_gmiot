@@ -6,7 +6,7 @@ let weekend_list = [];
 let settingOk = false;
 
 const setSetting = {
-    eventHandler : (seq) => {
+    eventHandler : () => {
 
         $(".cycle_day_dt").on("click", function(){
             $(".cycle_day_dt").removeClass("active");
@@ -735,13 +735,15 @@ function changeToDBStyle(chk,val){
 function getSettingList(url,pSeq) {
     return new Promise(function (resolve, reject){
         $.ajax({
-            url: url + pSeq,
-            type: "POST",
-            async: true,
+            url : url + pSeq,
+            type : "POST",
+            async : true,
+            dataType : 'json',
             success: function(response) {
                 resolve(response);
             },
             error: function (xhr) {
+                console.log(xhr);
                 reject(xhr);
             }
         });

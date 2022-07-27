@@ -870,7 +870,7 @@ const mntr = {
             let cctv = rpanel.find('option:selected').data();
             rnbList.playVideo(rpanel, cctv);
         });///영상 재생 func
-        $(".popup_controls .popup_writing .tab_button span").removeClass("active");
+        // $(".popup_controls .popup_writing .tab_button span").removeClass("active");
 
     }
 }
@@ -1266,6 +1266,7 @@ const rnbList = {
             target.find('.tab li[data-value=control]').hide();
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme === "smartBusStop") {
+            // target.find('.tab li[data-value=control]').show();
             //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
@@ -1275,7 +1276,7 @@ const rnbList = {
                 let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
                     '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}"></label>' +
-                    '<span onclick="setSetting.eventHandler(\'{{facilitySeq}}\'); setFacilityAppoint(\'{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\',\'{{facilityName}}\');"><img src="/images/default/icon_setting.svg"></span>' +
+                    '<span onclick="setFacilityAppoint(\'{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\',\'{{facilityName}}\');"><img src="/images/default/icon_setting.svg"></span>' +
                     '</dd></dl>';
                 let objAry = JSON.parse(result);
                 console.log(objAry)

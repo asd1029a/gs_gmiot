@@ -120,6 +120,7 @@ $(document).ready(() => {
         svgToImage.init();
         mntr.init();
         mntr.eventHandler();
+        setSetting.eventHandler();
         dialogManager.init(window.map);
 
         //추후 properties 혹은 디비로 관리?
