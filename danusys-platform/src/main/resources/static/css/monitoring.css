@@ -295,7 +295,7 @@
 
 .area_right .area_title{height: 50px; min-height: 50px;}
 .area_right .ptz_toggle{ display: flex; align-items: center;}
-.area_right .ptz_toggle span{margin: 0px 10px 0px 0px; font-size: 16px; color: #7f8491; cursor: pointer;}
+.area_right .ptz_toggle span{margin: 0px 0px 0px 10px; font-size: 16px; color: #7f8491; cursor: pointer;}
 
 .ptz_toggle input[type=checkbox]{visibility: hidden; width: 0; height: 0;}
 .ptz_toggle label{position: relative; display: block; width: 60px; height: 28px; text-indent: 28px; color: #7f8491 !important; background: #3b3f4a; border-radius: 100px; cursor: pointer;}
