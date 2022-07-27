@@ -1219,12 +1219,12 @@ function setFacility(id, fid, fseq) {
     let point = $("input:checkbox[id='" + id + "']");
     let pointValue = point.is(":checked") ? "On" : "Off";
     point.prop('checked', point.is(":checked"));
-    let spanId = "span_" + id.split("_")[1];
+    // let spanId = "span_" + id.split("_")[1];
     if(point.is(":checked")) {
-        $("#"+spanId).addClass("green");
+        // $("#"+spanId).addClass("green");
         $("label[for='"+id+"']").text("ON");
     } else {
-        $("#"+spanId).removeClass("green");
+        // $("#"+spanId).removeClass("green");
         $("label[for='"+id+"']").text("OFF");
     }
 

@@ -34,7 +34,6 @@ public class FacilitySettingController {
 
     @PostMapping
     public ResponseEntity<?> saveList(@RequestBody List<SettingDTO> settingDTOList) throws Exception {
-        log.info("{}",settingDTOList);
         facilitySettingService.save(settingDTOList);
         return ResponseEntity.noContent().build();
     }

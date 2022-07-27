@@ -1,7 +1,9 @@
 package com.danusys.web.commons.api.service;
 
 import com.danusys.web.commons.api.dto.SettingDTO;
+import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.FacilitySetting;
+import com.danusys.web.commons.api.repository.FacilityRepository;
 import com.danusys.web.commons.api.repository.FacilitySettingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +21,17 @@ import java.util.Map;
 public class FacilitySettingService {
 
     private final FacilitySettingRepository facilitySettingRepository;
+    private final FacilityRepository facilityRepository;
+    private final FacilityService facilityService;
 
     @Transactional
     public void save(List<SettingDTO> settingDTOList) {
+
         List<FacilitySetting> facilitySettingList = new ArrayList<>();
         settingDTOList.stream().forEach(settingDTO ->{
             FacilitySetting facilitySetting = new FacilitySetting(settingDTO);
+            Facility findFacility = facilityRepository.findByFacilitySeq(facilitySetting.getFacilitySeq());
+            facilitySetting.setFacilityId(findFacility.getFacilityId());
             facilitySettingList.add(facilitySetting);
         });
         facilitySettingRepository.deleteAllByFacilitySeq(facilitySettingList.get(0).getFacilitySeq());
@@ -104,5 +111,9 @@ public class FacilitySettingService {
 //            settingDTOList.add(settingDTO);
 //        }
         return settingDTOList;
+    }
+
+    public List<Map<String,Object>> findBySetScheduler() {
+        return facilitySettingRepository.findBySetScheduler();
     }
 }
