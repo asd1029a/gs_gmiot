@@ -1,6 +1,5 @@
 package com.danusys.web.commons.api.scheduler.controller;
 
-import com.danusys.web.commons.api.scheduler.service.SchedulerService;
 import com.danusys.web.commons.api.scheduler.service.YjMqttFacility;
 import com.danusys.web.commons.api.scheduler.service.YjMqttManager;
 import com.danusys.web.commons.app.JsonUtil;
@@ -27,12 +26,10 @@ import java.util.Map;
 public class MqttController {
     private final YjMqttManager yjMqttManager;
     private final YjMqttFacility yjMqttFacility;
-    private final SchedulerService schedulerService;
 
-    public MqttController(YjMqttManager yjMqttManager, YjMqttFacility yjMqttFacility, SchedulerService schedulerService) {
+    public MqttController(YjMqttManager yjMqttManager, YjMqttFacility yjMqttFacility) {
         this.yjMqttManager = yjMqttManager;
         this.yjMqttFacility = yjMqttFacility;
-        this.schedulerService = schedulerService;
     }
 
     @PostMapping(value = "/set")
