@@ -27,7 +27,7 @@ public class YjMqttManager {
     public void init(String serverUri) {
         option = new MqttConnectOptions();
         option.setCleanSession(true);
-        option.setKeepAliveInterval(30);
+        option.setKeepAliveInterval(60);
         try {
             mqttClient = new MqttClient(serverUri,"");
             mqttClient.connect();
