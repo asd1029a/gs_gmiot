@@ -18,6 +18,8 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
 
     Facility findByFacilityId(String facilityId);
 
+    Facility findByFacilitySeq(Long facilitySeq);
+
     @Query(value = "SELECT code_seq FROM v_facility_kind WHERE code_id = :codeId", nativeQuery = true)
     Long findCommonCode(String codeId);
 
