@@ -112,4 +112,8 @@ public class FacilitySettingService {
 //        }
         return settingDTOList;
     }
+
+    public List<Map<String,Object>> findBySetScheduler() {
+        return facilitySettingRepository.findBySetScheduler();
+    }
 }
