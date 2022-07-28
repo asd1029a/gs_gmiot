@@ -1272,7 +1272,7 @@ const rnbList = {
             target.find('.tab li[data-value=control]').hide();
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme === "smartBusStop") {
-            target.find('.tab li[data-value=control]').show();
+            // target.find('.tab li[data-value=control]').show();
             //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
@@ -1291,6 +1291,12 @@ const rnbList = {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
                     let admininstZone = pointInfo.administZone.substr(0, 5);
+                    // 로컬 db 전용
+                    // if (pointInfo.administZone != undefined) {
+                    //     admininstZone = pointInfo.administZone.substr(0, 5);
+                    // } else {
+                    //     admininstZone = "41210";
+                    // }
                     let presentValue = "";
 
                     facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
