@@ -1,4 +1,4 @@
-//setting data list
+//setting data array list
 let setting_list = [];
 let weekday_list = [];
 let weekend_list = [];
@@ -8,51 +8,51 @@ let settingOk = false;
 const setSetting = {
     eventHandler : () => {
 
-        $(".cycle_day_dt").on("click", function(){
+        $(".cycle_day_dt").on("click", function () {
             $(".cycle_day_dt").removeClass("active");
             $(this).addClass("active");
             $(".cycle_day").val($(this).text());
         });
-        $(".air_con_fan").off('click').on("click",function(){
-            if(settingOk){
+        $(".air_con_fan").off('click').on("click", function () {
+            if (settingOk) {
                 $(".air_con_fan").removeClass("active");
                 $(this).addClass("active");
                 $("#fan").val($(this).text());
-            }else{
+            } else {
                 $("#fan").val("");
                 comm.showAlert("설정 변경을 눌러야 가능한 기능입니다.");
                 return false;
             }
 
         });
-        $(".air_con_mode").off('click').on("click",function(){
-            if(settingOk){
+        $(".air_con_mode").off('click').on("click", function () {
+            if (settingOk) {
                 $(".air_con_mode").removeClass("active");
                 $(this).addClass("active");
                 $("#mode").val($(this).text());
-            }else{
+            } else {
                 $("#mode").val("");
                 comm.showAlert("설정 변경을 눌러야 가능한 기능입니다.");
                 return false;
             }
         });
-        $(".power_list").on("click", function(){
+        $(".power_list").on("click", function () {
             settingOk = false;
             $(".air_con_mode").removeClass("active");
             $(".air_con_fan").removeClass("active");
             $(".power_list").removeClass("active");
             $(this).addClass("active");
-            if(this.classList.contains('setting_controller')){
+            if (this.classList.contains('setting_controller')) {
                 settingOk = true;
-            }else{
+            } else {
                 $("#fan").val("");
                 $("#mode").val("");
             };
             $(".power").val($(this).text());
         });
 
-        $(".setting_save").on("click",()=>{
-            if(setting_list.length === 0) {
+        $(".setting_save").on("click", () => {
+            if (setting_list.length === 0) {
                 deleteSetting("/facilitySetting/",$(".facility_seq").val());
             } else {
                 setting_list.filter(
@@ -65,7 +65,7 @@ const setSetting = {
         })
 
 
-        $(".setting_close").off("click").on("click",()=>{
+        $(".setting_close").off("click").on("click", () => {
             comm.confirm("취소하시겠습니까?"
                 , {}
                 , () => {
@@ -84,12 +84,12 @@ const setSetting = {
             timeFormat : 'H:i',
             defaultTime : '00:00',
             step : 30,
-            dynamic: false,
-            dropdown: true,
-            scrollbar: true
+            dynamic : false,
+            dropdown : true,
+            scrollbar : true
         });
 
-        $(".popup_close").on("click", function (){
+        $(".popup_close").on("click", function () {
             $(".popup_controls").hide();
             $(".insert_data").remove();
             cancelChecks();
@@ -97,10 +97,17 @@ const setSetting = {
             weekday_list = [];
             weekend_list = [];
         });
+
     }
 }
+function gmSeqCheck(seq) {
+    if (seq == '6366' || seq == '6379' || seq == '6353' || seq == '6418' || seq == '6340' || seq == '6405' || seq == '6392') {
+        return true;
+    }
+    return false;
+}
 
-function cancelChecks(){
+function cancelChecks() {
     $(".cycle_day").val("");
     $("#fan").val("");
     $("#mode").val("");
@@ -111,11 +118,11 @@ function cancelChecks(){
     $(".power_list").removeClass("active");
 }
 
-function deleteControl(obj,idx,airChk){
+function deleteControl(obj, idx, airChk, seq) {
     let chk = obj.className;
     comm.confirm("삭제하시겠습니까?", {}
-        , ()=> {
-            if(chk.includes("weekday")) {
+        , () => {
+            if (chk.includes("weekday")) {
                 let set_filter = setting_list.filter(f => f.facilitySettingTime !== weekday_list[idx].start_time && f.facilitySettingDay !== weekday_list[idx].cycle_day);
                 let day_filter = weekday_list.filter(f => f !== weekday_list[idx]);
                 let day_tr = $(obj).parent().parent();
@@ -125,7 +132,7 @@ function deleteControl(obj,idx,airChk){
                 weekday_list = startTimeSort(weekday_list);
 
                 day_tr.remove();
-            }else if(chk.includes("weekend")) {
+            } else if (chk.includes("weekend")) {
                 let set_filter = setting_list.filter(f => f.facilitySettingTime !== weekend_list[idx].start_time && f.facilitySettingDay !== weekend_list[idx].cycle_day);
                 let end_filter = weekend_list.filter(f => f !== weekend_list[idx]);
                 let end_tr = $(obj).parent().parent();
@@ -137,16 +144,16 @@ function deleteControl(obj,idx,airChk){
                 end_tr.remove();
             }
             $(".insert_data").remove();
-            createControlAllV2(airChk);
+            createControlAllV2(airChk, seq);
         }
         , () => {
             return false;
     });
 }
 
-function startTimeSort(ary){
-    if(ary != null) {
-        ary.sort((a,b) =>{
+function startTimeSort(ary) {
+    if (ary != null) {
+        ary.sort((a, b) => {
             let as = a.start_time;
             let bs = b.start_time;
             if(as < bs){
@@ -179,7 +186,7 @@ function startTimeSort(ary){
 //     }
 // }
 
-function arrayDuplicateCheck(seq,ary,data){
+function arrayDuplicateCheck(type,seq,ary,data){
     let chk = true;
     for(let i=0; i<ary.length; i++){
         if(ary[i].facilitySettingTime === data.start_time && changeToFormStyle("cycle_day",ary[i].facilitySettingDay) === data.cycle_day){
@@ -190,7 +197,7 @@ function arrayDuplicateCheck(seq,ary,data){
     }
 
     if(chk){
-        changeToDBAry(seq,data);
+        changeToDBAry(seq,data,type);
         if(data.cycle_day == "평일") {
             weekday_list.push(data);
         }else{
@@ -243,11 +250,11 @@ async function settingAdd(type,seq){
 
     let air_form = $(".air_con_form").serializeJSON();
 
-    arrayDuplicateCheck(seq,setting_list,air_form);
+    arrayDuplicateCheck(type,seq,setting_list,air_form);
 
     weekday_list = startTimeSort(weekday_list);
     weekend_list = startTimeSort(weekend_list);
-    createControlAllV2(type);
+    createControlAllV2(type,seq);
 }
 
 
@@ -278,11 +285,11 @@ async function setFacilityAppoint(index,id,seq,name){
 //         return startTimeSortV2(chg_list);
 //     }
 // }
-function setAppointList(idCheck,setTag){
+function setAppointList(idCheck,setTag,seq) {
 
     setting_list = setting_list[0];
-    weekday_list = startTimeSort(changeToSameAry(weekday_list[0],idCheck));
-    weekend_list = startTimeSort(changeToSameAry(weekend_list[0],idCheck));
+    weekday_list = startTimeSort(changeToSameAry(weekday_list[0],idCheck,seq));
+    weekend_list = startTimeSort(changeToSameAry(weekend_list[0],idCheck,seq));
 
     if(setting_list.length === 0 || setting_list === undefined) {
         setting_list = [];
@@ -294,20 +301,20 @@ function setAppointList(idCheck,setTag){
         weekend_list = [];
     }
 
-    if(idCheck == "air_con"){
+    if(idCheck == "air_con" || gmSeqCheck(seq)) {
         $(".air_add").append(setTag)
-        if(weekend_list != null || weekday_list != null ){
-            createControlAllV2(idCheck);
+        if(weekend_list != null || weekday_list != null ) {
+            createControlAllV2(idCheck, seq);
         }
 
 
         $(".setting_area").show();
         $(".setting_controller").show();
 
-    }else{
+    } else {
         $(".ano_add").append(setTag)
-        if(weekend_list != null  || weekday_list != null  ){
-            createControlAllV2("another");
+        if(weekend_list != null  || weekday_list != null  ) {
+            createControlAllV2("another",seq);
         }
 
 
@@ -315,22 +322,22 @@ function setAppointList(idCheck,setTag){
         $(".setting_controller").hide();
 
     }
-    if($("#popup_controls").css("display") == "none"){
+    if($("#popup_controls").css("display") == "none") {
         $("#popup_controls").show();
-    }else{
-        $("form").each(function (){
-            this.reset();
-        })
+    } else {
+        // $("form").each(function (){
+        //     this.reset();
+        // })
         cancelChecks();
         $("#popup_controls").hide();
     }
-
 }
-function createControlAllV2(type){
+
+function createControlAllV2(type, seq) {
     let tag = "";
     for (let i = 0; i < weekday_list.length; i++) {
-        if(weekday_list[i] === weekday_list[weekday_list.length-1]){
-            if(weekday_list[i].power !== "OFF" && weekday_list[i].mode != null && type === "air_con"){
+        if(weekday_list[i] === weekday_list[weekday_list.length-1]) {
+            if(weekday_list[i].power !== "OFF" && weekday_list[i].mode != null && weekday_list[i].mode != undefined && (type === "air_con" || gmSeqCheck(seq))) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekday_list[i].cycle_day+"</td>"+
                     "<td>"+weekday_list[i].power+"</td>"+
@@ -338,9 +345,9 @@ function createControlAllV2(type){
                     "<td>"+weekday_list[i].mode+"</td>" +
                     "<td>"+weekday_list[i].temp+"°C</td>" +
                     "<td>"+weekday_list[i].fan+"</td>" +
-                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
-            }else if(weekday_list[i].power !== "OFF" && type === "air_con"){
+            } else if (weekday_list[i].power !== "OFF" && (type === "air_con" || gmSeqCheck(seq))) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekday_list[i].cycle_day+"</td>"+
                     "<td>"+weekday_list[i].power+"</td>"+
@@ -348,9 +355,9 @@ function createControlAllV2(type){
                     "<td></td>" +
                     "<td>"+weekday_list[i].temp+"°C</td>" +
                     "<td></td>" +
-                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
-            }else if(type === "air_con") {
+            } else if (type === "air_con" || gmSeqCheck(seq)) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekday_list[i].cycle_day+"</td>"+
                     "<td>"+weekday_list[i].power+"</td>"+
@@ -358,9 +365,9 @@ function createControlAllV2(type){
                     "<td></td>" +
                     "<td></td>" +
                     "<td></td>" +
-                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
-            }else {
+            } else {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekday_list[i].cycle_day+"</td>"+
                     "<td>"+weekday_list[i].power+"</td>"+
@@ -368,12 +375,12 @@ function createControlAllV2(type){
                     "<td style='display: none'></td>" +
                     "<td style='display: none'></td>" +
                     "<td style='display: none'></td>" +
-                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"another\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"another\","+seq+")'>삭제</span></td>" +
                     "</tr>"
             }
 
-        }else {
-            if(weekday_list[i].power !== "OFF" && weekday_list[i].mode != null  && type === "air_con"){
+        } else {
+            if(weekday_list[i].power !== "OFF" && weekday_list[i].mode != null && weekday_list[i].mode != undefined && (type === "air_con" || gmSeqCheck(seq))) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekday_list[i].cycle_day+"</td>"+
                     "<td>"+weekday_list[i].power+"</td>"+
@@ -381,9 +388,9 @@ function createControlAllV2(type){
                     "<td>"+weekday_list[i].mode+"</td>" +
                     "<td>"+weekday_list[i].temp+"°C</td>" +
                     "<td>"+weekday_list[i].fan+"</td>" +
-                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
-            }else if(weekday_list[i].power !== "OFF"  && type === "air_con") {
+            } else if (weekday_list[i].power !== "OFF"  && (type === "air_con" || gmSeqCheck(seq))) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekday_list[i].cycle_day+"</td>"+
                     "<td>"+weekday_list[i].power+"</td>"+
@@ -391,9 +398,9 @@ function createControlAllV2(type){
                     "<td></td>" +
                     "<td>"+weekday_list[i].temp+"°C</td>" +
                     "<td></td>" +
-                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
-            }else if(type === "air_con") {
+            } else if (type === "air_con" || gmSeqCheck(seq)) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekday_list[i].cycle_day+"</td>"+
                     "<td>"+weekday_list[i].power+"</td>"+
@@ -401,7 +408,7 @@ function createControlAllV2(type){
                     "<td></td>" +
                     "<td></td>" +
                     "<td></td>" +
-                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
             }
             else {
@@ -412,15 +419,15 @@ function createControlAllV2(type){
                     "<td style='display: none'></td>" +
                     "<td style='display: none'></td>" +
                     "<td style='display: none'></td>" +
-                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"another\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekday\" onclick='deleteControl(this,"+i+",\"another\","+seq+")'>삭제</span></td>" +
                     "</tr>"
             }
         }
     }
 
     for (let i = 0; i < weekend_list.length; i++) {
-        if(weekend_list[i] === weekend_list[weekend_list.length-1]){
-            if(weekend_list[i].power !== "OFF" && weekend_list[i].mode != null  && type === "air_con"){
+        if(weekend_list[i] === weekend_list[weekend_list.length-1]) {
+            if(weekend_list[i].power !== "OFF" && weekend_list[i].mode != null && weekend_list[i].mode != undefined && (type === "air_con" || gmSeqCheck(seq))) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekend_list[i].cycle_day+"</td>"+
                     "<td>"+weekend_list[i].power+"</td>"+
@@ -428,9 +435,9 @@ function createControlAllV2(type){
                     "<td>"+weekend_list[i].mode+"</td>" +
                     "<td>"+weekend_list[i].temp+"°C</td>" +
                     "<td>"+weekend_list[i].fan+"</td>" +
-                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
-            }else if(weekend_list[i].power !== "OFF"  && type === "air_con") {
+            } else if (weekend_list[i].power !== "OFF"  && (type === "air_con" || gmSeqCheck(seq))) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekend_list[i].cycle_day+"</td>"+
                     "<td>"+weekend_list[i].power+"</td>"+
@@ -438,9 +445,9 @@ function createControlAllV2(type){
                     "<td></td>" +
                     "<td>"+weekend_list[i].temp+"°C</td>" +
                     "<td></td>" +
-                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
-            }else if(type === "air_con") {
+            } else if (type === "air_con" || gmSeqCheck(seq)) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekend_list[i].cycle_day+"</td>"+
                     "<td>"+weekend_list[i].power+"</td>"+
@@ -448,7 +455,7 @@ function createControlAllV2(type){
                     "<td></td>" +
                     "<td></td>" +
                     "<td></td>" +
-                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
 
             }else{
@@ -459,11 +466,11 @@ function createControlAllV2(type){
                     "<td style='display: none'></td>" +
                     "<td style='display: none'></td>" +
                     "<td style='display: none'></td>" +
-                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"another\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"another\","+seq+")'>삭제</span></td>" +
                     "</tr>"
             }
         }else {
-            if(weekend_list[i].power !== "OFF"  && weekend_list[i].mode != null  && type === "air_con"){
+            if(weekend_list[i].power !== "OFF"  && weekend_list[i].mode != null && weekend_list[i].mode != undefined && (type === "air_con" || gmSeqCheck(seq))){
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekend_list[i].cycle_day+"</td>"+
                     "<td>"+weekend_list[i].power+"</td>"+
@@ -471,9 +478,9 @@ function createControlAllV2(type){
                     "<td>"+weekend_list[i].mode+"</td>" +
                     "<td>"+weekend_list[i].temp+"°C</td>" +
                     "<td>"+weekend_list[i].fan+"</td>" +
-                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
-            }else if(weekend_list[i].power !== "OFF"  && type === "air_con"){
+            }else if(weekend_list[i].power !== "OFF"  && (type === "air_con" || gmSeqCheck(seq))){
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekend_list[i].cycle_day+"</td>"+
                     "<td>"+weekend_list[i].power+"</td>"+
@@ -481,9 +488,9 @@ function createControlAllV2(type){
                     "<td></td>" +
                     "<td>"+weekend_list[i].temp+"°C</td>" +
                     "<td></td>" +
-                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
-            }else if(type === "air_con") {
+            }else if(type === "air_con" || gmSeqCheck(seq)) {
                 tag +=  "<tr class='insert_data'>"+
                     "<td>"+weekend_list[i].cycle_day+"</td>"+
                     "<td>"+weekend_list[i].power+"</td>"+
@@ -491,7 +498,7 @@ function createControlAllV2(type){
                     "<td></td>" +
                     "<td></td>" +
                     "<td></td>" +
-                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"air_con\","+seq+")'>삭제</span></td>" +
                     "</tr>"
 
             }else {
@@ -502,7 +509,7 @@ function createControlAllV2(type){
                     "<td style='display: none'></td>" +
                     "<td style='display: none'></td>" +
                     "<td style='display: none'></td>" +
-                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"another\")'>삭제</span></td>" +
+                    "<td><span class=\"button setting_delete weekend\" onclick='deleteControl(this,"+i+",\"another\","+seq+")'>삭제</span></td>" +
                     "</tr>"
             }
 
@@ -511,10 +518,10 @@ function createControlAllV2(type){
     $(".control_area").append(tag);
 }
 
-function changeToSameAry(chk,type) {
+function changeToSameAry(chk,type,seq) {
     let ary = [];
     let resultAry = [];
-    if(type == "air_con" && chk[0] != null) {
+    if((type == "air_con" || gmSeqCheck(seq)) && chk[0] != null) {
         for (let i = 0; i < chk.length; i++) {
             let name = "";
             let transAry = [];
@@ -575,50 +582,50 @@ function changeToSameAry(chk,type) {
 }
 
 
-function changeToDBAry(seq,data) {
+function changeToDBAry (seq, data, type) {
     setting_list.push({
-            "facilitySeq": seq,
-            "facilitySettingType": 189,
-            "facilitySettingDay": changeToDBStyle("cycle_day", data.cycle_day),
-            "facilitySettingTime": data.start_time,
-            "facilitySettingName": "power",
-            "facilitySettingValue": changeToDBStyle("power", data.power)
+            "facilitySeq" : seq,
+            "facilitySettingType" : 189,
+            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day),
+            "facilitySettingTime" : data.start_time,
+            "facilitySettingName" : "power",
+            "facilitySettingValue" : changeToDBStyle("power", data.power)
         });
-    if(data.mode != "") {
+    if (data.mode != "") {
         setting_list.push({
-            "facilitySeq": seq,
-            "facilitySettingType": 189,
-            "facilitySettingDay": changeToDBStyle("cycle_day", data.cycle_day),
-            "facilitySettingTime": data.start_time,
-            "facilitySettingName": "mode",
-            "facilitySettingValue": changeToDBStyle("mode", data.mode)
+            "facilitySeq" : seq,
+            "facilitySettingType" : 189,
+            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day),
+            "facilitySettingTime" : data.start_time,
+            "facilitySettingName" : "mode",
+            "facilitySettingValue" : changeToDBStyle("mode", data.mode)
         });
     }
     if (data.fan != "") {
         setting_list.push({
-            "facilitySeq": seq,
-            "facilitySettingType": 189,
-            "facilitySettingDay": changeToDBStyle("cycle_day", data.cycle_day),
-            "facilitySettingTime": data.start_time,
-            "facilitySettingName": "fan",
-            "facilitySettingValue": changeToDBStyle("fan", data.fan)
+            "facilitySeq" : seq,
+            "facilitySettingType" : 189,
+            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day),
+            "facilitySettingTime" : data.start_time,
+            "facilitySettingName" : "fan",
+            "facilitySettingValue" : changeToDBStyle("fan", data.fan)
         });
     }
-    if (data.temp != "" && data.power !== "OFF") {
+    if (data.temp != "" && data.power !== "OFF" && (type === "air_con" || gmSeqCheck(seq))) {
         setting_list.push({
-            "facilitySeq": seq,
-            "facilitySettingType": 189,
-            "facilitySettingDay": changeToDBStyle("cycle_day", data.cycle_day),
-            "facilitySettingTime": data.start_time,
-            "facilitySettingName": "temp",
-            "facilitySettingValue": data.temp
+            "facilitySeq" : seq,
+            "facilitySettingType" : 189,
+            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day),
+            "facilitySettingTime" : data.start_time,
+            "facilitySettingName" : "temp",
+            "facilitySettingValue" : data.temp
         });
     }
 }
 
 
 
-function changeToFormStyle(chk,val){
+function changeToFormStyle(chk,val) {
     let obj = "";
     if(chk === "power") {
         obj = {
@@ -677,7 +684,7 @@ function changeToFormStyle(chk,val){
     return obj[val].value;
 }
 
-function changeToDBStyle(chk,val){
+function changeToDBStyle(chk,val) {
     let obj = "";
     if(chk === "power") {
         obj = {
@@ -720,6 +727,7 @@ function changeToDBStyle(chk,val){
             }
         }
     }
+
     if(chk === "fan") {
         obj = {
             "약풍" : {
@@ -740,14 +748,14 @@ function changeToDBStyle(chk,val){
 }
 
 
-function getSettingList(url,pSeq) {
+function getSettingList(url, seq) {
     return new Promise(function (resolve, reject){
         $.ajax({
-            url : url + pSeq,
+            url : url + seq,
             type : "POST",
             async : true,
             dataType : 'json',
-            success: function(response) {
+            success: function (response) {
                 resolve(response);
             },
             error: function (xhr) {
@@ -758,7 +766,7 @@ function getSettingList(url,pSeq) {
     });
 };
 
-function addSetting(url,obj) {
+function addSetting(url, obj) {
     $.ajax({
         url : url,
         type : "POST",
@@ -771,10 +779,10 @@ function addSetting(url,obj) {
     })
 }
 
-function deleteSetting(url,seq) {
+function deleteSetting(url, seq) {
     $.ajax({
-        url: url + seq,
-        type: "DELETE",
+        url : url + seq,
+        type : "DELETE",
         // error: function (error) {
         //     console.log("error: " + error);
         // }

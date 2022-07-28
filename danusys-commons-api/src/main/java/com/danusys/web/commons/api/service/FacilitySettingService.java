@@ -26,12 +26,25 @@ public class FacilitySettingService {
 
     @Transactional
     public void save(List<SettingDTO> settingDTOList) {
-
         List<FacilitySetting> facilitySettingList = new ArrayList<>();
         settingDTOList.stream().forEach(settingDTO ->{
             FacilitySetting facilitySetting = new FacilitySetting(settingDTO);
             Facility findFacility = facilityRepository.findByFacilitySeq(facilitySetting.getFacilitySeq());
-            facilitySetting.setFacilityId(findFacility.getFacilityId());
+            String facilityId = findFacility.getFacilityName();
+            facilitySetting.setAdministZone(findFacility.getAdministZone());
+            if(facilityId.equals("IDU_기동정지")) {
+                if(facilitySetting.getFacilitySettingName().equals("power")) {
+                    facilitySetting.setFacilityId(findFacility.getFacilityId());
+                } else if (facilitySetting.getFacilitySettingName().equals("mode")) {
+                    facilitySetting.setFacilityId(facilitySettingRepository.findFacilityId(facilitySetting.getFacilitySeq(),"운전모드"));
+                } else if (facilitySetting.getFacilitySettingName().equals("fan")) {
+                    facilitySetting.setFacilityId(facilitySettingRepository.findFacilityId(facilitySetting.getFacilitySeq(),"바람세기"));
+                } else if (facilitySetting.getFacilitySettingName().equals("temp")) {
+                    facilitySetting.setFacilityId(facilitySettingRepository.findFacilityId(facilitySetting.getFacilitySeq(),"설정온도"));
+                }
+            } else {
+                facilitySetting.setFacilityId(findFacility.getFacilityId());
+            }
             facilitySettingList.add(facilitySetting);
         });
         facilitySettingRepository.deleteAllByFacilitySeq(facilitySettingList.get(0).getFacilitySeq());

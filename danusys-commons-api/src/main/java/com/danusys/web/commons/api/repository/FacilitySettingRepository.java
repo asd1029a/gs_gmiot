@@ -3,6 +3,7 @@ package com.danusys.web.commons.api.repository;
 import com.danusys.web.commons.api.model.FacilitySetting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -24,5 +25,9 @@ public interface FacilitySettingRepository extends JpaRepository<FacilitySetting
                     "ORDER BY facility_setting_time ", nativeQuery = true
     )
     List<Map<String,Object>> findBySetScheduler();
+
+    @Query(value = "select facility_key from t_facility_key_mapping where facility_seq = :facilitySeq and remarks = :remarks", nativeQuery = true)
+    String findFacilityId(@Param("facilitySeq") Long facilitySeq, @Param("remarks") String remarks);
+
 
 }

@@ -40,13 +40,12 @@ public class FacilitySetting {
 
     private String facilityId;
 
+    private String administZone;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd kk:mm:ss", timezone = "Asia/Seoul")
     @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp insertDt;
 
-    public void setFacilityId(String facilityId){
-        this.facilityId = facilityId;
-    }
 
     public FacilitySetting(SettingDTO settingDTO){
         this.facilitySeq = settingDTO.getFacilitySeq();
@@ -67,5 +66,13 @@ public class FacilitySetting {
         this.facilitySettingDay = settingDTO.getFacilitySettingDay();
 
         return this;
+    }
+
+    public void setFacilityId(String facilityId){
+        this.facilityId = facilityId;
+    }
+
+    public void setAdministZone(String administZone){
+        this.administZone = administZone;
     }
 }
