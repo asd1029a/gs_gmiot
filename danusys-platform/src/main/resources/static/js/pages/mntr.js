@@ -1282,7 +1282,7 @@ const rnbList = {
                 let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
                     '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}"></label>' +
-                    '<span onclick="setFacilityAppoint(\'{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\',\'{{facilityName}}\');"><img src="/images/default/icon_setting.svg"></span>' +
+                    '<span onclick="setFacilityAppoint(\'{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\',\'{{facilityName}}\',\'{{administZone}}\');"><img src="/images/default/icon_setting.svg"></span>' +
                     '</dd></dl>';
                 let objAry = JSON.parse(result);
                 console.log(objAry)
@@ -1290,6 +1290,7 @@ const rnbList = {
                 objAry.features.forEach((f, i) => {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
+                    let admininstZone = pointInfo.administZone.substr(0, 5);
                     let presentValue = "";
 
                     facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
@@ -1321,6 +1322,7 @@ const rnbList = {
                             .replaceAll("{{facilitySeq}}", facilitySeq)
                             .replace("{{for_index}}", i)
                             .replace("{{check_value}}", presentValue)
+                            .replace("{{administZone}}", admininstZone)
                     );
                     let point = $("input:checkbox[id='control_"+i+"']");
                     if(point.is(":checked")) {

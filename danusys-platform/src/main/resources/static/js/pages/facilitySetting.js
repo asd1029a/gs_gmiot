@@ -186,10 +186,10 @@ function startTimeSort(ary) {
 //     }
 // }
 
-function arrayDuplicateCheck(type,seq,ary,data){
+function arrayDuplicateCheck(type,seq,ary,data,administZone){
     let chk = true;
     for(let i=0; i<ary.length; i++){
-        if(ary[i].facilitySettingTime === data.start_time && changeToFormStyle("cycle_day",ary[i].facilitySettingDay) === data.cycle_day){
+        if(ary[i].facilitySettingTime === data.start_time && changeToFormStyle("cycle_day", ary[i].facilitySettingDay) === data.cycle_day){
             comm.showAlert("중복된 시간은 입력할 수 없습니다.");
             chk = false;
             break;
@@ -197,7 +197,7 @@ function arrayDuplicateCheck(type,seq,ary,data){
     }
 
     if(chk){
-        changeToDBAry(seq,data,type);
+        changeToDBAry(seq, data, type, administZone);
         if(data.cycle_day == "평일") {
             weekday_list.push(data);
         }else{
@@ -206,7 +206,7 @@ function arrayDuplicateCheck(type,seq,ary,data){
     }
 }
 
-async function settingAdd(type,seq){
+async function settingAdd(type,seq, administZone){
     if(setting_list == null){
         setting_list = [];
         weekday_list = [];
@@ -250,7 +250,7 @@ async function settingAdd(type,seq){
 
     let air_form = $(".air_con_form").serializeJSON();
 
-    arrayDuplicateCheck(type,seq,setting_list,air_form);
+    arrayDuplicateCheck(type,seq,setting_list,air_form,administZone);
 
     weekday_list = startTimeSort(weekday_list);
     weekend_list = startTimeSort(weekend_list);
@@ -258,7 +258,7 @@ async function settingAdd(type,seq){
 }
 
 
-async function setFacilityAppoint(index,id,seq,name){
+async function setFacilityAppoint(index,id,seq,name,administZone){
     $(".insert_data").remove();
     setting_list = [];
     weekday_list = [];
@@ -269,12 +269,12 @@ async function setFacilityAppoint(index,id,seq,name){
     weekend_list.push(await getSettingList("/facilitySetting/weekend/",seq));
 
     let idCheck = id.split("/");
-    let setTag = '<li class="add" id="setting_add" onclick="settingAdd(\''+idCheck[1]+'\','+seq+')">추가</li>';
+    let setTag = '<li class="add" id="setting_add" onclick="settingAdd(\''+idCheck[1]+'\','+seq+','+administZone+')">추가</li>';
     $(".ano_add").html("");
     $(".air_add").html("");
     $(".facility_seq").val(seq);
 
-    setAppointList(idCheck[1],setTag,seq);
+    setAppointList(idCheck[1],setTag,seq,administZone);
 }
 // function setTwoAryOneAry(ary) {
 //     if(ary != null) {
@@ -285,11 +285,11 @@ async function setFacilityAppoint(index,id,seq,name){
 //         return startTimeSortV2(chg_list);
 //     }
 // }
-function setAppointList(idCheck,setTag,seq) {
+function setAppointList(idCheck,setTag,seq,administZone) {
 
     setting_list = setting_list[0];
-    weekday_list = startTimeSort(changeToSameAry(weekday_list[0],idCheck,seq));
-    weekend_list = startTimeSort(changeToSameAry(weekend_list[0],idCheck,seq));
+    weekday_list = startTimeSort(changeToSameAry(weekday_list[0],idCheck,seq,administZone));
+    weekend_list = startTimeSort(changeToSameAry(weekend_list[0],idCheck,seq,administZone));
 
     if(setting_list.length === 0 || setting_list === undefined) {
         setting_list = [];
@@ -518,7 +518,7 @@ function createControlAllV2(type, seq) {
     $(".control_area").append(tag);
 }
 
-function changeToSameAry(chk,type,seq) {
+function changeToSameAry(chk,type,seq,administZone) {
     let ary = [];
     let resultAry = [];
     if((type == "air_con" || gmSeqCheck(seq)) && chk[0] != null) {
@@ -526,7 +526,7 @@ function changeToSameAry(chk,type,seq) {
             let name = "";
             let transAry = [];
             transAry.push({
-                "cycle_day":changeToFormStyle("cycle_day", chk[i][0].facilitySettingDay),
+                "cycle_day":changeToFormStyle("cycle_day", chk[i][0].facilitySettingDay, administZone),
                 "start_time":chk[i][0].facilitySettingTime
             })
             for (let j = 0; j < chk[i].length; j++) {
@@ -537,15 +537,15 @@ function changeToSameAry(chk,type,seq) {
                     });
                 }else if(name == "fan"){
                     transAry.push({
-                        "fan" : changeToFormStyle(chk[i][j].facilitySettingName,chk[i][j].facilitySettingValue)
+                        "fan" : changeToFormStyle(chk[i][j].facilitySettingName, chk[i][j].facilitySettingValue, administZone)
                     });
                 }else if(name == "mode"){
                     transAry.push({
-                        "mode" : changeToFormStyle(chk[i][j].facilitySettingName,chk[i][j].facilitySettingValue)
+                        "mode" : changeToFormStyle(chk[i][j].facilitySettingName,chk[i][j].facilitySettingValue, administZone)
                     });
                 }else if(name == "power"){
                     transAry.push({
-                        "power" : changeToFormStyle(chk[i][j].facilitySettingName,chk[i][j].facilitySettingValue)
+                        "power" : changeToFormStyle(chk[i][j].facilitySettingName,chk[i][j].facilitySettingValue, administZone)
                     });
                 }
             }
@@ -561,14 +561,14 @@ function changeToSameAry(chk,type,seq) {
             let name = "";
             let transAry = [];
             transAry.push({
-                "cycle_day":changeToFormStyle("cycle_day", chk[i][0].facilitySettingDay),
+                "cycle_day":changeToFormStyle("cycle_day", chk[i][0].facilitySettingDay, administZone),
                 "start_time":chk[i][0].facilitySettingTime
             })
             for (let j = 0; j < chk[i].length; j++) {
                 name = chk[i][j].facilitySettingName;
                 if(name == "power"){
                     transAry.push({
-                        "power" : changeToFormStyle(chk[i][j].facilitySettingName,chk[i][j].facilitySettingValue)
+                        "power" : changeToFormStyle(chk[i][j].facilitySettingName,chk[i][j].facilitySettingValue, administZone)
                     });
                 }
             }
@@ -582,40 +582,40 @@ function changeToSameAry(chk,type,seq) {
 }
 
 
-function changeToDBAry (seq, data, type) {
+function changeToDBAry (seq, data, type, administZone) {
     setting_list.push({
             "facilitySeq" : seq,
             "facilitySettingType" : 189,
-            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day),
+            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day, administZone),
             "facilitySettingTime" : data.start_time,
             "facilitySettingName" : "power",
-            "facilitySettingValue" : changeToDBStyle("power", data.power)
+            "facilitySettingValue" : changeToDBStyle("power", data.power, administZone)
         });
     if (data.mode != "") {
         setting_list.push({
             "facilitySeq" : seq,
             "facilitySettingType" : 189,
-            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day),
+            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day, administZone),
             "facilitySettingTime" : data.start_time,
             "facilitySettingName" : "mode",
-            "facilitySettingValue" : changeToDBStyle("mode", data.mode)
+            "facilitySettingValue" : changeToDBStyle("mode", data.mode, administZone)
         });
     }
     if (data.fan != "") {
         setting_list.push({
             "facilitySeq" : seq,
             "facilitySettingType" : 189,
-            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day),
+            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day, administZone),
             "facilitySettingTime" : data.start_time,
             "facilitySettingName" : "fan",
-            "facilitySettingValue" : changeToDBStyle("fan", data.fan)
+            "facilitySettingValue" : changeToDBStyle("fan", data.fan, administZone)
         });
     }
     if (data.temp != "" && data.power !== "OFF" && (type === "air_con" || gmSeqCheck(seq))) {
         setting_list.push({
             "facilitySeq" : seq,
             "facilitySettingType" : 189,
-            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day),
+            "facilitySettingDay" : changeToDBStyle("cycle_day", data.cycle_day, administZone),
             "facilitySettingTime" : data.start_time,
             "facilitySettingName" : "temp",
             "facilitySettingValue" : data.temp
@@ -625,17 +625,26 @@ function changeToDBAry (seq, data, type) {
 
 
 
-function changeToFormStyle(chk,val) {
+function changeToFormStyle(chk, val, administZone) {
     let obj = "";
     if(chk === "power") {
-        obj = {
-            "true" : {
-                "value" : "ON"
+        obj = (administZone == "41210") ?
+            {
+                "On" : {
+                    "value" : "ON"
+                }
+                , "Off" : {
+                    "value" : "OFF"
+                }
+            } :
+            {
+                "true" : {
+                    "value" : "ON"
+                }
+                , "false" : {
+                    "value" : "OFF"
+                }
             }
-            , "false" : {
-                "value" : "OFF"
-            }
-        }
     }
 
     if(chk === "cycle_day") {
@@ -684,20 +693,32 @@ function changeToFormStyle(chk,val) {
     return obj[val].value;
 }
 
-function changeToDBStyle(chk,val) {
+function changeToDBStyle(chk,val, administZone) {
     let obj = "";
     if(chk === "power") {
-        obj = {
-            "ON" : {
-                "value" : "true"
+        obj = (administZone == "41210") ?
+            {
+                "ON" : {
+                    "value" : "On"
+                }
+                , "OFF" : {
+                    "value" : "Off"
+                }
+                , "change" : {
+                    "value" : "On"
+                }
+            } :
+            {
+                "ON" : {
+                    "value" : "true"
+                }
+                , "OFF" : {
+                    "value" : "false"
+                }
+                , "change" : {
+                    "value" : "true"
+                }
             }
-            , "OFF" : {
-                "value" : "false"
-            }
-            , "change" : {
-                "value" : "true"
-            }
-        }
     }
 
     if(chk === "cycle_day") {
