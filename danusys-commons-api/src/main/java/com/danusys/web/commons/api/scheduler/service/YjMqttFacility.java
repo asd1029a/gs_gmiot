@@ -221,6 +221,10 @@ public class YjMqttFacility {
 
             List<Map<String,Object>> settingList =  facilitySettingService.findBySetScheduler();
             settingList.stream().forEach(ff -> {
+                if(!"47210390".equals(StrUtils.getStr(ff.get("administ_zone")))) {
+                    return;
+                }
+
                 Map<String,Object> message = new HashMap<>();
                 String facilityId = StrUtils.getStr(ff.get("facility_id"));
                 String dayOfWeek = StrUtils.getStr(ff.get("facility_setting_day"));

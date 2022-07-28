@@ -129,4 +129,6 @@ public class FacilitySettingService {
     public List<Map<String,Object>> findBySetScheduler() {
         return facilitySettingRepository.findBySetScheduler();
     }
+
+    public List<FacilitySetting> findAll() {return facilitySettingRepository.findAll();}
 }
