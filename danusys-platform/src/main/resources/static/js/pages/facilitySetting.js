@@ -659,20 +659,35 @@ function changeToFormStyle(chk, val, administZone) {
     }
 
     if(chk === "mode") {
-        obj = {
-            "1" : {
-                "value" : "냉방"
+        obj = (administZone == "41210") ?
+            {
+                "0" : {
+                    "value" : "냉방"
+                }
+                , "2" : {
+                    "value" : "송풍"
+                }
+                , "3" : {
+                    "value" : "자동"
+                }
+                , "4" : {
+                    "value" : "난방"
+                }
+            } :
+            {
+                "1" : {
+                    "value" : "냉방"
+                }
+                , "2" : {
+                    "value" : "송풍"
+                }
+                , "3" : {
+                    "value" : "자동"
+                }
+                , "4" : {
+                    "value" : "난방"
+                }
             }
-            , "2" : {
-                "value" : "송풍"
-            }
-            , "3" : {
-                "value" : "자동"
-            }
-            , "4" : {
-                "value" : "난방"
-            }
-        }
     }
     if(chk === "fan") {
         obj = {
@@ -733,20 +748,35 @@ function changeToDBStyle(chk,val, administZone) {
     }
 
     if(chk === "mode") {
-        obj = {
-            "냉방" : {
-                "value" : "1"
+        obj = (administZone == "41210") ?
+            {
+                "냉방" : {
+                    "value" : "0"
+                }
+                , "송풍" : {
+                    "value" : "2"
+                }
+                , "자동" : {
+                    "value" : "3"
+                }
+                , "난방" : {
+                    "value" : "4"
+                }
+            } :
+            {
+                "냉방" : {
+                    "value" : "1"
+                }
+                , "송풍" : {
+                    "value" : "2"
+                }
+                , "자동" : {
+                    "value" : "3"
+                }
+                , "난방" : {
+                    "value" : "4"
+                }
             }
-            , "송풍" : {
-                "value" : "2"
-            }
-            , "자동" : {
-                "value" : "3"
-            }
-            , "난방" : {
-                "value" : "4"
-            }
-        }
     }
 
     if(chk === "fan") {
