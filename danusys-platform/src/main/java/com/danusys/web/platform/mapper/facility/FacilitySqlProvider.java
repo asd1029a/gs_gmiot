@@ -31,7 +31,12 @@ public class FacilitySqlProvider {
             builder.append("t1.facility_seq, t1.facility_id, t1.facility_name");
             builder.append(", t1.administ_zone, t1.facility_image");
             builder.append(", t1.facility_instl_info, t1.facility_instl_dt");
-            builder.append(", t1.facility_status, t1.latitude");
+            builder.append(", t1.facility_status " +
+                    ", CASE" +
+                    " WHEN t1.facility_status = 0 THEN '미사용'" +
+                    " WHEN t1.facility_status = 1 then '정상'" +
+                    " ELSE '이상' END AS facility_status_name" +
+                    ", t1.latitude");
             builder.append(", t1.longitude, t1.insert_dt, t3.id AS insert_user_id");
             builder.append(", t1.update_user_seq , t4.id AS update_user_id");
             builder.append(", t2.code_value AS facility_kind");
