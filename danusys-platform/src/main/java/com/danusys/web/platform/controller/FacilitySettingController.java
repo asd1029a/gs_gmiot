@@ -1,6 +1,7 @@
 package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.api.dto.SettingDTO;
+import com.danusys.web.commons.api.scheduler.service.GmSchedulerService;
 import com.danusys.web.commons.api.scheduler.service.YjMqttFacility;
 import com.danusys.web.commons.api.service.FacilitySettingService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 public class FacilitySettingController {
 
     private final FacilitySettingService facilitySettingService;
-    private final YjMqttFacility yjMqttFacility;
+    private final GmSchedulerService gmSchedulerService;
 
     @PostMapping("/{facilitySeq}")
     public ResponseEntity<List<SettingDTO>> getAllList(@PathVariable Long facilitySeq) throws Exception {
@@ -37,7 +38,8 @@ public class FacilitySettingController {
     @PostMapping
     public ResponseEntity<?> saveList(@RequestBody List<SettingDTO> settingDTOList) throws Exception {
         facilitySettingService.save(settingDTOList);
-        yjMqttFacility.setScheduler();
+        /*yjMqttFacility.setScheduler();*/
+        gmSchedulerService.setScheduler();
         return ResponseEntity.noContent().build();
     }
 

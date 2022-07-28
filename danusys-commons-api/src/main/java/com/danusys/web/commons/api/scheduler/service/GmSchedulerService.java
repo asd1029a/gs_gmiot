@@ -6,15 +6,17 @@ import com.danusys.web.commons.api.service.FacilitySettingService;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.RestUtil;
 import com.danusys.web.commons.app.StrUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +32,9 @@ import java.util.Map;
 @Component
 public class GmSchedulerService {
     /*@Value("${server.port}")*/
-    private String SERVICE_PORT = "172.20.14.19";
+    private String SERVICE_IP = "127.0.0.1";
     /*@Value("${service.ip}")*/
-    private String SERVICE_IP = "8400";
+    private String SERVICE_PORT = "8400";
     /*@Value("${facility.xml.path}")*/
     private String FACILITY_XML_PATH;
     private final FacilitySettingService facilitySettingService;
@@ -46,6 +48,7 @@ public class GmSchedulerService {
 
     public void setScheduler() {
         try {
+            RestTemplate restTemplate = new RestTemplate();
             List<FacilitySetting> settingList = facilitySettingService.findAll();
 
             settingList.stream().forEach(ff -> {
@@ -55,7 +58,8 @@ public class GmSchedulerService {
                 String facilityId = StrUtils.getStr(ff.getFacilityId());
                 String dayOfWeek = StrUtils.getStr(ff.getFacilitySettingDay());
                 String settingTime = StrUtils.getStr(ff.getFacilitySettingTime());
-                String facilitySettingValue = StrUtils.getStr(ff.getFacilitySettingTime());
+                String facilitySettingValue = StrUtils.getStr(ff.getFacilitySettingValue());
+                String facilitySeq = StrUtils.getStr(ff.getFacilitySeq());
                 String hours = "0";
                 String min = "0";
 
@@ -84,20 +88,28 @@ public class GmSchedulerService {
                 String cron = "0 " + min + " " + hours + " ?" +" * " + cronWeek;
                 Map<String, Object> param = new HashMap<>();
                 param.put("callUrl", "gmSetPointValues");
-                param.put("pointPaths", facilityId);
+                param.put("pointValues", "");
+                param.put("pointPath", facilityId);
                 param.put("settingValue", facilitySettingValue);
+                param.put("facilitySeq", facilitySeq);
                 log.info("요청 데이터 : {}", param);
 
                 Runnable runnable = new Runnable() {
                     @SneakyThrows
                     @Override
                     public void run() {
-                        ResponseEntity<Map> responseEntity = null;
                         List<Map<String, Object>> result = null;
+                        final HttpHeaders headers = new HttpHeaders();
+                        headers.setContentType(MediaType.APPLICATION_JSON);
+                        final String json = new ObjectMapper().writeValueAsString(param);
+                        URI uri = new URI("http://"+ SERVICE_IP +":"+ SERVICE_PORT +"/api/call");
+                        HttpEntity requestEntity = new HttpEntity(json, headers);
                         try {
                             //TODO 운영계는 서버 IP로 변경
-                            responseEntity = RestUtil.exchange("http://"+ SERVICE_IP +":"+ SERVICE_PORT +"/api/call", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
-                            result = (List) (new HashMap<>((Map) responseEntity.getBody().get("return"))).get("pointValues");
+//                            responseEntity = RestUtil.exchange("http://"+ SERVICE_IP +":"+ SERVICE_PORT +"/api/call", HttpMethod.POST, MediaType.APPLICATION_JSON, param, Map.class);
+
+                            ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.POST, requestEntity, String.class);
+                            //result = (List) (new HashMap<>((Map) responseEntity.getBody().get("return"))).get("pointValues");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
