@@ -32,7 +32,7 @@ public class FacilitySettingService {
             Facility findFacility = facilityRepository.findByFacilitySeq(facilitySetting.getFacilitySeq());
             String facilityId = findFacility.getFacilityName();
             facilitySetting.setAdministZone(findFacility.getAdministZone());
-            if(facilityId.equals("IDU_기동정지")) {
+            if(facilityId.equals("에어컨")) {
                 if(facilitySetting.getFacilitySettingName().equals("power")) {
                     facilitySetting.setFacilityId(findFacility.getFacilityId());
                 } else if (facilitySetting.getFacilitySettingName().equals("mode")) {
