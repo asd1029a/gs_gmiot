@@ -217,6 +217,8 @@ public class YjMqttFacility {
 
         try {
             YjMqttManager yjMqttManager = new YjMqttManager();
+            dynamicScheduler.stopScheduler();
+
             List<Map<String,Object>> settingList =  facilitySettingService.findBySetScheduler();
             settingList.stream().forEach(ff -> {
                 Map<String,Object> message = new HashMap<>();
@@ -258,17 +260,16 @@ public class YjMqttFacility {
                 }
 
                 String cron = "0 " + min + " " + hours + " ?" +" * " + cronWeek;
-                log.info("start cron : {} message {}", cron, message);
                 Runnable runnable = new Runnable() {
                     @SneakyThrows
                     @Override
                     public void run() {
                         String jsonMessage = JsonUtil.convertMapToJson(message).toString();
-                        log.info("@@@@@@@@@@@@@@@@cron : {} message {}", cron, jsonMessage);
+                        log.info("scheduler start : {} message {}, topic : {}", cron, jsonMessage, facilityId + "/set/");
                         yjMqttManager.sender(facilityId + "/set/", jsonMessage);
                     }
                 };
-                dynamicScheduler.createScheduler(cron, runnable);
+                dynamicScheduler.registerScheduler(cron, runnable);
             });
 
         } catch (Exception e) {
