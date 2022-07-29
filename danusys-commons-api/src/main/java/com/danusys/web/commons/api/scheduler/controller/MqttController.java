@@ -1,11 +1,10 @@
 package com.danusys.web.commons.api.scheduler.controller;
 
+import com.danusys.web.commons.api.scheduler.service.YjMqttFacility;
 import com.danusys.web.commons.api.scheduler.service.YjMqttManager;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.StrUtils;
-import com.danusys.web.commons.app.StringUtil;
-import lombok.SneakyThrows;
-import org.eclipse.paho.client.mqttv3.MqttException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +21,15 @@ import java.util.Map;
 
 @Profile(value = "yj")
 @RequestMapping("/mqtt")
+@Slf4j
 @RestController
 public class MqttController {
     private final YjMqttManager yjMqttManager;
+    private final YjMqttFacility yjMqttFacility;
 
-    public MqttController(YjMqttManager yjMqttManager) {
+    public MqttController(YjMqttManager yjMqttManager, YjMqttFacility yjMqttFacility) {
         this.yjMqttManager = yjMqttManager;
+        this.yjMqttFacility = yjMqttFacility;
     }
 
     @PostMapping(value = "/set")
@@ -75,4 +77,10 @@ public class MqttController {
             e.printStackTrace();
         }
     }
+
+    /*@PostMapping(value= "/setScheduler")
+    public void setScheduler(@RequestBody Map<String,Object> map) {
+        String test = "test,test2";
+        schedulerService.setScheduler();
+    }*/
 }

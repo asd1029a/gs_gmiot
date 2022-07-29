@@ -41,7 +41,7 @@ const facility = {
                 {data: "facilitySeq", className: "alignLeft"},
                 {data: "facilityId"},
                 {data: "facilityKindName"},
-                {data: "facilityStatus"},
+                {data: "facilityStatusName"},
                 {data: "stationKindName"},
                 {data: "stationName"},
                 {data: "administZoneName"},

@@ -3,14 +3,18 @@ package com.danusys.web.commons.api.scheduler.service;
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.model.Station;
+import com.danusys.web.commons.api.scheduler.DynamicScheduler;
 import com.danusys.web.commons.api.scheduler.types.FacilityKindType;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
+import com.danusys.web.commons.api.service.FacilitySettingService;
 import com.danusys.web.commons.api.service.StationService;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -19,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,15 +43,17 @@ import java.util.Map;
 public class YjMqttFacility {
     private final FacilityService facilityService;
     private final FacilityOptService facilityOptService;
-    private final ObjectMapper objectMapper;
+    private final FacilitySettingService facilitySettingService;
     private final StationService stationService;
+    private final DynamicScheduler dynamicScheduler;
 
     @Autowired
-    public YjMqttFacility(FacilityService facilityService, FacilityOptService facilityOptService, ObjectMapper objectMapper, StationService stationService) {
+    public YjMqttFacility(FacilityService facilityService, FacilityOptService facilityOptService, ObjectMapper objectMapper, StationService stationService, FacilitySettingService facilitySettingService, DynamicScheduler dynamicScheduler) {
         this.facilityService = facilityService;
         this.facilityOptService = facilityOptService;
-        this.objectMapper = objectMapper;
+        this.facilitySettingService = facilitySettingService;
         this.stationService = stationService;
+        this.dynamicScheduler = dynamicScheduler;
     }
 
     // 동기화 t_facility 있으면 수정 없으면 입력
@@ -132,10 +140,11 @@ public class YjMqttFacility {
 
                 // 저장 되어 있다면!!
                 // opt 동기화 시작
-               List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(facility.getFacilitySeq());
+                List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(facility.getFacilitySeq());
 
                 // insert
                 if(facilityOptList.isEmpty()) {
+                    List<FacilityOpt> optList = new ArrayList<>();
                     Facility finalFacility = facility;
                     mqttReceivedData.entrySet().forEach((entry) -> {
                         String receivedFaciliyOptName = entry.getKey();
@@ -155,18 +164,21 @@ public class YjMqttFacility {
                                 return;
                             }
                         }
-                        facilityOptService.save(FacilityOpt.builder()
+
+                        FacilityOpt optData = FacilityOpt.builder()
                                 .facilitySeq(finalFacility.getFacilitySeq())
                                 .facilityOptName(receivedFaciliyOptName)
                                 .facilityOptType(optType)
                                 .facilityOptValue(receivedFacilityOptValue)
-                                .build());
+                                .build();
+                        optList.add(optData);
                     });
                     return;
                 }
 
                 // update
                 Facility finalFacility1 = facility;
+                List<FacilityOpt> optList = new ArrayList<>();
                 facilityOptList.stream().forEach(optData -> {
                     if(optData.getFacilitySeq().equals(finalFacility1.getFacilitySeq())) {
 
@@ -186,15 +198,88 @@ public class YjMqttFacility {
                             }
                              if(optData.getFacilityOptName().equals(receivedOptName)) {
                                 optData.setFacilityOptValue(entry.getValue().toString());
-                                facilityOptService.save(optData);
+//                                facilityOptService.save(optData);
+                                 optList.add(optData);
                             }
                         });
                     }
                 });
+                facilityOptService.saveAll(optList);
 
             });
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
+
+    public void setScheduler() {
+        log.info("setting scheudler start !!");
+
+        try {
+            YjMqttManager yjMqttManager = new YjMqttManager();
+            dynamicScheduler.stopScheduler();
+
+            List<Map<String,Object>> settingList =  facilitySettingService.findBySetScheduler();
+            settingList.stream().forEach(ff -> {
+                if(!"47210390".equals(StrUtils.getStr(ff.get("administ_zone")))) {
+                    return;
+                }
+
+                Map<String,Object> message = new HashMap<>();
+                String facilityId = StrUtils.getStr(ff.get("facility_id"));
+                String dayOfWeek = StrUtils.getStr(ff.get("facility_setting_day"));
+                String key = StrUtils.getStr(ff.get("optionKey"));
+                String value = StrUtils.getStr(ff.get("optionValue"));
+                String settingTime = StrUtils.getStr(ff.get("facility_setting_time"));
+                String hours = "0";
+                String min = "0";
+
+                if(!"".equals(settingTime)) {
+                    hours = settingTime.split(":")[0];
+                    min = settingTime.split(":")[1];
+
+                    if("00".equals(hours)) {
+                        hours = "0";
+                    }else {
+                        hours = StringUtils.stripStart(settingTime.split(":")[0], "0");
+                    }
+                    if("00".equals(min)) {
+                        min = "0";
+                    }else {
+                        min = StringUtils.stripStart(settingTime.split(":")[1], "0");
+                    }
+                }
+
+
+                if(!"".equals(key)) {
+                    String[] keyArray = key.split(",");
+                    String[] valueArray = value.split(",");
+                    for(int i=0;i<keyArray.length; i++) {
+                        message.put(keyArray[i], valueArray[i]);
+                    }
+                }
+                String cronWeek = "0,6";
+                if("weekday".equals(dayOfWeek)) {
+                    cronWeek = "1-5";
+                }
+
+                String cron = "0 " + min + " " + hours + " ?" +" * " + cronWeek;
+                Runnable runnable = new Runnable() {
+                    @SneakyThrows
+                    @Override
+                    public void run() {
+                        String jsonMessage = JsonUtil.convertMapToJson(message).toString();
+                        log.info("scheduler start : {} message {}, topic : {}", cron, jsonMessage, facilityId + "/set/");
+                        yjMqttManager.sender(facilityId + "/set/", jsonMessage);
+                    }
+                };
+                dynamicScheduler.registerScheduler(cron, runnable);
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

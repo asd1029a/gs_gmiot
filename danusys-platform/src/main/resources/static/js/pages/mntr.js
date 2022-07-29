@@ -14,8 +14,14 @@ const mntr = {
             console.log(e);
         };
         eventSource.onmessage = (e) => {
-            const objJson = JSON.parse(e.data);
+            let objJson;
             const eventSeqs = [];
+            if(typeof e.data === "undefined" || e.data === "" || e.data === null) {
+                objJson = JSON.parse("{}");
+                console.log("이벤트 데이터가 존재하지않습니다.");
+            } else {
+                objJson = JSON.parse(e.data);
+            }
             if (Array.isArray(objJson)) {
                 //긴급 배너 띄우기
                 Array.from(objJson).forEach((e,i)=> {
@@ -872,6 +878,7 @@ const mntr = {
             let cctv = rpanel.find('option:selected').data();
             rnbList.playVideo(rpanel, cctv);
         });///영상 재생 func
+        // $(".popup_controls .popup_writing .tab_button span").removeClass("active");
 
     }
 }
@@ -1220,11 +1227,13 @@ function setFacility(id, fid, fseq) {
     let point = $("input:checkbox[id='" + id + "']");
     let pointValue = point.is(":checked") ? "On" : "Off";
     point.prop('checked', point.is(":checked"));
-    let spanId = "span_" + id.split("_")[1];
+    // let spanId = "span_" + id.split("_")[1];
     if(point.is(":checked")) {
-        $("#"+spanId).addClass("green");
+        // $("#"+spanId).addClass("green");
+        $("label[for='"+id+"']").text("ON");
     } else {
-        $("#"+spanId).removeClass("green");
+        // $("#"+spanId).removeClass("green");
+        $("label[for='"+id+"']").text("OFF");
     }
 
     facility.facilityControl({
@@ -1265,6 +1274,7 @@ const rnbList = {
             target.find('.tab li[data-value=control]').hide();
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme === "smartBusStop") {
+            // target.find('.tab li[data-value=control]').show();
             //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
@@ -1273,14 +1283,22 @@ const rnbList = {
                 target.find(".area_right_bus_status dl").hide();
                 let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
                     '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
-                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}">Toggle</label></dd></dl>';
+                    '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}"></label>' +
+                    '<span onclick="setFacilityAppoint(\'{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\',\'{{facilityName}}\',\'{{administZone}}\');"><img src="/images/default/icon_setting.svg"></span>' +
+                    '</dd></dl>';
                 let objAry = JSON.parse(result);
-
                 console.log(objAry)
 
                 objAry.features.forEach((f, i) => {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
+                    let admininstZone = pointInfo.administZone.substr(0, 5);
+                    // 로컬 db 전용
+                    // if (pointInfo.administZone != undefined) {
+                    //     admininstZone = pointInfo.administZone.substr(0, 5);
+                    // } else {
+                    //     admininstZone = "41210";
+                    // }
                     let presentValue = "";
 
                     facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
@@ -1298,7 +1316,6 @@ const rnbList = {
                     let facilityName = pointInfo.facilityName;
                     let facilityId = pointInfo.facilityId;
                     let facilitySeq = pointInfo.facilitySeq;
-
                     let spanClass    = pointInfo.facilityStatus === 1 ? "green" : "";
                     // console.log("facilityName " + facilityName + " > " + presentValue );
 
@@ -1307,12 +1324,20 @@ const rnbList = {
                             .replace("{{span_id}}", i)
                             .replace("{{span_class}}", spanClass)
                             .replace("{{facilityName}}", facilityName)
-                            .replace("{{id_index}}", i)
-                            .replace("{{onclick_index}}", i)
-                            .replace("{{facilityId}}", facilityId)
-                            .replace("{{facilitySeq}}", facilitySeq)
+                            .replaceAll("{{id_index}}", i)
+                            .replaceAll("{{onclick_index}}", i)
+                            .replaceAll("{{facilityId}}", facilityId)
+                            .replaceAll("{{facilitySeq}}", facilitySeq)
                             .replace("{{for_index}}", i)
-                            .replace("{{check_value}}", presentValue));
+                            .replace("{{check_value}}", presentValue)
+                            .replace("{{administZone}}", admininstZone)
+                    );
+                    let point = $("input:checkbox[id='control_"+i+"']");
+                    if(point.is(":checked")) {
+                        $("label[for='control_"+i+"']").text("ON");
+                    } else {
+                        $("label[for='control_"+i+"']").text("OFF");
+                    }
                 });
             });
         } else if (theme === "smartPole") {

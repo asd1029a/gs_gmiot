@@ -35,7 +35,8 @@ public class BsngScheduler {
     private final FacilityService facilityService;
     private final FacilityOptService facilityOptService;
     private final FacilityActiveRepository facilityActiveRepository;
-    private static long FACILITY_SEQ = 9721L;
+    private static long FACILITY_SEQ = 8244L; // 실서버 facility_seq
+//    private static long FACILITY_SEQ = 9721L; // 로컬서버 facility_seq
 
 //    @Scheduled(cron = "0/30 * * * * *")
     @Scheduled(fixedDelay = 60000)

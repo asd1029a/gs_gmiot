@@ -1,0 +1,136 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="navSFragment" th:with="municipality=${@environment.getProperty('municipality.name')}">
+
+        <div class="popup popup_controls" id="popup_controls" style="display: none; width: 684px;">
+            <dl class="title">
+                <dt>시설물 예약시간 설정</dt>
+                <dd><i class="popup_close"><img src="/images/default/close.svg"></i></dd>
+            </dl>
+            <div class="popup_writing">
+                <fieldset>
+                    <form class="air_con_form">
+                        <p class="sub_title">스케쥴 추가하기</p>
+                        <ul class="setting_type1">
+                            <li class="tab_button">
+                                <p>주기 선택</p>
+                                <span class="cycle_day_dt" value="평일">평일</span>
+                                <span class="cycle_day_dt" value="주말">주말</span>
+                            </li>
+                            <input type="hidden" class="cycle_day" name="cycle_day">
+                            <input type="hidden" class="facility_seq">
+                            <li class="tab_button">
+                                <p></p>
+                                <span class="power_list">ON</span>
+                                <span class="power_list setting_controller">change</span>
+                                <span class="power_list">OFF</span>
+                            </li>
+                            <input type="hidden" class="power" name="power">
+                            <li class="date">
+                                <p>시간 선택</p>
+                                <input type="text" class="start_time" name="start_time" value="00:00">
+                            </li>
+                            <span class="ano_add"></span>
+                        </ul>
+                        <div class="setting_area">
+                            <p class="sub_title">상세 설정</p>
+                            <ul class="setting_type2">
+                                <li class="tab_button">
+                                    <p>운전 모드</p>
+                                    <span class="air_con_mode">냉방</span>
+                                    <span class="air_con_mode">송풍</span>
+                                    <span class="air_con_mode">자동</span>
+                                    <span class="air_con_mode">난방</span>
+                                </li>
+                                <input type="hidden" id="mode" name="mode">
+                            </ul>
+                            <ul class="setting_type3">
+                                <li class="tab_button">
+                                    <p>온도</p>
+                                    <p class="number">
+                                        <input type="number" min="18" max="34" value="23" id="temp" name="temp">
+                                        <span class="unit">°C</span>
+                                    </p>
+                                </li>
+                                <li class="tab_button">
+                                    <p>바람 세기</p>
+                                    <span class="air_con_fan">약풍</span>
+                                    <span class="air_con_fan">중풍</span>
+                                    <span class="air_con_fan">강풍</span>
+                                    <span class="air_con_fan">자동풍</span>
+                                </li>
+                                <input type="hidden" id="fan" name="fan">
+                                <span class="air_add"></span>
+                            </ul>
+                        </div>
+                    </form>
+                </fieldset>
+                <div class="controls_list" id="controls_list">
+                    <table class="control_area">
+                        <tr>
+                            <th>주기</th>
+                            <th>설정</th>
+                            <th>예약 시간</th>
+                            <th class="setting_controller">운전 모드</th>
+                            <th class="setting_controller">온도</th>
+                            <th class="setting_controller">바람 세기</th>
+                            <th>삭제</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <ul class="bottom">
+                <li class="setting_close" name="setting_close">취소</li>
+                <li class="color setting_save" name="setting_save">저장</li>
+            </ul>
+        </div>
+        <!-- //220708 popup : 시설물 예약시간 설정 -->
+
+<!--    <div class="popup popup_controls" id="ano_popup_controls" style="display: none; width: 684px;">-->
+<!--        <dl class="title">-->
+<!--            <dt>시설물 예약시간 설정</dt>-->
+<!--            <dd><i class="popup_close"><img src="/images/default/close.svg"></i></dd>-->
+<!--        </dl>-->
+<!--        <div class="popup_writing">-->
+<!--            <fieldset>-->
+<!--                <form id="ano_form">-->
+<!--                    <p class="sub_title">스케쥴 추가하기</p>-->
+<!--                    <ul class="setting_type1">-->
+<!--                        <li class="tab_button">-->
+<!--                            <p>주기 선택</p>-->
+<!--                            <span class="ano_cycle_day_dt" value="평일">평일</span>-->
+<!--                            <span class="ano_cycle_day_dt" value="주말">주말</span>-->
+<!--                        </li>-->
+<!--                        <input type="hidden" class="ano_cycle_day" name="cycle_day">-->
+<!--                        <input type="hidden" class="facility_seq">-->
+<!--                        <li class="tab_button">-->
+<!--                            <p></p>-->
+<!--                            <span class="ano_power_list">켜짐</span>-->
+<!--                            <span class="ano_power_list">꺼짐</span>-->
+<!--                        </li>-->
+<!--                        <input type="hidden" class="ano_power" name="power">-->
+<!--                        <li class="date">-->
+<!--                            <p>시간 선택</p>-->
+<!--                            <input type="text" class="ano_start_time" value="00:00">-->
+<!--                        </li>-->
+<!--                        <li class="add" id="setting_ano_add">추가</li>-->
+<!--                    </ul>-->
+<!--                </form>-->
+<!--            </fieldset>-->
+<!--            <div class="controls_list" id="controls_ano_list">-->
+<!--                <table class="control_area">-->
+<!--                    <tr>-->
+<!--                        <th>주기</th>-->
+<!--                        <th>예약 시간</th>-->
+<!--                        <th>삭제</th>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <ul class="bottom">-->
+<!--            <li class="ano_setting_close" name="setting_close">취소</li>-->
+<!--            <li class="color ano_setting_save" name="setting_save">저장</li>-->
+<!--        </ul>-->
+<!--    </div>-->
+    </section>
+</th:block>
+</html>

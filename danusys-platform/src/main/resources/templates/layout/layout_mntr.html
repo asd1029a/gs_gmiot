@@ -3,6 +3,7 @@
 <head>
     <th:block th:insert="fragments/default/default"/>
     <script src="/webjars/jquery-ui/1.13.0/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/jquery.timepicker.min.css">
     <link rel="stylesheet" type="text/css" href="/css/monitoring.css">
 
     <script type="text/javascript" src="/js/map/controlMap.js"></script>
@@ -32,6 +33,7 @@
                 <th:block th:replace="fragments/mntr/navL :: navLFragment" />
                 <th:block layout:fragment="content" />
                 <th:block th:replace="fragments/mntr/navR :: navRFragment" />
+                <th:block th:replace="fragments/mntr/navS :: navSFragment" />
             </div>
 
         <th:block th:replace="fragments/default/footer :: footerFragment" />

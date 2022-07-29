@@ -910,7 +910,7 @@ var stringFunc = {
     changeXSSOutputValue: (str) => {
         let returnStr = "";
         if (typeof(str) === "string") {
-            returnStr = str.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&apos;/gi, '\'').replace(/&nbsp;/gi, ' ').replace(/&#40;/gi, '(').replace(/&#41;/gi, ')');
+            returnStr = str.replace(/&amp;/gi, '&').replaceAll(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&apos;/gi, '\'').replace(/&nbsp;/gi, ' ').replace(/&#40;/gi, '(').replace(/&#41;/gi, ')');
         } else {
             returnStr = str;
         }
@@ -1019,7 +1019,7 @@ const dateFunc = {
                 // sDate.datepicker({
                 //     maxDate: new Date(eDay.replace(/-/g, "/"))
                 // });
-                optObj.maxDate = new Date(eDay.replace(/-/g, "/"));
+                //optObj.maxDate = new Date(eDay.replace(/-/g, "/"));
             }
             $sDate.datepicker(optObj);
             //종료일자 세팅하기 날짜가 없는경우엔 제한을 걸지 않음

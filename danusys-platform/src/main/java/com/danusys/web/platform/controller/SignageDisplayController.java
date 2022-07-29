@@ -50,7 +50,7 @@ public class SignageDisplayController {
 
     @GetMapping(value = "/pages/signageDisplay")
     public ModelAndView signagePage(@RequestParam(value = "id") int templateSeq, @RequestParam(value = "stationId") int stationSeq) throws Exception {
-        ModelAndView mav = new ModelAndView("/view/pages/signage_display");
+        ModelAndView mav = new ModelAndView("view/pages/signage_display");
         EgovMap data = facilityService.getSignageLayout(templateSeq);
         EgovMap stationData = stationService.getOneStationForSignage(stationSeq);
         data.put("options", stationData);
