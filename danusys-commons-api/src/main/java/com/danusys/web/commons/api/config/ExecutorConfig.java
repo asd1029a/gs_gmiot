@@ -1,11 +1,14 @@
 package com.danusys.web.commons.api.config;
 
 import com.danusys.web.commons.api.service.executor.ApiExecutorFactory;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+
+import javax.persistence.EntityManager;
 
 /**
  * Project : danusys-webservice-parent
@@ -26,5 +29,10 @@ public class ExecutorConfig {
     @Bean
     public RestTemplate restTesmplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    JPAQueryFactory jpaQueryFactory(EntityManager em) {
+        return new JPAQueryFactory(em);
     }
 }

@@ -123,48 +123,50 @@ const mntr = {
                 classname: 'context-style',
                 callback: e => {
                     const coordinate = new ol.proj.transform(e.coordinate, window.map.realProjection[window.map.type] ,'EPSG:4326');
+                    if(window.lyControl.getVisibleFlag('cctvLayer')){
+                        facility.getListCctvGeoJson({
+                            'longitude' : coordinate[0],
+                            'latitude' : coordinate[1],
+                            'headFlag' : true, //헤더(<->고정 :false)
+                            'view' : 'net' //투망(<->개소 :group)
+                        }, result => {
+                            dialogManager.closeAll();
 
-                    facility.getListCctvGeoJson({
-                        'longitude' : coordinate[0],
-                        'latitude' : coordinate[1],
-                        'headFlag' : true, //헤더(<->고정 :false)
-                        'view' : 'net' //투망(<->개소 :group)
-                    }, result => {
-                        dialogManager.closeAll();
+                            const datas = JSON.parse(result).features;
+                            if(datas.length > 0){ //반경 안 투망 카메라 존재
+                                for(let i = 0, max = datas.length; i < max; i++) {
+                                    const videoData = fcltOptData(datas[i]);
 
-                        const datas = JSON.parse(result).features;
-                        if(datas.length > 0){ //반경 안 투망 카메라 존재
-                            for(let i = 0, max = datas.length; i < max; i++) {
-                                const videoData = fcltOptData(datas[i]);
+                                    const dialogOption = {
+                                        draggable: true,
+                                        clickable: true,
+                                        data: videoData,
+                                        css: {
+                                            width: '400px',
+                                            height: '340px'
+                                        }
+                                    }
 
-                                const dialogOption = {
-                                    draggable: true,
-                                    clickable: true,
-                                    data: videoData,
-                                    css: {
-                                        width: '400px',
-                                        height: '340px'
+                                    const dialog = $.connectDialog(dialogOption);
+                                    const videoOption = {};
+                                    videoOption.data = videoData;
+                                    videoOption.parent = dialog;
+                                    videoOption.btnFlag = false;
+                                    videoOption.isSite = false;
+                                    videoOption.site_video_wrap = true;
+
+                                    if(!videoManager.createPlayer(videoOption)) {
+                                        dialogManager.close(dialog);
                                     }
                                 }
-
-                                const dialog = $.connectDialog(dialogOption);
-                                const videoOption = {};
-                                videoOption.data = videoData;
-                                videoOption.parent = dialog;
-                                videoOption.btnFlag = false;
-                                videoOption.isSite = false;
-                                videoOption.site_video_wrap = true;
-
-                                if(!videoManager.createPlayer(videoOption)) {
-                                    dialogManager.close(dialog);
-                                };
+                                dialogManager.sortDialog();
+                            } else { //반경 안 투망 카메라 없음
+                                comm.showAlert('해당 위치 근처 카메라가 없습니다.',{})
                             }
-                            dialogManager.sortDialog();
-                        } else { //반경 안 투망 카메라 없음
-                            comm.showAlert('해당 위치 근처 카메라가 없습니다.',{})
-                        }
-
-                    });
+                        });
+                    } else {
+                        comm.showAlert("CCTV 레이어를 켜고, 다시 시도하십시오.",{});
+                    }
                 }
             },
             {
@@ -271,7 +273,6 @@ const mntr = {
                 } // end hit canvas
                 if(cctvAry.length > 0 && !window.isOverlay){
                     const overlay = window.map.getOverlay('cctv');
-                    console.log(!overlay);
                     if(!window.isOverlay) {
                         window.isOverlay = true;
                         const position = cctvAry[0].getGeometry().getCoordinates();
@@ -380,6 +381,7 @@ const mntr = {
 
         facility.getListCctvGeoJson({"headFlag": true}, result => {
             reloadLayer(result, 'cctvLayer');
+            console.log(JSON.parse(result));
             window.lyControl.off('cctvLayer');
         });
 

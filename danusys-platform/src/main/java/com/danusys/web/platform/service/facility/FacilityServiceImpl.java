@@ -4,7 +4,6 @@ import com.danusys.web.commons.app.*;
 import com.danusys.web.platform.dto.request.SignageRequestDto;
 import com.danusys.web.platform.mapper.common.CommonMapper;
 import com.danusys.web.platform.mapper.facility.FacilitySqlProvider;
-import org.apache.tomcat.websocket.EndpointHolder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;

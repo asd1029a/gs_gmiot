@@ -77,6 +77,14 @@ class layerControl {
     }
 
     /**
+     * @summary 레이어 표출 상태 반환
+     * @param layerName : 레이어 이름
+     * */
+    getVisibleFlag(layerName){
+        return this.find(layerName).getVisible();
+    }
+
+    /**
      * @summary 해당 레이어 제거하기
      * @param layerName : 레이어명
      * */
