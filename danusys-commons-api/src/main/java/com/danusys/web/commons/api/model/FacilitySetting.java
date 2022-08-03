@@ -71,7 +71,7 @@ public class FacilitySetting {
     public void setFacilityId(String facilityId){
         this.facilityId = facilityId;
     }
-
+    public void setFacilitySettingName(String facilitySettingName) {this.facilitySettingName = facilitySettingName; }
     public void setAdministZone(String administZone){
         this.administZone = administZone;
     }

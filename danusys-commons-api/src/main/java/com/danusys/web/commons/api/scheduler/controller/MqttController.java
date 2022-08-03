@@ -4,6 +4,7 @@ import com.danusys.web.commons.api.scheduler.service.YjMqttFacility;
 import com.danusys.web.commons.api.scheduler.service.YjMqttManager;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.StrUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
@@ -23,14 +24,10 @@ import java.util.Map;
 @RequestMapping("/mqtt")
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class MqttController {
     private final YjMqttManager yjMqttManager;
     private final YjMqttFacility yjMqttFacility;
-
-    public MqttController(YjMqttManager yjMqttManager, YjMqttFacility yjMqttFacility) {
-        this.yjMqttManager = yjMqttManager;
-        this.yjMqttFacility = yjMqttFacility;
-    }
 
     @PostMapping(value = "/set")
     public void facilitySetPower(@RequestBody Map<String, Object> param) {

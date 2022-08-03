@@ -49,9 +49,13 @@ public class YjScheduler {
         List<Facility> facilityList = facilityService.findByFacilityKind(124L);
         facilityList.stream().forEach(f -> {
             Map<String,Object> param = new HashMap<>();
-            param.put("callUrl","/mjvt/smart-station/people-count");
-            param.put("cameraId",f.getFacilityId());
-            param.put("dateTime",iNow-1);
+            String substring = f.getAdministZone().substring(0,5);
+            if (f.getFacilityName().equals("유동인구") && substring.equals("47210")) {
+                param.put("callUrl","/mjvt/smart-station/people-count");
+                param.put("cameraId",f.getFacilityId());
+                param.put("dateTime",iNow-1);
+            }
+
             try {
                 // event save;
                 String json = objectMapper.writeValueAsString(apiUtils.getRestCallBody(param));

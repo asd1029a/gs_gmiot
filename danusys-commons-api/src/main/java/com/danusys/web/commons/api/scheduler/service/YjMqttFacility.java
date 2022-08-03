@@ -12,6 +12,7 @@ import com.danusys.web.commons.api.service.StationService;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.StrUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,28 +41,20 @@ import java.util.Map;
 @Profile(value ="yj")
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class YjMqttFacility {
     private final FacilityService facilityService;
     private final FacilityOptService facilityOptService;
     private final FacilitySettingService facilitySettingService;
     private final StationService stationService;
     private final DynamicScheduler dynamicScheduler;
-
-    @Autowired
-    public YjMqttFacility(FacilityService facilityService, FacilityOptService facilityOptService, ObjectMapper objectMapper, StationService stationService, FacilitySettingService facilitySettingService, DynamicScheduler dynamicScheduler) {
-        this.facilityService = facilityService;
-        this.facilityOptService = facilityOptService;
-        this.facilitySettingService = facilitySettingService;
-        this.stationService = stationService;
-        this.dynamicScheduler = dynamicScheduler;
-    }
+    private final YjMqttManager yjMqttManager;
 
     // 동기화 t_facility 있으면 수정 없으면 입력
     @PostConstruct
     public void facilitySync() {
 
         try {
-            YjMqttManager yjMqttManager = new YjMqttManager();
             MqttClient subscriber = yjMqttManager.getMqttClient();
             subscriber.subscribe("#", (topic, msg) -> {
                 byte[] payload = msg.getPayload();

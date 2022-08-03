@@ -3,6 +3,7 @@ package com.danusys.web.commons.api.scheduler.service;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -15,6 +16,7 @@ import org.eclipse.paho.client.mqttv3.*;
 
 @Slf4j
 @Getter
+@Component
 public class YjMqttManager {
     private MqttClient mqttClient;
     private MqttConnectOptions option;
@@ -25,8 +27,10 @@ public class YjMqttManager {
     }
 
     public void init(String serverUri) {
+        log.info("----------------- create Mqtt Manager -----------------");
         option = new MqttConnectOptions();
         option.setCleanSession(true);
+//        option.setExecutorServiceTimeout(180);
         option.setKeepAliveInterval(60);
         try {
             mqttClient = new MqttClient(serverUri,"");
@@ -56,5 +60,4 @@ public class YjMqttManager {
             }
         }
     }
-
 }

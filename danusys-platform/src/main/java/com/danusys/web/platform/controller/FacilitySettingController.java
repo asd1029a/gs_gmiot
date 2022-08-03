@@ -2,7 +2,6 @@ package com.danusys.web.platform.controller;
 
 import com.danusys.web.commons.api.dto.SettingDTO;
 import com.danusys.web.commons.api.scheduler.service.GmSchedulerService;
-import com.danusys.web.commons.api.scheduler.service.YjMqttFacility;
 import com.danusys.web.commons.api.scheduler.service.YjSchedulerService;
 import com.danusys.web.commons.api.service.FacilitySettingService;
 import lombok.RequiredArgsConstructor;

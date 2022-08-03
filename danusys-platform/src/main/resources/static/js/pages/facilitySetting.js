@@ -189,7 +189,7 @@ function startTimeSort(ary) {
 function arrayDuplicateCheck(type,seq,ary,data,administZone){
     let chk = true;
     for(let i=0; i<ary.length; i++){
-        if(ary[i].facilitySettingTime === data.start_time && changeToFormStyle("cycle_day", ary[i].facilitySettingDay) === data.cycle_day){
+        if(ary[i].facilitySettingTime === data.start_time && changeToFormStyle("cycle_day", ary[i].facilitySettingDay, administZone) === data.cycle_day){
             comm.showAlert("중복된 시간은 입력할 수 없습니다.");
             chk = false;
             break;
@@ -570,6 +570,10 @@ function changeToSameAry(chk,type,seq,administZone) {
                     transAry.push({
                         "power" : changeToFormStyle(chk[i][j].facilitySettingName,chk[i][j].facilitySettingValue, administZone)
                     });
+                } else if (name === "door1" || name === "door2" || name === "door3" || name === "lamp" || name === "bench" || name === "charger" || name === "sign" || name === "air_scan") {
+                    transAry.push({
+                        "power" : changeToFormStyle(chk[i][j].facilitySettingName,chk[i][j].facilitySettingValue, administZone)
+                    });
                 }
             }
             resultAry.push(transAry);
@@ -627,6 +631,18 @@ function changeToDBAry (seq, data, type, administZone) {
 
 function changeToFormStyle(chk, val, administZone) {
     let obj = "";
+
+    if(chk === "door1" || chk === "door2" || chk === "door3" || chk === "lamp" || chk === "bench" || chk === "charger" || chk === "sign" || chk === "air_scan") {
+        obj = {
+            "true" : {
+                "value" : "ON"
+            }
+            , "false" : {
+                "value" : "OFF"
+            }
+        }
+    }
+
     if(chk === "power") {
         obj = (administZone == "41210") ?
             {
@@ -708,7 +724,7 @@ function changeToFormStyle(chk, val, administZone) {
     return obj[val].value;
 }
 
-function changeToDBStyle(chk,val, administZone) {
+function changeToDBStyle(chk, val, administZone) {
     let obj = "";
     if(chk === "power") {
         obj = (administZone == "41210") ?

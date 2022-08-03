@@ -59,6 +59,7 @@ public class ApiCallRestController {
     private final ApiConvService apiConvService;
     private final FacilityOptService facilityOptService;
     private final SseService sseService;
+    private final YjMqttManager yjMqttManager;
 
 
     @PostMapping(value = "/facility")
@@ -169,7 +170,6 @@ public class ApiCallRestController {
 
     @PostMapping(value = "/ext/send")
     public ResponseEntity extSend(@RequestBody Map<String, Object> param) throws Exception {
-        YjMqttManager yjMqttManager = new YjMqttManager();
         log.info("param ?? = {}",param);
         Api api = apiService.getRequestApi(param);
 

@@ -32,12 +32,19 @@ public class FacilitySettingService {
             FacilitySetting facilitySetting = new FacilitySetting(settingDTO);
 
             Facility findFacility = facilityRepository.findByFacilitySeq(facilitySetting.getFacilitySeq());
-            String facilityId = findFacility.getFacilityName();
+            String facilityName = findFacility.getFacilityName();
+            String[] facilityIds = findFacility.getFacilityId().split("/");
+
             String administZone = findFacility.getAdministZone();
 
             facilitySetting.setAdministZone(administZone);
 
-            if (facilityId.equals("에어컨") && (administZone.substring(5)).equals("41210")) {
+            if (facilityIds[1].equals("switch") && (administZone.substring(0, 5)).equals("47210")) {
+                facilitySetting.setFacilitySettingName(facilityIds[2]);
+            }
+
+
+            if (facilityName.equals("에어컨") && (administZone.substring(0, 5)).equals("41210")) {
                 if (facilitySetting.getFacilitySettingName().equals("power")) {
                     facilitySetting.setFacilityId(findFacility.getFacilityId());
                 } else if (facilitySetting.getFacilitySettingName().equals("mode")) {

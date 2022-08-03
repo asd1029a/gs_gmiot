@@ -4,6 +4,7 @@ import com.danusys.web.commons.api.scheduler.DynamicScheduler;
 import com.danusys.web.commons.api.service.FacilitySettingService;
 import com.danusys.web.commons.app.JsonUtil;
 import com.danusys.web.commons.app.StrUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,27 +23,25 @@ import java.util.Map;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class YjSchedulerService {
-    final private DynamicScheduler dynamicScheduler;
-    final private FacilitySettingService facilitySettingService;
-
-    public YjSchedulerService(DynamicScheduler dynamicScheduler, FacilitySettingService facilitySettingService ) {
-        this.dynamicScheduler = dynamicScheduler;
-        this.facilitySettingService = facilitySettingService;
-    }
+    private final DynamicScheduler dynamicScheduler;
+    private final FacilitySettingService facilitySettingService;
+    private final YjMqttManager yjMqttManager;
 
     public void setScheduler() {
-        log.info("setting scheudler start !!");
+        log.info("setting scheduler start !!");
 
         try {
-            YjMqttManager yjMqttManager = new YjMqttManager();
             dynamicScheduler.stopScheduler();
 
             List<Map<String,Object>> settingList =  facilitySettingService.findBySetScheduler();
             settingList.stream().forEach(ff -> {
-                if(!"47210390".equals(StrUtils.getStr(ff.get("administ_zone")))) {
+                if(StrUtils.getStr(ff.get("administ_zone")).indexOf("47210") == 0) {
                     return;
                 }
+
+                log.info("yj@@@@@@@@@@");
 
                 Map<String,Object> message = new HashMap<>();
                 String facilityId = StrUtils.getStr(ff.get("facility_id"));
@@ -74,23 +73,28 @@ public class YjSchedulerService {
                     String[] keyArray = key.split(",");
                     String[] valueArray = value.split(",");
                     for(int i=0;i<keyArray.length; i++) {
-                        message.put(keyArray[i], valueArray[i]);
+                        if ("true".equals(valueArray[i]) || "false".equals(valueArray[i])) {
+                            message.put(keyArray[i], Boolean.parseBoolean(valueArray[i]));
+                        } else {
+                            message.put(keyArray[i], valueArray[i]);
+                        }
                     }
                 }
                 String cronWeek = "0,6";
                 if("weekday".equals(dayOfWeek)) {
                     cronWeek = "1-5";
                 }
-
                 String cron = "0 " + min + " " + hours + " ?" +" * " + cronWeek;
                 Runnable runnable = new Runnable() {
                     @SneakyThrows
                     @Override
                     public void run() {
                         String jsonMessage = JsonUtil.convertMapToJson(message).toString();
+                        String[] facilityIdAry = facilityId.split("/");
+                        String facilityIdAndSet = facilityIdAry[0] + "/set/" + facilityIdAry[1];
                         log.info("===scheduler start===");
-                        log.info("scheduler start : {} message {}, topic : {}", cron, jsonMessage, facilityId + "/set/");
-                        yjMqttManager.sender(facilityId + "/set/", jsonMessage);
+                        log.info("scheduler start : {} message {}, topic : {}", cron, jsonMessage, facilityIdAndSet );
+                        yjMqttManager.sender(facilityIdAndSet , jsonMessage);
                     }
                 };
                 dynamicScheduler.registerScheduler(cron, runnable);
