@@ -82,7 +82,6 @@ public class FacilityController {
      */
     @PostMapping(value="/cctv/geojson")
     public String let(@RequestBody Map<String, Object> paramMap) throws Exception {
-        EgovMap resultEgov = new EgovMap();
         paramMap.put("administZone", sigCode);
         boolean headerFlag = Boolean.parseBoolean(CommonUtil.validOneNull(paramMap, "headFlag"));
         String view = CommonUtil.validOneNull(paramMap, "view");
@@ -92,15 +91,7 @@ public class FacilityController {
             if(view.equals("net")){
                 double latitude = Double.parseDouble(StrUtils.getStr(paramMap.get("latitude")));
                 double longitude = Double.parseDouble(StrUtils.getStr(paramMap.get("longitude")));
-                facilityList = jpaFacilityService.findByGeomSql(latitude, longitude);
-
-//                resultEgov = facilityService.getListCctvHead(paramMap); //레이어 //투망감시
-//                facilityList = (List<Facility>) resultEgov.get("data");
-//                System.out.println(facilityList);
-//                facilityList.stream().peek(p -> {
-//                    log.trace("facilitySeq > {}", p.get("facilitySeq"));
-//                    p.put("facilityOpts", facilityOptService.findByFacilitySeqLast(Long.parseLong(String.valueOf(p.get("facilitySeq")))));
-//                }).collect(toList());
+                facilityList = jpaFacilityService.findByGeomSql(latitude, longitude, sigCode);
             } else {
                 facilityList = jpaFacilityService.findByFacilityKind(75L);
                 facilityList = facilityList.stream().filter(f ->
@@ -112,12 +103,9 @@ public class FacilityController {
             double latitude = Double.parseDouble(StrUtils.getStr(paramMap.get("latitude")));
             double longitude = Double.parseDouble(StrUtils.getStr(paramMap.get("longitude")));
             facilityList = jpaFacilityService.findByFacilityKindAndLatitudeAndLongitude(75L, latitude, longitude);
-//            resultEgov = facilityService.getListCctv(paramMap); //개소감시
         }
 
-        List<Map<String, Object>> list = objectMapper.convertValue(facilityList, new TypeReference<List<Map<String, Object>>>() {
-        });
-
+        List<Map<String, Object>> list = objectMapper.convertValue(facilityList, new TypeReference<List<Map<String, Object>>>() {});
         return GisUtil.getGeoJson(list, "cctv");
     }
 

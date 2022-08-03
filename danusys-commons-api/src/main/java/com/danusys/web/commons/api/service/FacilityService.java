@@ -2,10 +2,12 @@ package com.danusys.web.commons.api.service;
 
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.Station;
+import com.danusys.web.commons.api.querydsl.*;
 import com.danusys.web.commons.api.repository.FacilityOptRepository;
 import com.danusys.web.commons.api.repository.FacilityRepository;
 import com.danusys.web.commons.api.repository.StationRepository;
 import com.danusys.web.commons.app.StrUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,18 +25,12 @@ import java.util.Map;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FacilityService {
-    private FacilityRepository facilityRepository;
-    private StationRepository stationRepository;
-    private FacilityOptRepository facilityOptRepository;
-
-    public FacilityService(FacilityRepository facilityRepository
-            , StationRepository stationRepository
-            , FacilityOptRepository facilityOptRepository) {
-        this.facilityRepository = facilityRepository;
-        this.stationRepository = stationRepository;
-        this.facilityOptRepository = facilityOptRepository;
-    }
+    private final FacilityRepository facilityRepository;
+    private final StationRepository stationRepository;
+    private final FacilityOptRepository facilityOptRepository;
+    private final FacilityQueryDslRepository facilityQueryDslRepository;
 
     public Facility save(Facility facility) {
         return this.facilityRepository.save(facility);
@@ -169,7 +165,7 @@ public class FacilityService {
         return facilityRepository.findByFacilityKindAndLatitudeAndLongitude(facilityKind, latitude, longitude);
     }
 
-    public List<Facility> findByGeomSql(double latitude, double longitude) {
-        return facilityRepository.findByGeomSql(latitude,longitude);
+    public List<Facility> findByGeomSql(double latitude, double longitude, String administZone) {
+        return facilityQueryDslRepository.findByGeomSql(latitude, longitude, administZone);
     }
 }

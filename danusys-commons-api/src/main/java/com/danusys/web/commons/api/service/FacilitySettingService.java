@@ -28,12 +28,17 @@ public class FacilitySettingService {
     public void save(List<SettingDTO> settingDTOList) {
         List<FacilitySetting> facilitySettingList = new ArrayList<>();
         settingDTOList.stream().forEach(settingDTO ->{
+
             FacilitySetting facilitySetting = new FacilitySetting(settingDTO);
+
             Facility findFacility = facilityRepository.findByFacilitySeq(facilitySetting.getFacilitySeq());
             String facilityId = findFacility.getFacilityName();
-            facilitySetting.setAdministZone(findFacility.getAdministZone());
-            if(facilityId.equals("IDU_기동정지")) {
-                if(facilitySetting.getFacilitySettingName().equals("power")) {
+            String administZone = findFacility.getAdministZone();
+
+            facilitySetting.setAdministZone(administZone);
+
+            if (facilityId.equals("에어컨") && (administZone.substring(5)).equals("41210")) {
+                if (facilitySetting.getFacilitySettingName().equals("power")) {
                     facilitySetting.setFacilityId(findFacility.getFacilityId());
                 } else if (facilitySetting.getFacilitySettingName().equals("mode")) {
                     facilitySetting.setFacilityId(facilitySettingRepository.findFacilityId(facilitySetting.getFacilitySeq(),"운전모드"));
@@ -129,4 +134,6 @@ public class FacilitySettingService {
     public List<Map<String,Object>> findBySetScheduler() {
         return facilitySettingRepository.findBySetScheduler();
     }
+
+    public List<FacilitySetting> findAll() {return facilitySettingRepository.findAll();}
 }
