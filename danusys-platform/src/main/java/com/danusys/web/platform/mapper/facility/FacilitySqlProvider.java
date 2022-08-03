@@ -268,9 +268,7 @@ public class FacilitySqlProvider {
     }
 
     public String selectListFacilityForDimmingQry(Map<String, Object> paramMap) {
-        String keyword = CommonUtil.validOneNull(paramMap, "keyword");
         ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
-        ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
         String activeType = CommonUtil.validOneNull(paramMap, "activeType");
 
         SQL sql = new SQL() {{

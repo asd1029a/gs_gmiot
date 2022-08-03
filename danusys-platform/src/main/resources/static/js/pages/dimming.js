@@ -337,8 +337,8 @@ const dimming = {
                 toggleable: false
             }
             , columns: [
-                {data: "facilitySeq"},
                 {data: "facilityId"},
+                {data: "facilityKindName"},
                 {data: null}
             ]
             , columnDefs: [{
@@ -598,7 +598,7 @@ const dimming = {
     */
     , showPopup : (type, pRowData) => {
         const createObj = {
-            facilityKind : "lamp_road"
+            facilityKind : ["lamp_road", "lamp_walk"]
             , activeType : type
             , popupType : "dimming"
         }
@@ -612,6 +612,7 @@ const dimming = {
         if(type === "add") {
             dimming.createLampRoad(createObj);
         } else if(type === "mod") {
+            debugger;
             $("#dimmingGroupPopup #dimmingGroupName").val(pRowData.dimmingGroupName);
             const dimmingGroupSeq = pRowData.dimmingGroupSeq;
             $('#dimmingGroupPopup').data("dimmingGroupSeq", dimmingGroupSeq);
