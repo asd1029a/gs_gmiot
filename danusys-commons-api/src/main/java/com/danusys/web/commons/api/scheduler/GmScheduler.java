@@ -305,8 +305,6 @@ public class GmScheduler {
      */
     @Scheduled(cron = "0 0 0/1 * * *")
     public void apiCallSchedule() throws Exception{
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
         Map<String,Object> param = new HashMap<>();
         param.put("callUrl"," /mjvt/people_count");
         Map<String, Object> body = (Map<String, Object>) apiUtils.getRestCallBody(param);
