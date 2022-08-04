@@ -14,6 +14,7 @@ import com.danusys.web.commons.api.util.ApiUtils;
 import com.danusys.web.commons.api.util.XmlDataUtil;
 import com.danusys.web.commons.app.RestUtil;
 import com.danusys.web.commons.app.StrUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -63,6 +65,9 @@ public class GmScheduler {
     private String SERVICE_IP;
     @Value("${facility.xml.path}")
     private String FACILITY_XML_PATH;
+
+    @Value("#{${vms.server.map}}")
+    private Map<String, String> vmsServerData;
 
 
     /**
@@ -298,30 +303,40 @@ public class GmScheduler {
      *  TODO 광명에 맞게 변경 필요
      * 정류장 유동인구 저장
      */
-//    @Scheduled(cron = "0 0 0/1 * * *")
-//    public void apiCallSchedule() throws Exception{
-//        LocalDateTime now = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
-//        String formatNow = now.format(formatter);
-//        int iNow = Integer.parseInt(formatNow);
-//        List<Facility> facilityList = facilityService.findByFacilityKind(124L);
-//        facilityList.stream().forEach(f -> {
-//            Map<String,Object> param = new HashMap<>();
-//            param.put("callUrl","/mjvt/smart-station/people-count");
-//            param.put("cameraId",f.getFacilityId());
-//            param.put("dateTime",iNow-1);
-//            try {
-//                // event save;
-//                String json = objectMapper.writeValueAsString(apiUtils.getRestCallBody(param));
-//
-//                FacilityDataRequestDTO facilityDataRequestDTO = objectMapper.readValue(StrUtils.getStr(json), FacilityDataRequestDTO.class);
-//                facilityDataRequestDTO.setFacilityOptType(112);
-//                facilityOptService.save(facilityDataRequestDTO);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
-//    }
+    @Scheduled(cron = "0 0 0/1 * * *")
+    public void apiCallSchedule() throws Exception{
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+        Map<String,Object> param = new HashMap<>();
+        param.put("callUrl"," /mjvt/people_count");
+        Map<String, Object> body = (Map<String, Object>) apiUtils.getRestCallBody(param);
+        List<FacilityOpt> facilityOptList = new ArrayList<>();
+
+        List<Map<String, Object>> data = null;
+
+        try {
+            data = objectMapper.readValue(StrUtils.getStr(body.get("data")), List.class);
+            data.stream().forEach(f -> {
+                String nodeId = StrUtils.getStr(f.get("nodeId"));
+                String channel = StrUtils.getStr(f.get("channel"));
+                String count = StrUtils.getStr(f.get("count"));
+                String facilityId = MessageFormat.format("{0}_1_{1}", nodeId, channel);
+
+                Facility facility = facilityService.findByFacilityId(facilityId);
+
+                FacilityOpt facilityOpt = FacilityOpt.builder()
+                        .facilityOptName("floating_population")
+                        .facilityOptValue(count)
+                        .facilityOptType(112)
+                        .facilitySeq(facility.getFacilitySeq()).build();
+                facilityOptList.add(facilityOpt);
+            });
+            facilityOptService.saveAll(facilityOptList);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Scheduled(cron = "0 0 0/1 * * *")
     public void findDeviceList() throws Exception {
         Map<String,Object> param = new HashMap<>();
