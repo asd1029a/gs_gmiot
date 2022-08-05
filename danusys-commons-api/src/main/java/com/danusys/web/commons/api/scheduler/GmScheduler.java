@@ -303,10 +303,11 @@ public class GmScheduler {
      *  TODO 광명에 맞게 변경 필요
      * 정류장 유동인구 저장
      */
+//    @Scheduled(fixedDelay = 50000)
     @Scheduled(cron = "0 0 0/1 * * *")
     public void apiCallSchedule() throws Exception{
         Map<String,Object> param = new HashMap<>();
-        param.put("callUrl"," /mjvt/people_count");
+        param.put("callUrl","/mjvt/people_count");
         Map<String, Object> body = (Map<String, Object>) apiUtils.getRestCallBody(param);
         List<FacilityOpt> facilityOptList = new ArrayList<>();
 

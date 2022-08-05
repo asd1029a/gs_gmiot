@@ -35,7 +35,7 @@ const dimming = {
                     $checkedLampRoads.each((idx, ele)=> {
                         facilitySeqList.push($(ele).val());
                     });
-                    let dimmingGroupSeq = Number(dimming.getLastGroupSeq().dimmingGroupSeq);
+                    let dimmingGroupSeq = Number(dimming.getLastGroupSeq().data.dimmingGroupSeq);
                     if(typeof dimmingGroupSeq === "undefined" || dimmingGroupSeq == null) {
                         dimmingGroupSeq = 1;
                     } else {
@@ -538,8 +538,10 @@ const dimming = {
             , type : "GET"
             , contentType : "application/json; charset=utf-8"
             , async : false
-        }).done((result) => {
-            returnValue = result;
+            , success : function (data) {
+                returnValue = data;
+                alert(returnValue);
+            }
         });
         return returnValue;
     }
