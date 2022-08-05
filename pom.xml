@@ -20,6 +20,7 @@
         <module>danusys-server-netty</module>
         <module>danusys-server-socket</module>
         <module>demo</module>
+        <module>danusys-firefighting</module>
 
     </modules>
 
