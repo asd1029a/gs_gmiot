@@ -45,7 +45,7 @@ const dimming = {
                         "dimming_group_seq" : String(dimmingGroupSeq)
                         , "dimming_group_name" : dimmingGroupName
                     }
-                    facility.addOptProc(facility.createFacilityOptList("1", facilitySeqList, optObj)
+                    facility.addOptProc(facility.createFacilityOptList("51", facilitySeqList, optObj)
                         , () => {
                             comm.showAlert("디밍 그룹이 등록되었습니다. <br/> 디밍설정을 설정해주십시오.");
                             dimming.createGroup();
@@ -84,7 +84,8 @@ const dimming = {
                                 "dimming_group_seq" : dimmingGroupSeq
                                 , "dimming_group_name" : dimmingGroupName
                             }
-                            let modDimmingGroupObj = facility.createFacilityOptList("1", facilitySeqList, optObj);
+                            let modDimmingGroupObj = facility.createFacilityOptList("51", facilitySeqList, optObj);
+                            modDimmingGroupObj.facilitySeqList = facilitySeqList;
                             modDimmingGroupObj.delFacilitySeqList = delFacilitySeqList;
                             modDimmingGroupObj.ignoreDeleteOptList = ["dimming_time_zone"
                                 , "keep_bright_time"
@@ -174,7 +175,7 @@ const dimming = {
                             , "max_bright_time" : $("#maxBrightTime").val()
                             , "min_bright_time" : $("#minBrightTime").val()
                         }
-                        let modDimmingSetObj = facility.createFacilityOptList("1", facilitySeqList, optObj);
+                        let modDimmingSetObj = facility.createFacilityOptList("51", facilitySeqList, optObj);
                         modDimmingSetObj.delFacilitySeqList = facilitySeqList;
                         modDimmingSetObj.ignoreDeleteOptList = ["dimming_group_name", "dimming_group_seq"];
                         modDimmingSetObj.facilityOptType = "dimming";
@@ -540,7 +541,6 @@ const dimming = {
             , async : false
             , success : function (data) {
                 returnValue = data;
-                alert(returnValue);
             }
         });
         return returnValue;
