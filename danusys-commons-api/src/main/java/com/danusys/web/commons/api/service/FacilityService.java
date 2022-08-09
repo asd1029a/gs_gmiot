@@ -97,7 +97,7 @@ public class FacilityService {
 
             String latStr = StrUtils.getStr(d.get("latitude"));
             String lngStr = StrUtils.getStr(d.get("longitude"));
-            String facilityName = facilityRepository.findCommonCodeName(codeSeq);
+            String facilityName = StrUtils.getStr(d.get("facility_name"));
 
 
             latStr = latStr.isEmpty() ? "0" : latStr;
