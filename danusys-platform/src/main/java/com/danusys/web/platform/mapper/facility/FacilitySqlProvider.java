@@ -205,12 +205,29 @@ public class FacilitySqlProvider {
     public String deleteOptQry(Map<String, Object> paramMap) {
         String facilityOptType = CommonUtil.validOneNull(paramMap, "facilityOptType");
         List<Integer> delFacilitySeqList = (List<Integer>) paramMap.get("delFacilitySeqList");
+        List<Integer> facilitySeqList = (List<Integer>) paramMap.get("facilitySeqList");
         List<String> ignoreDeleteOptList = (List<String>) paramMap.get("ignoreDeleteOptList");
+        List<Integer> onlyDelList = new ArrayList<>();
+        if (facilitySeqList != null) {
+            for (Integer d :delFacilitySeqList) {
+                if (!(facilitySeqList.contains(d.toString()))) {
+                    onlyDelList.add(d);
+                }
+            }
+        }
+
         String ignoreDeleteOptListStr = "";
         String delFacilitySeqListStr = delFacilitySeqList
                 .stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
+        String onlyDelString = "";
+        if (!onlyDelList.isEmpty()) {
+            onlyDelString = onlyDelList
+                    .stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(","));
+        }
 
         StringBuilder sb = new StringBuilder();
         int index = 0;
@@ -226,16 +243,42 @@ public class FacilitySqlProvider {
             }
         }
 
+        String finalOnlyDelString = onlyDelString;
         SQL sql = new SQL() {{
-            DELETE_FROM("t_facility_opt t1 ");
-            WHERE("t1.facility_seq IN ( " + delFacilitySeqListStr + " )");
-            if (ignoreDeleteOptList != null && !ignoreDeleteOptList.isEmpty()) {
-                WHERE("t1.facility_opt_name NOT IN ( " + sb.toString() + " )");
+            if (facilitySeqList != null) {
+                if (facilitySeqList.size() >= delFacilitySeqList.size() && (finalOnlyDelString == "")) {
+                    DELETE_FROM("t_facility_opt t1 ");
+                    WHERE("t1.facility_seq IN ( " + delFacilitySeqListStr + " )");
+                    if (ignoreDeleteOptList != null && !ignoreDeleteOptList.isEmpty()) {
+                        WHERE("t1.facility_opt_name NOT IN ( " + sb.toString() + " )");
+                    }
+                    WHERE("t1.facility_opt_type = (" +
+                            "SELECT code_seq " +
+                            "FROM v_facility_opt_type " +
+                            "WHERE code_value = '" + facilityOptType + "')");
+                } else {
+                    DELETE_FROM("t_facility_opt t1 ");
+                    if (finalOnlyDelString != "") {
+                        WHERE("t1.facility_seq IN ( " + finalOnlyDelString + " )");
+                    } else {
+                        WHERE("t1.facility_seq IN ( " + delFacilitySeqListStr + " )");
+                    }
+                    WHERE("t1.facility_opt_type = (" +
+                            "SELECT code_seq " +
+                            "FROM v_facility_opt_type " +
+                            "WHERE code_value = '" + facilityOptType + "')");
+                }
+            } else {
+                DELETE_FROM("t_facility_opt t1 ");
+                WHERE("t1.facility_seq IN ( " + delFacilitySeqListStr + " )");
+                if (ignoreDeleteOptList != null && !ignoreDeleteOptList.isEmpty()) {
+                    WHERE("t1.facility_opt_name NOT IN ( " + sb.toString() + " )");
+                }
+                WHERE("t1.facility_opt_type = (" +
+                        "SELECT code_seq " +
+                        "FROM v_facility_opt_type " +
+                        "WHERE code_value = '" + facilityOptType + "')");
             }
-            WHERE("t1.facility_opt_type::varchar = (" +
-                    "SELECT code_value " +
-                    "FROM v_facility_opt_type " +
-                    "WHERE code_id = '" + facilityOptType + "')");
         }};
         return sql.toString();
     }
@@ -272,7 +315,7 @@ public class FacilitySqlProvider {
         String activeType = CommonUtil.validOneNull(paramMap, "activeType");
 
         SQL sql = new SQL() {{
-            SELECT("t1.facility_seq, t1.facility_id" +
+            SELECT("t1.facility_seq, t1.facility_id, t1.facility_name" +
                     ", t1.administ_zone, t1.latitude"+
                     ", t1.longitude, t1.insert_dt" +
                     ", t2.code_value AS facility_kind" +
