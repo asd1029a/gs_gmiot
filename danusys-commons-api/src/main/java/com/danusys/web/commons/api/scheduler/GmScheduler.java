@@ -352,22 +352,50 @@ public class GmScheduler {
         String formatNow = now.format(formatter);
         int iNow = Integer.parseInt(formatNow);
         List<FacilityDataRequestDTO> list = new ArrayList<>();
+        List<FacilityOpt> opts = new ArrayList<>();
 
         Map<String,Object> param = new HashMap<>();
         param.put("callUrl","/aepel/whInfoByDevice");
         param.put("searchTime",Integer.toString(iNow-1).substring(0,8));
-         param.put("time",Integer.parseInt(formatNow.substring(formatNow.length() - 2))-1);
+        param.put("time",Integer.parseInt(formatNow.substring(formatNow.length() - 2))-1);
         Map<String, Object> body = (Map<String, Object>) apiUtils.getRestCallBody(param);
         List<Map<String,Object>> bodyList =(List<Map<String,Object>>) body.get("facility_list");
         bodyList.stream().forEach(b ->{
-            FacilityDataRequestDTO facilityDataRequestDTO = FacilityDataRequestDTO.builder()
-                                                            .facilityId(b.get("facility_id").toString())
-                                                            .facilityOptName(b.get("facility_kind").toString())
-                                                            .facilityOptValue(b.get("facility_opt_value").toString())
-                                                            .facilityOptType(112)
-                                                            .build();
-            list.add(facilityDataRequestDTO);
+//            FacilityDataRequestDTO facilityDataRequestDTO = FacilityDataRequestDTO.builder()
+//                                                            .facilityId(b.get("facility_id").toString())
+//                                                            .facilityOptName(b.get("facility_kind").toString())
+//                                                            .facilityOptValue(b.get("facility_opt_value").toString())
+//                                                            .facilityOptType(112)
+//                                                            .build();
+//            list.add(facilityDataRequestDTO);
+            String facilityId = StrUtils.getStr(b.get("facility_id"));
+            Facility facility = facilityService.findByFacilityId(facilityId);
+            String max = StrUtils.getStr(b.get("wh_max"));
+            FacilityOpt maxOpt = FacilityOpt.builder()
+                    .facilityOptName("wh_max")
+                    .facilityOptType(112)
+                    .facilityOptValue(max)
+                    .facilitySeq(facility.getFacilitySeq()).build();
+            opts.add(maxOpt);
+
+
+            String reduce = StrUtils.getStr(b.get("wh_reduce"));
+            FacilityOpt reduceOpt = FacilityOpt.builder()
+                    .facilityOptName("wh_reduce")
+                    .facilityOptType(112)
+                    .facilityOptValue(reduce)
+                    .facilitySeq(facility.getFacilitySeq()).build();
+            opts.add(reduceOpt);
+
+            String use = StrUtils.getStr(b.get("wh_use"));
+            FacilityOpt useOpt = FacilityOpt.builder()
+                    .facilityOptName("wh_use")
+                    .facilityOptType(112)
+                    .facilityOptValue(use)
+                    .facilitySeq(facility.getFacilitySeq()).build();
+            opts.add(useOpt);
         });
-        facilityOptService.saveAllByFacilityDataRequestDTO(list);
+        facilityOptService.saveAll(opts);
+//        facilityOptService.saveAllByFacilityDataRequestDTO(list);
     }
 }
