@@ -338,7 +338,7 @@ const dimming = {
                 toggleable: false
             }
             , columns: [
-                {data: "facilityId"},
+                {data: "facilityName"},
                 {data: "facilityKindName"},
                 {data: null}
             ]
