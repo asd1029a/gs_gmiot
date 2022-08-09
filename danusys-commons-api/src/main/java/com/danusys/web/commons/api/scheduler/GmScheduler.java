@@ -55,6 +55,7 @@ public class GmScheduler {
     private static long SMART_STATION_NUM = 62L; //스마트 정류장
     private static long SMART_POLE_NUM = 4L; //스마트 폴
     private static int FACILITY_OPT_TYPE_ACCUMULATE_DATA = 112; //누적 데이터
+    private static int FACILITY_OPT_TYPE_DATA = 53; // 수정 데이터
     private static List<Long> ACCUMULATE_DATA_GROUP = Arrays.asList(114L, 115L, 116L, 117L, 118L, 119L); //누적데이터 common code
     private static int FACILITY_OPT_TYPE_POWER = 175; // power : true, false
     private static long FACILITY_SEQ = 2219L; // 나중에 실제 ip넣을때 실제 facilitySeq으로 바꿔야함
@@ -148,12 +149,18 @@ public class GmScheduler {
                             String facilityOptValue = StrUtils.getStr(fData.get("presentValue"));
 
                             log.trace(stationId + "#### > opt data : {}, {}, {}, {}", facilityOptName, facility.getFacilitySeq(), facilityOptName, facilityOptValue);
-                            facilityOptService.save(FacilityOpt.builder()
-                                .facilitySeq(facility.getFacilitySeq())
-                                .facilityOptName(facilityOptName)
-                                .facilityOptValue(facilityOptValue)
-                                .facilityOptType(FACILITY_OPT_TYPE_ACCUMULATE_DATA)
-                                .build());
+                            FacilityOpt facilityOpt = facilityOptService.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(), facilityOptName);
+                            if (facilityOpt == null) {
+                                facilityOptService.save(FacilityOpt.builder()
+                                        .facilitySeq(facility.getFacilitySeq())
+                                        .facilityOptName(facilityOptName)
+                                        .facilityOptValue(facilityOptValue)
+                                        .facilityOptType(FACILITY_OPT_TYPE_DATA)
+                                        .build());
+                            } else {
+                                facilityOpt.setFacilityOptValue(facilityOptValue);
+                                facilityOptService.save(facilityOpt);
+                            }
                         } else {
                             if(facility != null) {
                                 FacilityOpt facilityOpt = facilityOptService.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(), "power");
