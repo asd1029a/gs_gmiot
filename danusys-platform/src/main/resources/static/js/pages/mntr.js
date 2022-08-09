@@ -1497,21 +1497,24 @@ const rnbList = {
      * */
     playVideo: (rpanel, cctv) => {
         const rtspOpt = cctv.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
-        if(rtspOpt.length > 0){
+        if (rtspOpt.length <= 0) {
+            const videoArea = rpanel.find(".area_right_contents").find('.area_video');
+            videoArea.children('.video_wrap').remove();
+        } else {
             const rtspUrl = rtspOpt[0].facilityOptValue;
             const videoData = {
-                facilitySeq : cctv.facilitySeq,
-                rtspUrl : rtspUrl,
-                facilityKind : cctv.facilityKindc
+                facilitySeq: cctv.facilitySeq,
+                rtspUrl: rtspUrl,
+                facilityKind: cctv.facilityKindc
             }
             const videoArea = rpanel.find(".area_right_contents").find('.area_video');
             const option = {
-                data : videoData,
-                parent : videoArea,
-                isEvent : cctv.isRealTime,
-                isButton : false,
-                startTime : cctv.saveStartTime,
-                endTime : cctv.saveEndTime
+                data: videoData,
+                parent: videoArea,
+                isEvent: cctv.isRealTime,
+                isButton: false,
+                startTime: cctv.saveStartTime,
+                endTime: cctv.saveEndTime
             }
             videoArea.empty();
             videoManager.createPlayer(option);
