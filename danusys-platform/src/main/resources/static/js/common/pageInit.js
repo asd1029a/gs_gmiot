@@ -137,6 +137,9 @@ $(document).ready(() => {
     else if(path === "/pages/dashboard/dashboard_facility") {
         dashboard.init();
     }
+    else if(path === "/pages/dashboard/dashboard_facility_bsng") {
+        dashboard.init();
+    }
     else if(path === "/pages/dashboard/dashboard_drone") {
         dashboardGimje.init();
     }
