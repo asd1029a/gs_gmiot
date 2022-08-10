@@ -1281,6 +1281,7 @@ const rnbList = {
             },result => {
                 target.find(".area_right_bus_control").html("");
                 target.find(".area_right_bus_status dl").hide();
+                target.find(".area_right_bus_status_none ul").hide();
                 let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
                     '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}"></label>' +
@@ -1292,13 +1293,12 @@ const rnbList = {
                 objAry.features.forEach((f, i) => {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
-                    let admininstZone = pointInfo.administZone.substr(0, 5);
-                    // 로컬 db 전용
-                    // if (pointInfo.administZone != undefined) {
-                    //     admininstZone = pointInfo.administZone.substr(0, 5);
-                    // } else {
-                    //     admininstZone = "41210";
-                    // }
+                    let admininstZone;
+                    if (pointInfo.administZone != undefined) {
+                        admininstZone = pointInfo.administZone.substr(0, 5);
+                    } else {
+                        admininstZone = "";
+                    }
                     let presentValue = "";
 
                     facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
