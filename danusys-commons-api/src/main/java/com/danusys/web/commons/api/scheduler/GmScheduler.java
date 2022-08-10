@@ -311,7 +311,7 @@ public class GmScheduler {
      * 정류장 유동인구 저장
      */
 //    @Scheduled(fixedDelay = 50000)
-    @Scheduled(cron = "0 0 0/1 * * *")
+    @Scheduled(cron = "0 0/7 0/1 * * *")
     public void apiCallSchedule() throws Exception{
         Map<String,Object> param = new HashMap<>();
         param.put("callUrl","/mjvt/people_count");
