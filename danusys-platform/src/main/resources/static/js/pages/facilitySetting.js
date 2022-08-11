@@ -521,7 +521,7 @@ function createControlAllV2(type, seq) {
 function changeToSameAry(chk,type,seq,administZone) {
     let ary = [];
     let resultAry = [];
-    if((type == "air_con" || gmSeqCheck(seq)) && (chk[0] != null || chk[0] != undefined)) {
+    if((type == "air_con" || gmSeqCheck(seq)) && chk[0] != null) {
         for (let i = 0; i < chk.length; i++) {
             let name = "";
             let transAry = [];
@@ -555,7 +555,7 @@ function changeToSameAry(chk,type,seq,administZone) {
             ary.push(Object.assign(...resultAry[i]));
         }
         return ary;
-    } else if(chk[0] != null || chk[0] != undefined){
+    } else if(chk[0] != null){
         // chk[0] != undefined
         for (let i = 0; i < chk.length; i++) {
             let name = "";
