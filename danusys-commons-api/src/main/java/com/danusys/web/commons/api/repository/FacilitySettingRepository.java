@@ -16,7 +16,7 @@ public interface FacilitySettingRepository extends JpaRepository<FacilitySetting
 
     List<FacilitySetting> findAllByFacilitySettingTime(String facilitySettingTime);
 
-    List<FacilitySetting> findAllByFacilitySeqAndFacilitySettingTimeOrderByFacilitySettingTime(Long facilitySeq,String facilitySettingTime);
+    List<FacilitySetting> findAllByFacilitySeqAndFacilitySettingTimeAndFacilitySettingDayOrderByFacilitySettingTime(Long facilitySeq, String facilitySettingTime, String facilitySettingDay);
 
     @Query(value=
             "select facility_id, facility_setting_time, facility_setting_day, ARRAY_TO_STRING(ARRAY_AGG(facility_setting_name),',') AS optionKey, ARRAY_TO_STRING(ARRAY_AGG(facility_setting_value),',') AS optionValue " +

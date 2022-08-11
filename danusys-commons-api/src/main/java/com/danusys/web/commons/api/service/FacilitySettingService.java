@@ -92,7 +92,7 @@ public class FacilitySettingService {
             Integer count = map.get(temp.getFacilitySettingTime());
             map.put(temp.getFacilitySettingTime(), (count == null) ? 1 : count + 1);
         }
-        List<List<SettingDTO>> settingWeekdayList = printMap(map,facilitySeq);
+        List<List<SettingDTO>> settingWeekdayList = printMap(map,facilitySeq,"weekday");
         log.info("settingWeekdayList  : {} ",settingWeekdayList);
         return settingWeekdayList;
     }
@@ -111,23 +111,23 @@ public class FacilitySettingService {
             Integer count = map.get(temp.getFacilitySettingTime());
             map.put(temp.getFacilitySettingTime(), (count == null) ? 1 : count + 1);
         }
-        List<List<SettingDTO>> settingWeekdayList = printMap(map,facilitySeq);
+        List<List<SettingDTO>> settingWeekdayList = printMap(map,facilitySeq,"weekend");
         log.info("settingWeekdayList  : {} ",settingWeekdayList);
         return settingWeekdayList;
     }
 
-    private List<List<SettingDTO>> printMap(Map<String, Integer> map,Long facilitySeq){
+    private List<List<SettingDTO>> printMap(Map<String, Integer> map,Long facilitySeq, String facilitySettingDay){
         List<List<SettingDTO>> settingDTOLists = new ArrayList<>();
         for(Map.Entry<String, Integer> entry : map.entrySet()) {
             log.info("Element : {} Count : {}",entry.getKey(),entry.getValue());
-            settingDTOLists.add(makeArray(entry.getKey(), facilitySeq));
+            settingDTOLists.add(makeArray(entry.getKey(), facilitySeq, facilitySettingDay));
         }
         return settingDTOLists;
     }
 
-    private List<SettingDTO> makeArray(String settingDTO, Long facilitySeq){
+    private List<SettingDTO> makeArray(String settingDTO, Long facilitySeq, String facilitySettingDay){
         List<SettingDTO> settingDTOList = new ArrayList<>();
-        List<FacilitySetting> facilitySettingList = facilitySettingRepository.findAllByFacilitySeqAndFacilitySettingTimeOrderByFacilitySettingTime(facilitySeq,settingDTO);
+        List<FacilitySetting> facilitySettingList = facilitySettingRepository.findAllByFacilitySeqAndFacilitySettingTimeAndFacilitySettingDayOrderByFacilitySettingTime(facilitySeq,settingDTO,facilitySettingDay);
         facilitySettingList.stream().forEach(f -> {
             SettingDTO settingThis = new SettingDTO(f);
             settingDTOList.add(settingThis);
