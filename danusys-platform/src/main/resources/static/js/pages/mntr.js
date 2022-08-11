@@ -1281,6 +1281,7 @@ const rnbList = {
             },result => {
                 target.find(".area_right_bus_control").html("");
                 target.find(".area_right_bus_status dl").hide();
+                target.find(".area_right_bus_status_none ul").hide();
                 let smartBusStoFacilityTag = '<dl><dt><span id="span_{{span_id}}" class="circle {{span_class}}"></span>' +
                     '<span>{{facilityName}}</span></dt><dd class="ptz_toggle">' +
                     '<input type="checkbox" id="control_{{id_index}}" {{check_value}} onclick="setFacility(\'control_{{onclick_index}}\', \'{{facilityId}}\', \'{{facilitySeq}}\');"><label for="control_{{for_index}}"></label>' +
@@ -1292,13 +1293,12 @@ const rnbList = {
                 objAry.features.forEach((f, i) => {
                     let pointInfo = f.properties;
                     let facilityOpts = pointInfo.facilityOpts;
-                    let admininstZone = pointInfo.administZone.substr(0, 5);
-                    // 로컬 db 전용
-                    // if (pointInfo.administZone != undefined) {
-                    //     admininstZone = pointInfo.administZone.substr(0, 5);
-                    // } else {
-                    //     admininstZone = "41210";
-                    // }
+                    let admininstZone;
+                    if (pointInfo.administZone != undefined) {
+                        admininstZone = pointInfo.administZone.substr(0, 5);
+                    } else {
+                        admininstZone = "";
+                    }
                     let presentValue = "";
 
                     facilityOpts.filter(ff => ff.commonCode.codeId === "ACCUMULATE_DATA").forEach(ff => {
@@ -1497,21 +1497,24 @@ const rnbList = {
      * */
     playVideo: (rpanel, cctv) => {
         const rtspOpt = cctv.facilityOpts.filter(opt => opt.facilityOptName === "rtsp_url");
-        if(rtspOpt.length > 0){
+        if (rtspOpt.length <= 0) {
+            const videoArea = rpanel.find(".area_right_contents").find('.area_video');
+            videoArea.children('.video_wrap').remove();
+        } else {
             const rtspUrl = rtspOpt[0].facilityOptValue;
             const videoData = {
-                facilitySeq : cctv.facilitySeq,
-                rtspUrl : rtspUrl,
-                facilityKind : cctv.facilityKindc
+                facilitySeq: cctv.facilitySeq,
+                rtspUrl: rtspUrl,
+                facilityKind: cctv.facilityKindc
             }
             const videoArea = rpanel.find(".area_right_contents").find('.area_video');
             const option = {
-                data : videoData,
-                parent : videoArea,
-                isEvent : cctv.isRealTime,
-                isButton : false,
-                startTime : cctv.saveStartTime,
-                endTime : cctv.saveEndTime
+                data: videoData,
+                parent: videoArea,
+                isEvent: cctv.isRealTime,
+                isButton: false,
+                startTime: cctv.saveStartTime,
+                endTime: cctv.saveEndTime
             }
             videoArea.empty();
             videoManager.createPlayer(option);

@@ -614,7 +614,6 @@ const dimming = {
         if(type === "add") {
             dimming.createLampRoad(createObj);
         } else if(type === "mod") {
-            debugger;
             $("#dimmingGroupPopup #dimmingGroupName").val(pRowData.dimmingGroupName);
             const dimmingGroupSeq = pRowData.dimmingGroupSeq;
             $('#dimmingGroupPopup').data("dimmingGroupSeq", dimmingGroupSeq);
