@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/css/login.css">
+    <link rel="stylesheet" type="text/css" href="/webjars/sweetalert2/11.1.2/dist/sweetalert2.min.css"/>
+
+    <!-- JQuery -->
+    <script src="/webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+
+    <!-- sweetAlert2-->
+    <script type=text/javascript src="/webjars/sweetalert2/11.1.2/dist/sweetalert2.min.js"></script>
+
+    <script src="/js/loginWhy.js" defer ></script>
+    <script type="text/javascript" src="/js/common/common.js" ></script>
+
+    <link rel="shortcut icon" th:href="${@environment.getProperty('municipality.favicon')}"/>
+    <title>Iot 플랫폼</title>
+</head>
+
+<body>
+<div class="login_wrap">
+    <div class="login_visual">
+        <h2 class="login_title">
+<!--            <span th:text="${@environment.getProperty('loginPage.eng.title')}"></span>-->
+<!--            <br th:text="${@environment.getProperty('loginPage.kor.title')}">-->
+        </h2>
+    </div>
+    <h6 class="login_form">
+        <form>
+            <h6>
+<!--                <img th:src="'/images/default/'+${@environment.getProperty('loginPage.logo')}">-->
+            </h6>
+            <p>로그인을 해주세요.</p>
+            <ul>
+                <li><input type="text" class="input_id" id="id" name="username" placeholder="아이디를 입력하세요." tabindex="1"></li>
+                <li><input type="password" class="input_pw" id="pwd" name="password" placeholder="비밀번호를 입력하세요." tabindex="2"></li>
+                <li class="login_button">
+                    <button class="login-btn">LOGIN</button>
+                </li>
+            </ul>
+        </form>
+    </h6>
+</div>
+</body>
+
+</html>
