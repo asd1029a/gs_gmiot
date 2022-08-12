@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout_config"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<th:block layout:fragment="content">
+    <h4>
+        <i><img src="/images/default/settingTitle.svg"></i>
+        <span>환경설정</span>
+        <i><img src="/images/default/arrowNext.svg"></i>
+        <span>사용자</span>
+        <i><img src="/images/default/arrowNext.svg"></i>
+        <span>사용자 그룹 관리</span>
+    </h4>
+    <section class="setting_content">
+        <article class="search_form" id="searchForm">
+            <h6>사용자 그룹 검색</h6>
+            <form action="javascript:void(0);">
+                <div>
+                    <ul class="button">
+                        <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요." onkeydown="if(event.keyCode==13){account.group.create();}"></li>
+                        <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
+                        <li id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</li>
+                    </ul>
+                </div>
+            </form>
+        </article>
+        <article class="search_list">
+            <div class="article_title">
+                <dl class="title">
+                    <dt>사용자 그룹 목록</dt>
+                    <dd><span class="count">123</span>건</dd>
+                </dl>
+                <ul>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" id="addUserGroupBtn"><i><img src="/images/default/add.svg"></i>사용자 그룹 추가</li>
+                </ul>
+            </div>
+            <div class="search_table" id="userGroupTable">
+                <table id="userAccountTable">
+                    <thead>
+                    <tr>
+                        <th>그룹 이름</th>
+                        <th>그룹 설명</th>
+                        <th>소속 계정</th>
+                        <!--<th>사용여부</th>-->
+                        <th>상세보기</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </article>
+
+        <!-- 사용자 그룹 추가 및 편집 팝업  -->
+        <div class="popup" id="userGroupPopup">
+            <dl class="title">
+                <dt>사용자 그룹 추가</dt>
+                <dd><i><img src="/images/default/close.svg"></i></dd>
+            </dl>
+            <div class="popup_writing">
+                <div class="half_layout">
+                    <!-- 그룹 정보 -->
+                    <fieldset>
+                        <legend>그룹 정보</legend>
+                        <form id="userGroupForm">
+                            <dl>
+                                <dt>그룹 이름</dt>
+                                <dd><input id="groupName" type="text" placeholder="*필수 입력" name="groupName"></dd>
+                            </dl>
+                            <dl>
+                                <dt>설명</dt>
+                                <dd><textarea id="groupDesc" placeholder="설명 입력" name="groupDesc"></textarea></dd>
+                            </dl>
+                            <dl class="checkbox">
+                                <dt>사용 여부</dt>
+                                <dd>
+                                    <span>
+                                        <input type="radio" id="group_status_use" name="userGroupStatus" data-value="0">
+                                        <label for="group_status_use"><span class="round"></span>사용</label>
+                                    </span>
+                                    <span>
+                                        <input type="radio" id="group_status_none" name="userGroupStatus" data-value="1">
+                                        <label for="group_status_none"><span class="round"></span>사용 안함</label>
+                                    </span>
+                                </dd>
+                            </dl>
+                        </form>
+                    </fieldset>
+                    <!-- 권한 설정 -->
+                    <div class="list_search">
+                        <p class="legend">권한 설정</p>
+                        <div id="permitTable" class="list_table table_authorize">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th rowspan="2">메뉴</th>
+                                    <th colspan="3">권한</th>
+                                </tr>
+                                <tr>
+                                    <th>접근 금지</th>
+                                    <th>읽기만</th>
+                                    <th>읽기/쓰기</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>대시보드</td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="dashboardNot" name="dashboard" data-value="--">
+                                            <label for="dashboardNot"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="dashboardRead" name="dashboard" data-value="r-">
+                                            <label for="dashboardRead"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="dashboardReadAndWrite" name="dashboard" data-value="rw">
+                                            <label for="dashboardReadAndWrite"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>관제</td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="monitoringNot" name="mntr" data-value="--">
+                                            <label for="monitoringNot"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="monitoringRead" name="mntr" data-value="r-">
+                                            <label for="monitoringRead"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="monitoringReadAndWrite" name="mntr" data-value="rw">
+                                            <label for="monitoringReadAndWrite"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>조회 및 관리</td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="inquiryNot" name="inqry" data-value="--">
+                                            <label for="inquiryNot"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="inquiryRead" name="inqry" data-value="r-">
+                                            <label for="inquiryRead"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="inquiryReadAndWrite" name="inqry" data-value="rw">
+                                            <label for="inquiryReadAndWrite"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>통계</td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="statisticsNot" name="stats" data-value="--">
+                                            <label for="statisticsNot"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="statisticsRead" name="stats" data-value="r-">
+                                            <label for="statisticsRead"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="statisticsReadAndWrite" name="stats" data-value="rw">
+                                            <label for="statisticsReadAndWrite"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>환경설정</td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="settingNot" name="config" data-value="--">
+                                            <label for="settingNot"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="settingRead" name="config" data-value="r-">
+                                            <label for="settingRead"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <input type="radio" id="settingReadAndWrite" name="config" data-value="rw">
+                                            <label for="settingReadAndWrite"><span class="round"></span></label>
+                                        </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 소속 사용자 설정 -->
+                <div class="list_search">
+                    <p class="legend">소속 사용자 설정
+                        <!--<span><input id="userKeyword" type="text" placeholder="사용자 계정 검색"></span>-->
+                    </p>
+                    <div class="list_table">
+                        <table id="userInGroupTable">
+                            <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>사용자 이름</th>
+                                <th>설명</th>
+                                <th>선택</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <ul class="bottom">
+<!--                <li>취소</li>-->
+<!--                <li class="color">추가</li>-->
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="delUserGroupProcBtn">삭제</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="modUserGroupProcBtn">정보 수정</li>
+                <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-mode="add" id="addUserGroupProcBtn">등록</li>
+            </ul>
+        </div>
+    </section>
+</th:block>
+</html>

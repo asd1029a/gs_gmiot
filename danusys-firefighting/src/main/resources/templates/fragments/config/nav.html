@@ -1,0 +1,26 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="navFragment">
+    <aside class="accordion_menu accordion">
+        <ul class="accordion">
+        <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
+<!--            <li id="two" class="multi">-->
+<!--                <a href="#two">사용자</a>-->
+<!--                <ul class="accordion_sub_menu">-->
+<!--                    <li id="userAccount"><a href="/pages/config/userAccount">사용자 계정 관리</a></li>-->
+<!--                    <li id="userGroup"><a href="/pages/config/userGroup">사용자 그룹 관리</a></li>-->
+<!--                </ul>-->
+<!--            </li>-->
+            <li id="userAccount">
+                <a href="/pages/config/userAccount">사용자 계정 관리</a>
+            </li>
+            <li id="userGroup">
+                <a href="/pages/config/userGroup">사용자 그룹 관리</a>
+            </li>
+            <li id="commonCode">
+                <a href="#">연계 현황 조회</a>
+            </li>
+        </th:block>
+        </ul>
+    </aside>
+</th:block>
+</html>

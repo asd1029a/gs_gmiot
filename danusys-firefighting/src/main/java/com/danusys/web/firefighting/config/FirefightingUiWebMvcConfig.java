@@ -30,6 +30,9 @@ public class FirefightingUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("/main").setViewName("view/pages/main");
 //        registry.addViewController("/login/error").setViewName("view/login/loginError");
 
+        registry.addViewController("/pages/config/userAccount").setViewName("view/pages/config/userAccount");
+        registry.addViewController("/pages/config/userGroup").setViewName("view/pages/config/userGroup");
+
         super.addViewControllers(registry);
     }
 

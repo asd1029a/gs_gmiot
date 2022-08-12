@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout_config"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <th:block layout:fragment="content">
+        <h4>
+            <i><img src="/images/default/settingTitle.svg"></i>
+            <span>환경설정</span>
+            <i><img src="/images/default/arrowNext.svg"></i>
+            <span>사용자</span>
+            <i><img src="/images/default/arrowNext.svg"></i>
+            <span>사용자 계정 관리</span>
+        </h4>
+        <section class="setting_content">
+            <article class="search_form" id="searchForm">
+                <h6>사용자 계정 검색</h6>
+                <form action="javascript:void(0);">
+                    <div>
+                        <dl class="checkbox_set">
+                            <dt>계정 상태</dt>
+                            <dd>
+                                <span>
+                                    <input type="checkbox" id="use" name="status" data-value="0" data-init-value="checked" checked>
+                                    <label for="use"><span></span>사용</label>
+                                </span>
+                                <span>
+                                    <input type="checkbox" id="none" name="status" data-value="1" data-init-value="checked" checked>
+                                    <label for="none"><span></span>미사용</label>
+                                </span>
+                            </dd>
+                        </dl>
+                        <ul class="button">
+                            <li class="input"><input type="text" name="keyword" placeholder="검색어를 입력하세요." onkeydown="if(event.keyCode==13){account.user.create();}"></li>
+                            <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
+                            <li id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</li>
+                        </ul>
+                    </div>
+                </form>
+            </article>
+            <article class="search_list">
+                <div class="article_title">
+                    <dl class="title">
+                        <dt>사용자 계정 목록</dt>
+                        <dd><span class="count">123</span>건</dd>
+                    </dl>
+                    <ul>
+                        <li sec:authorize="hasAnyRole('ROLE_config_rw')" id="addUserAccountBtn"><i><img src="/images/default/add.svg"></i>사용자 계정 추가</li>
+                    </ul>
+                </div>
+                <div class="search_table">
+                    <table id="userAccountTable">
+                        <thead>
+                        <tr>
+                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>전화번호</th>
+                            <th>이메일</th>
+                            <th>계정 상태</th>
+                            <th>생성일</th>
+                            <th>마지막 접속 시간</th>
+                            <th>상세보기</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </article>
+
+            <!-- 사용자 계정 팝업 -->
+            <div class="popup" id="userAccountPopup">
+                <dl class="title">
+                    <dt></dt>
+                    <dd><i><img src="/images/default/close.svg"></i></dd>
+                </dl>
+                <div class="popup_writing">
+                    <fieldset>
+                        <legend>사용자 정보</legend>
+                        <form id="userAccountForm">
+                            <dl>
+                                <dt>ID</dt>
+                                <dd><input type="text" id="userId" name="userId" placeholder="*필수 입력(5~25 자리 영어, 숫자 조합)" ></dd>
+                            </dl>
+                            <dl>
+                                <dt>비밀번호</dt>
+                                <dd><input type="password" id="password" name="password" placeholder="*필수 입력(8~15 문자 + 숫자 + 특수문자 조합)" ></dd>
+                            </dl>
+                            <dl>
+                                <dt>비밀번호 확인</dt>
+                                <dd><input type="password" id="checkPassword" placeholder="*필수 입력" ></dd>
+                            </dl>
+                            <dl>
+                                <dt>이름</dt>
+                                <dd><input type="text" id="userName" name="userName" placeholder="*필수 입력" ></dd>
+                            </dl>
+                            <dl>
+                                <dt>전화번호</dt>
+                                <dd><input type="text" id="tel" name="tel" placeholder="*필수 입력(하이픈'-' 제외 작성)" ></dd>
+                            </dl>
+                            <dl>
+                                <dt>이메일</dt>
+                                <dd><input type="text" id="email" name="email" placeholder="*필수 입력(예.example@example.com)" ></dd>
+                            </dl>
+                            <dl class="checkbox">
+                                <dt>계정 상태</dt>
+                                <dd>
+                                    <span>
+                                        <input type="radio" id="account_status_use" name="status" data-value="0" checked> <!--value 임시값-->
+                                        <label for="account_status_use"><span class="round"></span>사용</label>
+                                    </span>
+                                    <span>
+                                        <input type="radio" id="account_status_none" name="status" data-value="1">
+                                        <label for="account_status_none"><span class="round"></span>사용 안함</label>
+                                    </span>
+                                </dd>
+                            </dl>
+                        </form>
+                    </fieldset>
+                    <div class="list_search">
+                        <p class="legend">소속 그룹</p>
+                        <div class="list_table">
+                            <table id="userInGroupTable">
+                                <thead>
+                                <tr>
+                                    <th>소속</th>
+                                    <th>그룹 이름</th>
+                                    <th>설명</th>
+                                    <th>선택</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <ul class="bottom">
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="delUserAccountProcBtn">삭제</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" data-mode="mod" id="modUserAccountProcBtn">정보 수정</li>
+                    <li sec:authorize="hasAnyRole('ROLE_config_rw')" class="color" data-mode="add" id="addUserAccountProcBtn">등록</li>
+                </ul>
+            </div>
+        </section>
+    </th:block>
+</html>
