@@ -1357,6 +1357,25 @@ const rnbList = {
                 textArea.val(prop[propStr]);
             }
         });
+
+        const fcltList = prop.facilityList;
+        if(fcltList.length > 0){
+            const area = target.find('.area_right_scroll[data-value=fcltState]');
+            area.find('div ul').empty();
+
+            fcltList.map(f => {
+                let listUl;
+                if(f.facilityKind == "CCTV"){
+                    listUl = area.find('div[data-group=cctvList] ul');
+                } else {
+                    listUl = area.find('div[data-group=fcltList] ul');
+                }
+                let li = "<li><span>" + f.facilityKindName +
+                         "</span><input value='" + f.facilityId + "' type='text' disabled/></li>";
+                listUl.append(li);
+            });
+        }
+
         //animation end
         window.map.removePulse();
         //다른 유형 중복선 제거
