@@ -52,7 +52,7 @@ public class GmSchedulerService {
             List<FacilitySetting> settingList = facilitySettingService.findAll();
 
             settingList.stream().forEach(ff -> {
-                if (!"41210102".equals(StrUtils.getStr(ff.getAdministZone()))) {
+                if (StrUtils.getStr(ff.getAdministZone()).indexOf("41210") != 0) {
                     return;
                 }
                 String facilityId = StrUtils.getStr(ff.getFacilityId());

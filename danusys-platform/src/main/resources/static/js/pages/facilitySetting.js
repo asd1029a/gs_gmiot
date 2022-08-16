@@ -61,6 +61,7 @@ const setSetting = {
                 addSetting("/facilitySetting",setting_list);
             }
             cancelChecks();
+            comm.showAlert("저장되었습니다.");
             $("#popup_controls").hide();
         })
 
@@ -90,12 +91,19 @@ const setSetting = {
         });
 
         $(".popup_close").on("click", function () {
-            $(".popup_controls").hide();
-            $(".insert_data").remove();
-            cancelChecks();
-            setting_list = [];
-            weekday_list = [];
-            weekend_list = [];
+            comm.confirm("취소하시겠습니까?"
+                , {}
+                , () => {
+                    $(".popup_controls").hide();
+                    $(".insert_data").remove();
+                    cancelChecks();
+                    setting_list = [];
+                    weekday_list = [];
+                    weekend_list = [];
+                }
+                , () => {
+                    return false;
+                });
         });
 
     }

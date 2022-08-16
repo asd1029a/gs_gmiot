@@ -1,0 +1,72 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="head">
+    <meta charset="utf-8">
+<!--    <link rel="shortcut icon" th:href="${@environment.getProperty('municipality.favicon')}"/>-->
+    <title>Iot 플랫폼</title>
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="context-path" th:href="@{/static}"/>
+
+    <!--js file -->
+
+    <!-- jquery -->
+    <script type="text/javascript" src="/webjars/jquery/3.6.0/dist/jquery.min.js" ></script>
+
+    <!-- dayjs -->
+    <script type="text/javascript" src="/webjars/dayjs/1.10.7/dayjs.min.js" ></script>
+
+    <!-- datatable.css-->
+    <link rel="stylesheet" type="text/css" href="/css/plugin/dataTable/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/plugin/dataTable/select/select.dataTables.css"/>
+
+    <!-- datatable.js-->
+    <script type="text/javascript" src="/js/plugin/dataTable/datatables.min.js" ></script>
+    <script type="text/javascript" src="/js/plugin/dataTable/ellipsis/dataTable-ellipsis.js" ></script>
+    <script type="text/javascript" src="/js/plugin/dataTable/select/dataTables.select.min.js" ></script>
+
+    <!-- datetimepicker -->
+    <link rel="stylesheet" type="text/css" href="/css/plugin/air-datepicker/datepicker.css">
+    <script type=text/javascript src="/js/plugin/air-datepicker/datepicker.js"></script>
+    <script type=text/javascript src="/js/plugin/air-datepicker/datepicker.ko.js"></script>
+
+    <!-- apexCharts-->
+    <link rel="stylesheet" type="text/css" href="/css/plugin/apexCharts/apexcharts.css">
+    <script type=text/javascript src="/js/plugin/apexCharts/apexcharts.min.js"></script>
+
+    <!-- echarts-->
+    <script type=text/javascript src="/js/plugin/eChart/echarts.min.js"></script>
+
+    <!-- sweetAlert2-->
+    <link rel="stylesheet" type="text/css" href="/webjars/sweetalert2/11.1.2/dist/sweetalert2.min.css"/>
+    <script type=text/javascript src="/webjars/sweetalert2/11.1.2/dist/sweetalert2.min.js"></script>
+
+    <!--  Toastr -->
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/2.1.2/build/toastr.css"/>
+    <script type="text/javascript" src="/webjars/toastr/2.1.2/toastr.js"></script>
+
+    <!-- dashboard -->
+    <script type=text/javascript src="/js/plugin/dashboard/slideMenu.js"></script>
+
+    <!-- default css files -->
+    <link rel="stylesheet" type="text/css" href="/css/reset.css"/>
+
+    <!-- common js-->
+    <script type="text/javascript" src="/js/common/common.js" ></script>
+    <script type="text/javascript" src="/js/common/pageInit.js" ></script>
+    <script type="text/javascript" src="/js/common/jquery.timepicker.min.js" ></script>
+
+    <!-- pages js-->
+    <script type="text/javascript" src="/js/pages/notice.js"></script>
+    <script type="text/javascript" src="/js/pages/signage.js"></script>
+    <script type="text/javascript" src="/js/pages/commonCode.js"></script>
+    <script type="text/javascript" src="/js/pages/event.js"></script>
+    <script type="text/javascript" src="/js/pages/account.js"></script>
+    <script type="text/javascript" src="/js/pages/station.js"></script>
+    <script type="text/javascript" src="/js/pages/facility.js"></script>
+    <script type="text/javascript" src="/js/pages/facilitySetting.js"></script>
+    <script type="text/javascript" src="/js/pages/dimming.js"></script>
+    <script type="text/javascript" src="/js/pages/faceDetection.js"></script>
+    <script type="text/javascript" src="/js/pages/stats.js"></script>
+</th:block>
+</html>

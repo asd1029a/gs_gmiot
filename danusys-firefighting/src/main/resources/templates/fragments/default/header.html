@@ -1,0 +1,36 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<th:block th:fragment="headerFragment">
+    <header>
+        <!-- <h1 class="logo"><i><img src="/images/default/headerMenu.svg"></i>Title</h1> -->
+        <h1>
+            <img th:src="'/images/default/'+${@environment.getProperty('mainPage.logo')}">
+            <span th:text="${@environment.getProperty('mainPage.title')}"></span>
+        </h1>
+        <ul class="gnm">
+            <li>
+                <a href="/">재난 현황판</a>
+            </li>
+            <li>
+                <a href="/">모니터링</a>
+            </li>
+            <li>
+                <a href="/">영상 로그 조회</a>
+            </li>
+            <li>
+                <a href="/">통계</a>
+            </li>
+            <li>
+                <a href="/">환경설정</a>
+            </li>
+<!--            <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">-->
+<!--            </th:block>-->
+        </ul>
+        <ul class="util_menu">
+<!--            TODO: 사용자 이름 매핑-->
+            <li><i><img src="/images/default/utmenu_login.svg"></i>admin 님</li>
+            <li id="logoutBtn"><i><img src="/images/default/utmenu_logout.svg"></i>로그아웃</li>
+        </ul>
+    </header>
+</th:block>
+</html>

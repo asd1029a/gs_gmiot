@@ -315,7 +315,7 @@ public class FacilitySqlProvider {
         String activeType = CommonUtil.validOneNull(paramMap, "activeType");
 
         SQL sql = new SQL() {{
-            SELECT("t1.facility_seq, t1.facility_id" +
+            SELECT("t1.facility_seq, t1.facility_id, t1.facility_name" +
                     ", t1.administ_zone, t1.latitude"+
                     ", t1.longitude, t1.insert_dt" +
                     ", t2.code_value AS facility_kind" +

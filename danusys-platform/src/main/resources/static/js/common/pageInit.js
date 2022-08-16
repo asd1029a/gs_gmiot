@@ -55,9 +55,11 @@ $(document).ready(() => {
         //초기값
         const now = new Date();
         const ago = new Date();
+        const endago = new Date();
         ago.setDate(now.getDate() - 30);
+        endago.setDate(now.getDate() + 1);
         $startDt.datepicker().data('datepicker').selectDate(ago);
-        $endDt.datepicker().data('datepicker').selectDate(now);
+        $endDt.datepicker().data('datepicker').selectDate(endago);
     });
 
     /* 페이지별 공통 기능 */
@@ -135,6 +137,9 @@ $(document).ready(() => {
     }
     // 대시보드 (임시)
     else if(path === "/pages/dashboard/dashboard_facility") {
+        dashboard.init();
+    }
+    else if(path === "/pages/dashboard/dashboard_facility_bsng") {
         dashboard.init();
     }
     else if(path === "/pages/dashboard/dashboard_drone") {
