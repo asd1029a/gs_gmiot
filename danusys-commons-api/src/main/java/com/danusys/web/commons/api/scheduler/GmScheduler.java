@@ -321,12 +321,12 @@ public class GmScheduler {
         List<Map<String, Object>> data = null;
 
         try {
-            data = objectMapper.readValue(StrUtils.getStr(body.get("data")), List.class);
+            data = objectMapper.readValue(objectMapper.writeValueAsString(body.get("data")), List.class);
             data.stream().forEach(f -> {
                 String nodeId = StrUtils.getStr(f.get("nodeId"));
-                String channel = StrUtils.getStr(f.get("channel"));
+//                String channel = StrUtils.getStr(f.get("channel"));
                 String count = StrUtils.getStr(f.get("count"));
-                String facilityId = MessageFormat.format("{0}_1_{1}", nodeId, channel);
+                String facilityId = MessageFormat.format("{0}_1_1", nodeId);
 
                 Facility facility = facilityService.findByFacilityId(facilityId);
 
