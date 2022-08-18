@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layoutMntr">
+<th:block layout:fragment="content">
+    <div class="map">
+        디도
+        <!-- 현재 위치 및 날씨 -->
+        <div class="map_info">
+            <ul>
+                <li>강원도</li>
+                <li><img src="/images/default/sm_arrow.svg"></li>
+                <li>원주시</li>
+                <li><img src="/images/default/sm_arrow.svg"></li>
+                <li>신림면</li>
+            </ul>
+            <p><img src="/images/default/weather_sunny.svg">15℃</p>
+            <p>강수&nbsp;50%</p>
+            <p>바람&nbsp;5m/s<img src="/images/default/icon_weather_arrow_12.svg"></p>
+        </div>
+        <!-- 마커 색상 범례 -->
+        <div class="marker_legend">
+            <ul>
+                <li><span class=""></span>지휘차</li>
+                <li><span class=""></span>펌프차</li>
+                <li><span class=""></span>탱크차</li>
+                <li><span class=""></span>구급차</li>
+                <li><span class=""></span>고가차</li>
+                <li><span class=""></span>화학차</li>
+                <li><span class=""></span>조명차</li>
+                <li><span class=""></span>기타</li>
+            </ul>
+            <p><span class=""></span>카메라 소지</p>
+        </div>
+        <!-- 지도 옵션 버튼 -->
+        <div class="map_options">
+            <div class="align_horizontal">
+                <div class="map_layer">
+                    <p><img src="/images/default/icon_layer.svg"></p>
+                    <div class="popup_layer">
+                        <h6>소방</h6>
+                        <ul>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_01.svg"></span>
+                                <span>소방용수</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_02.svg"></span>
+                                <span>대상물</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_03.svg"></span>
+                                <span>위험물</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_04.svg"></span>
+                                <span>비상소화장치</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_05.svg"></span>
+                                <span>서센터</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_06.svg"></span>
+                                <span>응급의료기관</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_07.svg"></span>
+                                <span>출동차량</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_08.svg"></span>
+                                <span>드론</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_09.svg"></span>
+                                <span>CCTV</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_10.svg"></span>
+                                <span>모바일</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_11.svg"></span>
+                                <span>소방권역</span>
+                            </li>
+                        </ul>
+                        <h6>날씨</h6>
+                        <ul class="layer_radio">
+                            <li>
+                                <input type="radio" id="radio1" name="">
+                                <label for="radio1"><span class="round"></span>날씨</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="radio1" name="">
+                                <label for="radio1"><span class="round"></span>통합대기</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="radio1" name="">
+                                <label for="radio1"><span class="round"></span>미세먼지</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="radio1" name="">
+                                <label for="radio1"><span class="round"></span>황사</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="radio1" name="">
+                                <label for="radio1"><span class="round"></span>오존</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="radio1" name="">
+                                <label for="radio1"><span class="round"></span>이산화질소</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="radio1" name="">
+                                <label for="radio1"><span class="round"></span>일산화탄소</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="radio1" name="">
+                                <label for="radio1"><span class="round"></span>아황산가스</label>
+                            </li>
+                        </ul>
+                        <h6>생활안전</h6>
+                        <ul>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_12.svg"></span>
+                                <span>약국</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_13.svg"></span>
+                                <span>AED</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_14.svg"></span>
+                                <span>보건소</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_15.svg"></span>
+                                <span>무더위쉼터</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_16.svg"></span>
+                                <span>원전구호소</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_17.svg"></span>
+                                <span>교통사고다발</span>
+                            </li>
+                            <li>
+                                <span class="icon"><img src="/images/default/icon_layer_18.svg"></span>
+                                <span>인명구조함</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <ul class="map_type">
+                    <li>지도</li>
+                    <li>스카이뷰</li>
+                </ul>
+            </div>
+            <div class="align_vertical">
+                <ul class="map_zoom">
+                    <li><img src="/images/default/icon_+.svg"></li>
+                    <li><img src="/images/default/icon_-.svg"></li>
+                </ul>
+                <ul class="map_measure">
+                    <li><img src="/images/default/icon_rul1.svg"></li>
+                    <li><img src="/images/default/icon_rul2.svg"></li>
+                    <li><img src="/images/default/icon_rul3.svg"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

@@ -1,0 +1,228 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="navRFragment">
+    <!-- panel : 기본 정보 -->
+    <div class="panel">
+        <div class="panel_contents">
+            <div class="sort_title">
+                <h5>재난 이름<span><img src="/images/default/icon_refresh.svg"></span></h5>
+                <p><span class="button"><img src="/images/default/icon_view.svg">투망감시</span><span><img
+                        src="/images/default/icon_closed.svg"></span></p>
+            </div>
+            <ul class="sort_tab">
+                <li href="#">기본 정보</li>
+                <li href="#">진행 상황</li>
+                <li href="#">주변 정보</li>
+            </ul>
+            <div class="sort_title_sub">
+                <h5><img src="/images/default/icon_info.svg">발생 이벤트 정보</h5>
+            </div>
+            <div class="sort_form">
+                <ul>
+                    <li><span>이벤트 종류</span><input type="text"></li>
+                    <li><span>이벤트 ID</span><input type="text"></li>
+                    <li><span>발생 주소</span><input type="text"></li>
+                    <li><span>접수 시각</span><input type="text"></li>
+                    <li><span>신고자 연락처</span><input type="text"></li>
+                    <li><span>신고자 위치</span><input type="text"></li>
+                    <li><span>신고 내용</span><textarea></textarea></li>
+                    <li><span>지시 사항</span><input type="text"></li>
+                    <li><span>출동 현황</span><input type="text"></li>
+                </ul>
+            </div>
+            <div class="list_detailed">
+                <table>
+                    <tr>
+                        <th>차량명</th>
+                        <th>출동상태</th>
+                        <th>호출부호</th>
+                        <th>거리(m)</th>
+                        <th>영상</th>
+                    </tr>
+                    <tr>
+                        <td>다누-소방-00</td>
+                        <td>귀소완료보고</td>
+                        <td>0000</td>
+                        <td>000</td>
+                        <td>아니오</td>
+                    </tr>
+                    <tr>
+                        <td>다누-소방-00</td>
+                        <td>귀소완료보고</td>
+                        <td>0000</td>
+                        <td>000</td>
+                        <td>아니오</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <p class="panel_toggle"><img src="/images/default/panel_open.svg"></p>
+    </div>
+    <!-- panel : 진행 상황 -->
+    <div class="panel" style="display: none;">
+        <div class="panel_contents">
+            <div class="sort_title">
+                <h5>재난 이름<span><img src="/images/default/icon_refresh.svg"></span></h5>
+                <p><span class="button"><img src="/images/default/icon_view.svg">투망감시</span><span><img
+                        src="/images/default/icon_closed.svg"></span></p>
+            </div>
+            <ul class="sort_tab">
+                <li href="#">기본 정보</li>
+                <li href="#">진행 상황</li>
+                <li href="#">주변 정보</li>
+            </ul>
+            <div class="sort_title_sub">
+                <h5><img src="/images/default/icon_info.svg">상세 진행 상황</h5>
+                <p><img src="/images/default/icon_export.svg"></p>
+            </div>
+            <div class="sort_form">
+                <p>#000</p>
+                <ul>
+                    <li><span>상황 구분</span><input type="text"></li>
+                    <li><span>보고 접수 일시</span><input type="text"></li>
+                    <li><span>상세 진행 상황</span><input type="text"></li>
+                    <li><span>관제자</span><input type="text"></li>
+                </ul>
+                <p>#000</p>
+                <ul>
+                    <li><span>상황 구분</span><input type="text"></li>
+                    <li><span>보고 접수 일시</span><input type="text"></li>
+                    <li><span>상세 진행 상황</span><textarea></textarea></li>
+                    <li><span>관제자</span><input type="text"></li>
+                </ul>
+                <p>#000</p>
+                <ul>
+                    <li><span>상황 구분</span><input type="text"></li>
+                    <li><span>보고 접수 일시</span><input type="text"></li>
+                    <li><span>상세 진행 상황</span><input type="text"></li>
+                    <li><span>관제자</span><input type="text"></li>
+                </ul>
+            </div>
+        </div>
+        <p class="panel_toggle"><img src="/images/default/panel_open.svg"></p>
+    </div>
+    <!-- panel : 주변 정보 -->
+    <div class="panel" style="display: none;">
+        <div class="panel_contents">
+            <div class="sort_title">
+                <h5>재난 이름<span><img src="/images/default/icon_refresh.svg"></span></h5>
+                <p><span class="button"><img src="/images/default/icon_view.svg">투망감시</span><span><img
+                        src="/images/default/icon_closed.svg"></span></p>
+            </div>
+            <ul class="sort_tab">
+                <li href="#">기본 정보</li>
+                <li href="#">진행 상황</li>
+                <li href="#">주변 정보</li>
+            </ul>
+            <div class="sort_title">
+                <h5><img src="/images/default/box_search.svg">소방용수<span class="count">00</span></h5>
+                <span><img src="/images/default/arrow_close.svg"></span>
+            </div>
+            <div class="list_detailed">
+                <table>
+                    <tr>
+                        <th>소방용수 번호</th>
+                        <th>종별코드</th>
+                        <th>구경(mm)</th>
+                        <th>거리(m)</th>
+                        <th>상세</th>
+                    </tr>
+                    <tr>
+                        <td>다누-DN-00</td>
+                        <td>내용</td>
+                        <td>00</td>
+                        <td>000</td>
+                        <td><img>내보내기</td>
+                    </tr>
+                    <tr>
+                        <td>다누-DN-00</td>
+                        <td>내용</td>
+                        <td>00</td>
+                        <td>000</td>
+                        <td><img>내보내기</td>
+                    </tr>
+                    <tr>
+                        <td>다누-DN-00</td>
+                        <td>내용</td>
+                        <td>00</td>
+                        <td>000</td>
+                        <td><img>내보내기</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="sort_title">
+                <h5><img src="/images/default/box_search.svg">대상물<span class="count">00</span></h5>
+                <span><img src="/images/default/arrow_close.svg"></span>
+            </div>
+            <div class="list_detailed">
+                <table>
+                    <tr>
+                        <th>대상물 이름</th>
+                        <th>용도</th>
+                        <th>구분</th>
+                        <th>거리(m)</th>
+                        <th>상세</th>
+                    </tr>
+                    <tr>
+                        <td>다누시스</td>
+                        <td>근린생활시설</td>
+                        <td>일반대상</td>
+                        <td>000</td>
+                        <td><img>내보내기</td>
+                    </tr>
+                    <tr>
+                        <td>다누시스</td>
+                        <td>근린생활시설</td>
+                        <td>일반대상</td>
+                        <td>000</td>
+                        <td><img>내보내기</td>
+                    </tr>
+                    <tr>
+                        <td>다누시스</td>
+                        <td>근린생활시설</td>
+                        <td>일반대상</td>
+                        <td>000</td>
+                        <td><img>내보내기</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="sort_title">
+                <h5><img src="/images/default/box_search.svg">위험물<span class="count">00</span></h5>
+                <span><img src="/images/default/arrow_close.svg"></span>
+            </div>
+            <div class="list_detailed">
+                <table>
+                    <tr>
+                        <th>위험물 이름</th>
+                        <th>구분</th>
+                        <th>안전관리자</th>
+                        <th>거리(m)</th>
+                        <th>상세</th>
+                    </tr>
+                    <tr>
+                        <td>다누시스</td>
+                        <td>옥내저장소</td>
+                        <td>김다누<br>010-0000-0000</td>
+                        <td>000</td>
+                        <td><img>내보내기</td>
+                    </tr>
+                    <tr>
+                        <td>다누시스</td>
+                        <td>옥내저장소</td>
+                        <td>김다누<br>010-0000-0000</td>
+                        <td>000</td>
+                        <td><img>내보내기</td>
+                    </tr>
+                    <tr>
+                        <td>다누시스</td>
+                        <td>옥내저장소</td>
+                        <td>김다누<br>010-0000-0000</td>
+                        <td>000</td>
+                        <td><img>내보내기</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <p class="panel_toggle"><img src="/images/default/panel_open.svg"></p>
+    </div>
+</th:block>
+</html>

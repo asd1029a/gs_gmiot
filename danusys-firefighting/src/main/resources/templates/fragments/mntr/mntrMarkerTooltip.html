@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <title>스마트 CCTV 지휘관제시스템</title>
+        <link rel="stylesheet" type="text/css" href="../../static/css/reset.css">
+        <link rel="stylesheet" type="text/css" href="../../static/css/monitoring.css">
+    </head>
+    <body>
+        <div class="wrap_monitoring">
+            <header class="header">
+                <h1><img src="/images/default/logo_119.svg">스마트 CCTV 지휘관제시스템</h1>
+                <ul class="gnm">
+                    <li>
+                        <a href="#">재난 현황판</a>
+                    </li>
+                    <li><a href="#">모니터링</a></li>
+                    <li><a href="#">영상 로그 조회</a></li>
+                    <li><a href="#">통계</a></li>
+                    <li><a href="#">환경설정</a></li>
+                </ul>
+                <ul class="util">
+                    <li><a href="#"><img src="/images/default/user.svg">사용자</a></li>
+                </ul>
+            </header>
+            <div class="container_monitoring">
+                <div class="lnb">
+                    <ul class="sort_tab">
+                        <li href="#">재난</li>
+                        <li href="#">소방영상</li>
+                        <li href="#">주소</li>
+                    </ul>
+                    <div class="sort_title">
+                        <h5><img src="/images/default/box_search.svg">재난 검색</h5>
+                        <span class="button"><img src="/images/default/icon_reset.svg">초기화</span>
+                    </div>
+                    <div class="sort_search">
+                        <input class="input_search" type="text" placeholder="검색어를 입력하세요.">
+                        <div class="sort_search_option">
+                            <p>재난 종류</p>
+                        </div>                        
+                    </div>
+                    <div class="sort_title">
+                        <h5><img src="/images/default/box_menu.svg">재난 목록<span class="count">12</span></h5>
+                    </div>
+                    <div class="lnb_list">
+                    </div>
+                </div>
+                <div class="map">
+                    디도
+                    <p class="talk_noti">영상 종료</p>
+                    <ul class="marker"> <!-- 차량 이미지 추후 전달 예정 -->
+                        <li>
+                            <span class="icon"><img src="/images/default/asdf.svg"></span>
+                            <span class="tooltip type1"><b>★</b>지휘차</span>
+                        </li>
+                        <li>
+                            <span class="icon"><img src="/images/default/asdf.svg"></span>
+                            <span class="tooltip type2"><b>★</b>화학차</span>
+                        </li>
+                        <li>
+                            <span class="icon"><img src="/images/default/asdf.svg"></span>
+                            <span class="tooltip type3">구급차</span>
+                        </li>
+                        <li>
+                            <span class="icon"><img src="/images/default/asdf.svg"></span>
+                            <span class="tooltip type4"><b>★</b>탱크차</span>
+                        </li>
+                        <li>
+                            <span class="icon"><img src="/images/default/asdf.svg"></span>
+                            <span class="tooltip type5">기타</span>
+                        </li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+    </body>
+</html>

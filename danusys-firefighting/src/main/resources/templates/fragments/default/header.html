@@ -1,35 +1,29 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <th:block th:fragment="headerFragment">
-    <header>
-        <!-- <h1 class="logo"><i><img src="/images/default/headerMenu.svg"></i>Title</h1> -->
+    <header class="header">
         <h1>
             <img th:src="'/images/default/'+${@environment.getProperty('mainPage.logo')}">
             <span th:text="${@environment.getProperty('mainPage.title')}"></span>
         </h1>
         <ul class="gnm">
             <li>
-                <a href="/">재난 현황판</a>
+                <a href="#">재난 현황판</a>
             </li>
+            <li><a href="#">모니터링</a></li>
+            <li><a href="#">영상 로그 조회</a></li>
             <li>
-                <a href="/">모니터링</a>
+                <a href="#">통계</a>
+                <ul class="gnm_sub" style="display: none;">
+                    <li><a>재난 통계</a></li>
+                    <li><a>영상 로그 통계</a></li>
+                </ul>
             </li>
-            <li>
-                <a href="/">영상 로그 조회</a>
-            </li>
-            <li>
-                <a href="/">통계</a>
-            </li>
-            <li>
-                <a href="/">환경설정</a>
-            </li>
-<!--            <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">-->
-<!--            </th:block>-->
+            <li><a href="#">환경설정</a></li>
         </ul>
-        <ul class="util_menu">
-<!--            TODO: 사용자 이름 매핑-->
-            <li><i><img src="/images/default/utmenu_login.svg"></i>admin 님</li>
-            <li id="logoutBtn"><i><img src="/images/default/utmenu_logout.svg"></i>로그아웃</li>
+        <ul class="util">
+            <li><a href="#"><img src="/images/default/user.svg">사용자</a></li>
+            <li id="logoutBtn"><a href="#"><img src="/images/default/utmenu_logout.svg">로그아웃</a></li>
         </ul>
     </header>
 </th:block>

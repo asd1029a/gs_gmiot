@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <title>스마트 CCTV 지휘관제시스템</title>
+        <link rel="stylesheet" type="text/css" href="../../static/css/reset.css">
+        <link rel="stylesheet" type="text/css" href="../../static/css/monitoring.css">
+    </head>
+    <body>
+        <div class="wrap_monitoring">
+            <header class="header">
+                <h1><img src="/images/default/logo_119.svg">스마트 CCTV 지휘관제시스템</h1>
+                <ul class="gnm">
+                    <li>
+                        <a href="#">재난 현황판</a>
+                    </li>
+                    <li><a href="#">모니터링</a></li>
+                    <li><a href="#">영상 로그 조회</a></li>
+                    <li><a href="#">통계</a></li>
+                    <li><a href="#">환경설정</a></li>
+                </ul>
+                <ul class="util">
+                    <li><a href="#"><img src="/images/default/user.svg">사용자</a></li>
+                </ul>
+            </header>
+            <div class="container_monitoring">
+                <div class="lnb">
+                    <ul class="sort_tab">
+                        <li href="#">재난</li>
+                        <li href="#">소방영상</li>
+                        <li href="#">주소</li>
+                    </ul>
+                    <div class="sort_title">
+                        <h5><img src="/images/default/box_search.svg">재난 검색</h5>
+                        <span class="button"><img src="/images/default/icon_reset.svg">초기화</span>
+                    </div>
+                    <div class="sort_search">
+                        <input class="input_search" type="text" placeholder="검색어를 입력하세요.">
+                        <div class="sort_search_option">
+                            <p>재난 종류</p>
+                            <ul>
+                                <li>
+                                    <span>
+                                        <input type="checkbox" id="checkbox01" name="">
+                                        <label for="checkbox01"><span></span>구급</label>
+                                    </span>
+                                <li>
+                                    <span>
+                                        <input type="checkbox" id="checkbox02" name="">
+                                        <label for="checkbox02"><span></span>화재</label>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <input type="checkbox" id="checkbox03" name="">
+                                        <label for="checkbox03"><span></span>구조</label>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <input type="checkbox" id="checkbox04" name="">
+                                        <label for="checkbox04"><span></span>기타</label>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>                        
+                    </div>
+                    <div class="sort_title">
+                        <h5><img src="/images/default/box_menu.svg">재난 목록<span class="count">12</span></h5>
+                    </div>
+                    <div class="lnb_list">
+                        <div class="list_composition">
+                            <p class="title">재난 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="/images/default/icon_list_1.svg">화재/일반화재</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                            <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+                        </div>
+                        <div class="list_composition">
+                            <p class="title">재난 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="/images/default/icon_list_2.svg">구급/질병</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                            <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+                        </div>
+                        <div class="list_composition">
+                            <p class="title">재난 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="/images/default/icon_list_3.svg">구조/조난</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                            <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+                        </div>
+                        <div class="list_composition">
+                            <p class="title">재난 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="/images/default/icon_list_4.svg">기타/기타</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                            <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="map">
+                    <p class="talk_noti">영상 종료</p>
+                    <!-- 관제 화면 영상 팝업 -->
+                    <div class="popup popup_cctv">
+                        <div class="sort_title">
+                            <h5>CCTV 명<img src="/images/default/icon_export.svg"></h5>
+                            <p>
+                                <span class="button"><img src="/images/default/icon_view.svg">개소감시</span>
+                                <span><img src="/images/default/icon_closed.svg"></span>
+                            </p>
+                        </div>
+                        <div class="sort_form">
+                            <ul>
+                                <li><span>관제센터 연락처</span><input type="text" disabled></li>
+                            </ul>                        
+                        </div>
+                        <div class="sort_channel">
+                            <h5>
+                                <img src="/images/default/icon_channel.svg">
+                                채널 1
+                                <select>
+                                    <option>방범 1</option>
+                                    <option>방범 2</option>
+                                    <option>방범 3</option>
+                                    <option>방범 4</option>
+                                </select>
+                            </h5>
+                            <div>
+                                <p>PTZ</p>
+                                <p>
+                                    <input type="checkbox" id="toggle" hidden>
+                                    <label for="toggle" class="toggle_switch">
+                                        <span class="toggle_button">YES</span>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="area_cctv">
+                            <ul class="tab">
+                                <li>실시간</li>
+                                <li>열화상</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- //관제 화면 영상 팝업 -->
+                    <!-- 관제 화면 정보 팝업 -->
+                    <div class="popup">
+                        <div class="sort_title">
+                            <h5>다누-DN-00</h5>
+                            <span><img src="/images/default/icon_closed.svg"></span>
+                        </div>
+                        <div class="sort_title_sub">
+                            <h5><img src="/images/default/icon_info.svg">소방용수 정보</h5>
+                            <span class="button">상세정보<img src="/images/default/icon_export.svg"></span>
+                        </div>
+                        <div class="sort_form">
+                            <ul>
+                                <li><span>소방용수 번호</span><input type="text" disabled></li>
+                                <li><span>주소</span><input type="text" disabled></li>
+                                <li><span>종류</span><input type="text" disabled></li>
+                                <li><span>배관 구경</span><input type="text" disabled></li>
+                                <li><span>수압</span><input type="text" disabled></li>
+                                <li><span>표지판 설치 여부</span><input type="text" disabled></li>                            
+                            </ul>                        
+                        </div>
+                    </div>
+                    <div class="popup">
+                        <div class="sort_title">
+                            <h5>다누시스</h5>
+                            <span><img src="/images/default/icon_closed.svg"></span>
+                        </div>
+                        <div class="sort_title_sub">
+                            <h5><img src="/images/default/icon_info.svg">대상물 정보</h5>
+                            <span class="button">상세정보<img src="/images/default/icon_export.svg"></span>
+                        </div>
+                        <div class="sort_form">
+                            <ul>
+                                <li><span>대상물 이름</span><input type="text" disabled></li>
+                                <li><span>주소</span><input type="text" disabled></li>
+                                <li><span>용도</span><input type="text" disabled></li>
+                                <li><span>구분</span><input type="text" disabled></li>
+                                <li><span>주간 전화번호</span><input type="text" disabled></li>
+                                <li><span>야간 전화번호</span><input type="text" disabled></li>                            
+                                <li><span>방재실 전화번호</span><input type="text" disabled></li>                            
+                            </ul>                        
+                        </div>
+                    </div>
+                    <div class="popup">
+                        <div class="sort_title">
+                            <h5>다누시스</h5>
+                            <span><img src="/images/default/icon_closed.svg"></span>
+                        </div>
+                        <div class="sort_title_sub">
+                            <h5><img src="/images/default/icon_info.svg">위험물 정보</h5>
+                            <span class="button">상세정보<img src="/images/default/icon_export.svg"></span>
+                        </div>
+                        <div class="sort_form">
+                            <ul>
+                                <li><span>위험물 이름</span><input type="text" disabled></li>
+                                <li><span>주소</span><input type="text" disabled></li>
+                                <li><span>구분</span><input type="text" disabled></li>
+                                <li><span>안전관리자 이름</span><input type="text" disabled></li>
+                                <li><span>안전관리자<br>전화번호</span><input type="text" disabled></li>                            
+                                <li><span>안전관리자<br>휴대전화</span><input type="text" disabled></li>                            
+                            </ul>                        
+                        </div>
+                    </div>
+                    <div class="popup">
+                        <div class="sort_title">
+                            <h5>다누시스</h5>
+                            <span><img src="/images/default/icon_closed.svg"></span>
+                        </div>
+                        <div class="sort_title_sub">
+                            <h5><img src="/images/default/icon_info.svg">비상소화장치 정보</h5>
+                            <span class="button">상세정보<img src="/images/default/icon_export.svg"></span>
+                        </div>
+                        <div class="sort_form">
+                            <ul>
+                                <li><span>비상소화장치<br>번호</span><input type="text" disabled></li>
+                                <li><span>주소</span><input type="text" disabled></li>
+                                <li><span>유형</span><input type="text" disabled></li>
+                                <li><span>장비 설명</span><textarea disabled></textarea></li>
+                            </ul>                        
+                        </div>
+                    </div>
+                    <!-- //관제 화면 정보 팝업 -->
+                </div>
+                </div>
+            </div>
+    </body>
+</html>
