@@ -624,7 +624,7 @@ const signage = {
                     "<input type='text' placeholder='날짜를 입력하세요' name='endDt' class='input_date'>" +
                     "</li>" +
                     "</div>";
-            } else { // input image 타입
+            } else if (idx === 1) { // input image 타입
                 content =
                     "<div class='"+ htmlObj[idx].name + "ImageList'>" +
                     "<h6>종류<span>" + htmlObj[idx].value + " 이미지를 설정해주세요. (영문명 파일만 가능)</span></h6>" +
@@ -634,6 +634,30 @@ const signage = {
                     "<input type='text' class='upload_name' name='"+ htmlObj[idx].name + "ImageFileName' placeholder='이미지 첨부파일' readonly>" +
                     "<label for='"+ htmlObj[idx].name + "ImageFile'>파일찾기</label>" +
                     "<input type='file' name='imageFile' accept='image/*, .pdf' id='"+ htmlObj[idx].name + "ImageFile' multiple>" +
+                    "</div>" +
+                    "</li>" +
+                    "</ul>" +
+                    "</div>" +
+                    "<div>" +
+                    "<h6>기간<span>이미지 표출 기간과 순환 시간을 설정해주세요.</span></h6>" +
+                    "<ul class='date'>" +
+                    "<li class='"+ htmlObj[idx].name + "Image'>" +
+                    "<input type='text' placeholder='날짜를 입력하세요' name='startDt' class='input_date'>" +
+                    "<input type='text' placeholder='날짜를 입력하세요' name='endDt' class='input_date'>" +
+                    "<span>순환 시간</span>" +
+                    "<input type='number' class='sec' name='delayTime' value='30' placeholder='30'><span>초</span>" +
+                    "</li>" +
+                    "</div>";
+            } else {
+                content =
+                    "<div class='"+ htmlObj[idx].name + "ImageList'>" +
+                    "<h6>종류<span>" + htmlObj[idx].value + " 이미지를 설정해주세요. (영문명 파일만 가능)</span></h6>" +
+                    "<ul>" +
+                    "<li class='"+ htmlObj[idx].name + "Image'>" +
+                    "<div class='file_box'>" +
+                    "<input type='text' class='upload_name' name='"+ htmlObj[idx].name + "ImageFileName' placeholder='이미지 첨부파일' readonly>" +
+                    "<label for='"+ htmlObj[idx].name + "ImageFile'>파일찾기</label>" +
+                    "<input type='file' name='imageFile' accept='image/*, .pdf, text/plain' id='"+ htmlObj[idx].name + "ImageFile' multiple>" +
                     "</div>" +
                     "</li>" +
                     "</ul>" +
