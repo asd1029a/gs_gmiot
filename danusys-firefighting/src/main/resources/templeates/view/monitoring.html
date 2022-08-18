@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <title>스마트 CCTV 지휘관제시스템</title>
+        <link rel="stylesheet" type="text/css" href="../../static/css/reset.css">
+        <link rel="stylesheet" type="text/css" href="../../static/css/monitoring.css">
+    </head>
+    <body>
+        <div class="wrap_monitoring">
+            <header class="header">
+                <h1><img src="../../static/images/logo_119.svg">스마트 CCTV 지휘관제시스템</h1>
+                <ul class="gnm">
+                    <li>
+                        <a href="#">재난 현황판</a>
+                    </li>
+                    <li><a href="#">모니터링</a></li>
+                    <li><a href="#">영상 로그 조회</a></li>
+                    <li>
+                        <a href="#">통계</a>
+                        <ul class="gnm_sub" style="display: none;">
+                            <li><a>재난 통계</a></li>
+                            <li><a>영상 로그 통계</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">환경설정</a></li>
+                </ul>
+                <ul class="util">
+                    <li><a href="#"><img src="../../static/images/user.svg">사용자</a></li>
+                </ul>
+            </header>
+            <div class="container_monitoring">
+                <!-- lnb : 재난 -->
+                <div class="lnb">
+                    <ul class="sort_tab">
+                        <li href="#">재난</li>
+                        <li href="#">소방영상</li>
+                        <li href="#">주소</li>
+                    </ul>
+                    <div class="sort_title">
+                        <h5><img src="../../static/images/box_search.svg">재난 검색</h5>
+                        <span class="button"><img src="../../static/images/icon_reset.svg">초기화</span>
+                    </div>
+                    <div class="sort_search">
+                        <input class="input_search" type="text" placeholder="검색어를 입력하세요.">
+                        <div class="sort_search_option">
+                            <p>재난 종류</p>
+                            <ul>
+                                <li>
+                                    <input type="checkbox" id="checkbox01" name="">
+                                    <label for="checkbox01"><span></span>구급</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="checkbox02" name="">
+                                    <label for="checkbox02"><span></span>화재</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="checkbox03" name="">
+                                    <label for="checkbox03"><span></span>구조</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="checkbox04" name="">
+                                    <label for="checkbox04"><span></span>기타</label>
+                                </li>
+                            </ul>
+                        </div>                        
+                    </div>
+                    <div class="sort_title">
+                        <h5><img src="../../static/images/box_menu.svg">재난 목록<span class="count">12</span></h5>
+                    </div>
+                    <div class="lnb_list">
+                        <div class="list_composition">
+                            <p class="title">재난 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="../../static/images/icon_list_1.svg">화재/일반화재</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                            <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+                        </div>
+                        <div class="list_composition">
+                            <p class="title">재난 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="../../static/images/icon_list_2.svg">구급/질병</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                            <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+                        </div>
+                        <div class="list_composition">
+                            <p class="title">재난 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="../../static/images/icon_list_3.svg">구조/조난</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                            <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+                        </div>
+                        <div class="list_composition">
+                            <p class="title">재난 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="../../static/images/icon_list_4.svg">기타/기타</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                            <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- lnb : 소방영상 -->
+                <div class="lnb" style="display: none;">
+                    <ul class="sort_tab">
+                        <li href="#">재난</li>
+                        <li href="#">소방영상</li>
+                        <li href="#">주소</li>
+                    </ul>
+                    <div class="sort_title">
+                        <h5><img src="../../static/images/box_search.svg">재난 검색</h5>
+                        <span class="button"><img src="../../static/images/icon_reset.svg">초기화</span>
+                    </div>
+                    <div class="sort_search">
+                        <input class="input_search" type="text" placeholder="검색어를 입력하세요.">
+                        <div class="sort_search_option">
+                            <p>장비 종류</p>
+                            <ul>
+                                <li>
+                                    <input type="radio" id="radio1" name="">
+                                    <label for="radio1"><span class="round"></span>CCTV</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="radio2" name="">
+                                    <label for="radio2"><span class="round"></span>소방 차량</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="radio3" name="">
+                                    <label for="radio3"><span class="round"></span>드론</label> 
+                                </li>
+                                <li>
+                                    <input type="radio" id="radio4" name="">
+                                    <label for="radio4"><span class="round"></span>모바일</label>
+                                </li>
+                            </ul>
+                        </div>                        
+                    </div>
+                    <div class="sort_title">
+                        <h5><img src="../../static/images/box_menu.svg">장비 목록<span class="count">12</span></h5>
+                    </div>
+                    <div class="lnb_list">
+                        <div class="list_composition">
+                            <p class="title">장비(영상) 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="../../static/images/icon_list_5.svg">CCTV</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                        </div>
+                        <div class="list_composition">
+                            <p class="title">장비(영상) 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="../../static/images/icon_list_6.svg">소방차량</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                        </div>
+                        <div class="list_composition">
+                            <p class="title">장비(영상) 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="../../static/images/icon_list_7.svg">드론</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                        </div>
+                        <div class="list_composition">
+                            <p class="title">장비(영상) 이름<span>병원도착보고</span></p>
+                            <p class="kind"><img src="../../static/images/icon_list_8.svg">모바일</p>
+                            <p>다누구 다누로 00길 00 (다누0동)</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- lnb : 주소 -->
+                <div class="lnb" style="display: none;">
+                    <ul class="sort_tab">
+                        <li href="#">재난</li>
+                        <li href="#">소방영상</li>
+                        <li href="#">주소</li>
+                    </ul>
+                    <div class="sort_title">
+                        <h5><img src="../../static/images/box_search.svg">재난 검색</h5>
+                        <span class="button"><img src="../../static/images/icon_reset.svg">초기화</span>
+                    </div>
+                    <div class="sort_search">
+                        <input class="input_search" type="text" placeholder="검색어를 입력하세요.">
+                        <div class="sort_search_option">
+                            <p>재난 종류</p>
+                            <ul>
+                                <li>
+                                    <input type="checkbox" id="checkbox01" name="">
+                                    <label for="checkbox01"><span></span>구급</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="checkbox02" name="">
+                                    <label for="checkbox02"><span></span>화재</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="checkbox03" name="">
+                                    <label for="checkbox03"><span></span>구조</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="checkbox04" name="">
+                                    <label for="checkbox04"><span></span>기타</label>
+                                </li>
+                            </ul>
+                        </div>                        
+                    </div>
+                    <div class="sort_title">
+                        <h5><img src="../../static/images/box_menu.svg">재난 목록<span class="count">12</span></h5>
+                    </div>
+                    <div class="lnb_list">
+                    </div>
+                </div>
+                <div class="map">
+                    디도
+                    <!-- 현재 위치 및 날씨 -->
+                    <div class="map_info">
+                        <ul>
+                            <li>강원도</li>
+                            <li><img src="../../static/images/sm_arrow.svg"></li>
+                            <li>원주시</li>
+                            <li><img src="../../static/images/sm_arrow.svg"></li>
+                            <li>신림면</li>
+                        </ul>
+                        <p><img src="../../static/images/weather_sunny.svg">15℃</p>
+                        <p>강수&nbsp;50%</p>
+                        <p>바람&nbsp;5m/s<img src="../../static/images/icon_weather_arrow_12.svg"></p>
+                    </div>
+                    <!-- 마커 색상 범례 -->
+                    <div class="marker_legend">
+                        <ul>
+                            <li><span class=""></span>지휘차</li>
+                            <li><span class=""></span>펌프차</li>
+                            <li><span class=""></span>탱크차</li>
+                            <li><span class=""></span>구급차</li>
+                            <li><span class=""></span>고가차</li>
+                            <li><span class=""></span>화학차</li>
+                            <li><span class=""></span>조명차</li>
+                            <li><span class=""></span>기타</li>
+                        </ul>
+                        <p><span class=""></span>카메라 소지</p>
+                    </div>
+                    <!-- 지도 옵션 버튼 -->
+                    <div class="map_options">
+                        <div class="align_horizontal">
+                            <div class="map_layer">
+                                <p><img src="../../static/images/icon_layer.svg"></p>
+                                <div class="popup_layer">
+                                    <h6>소방</h6>
+                                    <ul>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_01.svg"></span>
+                                            <span>소방용수</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_02.svg"></span>
+                                            <span>대상물</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_03.svg"></span>
+                                            <span>위험물</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_04.svg"></span>
+                                            <span>비상소화장치</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_05.svg"></span>
+                                            <span>서센터</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_06.svg"></span>
+                                            <span>응급의료기관</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_07.svg"></span>
+                                            <span>출동차량</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_08.svg"></span>
+                                            <span>드론</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_09.svg"></span>
+                                            <span>CCTV</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_10.svg"></span>
+                                            <span>모바일</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_11.svg"></span>
+                                            <span>소방권역</span>
+                                        </li>
+                                    </ul>
+                                    <h6>날씨</h6>
+                                    <ul class="layer_radio">
+                                        <li>
+                                            <input type="radio" id="radio1" name="">
+                                            <label for="radio1"><span class="round"></span>날씨</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="radio1" name="">
+                                            <label for="radio1"><span class="round"></span>통합대기</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="radio1" name="">
+                                            <label for="radio1"><span class="round"></span>미세먼지</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="radio1" name="">
+                                            <label for="radio1"><span class="round"></span>황사</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="radio1" name="">
+                                            <label for="radio1"><span class="round"></span>오존</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="radio1" name="">
+                                            <label for="radio1"><span class="round"></span>이산화질소</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="radio1" name="">
+                                            <label for="radio1"><span class="round"></span>일산화탄소</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="radio1" name="">
+                                            <label for="radio1"><span class="round"></span>아황산가스</label>
+                                        </li>
+                                    </ul>
+                                    <h6>생활안전</h6>
+                                    <ul>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_12.svg"></span>
+                                            <span>약국</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_13.svg"></span>
+                                            <span>AED</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_14.svg"></span>
+                                            <span>보건소</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_15.svg"></span>
+                                            <span>무더위쉼터</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_16.svg"></span>
+                                            <span>원전구호소</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_17.svg"></span>
+                                            <span>교통사고다발</span>
+                                        </li>
+                                        <li>
+                                            <span class="icon"><img src="../../static/images/icon_layer_18.svg"></span>
+                                            <span>인명구조함</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <ul class="map_type">
+                                <li>지도</li>
+                                <li>스카이뷰</li>
+                            </ul>
+                        </div>
+                        <div class="align_vertical">
+                            <ul class="map_zoom">
+                                <li><img src="../../static/images/icon_+.svg"></li>
+                                <li><img src="../../static/images/icon_-.svg"></li>
+                            </ul>
+                            <ul class="map_measure">
+                                <li><img src="../../static/images/icon_rul1.svg"></li>
+                                <li><img src="../../static/images/icon_rul2.svg"></li>
+                                <li><img src="../../static/images/icon_rul3.svg"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- panel : 기본 정보 -->
+                <div class="panel">
+                    <div class="panel_contents">
+                        <div class="sort_title">
+                            <h5>재난 이름<span><img src="../../static/images/icon_refresh.svg"></span></h5>
+                            <p><span class="button"><img src="../../static/images/icon_view.svg">투망감시</span><span><img src="../../static/images/icon_closed.svg"></span></p>
+                        </div>
+                        <ul class="sort_tab">
+                            <li href="#">기본 정보</li>
+                            <li href="#">진행 상황</li>
+                            <li href="#">주변 정보</li>
+                        </ul>
+                        <div class="sort_title_sub">
+                            <h5><img src="../../static/images/icon_info.svg">발생 이벤트 정보</h5>
+                        </div>
+                        <div class="sort_form">
+                            <ul>
+                                <li><span>이벤트 종류</span><input type="text"></li>
+                                <li><span>이벤트 ID</span><input type="text"></li>
+                                <li><span>발생 주소</span><input type="text"></li>
+                                <li><span>접수 시각</span><input type="text"></li>
+                                <li><span>신고자 연락처</span><input type="text"></li>
+                                <li><span>신고자 위치</span><input type="text"></li>                            
+                                <li><span>신고 내용</span><textarea></textarea></li>
+                                <li><span>지시 사항</span><input type="text"></li>
+                                <li><span>출동 현황</span><input type="text"></li>
+                            </ul>                        
+                        </div>
+                        <div class="list_detailed">
+                            <table>
+                                <tr>
+                                    <th>차량명</th>
+                                    <th>출동상태</th>
+                                    <th>호출부호</th>
+                                    <th>거리(m)</th>
+                                    <th>영상</th>
+                                </tr>
+                                <tr>
+                                    <td>다누-소방-00</td>
+                                    <td>귀소완료보고</td>
+                                    <td>0000</td>
+                                    <td>000</td>
+                                    <td>아니오</td>
+                                </tr>
+                                <tr>
+                                    <td>다누-소방-00</td>
+                                    <td>귀소완료보고</td>
+                                    <td>0000</td>
+                                    <td>000</td>
+                                    <td>아니오</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="panel_toggle"><img src="../../static/images/panel_open.svg"></p>
+                </div>
+                <!-- panel : 진행 상황 -->
+                <div class="panel" style="display: none;">
+                    <div class="panel_contents">
+                        <div class="sort_title">
+                            <h5>재난 이름<span><img src="../../static/images/icon_refresh.svg"></span></h5>
+                            <p><span class="button"><img src="../../static/images/icon_view.svg">투망감시</span><span><img src="../../static/images/icon_closed.svg"></span></p>
+                        </div>
+                        <ul class="sort_tab">
+                            <li href="#">기본 정보</li>
+                            <li href="#">진행 상황</li>
+                            <li href="#">주변 정보</li>
+                        </ul>
+                        <div class="sort_title_sub">
+                            <h5><img src="../../static/images/icon_info.svg">상세 진행 상황</h5>
+                            <p><img src="../../static/images/icon_export.svg"></p>
+                        </div>
+                        <div class="sort_form">
+                            <p>#000</p>
+                            <ul>
+                                <li><span>상황 구분</span><input type="text"></li>
+                                <li><span>보고 접수 일시</span><input type="text"></li>
+                                <li><span>상세 진행 상황</span><input type="text"></li>
+                                <li><span>관제자</span><input type="text"></li>
+                            </ul>
+                            <p>#000</p>
+                            <ul>
+                                <li><span>상황 구분</span><input type="text"></li>
+                                <li><span>보고 접수 일시</span><input type="text"></li>
+                                <li><span>상세 진행 상황</span><textarea></textarea></li>
+                                <li><span>관제자</span><input type="text"></li>
+                            </ul>
+                            <p>#000</p>
+                            <ul>
+                                <li><span>상황 구분</span><input type="text"></li>
+                                <li><span>보고 접수 일시</span><input type="text"></li>
+                                <li><span>상세 진행 상황</span><input type="text"></li>
+                                <li><span>관제자</span><input type="text"></li>
+                            </ul>
+                        </div>
+                    </div>                    
+                    <p class="panel_toggle"><img src="../../static/images/panel_open.svg"></p>
+                </div>
+                <!-- panel : 주변 정보 -->
+                <div class="panel" style="display: none;">
+                    <div class="panel_contents">
+                        <div class="sort_title">
+                            <h5>재난 이름<span><img src="../../static/images/icon_refresh.svg"></span></h5>
+                            <p><span class="button"><img src="../../static/images/icon_view.svg">투망감시</span><span><img src="../../static/images/icon_closed.svg"></span></p>
+                        </div>
+                        <ul class="sort_tab">
+                            <li href="#">기본 정보</li>
+                            <li href="#">진행 상황</li>
+                            <li href="#">주변 정보</li>
+                        </ul>
+                        <div class="sort_title">
+                            <h5><img src="../../static/images/box_search.svg">소방용수<span class="count">00</span></h5>
+                            <span><img src="../../static/images/arrow_close.svg"></span>
+                        </div>
+                        <div class="list_detailed">
+                            <table>
+                                <tr>
+                                    <th>소방용수 번호</th>
+                                    <th>종별코드</th>
+                                    <th>구경(mm)</th>
+                                    <th>거리(m)</th>
+                                    <th>상세</th>
+                                </tr>
+                                <tr>
+                                    <td>다누-DN-00</td>
+                                    <td>내용</td>
+                                    <td>00</td>
+                                    <td>000</td>
+                                    <td><img>내보내기</td>
+                                </tr>
+                                <tr>
+                                    <td>다누-DN-00</td>
+                                    <td>내용</td>
+                                    <td>00</td>
+                                    <td>000</td>
+                                    <td><img>내보내기</td>
+                                </tr>
+                                <tr>
+                                    <td>다누-DN-00</td>
+                                    <td>내용</td>
+                                    <td>00</td>
+                                    <td>000</td>
+                                    <td><img>내보내기</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="sort_title">
+                            <h5><img src="../../static/images/box_search.svg">대상물<span class="count">00</span></h5>
+                            <span><img src="../../static/images/arrow_close.svg"></span>
+                        </div>
+                        <div class="list_detailed">
+                            <table>
+                                <tr>
+                                    <th>대상물 이름</th>
+                                    <th>용도</th>
+                                    <th>구분</th>
+                                    <th>거리(m)</th>
+                                    <th>상세</th>
+                                </tr>
+                                <tr>
+                                    <td>다누시스</td>
+                                    <td>근린생활시설</td>
+                                    <td>일반대상</td>
+                                    <td>000</td>
+                                    <td><img>내보내기</td>
+                                </tr>
+                                <tr>
+                                    <td>다누시스</td>
+                                    <td>근린생활시설</td>
+                                    <td>일반대상</td>
+                                    <td>000</td>
+                                    <td><img>내보내기</td>
+                                </tr>
+                                <tr>
+                                    <td>다누시스</td>
+                                    <td>근린생활시설</td>
+                                    <td>일반대상</td>
+                                    <td>000</td>
+                                    <td><img>내보내기</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="sort_title">
+                            <h5><img src="../../static/images/box_search.svg">위험물<span class="count">00</span></h5>
+                            <span><img src="../../static/images/arrow_close.svg"></span>
+                        </div>
+                        <div class="list_detailed">
+                            <table>
+                                <tr>
+                                    <th>위험물 이름</th>
+                                    <th>구분</th>
+                                    <th>안전관리자</th>
+                                    <th>거리(m)</th>
+                                    <th>상세</th>
+                                </tr>
+                                <tr>
+                                    <td>다누시스</td>
+                                    <td>옥내저장소</td>
+                                    <td>김다누<br>010-0000-0000</td>
+                                    <td>000</td>
+                                    <td><img>내보내기</td>
+                                </tr>
+                                <tr>
+                                    <td>다누시스</td>
+                                    <td>옥내저장소</td>
+                                    <td>김다누<br>010-0000-0000</td>
+                                    <td>000</td>
+                                    <td><img>내보내기</td>
+                                </tr>
+                                <tr>
+                                    <td>다누시스</td>
+                                    <td>옥내저장소</td>
+                                    <td>김다누<br>010-0000-0000</td>
+                                    <td>000</td>
+                                    <td><img>내보내기</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="panel_toggle"><img src="../../static/images/panel_open.svg"></p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
