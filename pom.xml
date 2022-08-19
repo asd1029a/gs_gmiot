@@ -21,6 +21,7 @@
         <module>danusys-server-socket</module>
         <module>danusys-firefighting</module>
         <module>demo</module>
+        <module>danusys-construction-cctv</module>
 
     </modules>
 
