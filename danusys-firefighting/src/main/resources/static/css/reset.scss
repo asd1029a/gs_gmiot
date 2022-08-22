@@ -131,7 +131,7 @@ input{
 }
 input.input_search{
     padding: 0 2.625rem 0 $px12;
-    background: url(../images/icon_search.svg) right 12px center no-repeat transparent;
+    background: url(../images/default/icon_search.svg) right 12px center no-repeat transparent;
     background-size: $px20 $px20;
 }
 textarea{
@@ -159,7 +159,7 @@ select{
     border: $px1 solid $bg_box2;
     border-radius: $px4;
     font-family: 'Noto Sans KR', sans-serif;
-    background: url('../images/arrow_open.svg') right $px16 center no-repeat transparent; 
+    background: url('../images/default/arrow_open.svg') right $px16 center no-repeat transparent; 
     -webkit-appearance: none; -moz-appearance: none; appearance: none;
 }
 select::-ms-expand{display: none;}
@@ -283,12 +283,12 @@ input[type="checkbox"] + label span{
     max-width: $px20; max-height: $px20;
     margin: 0 0 0 0 !important;
     vertical-align: middle;
-    background: url('../images/checkbox_defalt.svg') center center no-repeat;
+    background: url('../images/default/checkbox_defalt.svg') center center no-repeat;
     background-size: 100% 100%;
     cursor: pointer;
 }
 input[type="checkbox"]:checked + label span{
-    background: url('../images/checkbox_active.svg') center center no-repeat;
+    background: url('../images/default/checkbox_active.svg') center center no-repeat;
     background-size: 100% 100%;
 }
 
@@ -314,12 +314,12 @@ input[type="radio"] + label span{
     margin: $px2 0 0 0;
     font-size: 0;
     vertical-align: middle;
-    background: url('../images/radio_default.svg') no-repeat;
+    background: url('../images/default/radio_default.svg') no-repeat;
     background-size: 100% 100%;
     cursor: pointer;
 }
 input[type="radio"]:checked + label span{
-    background: url('../images/radio_active.svg') no-repeat;
+    background: url('../images/default/radio_active.svg') no-repeat;
     background-size: 100% 100%;
 }
 

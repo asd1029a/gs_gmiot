@@ -120,7 +120,7 @@ input {
 
 input.input_search {
   padding: 0 2.625rem 0 0.75rem;
-  background: url(../images/icon_search.svg) right 12px center no-repeat transparent;
+  background: url(../images/default/icon_search.svg) right 12px center no-repeat transparent;
   background-size: 1.25rem 1.25rem;
 }
 
@@ -153,7 +153,7 @@ select {
   border: 0.0625rem solid #2c2c2c;
   border-radius: 0.25rem;
   font-family: "Noto Sans KR", sans-serif;
-  background: url("../images/arrow_open.svg") right 1rem center no-repeat transparent;
+  background: url("../images/default/arrow_open.svg") right 1rem center no-repeat transparent;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -286,13 +286,13 @@ input[type=checkbox] + label span {
   max-height: 1.25rem;
   margin: 0 0 0 0 !important;
   vertical-align: middle;
-  background: url("../images/checkbox_defalt.svg") center center no-repeat;
+  background: url("../images/default/checkbox_defalt.svg") center center no-repeat;
   background-size: 100% 100%;
   cursor: pointer;
 }
 
 input[type=checkbox]:checked + label span {
-  background: url("../images/checkbox_active.svg") center center no-repeat;
+  background: url("../images/default/checkbox_active.svg") center center no-repeat;
   background-size: 100% 100%;
 }
 
@@ -322,13 +322,13 @@ input[type=radio] + label span {
   margin: 0.125rem 0 0 0;
   font-size: 0;
   vertical-align: middle;
-  background: url("../images/radio_default.svg") no-repeat;
+  background: url("../images/default/radio_default.svg") no-repeat;
   background-size: 100% 100%;
   cursor: pointer;
 }
 
 input[type=radio]:checked + label span {
-  background: url("../images/radio_active.svg") no-repeat;
+  background: url("../images/default/radio_active.svg") no-repeat;
   background-size: 100% 100%;
 }
 
@@ -1253,4 +1253,6 @@ span.button:hover {
 }
 .marker li:active span.tooltip.type5::after {
   color: #957cdd;
-}/*# sourceMappingURL=monitoring.css.map */
+}
+
+/*# sourceMappingURL=monitoring.css.map */
