@@ -7,6 +7,13 @@ $(document).ready(() => {
 
     /* 탑메뉴 및 lnb 메뉴 관련 */
     $("#"+pathArr[2]).addClass("active");
+    $(".gnm_parent").on("mouseover", e => {
+        $(e.currentTarget).addClass("hover");
+    })
+
+    $(".gnm_parent").on("mouseout", e => {
+        $(e.currentTarget).removeClass("hover");
+    })
 
     $("#"+pathArr[3]).parents("li").hasClass("multi")
         ? $("#"+pathArr[3]).parents("li").addClass("on")
@@ -63,38 +70,7 @@ $(document).ready(() => {
     /* 페이지별 공통 기능 */
     // 조회/관리
     if(pathArr[2] === "inqry") {
-        if(path === "/pages/inqry/station") {
-            station.eventHandler();
-            station.create();
-        } else if(path === "/pages/inqry/facilities") {
-            facility.eventHandler();
-            facility.create();
-        } else if(path === "/pages/inqry/eventFaceDetection") {
-            faceDetection.eventHandler();
-            faceDetection.create();
-        } else if(path === "/pages/inqry/event2") {
-            // event.eventHandler($('#troubleEventTable'),"trouble");
-            // event.create($('#troubleEventTable'),"trouble");
-        } else {
-            const targetName = pathArr[3];
-            event.init(targetName);
-            comm.createMultiSelectBox($(".dropdown_checkbox[data-selectbox-delay = 'true']")[0]);
-
-            const $target = $('#'+targetName+'Table');
-            event.eventHandler($target, targetName);
-            event.create($target, targetName);
-        }
-    }
     // 환경설정
-    else if(path === "/pages/config/dimmingSet") {
-        dimming.eventHandler();
-        comm.checkAuthority("/user/check/authority", "config", "rw")
-            .then(
-                (result) => {
-                    dimming.createGroup(result);
-                }
-            );
-        dimming.initMap();
     } else if(path === "/pages/config/userAccount") {
         account.user.eventHandler();
         account.user.create();
@@ -136,12 +112,6 @@ $(document).ready(() => {
     // 대시보드 (임시)
     else if(path === "/pages/dashboard/dashboard_facility") {
         dashboard.init();
-    }
-    else if(path === "/pages/dashboard/dashboard_facility_bsng") {
-        dashboard.init();
-    }
-    else if(path === "/pages/dashboard/dashboard_drone") {
-        dashboardGimje.init();
     }
 
     //통계

@@ -183,61 +183,71 @@ input, select, textarea:focus{outline: none;}
         font-weight: 600;
         img{padding: 0 $px12 0 0;}
     }
-    .gnm{
+    .gnm {
         display: flex;
         height: 100%;
         color: $text_medium;
-        li{
-            width: 12.5rem; 
+
+        li {
+            width: 12.5rem;
             font-size: $px18;
             text-align: center;
             position: relative;
-            a{
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-                cursor: pointer;
-                border-bottom: $px4 solid $bg_nav;                
-            }
-            a:hover{
-                font-weight: 600;
-                color: $primary;
-                border-bottom: $px4 solid $primary;
-                transition: 0.2s;
-            }
-            a:active{
-                font-weight: 600;
-                color: $primary_variant;
-                border-bottom: $px4 solid $primary_variant;
-                transition: 0.2s;
-            }
-            .gnm_sub{
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            cursor: pointer;
+            border-bottom: $px4 solid $bg_nav;
+
+            .gnm_sub {
                 z-index: 10;
                 position: absolute;
+                top: 3.75rem;
                 overflow: hidden;
                 background: $bg_cate;
                 border-bottom-left-radius: $px4;
                 border-bottom-right-radius: $px4;
                 box-shadow: 0px 3px 5px rgba(0, 0, 0, 10);
-                li{
+                display: none;
+                li {
                     margin: 0;
                     padding: 0;
-                    a{
-                        height: 3.75rem;
+                    height: 3.75rem;
+                    display: flex;
+                    align-items: center;
+                    font-weight: 300;
+                    border: 0;
+                    a {
                         margin: 0;
-                        // padding: $px12 0;
                         font-size: $px16;
                         border: none;
                     }
-                    a:hover{
-                        color: $text_medium;
+                    a:hover {
+                        color: $primary;
+                        font-weight: 600;
                         border: none;
-                        background: $bg_box4;
                     }
-                }                
+                }
             }
+        }
+        & > li:hover {
+            font-weight: 600;
+            //color: $primary;
+            border-bottom: $px4 solid $primary;
+            transition: 0.2s;
+        }
+        & > li.hover {
+            .gnm_sub {
+                display: block;
+            }
+        }
+        & > li:active, & > li.active {
+            font-weight: 600;
+            color: $primary_variant;
+            border-bottom: $px4 solid $primary_variant;
+            transition: 0.2s;
         }
     }
     .util{
