@@ -1,0 +1,171 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="navLFragment">
+    <!-- lnb : 재난 -->
+    <div class="lnb">
+        <ul class="sort_tab">
+            <li href="#">재난</li>
+            <li href="#">소방영상</li>
+            <li href="#">주소</li>
+        </ul>
+        <div class="sort_title">
+            <h5><img src="/images/default/box_search.svg">재난 검색</h5>
+            <span class="button"><img src="/images/default/icon_reset.svg">초기화</span>
+        </div>
+        <div class="sort_search">
+            <input class="input_search" type="text" placeholder="검색어를 입력하세요.">
+            <div class="sort_search_option">
+                <p>재난 종류</p>
+                <ul>
+                    <li>
+                        <input type="checkbox" id="checkbox01" name="">
+                        <label for="checkbox01"><span></span>구급</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="checkbox02" name="">
+                        <label for="checkbox02"><span></span>화재</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="checkbox03" name="">
+                        <label for="checkbox03"><span></span>구조</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="checkbox04" name="">
+                        <label for="checkbox04"><span></span>기타</label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="sort_title">
+            <h5><img src="/images/default/box_menu.svg">재난 목록<span class="count">12</span></h5>
+        </div>
+        <div class="lnb_list">
+            <div class="list_composition">
+                <p class="title">재난 이름<span>병원도착보고</span></p>
+                <p class="kind"><img src="/images/default/icon_list_1.svg">화재/일반화재</p>
+                <p>다누구 다누로 00길 00 (다누0동)</p>
+                <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+            </div>
+            <div class="list_composition">
+                <p class="title">재난 이름<span>병원도착보고</span></p>
+                <p class="kind"><img src="/images/default/icon_list_2.svg">구급/질병</p>
+                <p>다누구 다누로 00길 00 (다누0동)</p>
+                <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+            </div>
+            <div class="list_composition">
+                <p class="title">재난 이름<span>병원도착보고</span></p>
+                <p class="kind"><img src="/images/default/icon_list_3.svg">구조/조난</p>
+                <p>다누구 다누로 00길 00 (다누0동)</p>
+                <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+            </div>
+            <div class="list_composition">
+                <p class="title">재난 이름<span>병원도착보고</span></p>
+                <p class="kind"><img src="/images/default/icon_list_4.svg">기타/기타</p>
+                <p>다누구 다누로 00길 00 (다누0동)</p>
+                <p>2022-08-05 17:32:25<span class="elapsed">0분 전</span></p>
+            </div>
+        </div>
+    </div>
+    <!-- lnb : 소방영상 -->
+    <div class="lnb" style="display: none;">
+        <ul class="sort_tab">
+            <li href="#">재난</li>
+            <li href="#">소방영상</li>
+            <li href="#">주소</li>
+        </ul>
+        <div class="sort_title">
+            <h5><img src="/images/default/box_search.svg">재난 검색</h5>
+            <span class="button"><img src="/images/default/icon_reset.svg">초기화</span>
+        </div>
+        <div class="sort_search">
+            <input class="input_search" type="text" placeholder="검색어를 입력하세요.">
+            <div class="sort_search_option">
+                <p>장비 종류</p>
+                <ul>
+                    <li>
+                        <input type="radio" id="radio1" name="">
+                        <label for="radio1"><span class="round"></span>CCTV</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="radio2" name="">
+                        <label for="radio2"><span class="round"></span>소방 차량</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="radio3" name="">
+                        <label for="radio3"><span class="round"></span>드론</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="radio4" name="">
+                        <label for="radio4"><span class="round"></span>모바일</label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="sort_title">
+            <h5><img src="/images/default/box_menu.svg">장비 목록<span class="count">12</span></h5>
+        </div>
+        <div class="lnb_list">
+            <div class="list_composition">
+                <p class="title">장비(영상) 이름<span>병원도착보고</span></p>
+                <p class="kind"><img src="/images/default/icon_list_5.svg">CCTV</p>
+                <p>다누구 다누로 00길 00 (다누0동)</p>
+            </div>
+            <div class="list_composition">
+                <p class="title">장비(영상) 이름<span>병원도착보고</span></p>
+                <p class="kind"><img src="/images/default/icon_list_6.svg">소방차량</p>
+                <p>다누구 다누로 00길 00 (다누0동)</p>
+            </div>
+            <div class="list_composition">
+                <p class="title">장비(영상) 이름<span>병원도착보고</span></p>
+                <p class="kind"><img src="/images/default/icon_list_7.svg">드론</p>
+                <p>다누구 다누로 00길 00 (다누0동)</p>
+            </div>
+            <div class="list_composition">
+                <p class="title">장비(영상) 이름<span>병원도착보고</span></p>
+                <p class="kind"><img src="/images/default/icon_list_8.svg">모바일</p>
+                <p>다누구 다누로 00길 00 (다누0동)</p>
+            </div>
+        </div>
+    </div>
+    <!-- lnb : 주소 -->
+    <div class="lnb" style="display: none;">
+        <ul class="sort_tab">
+            <li href="#">재난</li>
+            <li href="#">소방영상</li>
+            <li href="#">주소</li>
+        </ul>
+        <div class="sort_title">
+            <h5><img src="/images/default/box_search.svg">재난 검색</h5>
+            <span class="button"><img src="/images/default/icon_reset.svg">초기화</span>
+        </div>
+        <div class="sort_search">
+            <input class="input_search" type="text" placeholder="검색어를 입력하세요.">
+            <div class="sort_search_option">
+                <p>재난 종류</p>
+                <ul>
+                    <li>
+                        <input type="checkbox" id="checkbox01" name="">
+                        <label for="checkbox01"><span></span>구급</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="checkbox02" name="">
+                        <label for="checkbox02"><span></span>화재</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="checkbox03" name="">
+                        <label for="checkbox03"><span></span>구조</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="checkbox04" name="">
+                        <label for="checkbox04"><span></span>기타</label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="sort_title">
+            <h5><img src="/images/default/box_menu.svg">재난 목록<span class="count">12</span></h5>
+        </div>
+        <div class="lnb_list">
+        </div>
+    </div>
+</th:block>
+</html>

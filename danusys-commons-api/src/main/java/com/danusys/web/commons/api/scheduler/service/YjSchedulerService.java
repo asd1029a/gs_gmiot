@@ -41,8 +41,6 @@ public class YjSchedulerService {
                     return;
                 }
 
-                log.info("yj@@@@@@@@@@");
-
                 Map<String,Object> message = new HashMap<>();
                 String facilityId = StrUtils.getStr(ff.get("facility_id"));
                 String dayOfWeek = StrUtils.getStr(ff.get("facility_setting_day"));

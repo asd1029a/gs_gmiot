@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <th:block th:insert="fragments/default/default"/>
+
+    <link rel="stylesheet" type="text/css" href="/css/monitoring.css">
+</head>
+
+<body>
+    <div class="wrap_monitoring">
+
+            <th:block th:replace="fragments/default/header :: headerFragment" />
+
+            <div class="container_monitoring">
+                <th:block th:replace="fragments/mntr/navL :: navLFragment" />
+                <th:block layout:fragment="content" />
+                <th:block th:replace="fragments/mntr/navR :: navRFragment" />
+            </div>
+
+            <th:block th:replace="fragments/default/footer :: footerFragment" />
+    </div>
+</body>
+</html>

@@ -18,7 +18,7 @@ class mapPopup {
     }
 
     //팝업 생성
-    create(id) {
+    create(id, content = '') {
         if(this.find(id)){
             this.remove(id);
         }
@@ -35,11 +35,15 @@ class mapPopup {
         });
 
         popupElement.innerHTML =
-            "<i id="+ id +"Closer class='my-ol-popup-closer'>" +
-                "<img src='/images/default/close.svg'>" +
-            "</i>"
-            + "<div id="+ id +"Content class='popup_mini'></div>"
+            `<i id='${id}Closer' class='my-ol-popup-closer'>
+                <img src='/images/default/close.svg'>
+            </i>
+            <div id='${id}Content' class='popup_mini'>${content}</div>`
         ;
+
+        if(content.indexOf("my-ol-popup-closer") >= 0){
+            $(popupElement).children(".my-ol-popup-closer").eq(0).remove();
+        }
 
         this.map.addOverlay(popup);
         popup.setPosition(undefined);

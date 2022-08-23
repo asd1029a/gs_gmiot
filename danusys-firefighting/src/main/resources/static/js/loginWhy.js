@@ -1,5 +1,4 @@
-//let page = "/pages/mntr";
-let page = "/main";
+let page = "/pages/mntr";
 
 $(".login-btn").on("click", function () {
     let flag = false;
