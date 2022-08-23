@@ -310,8 +310,8 @@ const mntr = {
                 map.map.renderSync();
             } else {
                 jTarget.css("cursor", "all-scroll");
-                // popup.remove('mouseOverPopup');
-                // cctvAry.splice(0); //빈배열
+                popup.remove('mouseOverPopup');
+                cctvAry.splice(0); //빈배열
             }
         });
 
