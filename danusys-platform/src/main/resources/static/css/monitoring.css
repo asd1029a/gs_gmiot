@@ -372,6 +372,8 @@
 .area_right_scroll div{/*flex: 1;*/}
 /* area_right_text */
 .area_right_text{flex: 1; background: #1e1f23;}
+.area_right_text textarea{width: 100%; height: 100%; resize: none;}
+.area_right_text input[type="button"]{cursor:pointer; color: #7f8491; background: #292c34; margin-top: 10px; height: 60px;}
 .area_right_text ul{margin: 20px;}
 .area_right_text ul li{display: grid; grid-template-columns: 0.5fr 1fr; grid-gap: 10px; /*align-items: baseline;*/ align-items: center; margin: 10px 0px; line-height: 20px; font-size: 14px;}
 .area_right_text ul li span:nth-child(1){color: #7f8491; font-weight: bold;}

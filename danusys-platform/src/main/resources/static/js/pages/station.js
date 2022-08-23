@@ -298,6 +298,18 @@ const station = {
             station.hidePopup();
         });
     },
+    modUnFormProc : (pSeq, obj) => {
+        $.ajax({
+            url : "/station"
+            , type: "PATCH"
+            , data : JSON.stringify(
+                Object.assign(obj, {"stationSeq" : pSeq})
+            )
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
+            comm.showAlert("개소가 수정되었습니다");
+        });
+    },
     delProc : (pSeq) => {
         $.ajax({
             url : "/station/"+pSeq
