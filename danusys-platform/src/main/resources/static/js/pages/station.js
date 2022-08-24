@@ -298,7 +298,7 @@ const station = {
             station.hidePopup();
         });
     },
-    modUnFormProc : (pSeq, obj) => {
+    modUnFormProc : (pSeq, obj, pCallback) => {
         $.ajax({
             url : "/station"
             , type: "PATCH"
@@ -307,7 +307,7 @@ const station = {
             )
             , contentType : "application/json; charset=utf-8"
         }).done((result) => {
-            comm.showAlert("개소가 수정되었습니다");
+            pCallback(result);
         });
     },
     delProc : (pSeq) => {

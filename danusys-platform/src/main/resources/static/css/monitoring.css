@@ -453,3 +453,10 @@ span.bar.green {background-color: #7ddc1e;}
 span.bar.orange {background-color: #ff7e00;}
 span.bar.red {background-color: #f92927;}
 span.bar.unknown {background-color: #8f8e8e;}
+
+/* 시설물 현황 */
+.area_right .area_right_text ul li span.circle {width: 14px; height: 14px; border-radius: 50%; background: #464e5a; flex: none;}
+.area_right .area_right_text ul li span.circle.green {background: #357d33;}
+.area_right .area_right_text ul li span.circle.red {background: #f04242;}
+.area_right .area_right_text[data-group=cctvList] ul li,
+.area_right .area_right_text[data-group=fcltList] ul li {display: flex; white-space: nowrap;}

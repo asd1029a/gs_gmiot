@@ -886,15 +886,15 @@ const mntr = {
             //덮어 쓰기 ...
             const feature = $(e.currentTarget).parents('.area_right').data();
             const seq = feature.getProperties().stationSeq;
-            station.modUnFormProc(seq, {'remark': memo});
-            feature.getProperties().remark = memo;
-
-            const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
-            let paramObject = mntr.getInitParam(theme);
-            //개소
-            station.getListGeoJson(paramObject['station'] ,result => {
-                reloadLayer(result, 'stationLayer');
-                lnbList.createStation(result, 'station');
+            station.modUnFormProc(seq, {'remark': memo}, res => {
+                comm.showAlert("개소가 수정되었습니다");
+                const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
+                let paramObject = mntr.getInitParam(theme);
+                //개소
+                station.getListGeoJson(paramObject['station'] ,result => {
+                    reloadLayer(result, 'stationLayer');
+                    lnbList.createStation(result, 'station');
+                });
             });
         });
     }
@@ -1383,6 +1383,7 @@ const rnbList = {
         if(theme == "smartPole"){
             target.find('.tab li[data-value=fcltState]').show();
             const fcltList = prop.facilityList;
+            console.log(fcltList);
 
             if(fcltList.length > 0){
                 const area = target.find('.area_right_scroll[data-value=fcltState]');
@@ -1395,7 +1396,11 @@ const rnbList = {
                     } else {
                         listUl = area.find('div[data-group=fcltList] ul');
                     }
-                    let li = "<li><span>" + f.facilityKindName +
+                    console.log(f.facilityStatus);
+                    let color = f.facilityStatus == 1? "green" : "red";
+                    let li = "<li>" +
+                        "<span class='circle "+ color + "'></span>" +
+                        "<span>" + f.facilityKindName +
                         "</span><input value='" + f.facilityId + "' type='text' disabled/></li>";
                     listUl.append(li);
                 });
