@@ -54,6 +54,9 @@ public class Station {
     @Column
     private double longitude;
 
+    @Column
+    private String remark;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "stationSeq")
     @JsonManagedReference

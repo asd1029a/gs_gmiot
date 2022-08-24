@@ -131,7 +131,13 @@ public class StationController {
      */
     @PatchMapping
     public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) throws Exception {
-        return ResponseEntity.ok().body(stationService.mod(paramMap));
+        ResponseEntity<?> res = null;
+        if(paramMap.containsKey("facilitySeqList")){
+            res = ResponseEntity.ok().body(stationService.mod(paramMap));
+        } else {
+            res = ResponseEntity.ok().body(stationService.modOnlyStation(paramMap));
+        }
+        return res;
     }
 
     /**

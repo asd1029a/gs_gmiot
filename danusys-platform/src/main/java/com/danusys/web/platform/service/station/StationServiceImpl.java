@@ -99,6 +99,12 @@ public class StationServiceImpl implements StationService{
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public int modOnlyStation(Map<String, Object> paramMap) throws Exception {
+        return commonMapper.update(ssp.updateQry(paramMap));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void del(int seq) throws Exception {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("stationSeq", seq);

@@ -131,7 +131,7 @@ input{
 }
 input.input_search{
     padding: 0 2.625rem 0 $px12;
-    background: url(../images/icon_search.svg) right 12px center no-repeat transparent;
+    background: url(../images/default/icon_search.svg) right 12px center no-repeat transparent;
     background-size: $px20 $px20;
 }
 textarea{
@@ -159,7 +159,7 @@ select{
     border: $px1 solid $bg_box2;
     border-radius: $px4;
     font-family: 'Noto Sans KR', sans-serif;
-    background: url('../images/arrow_open.svg') right $px16 center no-repeat transparent; 
+    background: url('../images/default/arrow_open.svg') right $px16 center no-repeat transparent; 
     -webkit-appearance: none; -moz-appearance: none; appearance: none;
 }
 select::-ms-expand{display: none;}
@@ -183,61 +183,71 @@ input, select, textarea:focus{outline: none;}
         font-weight: 600;
         img{padding: 0 $px12 0 0;}
     }
-    .gnm{
+    .gnm {
         display: flex;
         height: 100%;
         color: $text_medium;
-        li{
-            width: 12.5rem; 
+
+        li {
+            width: 12.5rem;
             font-size: $px18;
             text-align: center;
             position: relative;
-            a{
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-                cursor: pointer;
-                border-bottom: $px4 solid $bg_nav;                
-            }
-            a:hover{
-                font-weight: 600;
-                color: $primary;
-                border-bottom: $px4 solid $primary;
-                transition: 0.2s;
-            }
-            a:active{
-                font-weight: 600;
-                color: $primary_variant;
-                border-bottom: $px4 solid $primary_variant;
-                transition: 0.2s;
-            }
-            .gnm_sub{
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            cursor: pointer;
+            border-bottom: $px4 solid $bg_nav;
+
+            .gnm_sub {
                 z-index: 10;
                 position: absolute;
+                top: 3.75rem;
                 overflow: hidden;
                 background: $bg_cate;
                 border-bottom-left-radius: $px4;
                 border-bottom-right-radius: $px4;
                 box-shadow: 0px 3px 5px rgba(0, 0, 0, 10);
-                li{
+                display: none;
+                li {
                     margin: 0;
                     padding: 0;
-                    a{
-                        height: 3.75rem;
+                    height: 3.75rem;
+                    display: flex;
+                    align-items: center;
+                    font-weight: 300;
+                    border: 0;
+                    a {
                         margin: 0;
-                        // padding: $px12 0;
                         font-size: $px16;
                         border: none;
                     }
-                    a:hover{
-                        color: $text_medium;
+                    a:hover {
+                        color: $primary;
+                        font-weight: 600;
                         border: none;
-                        background: $bg_box4;
                     }
-                }                
+                }
             }
+        }
+        & > li:hover {
+            font-weight: 600;
+            //color: $primary;
+            border-bottom: $px4 solid $primary;
+            transition: 0.2s;
+        }
+        & > li.hover {
+            .gnm_sub {
+                display: block;
+            }
+        }
+        & > li:active, & > li.active {
+            font-weight: 600;
+            color: $primary_variant;
+            border-bottom: $px4 solid $primary_variant;
+            transition: 0.2s;
         }
     }
     .util{
@@ -283,12 +293,12 @@ input[type="checkbox"] + label span{
     max-width: $px20; max-height: $px20;
     margin: 0 0 0 0 !important;
     vertical-align: middle;
-    background: url('../images/checkbox_defalt.svg') center center no-repeat;
+    background: url('../images/default/checkbox_defalt.svg') center center no-repeat;
     background-size: 100% 100%;
     cursor: pointer;
 }
 input[type="checkbox"]:checked + label span{
-    background: url('../images/checkbox_active.svg') center center no-repeat;
+    background: url('../images/default/checkbox_active.svg') center center no-repeat;
     background-size: 100% 100%;
 }
 
@@ -314,12 +324,12 @@ input[type="radio"] + label span{
     margin: $px2 0 0 0;
     font-size: 0;
     vertical-align: middle;
-    background: url('../images/radio_default.svg') no-repeat;
+    background: url('../images/default/radio_default.svg') no-repeat;
     background-size: 100% 100%;
     cursor: pointer;
 }
 input[type="radio"]:checked + label span{
-    background: url('../images/radio_active.svg') no-repeat;
+    background: url('../images/default/radio_active.svg') no-repeat;
     background-size: 100% 100%;
 }
 

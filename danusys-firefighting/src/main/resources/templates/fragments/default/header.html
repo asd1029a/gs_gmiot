@@ -7,23 +7,23 @@
             <span th:text="${@environment.getProperty('mainPage.title')}"></span>
         </h1>
         <ul class="gnm">
-            <li>
-                <a href="#">재난 현황판</a>
+            <li id="dashboard">
+                <a href="/">재난 현황판</a>
             </li>
-            <li><a href="#">모니터링</a></li>
-            <li><a href="#">영상 로그 조회</a></li>
-            <li>
-                <a href="#">통계</a>
-                <ul class="gnm_sub" style="display: none;">
-                    <li><a>재난 통계</a></li>
-                    <li><a>영상 로그 통계</a></li>
+            <li id="mntr"><a href="/pages/mntr">모니터링</a></li>
+            <li id="inqry"><a href="/">영상 로그 조회</a></li>
+            <li class="gnm_parent" id="stats">
+                <a href="">통계</a>
+                <ul class="gnm_sub">
+                    <li><a href="/">재난 통계</a></li>
+                    <li><a href="/">영상 로그 통계</a></li>
                 </ul>
             </li>
-            <li><a href="#">환경설정</a></li>
+            <li id="config"><a href="/pages/config/userAccount">환경설정</a></li>
         </ul>
         <ul class="util">
             <li><a href="#"><img src="/images/default/user.svg">사용자</a></li>
-            <li id="logoutBtn"><a href="#"><img src="/images/default/utmenu_logout.svg">로그아웃</a></li>
+            <li id="logoutBtn"><a href="#"><img src=" /images/default/utmenu_logout.svg">로그아웃</a></li>
         </ul>
     </header>
 </th:block>

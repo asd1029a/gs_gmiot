@@ -880,6 +880,23 @@ const mntr = {
         });///영상 재생 func
         // $(".popup_controls .popup_writing .tab_button span").removeClass("active");
 
+        //개소 메모 저장
+        $('#btnSaveMeno').on("click", e => {
+            const memo = $(e.currentTarget).prev('textarea').val();
+            //덮어 쓰기 ...
+            const feature = $(e.currentTarget).parents('.area_right').data();
+            const seq = feature.getProperties().stationSeq;
+            station.modUnFormProc(seq, {'remark': memo}, res => {
+                comm.showAlert("개소가 수정되었습니다");
+                const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
+                let paramObject = mntr.getInitParam(theme);
+                //개소
+                station.getListGeoJson(paramObject['station'] ,result => {
+                    reloadLayer(result, 'stationLayer');
+                    lnbList.createStation(result, 'station');
+                });
+            });
+        });
     }
 }
 
@@ -1356,12 +1373,17 @@ const rnbList = {
             if(textArea.length > 0){
                 textArea.val(prop[propStr]);
             }
+            //개소 메모
+            if(propStr== "remark"){
+                target.find('[data-value=remark]').val(prop[propStr]);
+            }
         });
 
         //시설물 현황
         if(theme == "smartPole"){
             target.find('.tab li[data-value=fcltState]').show();
             const fcltList = prop.facilityList;
+            console.log(fcltList);
 
             if(fcltList.length > 0){
                 const area = target.find('.area_right_scroll[data-value=fcltState]');
@@ -1374,7 +1396,11 @@ const rnbList = {
                     } else {
                         listUl = area.find('div[data-group=fcltList] ul');
                     }
-                    let li = "<li><span>" + f.facilityKindName +
+                    console.log(f.facilityStatus);
+                    let color = f.facilityStatus == 1? "green" : "red";
+                    let li = "<li>" +
+                        "<span class='circle "+ color + "'></span>" +
+                        "<span>" + f.facilityKindName +
                         "</span><input value='" + f.facilityId + "' type='text' disabled/></li>";
                     listUl.append(li);
                 });
@@ -1623,17 +1649,16 @@ function reloadLayer(result, layer) {
 
     switch(type) {
         case "cluster" :
-            newSource = new ol.source.Cluster({
+            let newCluSource = new ol.source.Cluster({
                 distance: 30, source : newSource
             });
+            window.lyControl.find(layer).setSource(newCluSource);
             break;
         case "vector" :
-            break;
         default :
+            window.lyControl.find(layer).setSource(newSource);
             break;
     }
-
-    window.lyControl.find(layer).setSource(newSource);
     window.lyControl.find(layer).changed();
     window.map.map.render();
 
@@ -1655,9 +1680,16 @@ function reloadLayer(result, layer) {
                     }
                 });
                 break;
-            // case "station" :
-            //     rnbList.createStation();
-            //     break;
+            case "station": //개소일때
+                const statSeq = beforeProp.getProperties().stationSeq;
+                newFeatures.forEach(f => {
+                    if(f.getProperties().stationSeq == statSeq){
+                        rnbList.createStation(f);
+                        window.lySelect.getFeatures().push(f);
+                        window.map.map.renderSync();
+                    }
+                });
+                break;
             // case "event" :
             //     rnbList.createEvent();
             //     break;

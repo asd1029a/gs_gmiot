@@ -36,16 +36,10 @@ public class CommonUtil {
 	}
 
 	public static void validMapNull(Map<String, Object> paramMap) {
-		paramMap.values()
-				.stream()
-				.map(value -> {
-					return value != null ? value : "";
-					//System.out.println(value.getClass().getName());
-					//return value;
-				}).collect(Collectors.toList());
+		paramMap.entrySet().stream().forEach(en -> en.setValue(en.getValue() == null ? "" : en.getValue()));
 	}
 
-	public static ArrayList<String> valiArrNull(Map<String, Object> paramMap, String key){
+	public static ArrayList<String>  valiArrNull(Map<String, Object> paramMap, String key){
 		if(paramMap.get(key) != null && paramMap.get(key).getClass().getSimpleName().equals("ArrayList")){
 			ArrayList<String> result = new ArrayList<>();
 			ArrayList<?> arr = (ArrayList<?>) paramMap.get(key);

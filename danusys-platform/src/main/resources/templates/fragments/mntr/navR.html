@@ -277,6 +277,16 @@
                         </li>
                     </ul>
                 </div>
+                <!-- 메모 -->
+                <dl th:if="${municipality == '26290000'}" class="area_title" data-group="stationMemo">
+                    <dt><i><img src="/images/default/titleIcon06.svg"></i>개소 메모</dt>
+                </dl>
+                <div th:if="${municipality == '26290000'}" class="area_right_text" data-group="stationMemo" style="display: flex; flex-direction: column; padding: 16px;">
+                    <textarea data-value="remark"></textarea>
+                    <input id="btnSaveMeno" value="메모 저장" type="button" />
+                </div>
+                <!-- /메모 -->
+
                 <dl class="area_title" data-group="stationState">
                     <dt><i><img src="/images/default/titleIcon04.svg"></i>개소 상태</dt>
                 </dl>
@@ -441,10 +451,16 @@
                 </dl>
                 <div class="area_right_text" data-group="fcltList">
                     <ul>
-                        <li>
+                        <!--<li>
+                            <span class="circle green"></span>
                             <span>FCLT1</span>
-                            <input data-value="address" type="text" disabled>
+                            <input data-value="address" value="시설물a" type="text" disabled>
                         </li>
+                        <li>
+                            <span class="circle red"></span>
+                            <span>FCLT2</span>
+                            <input data-value="address" value="시설물b" type="text" disabled>
+                        </li>-->
                     </ul>
                 </div>
             </div>
