@@ -104,6 +104,33 @@ const mntr = {
         return param;
     }
     , eventHandler : () => {
+        //RNM CLOSER (오른쪽창 닫기)
+        $('#navLClose, .panel_toggle').on("click", e => {
+            const type = $(e.currentTarget).parents('.panel').attr('data-value');
+            $('.panel').toggleClass("select");
+
+            const panelToggle = $('.panel_toggle img').attr('src');
+            if(panelToggle.indexOf('close') > -1)
+                $('.panel_toggle img').attr('src', panelToggle.replace('close', 'open'));
+            else
+                $('.panel_toggle img').attr('src', panelToggle.replace('open', 'close'));
+
+            //todo : 맵 사이즈 변경 안됨
+
+            //선택 해제
+            window.map.updateSize();
+        });
+
+        //RNM TAB SWITCH (오른쪽 창 탭 변경)
+        $('.sort_tab li').on("click", e => {
+            const type = $(e.currentTarget).attr('data-value');
+            $(e.currentTarget).parents('.panel_contents').find('.area_right_scroll').removeClass("select");
+            $(e.currentTarget).parents('.panel_contents').find('.area_right_scroll[data-value='+ type +']').addClass("select");
+            //ACTIVE STYLE
+            $(e.currentTarget).parent().children("li").removeClass("active");
+            $(e.currentTarget).addClass("active");
+        });
+
         ////////////////////////////////////////////// 추후 공통소스로 구상
         //MAP TOOL (맵 도구)
         $('.map_options li').on("click", e => {
