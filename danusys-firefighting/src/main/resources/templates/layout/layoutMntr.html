@@ -2,6 +2,11 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <th:block th:insert="fragments/default/default"/>
+    <th:block th:insert="view/commons/map"/>
+
+    <script type="text/javascript" src="/js/map/controlMap.js"></script>
+    <script type="text/javascript" src="/js/pages/mntr.js"></script>
+    <script type="text/javascript" src="/js/api/kakaoApi.js"></script>
 
     <link rel="stylesheet" type="text/css" href="/css/monitoring.css">
 </head>

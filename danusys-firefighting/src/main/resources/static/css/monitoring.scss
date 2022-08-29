@@ -114,6 +114,7 @@ span.button:hover{
     padding: $px4 $px12;
     border-radius: $px24;
     background: $bg_cate;
+    z-index: 1;
     ul{
         display: flex;
         align-items: center;
@@ -184,6 +185,7 @@ span.button:hover{
     padding: 0 $px10;
     border-radius: $px4;
     background: $bg_cate;
+    z-index: 1;
     ul{
         display: flex;
         align-items: center;
@@ -218,6 +220,7 @@ span.button:hover{
     font-size: $px12;
     font-weight: 300;
     color: $text_medium;
+    z-index: 1;
     .align_horizontal{
         display: flex; align-items: center;
         grid-gap: $px12;
@@ -271,6 +274,7 @@ span.button:hover{
         border-radius: 0.25rem;
         background: #1b1b1b;
         box-shadow: $px1 $px4 $px4 rgba(0, 0, 0, 0.18);
+        display: none;
         h6{
             padding: $px4 0 $px12 0;
             font-size: $px14;

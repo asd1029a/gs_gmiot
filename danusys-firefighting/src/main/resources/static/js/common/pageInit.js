@@ -77,53 +77,12 @@ $(document).ready(() => {
     } else if(path === "/pages/config/userGroup") {
         account.group.eventHandler();
         account.group.create();
-    } else if(path === "/pages/config/commonCode") {
-        commonCode.eventHandler($("[data-table-seq='0']"),0);
-        commonCode.create($("[data-table-seq='0']"),0);
-    } else if(path === "/pages/config/notice") {
-        notice.eventHandler();
-        comm.checkAuthority("/user/check/authority", "config", "rw")
-            .then(
-                (result) => {
-                    notice.create(result);
-                }
-            );
-    } else if(path === "/pages/config/signage") {
-        signage.eventHandler();
     }
+
     // 관제
     else if(path === "/pages/mntr") {
         svgToImage.init();
         mntr.init();
         mntr.eventHandler();
-        setSetting.eventHandler();
-        dialogManager.init(window.map);
-
-        //추후 properties 혹은 디비로 관리?
-        const initMenu = {
-            '41210':"smartPole", //광명
-            '47210':"smartBusStop", //영주
-            '45210':"smartPower", //김제
-            '26290':"smartPole" //부산남구
-        }
-        let type = initMenu[window.siGunCode];
-        $('.mntr_container .lnb ul li[data-value='+type+']').trigger("click");
-    }
-    // 대시보드 (임시)
-    else if(path === "/pages/dashboard/dashboard_facility") {
-        dashboard.init();
-    }
-
-    //통계
-    else if(path === "/pages/stats/statistics"){
-        const url = new URL(location.href);
-        const type = url.searchParams.get("type");
-        stats.getEventKind(type, (data) => {
-            $(".event_type").text(data.codeName);
-        });
-
-        stats.eventHandler();
-        stats.create();
-        stats.setChart();
     }
 });
