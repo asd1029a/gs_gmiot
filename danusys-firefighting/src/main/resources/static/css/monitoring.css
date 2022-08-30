@@ -766,15 +766,14 @@ span.button:hover {
 .panel {
   position: relative;
   display: flex;
-  right: -27.5rem;
   flex-direction: column;
-  width: 27.5rem;
+  width: 0rem;
   height: 100%;
   background: #1b1b1b;
 }
 
 .panel.select {
-  right: 0;
+  width: 27.5rem;
 }
 
 .panel_toggle {
@@ -797,6 +796,7 @@ span.button:hover {
 .panel_contents {
   height: 100%;
   overflow: auto;
+  right: -27.5rem;
 }
 
 .area_right_scroll {

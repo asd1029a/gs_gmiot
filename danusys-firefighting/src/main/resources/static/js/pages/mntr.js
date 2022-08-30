@@ -115,8 +115,6 @@ const mntr = {
             else
                 $('.panel_toggle img').attr('src', panelToggle.replace('open', 'close'));
 
-            //todo : 맵 사이즈 변경 안됨
-
             //선택 해제
             window.map.updateSize();
         });
