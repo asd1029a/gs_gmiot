@@ -364,8 +364,11 @@ span.button:hover{
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 27.5rem; height: 100%;
+    width: 0rem; height: 100%;
     background: $bg_cate;
+}
+.panel.select{
+    width: 27.5rem;
 }
 .panel_toggle{
     z-index: 20;
@@ -382,8 +385,14 @@ span.button:hover{
 .panel_contents{
     height: 100%;
     overflow: auto;
+    right: -27.5rem;
 }
-
+.area_right_scroll{
+    display: none;
+}
+.area_right_scroll.select{
+    display: block;
+}
 // sort_contents
 .sort_tab{
     display: flex;
@@ -408,7 +417,7 @@ span.button:hover{
         border-bottom: $px2 solid $primary;
         transition: 0.2s;
     }
-    li:active{
+    li:active, li.active{
         color: $primary_variant;
         font-weight: 600;
         border-bottom: $px2 solid $primary_variant;

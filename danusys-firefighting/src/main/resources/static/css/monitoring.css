@@ -767,9 +767,13 @@ span.button:hover {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 27.5rem;
+  width: 0rem;
   height: 100%;
   background: #1b1b1b;
+}
+
+.panel.select {
+  width: 27.5rem;
 }
 
 .panel_toggle {
@@ -792,6 +796,15 @@ span.button:hover {
 .panel_contents {
   height: 100%;
   overflow: auto;
+  right: -27.5rem;
+}
+
+.area_right_scroll {
+  display: none;
+}
+
+.area_right_scroll.select {
+  display: block;
 }
 
 .sort_tab {
@@ -818,7 +831,7 @@ span.button:hover {
   border-bottom: 0.125rem solid #f09a9c;
   transition: 0.2s;
 }
-.sort_tab li:active {
+.sort_tab li:active, .sort_tab li.active {
   color: #e77376;
   font-weight: 600;
   border-bottom: 0.125rem solid #e77376;
