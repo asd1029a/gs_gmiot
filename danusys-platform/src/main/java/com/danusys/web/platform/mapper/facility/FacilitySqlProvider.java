@@ -86,7 +86,7 @@ public class FacilitySqlProvider {
                         " OR t7.code_name LIKE '%" + keyword + "%'" +
                         ")");
             }
-            if (status != null && !status.equals("")) {
+            if (status.size() != 0) {
                 WHERE("t1.facility_status" + SqlUtil.getWhereInStr(status));
             }
             ORDER_BY("t1.facility_seq");
