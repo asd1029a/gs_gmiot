@@ -159,7 +159,7 @@ $(document).ready(() => {
 
         const statsType = stringFunc.camelize(type);
         $("#" + statsType).parents("li").hasClass("multi")
-            ? $("#" + statsType).parents("li").addClass("on")
+            ? $("#" + statsType).parents("li").addClass("on") & $("#" + statsType).addClass("on")
             : $("#" + statsType).addClass("on");
 
         stats.eventHandler();
