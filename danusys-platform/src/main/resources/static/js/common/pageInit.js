@@ -157,6 +157,11 @@ $(document).ready(() => {
             $(".event_type").text(data.codeName);
         });
 
+        const statsType = stringFunc.camelize(type);
+        $("#" + statsType).parents("li").hasClass("multi")
+            ? $("#" + statsType).parents("li").addClass("on")
+            : $("#" + statsType).addClass("on");
+
         stats.eventHandler();
         stats.create();
         stats.setChart();
