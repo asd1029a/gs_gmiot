@@ -540,23 +540,15 @@ const stats = {
     createAvgOptChart: (datas) => {
 
         const data = [{
-            name: "긴급",
-            data: []
-        }, {
-            name: "주의",
-            data: []
+            name: "평균 집계",
+            data: new Array()
         }];
 
         datas.forEach(v => {
             data[0].data.push({
                 x: v.xAxis,
-                y: [v.minUrgent, v.maxUrgent],
-                avg: v.avgUrgent
-            });
-            data[1].data.push({
-                x: v.xAxis,
-                y: [v.minCaution, v.maxCaution],
-                avg: v.avgCaution
+                y: [v.minValue, v.maxValue],
+                avg: v.avgValue
             });
         });
 
@@ -575,7 +567,7 @@ const stats = {
             theme: {
                 mode: "dark"
             },
-            colors: ['#f04242', '#f9a825'],
+            colors: ['#f04242'],
             fill: {
                 opacity: 0.9
             },
@@ -590,7 +582,6 @@ const stats = {
                     // console.log({series, seriesIndex, dataPointIndex, w});
                     const g = w.globals;
                     const dataUrgent = w.config.series[0].data[dataPointIndex];
-                    const dataCaution = w.config.series[1].data[dataPointIndex];
 
                     const text = `
                                 <div>
@@ -601,16 +592,6 @@ const stats = {
                                         <div>최대: ${dataUrgent.y[1]}</div>
                                         <div>평균: ${dataUrgent.avg}</div>
                                         <div>최소: ${dataUrgent.y[0]}</div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div>
-                                        <span style="color: ${g.colors[1]}">${g.seriesNames[1]} ${g.categoryLabels[dataPointIndex]}</span>
-                                    </div>
-                                    <div>
-                                        <div>최대: ${dataCaution.y[1]}</div>
-                                        <div>평균: ${dataCaution.avg}</div>
-                                        <div>최소: ${dataCaution.y[0]}</div>
                                     </div>
                                 </div>`;
 
