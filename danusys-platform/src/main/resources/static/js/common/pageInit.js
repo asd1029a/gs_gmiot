@@ -151,19 +151,7 @@ $(document).ready(() => {
 
     //통계
     else if(path === "/pages/stats/statistics"){
-        const url = new URL(location.href);
-        const type = url.searchParams.get("type");
-        stats.getEventKind(type, (data) => {
-            $(".event_type").text(data.codeName);
-        });
-
-        const statsType = stringFunc.camelize(type);
-        $("#" + statsType).parents("li").hasClass("multi")
-            ? $("#" + statsType).parents("li").addClass("on") & $("#" + statsType).addClass("on")
-            : $("#" + statsType).addClass("on");
-
+        stats.init();
         stats.eventHandler();
-        stats.create();
-        stats.setChart();
     }
 });
