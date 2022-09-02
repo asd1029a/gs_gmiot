@@ -37,9 +37,6 @@ public class YjSchedulerService {
 
             List<Map<String,Object>> settingList =  facilitySettingService.findBySetScheduler();
             settingList.stream().forEach(ff -> {
-                if(StrUtils.getStr(ff.get("administ_zone")).indexOf("47210") == 0) {
-                    return;
-                }
 
                 Map<String,Object> message = new HashMap<>();
                 String facilityId = StrUtils.getStr(ff.get("facility_id"));
