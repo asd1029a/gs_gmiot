@@ -20,6 +20,7 @@ public class FacilitySqlProvider {
         String stationSeq = CommonUtil.validOneNull(paramMap, "stationSeq"); //개소 SEQ
         ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone"); //동 구분용
         ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
+        ArrayList<String> status = CommonUtil.valiArrNull(paramMap, "status");
         String start = CommonUtil.validOneNull(paramMap, "start");
         String length = CommonUtil.validOneNull(paramMap, "length");
         String kindCodeViewName = CommonUtil.validOneNull(paramMap, "kindCodeViewName").isEmpty() ? "v_facility_kind" : CommonUtil.validOneNull(paramMap, "kindCodeViewName");
@@ -33,9 +34,10 @@ public class FacilitySqlProvider {
             builder.append(", t1.facility_instl_info, t1.facility_instl_dt");
             builder.append(", t1.facility_status " +
                     ", CASE" +
-                    " WHEN t1.facility_status = 0 THEN '미사용'" +
+                    " WHEN t1.facility_status = 0 THEN '이상'" +
                     " WHEN t1.facility_status = 1 then '정상'" +
-                    " ELSE '이상' END AS facility_status_name" +
+                    /*" ELSE '이상' END AS facility_status_name" +*/
+                    " END AS facility_status_name" +
                     ", t1.latitude");
             builder.append(", t1.longitude, t1.insert_dt, t3.id AS insert_user_id");
             builder.append(", t1.update_user_seq , t4.id AS update_user_id");
@@ -84,6 +86,9 @@ public class FacilitySqlProvider {
                         " OR t7.code_name LIKE '%" + keyword + "%'" +
                         ")");
             }
+            if (status.size() != 0) {
+                WHERE("t1.facility_status" + SqlUtil.getWhereInStr(status));
+            }
             ORDER_BY("t1.facility_seq");
             if (!start.equals("") && !length.equals("")) {
                 LIMIT(length);
@@ -97,9 +102,12 @@ public class FacilitySqlProvider {
         paramMap.remove("start");
         SQL sql = new SQL(){{
             SELECT("COUNT(c1.*) count" +
+                    ", count(case when c1.facility_status = 0 then 1 end) AS error_count" +
+                    ", count(case when c1.facility_status = 1 then 1 end) AS normal_count");
+            /*SELECT("COUNT(c1.*) count" +
                     ", count(case when c1.facility_status = 0 then 1 end) AS not_use_count" +
                     ", count(case when c1.facility_status = 1 then 1 end) AS normal_count" +
-                    ", count(case when c1.facility_status = 2 then 1 end) AS error_count");
+                    ", count(case when c1.facility_status = 2 then 1 end) AS error_count");*/
             FROM("(" + selectListQry(paramMap) + ") AS c1");
         }};
         return sql.toString();

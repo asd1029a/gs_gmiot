@@ -133,7 +133,7 @@ public class YjMqttFacility {
 
                 // 저장 되어 있다면!!
                 // opt 동기화 시작
-                List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(facility.getFacilitySeq());
+                List<FacilityOpt> facilityOptList = facilityOptService.findAllByFacilitySeq(facility.getFacilitySeq());
 
                 // insert
                 if(facilityOptList.isEmpty()) {

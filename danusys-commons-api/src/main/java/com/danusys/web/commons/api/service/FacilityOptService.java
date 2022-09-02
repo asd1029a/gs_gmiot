@@ -81,7 +81,7 @@ public class FacilityOptService {
         return facilityOptRepository.findByFacilityOptNameAndFacilityOptValue(facilityOptName, facilityOptValue);
     }
 
-    public List<FacilityOpt> findByFacilitySeq(Long facilitySeq) {
+    public List<FacilityOpt> findAllByFacilitySeq(Long facilitySeq) {
         return facilityOptRepository.findByFacilitySeq(facilitySeq);
     }
 

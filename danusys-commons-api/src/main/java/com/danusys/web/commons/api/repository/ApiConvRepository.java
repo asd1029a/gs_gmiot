@@ -3,6 +3,7 @@ package com.danusys.web.commons.api.repository;
 import com.danusys.web.commons.api.model.ApiParamConv;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Project : danusys-webservice-parent
@@ -14,5 +15,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface ApiConvRepository extends JpaRepository<ApiParamConv,Long> {
 
     @Query(value = "SELECT value FROM api_param_conv WHERE api_param_seq = :seq and key = :key", nativeQuery = true)
-    String findValueByApiParamSeqAndKey(Long seq,String key);
+    String findValueByApiParamSeqAndKey(@Param("seq") Long seq, @Param("key") String key);
 }
