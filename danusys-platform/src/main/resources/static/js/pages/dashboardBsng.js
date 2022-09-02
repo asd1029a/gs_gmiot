@@ -313,7 +313,7 @@ const dashboard = {
         const options = {
             series: [],
             chart: {
-                height: '100%',
+                height: '70%',
                 type: 'radialBar',
                 toolbar: {
                     show: false
