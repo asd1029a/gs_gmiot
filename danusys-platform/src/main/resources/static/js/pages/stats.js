@@ -20,23 +20,25 @@ const stats = {
             $(".event_type").text(data.codeName);
         });
 
-        stats.isOpt = stats.type.indexOf("event") + 1 ? true : false;
+        stats.isOpt = stats.type.indexOf("event") + 1 ? false : true;
         if(stats.isOpt){
-            stats.createTable();
-            stats.setChart();
-        }else{
+            $("[data-mode=event]").hide();
             stats.createOptTable();
             stats.setOptChart();
+        }else{
+            $("[data-mode=opt]").hide();
+            stats.createTable();
+            stats.setChart();
         }
     },
     eventHandler: () => {
         $("#searchBtn").on('click', (e) => {
             if(stats.isOpt){
-                stats.createTable();
-                stats.setChart();
-            }else{
                 stats.createOptTable();
                 stats.setOptChart();
+            }else{
+                stats.createTable();
+                stats.setChart();
             }
         });
         // todo 검색 조건은 체크 되었지만 검색 버튼을 누르지 않았을 때 해당 차트만 데이터가 상이함
@@ -49,9 +51,9 @@ const stats = {
                 const chartNm = $target.parentElement.id;
 
                 if(stats.isOpt){
-                    stats.setChart(chartNm);
-                }else{
                     stats.setOptChart(chartNm);
+                }else{
+                    stats.setChart(chartNm);
                 }
             }
         });

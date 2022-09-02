@@ -17,9 +17,15 @@
             <h6><span class="event_type"></span> 통계 검색</h6>
             <form>
                 <div>
-                    <p>이벤트 종류</p>
-                    <dl class="dropdown_checkbox" data-selectbox-type="eventKind" th:attr="data-selectbox-sub-type=${type}">
+                    <p data-mode="event">이벤트 종류</p>
+                    <dl class="dropdown_checkbox" data-selectbox-type="eventKind" th:attr="data-selectbox-sub-type=${type}" data-mode="event">
                         <dt class="checkbox_title select_title">이벤트 종류</dt>
+                        <dd class="checkbox_list list" style="display: none;">
+                        </dd>
+                    </dl>
+                    <p data-mode="opt">개소 종류</p>
+                    <dl class="dropdown_checkbox" data-selectbox-type="stationKind" th:attr="data-selectbox-sub-type=${type}" data-mode="opt">
+                        <dt class="checkbox_title select_title">개소 종류</dt>
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
