@@ -29,4 +29,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-.vscode/*
+### VS Code
+/.vscode/
+
+### MQTT
+*.lck

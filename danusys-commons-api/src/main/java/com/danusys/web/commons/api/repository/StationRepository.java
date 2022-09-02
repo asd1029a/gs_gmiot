@@ -3,6 +3,7 @@ package com.danusys.web.commons.api.repository;
 import com.danusys.web.commons.api.model.Station;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -21,8 +22,8 @@ public interface StationRepository extends JpaRepository<Station, Long> {
     Station findByStationSeq(Long stationSeq);
 
     @Query(value = "SELECT code_seq FROM v_facility_station WHERE code_id = :codeId", nativeQuery = true)
-    Long findCommonCode(String codeId);
+    Long findCommonCode(@Param("codeId") String codeId);
 
     @Query(value = "SELECT fn_lonlat_to_emdcode(:longitude, :latitude)", nativeQuery = true)
-    String getEmdCode(double longitude, double latitude);
+    String getEmdCode(@Param("longitude") double longitude, @Param("latitude") double latitude);
 }

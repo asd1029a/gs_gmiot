@@ -4,6 +4,8 @@ import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.FacilityActiveLog;
 import com.danusys.web.commons.api.model.FacilityOpt;
 import com.danusys.web.commons.api.repository.FacilityActiveRepository;
+import com.danusys.web.commons.api.repository.FacilityOptRepository;
+import com.danusys.web.commons.api.repository.FacilityRepository;
 import com.danusys.web.commons.api.scheduler.dto.FloatingPopulationDTO;
 import com.danusys.web.commons.api.service.EventService;
 import com.danusys.web.commons.api.service.FacilityOptService;
@@ -33,13 +35,14 @@ public class BsngScheduler {
     private final EventService eventService;
     private final RestTemplate restTemplate;
     private final FacilityService facilityService;
+    private final FacilityRepository facilityRepository;
     private final FacilityOptService facilityOptService;
+    private final FacilityOptRepository facilityOptRepository;
     private final FacilityActiveRepository facilityActiveRepository;
-    private static long FACILITY_SEQ = 8244L; // 실서버 facility_seq
-//    private static long FACILITY_SEQ = 9721L; // 로컬서버 facility_seq
 
-//    @Scheduled(cron = "0/30 * * * * *")
-    @Scheduled(fixedDelay = 60000)
+
+//    @Scheduled(fixedDelay = 60000)
+    @Scheduled(cron = "0/30 * * * * *")
     public void apiCallSchedule() throws Exception{
         //log.trace("---------------------bsng scheduler---------------------");
     }
@@ -78,8 +81,16 @@ public class BsngScheduler {
      */
     @Scheduled(cron = "0 0 0/1 * * *")
     public void ipPingCheck(){
-        Long faSeq = FACILITY_SEQ;
-        List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(faSeq);
+        List<FacilityOpt> facilityOptList = new ArrayList<>();
+        List<Facility> facilityList = new ArrayList<>();
+        facilityList.add(facilityRepository.findByFacilityId("BSNG_S_1"));
+        facilityList.add(facilityRepository.findByFacilityId("BSNG_S_2"));
+        facilityList.stream().forEach(facility -> {
+            FacilityOpt facilityOpt = facilityOptRepository.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(), "ip");
+            if(facilityOpt != null) {
+                facilityOptList.add(facilityOpt);
+            }
+        });
         List<Map<String, Object>> ipLists = new ArrayList<>();
         List<FacilityActiveLog> facilityActiveLogList = new ArrayList<>();
         FacilityActiveLog facilityActiveLog = new FacilityActiveLog();
@@ -87,16 +98,24 @@ public class BsngScheduler {
                 .forEach(facilityOpt -> {
                     Map<String,Object> maps = new HashMap<>();
                     maps.put(facilityOpt.getFacilityOptName(),facilityOpt.getFacilityOptValue());
+                    maps.put("facilitySeq",facilityOpt.getFacilitySeq());
                     ipLists.add(maps);
                 });
         IpCheckedUtil.ipCheckedList(ipLists);
 
         ipLists.stream().forEach(f -> {
-            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq(faSeq).
+            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq((Long) f.get("facilitySeq")).
                     facilityActiveCheck((boolean) f.get("active")).facilityActiveIp((String) f.get("ip")).build();
             facilityActiveLogList.add(build);
+
+            Facility facility = facilityRepository.findByFacilitySeq((Long) f.get("facilitySeq"));
+            if ((boolean) f.get("active")) {
+                facility.setFacilityPing(1L);
+            } else {
+                facility.setFacilityPing(0L);
+            }
+            facilityService.save(facility);
         });
         facilityActiveRepository.saveAll(facilityActiveLogList);
     }
-
 }
