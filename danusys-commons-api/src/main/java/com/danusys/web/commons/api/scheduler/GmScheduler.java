@@ -317,9 +317,9 @@ public class GmScheduler {
 //
 //            Facility facility = facilityRepository.findByFacilitySeq((Long) f.get("facilitySeq"));
 //            if ((boolean) f.get("active")) {
-//                facility.setFacilityPing(1L);
+//                facility.setAliveCheck(1L);
 //            } else {
-//                facility.setFacilityPing(0L);
+//                facility.setAliveCheck(0L);
 //            }
 //            facilityService.save(facility);
 //        });

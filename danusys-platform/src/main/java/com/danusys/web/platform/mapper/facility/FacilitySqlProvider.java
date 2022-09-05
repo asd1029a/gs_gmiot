@@ -39,7 +39,7 @@ public class FacilitySqlProvider {
                     /*" ELSE '이상' END AS facility_status_name" +*/
                     " END AS facility_status_name" +
                     ", t1.latitude");
-            builder.append(", t1.longitude, t1.insert_dt, t3.id AS insert_user_id");
+            builder.append(", t1.longitude, t1.insert_dt, t3.id AS insert_user_id, t1.alive_check");
             builder.append(", t1.update_user_seq , t4.id AS update_user_id");
             builder.append(", t2.code_value AS facility_kind");
             builder.append(", t2.code_name AS facility_kind_name");

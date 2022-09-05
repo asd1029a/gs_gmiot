@@ -1396,13 +1396,15 @@ const rnbList = {
                     } else {
                         listUl = area.find('div[data-group=fcltList] ul');
                     }
-                    console.log(f.facilityStatus);
-                    let color = f.facilityStatus == 1? "green" : "red";
+                    console.log(f.aliveCheck);
+                    let color = f.aliveCheck == 1? "green" : "red";
                     let li = "<li>" +
                         "<span class='circle "+ color + "'></span>" +
                         "<span>" + f.facilityKindName +
                         "</span><input value='" + f.facilityId + "' type='text' disabled/></li>";
-                    listUl.append(li);
+                    if (f.facilityId !== undefined) {
+                        listUl.append(li);
+                    }
                 });
             }
         } else {
