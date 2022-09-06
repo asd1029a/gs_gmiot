@@ -23,18 +23,18 @@
 .dashboard_top{display: flex; grid-gap: 14px; height: 100px;}
 .dashboard_top div.status_cnt{flex: 1; display: flex; align-items: center; justify-content: space-between; height: 100px; padding: 20px; box-sizing: border-box; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; background: #1a1b1d;}
 .dashboard_top div.status_cnt > div {flex: 1; display: flex; align-items: center; justify-content: space-between; max-width: 456px;}
-.dashboard_top div.status_cnt:nth-of-type(1){border-top: 8px solid #41aab1;}
-.dashboard_top div.status_cnt:nth-of-type(2){border-top: 8px solid #d29a43;}
-.dashboard_top div.status_cnt:nth-of-type(3){border-top: 8px solid #cc6565;}
-.dashboard_top div.status_cnt:nth-of-type(4){border-top: 8px solid #4aaf5f;}
+.dashboard_top div.status_cnt#statusCnt1{border-top: 8px solid #41aab1;}
+.dashboard_top div.status_cnt#statusCnt2{border-top: 8px solid #d29a43;}
+.dashboard_top div.status_cnt#statusCnt3{border-top: 8px solid #cc6565;}
+.dashboard_top div.status_cnt#statusCnt4{border-top: 8px solid #4aaf5f;}
 .dashboard_top div p.title{display: flex; flex-direction: column; color: #dee0e4; font-size: 16px; line-height: 24px;}
 .dashboard_top div p.title span{color: #7f8491; font-size: 14px;}
 .dashboard_top div p.value{display: flex; flex-direction: row; align-items: baseline; grid-gap: 6px; font-size: 26px; font-weight: bold;}
 .dashboard_top div p.value span{margin: 0px 0px 2px 0px; color: #dee0e4; font-size: 16px; font-weight: normal;}
-.dashboard_top div.status_cnt:nth-of-type(1) p.value{color: #41aab1;}
-.dashboard_top div.status_cnt:nth-of-type(2) p.value{color: #d29a43;}
-.dashboard_top div.status_cnt:nth-of-type(3) p.value{color: #cc6565;}
-.dashboard_top div.status_cnt:nth-of-type(4) p.value{color: #4aaf5f;}
+.dashboard_top div.status_cnt#statusCnt1 p.value{color: #41aab1;}
+.dashboard_top div.status_cnt#statusCnt2 p.value{color: #d29a43;}
+.dashboard_top div.status_cnt#statusCnt3 p.value{color: #cc6565;}
+.dashboard_top div.status_cnt#statusCnt4 p.value{color: #4aaf5f;}
 
 /* //dashboard_top */
 .dashboard_top.dashboard_top_gimje{/*height: initial;*/    height: 170px;}
@@ -116,7 +116,7 @@ div.area_weather .weather_left dl dt{overflow: hidden; flex: 0.6; height: 100%; 
 div.area_weather .weather_left dl dt img{width: 100%; height: 100%;}
 div.area_weather .weather_left dl dd{flex: 1; display: flex; align-items: center; grid-gap: 8px; white-space: nowrap; color: #dee0e4; font-size: 18px; font-weight: bold;}
 div.area_weather .weather_left dl dd span.bar{width: 2px; height: 14px; margin: 0px 8px; background: #464e5a;}
-div.area_weather .weather_right{flex: 1; display: flex; grid-gap: 26px; padding: 26px; border-right: 1px solid #1a1b1f;}
+div.area_weather .weather_right{flex: 1; display: flex; grid-gap: 26px; padding: 26px 0; border-right: 1px solid #1a1b1f;}
 div.area_weather .weather_right dl{flex: 1; display: flex; flex-direction: column; grid-gap: 26px;}
 div.area_weather .weather_right dl dt{color: #dee0e4; font-size: 18px; font-weight: bold;}
 div.area_weather .weather_right dl dd{flex: 1; /*background: gray;*/}

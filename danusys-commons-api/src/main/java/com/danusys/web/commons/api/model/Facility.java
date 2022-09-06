@@ -85,7 +85,7 @@ public class Facility implements Serializable {
     private String administZone;
 
     @Column
-    private Long facilityPing;
+    private Long aliveCheck;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "facilitySeq")

@@ -77,6 +77,15 @@ $(document).ready(() => {
         } else if(path === "/pages/inqry/event2") {
             // event.eventHandler($('#troubleEventTable'),"trouble");
             // event.create($('#troubleEventTable'),"trouble");
+        } else if(path === "/pages/inqry/peopleCount") {
+            peopleCount.eventHandler();
+            peopleCount.create();
+        } else if(path === "/pages/inqry/electricityLampWalk"
+            || path === "/pages/inqry/electricitySunlight"
+            || path === "/pages/inqry/electricityBus"
+            || path === "/pages/inqry/electricityBikeCharging") {
+            electricity.eventHandler();
+            electricity.create();
         } else {
             const targetName = pathArr[3];
             event.init(targetName);
