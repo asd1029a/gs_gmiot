@@ -1381,7 +1381,6 @@ const rnbList = {
 
         //시설물 현황
         if(theme == "smartPole"){
-            debugger;
             target.find('.tab li[data-value=control]').removeClass('select');
             target.find('div[data-value=control]').removeClass('select');
             target.find('.tab li[data-value=info]').addClass('select');
