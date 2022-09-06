@@ -156,7 +156,10 @@ public class StatisticsSqlProvider {
         }};
 
         SQL dateSql = new SQL() {{
-            SELECT("date_t.t_date AS x_axis, t.min_urgent, t.max_urgent, t.min_caution, t.max_caution, t.avg_urgent, t.avg_caution");
+            SELECT("date_t.t_date AS x_axis, " +
+                    "coalesce(t.min_urgent, 0) min_urgent, coalesce(t.max_urgent, 0) max_urgent, " +
+                    "coalesce(t.avg_urgent, 0) avg_urgent, coalesce(t.min_caution, 0) min_caution, " +
+                    "coalesce(t.max_caution, 0) max_caution, coalesce(t.avg_caution, 0) avg_caution");
             // 시간대 생성
             String startDtT = "";
             String endDtT = "";
