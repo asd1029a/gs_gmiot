@@ -131,7 +131,7 @@ public class ConfigSqlProvider {
         SQL sql = new SQL() {{
 
             SELECT("*");
-            FROM("v_event_kind");
+            FROM("t_common_code");
             WHERE("code_value = '" + kind + "'");
         }};
         return sql.toString();

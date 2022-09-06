@@ -1,17 +1,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<th:block th:fragment="navFragment">
+<th:block th:fragment="navFragment" th:with="municipality=${@environment.getProperty('municipality.name')}">
     <aside class="accordion_menu accordion">
         <ul class="accordion">
-            <li id="one" class="on">
-                <a href="#one">이벤트 발생 통계</a>
+            <li id="eventStats" class="multi">
+                <a href="#eventStats">이벤트 발생 통계</a>
                 <ul class="accordion_sub_menu">
-                    <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
-                    <li th:if="${municipality == '41210000' or municipality == '26290000'}"><a href="/pages/stats/statistics?type=smart_pole_event">스마트폴 이벤트</a></li>
-                    <li th:if="${municipality == '41210000' or municipality == '47210000'}"><a href="/pages/stats/statistics?type=smart_busstop_event">스마트 정류장 이벤트</a></li>
-                    <li th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics?type=EMS_EVENT">스마트분전함 이벤트</a></li>
-                    <li th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics?type=DRONE_EVENT">드론 관제 이벤트</a></li>
-                    </th:block>
+                    <li id="smartPoleEvent" th:if="${municipality == '41210000' or municipality == '26290000'}"><a href="/pages/stats/statistics?type=smart_pole_event">스마트폴 이벤트</a></li>
+                    <li id="smartBusstopEvent" th:if="${municipality == '41210000' or municipality == '47210000'}"><a href="/pages/stats/statistics?type=smart_busstop_event">스마트 정류장 이벤트</a></li>
+                    <li id="emsEvent" th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics?type=EMS_EVENT">스마트분전함 이벤트</a></li>
+                    <li id="droneEvent" th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics?type=DRONE_EVENT">드론 관제 이벤트</a></li>
                 </ul>
+            </li>
+            <li id="floatingPopulation" th:if="${municipality == '41210000'}">
+                <a href="/pages/stats/statistics?type=floating_population">유동인구 통계</a>
             </li>
         </ul>
     </aside>
