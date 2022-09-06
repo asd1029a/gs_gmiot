@@ -33,8 +33,8 @@ public class StationServiceImpl implements StationService{
     @Override
     public EgovMap getListPaging(Map<String, Object> paramMap) throws Exception {
         Map<String, Object> pagingMap = new HashMap<>();
-        EgovMap count = commonMapper.selectOne(ssp.selectCountQry(paramMap));
         pagingMap.put("data", commonMapper.selectList(ssp.selectListQry(paramMap)));
+        EgovMap count = commonMapper.selectOne(ssp.selectCountQry(paramMap));
         pagingMap.put("count", count.get("count"));
         pagingMap.put("statusCount", count);
         return PagingUtil.createPagingMap(paramMap, pagingMap);

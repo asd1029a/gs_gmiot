@@ -84,6 +84,9 @@ public class Facility implements Serializable {
     @Column
     private String administZone;
 
+    @Column
+    private Long aliveCheck;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "facilitySeq")
     @JsonManagedReference

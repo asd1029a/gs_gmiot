@@ -39,7 +39,8 @@ public class EventSqlProvider {
                     ", v1.code_name AS event_kind_name" + //이벤트 종류 한글명
                     ", v2.code_name AS event_grade_name" + //이벤트 등급 한글명
                     ", v3.code_name AS event_proc_stat_name" + //이벤트 처리상태 한글명
-                    ", v4.code_name AS administ_zone_name"; //동 이름
+                    ", v4.code_name AS administ_zone_name" + //동 이름
+                    ", v5.code_name as facility_kind";
 
             String tables = "t_event t1 " +
                     "INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq " +
@@ -47,7 +48,8 @@ public class EventSqlProvider {
                     "INNER JOIN v_event_kind v1 ON t1.event_kind = v1.code_seq " +
                     "INNER JOIN v_event_grade v2 ON t1.event_grade = v2.code_seq " +
                     "INNER JOIN v_event_proc_stat v3 ON t1.event_proc_stat = v3.code_seq " +
-                    "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value ";
+                    "INNER JOIN v_administ v4 ON t2.administ_zone = v4.code_value " +
+                    "INNER JOIN v_facility_kind v5 on t2.facility_kind = v5.code_seq";
 
             if (geoFlag) { //geojson 호출시
                 columns += ", t3.longitude, t3.latitude, t3.administ_zone";

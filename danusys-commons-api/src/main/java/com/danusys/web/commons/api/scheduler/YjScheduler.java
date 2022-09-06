@@ -4,9 +4,14 @@ import com.danusys.web.commons.api.dto.FacilityDataRequestDTO;
 import com.danusys.web.commons.api.model.Facility;
 import com.danusys.web.commons.api.model.FacilityActiveLog;
 import com.danusys.web.commons.api.model.FacilityOpt;
+import com.danusys.web.commons.api.model.Station;
 import com.danusys.web.commons.api.repository.FacilityActiveRepository;
+import com.danusys.web.commons.api.repository.FacilityOptRepository;
+import com.danusys.web.commons.api.repository.FacilityRepository;
+import com.danusys.web.commons.api.scheduler.service.YjSchedulerService;
 import com.danusys.web.commons.api.service.FacilityOptService;
 import com.danusys.web.commons.api.service.FacilityService;
+import com.danusys.web.commons.api.service.StationService;
 import com.danusys.web.commons.api.util.ApiUtils;
 import com.danusys.web.commons.api.util.IpCheckedUtil;
 import com.danusys.web.commons.app.StrUtils;
@@ -17,6 +22,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -32,10 +38,11 @@ public class YjScheduler {
     private final ApiUtils apiUtils;
     private final ObjectMapper objectMapper;
     private final FacilityOptService facilityOptService;
+    private final FacilityOptRepository facilityOptRepository;
     private final FacilityService facilityService;
+    private final FacilityRepository facilityRepository;
     private final FacilityActiveRepository facilityActiveRepository;
-    private static long FACILITY_SEQ = 9588L; //실서버 facility_seq
-//    private static long FACILITY_SEQ = 9722L; // 로컬서버 facility_seq
+    private final YjSchedulerService yjSchedulerService;
 
     /**
      * 정류장 유동인구 저장
@@ -76,8 +83,14 @@ public class YjScheduler {
      */
     @Scheduled(cron = "0 0 0/1 * * *")
     public void ipPingCheck(){
-        Long faSeq = FACILITY_SEQ;
-        List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(faSeq);
+        List<FacilityOpt> facilityOptList = new ArrayList<>();
+        List<Facility> facilityList = facilityRepository.findAllByAdministZoneAndFacilityName("47210","유동인구");
+        facilityList.stream().forEach(facility -> {
+            FacilityOpt facilityOpt = facilityOptRepository.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(), "ip");
+            if(facilityOpt != null) {
+                facilityOptList.add(facilityOpt);
+            }
+        });
         List<Map<String, Object>> ipLists = new ArrayList<>();
         List<FacilityActiveLog> facilityActiveLogList = new ArrayList<>();
         FacilityActiveLog facilityActiveLog = new FacilityActiveLog();
@@ -85,15 +98,29 @@ public class YjScheduler {
                 .forEach(facilityOpt -> {
                     Map<String,Object> maps = new HashMap<>();
                     maps.put(facilityOpt.getFacilityOptName(),facilityOpt.getFacilityOptValue());
+                    maps.put("facilitySeq",facilityOpt.getFacilitySeq());
                     ipLists.add(maps);
                 });
         IpCheckedUtil.ipCheckedList(ipLists);
 
         ipLists.stream().forEach(f -> {
-            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq(faSeq).
+            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq((Long) f.get("facilitySeq")).
                     facilityActiveCheck((boolean) f.get("active")).facilityActiveIp((String) f.get("ip")).build();
             facilityActiveLogList.add(build);
+
+            Facility facility = facilityRepository.findByFacilitySeq((Long) f.get("facilitySeq"));
+            if ((boolean) f.get("active")) {
+                facility.setAliveCheck(1L);
+            } else {
+                facility.setAliveCheck(0L);
+            }
+            facilityService.save(facility);
         });
         facilityActiveRepository.saveAll(facilityActiveLogList);
+    }
+
+    @PostConstruct
+    public void facilityScheduleInit() {
+        yjSchedulerService.setScheduler();
     }
 }

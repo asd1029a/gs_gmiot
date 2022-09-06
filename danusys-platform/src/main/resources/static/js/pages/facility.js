@@ -27,7 +27,7 @@ const facility = {
                     },
                     'dataSrc' : function (result) {
                         $('.title dd .count').text(result.recordsTotal);
-                        $('.status_label li#notUseCount').html(`<span class="gray"></span>미사용 : ${result.statusCount.notUseCount}`);
+                        //$('.status_label li#notUseCount').html(`<span class="gray"></span>미사용 : ${result.statusCount.notUseCount}`);
                         $('.status_label li#normalCount').html(`<span class="green"></span>정상 : ${result.statusCount.normalCount}`);
                         $('.status_label li#errorCount').html(`<span class="red"></span>이상 : ${result.statusCount.errorCount}`);
                         return result.data;

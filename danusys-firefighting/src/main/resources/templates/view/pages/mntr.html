@@ -4,18 +4,13 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout/layoutMntr">
 <th:block layout:fragment="content">
-    <div class="map">
-        디도
+    <div class="map" id="map">
         <!-- 현재 위치 및 날씨 -->
         <div class="map_info">
             <ul>
-                <li>강원도</li>
-                <li><img src="/images/default/sm_arrow.svg"></li>
-                <li>원주시</li>
-                <li><img src="/images/default/sm_arrow.svg"></li>
-                <li>신림면</li>
+                <li id="admAreaName"></li>
             </ul>
-            <p><img src="/images/default/weather_sunny.svg">15℃</p>
+            <p id="admWeather"><i><img src="/images/default/icon_weather_sunny.png"></i>12°</p>
             <p>강수&nbsp;50%</p>
             <p>바람&nbsp;5m/s<img src="/images/default/icon_weather_arrow_12.svg"></p>
         </div>
@@ -37,7 +32,7 @@
         <div class="map_options">
             <div class="align_horizontal">
                 <div class="map_layer">
-                    <p><img src="/images/default/icon_layer.svg"></p>
+                    <p id="mapLayer"><img src="/images/default/icon_layer.svg"></p>
                     <div class="popup_layer">
                         <h6>소방</h6>
                         <ul>
@@ -155,19 +150,20 @@
                     </div>
                 </div>
                 <ul class="map_type">
-                    <li>지도</li>
-                    <li>스카이뷰</li>
+                    <li data-value="btnImgmap" class="active">지도</li>
+                    <li data-value="btnSkyview">스카이뷰</li>
                 </ul>
             </div>
             <div class="align_vertical">
                 <ul class="map_zoom">
-                    <li><img src="/images/default/icon_+.svg"></li>
-                    <li><img src="/images/default/icon_-.svg"></li>
+                    <li data-value="plus" title="확대"><img src="/images/default/icon_+.svg"></li>
+                    <li data-value="minus" title="축소"><img src="/images/default/icon_-.svg"></li>
                 </ul>
                 <ul class="map_measure">
-                    <li><img src="/images/default/icon_rul1.svg"></li>
-                    <li><img src="/images/default/icon_rul2.svg"></li>
-                    <li><img src="/images/default/icon_rul3.svg"></li>
+                    <li data-value="distance" title="거리측정"><img src="/images/default/icon_rul1.svg"></li>
+                    <li data-value="measure" title="면적측정"><img src="/images/default/icon_rul2.svg"></li>
+                    <li data-value="radius" title="반경측정"><img src="/images/default/icon_rul3.svg"></li>
+                    <li data-value="eraser" title="지우기"><img src="/images/default/mapEraser.svg"></li>
                 </ul>
             </div>
         </div>

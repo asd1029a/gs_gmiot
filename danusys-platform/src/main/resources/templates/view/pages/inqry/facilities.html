@@ -41,11 +41,11 @@
                         <dt>시설물 상태</dt>
                         <dd>
 							<span>
-								<input type="checkbox" id="normal" name="status" data-value="normal" data-init-value="checked" checked>
+								<input type="checkbox" id="normal" name="status" data-value="1" data-init-value="checked" checked>
 								<label for="normal"><span></span>정상</label>
 							</span>
                             <span>
-								<input type="checkbox" id="strange" name="status" data-value="strange" data-init-value="checked" checked>
+								<input type="checkbox" id="strange" name="status" data-value="0" data-init-value="checked" checked>
 								<label for="strange"><span></span>이상</label>
 							</span>
                         </dd>
@@ -67,7 +67,7 @@
                 </dl>
                 <div>
                     <ul class="status_label">
-                        <li id="notUseCount"><span class="gray"></span>미사용 : 0</li>
+                        <!--<li id="notUseCount"><span class="gray"></span>미사용 : 0</li>-->
                         <li id="normalCount"><span class="green"></span>정상 : 0</li>
                         <li id="errorCount"><span class="red"></span>이상 : 0</li>
                     </ul>

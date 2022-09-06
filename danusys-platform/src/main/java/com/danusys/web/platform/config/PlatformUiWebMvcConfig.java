@@ -46,6 +46,7 @@ public class PlatformUiWebMvcConfig extends UiWebMvcConfig {
         registry.addViewController("/pages/dashboard").setViewName("view/pages/dashboard");
         registry.addViewController("/pages/dashboard/dashboard_facility").setViewName("view/pages/dashboard/dashboard_facility");
         registry.addViewController("/pages/dashboard/dashboard_facility_bsng").setViewName("view/pages/dashboard/dashboard_facility_bsng");
+        registry.addViewController("/pages/dashboard/dashboard_facility_gm").setViewName("view/pages/dashboard/dashboard_facility_gm");
         registry.addViewController("/pages/dashboard/dashboard_drone").setViewName("view/pages/dashboard/dashboard_drone");
 
         // 통계

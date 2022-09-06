@@ -142,20 +142,16 @@ $(document).ready(() => {
     else if(path === "/pages/dashboard/dashboard_facility_bsng") {
         dashboard.init();
     }
+    else if(path === "/pages/dashboard/dashboard_facility_gm") {
+        dashboard.init();
+    }
     else if(path === "/pages/dashboard/dashboard_drone") {
         dashboardGimje.init();
     }
 
     //통계
     else if(path === "/pages/stats/statistics"){
-        const url = new URL(location.href);
-        const type = url.searchParams.get("type");
-        stats.getEventKind(type, (data) => {
-            $(".event_type").text(data.codeName);
-        });
-
+        stats.init();
         stats.eventHandler();
-        stats.create();
-        stats.setChart();
     }
 });

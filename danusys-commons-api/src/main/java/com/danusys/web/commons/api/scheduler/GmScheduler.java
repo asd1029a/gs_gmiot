@@ -2,15 +2,16 @@ package com.danusys.web.commons.api.scheduler;
 
 import com.danusys.web.commons.api.dto.FacilityDataRequestDTO;
 import com.danusys.web.commons.api.dto.LogicalfolderDTO;
-import com.danusys.web.commons.api.model.CommonCode;
-import com.danusys.web.commons.api.model.Facility;
-import com.danusys.web.commons.api.model.FacilityOpt;
-import com.danusys.web.commons.api.model.Station;
+import com.danusys.web.commons.api.model.*;
 import com.danusys.web.commons.api.repository.FacilityActiveRepository;
+import com.danusys.web.commons.api.repository.FacilityOptRepository;
+import com.danusys.web.commons.api.repository.FacilityRepository;
+import com.danusys.web.commons.api.scheduler.service.GmSchedulerService;
 import com.danusys.web.commons.api.service.*;
 import com.danusys.web.commons.api.service.executor.RestApiExecutor;
 import com.danusys.web.commons.api.types.FacilityGroupType;
 import com.danusys.web.commons.api.util.ApiUtils;
+import com.danusys.web.commons.api.util.IpCheckedUtil;
 import com.danusys.web.commons.api.util.XmlDataUtil;
 import com.danusys.web.commons.app.RestUtil;
 import com.danusys.web.commons.app.StrUtils;
@@ -27,6 +28,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,11 +44,14 @@ import static java.util.stream.Collectors.toList;
 public class GmScheduler {
     private final ObjectMapper objectMapper;
     private final FacilityService facilityService;
+    private final FacilityRepository facilityRepository;
     private final ApiUtils apiUtils;
     private final FacilityOptService facilityOptService;
+    private final FacilityOptRepository facilityOptRepository;
     private final StationService stationService;
     private final CommonCodeService commonCodeService;
     private final FacilityActiveRepository facilityActiveRepository;
+    private final GmSchedulerService gmSchedulerService;
     private final ApiExecutorFactoryService apiExecutorFactoryService;
     private final RestApiExecutor restApiExecutor;
     private final ApiCallService apiService;
@@ -280,13 +285,19 @@ public class GmScheduler {
         }
     }
 //    /**
-//     * TODO faSeq 부분 광명 시설물 facilitySeq에 맞게 변경 필요
+//     * TODO facility 가져오는부분 변경 필요
 //     * 시설물 장애 이벤트 ping check
 //     */
 //    @Scheduled(cron = "0 0 0/1 * * *")
 //    public void ipPingCheck(){
-//        Long faSeq = FACILITY_SEQ;
-//        List<FacilityOpt> facilityOptList = facilityOptService.findByFacilitySeq(faSeq);
+//        List<FacilityOpt> facilityOptList = new ArrayList<>();
+//        List<Facility> facilityList = facilityRepository.findAllByAdministZoneAndFacilityName("41210", "유동인구");
+//        facilityList.stream().forEach(facility -> {
+//            FacilityOpt facilityOpt = facilityOptRepository.findByFacilitySeqAndFacilityOptName(facility.getFacilitySeq(), "ip");
+//            if(facilityOpt != null) {
+//                facilityOptList.add(facilityOpt);
+//            }
+//        });
 //        List<Map<String, Object>> ipLists = new ArrayList<>();
 //        List<FacilityActiveLog> facilityActiveLogList = new ArrayList<>();
 //        FacilityActiveLog facilityActiveLog = new FacilityActiveLog();
@@ -294,14 +305,23 @@ public class GmScheduler {
 //                .forEach(facilityOpt -> {
 //                    Map<String,Object> maps = new HashMap<>();
 //                    maps.put(facilityOpt.getFacilityOptName(),facilityOpt.getFacilityOptValue());
+//                    maps.put("facilitySeq",facilityOpt.getFacilitySeq());
 //                    ipLists.add(maps);
 //                });
 //        IpCheckedUtil.ipCheckedList(ipLists);
 //
 //        ipLists.stream().forEach(f -> {
-//            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq(faSeq).
+//            FacilityActiveLog build = facilityActiveLog.builder().facilitySeq((Long) f.get("facilitySeq")).
 //                    facilityActiveCheck((boolean) f.get("active")).facilityActiveIp((String) f.get("ip")).build();
 //            facilityActiveLogList.add(build);
+//
+//            Facility facility = facilityRepository.findByFacilitySeq((Long) f.get("facilitySeq"));
+//            if ((boolean) f.get("active")) {
+//                facility.setAliveCheck(1L);
+//            } else {
+//                facility.setAliveCheck(0L);
+//            }
+//            facilityService.save(facility);
 //        });
 //        facilityActiveRepository.saveAll(facilityActiveLogList);
 //    }
@@ -404,5 +424,10 @@ public class GmScheduler {
         });
         facilityOptService.saveAll(opts);
 //        facilityOptService.saveAllByFacilityDataRequestDTO(list);
+    }
+
+    @PostConstruct
+    public void facilityScheduleInit() {
+        gmSchedulerService.setScheduler();
     }
 }
