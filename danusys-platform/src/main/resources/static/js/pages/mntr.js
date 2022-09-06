@@ -1291,7 +1291,7 @@ const rnbList = {
             target.find('.tab li[data-value=control]').hide();
             target.find(".area_right_scroll.select [data-group=stationStatus]").hide();
         } else if(theme === "smartBusStop") {
-            // target.find('.tab li[data-value=control]').show();
+            target.find('.tab li[data-value=control]').show();
             //개소 현황 & 시설물 제어
             facility.getListGeoJson({
                 "stationSeq": prop.stationSeq
@@ -1381,6 +1381,11 @@ const rnbList = {
 
         //시설물 현황
         if(theme == "smartPole"){
+            debugger;
+            target.find('.tab li[data-value=control]').removeClass('select');
+            target.find('div[data-value=control]').removeClass('select');
+            target.find('.tab li[data-value=info]').addClass('select');
+            target.find('div[data-value=info]').addClass('select');
             target.find('.tab li[data-value=fcltState]').show();
             const fcltList = prop.facilityList;
             console.log(fcltList);
@@ -1402,9 +1407,7 @@ const rnbList = {
                         "<span class='circle "+ color + "'></span>" +
                         "<span>" + f.facilityKindName +
                         "</span><input value='" + f.facilityId + "' type='text' disabled/></li>";
-                    if (f.facilityId !== undefined) {
                         listUl.append(li);
-                    }
                 });
             }
         } else {
