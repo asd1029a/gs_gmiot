@@ -218,6 +218,7 @@ public class StatisticsSqlProvider {
             String length = CommonUtil.validOneNull(paramMap, "length");
             String startDt = CommonUtil.validOneNull(paramMap, "startDt");
             String endDt = CommonUtil.validOneNull(paramMap, "endDt");
+            String optName = CommonUtil.validOneNull(paramMap, "optName");
             ArrayList administZone = CommonUtil.valiArrNull(paramMap, "administZone");
             String sigCode = CommonUtil.validOneNull(paramMap, "sigCode");
             ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
@@ -235,6 +236,7 @@ public class StatisticsSqlProvider {
                     "INNER JOIN v_facility_kind v1 on t2.facility_kind = v1.code_seq " +
                     "INNER JOIN v_station_kind v2 on t3.station_kind = v2.code_seq " +
                     "INNER JOIN v_administ v3 ON t2.administ_zone = v3.code_value");
+            WHERE("t1.insert_dt notnull and facility_opt_name = '" + optName + "'");
 
             if (!keyword.equals("")) {
                 WHERE("t3.station_name LIKE '%" + keyword + "%'");

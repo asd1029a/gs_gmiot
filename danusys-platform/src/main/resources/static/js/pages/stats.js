@@ -1,6 +1,14 @@
 const stats = {
     isOpt: false,
     type: "",
+    codeName: {
+        "smart_pole_event": "스마트 폴 이벤트",
+        "smart_busstop_event": "스마트 정류장 이벤트",
+        "EMS_EVENT": "스마트분전함 이벤트",
+        "DRONE_EVENT": "드론 관제 이벤트",
+        "floating_population": "유동인구",
+        "wh_use": "전력량",
+    },
     init: () => {
         const url = new URL(location.href);
         stats.type = url.searchParams.get("type");
@@ -16,9 +24,7 @@ const stats = {
             $("#" + typeCamel).addClass("on");
         }
 
-        stats.getEventKind(stats.type, (data) => {
-            $(".event_type").text(data.codeName);
-        });
+        $(".event_type").text(stats.codeName[stats.type]);
 
         stats.isOpt = stats.type.indexOf("event") + 1 ? false : true;
         if (stats.isOpt) {
@@ -130,6 +136,8 @@ const stats = {
                     'type': "POST",
                     'data': function (d) {
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
+                        param.optName = stats.type;
+
                         return JSON.stringify(param);
                     },
                     'dataSrc': function (result) {
