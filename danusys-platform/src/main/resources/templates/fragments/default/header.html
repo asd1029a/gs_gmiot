@@ -35,8 +35,7 @@
             </th:block>
         </ul>
         <ul class="util_menu">
-<!--            TODO: 사용자 이름 매핑-->
-            <li><i><img src="/images/default/utmenu_login.svg"></i>admin 님</li>
+            <li><i><img src="/images/default/utmenu_login.svg"></i><span sec:authentication="name"></span>님</li>
             <li id="logoutBtn"><i><img src="/images/default/utmenu_logout.svg"></i>로그아웃</li>
         </ul>
     </header>

@@ -149,8 +149,8 @@ public class StatisticsSqlProvider {
                     "     , max(urgent)  AS max_urgent" +
                     "     , min(caution) AS min_caution" +
                     "     , max(caution) AS max_caution" +
-                    "     , avg(urgent)  AS avg_urgent" +
-                    "     , avg(caution) AS avg_caution");
+                    "     , trunc(avg(urgent))  AS avg_urgent" +
+                    "     , trunc(avg(caution)) AS avg_caution");
             FROM("(" + subQry1.toString() + ")t");
             GROUP_BY("to_char(to_timestamp(x_axis, '" + timePattern + "'), '" + avgTimePattern + "')");
         }};
@@ -399,7 +399,7 @@ public class StatisticsSqlProvider {
             SELECT("to_char(to_timestamp(x_axis, '" + timePattern + "'), '" + avgTimePattern + "') AS x_axis" +
                     "     , min(value)  AS min_value" +
                     "     , max(value)  AS max_value" +
-                    "     , avg(value)  AS avg_value");
+                    "     , trunc(avg(value))  AS avg_value");
             FROM("(" + subQry1.toString() + ")t");
             GROUP_BY("to_char(to_timestamp(x_axis, '" + timePattern + "'), '" + avgTimePattern + "')");
         }};
