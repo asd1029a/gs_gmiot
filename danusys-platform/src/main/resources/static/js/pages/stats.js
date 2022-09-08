@@ -673,6 +673,14 @@ const stats = {
             charts.hideLoading();
             echarts.registerMap('map', JSON.parse(geoJson));
         });
+
+        let maxVal = 0;
+        let minVal = 0;
+        datas.forEach(v => {
+            maxVal = maxVal < v.value ? v.value : maxVal;
+            minVal = minVal > v.value ? v.value : minVal;
+        })
+
         const option = {
             backgroundColor: "#00000000",
             tooltip: {
@@ -682,6 +690,8 @@ const stats = {
             },
             visualMap: {
                 left: 'right',
+                min: minVal,
+                max: maxVal,
                 inRange: {
                     color: ['#313695', '#fee090', '#a50026']
                 },
