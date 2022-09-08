@@ -27,17 +27,36 @@ public class DashboardServiceImpl implements DashboardService {
         return resultMap;
     }
 
+    /*
+    광명       : 승객카운트 - 스마트 폴
+    영주       : 스마트버스정류장 통신장애
+    부산남구    : 스마트폴 통신장애
+    */
     @Override
     public EgovMap getStatusCnt1(Map<String, Object> paramMap) throws Exception {
         EgovMap resultMap = new EgovMap();
+        List<EgovMap> resultList = new ArrayList<EgovMap>();
 
         paramMap.put("codeSig",codeSig);
-        resultMap.put("data", commonMapper.selectList(dsp.selectStatusCnt1(paramMap)));
+        switch (codeSig) {
+            case "26290":
+            case "47210":
+                resultList = commonMapper.selectList(dsp.selectStatusCnt1(paramMap));
+                break;
+            case "41210":
+                paramMap.put("stationKind",62); //버스
+                paramMap.put("subName","스마트 버스정류장 승객 카운트(1시간내)");
+                resultList = commonMapper.selectList(dsp.selectKindStatusCnt(paramMap));
+                break;
+        }
+
+        //resultMap.put("data", commonMapper.selectList(dsp.selectStatusCnt1(paramMap)));
+        resultMap.put("data",resultList);
         return resultMap;
     }
 
     /*
-    광명       : 스마트버스정류장 통신장애
+    광명       : 승객카운트 - 스마트 폴
     영주       : 스마트버스정류장 통신장애
     부산남구    : 스마트폴 통신장애
     */
@@ -49,6 +68,10 @@ public class DashboardServiceImpl implements DashboardService {
         paramMap.put("codeSig",codeSig);
         switch (codeSig) {
             case "41210":
+                paramMap.put("stationKind",104);   //폴
+                paramMap.put("subName","스마트 폴 유동인구 카운트(1시간내)");
+                resultList = commonMapper.selectList(dsp.selectKindStatusCnt(paramMap));
+                break;
             case "47210":
                 paramMap.put("stationKind",62);
                 resultList = commonMapper.selectList(dsp.selectTroubleFacility(paramMap));

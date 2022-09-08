@@ -26,6 +26,28 @@ public class DashboardSqlProvider {
         return sql.toString();
     }
 
+    public String selectKindStatusCnt(Map<String, Object> paramMap) {
+        String codeSig = CommonUtil.validOneNull(paramMap, "codeSig");
+        String stationKind = CommonUtil.validOneNull(paramMap, "stationKind");
+        String subName = CommonUtil.validOneNull(paramMap, "subName");
+        SQL sql = new SQL() {{
+            SELECT("ts.station_seq" +
+                    ", ts.station_name as name" +
+                    ", '"+subName+"' as sub_name" +
+                    ", coalesce(SUM(tfo.facility_opt_value::integer),0) as value" +
+                    ", '명' as unit");
+            FROM("t_station ts");
+            INNER_JOIN("t_facility tf ON ts.station_seq = tf.station_seq");
+            INNER_JOIN("t_facility_opt tfo ON tf.facility_seq = tfo.facility_seq");
+            WHERE("ts.administ_zone LIKE '"+codeSig+"%'");
+            WHERE("tfo.facility_opt_name = 'floating_population'");
+            WHERE("ts.station_kind = '"+stationKind+"'");
+            WHERE("to_char(tfo.insert_dt,'YYYYMMDDHH24') between to_char(now() - interval '1 hour','YYYYMMDDHH24') and to_char(now(),'YYYYMMDDHH24')");
+            GROUP_BY("ts.station_seq");
+        }};
+        return sql.toString();
+    }
+
     public String selectTroubleFacility(Map<String, Object> paramMap) {
         String codeSig = CommonUtil.validOneNull(paramMap, "codeSig");
         String stationKind = CommonUtil.validOneNull(paramMap, "stationKind");
