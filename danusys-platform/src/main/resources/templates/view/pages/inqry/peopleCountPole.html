@@ -17,13 +17,8 @@
             <h6>이용자 수 검색</h6>
             <form>
                 <input type="hidden" name="optName" value="floating_population">
+                <input type="hidden" name="stationKind" value="smart_pole">
                 <div>
-                    <p>개소 종류</p>
-                    <dl class="dropdown_checkbox" data-selectbox-type="stationKind">
-                        <dt class="checkbox_title select_title">개소 종류</dt>
-                        <dd class="checkbox_list list" style="display: none;">
-                        </dd>
-                    </dl>
                     <p>행정구역</p>
                     <dl class="dropdown_checkbox" data-selectbox-type="administZone" th:attr="data-selectbox-sub-type=${@environment.getProperty('danusys.area.code.sig')}">
                         <dt class="checkbox_title select_title">행정구역</dt>
@@ -51,7 +46,7 @@
         <article class="search_list">
             <div class="article_title">
                 <dl class="title">
-                    <dt>이용자 수 목록</dt>
+                    <dt>유동인구 수 목록</dt>
                     <dd><span class="count"></span>건</dd>
                 </dl>
             </div>
@@ -64,7 +59,7 @@
                         <th>개소 이름</th>
                         <th>행정구역</th>
                         <th>개소 주소</th>
-                        <th>총 이용자 수</th>
+                        <th>총 유동인구 수</th>
                     </tr>
                     </thead>
                 </table>

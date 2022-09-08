@@ -77,7 +77,8 @@ $(document).ready(() => {
         } else if(path === "/pages/inqry/event2") {
             // event.eventHandler($('#troubleEventTable'),"trouble");
             // event.create($('#troubleEventTable'),"trouble");
-        } else if(path === "/pages/inqry/peopleCount") {
+        } else if(path === "/pages/inqry/peopleCountBus"
+            || path === "/pages/inqry/peopleCountPole") {
             peopleCount.eventHandler();
             peopleCount.create();
         } else if(path === "/pages/inqry/electricityLampWalk"

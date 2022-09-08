@@ -24,8 +24,11 @@
                     <!--<li th:if="${municipality == '41210000'}" id="busStopElectricity"><a href="/pages/inqry/busStopElectricity">전력량 조회</a></li>-->
                 </ul>
             </li>
-            <li th:if="${municipality == '41210000'}" id="peopleCount">
-                <a href="/pages/inqry/peopleCount">유동인구 조회</a>
+            <li th:if="${municipality == '41210000'}" id="peopleCountBus">
+                <a href="/pages/inqry/peopleCountBus">스마트 정류장 이용자 조회</a>
+            </li>
+            <li th:if="${municipality == '41210000'}" id="peopleCountPole">
+                <a href="/pages/inqry/peopleCountPole">스마트 폴 유동인구 조회</a>
             </li>
             <li th:if="${municipality == '41210000'}" id="electricity" class="multi">
                 <a href="#electricity">전력량 조회</a>
