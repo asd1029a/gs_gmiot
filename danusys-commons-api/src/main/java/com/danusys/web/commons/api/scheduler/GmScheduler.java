@@ -162,6 +162,13 @@ public class GmScheduler {
                                         .facilityOptValue(facilityOptValue)
                                         .facilityOptType(FACILITY_OPT_TYPE_DATA)
                                         .build());
+                            } else if ("wattage".equals(facilityOptName) || "sunlight_wattage".equals(facilityOptName)) {
+                                facilityOptService.save(FacilityOpt.builder()
+                                        .facilitySeq(facility.getFacilitySeq())
+                                        .facilityOptName(facilityOptName)
+                                        .facilityOptValue(facilityOptValue)
+                                        .facilityOptType(FACILITY_OPT_TYPE_ACCUMULATE_DATA)
+                                        .build());
                             } else {
                                 facilityOpt.setFacilityOptValue(facilityOptValue);
                                 facilityOptService.save(facilityOpt);
