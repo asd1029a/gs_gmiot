@@ -134,6 +134,7 @@ $(document).ready(() => {
         }
         let type = initMenu[window.siGunCode];
         $('.mntr_container .lnb ul li[data-value='+type+']').trigger("click");
+        $('.mntr_container .menu_fold .tab li.active').trigger("click");
     }
     // 대시보드 (임시)
     else if(path === "/pages/dashboard/dashboard_facility") {

@@ -114,7 +114,7 @@ public class UserInGroupService {
         List<Integer> userSeqList = (List<Integer>) paramMap.get("userSeqList");
         List<Integer> userGroupSeqList = (List<Integer>) paramMap.get("userGroupSeqList");
         List<UserInGroup> userInGroupList = new ArrayList<>();
-        int insertUserSeq = LoginInfoUtil.getUserDetails().getUserSeq();
+        int insertUserSeq =LoginInfoUtil.getUserDetails().getUserSeq();
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userSeqList.forEach(userSeq -> {

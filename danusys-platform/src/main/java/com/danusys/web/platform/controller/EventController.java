@@ -73,4 +73,10 @@ public class EventController {
         System.out.println(seq);
         return ResponseEntity.ok().body(eventService.getOne(seq));
     }
+
+    @PatchMapping
+    public ResponseEntity<?> mod(@RequestBody Map<String, Object> paramMap) throws Exception {
+        ResponseEntity<?> res = null;
+        return ResponseEntity.ok().body(eventService.mod(paramMap));
+    }
 }

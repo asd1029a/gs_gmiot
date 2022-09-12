@@ -28,7 +28,7 @@ public class EventSqlProvider {
                     "t1.event_seq, v1.code_value as event_kind, v2.code_value as event_grade" +
                     ", v3.code_value as event_proc_stat, v3.code_name as event_proc_stat_name, t1.event_address" +
                     ", t1.event_manager, t1.event_mng_dt, t1.event_mng_content, t1.insert_dt, t1.station_seq" +
-                    ", t1.facility_seq, t1.event_message" +
+                    ", t1.facility_seq, t1.event_message, t1.event_end_manager" +
                     ", CASE WHEN t1.event_start_dt IS NOT NULL" +
                     " THEN to_char(t1.event_start_dt, 'YYYY-MM-DD HH24:MI:SS')" +
                     " ELSE '정보없음' END AS event_start_dt" +
@@ -112,7 +112,7 @@ public class EventSqlProvider {
                     ", to_char(t1.event_start_dt, 'YYYY-MM-DD HH24:MI:SS') event_start_dt" +
                     ", to_char(t1.event_end_dt, 'YYYY-MM-DD HH24:MI:SS') event_end_dt" +
                     ", to_char(t1.event_mng_dt, 'YYYY-MM-DD HH24:MI:SS') event_mng_dt" +
-                    ", t1.event_manager, t1.event_mng_content, to_char(t1.insert_dt, 'YYYY-MM-DD HH24:MI:SS') insert_dt" +
+                    ", t1.event_manager, t1.event_mng_content, t1.event_end_manager, to_char(t1.insert_dt, 'YYYY-MM-DD HH24:MI:SS') insert_dt" +
                     ", t2.station_name, t2.station_kind, t2.administ_zone, t2.address, t2.station_image" +
                     ", to_char(t2.station_compet_dt, 'YYYY-MM-DD HH24:MI:SS') station_compet_dt, t2.latitude, t2.longitude" +
                     ", v1.code_name AS administ_zone_name");
@@ -123,4 +123,24 @@ public class EventSqlProvider {
         }};
         return sql.toString();
     }
+
+    public String updateQry(Map<String, Object> paramMap) {
+        String eventSeq = paramMap.get("eventSeq").toString();
+        SQL sql = new SQL() {{
+            UPDATE("t_event");
+            SET(SqlUtil.getMultiSetStr(paramMap));
+            WHERE("event_seq = " + eventSeq);
+        }};
+        return sql.toString();
+    }
+
+    public String selectProcStatCodeSeqQry(String codeValue){
+        SQL sql = new SQL() {{
+            SELECT("code_seq");
+            FROM("v_event_proc_stat");
+            WHERE("code_value = " + codeValue + "::text");
+        }};
+        return sql.toString();
+    }
+
 }

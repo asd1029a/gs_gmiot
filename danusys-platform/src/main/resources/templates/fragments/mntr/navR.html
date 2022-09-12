@@ -757,7 +757,7 @@
                         <dd>이벤트 완료</dd>
                     </dl>
                 </div>
-                <div class="process_contents step4" style="display: none;">
+                <div class="process_contents step9" style="display: none;">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>
@@ -928,7 +928,7 @@
                         <dd>이벤트 완료</dd>
                     </dl>
                 </div>
-                <div class="process_contents step2" style="display: none;">
+                <div class="process_contents step2">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>
@@ -946,7 +946,7 @@
                         <dd>이벤트 완료</dd>
                     </dl>
                 </div>
-                <div class="process_contents step3" style="display: none;">
+                <div class="process_contents step3">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>
@@ -964,7 +964,7 @@
                         <dd>이벤트 완료</dd>
                     </dl>
                 </div>
-                <div class="process_contents step4" style="display: none;">
+                <div class="process_contents step9">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>
@@ -983,7 +983,6 @@
                     </dl>
                 </div>
                 <ul class="button">
-                    <li data-value="net">투망 감시</li>
                     <li data-value="action">조치사항 입력/수정</li>
                     <li data-value="eventEnd">이벤트 종료</li>
                 </ul>
@@ -1005,42 +1004,42 @@
                         </li>
                         <li>
                             <span>이벤트 ID</span>
-                            <input data-value="" type="text" placeholder="이벤트 ID">
+                            <input data-value="eventSeq" type="text" placeholder="이벤트 ID" disabled>
                         </li>
                         <li>
                             <span>이벤트 종류</span>
                             <input data-value="eventKindName" type="text" placeholder="이벤트 종류" disabled>
                         </li>
                         <li>
-                            <span>개소 종류</span> <!--스마트정류장, 폴, 분전함, 격납고 -->
-                            <input data-value="" type="text" placeholder="스마트 정류장" >
+                            <span>개소명</span> <!--스마트정류장, 폴, 분전함, 격납고 -->
+                            <input data-value="stationName" type="text" placeholder="개소명" disabled>
                         </li>
                         <li>
-                            <span>개소 ID / 개소명</span>
-                            <input data-value="stationSeq" type="text" placeholder="개소 ID / 개소명" disabled>
+                            <span>개소 ID</span>
+                            <input data-value="stationSeq" type="text" placeholder="개소 ID" disabled>
                         </li>
-                        <li>
+                        <!--<li>
                             <span>개소 주소</span>
                             <input data-value="" type="text" placeholder="개소 주소">
-                        </li>
+                        </li>-->
                         <li>
                             <span>행정 구역</span>
-                            <input data-value="administZoneName" type="text" placeholder="정왕동" >
+                            <input data-value="administZoneName" type="text" placeholder="행정 구역" disabled>
                         </li>
                         <li>
                             <span>이벤트 발생시각</span>
                             <input data-value="insertDt" type="text" placeholder="이벤트 발생시각" disabled>
                         </li>
                         <!--시설물 장애 이벤트일시-->
-                        <li>
+                        <!--<li>
                             <span>유지보수 담당자</span>
                             <input data-value="" type="text" placeholder="민희언" >
-                        </li>
+                        </li>-->
                         <!--시설물 장애 이벤트일시-->
-                        <li>
+                        <!--<li>
                             <span>유지보수 업체 연락처</span>
                             <input data-value="" type="text" placeholder="1234-5678" >
-                        </li>
+                        </li>-->
                     </ul>
                 </div>
                 <dl class="area_title">
@@ -1050,15 +1049,15 @@
                     <ul>
                         <li>
                             <span>조치자</span>
-                            <input data-value="" type="text" placeholder="현재 온도">
+                            <input data-value="eventManager" type="text" placeholder="조치자" disabled>
                         </li>
                         <li>
                             <span>조치 일시</span>
-                            <input data-value="" type="text" placeholder="현재 전압">
+                            <input data-value="eventMngDt" type="text" placeholder="조치 일시" disabled>
                         </li>
                         <li>
                             <span>조치 내용</span>
-                            <input data-value="" type="text" placeholder="현재 전류">
+                            <input data-value="eventMngContent" type="text" placeholder="조치 내용" disabled>
                         </li>
                     </ul>
                 </div>
@@ -1068,16 +1067,12 @@
                 <div class="area_right_text">
                     <ul>
                         <li>
-                            <span>조치자</span>
-                            <input data-value="" type="text" placeholder="조치자 이름">
+                            <span>종료자</span>
+                            <input data-value="eventEndManager" type="text" placeholder="종료자 이름" disabled>
                         </li>
                         <li>
                             <span>종료일시</span>
-                            <input data-value="" type="text" placeholder="종료일시">
-                        </li>
-                        <li>
-                            <span>이벤트 종료 내용</span>
-                            <input data-value="" type="text" placeholder="이벤트 종료 내용">
+                            <input data-value="eventEndDt" type="text" placeholder="종료일시" disabled>
                         </li>
                     </ul>
                 </div>
@@ -1118,7 +1113,7 @@
                         <dd>대응중</dd>
                     </dl>
                 </div>
-                <div class="process_contents step2" style="display: none;">
+                <div class="process_contents step2">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>
@@ -1132,7 +1127,7 @@
                         <dd>대응 중</dd>
                     </dl>
                 </div>
-                <div class="process_contents step3" style="display: none;">
+                <div class="process_contents step3">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>
@@ -1146,7 +1141,7 @@
                         <dd>대응 중</dd>
                     </dl>
                 </div>
-                <div class="process_contents step4" style="display: none;">
+                <div class="process_contents step9">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>
@@ -1285,7 +1280,7 @@
                         <dd>이벤트 종료</dd>
                     </dl>
                 </div>
-                <div class="process_contents step2" style="display: none;">
+                <div class="process_contents step2">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>
@@ -1303,7 +1298,7 @@
                         <dd>이벤트 종료</dd>
                     </dl>
                 </div>
-                <div class="process_contents step3" style="display: none;">
+                <div class="process_contents step3">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>
@@ -1321,7 +1316,7 @@
                         <dd>이벤트 종료</dd>
                     </dl>
                 </div>
-                <div class="process_contents step4" style="display: none;">
+                <div class="process_contents step9">
                     <dl class="on">
                         <dt><i><img src="/images/default/processIcon01.svg"></i></dt>
                         <dd>이벤트 발생</dd>

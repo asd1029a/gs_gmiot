@@ -207,6 +207,18 @@ const event = {
                 event.hidePopup();
             });
     },
+    modUnFormProc : (pSeq, obj, pCallback) => {
+        $.ajax({
+            url : "/event"
+            , type: "PATCH"
+            , data : JSON.stringify(
+                Object.assign(obj, {"eventSeq" : pSeq})
+            )
+            , contentType : "application/json; charset=utf-8"
+        }).done((result) => {
+            pCallback(result);
+        });
+    },
     delProc : ($target, pEventType, pSeq) => {
         comm.ajaxPost({
                 url : "/event"
