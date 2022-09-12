@@ -24,6 +24,21 @@
                     <!--<li th:if="${municipality == '41210000'}" id="busStopElectricity"><a href="/pages/inqry/busStopElectricity">전력량 조회</a></li>-->
                 </ul>
             </li>
+            <li th:if="${municipality == '41210000'}" id="peopleCountBus">
+                <a href="/pages/inqry/peopleCountBus">스마트 정류장 이용자 조회</a>
+            </li>
+            <li th:if="${municipality == '41210000'}" id="peopleCountPole">
+                <a href="/pages/inqry/peopleCountPole">스마트 폴 유동인구 조회</a>
+            </li>
+            <li th:if="${municipality == '41210000'}" id="electricity" class="multi">
+                <a href="#electricity">전력량 조회</a>
+                <ul class="accordion_sub_menu">
+                    <li id="electricityBus"><a href="/pages/inqry/electricityBus">스마트 버스 전력량</a></li>
+                    <li id="electricitySunlight"><a href="/pages/inqry/electricitySunlight">태양광 전력량</a></li>
+                    <li id="electricityLampWalk"><a href="/pages/inqry/electricityLampWalk">스마트 보안등 전력량</a></li>
+                    <li id="electricityBikeCharging"><a href="/pages/inqry/electricityBikeCharging">자전거 충전소 전력량</a></li>
+                </ul>
+            </li>
             <li th:if="${municipality == '45210000'}" id="smartCabinet" class="multi">
                 <a href="#smartCabinet">스마트 분전반</a>
                 <ul class="accordion_sub_menu">

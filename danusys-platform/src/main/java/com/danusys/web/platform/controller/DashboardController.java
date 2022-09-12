@@ -21,14 +21,18 @@ public class DashboardController {
         return ResponseEntity.ok().body(dashboardService.getDroneData(paramMap));
     }
 
-    //승객카운트
+     /*
+    광명       : 승객카운트 - 스마트버스정류장
+    영주       : 승객카운트 전체
+    부산남구    : 승객카운트 전체
+    */
     @PostMapping(value = "/getStatusCnt1")
     public ResponseEntity<EgovMap> getStatusCnt1(@RequestBody Map<String, Object> paramMap) throws Exception {
         return ResponseEntity.ok().body(dashboardService.getStatusCnt1(paramMap));
     }
 
     /*
-    광명       : 스마트버스정류장 통신장애
+    광명       : 승객카운트 - 스마트 폴
     영주       : 스마트버스정류장 통신장애
     부산남구    : 스마트폴 통신장애
     */

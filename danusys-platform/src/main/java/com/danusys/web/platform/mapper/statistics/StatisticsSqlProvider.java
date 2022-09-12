@@ -149,14 +149,17 @@ public class StatisticsSqlProvider {
                     "     , max(urgent)  AS max_urgent" +
                     "     , min(caution) AS min_caution" +
                     "     , max(caution) AS max_caution" +
-                    "     , avg(urgent)  AS avg_urgent" +
-                    "     , avg(caution) AS avg_caution");
+                    "     , trunc(avg(urgent))  AS avg_urgent" +
+                    "     , trunc(avg(caution)) AS avg_caution");
             FROM("(" + subQry1.toString() + ")t");
             GROUP_BY("to_char(to_timestamp(x_axis, '" + timePattern + "'), '" + avgTimePattern + "')");
         }};
 
         SQL dateSql = new SQL() {{
-            SELECT("date_t.t_date AS x_axis, t.min_urgent, t.max_urgent, t.min_caution, t.max_caution, t.avg_urgent, t.avg_caution");
+            SELECT("date_t.t_date AS x_axis, " +
+                    "coalesce(t.min_urgent, 0) min_urgent, coalesce(t.max_urgent, 0) max_urgent, " +
+                    "coalesce(t.avg_urgent, 0) avg_urgent, coalesce(t.min_caution, 0) min_caution, " +
+                    "coalesce(t.max_caution, 0) max_caution, coalesce(t.avg_caution, 0) avg_caution");
             // 시간대 생성
             String startDtT = "";
             String endDtT = "";
@@ -215,6 +218,7 @@ public class StatisticsSqlProvider {
             String length = CommonUtil.validOneNull(paramMap, "length");
             String startDt = CommonUtil.validOneNull(paramMap, "startDt");
             String endDt = CommonUtil.validOneNull(paramMap, "endDt");
+            String optName = CommonUtil.validOneNull(paramMap, "optName");
             ArrayList administZone = CommonUtil.valiArrNull(paramMap, "administZone");
             String sigCode = CommonUtil.validOneNull(paramMap, "sigCode");
             ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
@@ -232,6 +236,7 @@ public class StatisticsSqlProvider {
                     "INNER JOIN v_facility_kind v1 on t2.facility_kind = v1.code_seq " +
                     "INNER JOIN v_station_kind v2 on t3.station_kind = v2.code_seq " +
                     "INNER JOIN v_administ v3 ON t2.administ_zone = v3.code_value");
+            WHERE("t1.insert_dt notnull and facility_opt_name = '" + optName + "'");
 
             if (!keyword.equals("")) {
                 WHERE("t3.station_name LIKE '%" + keyword + "%'");
@@ -394,7 +399,7 @@ public class StatisticsSqlProvider {
             SELECT("to_char(to_timestamp(x_axis, '" + timePattern + "'), '" + avgTimePattern + "') AS x_axis" +
                     "     , min(value)  AS min_value" +
                     "     , max(value)  AS max_value" +
-                    "     , avg(value)  AS avg_value");
+                    "     , trunc(avg(value))  AS avg_value");
             FROM("(" + subQry1.toString() + ")t");
             GROUP_BY("to_char(to_timestamp(x_axis, '" + timePattern + "'), '" + avgTimePattern + "')");
         }};

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/layout_inqry"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<th:block layout:fragment="content">
+    <h4>
+        <i><img src="/images/default/inquiryTitle.svg"></i>
+        <span>조회/관리</span>
+        <i><img src="/images/default/settingArrowNext.svg"></i>
+        <span>스마트보안등 전력량 조회</span>
+    </h4>
+    <section class="inquiry_content">
+        <article class="search_form" id="searchForm">
+            <h6>전력량 검색</h6>
+            <form>
+                <input type="hidden" name="optName" value="whUse">
+                <input type="hidden" name="facilityKind" value="lamp_walk">
+                <div>
+                    <p>행정구역</p>
+                    <dl class="dropdown_checkbox" data-selectbox-type="administZone" th:attr="data-selectbox-sub-type=${@environment.getProperty('danusys.area.code.sig')}">
+                        <dt class="checkbox_title select_title">행정구역</dt>
+                        <dd class="checkbox_list list" style="display: none;">
+                        </dd>
+                    </dl>
+                </div>
+                <div>
+                    <dl class="date_set">
+                        <dt>발생 기간</dt>
+                        <dd><input type="text" id="startDt" placeholder="날짜를 입력하세요" name="startDt" class="input_date"></dd>
+                        <span>부터</span>
+                        <dd><input type="text" id="endDt" placeholder="날짜를 입력하세요" name="endDt" class="input_date"></dd>
+                        <span>까지</span>
+                    </dl>
+                    <p>검색어 입력</p>
+                    <ul class="button">
+                        <li class="input"><input type="text" name="keyword" placeholder="개소명을 입력하세요." onkeydown="if(event.keyCode==13){stations.create();}"></li>
+                        <li id="resetFormBtn"><i><img src="/images/default/return.svg"></i>검색조건 초기화</li>
+                        <li id="searchBtn"><i><img src="/images/default/search.svg"></i>검색</li>
+                    </ul>
+                </div>
+            </form>
+        </article>
+        <article class="search_list">
+            <div class="article_title">
+                <dl class="title">
+                    <dt>전력량 목록</dt>
+                    <dd><span class="count"></span>건</dd>
+                </dl>
+            </div>
+            <div class="search_table">
+                <table id="electricityTable">
+                    <thead>
+                    <tr>
+                        <th>고유 번호</th>
+                        <th>개소 종류</th>
+                        <th>개소 이름</th>
+                        <th>시설물 이름</th>
+                        <th>행정구역</th>
+                        <th>개소 주소</th>
+                        <th>전력량(W)</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </article>
+    </section>
+</th:block>
+</html>

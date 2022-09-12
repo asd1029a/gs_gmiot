@@ -1,31 +1,37 @@
 const stats = {
     isOpt: false,
     type: "",
+    codeName: {
+        "smart_pole_event": "스마트 폴 이벤트",
+        "smart_busstop_event": "스마트 정류장 이벤트",
+        "EMS_EVENT": "스마트분전함 이벤트",
+        "DRONE_EVENT": "드론 관제 이벤트",
+        "floating_population": "유동인구",
+        "wh_use": "전력량",
+    },
     init: () => {
         const url = new URL(location.href);
         stats.type = url.searchParams.get("type");
         const typeCamel = stringFunc.camelize(stats.type);
 
-        if($("#" + typeCamel).parents("li").hasClass("multi")){
+        if ($("#" + typeCamel).parents("li").hasClass("multi")) {
             $("#" + typeCamel).parents("li").addClass("on");
             $("#" + typeCamel).addClass("on");
-        }else {
+        } else {
             $("h4 span").eq(1).remove();
             $("h4 i").eq(1).remove();
 
             $("#" + typeCamel).addClass("on");
         }
 
-        stats.getEventKind(stats.type, (data) => {
-            $(".event_type").text(data.codeName);
-        });
+        $(".event_type").text(stats.codeName[stats.type]);
 
         stats.isOpt = stats.type.indexOf("event") + 1 ? false : true;
-        if(stats.isOpt){
+        if (stats.isOpt) {
             $("[data-mode=event]").hide();
             stats.createOptTable();
             stats.setOptChart();
-        }else{
+        } else {
             $("[data-mode=opt]").hide();
             stats.createTable();
             stats.setChart();
@@ -33,10 +39,10 @@ const stats = {
     },
     eventHandler: () => {
         $("#searchBtn").on('click', (e) => {
-            if(stats.isOpt){
+            if (stats.isOpt) {
                 stats.createOptTable();
                 stats.setOptChart();
-            }else{
+            } else {
                 stats.createTable();
                 stats.setChart();
             }
@@ -50,9 +56,9 @@ const stats = {
                 $target.classList.add("on");
                 const chartNm = $target.parentElement.id;
 
-                if(stats.isOpt){
+                if (stats.isOpt) {
                     stats.setOptChart(chartNm);
-                }else{
+                } else {
                     stats.setChart(chartNm);
                 }
             }
@@ -69,7 +75,7 @@ const stats = {
             {data: "eventStartDt", name: "이벤트 발생일시"},
         ]
 
-        for(col of colunms){
+        for (col of colunms) {
             $("thead tr").append(`<th>${col.name}</th>`);
         }
 
@@ -113,7 +119,7 @@ const stats = {
             {data: "insertDt", name: "기록 일시"},
         ];
 
-        for(col of colunms){
+        for (col of colunms) {
             $("thead tr").append(`<th>${col.name}</th>`);
         }
 
@@ -130,6 +136,8 @@ const stats = {
                     'type': "POST",
                     'data': function (d) {
                         const param = $.extend({}, d, $("#searchForm form").serializeJSON());
+                        param.optName = stats.type;
+
                         return JSON.stringify(param);
                     },
                     'dataSrc': function (result) {
@@ -265,44 +273,20 @@ const stats = {
         datas.forEach(v => {
             data[0].data.push({
                 x: v.xAxis,
-                y: [v.minUrgent, v.maxUrgent],
-                avg: v.avgUrgent
+                y: [v.minUrgent, v.minUrgent, v.maxUrgent, v.maxUrgent],
+                avgVal: v.avgUrgent
             });
             data[1].data.push({
                 x: v.xAxis,
-                y: [v.minCaution, v.maxCaution],
-                avg: v.avgCaution
+                y: [v.minCaution, v.minCaution, v.maxCaution, v.maxCaution],
+                avgVal: v.avgCaution
             });
         });
 
-        let options = {
-            chart: {
-                type: 'rangeBar',
-                height: "80%",
-                background: "#00000000",
-                zoom: {
-                    enabled: false
-                },
-                toolbar: {
-                    show: false
-                },
-            },
-            theme: {
-                mode: "dark"
-            },
-            colors: ['#f04242', '#f9a825'],
-            fill: {
-                opacity: 0.9
-            },
-            plotOptions: {
-                bar: {
-                    columnWidth: "45%"
-                }
-            },
+        const options = {
             tooltip: {
-                marker: true,
+                enabled: true,
                 custom: function ({series, seriesIndex, dataPointIndex, w}) {
-                    // console.log({series, seriesIndex, dataPointIndex, w});
                     const g = w.globals;
                     const dataUrgent = w.config.series[0].data[dataPointIndex];
                     const dataCaution = w.config.series[1].data[dataPointIndex];
@@ -314,7 +298,7 @@ const stats = {
                                 </div>
                                 <div>
                                     <div>최대: ${dataUrgent.y[1]}</div>
-                                    <div>평균: ${dataUrgent.avg}</div>
+                                    <div>평균: ${dataUrgent.avgVal}</div>
                                     <div>최소: ${dataUrgent.y[0]}</div>
                                 </div>
                             </div>
@@ -324,7 +308,7 @@ const stats = {
                                 </div>
                                 <div>
                                     <div>최대: ${dataCaution.y[1]}</div>
-                                    <div>평균: ${dataCaution.avg}</div>
+                                    <div>평균: ${dataCaution.avgVal}</div>
                                     <div>최소: ${dataCaution.y[0]}</div>
                                 </div>
                             </div>`;
@@ -332,17 +316,14 @@ const stats = {
                     return text;
                 }
             },
-            xaxis: {
-                tickPlacement: "category"
-            },
-            yaxis: {
-                tickAmount: 10,
-                axisTicks: {}
-            },
             dataLabels: {
                 enabled: true,
+                offsetY: -10,
+                background: {
+                    opacity: 0.2
+                },
                 formatter: function (val, {series, seriesIndex, dataPointIndex, w}) {
-                    const label = w.config.series[seriesIndex].data[dataPointIndex].avg;
+                    const label = w.config.series[seriesIndex].data[dataPointIndex].avgVal;
                     return label !== null ? label : "";
                 },
             },
@@ -351,6 +332,49 @@ const stats = {
                 text: "데이터가 없습니다.",
                 align: 'center',
                 verticalAlign: 'middle',
+            },
+            chart: {
+                type: 'candlestick',
+                height: "80%",
+                toolbar: false,
+                background: "#00000000",
+                zoom: {
+                    enabled: false
+                },
+                toolbar: {
+                    show: false
+                },
+            },
+            colors: ['#f04242', '#f9a825'],
+            stroke: {
+                colors: ['#f04242', '#f9a825']
+            },
+            theme: {
+                mode: "dark"
+            },
+            fill: {
+                opacity: 0.9
+            },
+            xaxis: {
+                tickPlacement: "category",
+                tooltip: {
+                    enabled: false
+                }
+            },
+            yaxis: {
+                tickAmount: 5,
+                tooltip: {
+                    enabled: false
+                }
+            },
+            plotOptions: {
+                candlestick: {
+                    colors: [{
+                        upward: "#f04242"
+                    }, {
+                        upward: "#f9a825"
+                    }],
+                },
             }
         };
 
@@ -549,39 +573,29 @@ const stats = {
         datas.forEach(v => {
             data[0].data.push({
                 x: v.xAxis,
-                y: [v.minValue, v.maxValue],
-                avg: v.avgValue
+                y: [v.minValue, v.minValue, v.maxValue, v.maxValue],
+                avgVal: v.avgValue
             });
         });
 
-        let options = {
-            chart: {
-                type: 'rangeBar',
-                height: "80%",
-                background: "#00000000",
-                zoom: {
-                    enabled: false
+        const options = {
+            dataLabels: {
+                enabled: true,
+                offsetY: -10,
+                background: {
+                    opacity: 0.2
                 },
-                toolbar: {
-                    show: false
+                formatter: function (val, {series, seriesIndex, dataPointIndex, w}) {
+                    const label = w.config.series[0].data[dataPointIndex].avgVal;
+                    return label !== null ? label : "";
                 },
-            },
-            theme: {
-                mode: "dark"
-            },
-            colors: ['#f04242'],
-            fill: {
-                opacity: 0.9
-            },
-            plotOptions: {
-                bar: {
-                    columnWidth: "45%"
-                }
             },
             tooltip: {
+                enabled: true,
                 marker: true,
+                enabledOnSeries: [1],
                 custom: function ({series, seriesIndex, dataPointIndex, w}) {
-                    // console.log({series, seriesIndex, dataPointIndex, w});
+                    console.log({series, seriesIndex, dataPointIndex, w});
                     const g = w.globals;
                     const dataUrgent = w.config.series[0].data[dataPointIndex];
 
@@ -592,7 +606,7 @@ const stats = {
                                     </div>
                                     <div>
                                         <div>최대: ${dataUrgent.y[1]}</div>
-                                        <div>평균: ${dataUrgent.avg}</div>
+                                        <div>평균: ${dataUrgent.avgVal}</div>
                                         <div>최소: ${dataUrgent.y[0]}</div>
                                     </div>
                                 </div>`;
@@ -600,25 +614,46 @@ const stats = {
                     return text;
                 }
             },
-            xaxis: {
-                tickPlacement: "category"
-            },
-            yaxis: {
-                tickAmount: 10,
-                axisTicks: {}
-            },
-            dataLabels: {
-                enabled: true,
-                formatter: function (val, {series, seriesIndex, dataPointIndex, w}) {
-                    const label = w.config.series[seriesIndex].data[dataPointIndex].avg;
-                    return label !== null ? label : "";
-                },
-            },
             series: data,
             noData: {
                 text: "데이터가 없습니다.",
                 align: 'center',
                 verticalAlign: 'middle',
+            },
+            chart: {
+                type: 'candlestick',
+                height: "80%",
+                toolbar: false,
+                background: "#00000000",
+                zoom: {
+                    enabled: false
+                },
+                toolbar: {
+                    show: false
+                },
+            },
+            colors: ["#f04242"],
+            theme: {
+                mode: "dark"
+            },
+            fill: {
+                opacity: 0.9
+            },
+            xaxis: {
+                tickPlacement: "category"
+            },
+            yaxis: {
+                tickAmount: 5,
+                tooltip: {
+                    enabled: false
+                }
+            },
+            plotOptions: {
+                candlestick: {
+                    colors: {
+                        upward: "#f04242"
+                    },
+                }
             }
         };
 
@@ -638,6 +673,14 @@ const stats = {
             charts.hideLoading();
             echarts.registerMap('map', JSON.parse(geoJson));
         });
+
+        let maxVal = 0;
+        let minVal = 0;
+        datas.forEach(v => {
+            maxVal = maxVal < v.value ? v.value : maxVal;
+            minVal = minVal > v.value ? v.value : minVal;
+        })
+
         const option = {
             backgroundColor: "#00000000",
             tooltip: {
@@ -647,6 +690,8 @@ const stats = {
             },
             visualMap: {
                 left: 'right',
+                min: minVal,
+                max: maxVal,
                 inRange: {
                     color: ['#313695', '#fee090', '#a50026']
                 },
