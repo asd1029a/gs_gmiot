@@ -387,7 +387,6 @@ const mntr = {
 
         facility.getListCctvGeoJson({"headFlag": true}, result => {
             reloadLayer(result, 'cctvLayer');
-            console.log(JSON.parse(result));
             window.lyControl.off('cctvLayer');
         });
 
@@ -1512,7 +1511,6 @@ const rnbList = {
         target.find('span[data-value=eventGrade] input').prop('checked',false);
         target.find('span[data-value=eventGrade] input#lv'+prop.eventGrade.replace("0","")).prop('checked',true);
 
-        console.log(prop);
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
         const procInt = Number(prop.eventProcStat);
