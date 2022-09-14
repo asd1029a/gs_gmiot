@@ -922,6 +922,9 @@ var stringFunc = {
  * 날짜관련
  */
 const dateFunc = {
+    getCurrentDateDBFormat: function() {
+        return new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    },
     getZeroString: function(tVal) {
         return (tVal > 9 ? '' : '0') + tVal;
     },

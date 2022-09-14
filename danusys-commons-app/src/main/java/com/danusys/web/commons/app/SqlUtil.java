@@ -39,10 +39,17 @@ public class SqlUtil {
                             if(setStr.length() > 0) {
                                 setStr.append(",");
                             }
-                            setStr.append(StringUtil.camelToSnake(entry.getKey()))
-                                    .append(" = '")
-                                    .append(CommonUtil.validNull(entry.getValue()))
-                                    .append("'");
+
+                            setStr.append(StringUtil.camelToSnake(entry.getKey()));
+
+                            if(entry.getValue().equals("NOW")){
+                                setStr.append(" = ")
+                                      .append("(select now())");
+                            } else {
+                                setStr.append(" = '")
+                                      .append(CommonUtil.validNull(entry.getValue()))
+                                      .append("'");
+                            }
                         }
                 );
         return setStr.toString();

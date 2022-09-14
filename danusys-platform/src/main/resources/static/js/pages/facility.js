@@ -54,7 +54,7 @@ const facility = {
                 "defaultContent": '<span class="button">상세보기</span>'
             }
             , */{
-                "targets": 2,
+                "targets": 3,
                 "data": null,
                 "render": function ( data, type, row ) {
                     switch (row.facilityStatus){

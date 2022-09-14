@@ -359,7 +359,7 @@
 .process_contents.step1 dl.on dt:before{background: #3a66e5;}
 .process_contents.step2 dl.on dt:before{background: #3a66e5;}
 .process_contents.step3 dl.on dt:before{background: #3a66e5;}
-.process_contents.step4 dl.on dt:before{background: #3a66e5;}
+.process_contents.step9 dl.on dt:before{background: #3a66e5;}
 .process_contents dl.on dt:after{content: ''; position: absolute; top: 24px; left: 50%; right: 0px; width: 100%; height: 2px;}
 .process_contents.step1 dl.on dt:after{background: #353740;}
 .process_contents.step2 dl:nth-child(2).on dt:after{background: #353740;}

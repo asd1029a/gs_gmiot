@@ -387,7 +387,6 @@ const mntr = {
 
         facility.getListCctvGeoJson({"headFlag": true}, result => {
             reloadLayer(result, 'cctvLayer');
-            console.log(JSON.parse(result));
             window.lyControl.off('cctvLayer');
         });
 
@@ -543,7 +542,6 @@ const mntr = {
             //ACTIVE STYLE
             $(e.currentTarget).parent().children("li").removeClass("active");
             $(e.currentTarget).addClass("active");
-
             if((theme == "drone")&&(tab == "station")){ tab = "facility" }
             switch(tab) {
                 case "event" :
@@ -672,7 +670,7 @@ const mntr = {
                     const $viewer = $("#tileViewer");
                     $viewer.toggle('show');
                     break;
-                case "layer" : //레이어 제어
+                case "layer" : //레이어 제어 (추후 공통으로 분리필요)
                     const $target = $("#layerViewer");
                     $target.toggle('show');
                     $("#layerViewer ul").empty();
@@ -861,15 +859,82 @@ const mntr = {
         //관제 이벤트 종료 팝업
         $('section[data-value=event] .occur_process ul li').on("click", e => {
             const type = $(e.currentTarget).attr('data-value');
-            if(type == "eventEnd"){
-                $('#popupEventEnd').css('display','flex');
+            const feature = $(e.currentTarget).parents('.area_right').data();
+            const prop = feature.getProperties();
+
+            if(type == "action"){
+                $('#popupEventAction').css('display','flex');
+                //이벤트 조치완료
+                const $targetAct = $('#popupEventAction');
+                $targetAct.find('.title dt p[data-value=eventSeq]').text(prop.eventSeq);
+                $targetAct.find('form [name=eventManager]').val(prop.eventManager);
+                $targetAct.find('form [name=eventMngContent]').val(prop.eventMngContent);
+            } else if(type == "eventEnd"){
+                //이벤트 state 변경
+                comm.confirm("해당 이벤트를 종료 하시겠습니까?"
+                    ,{}
+                    , () => {
+                        //종료
+                        const obj = new Object();
+                        obj.eventSeq = prop.eventSeq;
+                        obj.eventEndDt = "NOW";
+                        obj.eventProcStat = 9;
+
+                        event.modUnFormProc(prop.eventSeq, obj, f => {
+                            $('.area_right_closer').trigger("click");
+                            const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
+                            const paramObject = mntr.getInitParam(theme);
+                            //실시간
+                            event.getListGeoJson(paramObject['event'], result => {
+                                //실시간 레이어 reload
+                                reloadLayer(result, 'eventLayer');
+                                //실시간 좌측 패널 reload
+                                lnbList.createEvent(result);
+                            });
+                            //과거이력
+                            event.getListGeoJson(paramObject['eventPast'], result => {
+                                //과거이력 레이어 reload
+                                reloadLayer(result, 'eventPastLayer');
+                                //과거이력 좌측 패널 reload
+                                lnbList.createEventPast(result);
+                            });
+                        });
+                    }
+                    , () => {}
+                );
             }
         });
 
-        //팝업 closer
+        //이벤트 팝업 closer
         $('.popup_detection_closer, .popup_detection li[data-value=cancel]').on("click", e => {
             const $target = $(e.currentTarget).parents('.popup_detection');
             $target.css('display', 'none');
+        });
+
+        //이벤트 팝업 버튼
+        $('#popupEventAction .bottom li').on("click", e => {
+            const $tar = $(e.currentTarget);
+            const type = $tar.attr('data-value');
+            if(type == "confirm"){
+                const formObj = $tar.parents('.popup').find('form').serializeJSON();
+                const evtSeq = $tar.parents('.popup').find('[data-value=eventSeq]').text();
+                //종료
+                event.modUnFormProc(evtSeq, formObj, f => {
+                    $('.area_right_closer').trigger("click");
+                    $tar.parents('.popup_detection').css('display', 'none');
+                    const theme = $('.mntr_container .lnb ul li.active').attr('data-value');
+                    const paramObject = mntr.getInitParam(theme);
+                    //실시간
+                    event.getListGeoJson(paramObject['event'], result => {
+                        //실시간 레이어 reload
+                        reloadLayer(result, 'eventLayer');
+                        //실시간 좌측 패널 reload
+                        lnbList.createEvent(result);
+                    });
+                });
+            } else {
+                $tar.parents('.popup_detection').css('display', 'none');
+            }
         });
 
         //영상 선택
@@ -1448,6 +1513,16 @@ const rnbList = {
 
         //prop 돌리면서 채워넣기
         const propList = Object.keys(prop);
+        const procInt = Number(prop.eventProcStat);
+        //이벤트 처리현황 프로세스바
+        target.find('.process_contents').hide();
+        target.find('.process_contents.step'+ procInt).show();
+        //이벤트 처리 버튼
+        target.find('.occur_process .button li').hide();
+        if(procInt < 9) {
+            target.find('.occur_process .button li').show();
+        }
+
         propList.map(propStr => {
             const textArea = target.find('.area_right_text li input[data-value='+propStr+']');
             if(textArea.length > 0){

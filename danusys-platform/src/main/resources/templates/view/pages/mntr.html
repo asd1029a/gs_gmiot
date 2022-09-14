@@ -107,34 +107,24 @@
                 실시간관측자료이며, 현지 사정에 의해 오차가 발생할 수 있습니다. <span class="unit">(단위:ppm)</span>
             </p>
         </div>
-        <div id="popupEventEnd" class="popup popup_detection" style="width: 540px;">
+        <div id="popupEventAction" class="popup popup_detection" style="width: 540px;">
             <dl class="title">
-                <dt>{이벤트 ID} 이벤트 조치 완료</dt>
+                <dt><p data-value="eventSeq" style="display: inline-block;"></p> 이벤트 조치</dt>
                 <dd><i class="popup_detection_closer"><img src="/images/default/close.svg"></i></dd>
             </dl>
             <div class="popup_writing">
                 <fieldset>
                     <form>
                         <dl>
-                            <dt>이벤트 ID</dt>
-                            <dd><input type="text"></dd>
-                        </dl>
-                        <dl>
-                            <dt>이벤트 종류</dt>
-                            <dd><input type="text"></dd>
-                        </dl>
-                        <dl>
                             <dt>조치자</dt>
-                            <dd><input type="text"></dd>
+                            <dd><input name="eventManager" type="text"></dd>
                         </dl>
                         <dl>
-                            <dt>조치 시각</dt>
-                            <dd><input type="date"><input type="time"></dd>
+                            <dt>조치 내용</dt>
+                            <dd><textarea name="eventMngContent" placeholder="내용을 입력해 주세요." style="height: 200px;"></textarea></dd>
                         </dl>
-                        <dl>
-                            <dt>본문</dt>
-                            <dd><textarea placeholder="내용을 입력해 주세요." style="height: 200px;"></textarea></dd>
-                        </dl>
+                        <input type="hidden" name="eventMngDt" value="NOW" />
+                        <input type="hidden" name="eventProcStat" value="2" />
                     </form>
                 </fieldset>
             </div>
