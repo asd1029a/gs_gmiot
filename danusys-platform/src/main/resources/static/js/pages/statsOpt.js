@@ -1,33 +1,60 @@
-const stats = {
-    korName: {
-        "smart_pole_event": "스마트 폴 이벤트",
-        "smart_busstop_event": "스마트 정류장 이벤트",
-        "EMS_EVENT": "스마트분전함 이벤트",
-        "DRONE_EVENT": "드론 관제 이벤트",
+const statsOpt = {
+    optType: null,
+    optName: {
+        'floatingPopulationBus': {
+            'korName': '스마트 정류장 이용자',
+            'optName': 'floating_population',
+            'stationKind': 'smart_station',
+        },
+        'floatingPopulationPole': {
+            'korName': '스마트 폴 유동인구',
+            'optName': 'floating_population',
+            'stationKind': 'smart_pole',
+        },
+        'electricityBus': {
+            'korName': '스마트 버스 전력량',
+            'optName': 'wattage',
+            'facilityKind': 'wattage',
+        },
+        "electricitySunlight": {
+            'korName': "태양광 전력량",
+            'optName': 'sunlight',
+            'facilityKind': 'sunlight',
+        },
+        "electricityLampWalk": {
+            'korName': "스마트 보안등 전력량",
+            'optName': 'whUse',
+            'facilityKind': 'lamp_walk',
+        },
+        "electricityBikeCharging": {
+            'korName': "자전거 충전소 전력량",
+            'optName': 'electricPower',
+            'facilityKind': 'bike_charging',
+        },
     },
     init: (url) => {
-        const eventType = url.searchParams.get("eventType");
-        const eventTypeCamel = stringFunc.camelize(eventType);
+        statsOpt.optType = url.searchParams.get("optType");
 
-        if ($("#" + eventTypeCamel).parents("li").hasClass("multi")) {
-            $("#" + eventTypeCamel).parents("li").addClass("on");
-            $("#" + eventTypeCamel).addClass("on");
+        if ($("#" + statsOpt.optType).parents("li").hasClass("multi")) {
+            $("#" + statsOpt.optType).parents("li").addClass("on");
+            $("#" + statsOpt.optType).addClass("on");
         } else {
             $("h4 span").eq(1).remove();
             $("h4 i").eq(1).remove();
 
-            $("#" + eventTypeCamel).addClass("on");
+            $("#" + statsOpt.optType).addClass("on");
         }
 
-        $(".event_type").text(stats.korName[eventType]);
+        $(".event_type").text(statsOpt.optName[statsOpt.optType].korName);
 
-        stats.createTable();
-        stats.setChart();
+        $("[data-mode=event]").hide();
+        statsOpt.createTable();
+        statsOpt.setChart();
     },
     eventHandler: () => {
         $("#searchBtn").on('click', (e) => {
-            stats.createTable();
-            stats.setChart();
+            statsOpt.createTable();
+            statsOpt.setChart();
         });
         // todo 검색 조건은 체크 되었지만 검색 버튼을 누르지 않았을 때 해당 차트만 데이터가 상이함
         // 전체 다 새로 고침을 하거나 이전 검색 데이터를 저장했다가 검색해야 될 듯
@@ -38,7 +65,7 @@ const stats = {
                 $target.classList.add("on");
                 const chartNm = $target.parentElement.id;
 
-                stats.setChart(chartNm);
+                statsOpt.setChart(chartNm);
             }
         });
     },
@@ -46,12 +73,12 @@ const stats = {
         const $target = $('#troubleEventTable');
 
         const colunms = [
-            {data: "eventGradeName", name: "이벤트 등급"},
-            {data: "eventKindName", name: "이벤트 종류"},
+            {data: "stationKind", name: "개소 종류"},
+            {data: "stationName", name: "개소 이름"},
             {data: "facilityKind", name: "시설물 종류"},
             {data: "administZoneName", name: "행정구역"},
-            {data: "eventStartDt", name: "이벤트 발생일시"},
-        ]
+            {data: "insertDt", name: "기록 일시"},
+        ];
 
         for (col of colunms) {
             $("thead tr").append(`<th>${col.name}</th>`);
@@ -65,11 +92,13 @@ const stats = {
             pagingType: "full",
             ajax:
                 {
-                    'url': "/stats/list",
+                    'url': "/stats/listOpt",
                     'contentType': "application/json; charset=utf-8",
                     'type': "POST",
                     'data': function (d) {
-                        const param = $.extend({}, d, $("#searchForm form").serializeJSON());
+                        const param = $.extend(statsOpt.optName[statsOpt.optType], d, $("#searchForm form").serializeJSON());
+                        console.log(param);
+
                         return JSON.stringify(param);
                     },
                     'dataSrc': function (result) {
@@ -87,16 +116,16 @@ const stats = {
         comm.createTable($target, optionObj);
     },
     setChart: (chartNm) => {
-        const param = $("#searchForm form").serializeJSON();
+        const param = $.extend(statsOpt.optName[statsOpt.optType], $("#searchForm form").serializeJSON());
 
         if (chartNm === "sumBtn") {
-            stats.getSumChartData(param, stats.createSumChart);
+            statsOpt.getSumChartData(param, statsOpt.createSumChart);
         } else if (chartNm === "avgBtn") {
-            stats.getAvgChartData(param, stats.createAvgChart);
+            statsOpt.getAvgChartData(param, statsOpt.createAvgChart);
         } else {
-            stats.getSumChartData(param, stats.createSumChart);
-            stats.getAvgChartData(param, stats.createAvgChart);
-            stats.getMapChartData(param, stats.createMapChart);
+            statsOpt.getSumChartData(param, statsOpt.createSumChart);
+            statsOpt.getAvgChartData(param, statsOpt.createAvgChart);
+            statsOpt.getMapChartData(param, statsOpt.createMapChart);
         }
     },
     createSumChart: (datas) => {
@@ -123,7 +152,7 @@ const stats = {
                 opacity: 0.9
             },
             stroke: {
-                width: [0, 0, 3, 3],
+                width: [0, 3],
                 dashArray: 10
             },
             plotOptions: {
@@ -139,42 +168,25 @@ const stats = {
             },
             yaxis: [{
                 show: true,
-                seriesName: "주의"
+                seriesName: "합계"
             }, {
                 show: false,
-                seriesName: "주의"
-            }, {
-                show: true,
-                seriesName: "주의 누적",
-                opposite: true
-            }, {
-                show: false,
-                seriesName: "주의 누적",
+                seriesName: "누적 합계"
             }],
             dataLabels: {
                 enabled: true,
-                // enabledOnSeries: [2, 3]
+                enabledOnSeries: [1]
             },
             series: [
                 {
-                    name: '긴급',
+                    name: '합계',
                     type: 'column',
-                    data: data.urgent
+                    data: data.value
                 },
                 {
-                    name: '주의',
-                    type: 'column',
-                    data: data.caution
-                },
-                {
-                    name: '긴급 누적',
+                    name: '누적 합계',
                     type: 'line',
-                    data: data.accUrgent
-                },
-                {
-                    name: '주의 누적',
-                    type: 'line',
-                    data: data.accCaution
+                    data: data.accValue
                 }
             ],
             noData: {
@@ -195,59 +207,19 @@ const stats = {
     createAvgChart: (datas) => {
 
         const data = [{
-            name: "긴급",
-            data: []
-        }, {
-            name: "주의",
-            data: []
+            name: "평균 집계",
+            data: new Array()
         }];
 
         datas.forEach(v => {
             data[0].data.push({
                 x: v.xAxis,
-                y: [v.minUrgent, v.minUrgent, v.maxUrgent, v.maxUrgent],
-                avgVal: v.avgUrgent
-            });
-            data[1].data.push({
-                x: v.xAxis,
-                y: [v.minCaution, v.minCaution, v.maxCaution, v.maxCaution],
-                avgVal: v.avgCaution
+                y: [v.minValue, v.minValue, v.maxValue, v.maxValue],
+                avgVal: v.avgValue
             });
         });
 
         const options = {
-            tooltip: {
-                enabled: true,
-                custom: function ({series, seriesIndex, dataPointIndex, w}) {
-                    const g = w.globals;
-                    const dataUrgent = w.config.series[0].data[dataPointIndex];
-                    const dataCaution = w.config.series[1].data[dataPointIndex];
-
-                    const text = `
-                            <div>
-                                <div>
-                                    <span style="color: ${g.colors[0]}">${g.seriesNames[0]} ${g.categoryLabels[dataPointIndex]}</span>
-                                </div>
-                                <div>
-                                    <div>최대: ${dataUrgent.y[1]}</div>
-                                    <div>평균: ${dataUrgent.avgVal}</div>
-                                    <div>최소: ${dataUrgent.y[0]}</div>
-                                </div>
-                            </div>
-                            <div>
-                                <div>
-                                    <span style="color: ${g.colors[1]}">${g.seriesNames[1]} ${g.categoryLabels[dataPointIndex]}</span>
-                                </div>
-                                <div>
-                                    <div>최대: ${dataCaution.y[1]}</div>
-                                    <div>평균: ${dataCaution.avgVal}</div>
-                                    <div>최소: ${dataCaution.y[0]}</div>
-                                </div>
-                            </div>`;
-
-                    return text;
-                }
-            },
             dataLabels: {
                 enabled: true,
                 offsetY: -10,
@@ -255,9 +227,33 @@ const stats = {
                     opacity: 0.2
                 },
                 formatter: function (val, {series, seriesIndex, dataPointIndex, w}) {
-                    const label = w.config.series[seriesIndex].data[dataPointIndex].avgVal;
+                    const label = w.config.series[0].data[dataPointIndex].avgVal;
                     return label !== null ? label : "";
                 },
+            },
+            tooltip: {
+                enabled: true,
+                marker: true,
+                enabledOnSeries: [1],
+                custom: function ({series, seriesIndex, dataPointIndex, w}) {
+                    console.log({series, seriesIndex, dataPointIndex, w});
+                    const g = w.globals;
+                    const dataUrgent = w.config.series[0].data[dataPointIndex];
+
+                    const text = `
+                                <div>
+                                    <div>
+                                        <span style="color: ${g.colors[0]}">${g.seriesNames[0]} ${g.categoryLabels[dataPointIndex]}</span>
+                                    </div>
+                                    <div>
+                                        <div>최대: ${dataUrgent.y[1]}</div>
+                                        <div>평균: ${dataUrgent.avgVal}</div>
+                                        <div>최소: ${dataUrgent.y[0]}</div>
+                                    </div>
+                                </div>`;
+
+                    return text;
+                }
             },
             series: data,
             noData: {
@@ -277,10 +273,7 @@ const stats = {
                     show: false
                 },
             },
-            colors: ['#f04242', '#f9a825'],
-            stroke: {
-                colors: ['#f04242', '#f9a825']
-            },
+            colors: ["#f04242"],
             theme: {
                 mode: "dark"
             },
@@ -288,10 +281,7 @@ const stats = {
                 opacity: 0.9
             },
             xaxis: {
-                tickPlacement: "category",
-                tooltip: {
-                    enabled: false
-                }
+                tickPlacement: "category"
             },
             yaxis: {
                 tickAmount: 5,
@@ -301,12 +291,10 @@ const stats = {
             },
             plotOptions: {
                 candlestick: {
-                    colors: [{
+                    colors: {
                         upward: "#f04242"
-                    }, {
-                        upward: "#f9a825"
-                    }],
-                },
+                    },
+                }
             }
         };
 
@@ -326,6 +314,14 @@ const stats = {
             charts.hideLoading();
             echarts.registerMap('map', JSON.parse(geoJson));
         });
+
+        let maxVal = 0;
+        let minVal = 0;
+        datas.forEach(v => {
+            maxVal = maxVal < v.value ? v.value : maxVal;
+            minVal = minVal > v.value ? v.value : minVal;
+        })
+
         const option = {
             backgroundColor: "#00000000",
             tooltip: {
@@ -335,6 +331,8 @@ const stats = {
             },
             visualMap: {
                 left: 'right',
+                min: minVal,
+                max: maxVal,
                 inRange: {
                     color: ['#313695', '#fee090', '#a50026']
                 },
@@ -366,7 +364,7 @@ const stats = {
     getSumChartData: (param, pCallback) => {
         param.unit = document.querySelector("#sumBtn span.on").classList[0];
         $.ajax({
-            url: "/stats/sumChart"
+            url: "/stats/sumChartOpt"
             , type: "POST"
             , data: JSON.stringify(param)
             , contentType: "application/json; charset=utf-8"
@@ -377,7 +375,7 @@ const stats = {
     getAvgChartData: (param, pCallback) => {
         param.unit = document.querySelector("#avgBtn span.on").classList[0];
         $.ajax({
-            url: "/stats/avgChart"
+            url: "/stats/avgChartOpt"
             , type: "POST"
             , data: JSON.stringify(param)
             , contentType: "application/json; charset=utf-8"
@@ -387,34 +385,12 @@ const stats = {
     },
     getMapChartData: (param, pCallback) => {
         $.ajax({
-            url: "/stats/mapChart"
+            url: "/stats/mapChartOpt"
             , type: "POST"
             , data: JSON.stringify(param)
             , contentType: "application/json; charset=utf-8"
         }).done((result) => {
             pCallback(result);
         });
-    },
-    getMapGeoJson: (pCallback) => {
-        $.ajax({
-            url: "/stats/geoJson"
-            , type: "POST"
-            , contentType: "application/json; charset=utf-8"
-            , async: false
-        }).done((result) => {
-            pCallback(result);
-        });
-    },
-    getColumnData: (data) => {
-        let result = {};
-        data.forEach(v => {
-            for (let k in v) {
-                if (Array.isArray(result[k]))
-                    result[k].push(v[k]);
-                else
-                    result[k] = Array.of(v[k]);
-            }
-        });
-        return result;
     },
 }

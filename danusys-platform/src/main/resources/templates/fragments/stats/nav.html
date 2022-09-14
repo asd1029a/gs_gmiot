@@ -5,17 +5,26 @@
             <li id="eventStats" class="multi">
                 <a href="#eventStats">이벤트 발생 통계</a>
                 <ul class="accordion_sub_menu">
-                    <li id="smartPoleEvent" th:if="${municipality == '41210000' or municipality == '26290000'}"><a href="/pages/stats/statistics?type=smart_pole_event">스마트 폴 이벤트</a></li>
-                    <li id="smartBusstopEvent" th:if="${municipality == '41210000' or municipality == '47210000'}"><a href="/pages/stats/statistics?type=smart_busstop_event">스마트 정류장 이벤트</a></li>
-                    <li id="emsEvent" th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics?type=EMS_EVENT">스마트분전함 이벤트</a></li>
-                    <li id="droneEvent" th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics?type=DRONE_EVENT">드론 관제 이벤트</a></li>
+                    <li id="smartPoleEvent" th:if="${municipality == '41210000' or municipality == '26290000'}"><a href="/pages/stats/statistics?type=event&eventType=smart_pole_event">스마트 폴 이벤트</a></li>
+                    <li id="smartBusstopEvent" th:if="${municipality == '41210000' or municipality == '47210000'}"><a href="/pages/stats/statistics?type=event&eventType=smart_busstop_event">스마트 정류장 이벤트</a></li>
+                    <li id="emsEvent" th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics?type=event&eventType=EMS_EVENT">스마트분전함 이벤트</a></li>
+                    <li id="droneEvent" th:if="${municipality == '45210000'}"><a href="/pages/stats/statistics?type=event&eventType=DRONE_EVENT">드론 관제 이벤트</a></li>
                 </ul>
             </li>
-            <li id="floatingPopulation" th:if="${municipality == '41210000'}">
-                <a href="/pages/stats/statistics?type=floating_population">유동인구 통계</a>
+            <li id="floatingPopulationBus" th:if="${municipality == '41210000'}">
+                <a href="/pages/stats/statistics?type=opt&optType=floatingPopulationBus">스마트 정류장 이용자 통계</a>
             </li>
-            <li id="whUse" th:if="${municipality == '41210000'}">
-                <a href="/pages/stats/statistics?type=wh_use">전력량 통계</a>
+            <li id="floatingPopulationPole" th:if="${municipality == '41210000'}">
+                <a href="/pages/stats/statistics?type=opt&optType=floatingPopulationPole">스마트 폴 유동인구 통계</a>
+            </li>
+            <li id="whUse" class="multi" th:if="${municipality == '41210000'}">
+                <a>전력량 통계</a>
+                <ul class="accordion_sub_menu">
+                    <li id="electricityBus"><a href="/pages/stats/statistics?type=opt&optType=electricityBus">스마트 버스 전력량</a></li>
+                    <li id="electricitySunlight"><a href="/pages/stats/statistics?type=opt&optType=electricitySunlight">태양광 전력량</a></li>
+                    <li id="electricityLampWalk"><a href="/pages/stats/statistics?type=opt&optType=electricityLampWalk">스마트 보안등 전력량</a></li>
+                    <li id="electricityBikeCharging"><a href="/pages/stats/statistics?type=opt&optType=electricityBikeCharging">자전거 충전소 전력량</a></li>
+                </ul>
             </li>
         </ul>
     </aside>

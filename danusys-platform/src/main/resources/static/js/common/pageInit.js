@@ -161,8 +161,14 @@ $(document).ready(() => {
     }
 
     //통계
-    else if(path === "/pages/stats/statistics"){
-        stats.init();
-        stats.eventHandler();
+    else if (path === "/pages/stats/statistics") {
+        const url = new URL(location.href);
+        if (url.searchParams.get("type") === "event") {
+            stats.init(url);
+            stats.eventHandler();
+        } else {
+            statsOpt.init(url);
+            statsOpt.eventHandler();
+        }
     }
 });

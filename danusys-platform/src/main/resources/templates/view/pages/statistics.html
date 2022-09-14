@@ -23,12 +23,6 @@
                         <dd class="checkbox_list list" style="display: none;">
                         </dd>
                     </dl>
-                    <p data-mode="opt">개소 종류</p>
-                    <dl class="dropdown_checkbox" data-selectbox-type="stationKind" th:attr="data-selectbox-sub-type=${type}" data-mode="opt">
-                        <dt class="checkbox_title select_title">개소 종류</dt>
-                        <dd class="checkbox_list list" style="display: none;">
-                        </dd>
-                    </dl>
                     <p>행정구역</p>
                     <dl class="dropdown_checkbox" data-selectbox-type="administZone" th:attr="data-selectbox-sub-type=${@environment.getProperty('danusys.area.code.sig')}">
                         <dt class="checkbox_title select_title">행정구역</dt>
@@ -37,20 +31,6 @@
                     </dl>
                 </div>
                 <div>
-<!--                    TODO: 등급 조건으로 차트 바뀌는 건 고도화에 적용 예정 - 차트 생성 방식이 컬럼을 변경하기 힘듦-->
-<!--                    <dl class="checkbox_set">-->
-<!--                        <dt>이벤트 등급</dt>-->
-<!--                        <dd>-->
-<!--							<span>-->
-<!--								<input type="checkbox" id="urgent" name="eventGrade" data-value="10" data-init-value="checked" checked>-->
-<!--								<label for="urgent"><span></span>긴급</label>-->
-<!--							</span>-->
-<!--                            <span>-->
-<!--								<input type="checkbox" id="caution" name="eventGrade" data-value="20" data-init-value="checked" checked>-->
-<!--								<label for="caution"><span></span>주의</label>-->
-<!--							</span>-->
-<!--                        </dd>-->
-<!--                    </dl>-->
                     <dl class="date_set">
                         <dt>발생 기간</dt>
                         <dd><input type="text" id="startDt" placeholder="날짜를 입력하세요" name="startDt" class="input_date"></dd>

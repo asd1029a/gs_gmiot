@@ -222,6 +222,7 @@ public class StatisticsSqlProvider {
             ArrayList administZone = CommonUtil.valiArrNull(paramMap, "administZone");
             String sigCode = CommonUtil.validOneNull(paramMap, "sigCode");
             ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
+            ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
 
             SELECT("t1.facility_opt_name," +
                     "t1.facility_opt_value, " +
@@ -230,7 +231,7 @@ public class StatisticsSqlProvider {
                     "v1.code_name AS facility_kind, " +
                     "v2.code_name AS station_kind, " +
                     "v3.code_name AS administ_zone_name");
-            FROM("t_facility_opt t1\n" +
+            FROM("t_facility_opt t1 " +
                     "INNER JOIN t_facility t2 on t1.facility_seq = t2.facility_seq " +
                     "INNER JOIN t_station t3 on t2.station_seq = t3.station_seq " +
                     "INNER JOIN v_facility_kind v1 on t2.facility_kind = v1.code_seq " +
@@ -255,6 +256,9 @@ public class StatisticsSqlProvider {
             }
             if (stationKind != null && !stationKind.isEmpty()) {
                 WHERE("v2.code_value" + SqlUtil.getWhereInStr(stationKind));
+            }
+            if (facilityKind != null && !facilityKind.isEmpty()) {
+                WHERE("v3.code_value" + SqlUtil.getWhereInStr(facilityKind));
             }
 
             ORDER_BY("t1.insert_dt desc");
@@ -290,6 +294,7 @@ public class StatisticsSqlProvider {
         String timePattern = timePatternMap.get(unit);
         ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
         ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
+        ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
 
         SQL sql = new SQL() {{
             SELECT("to_char(t1.insert_dt, '" + timePattern + "') as x_axis, sum(facility_opt_value::int) as value");
@@ -298,6 +303,7 @@ public class StatisticsSqlProvider {
             INNER_JOIN("v_administ v1 ON t2.administ_zone = v1.code_value");
             INNER_JOIN("t_station t3 on t2.station_seq = t3.station_seq");
             INNER_JOIN("v_station_kind v2 on t3.station_kind = v2.code_seq");
+            INNER_JOIN("v_facility_kind v3 on t2.facility_kind = v3.code_seq");
 
             WHERE("t1.insert_dt notnull and facility_opt_name = '" + optName + "'");
 
@@ -316,6 +322,10 @@ public class StatisticsSqlProvider {
 
             if (stationKind != null && !stationKind.isEmpty()) {
                 WHERE("v2.code_value" + SqlUtil.getWhereInStr(stationKind));
+            }
+
+            if (facilityKind != null && !facilityKind.isEmpty()) {
+                WHERE("v3.code_value" + SqlUtil.getWhereInStr(facilityKind));
             }
 
             GROUP_BY("x_axis");
@@ -367,6 +377,7 @@ public class StatisticsSqlProvider {
         String avgTimePattern = avgTimePatternMap.get(unit);
         ArrayList<String> administZone = CommonUtil.valiArrNull(paramMap, "administZone");
         ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
+        ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
 
         SQL sql = new SQL() {{
             SQL subQry1 = new SQL() {{
@@ -376,7 +387,8 @@ public class StatisticsSqlProvider {
                         "    INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq" +
                         "    INNER JOIN v_administ v1 ON t2.administ_zone = v1.code_value" +
                         "    INNER JOIN t_station t3 on t2.station_seq = t3.station_seq" +
-                        "    INNER JOIN v_station_kind v2 on t3.station_kind = v2.code_seq");
+                        "    INNER JOIN v_station_kind v2 on t3.station_kind = v2.code_seq" +
+                        "    INNER JOIN v_facility_kind v3 on t2.facility_kind = v3.code_seq");
                 WHERE("facility_opt_name = '" + optName + "'");
                 if (!startDt.equals("")) {
                     WHERE("t1.insert_dt >= to_timestamp('" + startDt + "', 'YYYY-MM-DD HH24:MI:SS')");
@@ -391,6 +403,10 @@ public class StatisticsSqlProvider {
 
                 if (stationKind != null && !stationKind.isEmpty()) {
                     WHERE("v2.code_value" + SqlUtil.getWhereInStr(stationKind));
+                }
+
+                if (facilityKind != null && !facilityKind.isEmpty()) {
+                    WHERE("v3.code_value" + SqlUtil.getWhereInStr(facilityKind));
                 }
 
                 GROUP_BY("x_axis");
@@ -434,13 +450,15 @@ public class StatisticsSqlProvider {
             String endDt = CommonUtil.validOneNull(paramMap, "endDt");
             String optName = CommonUtil.validOneNull(paramMap, "optName");
             ArrayList<String> stationKind = CommonUtil.valiArrNull(paramMap, "stationKind");
+            ArrayList<String> facilityKind = CommonUtil.valiArrNull(paramMap, "facilityKind");
 
             SELECT("v1.code_name AS name, sum(facility_opt_value::int) AS value");
             FROM("t_facility_opt t1" +
                     "    INNER JOIN t_facility t2 ON t1.facility_seq = t2.facility_seq" +
                     "    INNER JOIN v_administ v1 ON t2.administ_zone = v1.code_value" +
                     "    INNER JOIN t_station t3 on t2.station_seq = t3.station_seq" +
-                    "    INNER JOIN v_station_kind v2 on t3.station_kind = v2.code_seq");
+                    "    INNER JOIN v_station_kind v2 on t3.station_kind = v2.code_seq" +
+                    "    INNER JOIN v_facility_kind v3 on t2.facility_kind = v3.code_seq");
             WHERE("facility_opt_name = '" + optName + "'");
 
             if (!startDt.equals("")) {
@@ -452,6 +470,11 @@ public class StatisticsSqlProvider {
             if (stationKind != null && !stationKind.isEmpty()) {
                 WHERE("v2.code_value" + SqlUtil.getWhereInStr(stationKind));
             }
+
+            if (facilityKind != null && !facilityKind.isEmpty()) {
+                WHERE("v3.code_value" + SqlUtil.getWhereInStr(facilityKind));
+            }
+
             GROUP_BY("name");
         }};
         return sql.toString();
