@@ -10,9 +10,9 @@
             <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
             <li th:if="${municipality == '41210000'
                         or municipality == '26290000'}" data-value="smartPole">스마트 폴</li>
-            <li data-value="smartBusStop"  class="active"
-                th:if="${municipality == '41210000'
-                        or municipality == '47210000'}">스마트 정류장</li>
+<!--            <li data-value="smartBusStop"  class="active"-->
+<!--                th:if="${municipality == '41210000'-->
+<!--                        or municipality == '47210000'}">스마트 정류장</li>-->
             <li th:if="${municipality == '45210000'}" data-value="smartPower">스마트 분전함</li>
             <li th:if="${municipality == '45210000'}" data-value="drone">드론<br>관제</li>
             <li th:if="${municipality == '45210000'}" data-value="smart">스마트김제</li>
@@ -38,7 +38,7 @@
                     <li class='toggle' th:if="${municipality == '41210000'} or ${municipality == '26290000'}" data-value="cctv" title="cctv"><img src="/images/default/iconCctv.svg"></li>
                     <li data-value="plus" title="확대"><img src="/images/default/mapPlus.svg"></li>
                     <li data-value="minus" title="축소"><img src="/images/default/mapMinus.svg"></li>
-                    <li class='toggle' data-value="layer" title="레이어"><img src="/images/default/mapLayer.svg"></li>
+<!--                    <li class='toggle' data-value="layer" title="레이어"><img src="/images/default/mapLayer.svg"></li>-->
                     <li class='toggle' data-value="airTile" title="대기정보"><img src="/images/default/mapAirTile.svg"></li>
                     <li data-value="distance" title="거리측정"><img src="/images/default/mapDistance.svg"></li>
                     <li data-value="measure" title="면적측정"><img src="/images/default/mapMeasure.svg"></li>

@@ -3,13 +3,13 @@
     <aside class="accordion_menu accordion">
         <ul class="accordion">
         <th:block th:with="municipality=${@environment.getProperty('municipality.name')}">
-            <li th:if="${municipality == '41210000'}" id="one" class="multi">
-                <a href="#one">스마트 보안등</a>
-                <ul class="accordion_sub_menu">
-                    <!--<li id="dimmingGroup"><a href="/pages/config/dimmingGroup">디밍 그룹 설정</a></li>-->
-                    <li id="dimmingSet"><a href="/pages/config/dimmingSet">디밍 설정</a></li>
-                </ul>
-            </li>
+<!--            <li th:if="${municipality == '41210000'}" id="one" class="multi">-->
+<!--                <a href="#one">스마트 보안등</a>-->
+<!--                <ul class="accordion_sub_menu">-->
+<!--                    &lt;!&ndash;<li id="dimmingGroup"><a href="/pages/config/dimmingGroup">디밍 그룹 설정</a></li>&ndash;&gt;-->
+<!--                    <li id="dimmingSet"><a href="/pages/config/dimmingSet">디밍 설정</a></li>-->
+<!--                </ul>-->
+<!--            </li>-->
             <li id="two" class="multi">
                 <a href="#two">사용자</a>
                 <ul class="accordion_sub_menu">
@@ -23,9 +23,9 @@
             <li id="notice">
                 <a href="/pages/config/notice">공지사항</a>
             </li>
-            <li th:if="${municipality == '41210000' or municipality == '47210000'}" id="signage">
-                <a href="/pages/config/signage">사이니지 템플릿</a>
-            </li>
+<!--            <li th:if="${municipality == '41210000' or municipality == '47210000'}" id="signage">-->
+<!--                <a href="/pages/config/signage">사이니지 템플릿</a>-->
+<!--            </li>-->
         </th:block>
         </ul>
     </aside>

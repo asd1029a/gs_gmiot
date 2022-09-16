@@ -6,41 +6,41 @@
         <section th:if="${municipality == '41210000'
                           or municipality == '26290000'}" id="smartPole" class="menu_fold">
             <ul class="tab">
-                <li data-value="event" class="active"><a>실시간</a></li>
-                <li data-value="station"><a>개소</a></li>
-                <li data-value="eventPast"><a>과거이력</a></li>
+<!--                <li data-value="event" class="active"><a>실시간</a></li>-->
+                <li data-value="station" class="active"><a>개소</a></li>
+<!--                <li data-value="eventPast"><a>과거이력</a></li>-->
             </ul>
             <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
 
             <!-- 실시간 -->
-            <div data-value="event" class="lnb_tab_section select">
-                <dl class="area_title" data-value="lv1">
-                    <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
-                    <dd><span class="count">0</span></dd>
-                </dl>
-                <div class="search_list" data-value="lv1">
-                    <!--<dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>-->
-                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
-                </div>
-                <dl class="area_title" data-value="lv2">
-                    <dt><i><img src="/images/default/titleIcon02.svg"></i>주의 이벤트</dt>
-                    <dd><span class="count">0</span></dd>
-                </dl>
-                <div class="search_list" data-value="lv2">
-                   <!-- <dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>-->
-                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
-                </div>
-            </div>
+<!--            <div data-value="event" class="lnb_tab_section select">-->
+<!--                <dl class="area_title" data-value="lv1">-->
+<!--                    <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>-->
+<!--                    <dd><span class="count">0</span></dd>-->
+<!--                </dl>-->
+<!--                <div class="search_list" data-value="lv1">-->
+<!--                    &lt;!&ndash;<dl>-->
+<!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>&ndash;&gt;-->
+<!--                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>-->
+<!--                </div>-->
+<!--                <dl class="area_title" data-value="lv2">-->
+<!--                    <dt><i><img src="/images/default/titleIcon02.svg"></i>주의 이벤트</dt>-->
+<!--                    <dd><span class="count">0</span></dd>-->
+<!--                </dl>-->
+<!--                <div class="search_list" data-value="lv2">-->
+<!--                   &lt;!&ndash; <dl>-->
+<!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>&ndash;&gt;-->
+<!--                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <!-- 개소 -->
             <div data-value="station" class="lnb_tab_section">
@@ -88,7 +88,7 @@
                         </select>
                     </dd>
                 </dl>
-                <div class="search_list" data-value="station">
+                <div class="search_list select" data-value="station">
                     <!--<dl>
                         <dt>광명 전통시장</dt>
                         <dd>유형 : 정전</dd>
@@ -189,209 +189,209 @@
 
         </section>
         <!-- 스마트 정류장 -->
-        <section th:if="${municipality == '41210000'
-                          or municipality == '47210000'}" id="smartBusStop" class="menu_fold">
-            <ul class="tab">
-                <li data-value="event" class="active"><a>실시간</a></li>
-                <li data-value="station"><a>개소</a></li>
-                <li data-value="eventPast"><a>과거이력</a></li>
-            </ul>
-            <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>
+<!--        <section th:if="${municipality == '41210000'-->
+<!--                          or municipality == '47210000'}" id="smartBusStop" class="menu_fold">-->
+<!--            <ul class="tab">-->
+<!--                <li data-value="event" class="active"><a>실시간</a></li>-->
+<!--                <li data-value="station"><a>개소</a></li>-->
+<!--                <li data-value="eventPast"><a>과거이력</a></li>-->
+<!--            </ul>-->
+<!--            <p class="lnb_fold"><i><img src="/images/default/foldOn.svg"></i></p>-->
 
-            <!-- 실시간 -->
-            <div data-value="event" class="lnb_tab_section select">
-                <dl class="area_title" data-value="lv1">
-                    <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>
-                    <dd><span class="count">11</span></dd>
-                </dl>
-                <div class="search_list" data-value="lv1">
-                    <!--<dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>-->
-                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
-                </div>
-                <dl class="area_title" data-value="lv2">
-                    <dt><i><img src="/images/default/titleIcon02.svg"></i>주의 이벤트</dt>
-                    <dd><span class="count">11</span></dd>
-                </dl>
-                <div class="search_list" data-value="lv2">
-                   <!-- <dl>
-                        <dt>EVENT ID<span class="state">미처리</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>-->
-                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
-                </div>
-            </div>
+<!--            &lt;!&ndash; 실시간 &ndash;&gt;-->
+<!--            <div data-value="event" class="lnb_tab_section select">-->
+<!--                <dl class="area_title" data-value="lv1">-->
+<!--                    <dt><i><img src="/images/default/titleIcon02.svg"></i>긴급 이벤트</dt>-->
+<!--                    <dd><span class="count">11</span></dd>-->
+<!--                </dl>-->
+<!--                <div class="search_list" data-value="lv1">-->
+<!--                    &lt;!&ndash;<dl>-->
+<!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>&ndash;&gt;-->
+<!--                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>-->
+<!--                </div>-->
+<!--                <dl class="area_title" data-value="lv2">-->
+<!--                    <dt><i><img src="/images/default/titleIcon02.svg"></i>주의 이벤트</dt>-->
+<!--                    <dd><span class="count">11</span></dd>-->
+<!--                </dl>-->
+<!--                <div class="search_list" data-value="lv2">-->
+<!--                   &lt;!&ndash; <dl>-->
+<!--                        <dt>EVENT ID<span class="state">미처리</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>&ndash;&gt;-->
+<!--                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <!-- 개소 -->
-            <div data-value="station" class="lnb_tab_section">
-                <dl class="area_title">
-                    <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>
-                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
-                </dl>
-                <div class="search_form"> <!-- search_form 변경 -->
-                    <dl>
-                        <dt><input type="text" placeholder="검색어를 입력하세요."><i><img src="/images/default/search.svg"></i></dt>
-                        <dd class="detail_btn"><i><img src="/images/default/arrowBottom.svg"></i>검색 조건 더보기</dd>
-                    </dl>
-                    <!-- search_fold -->
-                    <div class="search_fold"><!-- active 시, display: flex; -->
-                        <!-- form 통째로 -->
-                        <form>
-                            <dl class="dropdown_checkbox" data-selectbox-type="stationKind">
-                                <dt class="checkbox_title select_title">개소종류</dt>
-                                <dd class="checkbox_list list" style="display: none;">
-                                </dd>
-                            </dl>
-                            <dl class="dropdown_checkbox" data-selectbox-type="facilityKind">
-                                <dt class="checkbox_title select_title">시설물</dt>
-                                <dd class="checkbox_list list" style="display: none;">
-                                </dd>
-                            </dl>
-                            <dl class="dropdown_checkbox" data-selectbox-type="administZone" th:attr="data-selectbox-sub-type=${@environment.getProperty('danusys.area.code.sig')}">
-                                <dt class="checkbox_title select_title">행정구역</dt>
-                                <dd class="checkbox_list list" style="display: none;">
-                                </dd>
-                            </dl>
-                        </form>
-                        <ul class="button">
-                            <li><i><img src="/images/default/search.svg"></i>검색</li>
-                        </ul>
-                    </div>
-                </div>
-                <dl class="area_title" data-value="station">
-                    <dt><i><img src="/images/default/titleIcon02.svg"></i>Tab 1 목록<span class="count">0</span></dt>
-                    <dd>
-                        <!--                            <i></i>초기화-->
-                        <select>
-                            <option>번호 올림차순</option>
-                            <option>번호 내림차순</option>
-                        </select>
-                    </dd>
-                </dl>
-                <div class="search_list" data-value="station">
-                    <!--<dl>
-                        <dt>광명 전통시장</dt>
-                        <dd>유형 : 정전</dd>
-                        <dd>행정구역 : 광명동</dd>
-                        <dd>경기 광명시 광이로13번길 17-5</dd>
-                    </dl>-->
-                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
-                </div>
-            </div>
+<!--            &lt;!&ndash; 개소 &ndash;&gt;-->
+<!--            <div data-value="station" class="lnb_tab_section">-->
+<!--                <dl class="area_title">-->
+<!--                    <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>-->
+<!--                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>-->
+<!--                </dl>-->
+<!--                <div class="search_form"> &lt;!&ndash; search_form 변경 &ndash;&gt;-->
+<!--                    <dl>-->
+<!--                        <dt><input type="text" placeholder="검색어를 입력하세요."><i><img src="/images/default/search.svg"></i></dt>-->
+<!--                        <dd class="detail_btn"><i><img src="/images/default/arrowBottom.svg"></i>검색 조건 더보기</dd>-->
+<!--                    </dl>-->
+<!--                    &lt;!&ndash; search_fold &ndash;&gt;-->
+<!--                    <div class="search_fold">&lt;!&ndash; active 시, display: flex; &ndash;&gt;-->
+<!--                        &lt;!&ndash; form 통째로 &ndash;&gt;-->
+<!--                        <form>-->
+<!--                            <dl class="dropdown_checkbox" data-selectbox-type="stationKind">-->
+<!--                                <dt class="checkbox_title select_title">개소종류</dt>-->
+<!--                                <dd class="checkbox_list list" style="display: none;">-->
+<!--                                </dd>-->
+<!--                            </dl>-->
+<!--                            <dl class="dropdown_checkbox" data-selectbox-type="facilityKind">-->
+<!--                                <dt class="checkbox_title select_title">시설물</dt>-->
+<!--                                <dd class="checkbox_list list" style="display: none;">-->
+<!--                                </dd>-->
+<!--                            </dl>-->
+<!--                            <dl class="dropdown_checkbox" data-selectbox-type="administZone" th:attr="data-selectbox-sub-type=${@environment.getProperty('danusys.area.code.sig')}">-->
+<!--                                <dt class="checkbox_title select_title">행정구역</dt>-->
+<!--                                <dd class="checkbox_list list" style="display: none;">-->
+<!--                                </dd>-->
+<!--                            </dl>-->
+<!--                        </form>-->
+<!--                        <ul class="button">-->
+<!--                            <li><i><img src="/images/default/search.svg"></i>검색</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <dl class="area_title" data-value="station">-->
+<!--                    <dt><i><img src="/images/default/titleIcon02.svg"></i>Tab 1 목록<span class="count">0</span></dt>-->
+<!--                    <dd>-->
+<!--                        &lt;!&ndash;                            <i></i>초기화&ndash;&gt;-->
+<!--                        <select>-->
+<!--                            <option>번호 올림차순</option>-->
+<!--                            <option>번호 내림차순</option>-->
+<!--                        </select>-->
+<!--                    </dd>-->
+<!--                </dl>-->
+<!--                <div class="search_list" data-value="station">-->
+<!--                    &lt;!&ndash;<dl>-->
+<!--                        <dt>광명 전통시장</dt>-->
+<!--                        <dd>유형 : 정전</dd>-->
+<!--                        <dd>행정구역 : 광명동</dd>-->
+<!--                        <dd>경기 광명시 광이로13번길 17-5</dd>-->
+<!--                    </dl>&ndash;&gt;-->
+<!--                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <!-- 과거이력 -->
-            <div data-value="eventPast" class="lnb_tab_section">
-                <dl class="area_title">
-                    <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>
-                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
-                </dl>
-                <div class="search_form"> <!-- search_form 변경 -->
-                    <dl>
-                        <dt><input type="text" placeholder="검색어를 입력하세요."><i><img src="/images/default/search.svg"></i></dt>
-                        <dd class="detail_btn"><i><img src="/images/default/arrowBottom.svg"></i>검색 조건 더보기</dd>
-                    </dl>
-                    <!-- search_fold -->
-                    <div class="search_fold"><!-- active 시, display: flex; -->
-                        <!-- form 통째로 -->
-                        <form>
-                            <dl class="date_set">
-                                <dt>발생 기간</dt>
-                                <dd><input type="text" id="smartBusStopEventPastStartDt" placeholder="날짜를 입력하세요" name="startDt" class="input_date"></dd>
-                                <span>부터</span>
-                                <dd><input type="text" id="smartBusStopEventPastEndDt" placeholder="날짜를 입력하세요" name="endDt" class="input_date"></dd>
-                                <span>까지</span>
-                            </dl>
-                            <dl class="dropdown_checkbox" data-selectbox-type="eventKind" data-selectbox-sub-type=smart_busstop_event>
-                                <dt class="checkbox_title select_title">이벤트 종류</dt>
-                                <dd class="checkbox_list list" style="display: none;">
-                                </dd>
-                            </dl>
-                            <dl class="dropdown_checkbox" data-selectbox-type="administZone" th:attr="data-selectbox-sub-type=${@environment.getProperty('danusys.area.code.sig')}">
-                                <dt class="checkbox_title select_title">행정구역</dt>
-                                <dd class="checkbox_list list" style="display: none;">
-                                </dd>
-                            </dl>
-                            <dl class="checkbox_set">
-                                <dt>이벤트 등급</dt>
-                                <dd>
-							<span>
-								<input type="checkbox" id="smartBusStopEventPastUrgent" name="eventGrade" data-value="10" checked>
-								<label for="smartBusStopEventPastUrgent"><span></span>긴급</label>
-							</span>
-                                    <span>
-								<input type="checkbox" id="smartBusStopEventPastCaution" name="eventGrade" data-value="20" checked>
-								<label for="smartBusStopEventPastCaution"><span></span>주의</label>
-							</span>
-                                </dd>
-                            </dl>
-                            <dl class="checkbox_set">
-                                <dt>처리 상태</dt>
-                                <dd>
-                                    <span>
-                                        <input type="checkbox" id="smartBusStopEventPastStaus00" name="eventState" data-value="0" multiple="multiple">
-                                        <label for="smartBusStopEventPastStaus00"><span></span>미처리</label>
-                                    </span>
-                                    <span>
-                                        <input type="checkbox" id="smartBusStopEventPastStaus01" name="eventState" data-value="1" multiple="multiple" checked>
-                                        <label for="smartBusStopEventPastStaus01"><span></span>조치완료</label>
-                                    </span>
-                                    <span>
-                                        <input type="checkbox" id="smartBusStopEventPastStaus02" name="eventState" data-value="2" multiple="multiple" checked>
-                                        <label for="smartBusStopEventPastStaus02"><span></span>종료</label>
-                                    </span>
-                                </dd>
-                            </dl>
-                        </form>
-                        <ul class="button refresh">
-                            <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>
-                        </ul>
-                    </div>
-                </div>
-                <dl class="area_title">
-                    <dt><i><img src="/images/default/titleIcon02.svg"></i>이벤트 목록<span class="count">11</span></dt>
-                    <dd>
-                        <select>
-                            <option>번호 올림차순</option>
-                            <option>번호 내림차순</option>
-                        </select>
-                    </dd>
-                </dl>
-                <div class="search_list">
-                    <!--<dl>
-                        <dt>EVENT ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>-->
-                    <!--<dl>
-                        <dt>EVENT ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>
-                    <dl>
-                        <dt>EVENT ID<span class="state">종료</span></dt>
-                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>
-                        <dd>경기 광명시 소하동 1294</dd>
-                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>
-                    </dl>-->
-                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>
-                </div>
-            </div>
+<!--            &lt;!&ndash; 과거이력 &ndash;&gt;-->
+<!--            <div data-value="eventPast" class="lnb_tab_section">-->
+<!--                <dl class="area_title">-->
+<!--                    <dt><i><img src="/images/default/titleIcon01.svg"></i>이벤트 검색</dt>-->
+<!--                    <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>-->
+<!--                </dl>-->
+<!--                <div class="search_form"> &lt;!&ndash; search_form 변경 &ndash;&gt;-->
+<!--                    <dl>-->
+<!--                        <dt><input type="text" placeholder="검색어를 입력하세요."><i><img src="/images/default/search.svg"></i></dt>-->
+<!--                        <dd class="detail_btn"><i><img src="/images/default/arrowBottom.svg"></i>검색 조건 더보기</dd>-->
+<!--                    </dl>-->
+<!--                    &lt;!&ndash; search_fold &ndash;&gt;-->
+<!--                    <div class="search_fold">&lt;!&ndash; active 시, display: flex; &ndash;&gt;-->
+<!--                        &lt;!&ndash; form 통째로 &ndash;&gt;-->
+<!--                        <form>-->
+<!--                            <dl class="date_set">-->
+<!--                                <dt>발생 기간</dt>-->
+<!--                                <dd><input type="text" id="smartBusStopEventPastStartDt" placeholder="날짜를 입력하세요" name="startDt" class="input_date"></dd>-->
+<!--                                <span>부터</span>-->
+<!--                                <dd><input type="text" id="smartBusStopEventPastEndDt" placeholder="날짜를 입력하세요" name="endDt" class="input_date"></dd>-->
+<!--                                <span>까지</span>-->
+<!--                            </dl>-->
+<!--                            <dl class="dropdown_checkbox" data-selectbox-type="eventKind" data-selectbox-sub-type=smart_busstop_event>-->
+<!--                                <dt class="checkbox_title select_title">이벤트 종류</dt>-->
+<!--                                <dd class="checkbox_list list" style="display: none;">-->
+<!--                                </dd>-->
+<!--                            </dl>-->
+<!--                            <dl class="dropdown_checkbox" data-selectbox-type="administZone" th:attr="data-selectbox-sub-type=${@environment.getProperty('danusys.area.code.sig')}">-->
+<!--                                <dt class="checkbox_title select_title">행정구역</dt>-->
+<!--                                <dd class="checkbox_list list" style="display: none;">-->
+<!--                                </dd>-->
+<!--                            </dl>-->
+<!--                            <dl class="checkbox_set">-->
+<!--                                <dt>이벤트 등급</dt>-->
+<!--                                <dd>-->
+<!--							<span>-->
+<!--								<input type="checkbox" id="smartBusStopEventPastUrgent" name="eventGrade" data-value="10" checked>-->
+<!--								<label for="smartBusStopEventPastUrgent"><span></span>긴급</label>-->
+<!--							</span>-->
+<!--                                    <span>-->
+<!--								<input type="checkbox" id="smartBusStopEventPastCaution" name="eventGrade" data-value="20" checked>-->
+<!--								<label for="smartBusStopEventPastCaution"><span></span>주의</label>-->
+<!--							</span>-->
+<!--                                </dd>-->
+<!--                            </dl>-->
+<!--                            <dl class="checkbox_set">-->
+<!--                                <dt>처리 상태</dt>-->
+<!--                                <dd>-->
+<!--                                    <span>-->
+<!--                                        <input type="checkbox" id="smartBusStopEventPastStaus00" name="eventState" data-value="0" multiple="multiple">-->
+<!--                                        <label for="smartBusStopEventPastStaus00"><span></span>미처리</label>-->
+<!--                                    </span>-->
+<!--                                    <span>-->
+<!--                                        <input type="checkbox" id="smartBusStopEventPastStaus01" name="eventState" data-value="1" multiple="multiple" checked>-->
+<!--                                        <label for="smartBusStopEventPastStaus01"><span></span>조치완료</label>-->
+<!--                                    </span>-->
+<!--                                    <span>-->
+<!--                                        <input type="checkbox" id="smartBusStopEventPastStaus02" name="eventState" data-value="2" multiple="multiple" checked>-->
+<!--                                        <label for="smartBusStopEventPastStaus02"><span></span>종료</label>-->
+<!--                                    </span>-->
+<!--                                </dd>-->
+<!--                            </dl>-->
+<!--                        </form>-->
+<!--                        <ul class="button refresh">-->
+<!--                            <li><i><img src="/images/default/refresh.svg"></i>검색조건 초기화</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <dl class="area_title">-->
+<!--                    <dt><i><img src="/images/default/titleIcon02.svg"></i>이벤트 목록<span class="count">11</span></dt>-->
+<!--                    <dd>-->
+<!--                        <select>-->
+<!--                            <option>번호 올림차순</option>-->
+<!--                            <option>번호 내림차순</option>-->
+<!--                        </select>-->
+<!--                    </dd>-->
+<!--                </dl>-->
+<!--                <div class="search_list">-->
+<!--                    &lt;!&ndash;<dl>-->
+<!--                        <dt>EVENT ID<span class="state">종료</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>&ndash;&gt;-->
+<!--                    &lt;!&ndash;<dl>-->
+<!--                        <dt>EVENT ID<span class="state">종료</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv2">주의</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>-->
+<!--                    <dl>-->
+<!--                        <dt>EVENT ID<span class="state">종료</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>-->
+<!--                    <dl>-->
+<!--                        <dt>EVENT ID<span class="state">종료</span></dt>-->
+<!--                        <dd class="event_level"><span class="level lv1">긴급</span>정전</dd>-->
+<!--                        <dd>경기 광명시 소하동 1294</dd>-->
+<!--                        <dd>2022-03-14 10:44:26<span class="ago">1분 전</span></dd>-->
+<!--                    </dl>&ndash;&gt;-->
+<!--                    <p class="button_top"><img src="/images/default/arrowNext.svg"></p>-->
+<!--                </div>-->
+<!--            </div>-->
 
-        </section>
+<!--        </section>-->
         <!-- 스마트 분전함 -->
         <section th:if="${municipality == '45210000'}" id="smartPower" class="menu_fold">
             <ul class="tab">
@@ -432,7 +432,7 @@
             </div>
 
             <!-- 개소 -->
-            <div data-value="station" class="lnb_tab_section">
+            <div data-value="station" class="lnb_tab_section select">
                 <dl class="area_title">
                     <dt><i><img src="/images/default/titleIcon01.svg"></i>개소 검색</dt>
                     <dd class="button refresh"><i><img src="/images/default/refresh.svg"></i>초기화</dd>
@@ -477,7 +477,7 @@
                         </select>
                     </dd>
                 </dl>
-                <div class="search_list" data-value="station">
+                <div class="search_list select" data-value="station">
                    <!--<dl>
                         <dt>광명 전통시장</dt>
                         <dd>유형 : 정전</dd>

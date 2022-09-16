@@ -23,7 +23,7 @@ public class YjMqttManager {
 
     public YjMqttManager() {
 //        this.init("tcp://1.235.55.18:1883");
-        this.init("tcp://192.168.10.11:1883");
+//        this.init("tcp://192.168.10.11:1883");
     }
 
     public void init(String serverUri) {
