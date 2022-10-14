@@ -63,7 +63,7 @@ public class AuthController {
     public ResponseEntity<?> createAuthenticationToken(HttpServletRequest request, EncryptedUser user) throws Exception {
       //  log.info("user={}", user);
 
-        PrivateKey privateKey = rsaUtils.extractingThePrivateKey(request);
+        PrivateKey privateKey = rsaUtils.privateKeyExtraction(request);
 
         String username = rsaUtils.decrypt(privateKey, user.getSecuredUsername()).orElseGet(() -> new String(""));
         String password = rsaUtils.decrypt(privateKey, user.getSecuredPassword()).orElseGet(() -> new String(""));
@@ -81,7 +81,6 @@ public class AuthController {
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
     }
-
 
     @PostMapping("/regenerateToken")
     public ResponseEntity<?> RegenerateToken(HttpServletRequest request) throws Exception {
