@@ -25,7 +25,10 @@
             <version>${revision}</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 
         <!--   스타트웹, jpa 끝  -->
         <!-- 롬복,다누시스웹 -->

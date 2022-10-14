@@ -1,15 +1,26 @@
 package com.danusys.web.platform.controller;
 
+import com.danusys.web.commons.auth.encryption.RsaUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class BaseController {
 
+    private final RsaUtils rsaUtils;
     @Value("${homePage.url}")
     private String homePageUrl;
 
@@ -17,21 +28,18 @@ public class BaseController {
     private String loginPagePath;
 
     @RequestMapping(value = "/")
-    public String index() {
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public String index(HttpServletRequest request, Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, ServletException, IOException {
+       if (SecurityContextHolder.getContext().getAuthentication() != null) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-
-               if (SecurityContextHolder.getContext().getAuthentication() != null) {
-                    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-                    log.info("principal={}",principal);
-                    if (!principal.toString().equals("anonymousUser"))
-                        return "redirect:" + homePageUrl;
-                }
-//        if (!principal.toString().equals("anonymousUser"))
-//            return "redirect:"+homePageUrl;
-
-        return loginPagePath;
+        log.info("principal={}",principal);
+        if (!principal.toString().equals("anonymousUser"))
+        return "redirect:" + homePageUrl;
+       }
+       request.getSession().setAttribute("__rsaPrivateKey__", rsaUtils.getPrivateKey());
+       model.addAttribute("publicKeyModulus", rsaUtils.getPublicKeyModulus());
+       model.addAttribute("publicKeyExponent", rsaUtils.getPublicKeyExponent());
+       return loginPagePath;
     }
 
 //	/**

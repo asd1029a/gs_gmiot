@@ -3,6 +3,8 @@ package com.danusys.web.commons.auth.token.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.danusys.web.commons.auth.config.auth.CommonsUserDetailsService;
+import com.danusys.web.commons.auth.dto.EncryptedUser;
+import com.danusys.web.commons.auth.encryption.RsaUtils;
 import com.danusys.web.commons.auth.model.AuthenticationResponse;
 import com.danusys.web.commons.auth.model.TokenDto;
 import com.danusys.web.commons.auth.model.User;
@@ -10,6 +12,7 @@ import com.danusys.web.commons.auth.service.UserService;
 import com.danusys.web.commons.auth.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.security.PrivateKey;
 import java.util.Date;
 
 @RestController
@@ -39,6 +44,8 @@ public class AuthController {
 
     private final UserService userService;
 
+    private final RsaUtils rsaUtils;
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -53,25 +60,26 @@ public class AuthController {
     }
 
     @PostMapping("/generateToken")
-    public ResponseEntity<?> createAuthenticationToken(User user) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(HttpServletRequest request, EncryptedUser user) throws Exception {
       //  log.info("user={}", user);
+
+        PrivateKey privateKey = rsaUtils.extractingThePrivateKey(request);
+
+        String username = rsaUtils.decrypt(privateKey, user.getSecuredUsername()).orElseGet(() -> new String(""));
+        String password = rsaUtils.decrypt(privateKey, user.getSecuredPassword()).orElseGet(() -> new String(""));
+
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
-        } catch (NullPointerException e2) {
-            // httpServletRequest.getRequestDispatcher("/login/error").forward(httpServletRequest,httpServletResponse);
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserId());
-        //userDetails가 잘못들어왔을대 에러페이지 관리해야됨
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         final TokenDto jwt = jwtUtil.generateToken(userDetails);
-        userService.mod(user.getUserId(), jwt.getRefreshToken());
+        userService.mod(username, jwt.getRefreshToken());
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
-
     }
 
 
@@ -104,5 +112,19 @@ public class AuthController {
 
         userService.mod(username, jwt.getRefreshToken());
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
+    }
+
+
+    private void valiedatePrivateKey(PrivateKey privateKey) {
+        if(privateKey == null){
+            throw new RuntimeException("암호화 비밀키를 찾을 수 없습니다.");
+        }
+    }
+
+    private PrivateKey getPrivateKey(HttpSession session) {
+        PrivateKey privateKey = (PrivateKey) session.getAttribute(RsaUtils.RSA_PRIVATE_KEY);
+        valiedatePrivateKey(privateKey);
+        session.removeAttribute(RsaUtils.RSA_PRIVATE_KEY);
+        return privateKey;
     }
 }

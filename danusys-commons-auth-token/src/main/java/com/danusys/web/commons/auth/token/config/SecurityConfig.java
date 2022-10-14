@@ -111,6 +111,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(url).hasAnyRole(roles);
         }
 
+
         httpSecurity
                 .authorizeRequests() //시큐리티 처리에 HttpServletRequest를 이용한다
                 .antMatchers(permitAll).permitAll()

@@ -12,8 +12,16 @@
     <!-- sweetAlert2-->
     <script type=text/javascript src="/webjars/sweetalert2/11.1.2/dist/sweetalert2.min.js"></script>
 
-    <script src="/js/loginWhy.js" defer ></script>
+<!--    <script src="/js/loginWhy.js" defer ></script>-->
     <script type="text/javascript" src="/js/common/common.js" ></script>
+
+    <!-- rsa script  -->
+    <script type="text/javascript" src="/js/security/rsa.js"></script>
+    <script type="text/javascript" src="/js/security/rng.js" ></script>
+    <script type="text/javascript" src="/js/security/prng4.js"></script>
+    <script type="text/javascript" src="/js/security/jsbn.js" ></script>
+
+    <script type="text/javascript" src="/js/security/login.js" defer></script>
 
     <link rel="shortcut icon" th:href="${@environment.getProperty('municipality.favicon')}"/>
     <title>Iot 플랫폼</title>
@@ -28,7 +36,8 @@
         </h2>
     </div>
     <h6 class="login_form">
-        <form>
+        <form onsubmit="return false">
+<!--        <div>-->
             <h6>
                 <img th:src="'/images/default/'+${@environment.getProperty('loginPage.logo')}">
             </h6>
@@ -36,11 +45,17 @@
             <ul>
                 <li><input type="text" class="input_id" id="id" name="username" placeholder="아이디를 입력하세요." tabindex="1"></li>
                 <li><input type="password" class="input_pw" id="pwd" name="password" placeholder="비밀번호를 입력하세요." tabindex="2"></li>
+                <input type="hidden" id="rsaPublicKeyModulus" th:value="${publicKeyModulus}" />
+                <input type="hidden" id="rsaPublicKeyExponent" th:value="${publicKeyExponent}" />
                 <li class="login_button">
                     <button class="login-btn">LOGIN</button>
                 </li>
             </ul>
+<!--        <form id="securedLoginForm" name="securedLoginForm"  style="display: none">-->
+<!--            <input type="hidden" name="securedUsername" id="securedUsername" value=""/>-->
+<!--            <input type="hidden" name="securedPassword" id="securedPassword" value=""/>-->
         </form>
+<!--        </div>-->
     </h6>
 </div>
 </body>

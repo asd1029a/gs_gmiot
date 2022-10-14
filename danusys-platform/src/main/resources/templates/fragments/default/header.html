@@ -14,7 +14,8 @@
 <!--                    <a th:if="${municipality == '41210000'}" href="/pages/dashboard/dashboard_facility_gm">대시보드</a>-->
 <!--                    <a th:if="${municipality == '45210000'}" href="/pages/dashboard/dashboard_drone">대시보드</a>-->
 <!--                </li>-->
-                <li sec:authorize="hasAnyRole('ROLE_mntr_rw, ROLE_mntr_r-')" id="mntr">
+<!--                <li sec:authorize="hasAnyRole('ROLE_mntr_rw, ROLE_mntr_r-')" id="mntr">-->
+                <li sec:authorize="hasAnyRole('ROLE_inqry_rw', 'ROLE_inqry_r-')" id="mntr">
                     <a href="/pages/mntr">관제</a>
                 </li>
                 <li sec:authorize="hasAnyRole('ROLE_inqry_rw', 'ROLE_inqry_r-')" id="inqry">
