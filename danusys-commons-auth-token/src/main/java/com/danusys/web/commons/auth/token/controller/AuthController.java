@@ -44,8 +44,7 @@ public class AuthController {
 
     private final UserService userService;
 
-//    private final RsaUtils rsaUtils;
-    private RsaUtils rsaUtils;
+    private final RsaUtils rsaUtils;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -62,9 +61,9 @@ public class AuthController {
 
     @PostMapping("/generateToken")
     public ResponseEntity<?> createAuthenticationToken(HttpServletRequest request, EncryptedUser user) throws Exception {
-      //  log.info("user={}", user);
-        rsaUtils = new RsaUtils();
-        PrivateKey privateKey = rsaUtils.privateKeyExtraction(request);
+        HttpSession session = request.getSession();
+        PrivateKey privateKey = rsaUtils.privateKeyExtractionFrom(session)
+                .orElseThrow(()-> new Exception("the private key does not exist."));
 
         String username = rsaUtils.decrypt(privateKey, user.getSecuredUsername()).orElseGet(() -> new String(""));
         String password = rsaUtils.decrypt(privateKey, user.getSecuredPassword()).orElseGet(() -> new String(""));
@@ -74,7 +73,7 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
-
+        rsaUtils.privateKeyDeleteFrom(session);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         final TokenDto jwt = jwtUtil.generateToken(userDetails);

@@ -31,12 +31,11 @@ public class BaseController {
     public String index(HttpServletRequest request, Model model) throws NoSuchAlgorithmException, InvalidKeySpecException, ServletException, IOException {
        if (SecurityContextHolder.getContext().getAuthentication() != null) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         log.info("principal={}",principal);
         if (!principal.toString().equals("anonymousUser"))
         return "redirect:" + homePageUrl;
        }
-       request.getSession().setAttribute("__rsaPrivateKey__", rsaUtils.getPrivateKey());
+       request.getSession().setAttribute(rsaUtils.RSA_SESSION_KEY, rsaUtils.getPrivateKey());
        model.addAttribute("publicKeyModulus", rsaUtils.getPublicKeyModulus());
        model.addAttribute("publicKeyExponent", rsaUtils.getPublicKeyExponent());
        return loginPagePath;

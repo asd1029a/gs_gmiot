@@ -21,7 +21,7 @@ import java.util.Optional;
 @Component
 public class RsaUtils {
 
-    public static String RSA_PRIVATE_KEY = "__rsaPrivateKey__";
+    public static String RSA_SESSION_KEY = "__rsaPrivateKey__";
 
     private int KEY_SIZE = 4096;
     private PublicKey publicKey;
@@ -31,6 +31,14 @@ public class RsaUtils {
     KeyPairGenerator generator;
 
     public RsaUtils()  {
+        init();
+    }
+
+    public void initialize(){
+        this.init();
+    }
+
+    private void init() {
         try{
             generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(KEY_SIZE);
@@ -46,10 +54,6 @@ public class RsaUtils {
             publicKeyExponent = keySpec.getPublicExponent().toString(16);
         } catch( NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
-            publicKey = null;
-            privateKey = null;
-            publicKeyExponent = null;
-            publicKeyModulus = null;
         }
     }
 
@@ -71,7 +75,6 @@ public class RsaUtils {
 
     public Optional<String> decrypt(PrivateKey privateKey, String securityCode){
         String decryptCode = Strings.EMPTY;
-
         try{
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             byte[] encryptedBytes = Funcs.hexToByteArray(securityCode);
@@ -86,22 +89,19 @@ public class RsaUtils {
         return Optional.of(decryptCode);
     }
 
-    public PrivateKey privateKeyExtraction(HttpServletRequest request){
-        HttpSession session = request.getSession();
-        PrivateKey privateKey = (PrivateKey) session.getAttribute(RsaUtils.RSA_PRIVATE_KEY);
-
-        if(!valiedatePrivateKey(privateKey)){
-            session.removeAttribute(RsaUtils.RSA_PRIVATE_KEY);
-            return privateKey;
+    public Optional<PrivateKey> privateKeyExtractionFrom(HttpSession session){
+        PrivateKey privateKey = (PrivateKey) session.getAttribute(RSA_SESSION_KEY);
+        if(validatePrivateKey(privateKey)){
+            return Optional.of(privateKey);
         }
-
-        return privateKey;
+        return Optional.empty();
     }
 
-    private boolean valiedatePrivateKey(PrivateKey privateKey) {
-        return Objects.isNull(privateKey) ? true : false;
-//        if(privateKey == null){
-//            throw new RuntimeException("암호화 비밀키를 찾을 수 없습니다.");
-//        }
+    public void privateKeyDeleteFrom(HttpSession session){
+        session.removeAttribute(RsaUtils.RSA_SESSION_KEY);
+    }
+
+    private boolean validatePrivateKey(PrivateKey privateKey) {
+        return Objects.isNull(privateKey) ? false : true;
     }
 }
