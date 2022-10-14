@@ -44,7 +44,8 @@ public class AuthController {
 
     private final UserService userService;
 
-    private final RsaUtils rsaUtils;
+//    private final RsaUtils rsaUtils;
+    private RsaUtils rsaUtils;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -62,7 +63,7 @@ public class AuthController {
     @PostMapping("/generateToken")
     public ResponseEntity<?> createAuthenticationToken(HttpServletRequest request, EncryptedUser user) throws Exception {
       //  log.info("user={}", user);
-
+        rsaUtils = new RsaUtils();
         PrivateKey privateKey = rsaUtils.privateKeyExtraction(request);
 
         String username = rsaUtils.decrypt(privateKey, user.getSecuredUsername()).orElseGet(() -> new String(""));
@@ -113,17 +114,4 @@ public class AuthController {
         return ResponseEntity.ok(new AuthenticationResponse(jwt.getAccessToken()));
     }
 
-
-    private void valiedatePrivateKey(PrivateKey privateKey) {
-        if(privateKey == null){
-            throw new RuntimeException("암호화 비밀키를 찾을 수 없습니다.");
-        }
-    }
-
-    private PrivateKey getPrivateKey(HttpSession session) {
-        PrivateKey privateKey = (PrivateKey) session.getAttribute(RsaUtils.RSA_PRIVATE_KEY);
-        valiedatePrivateKey(privateKey);
-        session.removeAttribute(RsaUtils.RSA_PRIVATE_KEY);
-        return privateKey;
-    }
 }

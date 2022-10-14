@@ -11,6 +11,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -88,15 +89,19 @@ public class RsaUtils {
     public PrivateKey privateKeyExtraction(HttpServletRequest request){
         HttpSession session = request.getSession();
         PrivateKey privateKey = (PrivateKey) session.getAttribute(RsaUtils.RSA_PRIVATE_KEY);
-        valiedatePrivateKey(privateKey);
-        session.removeAttribute(RsaUtils.RSA_PRIVATE_KEY);
+
+        if(!valiedatePrivateKey(privateKey)){
+            session.removeAttribute(RsaUtils.RSA_PRIVATE_KEY);
+            return privateKey;
+        }
 
         return privateKey;
     }
 
-    private void valiedatePrivateKey(PrivateKey privateKey) {
-        if(privateKey == null){
-            throw new RuntimeException("암호화 비밀키를 찾을 수 없습니다.");
-        }
+    private boolean valiedatePrivateKey(PrivateKey privateKey) {
+        return Objects.isNull(privateKey) ? true : false;
+//        if(privateKey == null){
+//            throw new RuntimeException("암호화 비밀키를 찾을 수 없습니다.");
+//        }
     }
 }
